@@ -11,7 +11,7 @@ import com.rndmodgames.localization.LanguageModLoader;
 public class MainMenuButton extends VisTextButton {
 
 	/**
-	 * This Button will exit the Game
+	 * This Button will switch to the Main Menu Screen
 	 * 
 	 * @param game
 	 * @param dispose
