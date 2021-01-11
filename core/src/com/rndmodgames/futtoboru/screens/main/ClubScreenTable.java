@@ -9,7 +9,14 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 /**
  * Club Screen - Main Game
  * 
+ * Sub-Screens:
  * 
+ *      - Profile           []
+ *      - General           [WIP]
+ *      - News              []
+ *      - Facilities        []
+ *      - Affiliates        []
+ *      - History           []
  * 
  * Sources:
  *  - https://redledslick.weebly.com/uploads/1/2/3/7/123738267/627008043.png

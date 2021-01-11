@@ -4,18 +4,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
 import com.rndmodgames.futtoboru.game.Futtuboru;
 import com.rndmodgames.futtoboru.screens.main.BTeamScreenTable;
 import com.rndmodgames.futtoboru.screens.main.BoardScreenTable;
@@ -24,6 +18,7 @@ import com.rndmodgames.futtoboru.screens.main.CompetitionsScreenTable;
 import com.rndmodgames.futtoboru.screens.main.FinancesScreenTable;
 import com.rndmodgames.futtoboru.screens.main.HomeScreenTable;
 import com.rndmodgames.futtoboru.screens.main.InboxScreenTable;
+import com.rndmodgames.futtoboru.screens.main.MainGameMenuTable;
 import com.rndmodgames.futtoboru.screens.main.ScheduleScreenTable;
 import com.rndmodgames.futtoboru.screens.main.ScoutingScreenTable;
 import com.rndmodgames.futtoboru.screens.main.SquadScreenTable;
@@ -55,15 +50,6 @@ public class MainGameScreen implements Screen {
     Game game;
     Stage stage;
     SaveGame currentGame; // reference for easy access
-        
-    /**
-     * We access to an Initial Unsaved Game Data from Parent (also SAVE/LOAD THROUGH PARENT)
-     */
-    
-    /**
-     * Screen Components
-     */
-    final VisTextButton continueGameButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
     
     /**
      * Screen Ids
@@ -81,10 +67,15 @@ public class MainGameScreen implements Screen {
     private static final int TRAINING_SCREEN     = 11;
     private static final int SCOUTING_SCREEN     = 12;
     private static final int TRANSFERS_SCREEN    = 13;
-    private static final int CLUB_SCREEN         = 14;
+    public static final int CLUB_SCREEN         = 14;
     private static final int BOARD_SCREEN        = 15;
     private static final int FINANCES_SCREEN     = 16;
 
+    /**
+     * Main Game Menu
+     */
+    private MainGameMenuTable mainGameMenuTable = null;
+    
     /**
      * Main Screen Tables
      */
@@ -127,11 +118,6 @@ public class MainGameScreen implements Screen {
     private VisTextButton financesButton = new VisTextButton(LanguageModLoader.getValue("finances"));
     
     /**
-     * Dialogs
-     */
-    private SaveGameDialog saveGameDialog = null;
-    
-    /**
      * @param parent
      */
     public MainGameScreen(Game parent) {
@@ -152,114 +138,13 @@ public class MainGameScreen implements Screen {
         gameWindowTable.setDebug(true, true);
         
         /**
-         * Weekly Calendar Widget
+         * Main Game Menu (Top Menu)
          */
-
-        final VisTable weeklyCalendarWidget = new VisTable(true);
-        weeklyCalendarWidget.pad(5);
-        
-        /**
-         * Open Options Drop Down Menu Button/SelectBox -
-         */
-        final VisSelectBox<String> gameSettingsSelectBox = new VisSelectBox<>();
+        mainGameMenuTable = new MainGameMenuTable(game, stage);
 
         /**
-         * Options:
-         *  - Save Game
-         *  -
+         * Main Game Screen
          */
-        gameSettingsSelectBox.setItems(LanguageModLoader.getValue("options"),
-                                       LanguageModLoader.getValue("save_game"),
-                                       LanguageModLoader.getValue("load_game"),
-                                       LanguageModLoader.getValue("settings"),
-                                       LanguageModLoader.getValue("quit_to_menu"),
-                                       LanguageModLoader.getValue("quit_to_desktop")
-                                       );
-
-        gameSettingsSelectBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-
-                /**
-                 * Available Game Settings - Save Game v1
-                 */
-                int selectedOptionIndex = gameSettingsSelectBox.getSelectedIndex();
-                
-                switch(selectedOptionIndex) {
-                
-                case 0:
-                    // ignore, main options button
-                    break;
-                
-                case 1:
-                    /**
-                     * Show Save Game Dialog Window
-                     */
-                    if (saveGameDialog == null) {
-                        
-                        /**
-                         * Pass the reference to the Continue Game button so we can enable that after saving the game once
-                         */
-                        saveGameDialog = new SaveGameDialog(((Futtuboru)(game)).getCurrentGame(), continueGameButton);  
-                    } 
-
-                    // 
-                    saveGameDialog.show(stage);
-                    break;
-                
-                default:
-                    System.out.println("OPTION NOT IMPLEMENTED!");
-                    break;
-                }
-                
-                /**
-                 * Clear the selection after click
-                 */
-                gameSettingsSelectBox.setSelectedIndex(0);
-            }
-        });
-
-        /**
-         * Continue Game Button
-         * 
-         * - This will be disabled until the Game is Saved Once
-         */
-        continueGameButton.addCaptureListener(new InputListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-                /**
-                 * Continue Game Simulation
-                 */
-                if (continueGameButton.isDisabled()) {
-
-                    System.out.println("SAVE GAME BEFORE ADVANCING THE SIMULATION!");
-
-                } else {
-
-                    // 
-                    advanceGameTurn();
-                }
-            }
-        });
-
-        /**
-         * Continue Game Tooltip [SAVE GAME FIRST]
-         * 
-         * NOTE: button disabled until saving game at least once
-         */
-        if (!((Futtuboru)(game)).getCurrentGame().getIsSaved()) {
-            
-            continueGameButton.addListener(new TextTooltip("Save Game Before Advancing the Simulation", VisUI.getSkin()));
-            continueGameButton.setDisabled(true);
-        }
-
         final VisTable mainScreenArea = new VisTable();
         
         mainTable.setDebug(true);
@@ -595,21 +480,22 @@ public class MainGameScreen implements Screen {
         buttonsMenu.add(financesButton).fill();
         buttonsMenu.row();
         
-        //
+        // default initial screen
         setActiveMainScreen(HOME_SCREEN);
         
         //
         updateMainButtonsVisibility();
-        
-        // Settings SelectBox & Continue Game Button
-        weeklyCalendarWidget.add(gameSettingsSelectBox);
-        weeklyCalendarWidget.add(continueGameButton);
 
         // Main Game Buttons
         gameWindowTable.add(buttonsMenu).top();
         
-        // Game Area Screen
-        mainScreenArea.add(weeklyCalendarWidget).top().expandX().right();
+        /**
+         * Main Game Menu
+         * 
+         * Switched dinamically as the main game screen
+         */
+        mainScreenArea.add(mainGameMenuTable).fillX().top().left();
+        
         mainScreenArea.row();
         mainScreenArea.add(mainTable).grow();
 
@@ -722,18 +608,9 @@ public class MainGameScreen implements Screen {
             System.out.println("SCREEN NOT SET UP");
             break;
         }
-    }
-    
-    /**
-     * TODO: move this to the Simulation
-     */
-    private void advanceGameTurn() {
         
-        System.out.println("ADVANCE THE SIMULATION - 1 TURN");
-       
-        
-        // update the buttons in case the Player got a new Job at a Club
-        updateMainButtonsVisibility();
+        // Update the Dynamic Main Menu
+        mainGameMenuTable.setMainGameMenu(screen);
     }
     
     /**
