@@ -147,7 +147,7 @@ public class MainGameMenuTable extends VisTable {
 
         add(dynamicMainGameMenuTable).expandX().left();
         
-     // Settings SelectBox & Continue Game Button
+        // Settings SelectBox & Continue Game Button
         VisTable rightMenu = new VisTable(true);
         
         rightMenu.add(gameSettingsSelectBox).right();
@@ -159,7 +159,7 @@ public class MainGameMenuTable extends VisTable {
     /**
      * Dynamically sets the Main Game Menu depending on the Selected Screen
      */
-    public void setMainGameMenu(int screen) {
+    public void setMainGameMenu(int screen, VisTable screenTable) {
         
         dynamicMainGameMenuTable.clear();
         
@@ -169,20 +169,7 @@ public class MainGameMenuTable extends VisTable {
             /**
              * Profile, General, News, Facilities, Affiliates, History
              */
-            VisTextButton clubProfileButton = new VisTextButton(LanguageModLoader.getValue("profile"));
-            VisTextButton clubGeneralButton = new VisTextButton(LanguageModLoader.getValue("general"));
-            VisTextButton clubNewsButton = new VisTextButton(LanguageModLoader.getValue("news"));
-            VisTextButton clubFacilitiesButton = new VisTextButton(LanguageModLoader.getValue("facilities"));
-            VisTextButton clubAffiliatesButton = new VisTextButton(LanguageModLoader.getValue("affiliates"));
-            VisTextButton clubHistoryButton = new VisTextButton(LanguageModLoader.getValue("history"));
-            
-            dynamicMainGameMenuTable.add(clubProfileButton).expandX().left();
-            dynamicMainGameMenuTable.add(clubGeneralButton).expandX().left();
-            dynamicMainGameMenuTable.add(clubNewsButton).expandX().left();
-            dynamicMainGameMenuTable.add(clubFacilitiesButton).expandX().left();
-            dynamicMainGameMenuTable.add(clubAffiliatesButton).expandX().left();
-            dynamicMainGameMenuTable.add(clubHistoryButton).expandX().left();
-            
+            dynamicMainGameMenuTable.add(((ClubScreenTable) screenTable).getClubScreenDynamicMenu());
             break;
         
         default:

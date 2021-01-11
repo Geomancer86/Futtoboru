@@ -537,6 +537,9 @@ public class MainGameScreen implements Screen {
         
         // Clear the main table
         mainTable.clear();
+//        mainTable.setFillParent(true);
+//        mainTable.top();
+//        mainTable.left();
         
         switch (screen) {
         
@@ -593,7 +596,10 @@ public class MainGameScreen implements Screen {
             break;
             
         case CLUB_SCREEN:
-            mainTable.add(clubScreenTable).grow();
+            mainTable.add(clubScreenTable).grow().top().left();
+            
+            // set default screen to Club Profile
+            (clubScreenTable).setClubSubScreen(ClubScreenTable.CLUB_PROFILE_SCREEN, ((Futtuboru)game).getCurrentGame().getOwner().getCurrentClub());
             break;
             
         case BOARD_SCREEN:
@@ -610,7 +616,7 @@ public class MainGameScreen implements Screen {
         }
         
         // Update the Dynamic Main Menu
-        mainGameMenuTable.setMainGameMenu(screen);
+        mainGameMenuTable.setMainGameMenu(screen, clubScreenTable);
     }
     
     /**
