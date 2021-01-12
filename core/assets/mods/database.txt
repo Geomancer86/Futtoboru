@@ -1,0 +1,9 @@
+# Database v1
+#
+# This file file keeps track of the Database Version and Initial Game Dates to be Selected during a New Game
+#
+#
+# COLUMNS
+# id, name, number, version, creation_date, updated_date
+#
+1, DataBase 2021,1,'alpha-v1','',

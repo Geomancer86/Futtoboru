@@ -1,0 +1,15 @@
+# Continents v1
+#
+# This file include all the Continents allowed in-game to select when creating a new Game.
+#
+# NOTE: English names used by default
+#
+# COLUMNS
+# id, name
+#
+1,Africa
+2,Asia
+3,Europe
+4,North America
+5,South America
+6,Oceania

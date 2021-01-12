@@ -1,0 +1,13 @@
+# Professions v1
+#
+# COLUMNS
+# id, name, player_selectable
+#
+1, Player,false
+2, Retired Player,true
+3, Manager,true
+4, Director,true
+5, Scout,true
+6, Agent,true
+7, Investor,true
+8, Club Owner,true
