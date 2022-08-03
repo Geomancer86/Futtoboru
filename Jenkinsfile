@@ -30,7 +30,7 @@ pipeline {
             steps {
                 // Run Maven on a Unix agent.
                 wrap([$class: 'Xvfb']) {
-                    sh "mvn -Dmaven.test.failure.ignore=true clean -Pdesktop package"
+                    sh "mvn -Dmaven.test.failure.ignore=true clean package"
                     sh "mvn -Dmaven.test.failure.ignore=true test"
                 }
             }
@@ -50,7 +50,7 @@ pipeline {
         stage("Build") {
             steps {
                 wrap([$class: 'Xvfb']) {
-                    //sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=ArtEvolver4---DEV -Dsonar.host.url=http://192.168.0.102:9000 -Dsonar.login=3c0d9e9e2d84467a06d9d0a52c40f527daf0cb81'
+                    sh 'mvn install'
                 }
             }
         }
