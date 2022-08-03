@@ -11,6 +11,7 @@ public class DesktopLauncher {
 	    
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
+//		new LwjglApplication(new SCPHGame(), config);
 		new LwjglApplication(new Futtuboru(), config);
 	}
 }
