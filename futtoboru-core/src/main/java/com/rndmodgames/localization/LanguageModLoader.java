@@ -5,6 +5,10 @@ import com.badlogic.gdx.utils.I18NBundle;
 /**
  * Language Mod Loader v1
  * 
+ * NOTE: The bundle needs to be preloaded while loading the game assets or will be null here
+ * 
+ * TODO: this component is a great candidate for a separate JAR PROJECT
+ * 
  * @author Geomancer86
  */
 public class LanguageModLoader {
@@ -35,6 +39,9 @@ public class LanguageModLoader {
 	public static void setBundle(I18NBundle bundle) {
 	
 		baseBundle = bundle;
+		
+		// DO NOT FAIL ON MISSING KEY
+        I18NBundle.setExceptionOnMissingKey(false);
 	}
 	
 	/**
@@ -44,15 +51,16 @@ public class LanguageModLoader {
 	 * @return
 	 */
 	public static String getValue(String key) {
-	
-		if (baseBundle == null) {
-			return key;
-		}
-		
-		if (baseBundle.get(key) == null || baseBundle.get(key).equals("")) {
-			return "EMPTY_LABEL";
-		}
-		
-		return baseBundle.get(key);
+	    
+	    if (baseBundle == null || baseBundle.get(key) == null || baseBundle.get(key).equals("")) {
+            
+            /**
+             * TODO: this logs as error when initially loading the bundles but shouldn't be
+             */
+            System.out.println("missing bundle key: " + key);
+            return key;
+        }
+        
+        return baseBundle.get(key).replace("???", "");
 	}
 }

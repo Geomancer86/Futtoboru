@@ -14,6 +14,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.QuitGameButton;
 import com.rndmodgames.components.SettingsButton;
+import com.rndmodgames.components.SocialNetworkLinksComponent;
 import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -43,8 +44,10 @@ public class MenuScreen implements Screen {
 		
 		stage = new Stage(new ScreenViewport());
 
+		final VisTable mainTable = new VisTable(true);
+        mainTable.setFillParent(true);
+		
 		final VisTable table = new VisTable();
-		table.setFillParent(true);
 		
 		/**
 		 * New Game: 
@@ -124,7 +127,20 @@ public class MenuScreen implements Screen {
 		table.row();
 		table.add(exitButton).fill();
 		
-		stage.addActor(table);
+		/**
+         * Patreon Link / Clickable Label
+         * 
+         * TODO: i18n
+         */
+//        
+		
+        mainTable.add(table).grow();
+        
+        mainTable.row();
+        mainTable.add(new SocialNetworkLinksComponent()).right().pad(10);
+        
+        //
+        stage.addActor(mainTable);
 	}
 	
 	@Override
