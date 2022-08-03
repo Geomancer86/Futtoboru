@@ -1,7 +1,6 @@
 package com.rndmodgames.components;
 
 import com.kotcrab.vis.ui.widget.LinkLabel;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 
 /**
@@ -23,9 +22,7 @@ public class SocialNetworkLinksComponent extends VisTable {
     public static final String RNDMODGAMES_URL = "https://rndmodgames.com";
     
     public SocialNetworkLinksComponent() {
-        
-//        add(new VisLabel("Follow us on:"));
-        
+
         row();
         add(new LinkLabel("Patreon", PATREON_URL));
         
