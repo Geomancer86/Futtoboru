@@ -10,11 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.QuitGameButton;
 import com.rndmodgames.components.SettingsButton;
+import com.rndmodgames.components.SocialNetworkLinksComponent;
 import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -30,18 +30,6 @@ public class MenuScreen implements Screen {
 	 * Load Game Dialog
 	 */
 	LoadGameDialog loadGameDialog = null;
-	
-	/**
-     * TODO: this string belongs elsewhere to make things easier
-     * 
-     * NOTE: avoid clicking during development to mess with Analytics
-     */
-//  public static final String PATREON_URL = "https://www.patreon.com/nalvargonzalez";
-	public static final String PATREON_URL = "https://www.google.com/";
-	public static final String TWITTER_URL = "https://www.google.com/";
-	public static final String FACEBOOK_URL = "https://www.google.com/";
-	public static final String INSTAGRAM_URL = "https://www.google.com/";
-	public static final String RNDMODGAMES_URL = "https://www.google.com/";
 	
 	/**
 	 * Main Menu Screen
@@ -144,11 +132,12 @@ public class MenuScreen implements Screen {
          * 
          * TODO: i18n
          */
-        LinkLabel patreonLinkLabel = new LinkLabel("Follow me on Patreon", PATREON_URL);
+//        
 		
         mainTable.add(table).grow();
+        
         mainTable.row();
-        mainTable.add(patreonLinkLabel).right().pad(10);
+        mainTable.add(new SocialNetworkLinksComponent()).right().pad(10);
         
         //
         stage.addActor(mainTable);
