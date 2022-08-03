@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.QuitGameButton;
@@ -31,6 +32,18 @@ public class MenuScreen implements Screen {
 	LoadGameDialog loadGameDialog = null;
 	
 	/**
+     * TODO: this string belongs elsewhere to make things easier
+     * 
+     * NOTE: avoid clicking during development to mess with Analytics
+     */
+//  public static final String PATREON_URL = "https://www.patreon.com/nalvargonzalez";
+	public static final String PATREON_URL = "https://www.google.com/";
+	public static final String TWITTER_URL = "https://www.google.com/";
+	public static final String FACEBOOK_URL = "https://www.google.com/";
+	public static final String INSTAGRAM_URL = "https://www.google.com/";
+	public static final String RNDMODGAMES_URL = "https://www.google.com/";
+	
+	/**
 	 * Main Menu Screen
 	 * 
 	 * 		- This will be the first Screen Loaded
@@ -43,8 +56,10 @@ public class MenuScreen implements Screen {
 		
 		stage = new Stage(new ScreenViewport());
 
+		final VisTable mainTable = new VisTable(true);
+        mainTable.setFillParent(true);
+		
 		final VisTable table = new VisTable();
-		table.setFillParent(true);
 		
 		/**
 		 * New Game: 
@@ -124,7 +139,19 @@ public class MenuScreen implements Screen {
 		table.row();
 		table.add(exitButton).fill();
 		
-		stage.addActor(table);
+		/**
+         * Patreon Link / Clickable Label
+         * 
+         * TODO: i18n
+         */
+        LinkLabel patreonLinkLabel = new LinkLabel("Follow me on Patreon", PATREON_URL);
+		
+        mainTable.add(table).grow();
+        mainTable.row();
+        mainTable.add(patreonLinkLabel).right().pad(10);
+        
+        //
+        stage.addActor(mainTable);
 	}
 	
 	@Override

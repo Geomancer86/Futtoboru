@@ -20,7 +20,7 @@ public class DesktopLauncher {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         
         // TODO: add release - build version - etc
-        configuration.setTitle("ArtEvolver v4.0");
+        configuration.setTitle("Futtoboru v0.1.0-alpha");
         configuration.useVsync(true);
         
         // Limits FPS to the refresh rate of the currently active monitor.
@@ -32,7 +32,7 @@ public class DesktopLauncher {
         configuration.setWindowedMode(1920, 1080);
 //        configuration.setWindowedMode(320, 240);
 
-        // TODO: set ArtEvolver icon
+        // TODO: set Futtoboru icon
 //        configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         
         //
