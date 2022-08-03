@@ -30,7 +30,7 @@ pipeline {
             steps {
                 // Run Maven on a Unix agent.
                 wrap([$class: 'Xvfb']) {
-                    sh "mvn -Dmaven.test.failure.ignore=true clean package"
+                    sh "mvn -Dmaven.test.failure.ignore=true clean -Pdesktop package"
                     sh "mvn -Dmaven.test.failure.ignore=true test"
                 }
             }
