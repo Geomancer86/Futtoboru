@@ -2,9 +2,13 @@ package com.rndmodgames.futtoboru.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.kotcrab.vis.ui.VisUI;
 import com.rndmodgames.PreferencesManager;
 import com.rndmodgames.futtoboru.data.Country;
@@ -17,6 +21,7 @@ import com.rndmodgames.futtoboru.screens.NewManagerScreen;
 import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Rock-Bottom Futtuboru Challenge
@@ -28,6 +33,7 @@ public class Futtoboru extends Game {
 
     // LibGDX 
     private Game instance;
+    public AssetManager manager;
     public PreferencesManager preferences;
     
     /**
@@ -80,10 +86,19 @@ public class Futtoboru extends Game {
     @Override
     public void create() {
         
+        // Create Asset Manager
+        manager = new AssetManager();
+        
         /**
          * Create User Preferences Manager
          */
         preferences = new PreferencesManager();
+        
+        /**
+         * Restore Prefered Locale from User Properties
+         */
+        Locale locale = preferences.getSavedLocale();
+        manager.load("mods/language/BaseBundle", I18NBundle.class, new I18NBundleLoader.I18NBundleParameter(locale));
         
         /**
          * Check for Saved Settings
@@ -102,6 +117,12 @@ public class Futtoboru extends Game {
         
         // Load VisUI
         VisUI.load(Gdx.files.internal("skin/tixel.json"));
+        
+        // 
+        manager.finishLoading();
+        
+        // 
+        LanguageModLoader.setBundle(manager.get("mods/language/BaseBundle", I18NBundle.class));
         
         // Preload the Database
         DatabaseLoader.getInstance();
