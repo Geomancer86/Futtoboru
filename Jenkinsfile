@@ -40,7 +40,7 @@ pipeline {
                 // failed, record the test results and archive the jar file.
                 success {
                     junit 'futtoboru-core/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'futtoboru-core/target/*.jar'
+                    archiveArtifacts 'futtoboru-desktop/target/*.jar'
                     echo "Maven Build Archive Artifacts Done"
                 }
             }
