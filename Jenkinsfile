@@ -79,7 +79,7 @@ pipeline {
                     //wrap([$class: 'Xvfb', screen: '1920x1080x32']) {
                     wrap([$class: 'Xvfb']) {
                         // Run Sonar 
-                        // sh "mvn clean verify -Djacoco.skip=false sonar:sonar -Dsonar.projectKey=ArtEvolver4---DEV -Dsonar.host.url=http://192.168.0.102:9000 -Dsonar.login=3c0d9e9e2d84467a06d9d0a52c40f527daf0cb81"
+                        sh "mvn clean verify -Djacoco.skip=false sonar:sonar -Dsonar.projectKey=FuttoboruDEV -Dsonar.host.url=http://192.168.0.102:9000 -Dsonar.login=7860635e27b1b05389584bbc0e6c73f077a4631e"
                     }        
                 }
                        
