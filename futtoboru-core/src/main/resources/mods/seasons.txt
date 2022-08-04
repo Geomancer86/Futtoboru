@@ -1,0 +1,4 @@
+# SEASONS v1
+# COLUMNS
+# id, name, description
+1,1888-1889 Season,"The Most Important Football Season Ever, The One That Started It All."

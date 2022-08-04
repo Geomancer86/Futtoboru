@@ -87,6 +87,25 @@ class DatabaseLoaderTests {
         
         assertNotNull(allSeasons);
         
-//        assertNotEquals(true, allSeasons.isEmpty());
+        assertNotEquals(true, allSeasons.isEmpty());
+        
+        System.out.println("FOUND " + allSeasons.size() + " SEASONS");
+    }
+    
+    @Test
+    void loadSeasonCountriesTest() {
+        
+        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
+        
+        List<Season> allSeasons = dbLoader.getSeasons();
+        
+        // 1st season
+        Season season = allSeasons.get(0);
+        
+        assertNotNull(season);
+        
+        assertNotNull(season.getCountries());
+        
+        assertNotEquals(true, season.getCountries().isEmpty());
     }
 }
