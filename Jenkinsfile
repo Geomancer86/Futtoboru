@@ -47,13 +47,13 @@ pipeline {
         }
         
         // 
-        stage("Build") {
-            steps {
-                wrap([$class: 'Xvfb']) {
-                    sh 'mvn install'
-                }
-            }
-        }
+        //stage("Build") {
+        //    steps {
+        //        wrap([$class: 'Xvfb']) {
+        //            sh 'mvn install'
+        //        }
+        //    }
+        //}
         
         stage("Test Reports") {
             steps {
