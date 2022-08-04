@@ -42,45 +42,63 @@ public class NewGameSeasonScreen implements Screen {
         
         //
         VisLabel seasonLabel = new VisLabel(LanguageModLoader.getValue("starting_season"));
+        VisLabel seasonDescriptionLabel = new VisLabel(LanguageModLoader.getValue("season_description"));
+        VisLabel seasonCountriesLabel = new VisLabel(LanguageModLoader.getValue("season_countries"));
+        VisLabel seasonCountriesNumber = new VisLabel("0");
         
         // Get All Available Seasons
         List<Season> allSeasons = DatabaseLoader.getInstance().getSeasons();
         
         // Seasons Select Box
-        final VisSelectBox<Season> availableSeasonsSelectBox = new VisSelectBox<Season>();
+        final VisSelectBox<Season> availableSeasonsSelectBox = new VisSelectBox<>();
         availableSeasonsSelectBox.setItems(allSeasons.toArray(new Season[allSeasons.size()]));
-        
-        // Set resolution from saved settings (or default)
-//        availableResolutionsSelectBox.setSelected(Futtoboru.RESOLUTION);
 
+        // Selected Season Description Label
+        VisLabel selectedSeasonDescriptionLabel = new VisLabel("");        
+        
+        //
         availableSeasonsSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 
-                // The selected resolution
-//                String res = availableResolutionsSelectBox.getSelected();
-//                
-//                // Update Game Resolution
-//                Futtoboru.RESOLUTION = res;
-//                
-//                // Update User Preferences
-//                ((Futtoboru) game).updateScreenResolution(res);
-//                
-//                // Set to Windowed
-//                fullScreenCheckBox.setChecked(false);
-//                
-//                if (Futtoboru.FULLSCREEN) {
-//                    ((Futtoboru) game).toggleFullscreen();
-//                } else {
-//                    ((Futtoboru) game).setScreen();
-//                }
+                //
+                if (availableSeasonsSelectBox.getSelected() != null) {
+                    
+                    // update season description label
+                    selectedSeasonDescriptionLabel.setText(availableSeasonsSelectBox.getSelected().getDescription());
+                    
+                    // update season countries label
+                    seasonCountriesNumber.setText(availableSeasonsSelectBox.getSelected().getCountries().size());
+                }
             }
         });
         
-        //
+        // set the default values as the Season will be selected automatically
+        selectedSeasonDescriptionLabel.setText(availableSeasonsSelectBox.getSelected().getDescription());
+        seasonCountriesNumber.setText(availableSeasonsSelectBox.getSelected().getCountries().size());
+        
+        // Season
         table.row();
         table.add(seasonLabel);
         table.add(availableSeasonsSelectBox);
+        
+        // Season Description
+        table.row();
+        table.add(seasonDescriptionLabel);
+        table.add(selectedSeasonDescriptionLabel);
+        
+        // Season Countries
+        table.row();
+        table.add(seasonCountriesLabel);
+        table.add(seasonCountriesNumber);
+        
+        // Season Leagues
+        
+        // Season Teams
+        
+        // Season Competitions
+        
+        // Season Rules
         
         // 
         mainContainer.add(table);
@@ -88,7 +106,7 @@ public class NewGameSeasonScreen implements Screen {
         // Add Settings Screen Main Container to Stage
         stage.addActor(mainContainer);
     }
-
+    
     @Override
     public void show() {
         // Add input capabilities

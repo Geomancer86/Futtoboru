@@ -79,9 +79,6 @@ public class DatabaseLoader {
             
             instance = new DatabaseLoader();
             
-            // Initialize Seasons
-            initializeSeasons();
-            
             // Initialize Databases
             initializeDatabases();
             
@@ -99,6 +96,9 @@ public class DatabaseLoader {
             
             // Initialize Available Profession
             initializeProfessions();
+            
+            // Initialize Seasons
+            initializeSeasons();
         } 
             
         //
@@ -161,6 +161,24 @@ public class DatabaseLoader {
         return selectableProfessions;
     }
 
+    /**
+     * Returns a Country by ID or null if doesn't exist
+     * @param id
+     * @return
+     */
+    public static Country getCountryById(Long id) {
+ 
+        for (Country country : countries) {
+
+            if (country.getId().equals(id)) {
+
+                return country;
+            }
+        }
+        
+        return null;
+    }
+    
     /**
      * @param A Continent
      * @return the list of available Countries by Continent
@@ -229,6 +247,7 @@ public class DatabaseLoader {
                         season.setId(Long.valueOf(splitted[0]));
                         season.setName(splitted[1]);
                         season.setDescription(splitted[2]);
+                        season.setCountries(new ArrayList<>());
                         
                         seasons.add(season);
                     }
@@ -243,6 +262,51 @@ public class DatabaseLoader {
             
         } else {
             // TODO: If file doesn't exist, restore from default
+        }
+        
+        /**
+         * After loading the Base Seasons we need to load the subfolders for each season by Season ID
+         */
+        for (Season season : seasons) {
+
+            FileHandle seasonCountriesFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/countries.txt");
+            
+            if (seasonCountriesFile.exists()){
+                
+                BufferedReader reader = new BufferedReader(seasonCountriesFile.reader());
+                
+                String line;
+                
+                try {
+                    line = reader.readLine();
+
+                    // Use # symbol as starting for comment (to enable or disable available resolutions)
+                    while (line != null) {
+                        
+                        if (!line.startsWith("#")) {
+    
+                            String [] splitted = line.split(",");
+                            
+                            /**
+                             * FORMAT:
+                             * COLUMNS
+                             * id,
+                             */
+                            season.getCountries().add(getCountryById(Long.valueOf(splitted[0])));
+                        }
+                        
+                        line = reader.readLine();
+                    }
+                    
+                } catch (IOException e) {
+                    // TODO: If error, restore default resolutions.txt file
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("mods/seasons/" + season.getId() + "/countries.txt doesnt exist");
+            }
+
+            System.out.println("FINISHED LOADING " + season.getCountries().size() + " SEASON COUNTRIES");
         }
         
         System.out.println("FINISHED LOADING " + seasons.size() + " SEASONS");
