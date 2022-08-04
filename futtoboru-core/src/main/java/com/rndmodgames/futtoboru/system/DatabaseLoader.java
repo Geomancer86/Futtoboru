@@ -200,6 +200,52 @@ public class DatabaseLoader {
      */
     private static void initializeSeasons() {
         
+        FileHandle seasonsTxt = Gdx.files.internal(SEASONS_FILE);
+        
+        if (seasonsTxt.exists()){
+            
+            BufferedReader reader = new BufferedReader(seasonsTxt.reader());
+            
+            String line;
+            
+            try {
+                line = reader.readLine();
+
+                // Use # symbol as starting for comment (to enable or disable available resolutions)
+                while (line != null) {
+                    
+                    if (!line.startsWith("#")) {
+  
+                        String [] splitted = line.split(",");
+                        
+                        /**
+                         * Season Format
+                         * 
+                         * # COLUMNS
+                         * # id, name, description, 
+                         */
+                        Season season = new Season();
+                        
+                        season.setId(Long.valueOf(splitted[0]));
+                        season.setName(splitted[1]);
+                        season.setDescription(splitted[2]);
+                        
+                        seasons.add(season);
+                    }
+                    
+                    line = reader.readLine();
+                }
+                
+            } catch (IOException e) {
+                // TODO: If error, restore default resolutions.txt file
+                e.printStackTrace();
+            }
+            
+        } else {
+            // TODO: If file doesn't exist, restore from default
+        }
+        
+        System.out.println("FINISHED LOADING " + seasons.size() + " SEASONS");
     }
     
     /**

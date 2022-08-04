@@ -87,6 +87,8 @@ class DatabaseLoaderTests {
         
         assertNotNull(allSeasons);
         
-//        assertNotEquals(true, allSeasons.isEmpty());
+        assertNotEquals(true, allSeasons.isEmpty());
+        
+        System.out.println("FOUND " + allSeasons.size() + " SEASONS");
     }
 }

@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.screens;
 
+import java.util.List;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,6 +14,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -40,9 +43,12 @@ public class NewGameSeasonScreen implements Screen {
         //
         VisLabel seasonLabel = new VisLabel(LanguageModLoader.getValue("starting_season"));
         
+        // Get All Available Seasons
+        List<Season> allSeasons = DatabaseLoader.getInstance().getSeasons();
+        
         // Seasons Select Box
         final VisSelectBox<Season> availableSeasonsSelectBox = new VisSelectBox<Season>();
-//        availableResolutionsSelectBox.setItems(availableResolutions.toArray(new String[availableResolutions.size()]));
+        availableSeasonsSelectBox.setItems(allSeasons.toArray(new Season[allSeasons.size()]));
         
         // Set resolution from saved settings (or default)
 //        availableResolutionsSelectBox.setSelected(Futtoboru.RESOLUTION);
