@@ -1,0 +1,39 @@
+# Argentina States v1
+# 
+# This file will include all the Cities related to Countries by Country ID
+#
+# Not all Cities will have Leagues or Clubs, add them Individually
+#
+# NOTE: English names used by default
+#
+# Sources:
+#   - https://en.wikipedia.org/wiki/List_of_administrative_divisions_by_country
+#   - https://en.wikipedia.org/wiki/Provinces_of_Argentina
+#
+# COLUMNS
+# id, name, administrative_level
+#
+1,Ciudad de Buenos Aires
+2,Buenos Aires
+3,Catamarca
+4,Chaco
+5,Chubut
+6,Cordoba
+7,Corrientes
+8,Entre Rios
+9,Formosa
+10,Jujuy
+11,La Pampa
+12,La Rioja
+13,Mendoza
+14,Misiones
+15,Neuquen
+16,Rio Negro
+17,Salta
+18,San Juan
+19,San Luis
+20,Santa Cruz
+21,Santa Fe
+22,Santiago del Estero
+23,Tierra del Fuego
+24,Tucuman

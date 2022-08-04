@@ -80,7 +80,7 @@ public class DatabaseLoader {
             instance = new DatabaseLoader();
             
             // Initialize Seasons
-            
+            initializeSeasons();
             
             // Initialize Databases
             initializeDatabases();
