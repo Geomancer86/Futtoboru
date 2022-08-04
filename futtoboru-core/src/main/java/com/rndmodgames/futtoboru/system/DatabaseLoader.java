@@ -14,6 +14,7 @@ import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.DataBase;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Profession;
+import com.rndmodgames.futtoboru.data.Season;
 
 /**
  * Database Loader v1
@@ -26,6 +27,7 @@ import com.rndmodgames.futtoboru.data.Profession;
 public class DatabaseLoader {
 
     //
+    private static final String SEASONS_FILE = "mods/seasons.txt";
     private static final String DATABASES_FILE = "mods/database.txt";
     private static final String CONTINENTS_FILE = "mods/continents.txt";
     private static final String COUNTRIES_FILE = "mods/countries.txt";
@@ -41,6 +43,7 @@ public class DatabaseLoader {
     private static final String FILE_EXTENSION = ".txt";
     
     //
+    private static List<Season> seasons = new ArrayList<>();
     private static List<DataBase> databases = new ArrayList<>();
     private static List<Continent> continents = new ArrayList<>();
     private static List<Country> countries = new ArrayList<>();
@@ -76,6 +79,9 @@ public class DatabaseLoader {
             
             instance = new DatabaseLoader();
             
+            // Initialize Seasons
+            
+            
             // Initialize Databases
             initializeDatabases();
             
@@ -97,6 +103,15 @@ public class DatabaseLoader {
             
         //
         return instance;
+    }
+    
+    /**
+     * @return the complete list of Seasons
+     */
+    public List<Season> getSeasons() {
+     
+        //
+        return seasons;
     }
     
     /**
@@ -178,6 +193,13 @@ public class DatabaseLoader {
     public List<Club> getClubsByCountry(Country country){
         
         return clubsByCountry.get(country.getId());
+    }
+    
+    /**
+     * Load the Available Seasons from /mods/seasons.txt
+     */
+    private static void initializeSeasons() {
+        
     }
     
     /**

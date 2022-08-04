@@ -26,7 +26,10 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * New Game Setup Screen
+ * New Game Setup Screen v1
+ * 
+ * - Choose Starting Season
+ *      - Alpha 1888-89 Season      [WIP]
  * 
  * - Choose Nations
  * 

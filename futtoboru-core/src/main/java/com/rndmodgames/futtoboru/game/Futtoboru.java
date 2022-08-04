@@ -15,7 +15,7 @@ import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
 import com.rndmodgames.futtoboru.screens.NewGameOverviewScreen;
-import com.rndmodgames.futtoboru.screens.NewGameScreen;
+import com.rndmodgames.futtoboru.screens.NewGameSeasonScreen;
 import com.rndmodgames.futtoboru.screens.NewGameSetupScreen;
 import com.rndmodgames.futtoboru.screens.NewManagerScreen;
 import com.rndmodgames.futtoboru.screens.SettingsScreen;
@@ -151,7 +151,8 @@ public class Futtoboru extends Game {
             break;
             
         case NEW_GAME_SCREEN:
-            this.setScreen(new NewGameScreen(this));
+//            this.setScreen(new NewGameScreen(this));
+            this.setScreen(new NewGameSeasonScreen(this));
             break;
             
         case NEW_MANAGER_SCREEN:
