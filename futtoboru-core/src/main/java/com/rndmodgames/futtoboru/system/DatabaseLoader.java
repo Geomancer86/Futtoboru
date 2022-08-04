@@ -234,7 +234,10 @@ public class DatabaseLoader {
                     
                     if (!line.startsWith("#")) {
   
-                        String [] splitted = line.split(",");
+                        /**
+                         * This regex ignore commas inside double quotes (for descriptions, etc)
+                         */
+                        String [] splitted = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                         
                         /**
                          * Season Format
@@ -246,7 +249,7 @@ public class DatabaseLoader {
                         
                         season.setId(Long.valueOf(splitted[0]));
                         season.setName(splitted[1]);
-                        season.setDescription(splitted[2]);
+                        season.setDescription(splitted[2].replace("\"", "")); // remove opening and closing quotes
                         season.setCountries(new ArrayList<>());
                         
                         seasons.add(season);
