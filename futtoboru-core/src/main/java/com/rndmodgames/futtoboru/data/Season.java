@@ -40,6 +40,8 @@ public class Season implements Serializable {
     
     //
     private List<Country> countries;
+    private List<League> leagues;
+    private List<Club> clubs;
     
     public Long getId() {
         return id;
@@ -73,6 +75,22 @@ public class Season implements Serializable {
         this.countries = countries;
     }
     
+    public List<League> getLeagues() {
+        return leagues;
+    }
+
+    public void setLeagues(List<League> leagues) {
+        this.leagues = leagues;
+    }
+
+    public List<Club> getClubs() {
+        return clubs;
+    }
+
+    public void setClubs(List<Club> clubs) {
+        this.clubs = clubs;
+    }
+
     @Override
     public String toString() {
         return name != null ? name : "empty_season_name";

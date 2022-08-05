@@ -251,6 +251,8 @@ public class DatabaseLoader {
                         season.setName(splitted[1]);
                         season.setDescription(splitted[2].replace("\"", "")); // remove opening and closing quotes
                         season.setCountries(new ArrayList<>());
+                        season.setLeagues(new ArrayList<>());
+                        season.setClubs(new ArrayList<>());
                         
                         seasons.add(season);
                     }
@@ -311,6 +313,10 @@ public class DatabaseLoader {
 
             System.out.println("FINISHED LOADING " + season.getCountries().size() + " SEASON COUNTRIES");
         }
+        
+        /**
+         * Load the Season Leagues and Clubs
+         */
         
         System.out.println("FINISHED LOADING " + seasons.size() + " SEASONS");
     }
