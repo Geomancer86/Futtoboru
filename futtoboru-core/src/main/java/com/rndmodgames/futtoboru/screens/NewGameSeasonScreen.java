@@ -7,14 +7,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -93,12 +100,52 @@ public class NewGameSeasonScreen implements Screen {
         table.add(seasonCountriesNumber);
         
         // Season Leagues
+        // TODO: show
         
         // Season Teams
+        // TODO: show
         
         // Season Competitions
+        // TODO: show
         
         // Season Rules
+        // TODO: show
+        
+        /**
+         * NEXT/NEW GAME GAME BUTTON
+         */
+        final VisTextButton startGame = new VisTextButton(LanguageModLoader.getValue("start"));
+        startGame.addCaptureListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                
+                System.out.println("LOADING EXISTING MANAGER FROM FILE - CHANGING TO NEW GAME SETUP SCREEN");
+                
+                /**
+                 * Set the Selected Person as Game Owner
+                 */
+                SaveGame currentGame = new SaveGame();
+                
+                // set game owner
+//                Person gameOwner = SaveLoadSystem.loadPersonFromFile(savedGame);
+//                currentGame.setOwner(gameOwner);
+                
+                ((Futtoboru) game).setCurrentGame(currentGame);
+                
+                /**
+                 * Redirect to New Game Setup Screen
+                 */
+                ((Futtoboru) game).changeScreen(Futtoboru.NEW_MANAGER_SCREEN);
+            }
+        });
+        
+        //
+        table.add(startGame).pad(5);
         
         // 
         mainContainer.add(table);

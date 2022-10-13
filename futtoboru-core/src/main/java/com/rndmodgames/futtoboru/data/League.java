@@ -16,6 +16,8 @@ public class League implements Serializable {
     private Long id;
     private String name;
     private Integer level;
+    private String sourceLink;
+    
     private transient Country country;
     private transient League parent;
     
@@ -54,6 +56,14 @@ public class League implements Serializable {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    public String getSourceLink() {
+        return sourceLink;
+    }
+
+    public void setSourceLink(String sourceLink) {
+        this.sourceLink = sourceLink;
     }
 
     public League getParent() {

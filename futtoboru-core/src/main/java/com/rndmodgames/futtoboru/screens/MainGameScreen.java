@@ -125,9 +125,9 @@ public class MainGameScreen implements Screen {
         this.game = parent;
         
         // set saved game if exist
-        if ((((Futtoboru)game)).getCurrentGame() != null){
+        if (((Futtoboru)game).getCurrentGame() != null){
             
-            this.currentGame = (((Futtoboru)game)).getCurrentGame();
+            this.currentGame = ((Futtoboru)game).getCurrentGame();
         }
         
         stage = new Stage(new ScreenViewport());
