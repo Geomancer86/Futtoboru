@@ -36,6 +36,9 @@ public class NewGameSeasonScreen implements Screen {
     Game game;
     Stage stage;
     
+    //
+    private Person selectedManager;
+    
     public NewGameSeasonScreen(Game parent) {
         
         //
@@ -114,6 +117,83 @@ public class NewGameSeasonScreen implements Screen {
         // TODO: show
         
         /**
+         * Load Existing Manager - Create New Manager
+         */
+        VisLabel managerLabel = new VisLabel(LanguageModLoader.getValue("manager"));
+        
+        //
+        int existingManagers = SaveLoadSystem.listSavedManagers().size(); 
+        
+        table.row();
+        table.add(managerLabel);
+        
+        if (existingManagers > 0) {
+        
+            // EXISTING MANAGERS LIST
+            List<String> savedManagers = SaveLoadSystem.listSavedManagers();
+            final VisSelectBox<String> savedManagersSelectBox = new VisSelectBox<>();
+            savedManagersSelectBox.setItems(savedManagers.toArray(new String[allSeasons.size()]));
+            
+            // SELECT MANAGER BUTTON
+            final VisTextButton selectManager = new VisTextButton(LanguageModLoader.getValue("select_manager"));
+            
+            selectManager.addCaptureListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    
+                    //
+                    System.out.println("MANAGER SELECTED!");
+                    
+                    // Set Selected Manager
+                    Person manager = SaveLoadSystem.loadPersonFromFile(savedManagersSelectBox.getSelected());
+                    
+                    //
+                    selectedManager = manager;
+                }
+            });
+            
+            // automatically select first manager on the list
+            selectedManager = SaveLoadSystem.loadPersonFromFile(savedManagersSelectBox.getSelected());
+            
+            table.add(savedManagersSelectBox);
+            table.add(selectManager);
+        }
+            
+        // CREATE MANAGER BUTTON
+        final VisTextButton createManager = new VisTextButton(LanguageModLoader.getValue("create_manager"));
+        createManager.addCaptureListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                
+                System.out.println("SWITCHING TO CREATE MANAGER SCREEN");
+                
+                /**
+                 * Set the Selected Person as Game Owner
+                 */
+                SaveGame currentGame = new SaveGame();
+
+                ((Futtoboru) game).setCurrentGame(currentGame);
+                
+                /**
+                 * Redirect to NEW_MANAGER_SCREEN
+                 */
+                ((Futtoboru) game).changeScreen(Futtoboru.NEW_MANAGER_SCREEN);
+            }
+        });
+        
+        table.add(createManager);
+        
+        /**
          * NEXT/NEW GAME GAME BUTTON
          */
         final VisTextButton startGame = new VisTextButton(LanguageModLoader.getValue("start"));
@@ -132,17 +212,14 @@ public class NewGameSeasonScreen implements Screen {
                  * Set the Selected Person as Game Owner
                  */
                 SaveGame currentGame = new SaveGame();
-                
-                // set game owner
-//                Person gameOwner = SaveLoadSystem.loadPersonFromFile(savedGame);
-//                currentGame.setOwner(gameOwner);
-                
+
+                //
                 ((Futtoboru) game).setCurrentGame(currentGame);
                 
-                /**
-                 * Redirect to New Game Setup Screen
-                 */
-//                ((Futtoboru) game).changeScreen(Futtoboru.NEW_MANAGER_SCREEN);
+                // set game owner
+                ((Futtoboru) game).getCurrentGame().setOwner(selectedManager);
+                
+                // Redirect to New Game Setup Screen
                 ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SETUP_SCREEN);
             }
         });
