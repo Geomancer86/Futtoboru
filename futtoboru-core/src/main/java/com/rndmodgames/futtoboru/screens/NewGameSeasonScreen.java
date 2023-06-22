@@ -27,6 +27,8 @@ import com.rndmodgames.localization.LanguageModLoader;
 /**
  * New Game Season Screen v1
  * 
+ *  - 
+ * 
  * @author Geomancer86
  */
 public class NewGameSeasonScreen implements Screen {
@@ -140,7 +142,8 @@ public class NewGameSeasonScreen implements Screen {
                 /**
                  * Redirect to New Game Setup Screen
                  */
-                ((Futtoboru) game).changeScreen(Futtoboru.NEW_MANAGER_SCREEN);
+//                ((Futtoboru) game).changeScreen(Futtoboru.NEW_MANAGER_SCREEN);
+                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SETUP_SCREEN);
             }
         });
         

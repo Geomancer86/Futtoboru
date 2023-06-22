@@ -67,7 +67,7 @@ public class MainGameScreen implements Screen {
     private static final int TRAINING_SCREEN     = 11;
     private static final int SCOUTING_SCREEN     = 12;
     private static final int TRANSFERS_SCREEN    = 13;
-    public static final int CLUB_SCREEN         = 14;
+    public  static final int CLUB_SCREEN         = 14;
     private static final int BOARD_SCREEN        = 15;
     private static final int FINANCES_SCREEN     = 16;
 

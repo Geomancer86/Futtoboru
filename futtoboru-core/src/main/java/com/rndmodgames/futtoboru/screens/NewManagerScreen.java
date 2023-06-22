@@ -56,7 +56,7 @@ public class NewManagerScreen implements Screen {
 	SpriteBatch batch;
 	Texture img;
 
-	public NewManagerScreen (Game parent) {
+	public NewManagerScreen(Game parent) {
 
 		this.game = parent;
 		

@@ -40,8 +40,11 @@ public class NewGameScreen implements Screen {
 	SpriteBatch batch;
 	Texture img;
 
-	public NewGameScreen (Game parent) {
+	public NewGameScreen(Game parent) {
 
+	    //
+	    System.out.println("NewGameScreen");
+	    
 		this.game = parent;
 		
 		stage = new Stage(new ScreenViewport());
