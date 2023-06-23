@@ -161,21 +161,21 @@ public class MainGameMenuTable extends VisTable {
      */
     public void setMainGameMenu(int screen, VisTable screenTable) {
         
-        dynamicMainGameMenuTable.clear();
-        
-        switch (screen) {
-        
-        case MainGameScreen.CLUB_SCREEN:
-            /**
-             * Profile, General, News, Facilities, Affiliates, History
-             */
-            dynamicMainGameMenuTable.add(((ClubScreenTable) screenTable).getClubScreenDynamicMenu());
-            break;
-        
-        default:
-            System.out.println("MAIN GAME MENU NOT IMPLEMENTED");
-            break;
-        }
+//        dynamicMainGameMenuTable.clear();
+//        
+//        switch (screen) {
+//        
+//        case MainGameScreen.CLUB_SCREEN:
+//            /**
+//             * Profile, General, News, Facilities, Affiliates, History
+//             */
+//            dynamicMainGameMenuTable.add(((ClubScreenTable) screenTable).getClubScreenDynamicMenu());
+//            break;
+//        
+//        default:
+//            System.out.println("MAIN GAME MENU NOT IMPLEMENTED");
+//            break;
+//        }
 
     }
     
