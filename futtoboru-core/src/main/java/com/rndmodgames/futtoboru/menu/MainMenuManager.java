@@ -91,7 +91,7 @@ public class MainMenuManager {
         //  
         case PERSON_DETAILS_SCREEN:
             personDetailsScreenTable.updateDynamicPersonComponents(currentGame.getOwner());
-            parentTable.add(personDetailsScreenTable).top().right();
+            parentTable.add(personDetailsScreenTable);
             break;
 
         //
@@ -99,6 +99,8 @@ public class MainMenuManager {
             System.out.println("SCREEN NOT SET UP");
             break;
         }
+        
+        parentTable.top().left();
     }
 
     //

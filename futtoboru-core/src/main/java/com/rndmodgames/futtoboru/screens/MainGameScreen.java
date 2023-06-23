@@ -76,7 +76,6 @@ public class MainGameScreen implements Screen {
         gameWindowTable.row().colspan(2);
         gameWindowTable.add(mainGameMenu).growX().top().right();
         
-        
         // Takes care of Buttons Menu Dynamically
         mainTable = new VisTable(true);
         menuManager = new MainMenuManager(game, currentGame, mainTable);
