@@ -9,6 +9,10 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 /**
  * Home Screen - Main Game
  * 
+ *  - All in one place
+ *      - Gadgets / Charts
+ *      - 
+ * 
  * @author Geomancer86
  */
 public class HomeScreenTable extends VisTable {

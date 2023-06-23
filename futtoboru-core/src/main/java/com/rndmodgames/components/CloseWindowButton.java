@@ -11,7 +11,7 @@ import com.rndmodgames.localization.LanguageModLoader;
  * 
  * @author Geomancer86
  */
-public class CloseWindowButton extends VisTextButton{
+public class CloseWindowButton extends VisTextButton {
 
 	public CloseWindowButton(final Window parent) {
 		
