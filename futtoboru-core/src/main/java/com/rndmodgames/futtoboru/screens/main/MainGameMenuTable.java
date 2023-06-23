@@ -44,7 +44,7 @@ public class MainGameMenuTable extends VisTable {
         pad(5);
 
         // recursive debug test
-        setDebug(true, true);
+//        setDebug(true, true);
 
         /**
          * Open Options Drop Down Menu Button/SelectBox -

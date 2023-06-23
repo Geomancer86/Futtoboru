@@ -46,7 +46,7 @@ public class MainGameScreen implements Screen {
     MainMenuManager menuManager;
     
     //
-    private MainGameMenuTable mainGameMenuTable = null;
+    private MainGameMenuTable mainGameMenu = null;
     private VisTable mainTable = null;
     
     //
@@ -60,47 +60,34 @@ public class MainGameScreen implements Screen {
             this.currentGame = ((Futtoboru)game).getCurrentGame();
         }
         
+        //
         stage = new Stage(new ScreenViewport());
         
+        // Full Game Window
         final VisTable gameWindowTable = new VisTable(true);
-        gameWindowTable.pad(5);
+        gameWindowTable.setDebug(true);
         gameWindowTable.setFillParent(true);
-        gameWindowTable.setDebug(true, true);
-
-        /**
-         * Top Game Menu (Top Menu)
-         */
-        mainGameMenuTable = new MainGameMenuTable(game, stage);
+        gameWindowTable.pad(5);
         
-        /**
-         * Main Game Screen
-         */
-        final VisTable mainScreenArea = new VisTable();
-
+        // Top Menu (save, load, settings, advance time)
+        mainGameMenu = new MainGameMenuTable(game, stage);
+        
+        //
+        gameWindowTable.row().colspan(2);
+        gameWindowTable.add(mainGameMenu).growX().top().right();
+        
+        
+        // Takes care of Buttons Menu Dynamically
         mainTable = new VisTable(true);
-        mainTable.setDebug(true);
+        menuManager = new MainMenuManager(game, currentGame, mainTable);
         
-         /**
-          * Main Screen Area
-          * 
-          * Switched dinamically as the main game screen
-          */
-         mainScreenArea.add(mainGameMenuTable).fillX().top().left();
-         
-         mainScreenArea.row();
-         mainScreenArea.add(mainTable).grow();
-    
-         // Takes care of Buttons Menu Dynamically
-         menuManager = new MainMenuManager(game, currentGame, mainTable);
+        //
+        gameWindowTable.row();
+        gameWindowTable.add(menuManager.getButtonsMenu()).top();
+        gameWindowTable.add(mainTable).grow();
 
-         // Main Game Menu Buttons
-         gameWindowTable.add(menuManager.getButtonsMenu()).top();
-         
-         // 
-         gameWindowTable.add(mainScreenArea).grow();
-
-         //
-         stage.addActor(gameWindowTable);
+        //
+        stage.addActor(gameWindowTable);
     }
     
     @Override

@@ -1,13 +1,14 @@
 package com.rndmodgames.futtoboru.menu;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.components.buttons.HomeButton;
+import com.rndmodgames.components.buttons.PersonalDetailsButton;
 import com.rndmodgames.futtoboru.screens.main.HomeScreenTable;
+import com.rndmodgames.futtoboru.screens.person.PersonDetailsScreenTable;
 import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Main Menu Manager v1
@@ -21,61 +22,76 @@ import com.rndmodgames.localization.LanguageModLoader;
  */
 public class MainMenuManager {
 
+    // keep track
+    SaveGame currentGame;
+    
     // main screen reference
-    VisTable mainTable;
+    VisTable parentTable;
     
     //
     private VisTable buttonsMenu = new VisTable();
     
     // Screen Ids
-    private static final int HOME_SCREEN =  1;
-    
+    public static final int HOME_SCREEN             =  100;
+    private static final int INBOX_SCREEN            =  200;
+    public static final int PERSON_DETAILS_SCREEN   =  300;
+    private static final int AUTHORITY_SCREEN        =  400;    
+    private static final int LEAGUE_SCREEN           =  500;    
+    private static final int WORLD_SCREEN            =  600;    
+        
     // Main Game Buttons
-    private VisTextButton homeButton = new VisTextButton(LanguageModLoader.getValue("home"));
+    private VisTextButton homeButton = null;
+    private VisTextButton personalDetailsButton = null;
     
     //
     private HomeScreenTable homeScreenTable = null;
+    private PersonDetailsScreenTable personDetailsScreenTable = null;
     
-    public MainMenuManager(Game game, SaveGame currentGame, VisTable mainTable) {
+    public MainMenuManager(Game game, SaveGame currentGame, VisTable parentTable) {
         
         //
-        this.mainTable = mainTable;
+        this.currentGame = currentGame;
+        
+        // this will always .grow()
+        this.parentTable = parentTable;
+        this.parentTable.setDebug(true);
         
         // other windows
         homeScreenTable = new HomeScreenTable(game);
+        personDetailsScreenTable = new PersonDetailsScreenTable(game);
         
         //
-        homeButton.addCaptureListener(new InputListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-                //
-                setActiveMainScreen(HOME_SCREEN);
-            }
-        });
-
+        homeButton = new HomeButton(this);
+        personalDetailsButton = new PersonalDetailsButton(this);
+        
+        /**
+         * TODO: dynamic depending on job/etc
+         */
         buttonsMenu.add(homeButton).fill();
+        buttonsMenu.row();
+        buttonsMenu.add(personalDetailsButton).fill();
         buttonsMenu.row();
     }
 
     /**
      * Handle the Table Switching for the Main Screen
      */
-    private void setActiveMainScreen(int screen) {
+    public void setActiveMainScreen(int screen) {
 
         // Clear the main table
-        mainTable.clear();
+        parentTable.clear();
 
         switch (screen) {
 
+        //
         case HOME_SCREEN:
-            mainTable.add(homeScreenTable).grow();
+            parentTable.add(homeScreenTable).top().right();
+            break;
+        
+        //  
+        case PERSON_DETAILS_SCREEN:
+            personDetailsScreenTable.updateDynamicPersonComponents(currentGame.getOwner());
+            parentTable.add(personDetailsScreenTable).top().right();
             break;
 
         //
@@ -83,9 +99,8 @@ public class MainMenuManager {
             System.out.println("SCREEN NOT SET UP");
             break;
         }
-
     }
-    
+
     //
     public VisTable getButtonsMenu() {
         return buttonsMenu;
