@@ -82,6 +82,16 @@ public class AuthorityScreenTable extends VisTable {
         // Source
         this.add(sourceLabel);
         this.add(sourceLinkLabel);
+        
+        /**
+         * Leagues
+         */
+        VisLabel leaguesLabel = new VisLabel(LanguageModLoader.getValue("leagues"));
+        
         this.row();
+        this.addSeparator().colspan(2);
+        this.add(leaguesLabel).colspan(2);
+        
+        
     }
 }
