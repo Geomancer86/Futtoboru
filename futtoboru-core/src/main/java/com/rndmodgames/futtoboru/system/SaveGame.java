@@ -54,9 +54,6 @@ public class SaveGame implements Serializable {
         
         this.owner = owner;
         this.setSelectedCountries(selectedCountries);
-        
-        // 
-//        this.createdDate = new Date();
     }
 
     public Person getOwner() {

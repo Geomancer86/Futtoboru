@@ -190,10 +190,10 @@ public class MainGameMenuTable extends VisTable {
      */
     private void advanceGameTurn() {
         
+        //
         System.out.println("ADVANCE THE SIMULATION - 1 TURN");
-       
         
-        // update the buttons in case the Player got a new Job at a Club
-//        updateMainButtonsVisibility();
+        //
+        dateTimeWidget.updateDynamicComponents();
     }
 }

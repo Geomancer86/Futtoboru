@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.screens;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Game;
@@ -51,6 +52,7 @@ public class NewGameSeasonScreen implements Screen {
     
     //
     private Person selectedManager;
+    private Season selectedSeason;
     
     public NewGameSeasonScreen(Game parent) {
         
@@ -88,10 +90,18 @@ public class NewGameSeasonScreen implements Screen {
                 if (availableSeasonsSelectBox.getSelected() != null) {
                     
                     //
+                    selectedSeason = availableSeasonsSelectBox.getSelected();
+                    
+                    //
                     updateDynamicComponents();
                 }
             }
         });
+        
+        // if there is only a single season select it automatically
+        if (allSeasons.size() == 1) {
+            selectedSeason = allSeasons.get(0);
+        }
         
         // set the default values as the Season will be selected automatically
         updateDynamicComponents();
@@ -239,7 +249,7 @@ public class NewGameSeasonScreen implements Screen {
                 ((Futtoboru) game).getCurrentGame().setOwner(selectedManager);
                 
                 // Redirect to New Game Setup Screen
-                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SETUP_SCREEN);
+                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SETUP_SCREEN, selectedSeason, new ArrayList<>());
             }
         });
         

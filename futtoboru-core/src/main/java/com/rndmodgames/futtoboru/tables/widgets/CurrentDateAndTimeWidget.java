@@ -1,9 +1,13 @@
 package com.rndmodgames.futtoboru.tables.widgets;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
@@ -25,6 +29,12 @@ public class CurrentDateAndTimeWidget extends VisTable {
     VisLabel dateValueLabel = null;
     VisLabel timeValueLabel = null;
     
+    /**
+     * TODO: date formats should be set on user settings and persisted
+     */
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+    SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm:ss a", Locale.ENGLISH);
+    
     //
     public CurrentDateAndTimeWidget(Game game) {
         
@@ -43,5 +53,17 @@ public class CurrentDateAndTimeWidget extends VisTable {
         
         // Time Value Label
         this.add(timeValueLabel);
+    }
+    
+    //
+    public void updateDynamicComponents() {
+        
+        //
+        if (saveGame.getGameDate() != null) {
+            
+            // DatabaseLoader.formatter.format(availableSeasonsSelectBox.getSelected().getStartDate())
+            dateValueLabel.setText(dateFormatter.format(saveGame.getGameDate()));
+            timeValueLabel.setText(timeFormatter.format(saveGame.getGameDate()));
+        }
     }
 }

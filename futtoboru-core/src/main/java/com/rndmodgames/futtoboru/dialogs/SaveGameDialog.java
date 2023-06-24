@@ -50,6 +50,15 @@ public class SaveGameDialog extends VisDialog {
                     // Set to SAVED on success
                     saveGame.setIsSaved(true);
                     
+                    /**
+                     * TODO: avoid renaming savegame!
+                     * 
+                     *  save game format:
+                     *      
+                     *      - manager name/last name
+                     *      - in game date
+                     *      
+                     */
                     SaveLoadSystem.saveGame(saveGame, "savegame");
 
                     // Enable the Continue Game Button

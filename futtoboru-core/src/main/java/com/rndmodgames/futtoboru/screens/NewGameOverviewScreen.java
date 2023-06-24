@@ -24,8 +24,10 @@ import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.DataBase;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Profession;
+import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -60,6 +62,9 @@ public class NewGameOverviewScreen implements Screen {
     SpriteBatch batch;
     Texture img;
     
+    // Starting Season
+    Season startingSeason = null;
+    
     // Selected Countries List Setup
     List<Country> selectedCountries = new ArrayList<>();
     Country startingCountry = null;
@@ -77,10 +82,13 @@ public class NewGameOverviewScreen implements Screen {
     final VisSelectBox<Club> startingClubSelectBox = new VisSelectBox<>();
     
     // 
-    public NewGameOverviewScreen(Game parent, List<Country> selectedCountries) {
+    public NewGameOverviewScreen(Game parent, Season startingSeason, List<Country> selectedCountries) {
         
         this.game = parent;
 
+        // Keep track of starting season
+        this.startingSeason = startingSeason;
+        
         // Keep track of selected Countries
         this.selectedCountries = selectedCountries;
         
@@ -282,10 +290,12 @@ public class NewGameOverviewScreen implements Screen {
         professionsSelectBox.setSelectedIndex(0);
         
         //
+        gameStartConfigurationTable.add(gameStartDateLabel);
+        
+        //
         gameStartConfigurationTable.row();
         gameStartConfigurationTable.add(gameStartCountryLabel);
         gameStartConfigurationTable.add(startingCountrySelectBox);        
-        gameStartConfigurationTable.add(gameStartDateLabel);
         
         //
         gameStartConfigurationTable.row();
@@ -320,7 +330,7 @@ public class NewGameOverviewScreen implements Screen {
                  *      - Selected Lowest Leagues   [TODO]
                  *      - Selected Profession       [TODO]
                  */
-                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SETUP_SCREEN, selectedCountries);
+                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SETUP_SCREEN, startingSeason, selectedCountries);
             }
         });
         
@@ -346,13 +356,19 @@ public class NewGameOverviewScreen implements Screen {
                  *      - Selected Profession       [DONE]
                  *      - Starting Country          [DONE]
                  */
-                ((Futtoboru) game).getCurrentGame().setSelectedCountries(selectedCountries);
-                ((Futtoboru) game).getCurrentGame().getOwner().setPrimaryProfession(primaryProfession);
-                ((Futtoboru) game).getCurrentGame().getOwner().setCurrentCountry(startingCountry);
+                SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
                 
-                // Avoid setting the UNAVAILABLE dummy Club as Current
-                if (startingClub.getId() != null) {
-                    ((Futtoboru) game).getCurrentGame().getOwner().setCurrentClub(startingClub);
+                //
+                currentGame.setSelectedCountries(selectedCountries);
+                currentGame.getOwner().setPrimaryProfession(primaryProfession);
+                currentGame.getOwner().setCurrentCountry(startingCountry);
+                
+                //
+                if (startingSeason != null) {
+                    
+                    System.out.println("DATE DEBUG 1:" + startingSeason.getStartDate());
+                    currentGame.setGameStartDate(startingSeason.getStartDate());
+                    currentGame.setGameDate(startingSeason.getStartDate());
                 }
                 
                 ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
@@ -362,6 +378,7 @@ public class NewGameOverviewScreen implements Screen {
         // selected countries label
         mainContainer.row();
         mainContainer.add(selectedCountriesLabel);
+        
         // selected countries table
         mainContainer.row();
         mainContainer.addSeparator();
