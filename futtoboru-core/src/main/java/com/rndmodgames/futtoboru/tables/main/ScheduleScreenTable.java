@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.screens.main;
+package com.rndmodgames.futtoboru.tables.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -7,11 +7,11 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /**
- * Transfers Screen - Main Game
+ * Schedule Screen - Main Game
  * 
  * @author Geomancer86
  */
-public class TransfersScreenTable extends VisTable {
+public class ScheduleScreenTable extends VisTable {
 
     Game game;
     Stage stage;
@@ -20,16 +20,16 @@ public class TransfersScreenTable extends VisTable {
      * 
      * @param parent
      */
-    public TransfersScreenTable(Game parent) {
+    public ScheduleScreenTable(Game parent) {
         
         this.game = parent;
         this.stage = new Stage(new ScreenViewport());
         
-        VisTable transfersScreenTable = new VisTable(true);
+        VisTable scheduleScreenTable = new VisTable(true);
         
-        transfersScreenTable.add(new VisTextButton("TRANSFERS screen placeholder"));
+        scheduleScreenTable.add(new VisTextButton("SCHEDULE screen placeholder"));
         
         this.row();
-        this.add(transfersScreenTable);
+        this.add(scheduleScreenTable);
     }
 }

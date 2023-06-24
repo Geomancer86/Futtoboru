@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.screens.main;
+package com.rndmodgames.futtoboru.tables.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -9,8 +9,8 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.screens.main.club.ClubGeneralTableScreen;
-import com.rndmodgames.futtoboru.screens.main.club.ClubProfileTableScreen;
+import com.rndmodgames.futtoboru.tables.club.ClubGeneralTable;
+import com.rndmodgames.futtoboru.tables.club.ClubProfileTable;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -48,8 +48,8 @@ public class ClubScreenTable extends VisTable {
      * Club Screen Components
      */
     private VisTable clubScreenTable = null;
-    private ClubGeneralTableScreen clubGeneralTableScreen = null;
-    private ClubProfileTableScreen clubProfileTableScreen = null;
+    private ClubGeneralTable clubGeneralTableScreen = null;
+    private ClubProfileTable clubProfileTableScreen = null;
     
     /**
      * Club Screen Dynamic Menus
@@ -81,8 +81,8 @@ public class ClubScreenTable extends VisTable {
         clubScreenTable.pad(5);
         clubScreenTable.top().left();
 
-        clubGeneralTableScreen = new ClubGeneralTableScreen();
-        clubProfileTableScreen = new ClubProfileTableScreen();
+        clubGeneralTableScreen = new ClubGeneralTable();
+        clubProfileTableScreen = new ClubProfileTable();
         
         /**
          * Initialize Dynamic Menu

@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.screens.main.club;
+package com.rndmodgames.futtoboru.tables.club;
 
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -6,7 +6,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * Club General Table Screen
+ * Club General Table v1
  * 
  * 
  * 
@@ -14,9 +14,9 @@ import com.rndmodgames.localization.LanguageModLoader;
  * 
  * @author Geomancer86
  */
-public class ClubGeneralTableScreen extends VisTable {
+public class ClubGeneralTable extends VisTable {
 
-    public ClubGeneralTableScreen() {
+    public ClubGeneralTable() {
         
         super(true);
     }

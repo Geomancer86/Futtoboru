@@ -1,4 +1,4 @@
-package com.rndmodgames.components.buttons;
+package com.rndmodgames.futtoboru.menu.buttons;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -7,18 +7,18 @@ import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * Personal Details v1
+ * Home Button v1
  * 
- *  - Switches to Person Details Screen for the Current Player
+ *  - Switches to Home Screen
  * 
  * @author Geomancer86
  */
-public class PersonalDetailsButton extends VisTextButton {
+public class HomeButton extends VisTextButton {
 
-    public PersonalDetailsButton(MainMenuManager menuManager) {
+    public HomeButton(MainMenuManager menuManager) {
         
         // TODO: i18n
-        super(LanguageModLoader.getValue("personal_details"));
+        super(LanguageModLoader.getValue("home"));
         
         this.addCaptureListener(new InputListener() {
 
@@ -31,7 +31,7 @@ public class PersonalDetailsButton extends VisTextButton {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
                 //
-                menuManager.setActiveMainScreen(MainMenuManager.PERSON_DETAILS_SCREEN);
+                menuManager.setActiveMainScreen(MainMenuManager.HOME_SCREEN);
             }
         });
     }

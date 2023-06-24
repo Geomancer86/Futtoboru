@@ -1,14 +1,15 @@
 package com.rndmodgames.futtoboru.menu;
 
 import com.badlogic.gdx.Game;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.rndmodgames.components.buttons.HomeButton;
-import com.rndmodgames.components.buttons.PersonalDetailsButton;
-import com.rndmodgames.futtoboru.screens.main.HomeScreenTable;
-import com.rndmodgames.futtoboru.screens.person.PersonDetailsScreenTable;
+import com.rndmodgames.futtoboru.menu.buttons.AuthorityButton;
+import com.rndmodgames.futtoboru.menu.buttons.HomeButton;
+import com.rndmodgames.futtoboru.menu.buttons.PersonalDetailsButton;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
+import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
+import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
 
 /**
  * Main Menu Manager v1
@@ -35,18 +36,23 @@ public class MainMenuManager {
     public static final int HOME_SCREEN             =  100;
     private static final int INBOX_SCREEN            =  200;
     public static final int PERSON_DETAILS_SCREEN   =  300;
-    private static final int AUTHORITY_SCREEN        =  400;    
+    public static final int AUTHORITY_SCREEN        =  400;    
     private static final int LEAGUE_SCREEN           =  500;    
     private static final int WORLD_SCREEN            =  600;    
         
     // Main Game Buttons
     private VisTextButton homeButton = null;
     private VisTextButton personalDetailsButton = null;
+    private VisTextButton authorityButton = null;
     
     //
     private HomeScreenTable homeScreenTable = null;
     private PersonDetailsScreenTable personDetailsScreenTable = null;
+    private AuthorityScreenTable authorityScreenTable = null;
     
+    /**
+     * 
+     */
     public MainMenuManager(Game game, SaveGame currentGame, VisTable parentTable) {
         
         //
@@ -59,10 +65,12 @@ public class MainMenuManager {
         // other windows
         homeScreenTable = new HomeScreenTable(game);
         personDetailsScreenTable = new PersonDetailsScreenTable(game);
+        authorityScreenTable = new AuthorityScreenTable(game);
         
-        //
+        // custom buttons with logic to switch screen/tables
         homeButton = new HomeButton(this);
         personalDetailsButton = new PersonalDetailsButton(this);
+        authorityButton = new AuthorityButton(this);
         
         /**
          * TODO: dynamic depending on job/etc
@@ -70,6 +78,8 @@ public class MainMenuManager {
         buttonsMenu.add(homeButton).fill();
         buttonsMenu.row();
         buttonsMenu.add(personalDetailsButton).fill();
+        buttonsMenu.row();
+        buttonsMenu.add(authorityButton).fill();
         buttonsMenu.row();
     }
 
@@ -86,6 +96,10 @@ public class MainMenuManager {
         //
         case HOME_SCREEN:
             parentTable.add(homeScreenTable).top().right();
+            break;
+            
+        case AUTHORITY_SCREEN:
+            parentTable.add(authorityScreenTable).top().right();
             break;
         
         //  
