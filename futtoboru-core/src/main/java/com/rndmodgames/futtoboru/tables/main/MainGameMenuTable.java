@@ -13,11 +13,13 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.screens.MainGameScreen;
+import com.rndmodgames.futtoboru.tables.widgets.CurrentDateAndTimeWidget;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * Main Game Menu Table
+ * Top Game Menu Table
+ * 
+ * 
  * 
  * @author Geomancer86
  */
@@ -37,14 +39,12 @@ public class MainGameMenuTable extends VisTable {
      * Screen Components
      */
     VisTextButton continueGameButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
+    CurrentDateAndTimeWidget dateTimeWidget = null;
     
     public MainGameMenuTable(Game game, Stage stage) {
         
         super(true);
         pad(5);
-
-        // recursive debug test
-//        setDebug(true, true);
 
         /**
          * Open Options Drop Down Menu Button/SelectBox -
@@ -102,6 +102,11 @@ public class MainGameMenuTable extends VisTable {
         });
         
         /**
+         * Current Date & Time Widget
+         */
+        dateTimeWidget = new CurrentDateAndTimeWidget(game);
+        
+        /**
          * Continue Game Button
          * 
          * - This will be disabled until the Game is Saved Once
@@ -151,6 +156,7 @@ public class MainGameMenuTable extends VisTable {
         VisTable rightMenu = new VisTable(true);
         
         rightMenu.add(gameSettingsSelectBox).right();
+        rightMenu.add(dateTimeWidget).right();
         rightMenu.add(continueGameButton).right();
         
         add(rightMenu).expandX().right();

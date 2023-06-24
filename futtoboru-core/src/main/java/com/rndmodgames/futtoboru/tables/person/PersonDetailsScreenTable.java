@@ -11,7 +11,7 @@ import com.rndmodgames.localization.LanguageModLoader;
  * 
  * @author Geomancer86
  */
-public class PersonDetailsScreenTable  extends VisTable {
+public class PersonDetailsScreenTable extends VisTable {
 
     //
     Game game;
