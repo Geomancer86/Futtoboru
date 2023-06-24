@@ -2,9 +2,11 @@ package com.rndmodgames.futtoboru.system;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -63,6 +65,9 @@ public class DatabaseLoader {
     //
     private static List<Profession> professions = new ArrayList<>();
     private static List<Profession> selectableProfessions = new ArrayList<>();
+    
+    //
+    public static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
     
     private static DatabaseLoader instance;
     
@@ -243,13 +248,25 @@ public class DatabaseLoader {
                          * Season Format
                          * 
                          * # COLUMNS
-                         * # id, name, description, 
+                         * # id, name, description, urlSource, startDate
                          */
                         Season season = new Season();
                         
                         season.setId(Long.valueOf(splitted[0]));
                         season.setName(splitted[1]);
                         season.setDescription(splitted[2].replace("\"", "")); // remove opening and closing quotes
+                        season.setUrlSource(splitted[3]);
+                        
+                        // Parse Start Date
+                        try {
+                            
+                            season.setStartDate(formatter.parse(splitted[4]));
+                            
+                        } catch (Exception e) {
+                            
+                            System.out.println("Error Parsing Season Starting Date & Time!");
+                        }
+                        
                         season.setCountries(new ArrayList<>());
                         season.setLeagues(new ArrayList<>());
                         season.setClubs(new ArrayList<>());

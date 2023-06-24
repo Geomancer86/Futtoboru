@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -27,7 +28,11 @@ import com.rndmodgames.localization.LanguageModLoader;
 /**
  * New Game Season Screen v1
  * 
- *  - 
+ *  - TODO WIP
+ *  
+ *      - add/show URL Source to Season
+ *      - add/show Starting Date to Season
+ *      
  * 
  * @author Geomancer86
  */
@@ -35,6 +40,14 @@ public class NewGameSeasonScreen implements Screen {
 
     Game game;
     Stage stage;
+    
+    // Dynamic Components
+    VisLabel selectedSeasonDescriptionLabel = new VisLabel("");
+    VisLabel seasonCountriesNumber = new VisLabel("");
+    VisLabel seasonStartDateValueLabel = new VisLabel("");
+    LinkLabel seasonUrlSourceValueLabel = new LinkLabel("");
+    
+    VisSelectBox<Season> availableSeasonsSelectBox = null;
     
     //
     private Person selectedManager;
@@ -55,19 +68,17 @@ public class NewGameSeasonScreen implements Screen {
         //
         VisLabel seasonLabel = new VisLabel(LanguageModLoader.getValue("starting_season"));
         VisLabel seasonDescriptionLabel = new VisLabel(LanguageModLoader.getValue("season_description"));
+        VisLabel seasonStartDateLabel = new VisLabel(LanguageModLoader.getValue("season_start_date")); 
+        VisLabel seasonUrlSourceLabel = new VisLabel(LanguageModLoader.getValue("season_url_source"));
         VisLabel seasonCountriesLabel = new VisLabel(LanguageModLoader.getValue("season_countries"));
-        VisLabel seasonCountriesNumber = new VisLabel("0");
         
         // Get All Available Seasons
         List<Season> allSeasons = DatabaseLoader.getInstance().getSeasons();
         
         // Seasons Select Box
-        final VisSelectBox<Season> availableSeasonsSelectBox = new VisSelectBox<>();
+        availableSeasonsSelectBox = new VisSelectBox<>();
         availableSeasonsSelectBox.setItems(allSeasons.toArray(new Season[allSeasons.size()]));
 
-        // Selected Season Description Label
-        VisLabel selectedSeasonDescriptionLabel = new VisLabel("");        
-        
         //
         availableSeasonsSelectBox.addListener(new ChangeListener() {
             @Override
@@ -76,18 +87,14 @@ public class NewGameSeasonScreen implements Screen {
                 //
                 if (availableSeasonsSelectBox.getSelected() != null) {
                     
-                    // update season description label
-                    selectedSeasonDescriptionLabel.setText(availableSeasonsSelectBox.getSelected().getDescription());
-                    
-                    // update season countries label
-                    seasonCountriesNumber.setText(availableSeasonsSelectBox.getSelected().getCountries().size());
+                    //
+                    updateDynamicComponents();
                 }
             }
         });
         
         // set the default values as the Season will be selected automatically
-        selectedSeasonDescriptionLabel.setText(availableSeasonsSelectBox.getSelected().getDescription());
-        seasonCountriesNumber.setText(availableSeasonsSelectBox.getSelected().getCountries().size());
+        updateDynamicComponents();
         
         // Season
         table.row();
@@ -98,6 +105,16 @@ public class NewGameSeasonScreen implements Screen {
         table.row();
         table.add(seasonDescriptionLabel);
         table.add(selectedSeasonDescriptionLabel);
+        
+        // Season Start Date
+        table.row();
+        table.add(seasonStartDateLabel);
+        table.add(seasonStartDateValueLabel);
+        
+        // Season Source URL
+        table.row();
+        table.add(seasonUrlSourceLabel);
+        table.add(seasonUrlSourceValueLabel);
         
         // Season Countries
         table.row();
@@ -131,6 +148,8 @@ public class NewGameSeasonScreen implements Screen {
         
             // EXISTING MANAGERS LIST
             List<String> savedManagers = SaveLoadSystem.listSavedManagers();
+            
+            //
             final VisSelectBox<String> savedManagersSelectBox = new VisSelectBox<>();
             savedManagersSelectBox.setItems(savedManagers.toArray(new String[allSeasons.size()]));
             
@@ -232,6 +251,25 @@ public class NewGameSeasonScreen implements Screen {
         
         // Add Settings Screen Main Container to Stage
         stage.addActor(mainContainer);
+    }
+    
+    /**
+     * 
+     */
+    public void updateDynamicComponents() {
+        
+        // update season description label
+        selectedSeasonDescriptionLabel.setText(availableSeasonsSelectBox.getSelected().getDescription());
+        
+        // update season countries label
+        seasonCountriesNumber.setText(availableSeasonsSelectBox.getSelected().getCountries().size());
+        
+        // update season start date label
+        seasonStartDateValueLabel.setText(DatabaseLoader.formatter.format(availableSeasonsSelectBox.getSelected().getStartDate()));
+        
+        // update season source url label
+        seasonUrlSourceValueLabel.setText("Wikipedia");
+        seasonUrlSourceValueLabel.setUrl(availableSeasonsSelectBox.getSelected().getUrlSource());
     }
     
     @Override
