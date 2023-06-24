@@ -1,4 +1,4 @@
-package com.rndmodgames.components.buttons;
+package com.rndmodgames.futtoboru.menu.buttons;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -13,12 +13,12 @@ import com.rndmodgames.localization.LanguageModLoader;
  * 
  * @author Geomancer86
  */
-public class HomeButton extends VisTextButton {
+public class AuthorityButton extends VisTextButton {
 
-    public HomeButton(MainMenuManager menuManager) {
+    public AuthorityButton(MainMenuManager menuManager) {
         
         // TODO: i18n
-        super(LanguageModLoader.getValue("home"));
+        super(LanguageModLoader.getValue("authority"));
         
         this.addCaptureListener(new InputListener() {
 
@@ -31,7 +31,7 @@ public class HomeButton extends VisTextButton {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
                 //
-                menuManager.setActiveMainScreen(MainMenuManager.HOME_SCREEN);
+                menuManager.setActiveMainScreen(MainMenuManager.AUTHORITY_SCREEN);
             }
         });
     }
