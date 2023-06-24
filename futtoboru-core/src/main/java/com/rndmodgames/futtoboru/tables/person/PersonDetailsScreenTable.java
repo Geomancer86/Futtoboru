@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.screens.person;
+package com.rndmodgames.futtoboru.tables.person;
 
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;

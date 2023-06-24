@@ -12,9 +12,9 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.screens.main.HomeScreenTable;
-import com.rndmodgames.futtoboru.screens.main.MainGameMenuTable;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
+import com.rndmodgames.futtoboru.tables.main.MainGameMenuTable;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**

@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.screens.main;
+package com.rndmodgames.futtoboru.tables.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -7,11 +7,11 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /**
- * Inbox Screen - Main Game
+ * Squad Screen - Main Game
  * 
  * @author Geomancer86
  */
-public class InboxScreenTable extends VisTable {
+public class SquadScreenTable extends VisTable {
 
     Game game;
     Stage stage;
@@ -20,16 +20,16 @@ public class InboxScreenTable extends VisTable {
      * 
      * @param parent
      */
-    public InboxScreenTable(Game parent) {
+    public SquadScreenTable(Game parent) {
         
         this.game = parent;
         this.stage = new Stage(new ScreenViewport());
         
-        VisTable inboxScreenTab = new VisTable(true);
+        VisTable squadScreenTable = new VisTable(true);
         
-        inboxScreenTab.add(new VisTextButton("INBOX screen placeholder"));
+        squadScreenTable.add(new VisTextButton("SQUAD screen placeholder"));
         
         this.row();
-        this.add(inboxScreenTab);
+        this.add(squadScreenTable);
     }
 }

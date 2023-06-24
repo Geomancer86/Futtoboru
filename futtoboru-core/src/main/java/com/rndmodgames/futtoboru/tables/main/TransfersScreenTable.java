@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.screens.main;
+package com.rndmodgames.futtoboru.tables.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -7,11 +7,11 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /**
- * Tactics Screen - Main Game
+ * Transfers Screen - Main Game
  * 
  * @author Geomancer86
  */
-public class TacticsScreenTable extends VisTable {
+public class TransfersScreenTable extends VisTable {
 
     Game game;
     Stage stage;
@@ -20,16 +20,16 @@ public class TacticsScreenTable extends VisTable {
      * 
      * @param parent
      */
-    public TacticsScreenTable(Game parent) {
+    public TransfersScreenTable(Game parent) {
         
         this.game = parent;
         this.stage = new Stage(new ScreenViewport());
         
-        VisTable tacticsScreenTable = new VisTable(true);
+        VisTable transfersScreenTable = new VisTable(true);
         
-        tacticsScreenTable.add(new VisTextButton("TACTICS screen placeholder"));
+        transfersScreenTable.add(new VisTextButton("TRANSFERS screen placeholder"));
         
         this.row();
-        this.add(tacticsScreenTable);
+        this.add(transfersScreenTable);
     }
 }

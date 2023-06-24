@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.screens.main.club;
+package com.rndmodgames.futtoboru.tables.club;
 
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -6,14 +6,14 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * Club Profile Table Screen
+ * Club Profile Table v1
  * 
  * 
  * @author Geomancer86
  */
-public class ClubProfileTableScreen extends VisTable {
+public class ClubProfileTable extends VisTable {
 
-    public ClubProfileTableScreen() {
+    public ClubProfileTable() {
         
         super(true);
 

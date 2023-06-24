@@ -6,9 +6,9 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.buttons.HomeButton;
 import com.rndmodgames.components.buttons.PersonalDetailsButton;
-import com.rndmodgames.futtoboru.screens.main.HomeScreenTable;
-import com.rndmodgames.futtoboru.screens.person.PersonDetailsScreenTable;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
+import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
 
 /**
  * Main Menu Manager v1

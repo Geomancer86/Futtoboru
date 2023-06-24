@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.screens.main;
+package com.rndmodgames.futtoboru.tables.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -7,11 +7,11 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /**
- * Schedule Screen - Main Game
+ * Staff Screen - Main Game
  * 
  * @author Geomancer86
  */
-public class ScheduleScreenTable extends VisTable {
+public class StaffScreenTable extends VisTable {
 
     Game game;
     Stage stage;
@@ -20,16 +20,16 @@ public class ScheduleScreenTable extends VisTable {
      * 
      * @param parent
      */
-    public ScheduleScreenTable(Game parent) {
+    public StaffScreenTable(Game parent) {
         
         this.game = parent;
         this.stage = new Stage(new ScreenViewport());
         
-        VisTable scheduleScreenTable = new VisTable(true);
+        VisTable staffScreenTable = new VisTable(true);
         
-        scheduleScreenTable.add(new VisTextButton("SCHEDULE screen placeholder"));
+        staffScreenTable.add(new VisTextButton("STAFF screen placeholder"));
         
         this.row();
-        this.add(scheduleScreenTable);
+        this.add(staffScreenTable);
     }
 }

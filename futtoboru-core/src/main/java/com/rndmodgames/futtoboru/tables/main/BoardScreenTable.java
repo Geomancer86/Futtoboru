@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.screens.main;
+package com.rndmodgames.futtoboru.tables.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -7,15 +7,11 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /**
- * Home Screen - Main Game
- * 
- *  - All in one place
- *      - Gadgets / Charts
- *      - 
+ * Board Screen - Main Game
  * 
  * @author Geomancer86
  */
-public class HomeScreenTable extends VisTable {
+public class BoardScreenTable extends VisTable {
 
     Game game;
     Stage stage;
@@ -24,16 +20,16 @@ public class HomeScreenTable extends VisTable {
      * 
      * @param parent
      */
-    public HomeScreenTable(Game parent) {
+    public BoardScreenTable(Game parent) {
         
         this.game = parent;
         this.stage = new Stage(new ScreenViewport());
         
-        VisTable homeScreenTable = new VisTable(true);
+        VisTable boardScreenTable = new VisTable(true);
         
-        homeScreenTable.add(new VisTextButton("HOME screen placeholder"));
+        boardScreenTable.add(new VisTextButton("Board screen placeholder"));
         
         this.row();
-        this.add(homeScreenTable);
+        this.add(boardScreenTable);
     }
 }
