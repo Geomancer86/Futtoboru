@@ -13,7 +13,7 @@ public class JsonDateSerializer implements Json.Serializer<LocalDateTime> {
         System.out.println("json: " + json + ", date: " + date + " knownType: " + knownType);
          
         json.writeObjectStart();
-        json.writeValue("date", date.toString());
+        json.writeValue("value", date.toString());
         json.writeObjectEnd();
      }
 
@@ -22,7 +22,7 @@ public class JsonDateSerializer implements Json.Serializer<LocalDateTime> {
          
          System.out.println("json: " + json + ", jsonData: " + jsonData + "type: " + type);
          
-         LocalDateTime date = LocalDateTime.parse(jsonData.toString());
+         LocalDateTime date = LocalDateTime.parse(jsonData.getString("value"));
          return date;
      }
 }

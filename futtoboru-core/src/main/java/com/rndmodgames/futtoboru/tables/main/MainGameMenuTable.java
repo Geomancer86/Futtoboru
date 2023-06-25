@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.main;
 
+import java.time.LocalDateTime;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,6 +27,9 @@ import com.rndmodgames.localization.LanguageModLoader;
  */
 public class MainGameMenuTable extends VisTable {
 
+    //
+    Game game;
+    
     /**
      * Dialogs
      */
@@ -46,6 +51,9 @@ public class MainGameMenuTable extends VisTable {
         super(true);
         pad(5);
 
+        //
+        this.game = game;
+        
         /**
          * Open Options Drop Down Menu Button/SelectBox -
          */
@@ -156,7 +164,7 @@ public class MainGameMenuTable extends VisTable {
         VisTable rightMenu = new VisTable(true);
         
         rightMenu.add(gameSettingsSelectBox).right();
-        rightMenu.add(dateTimeWidget).right();
+        rightMenu.add(dateTimeWidget).width(100).right();
         rightMenu.add(continueGameButton).right();
         
         add(rightMenu).expandX().right();
@@ -192,6 +200,10 @@ public class MainGameMenuTable extends VisTable {
         
         //
         System.out.println("ADVANCE THE SIMULATION - 1 TURN");
+        
+        LocalDateTime current = ((Futtoboru)(game)).getCurrentGame().getGameDate();
+        
+        ((Futtoboru)(game)).getCurrentGame().setGameDate(current.plusDays(1));
         
         //
         dateTimeWidget.updateDynamicComponents();
