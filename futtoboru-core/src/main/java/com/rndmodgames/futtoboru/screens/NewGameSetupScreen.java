@@ -21,6 +21,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Continent;
 import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -43,15 +44,20 @@ public class NewGameSetupScreen implements Screen {
     SpriteBatch batch;
     Texture img;
     
+    //
     List<Country> selectedCountries = new ArrayList<>();
+    Season startingSeason = null;
     
     //
-    public NewGameSetupScreen(Game parent, List<Country> selectedCountries) {
+    public NewGameSetupScreen(Game parent, Season startingSeason, List<Country> selectedCountries) {
         
         this.game = parent;
         
         // Keep track of selected Countries
         this.selectedCountries = selectedCountries;
+        
+        // Keep track of starting season
+        this.startingSeason = startingSeason;
 
         stage = new Stage(new ScreenViewport());
         
@@ -186,7 +192,7 @@ public class NewGameSetupScreen implements Screen {
                 /**
                  * Move to New Game Overview Screen
                  */
-                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_OVERVIEW_SCREEN, selectedCountries);
+                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_OVERVIEW_SCREEN, startingSeason, selectedCountries);
             }
         });
         

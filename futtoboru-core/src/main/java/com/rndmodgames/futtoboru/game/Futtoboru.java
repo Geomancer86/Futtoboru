@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.kotcrab.vis.ui.VisUI;
 import com.rndmodgames.PreferencesManager;
 import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
 import com.rndmodgames.futtoboru.screens.NewGameOverviewScreen;
@@ -159,10 +160,6 @@ public class Futtoboru extends Game {
             this.setScreen(new NewManagerScreen(this));
             break;
             
-        case NEW_GAME_SETUP_SCREEN:
-            this.setScreen(new NewGameSetupScreen(this, new ArrayList<>()));
-            break;
-            
         case GAME_ADD_PLAYER_SCREEN:
             
             break;
@@ -187,15 +184,17 @@ public class Futtoboru extends Game {
      *  - This will be used to switch back and forth on some screens such as NEW GAME and NEW GAME OVERVIEW
      *      while keeping track of User Selections (Countries, Leagues, Options, etc).
      */
-    public void changeScreen(int screen, List<Country> selectedCountries) {
+    public void changeScreen(int screen, Season startingSeason, List<Country> selectedCountries) {
+        
+        System.out.println("Starting Season: " + startingSeason);
         
         switch (screen) {
         case NEW_GAME_SETUP_SCREEN:
-            this.setScreen(new NewGameSetupScreen(this, selectedCountries));
+            this.setScreen(new NewGameSetupScreen(this, startingSeason, selectedCountries));
             break;
             
         case NEW_GAME_OVERVIEW_SCREEN:
-            this.setScreen(new NewGameOverviewScreen(this, selectedCountries));
+            this.setScreen(new NewGameOverviewScreen(this, startingSeason, selectedCountries));
             break;
         }
     }

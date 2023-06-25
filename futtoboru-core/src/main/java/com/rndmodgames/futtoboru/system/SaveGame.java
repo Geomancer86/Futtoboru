@@ -2,6 +2,7 @@ package com.rndmodgames.futtoboru.system;
 
 import java.beans.Transient;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.rndmodgames.futtoboru.data.Country;
@@ -32,12 +33,8 @@ public class SaveGame implements Serializable {
     private Person owner;
     private List<Country> selectedCountries;
     
-//  private Date createdDate;
-//  private Date updatedDate;
-//  private Date savedDate;
-//  
-//  private Date gameStartDate;
-//  private Date gameDate;
+    private LocalDateTime gameStartDate;
+    private LocalDateTime gameDate;
     
     private Boolean isSaved = false; // default to unsaved game
     
@@ -53,9 +50,6 @@ public class SaveGame implements Serializable {
         
         this.owner = owner;
         this.setSelectedCountries(selectedCountries);
-        
-        // 
-//        this.createdDate = new Date();
     }
 
     public Person getOwner() {
@@ -73,6 +67,22 @@ public class SaveGame implements Serializable {
 
     public void setSelectedCountries(List<Country> selectedCountries) {
         this.selectedCountries = selectedCountries;
+    }
+
+    public LocalDateTime getGameStartDate() {
+        return gameStartDate;
+    }
+
+    public void setGameStartDate(LocalDateTime gameStartDate) {
+        this.gameStartDate = gameStartDate;
+    }
+
+    public LocalDateTime getGameDate() {
+        return gameDate;
+    }
+
+    public void setGameDate(LocalDateTime gameDate) {
+        this.gameDate = gameDate;
     }
 
     public Boolean getIsSaved() {
