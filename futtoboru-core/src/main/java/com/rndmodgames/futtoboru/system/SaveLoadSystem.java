@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.system;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +33,7 @@ public class SaveLoadSystem {
         System.out.println("Saving Game File on USER HOME PATH: " + userHomePath);
         
         Json json = new Json();
-        
-//        json.setTypeName(null);
-//        json.setUsePrototypes(false);
-//        json.setIgnoreUnknownFields(true);
-//        json.setOutputType(JsonWriter.OutputType.json);
+        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
 
         FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + SAVEGAMES_FOLDER + filename + SAVE_EXTENSION);
         
@@ -61,6 +58,7 @@ public class SaveLoadSystem {
     public static SaveGame loadGame(String saveGameName) {
 
         Json json = new Json();
+        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
         
         String userHomePath = System.getProperty(USER_HOME);
         FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + SAVEGAMES_FOLDER + saveGameName);
@@ -189,5 +187,19 @@ public class SaveLoadSystem {
         }
         
         return person;
+    }
+    
+    public static void main (String args []) {
+        
+        Json json = new Json();
+        
+        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
+        
+        SaveGame save = new SaveGame();
+
+        save.setGameDate(LocalDateTime.now());
+        save.setGameStartDate(LocalDateTime.now());
+        
+        System.out.println("SAVE: " + json.prettyPrint(save));
     }
 }

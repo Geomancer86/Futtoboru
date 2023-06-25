@@ -1,13 +1,12 @@
 package com.rndmodgames.futtoboru.tables.widgets;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
@@ -26,14 +25,14 @@ public class CurrentDateAndTimeWidget extends VisTable {
     SaveGame saveGame;
     
     // Dynamic Components
-    VisLabel dateValueLabel = null;
-    VisLabel timeValueLabel = null;
+    VisLabel dateValueLabel = new VisLabel();
+    VisLabel timeValueLabel = new VisLabel();
     
     /**
      * TODO: date formats should be set on user settings and persisted
      */
-    SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-    SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm:ss a", Locale.ENGLISH);
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
+    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("EEE hh:mm:ss a", Locale.ENGLISH);
     
     //
     public CurrentDateAndTimeWidget(Game game) {
@@ -44,8 +43,7 @@ public class CurrentDateAndTimeWidget extends VisTable {
         /**
          * TODO: format should come from Settings page
          */
-        dateValueLabel = new VisLabel("01 Jun 1888");
-        timeValueLabel = new VisLabel("FRI 08:00");
+        updateDynamicComponents();
         
         // Date Value Label
         this.add(dateValueLabel);

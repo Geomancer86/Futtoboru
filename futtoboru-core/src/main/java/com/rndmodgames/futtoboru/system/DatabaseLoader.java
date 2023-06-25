@@ -2,7 +2,8 @@ package com.rndmodgames.futtoboru.system;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +68,7 @@ public class DatabaseLoader {
     private static List<Profession> selectableProfessions = new ArrayList<>();
     
     //
-    public static SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
+    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
     
     private static DatabaseLoader instance;
     
@@ -260,7 +261,7 @@ public class DatabaseLoader {
                         // Parse Start Date
                         try {
                             
-                            season.setStartDate(formatter.parse(splitted[4]));
+                            season.setStartDate(LocalDateTime.parse(splitted[4], formatter));
                             
                         } catch (Exception e) {
                             

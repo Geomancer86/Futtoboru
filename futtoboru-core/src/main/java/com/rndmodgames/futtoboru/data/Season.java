@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class Season implements Serializable {
     private String name;
     private String description;
     private String urlSource;
-    private Date startDate;
+    private LocalDateTime startDate;
      
     //
     private List<Country> countries;
@@ -78,11 +79,11 @@ public class Season implements Serializable {
         this.urlSource = urlSource;
     }
 
-    public Date getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
