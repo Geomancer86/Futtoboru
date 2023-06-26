@@ -44,7 +44,7 @@ public class ClubsLoader {
                         
                         //
                         club.setId(Long.valueOf(splitted[0]));
-                        club.setName(splitted[1]);
+                        club.setFullName(splitted[1]);
                         club.setUrlSource(splitted[2]);
                         club.setYear(Integer.valueOf(splitted[3]));
                         

@@ -4,6 +4,9 @@ import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -46,6 +49,9 @@ public class AuthorityScreenTable extends VisTable {
     
     //
     private static final String IFAB_WIKIPEDIA_URL = "https://en.wikipedia.org/wiki/International_Football_Association_Board";
+    
+    // Dynamic Components
+    VisTable teamsListTable = new VisTable(true);
     
     public AuthorityScreenTable(Game parent) {
         
@@ -96,11 +102,44 @@ public class AuthorityScreenTable extends VisTable {
         
         /**
          * Teams
+         * 
+         * TODO: WIP
+         * 
+         *  - Existing Teams Widget
          */
         VisLabel teamsLabel = new VisLabel(LanguageModLoader.getValue("teams"));
+        
+        // update active teams list table
+        listActiveTeams();
         
         this.row();
         this.addSeparator().colspan(2);
         this.add(teamsLabel).colspan(2);
+        
+        this.row();
+        this.add(teamsListTable).colspan(2);
+    }
+    
+    /**
+     * TODO: we need to set the Current Season depending on Player Selection on New Game
+     *          and the current game DATE TIME
+     */
+    public void listActiveTeams() {
+        
+        // TODO: unhardcode active season
+        Season activeSeason = DatabaseLoader.getInstance().getSeasons().get(0);
+        
+        System.out.println("LISTING SEASON " + activeSeason.getClubs().size() + " ACTIVE TEAMS");
+        
+        //
+        teamsListTable.clear();
+        
+        for (Club club : activeSeason.getClubs()) {
+            
+            teamsListTable.add(new VisLabel(club.getFullName()));
+            teamsListTable.add(new VisLabel(club.getYear().toString()));
+            teamsListTable.add(new LinkLabel("(Wikipedia)", club.getUrlSource()));
+            teamsListTable.row();
+        }
     }
 }
