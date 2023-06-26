@@ -12,12 +12,20 @@ public class Club implements Serializable {
     private static final long serialVersionUID = -2626184195364944334L;
 
     private Long id;
-    private String name;
-    private String fullName;
-    private String initials;
     
     /**
-     * Foundation Year
+     * Club Official Names
+     * 
+     * TODO: club nicknames need to be temporal/script based
+     */
+    private String name;
+    private String fullName;
+    private String shortName;
+    private String initials;
+    private String urlSource;
+    
+    /**
+     * Foundation Date
      */
     private Integer year;
     private Integer month;
@@ -71,12 +79,28 @@ public class Club implements Serializable {
         this.fullName = fullName;
     }
 
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
     public String getInitials() {
         return initials;
     }
 
     public void setInitials(String initials) {
         this.initials = initials;
+    }
+
+    public String getUrlSource() {
+        return urlSource;
+    }
+
+    public void setUrlSource(String urlSource) {
+        this.urlSource = urlSource;
     }
 
     public Integer getYear() {

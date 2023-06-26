@@ -85,6 +85,8 @@ public class AuthorityScreenTable extends VisTable {
         
         /**
          * Leagues
+         * 
+         * NOTE: Leagues won't appear until the first league is founded, need scripts!
          */
         VisLabel leaguesLabel = new VisLabel(LanguageModLoader.getValue("leagues"));
         
@@ -92,6 +94,13 @@ public class AuthorityScreenTable extends VisTable {
         this.addSeparator().colspan(2);
         this.add(leaguesLabel).colspan(2);
         
+        /**
+         * Teams
+         */
+        VisLabel teamsLabel = new VisLabel(LanguageModLoader.getValue("teams"));
         
+        this.row();
+        this.addSeparator().colspan(2);
+        this.add(teamsLabel).colspan(2);
     }
 }

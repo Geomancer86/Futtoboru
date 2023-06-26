@@ -1,0 +1,17 @@
+# 1888–89 Football League Teams
+#
+# COLUMNS
+# id, fullname, url_source, foundation_year
+#
+1,Preston North End Football Club,https://en.wikipedia.org/wiki/Preston_North_End_F.C.,1880
+2,Aston Villa Football Club,https://en.wikipedia.org/wiki/Aston_Villa_F.C.,1874
+3,Wolverhampton Wanderers Football Club,https://en.wikipedia.org/wiki/Wolverhampton_Wanderers_F.C.,1877
+4,Blackburn Rovers Football Club,https://en.wikipedia.org/wiki/Blackburn_Rovers_F.C.,1875
+5,Bolton Wanderers Football Club,https://en.wikipedia.org/wiki/Bolton_Wanderers_F.C.,1874
+6,West Bromwich Albion Football Club,https://en.wikipedia.org/wiki/West_Bromwich_Albion_F.C.,1878
+7,Accrington Football Club,https://en.wikipedia.org/wiki/Accrington_F.C.,1878
+8,Everton Football Club,https://en.wikipedia.org/wiki/Everton_F.C.,1878
+9,Burnley Football Club,https://en.wikipedia.org/wiki/Burnley_F.C.,1882
+10,Derby County Football Club,https://en.wikipedia.org/wiki/Derby_County_F.C.,1884
+11,Notts County Football Club,https://en.wikipedia.org/wiki/Notts_County_F.C,1862
+12,Stoke City Football Club,https://en.wikipedia.org/wiki/Stoke_City_F.C.,1868

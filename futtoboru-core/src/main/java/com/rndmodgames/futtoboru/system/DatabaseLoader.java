@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.data.DataBase;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.system.loaders.SeasonsLoader;
 
 /**
  * Database Loader v1
@@ -72,12 +73,17 @@ public class DatabaseLoader {
     
     private static DatabaseLoader instance;
     
+    // split loaders
+    private SeasonsLoader seasonsLoader;
+    
     public DatabaseLoader() {
 
     }
 
     /**
      * Initialize the Game Data in Required Order
+     * 
+     * TODO: revamp for script use
      */
     public static DatabaseLoader getInstance() {
         
@@ -95,16 +101,19 @@ public class DatabaseLoader {
             initializeCountries();
             
             // Initialize Available Leagues
-            initializeLeagues();
+//            initializeLeagues();
             
             // Initialize Available Clubs
-            initializeClubs();
+//            initializeClubs();
             
             // Initialize Available Profession
             initializeProfessions();
             
             // Initialize Seasons
             initializeSeasons();
+            
+            // Load Seasons Data
+            SeasonsLoader.load(seasons);
         } 
             
         //
@@ -286,55 +295,6 @@ public class DatabaseLoader {
         } else {
             // TODO: If file doesn't exist, restore from default
         }
-        
-        /**
-         * After loading the Base Seasons we need to load the subfolders for each season by Season ID
-         */
-        for (Season season : seasons) {
-
-            FileHandle seasonCountriesFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/countries.txt");
-            
-            if (seasonCountriesFile.exists()){
-                
-                BufferedReader reader = new BufferedReader(seasonCountriesFile.reader());
-                
-                String line;
-                
-                try {
-                    line = reader.readLine();
-
-                    // Use # symbol as starting for comment (to enable or disable available resolutions)
-                    while (line != null) {
-                        
-                        if (!line.startsWith("#")) {
-    
-                            String [] splitted = line.split(",");
-                            
-                            /**
-                             * FORMAT:
-                             * COLUMNS
-                             * id,
-                             */
-                            season.getCountries().add(getCountryById(Long.valueOf(splitted[0])));
-                        }
-                        
-                        line = reader.readLine();
-                    }
-                    
-                } catch (IOException e) {
-                    // TODO: If error, restore default resolutions.txt file
-                    e.printStackTrace();
-                }
-            } else {
-                System.out.println("mods/seasons/" + season.getId() + "/countries.txt doesnt exist");
-            }
-
-            System.out.println("FINISHED LOADING " + season.getCountries().size() + " SEASON COUNTRIES");
-        }
-        
-        /**
-         * Load the Season Leagues and Clubs
-         */
         
         System.out.println("FINISHED LOADING " + seasons.size() + " SEASONS");
     }
