@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 
 public class ClubsLoader {
 
@@ -48,6 +49,9 @@ public class ClubsLoader {
                         club.setUrlSource(splitted[2]);
                         club.setYear(Integer.valueOf(splitted[3]));
                         
+                        // Country
+                        club.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[4])));
+                        
                         //
                         season.getClubs().add(club);
                     }
@@ -63,6 +67,15 @@ public class ClubsLoader {
         } else {
             
             System.out.println("mods/seasons/" + season.getId() + "/clubs.txt doesnt exist");
+        }
+        
+        /**
+         * Update Clubs by Country HashMap
+         */
+        for (Club club : season.getClubs()) {
+            
+            //
+            DatabaseLoader.getInstance().getClubsByCountry(club.getCountry()).add(club);
         }
         
         System.out.println("FINISHED LOADING " + season.getClubs().size() + " SEASON CLUBS");

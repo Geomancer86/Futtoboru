@@ -101,11 +101,8 @@ public class DatabaseLoader {
             initializeCountries();
             
             // Initialize Available Leagues
-//            initializeLeagues();
-            
-            // Initialize Available Clubs
-//            initializeClubs();
-            
+            initializeLeagues();
+
             // Initialize Available Profession
             initializeProfessions();
             
@@ -565,83 +562,6 @@ public class DatabaseLoader {
     }
     
     /**
-     * Load the Available Clubs for each League under /mods/leagues/${country_name}.txt
-     */
-    private static void initializeClubs() {
-        
-        /**
-         * Iterate the Available Countries and Load the Existing Clubs
-         */
-        for (Country country : countries) {
-            
-            FileHandle clubsTxt = Gdx.files.internal(LEAGUES_FOLDER + country.getCommonName().toLowerCase() + FILE_EXTENSION);
-            
-            if (clubsTxt.exists()) {
-                
-                BufferedReader reader = new BufferedReader(clubsTxt.reader());
-                
-                String line;
-                
-                try {
-                    line = reader.readLine();
-
-                    // Use # symbol as starting for comment (to enable or disable available resolutions)
-                    while (line != null) {
-                        
-                        if (!line.startsWith("#")) {
-      
-                            String [] splitted = line.split(",");
-                            
-                            /**
-                             * Club Format
-                             * 
-                             *  # COLUMNS
-                             *  # id, name, long_name, state, city, current_division_id
-                             */
-                            Club club = new Club();
-                            club.setId(Long.valueOf(splitted[0]));
-                            club.setName(splitted[1]);
-                            club.setCountry(country);
-                            
-                            /**
-                             * Set the Current League
-                             */
-                            League league = leaguesById.get(Long.valueOf(splitted[5]));
-                            
-                            if (league != null) {
-                                
-                                club.setCurrentLeague(league);
-                            }
-                            
-                            clubs.add(club);
-                        }
-                        
-                        line = reader.readLine();
-                    }
-                    
-                } catch (IOException e) {
-                    // TODO: If error, restore default resolutions.txt file
-                    e.printStackTrace();
-                }
-                
-            } else {
-                // TODO: If file doesn't exist, restore from default
-            }
-        }
-        
-        System.out.println("FINISHED LOADING " + clubs.size() + " CLUBS");
-        
-        /**
-         * Load the Clubs By League HashMap
-         */
-        for (Club club : clubs) {
-            
-            clubsByLeague.get(club.getCurrentLeague().getId()).add(club);
-            clubsByCountry.get(club.getCountry().getId()).add(club);
-        }
-    }
-    
-    /**
      * Load the Available Professions from /mods/professions.txt
      */
     private static void initializeProfessions() {
@@ -693,5 +613,13 @@ public class DatabaseLoader {
         }
         
         System.out.println("FINISHED LOADING " + professions.size() + " PROFESSIONS");
+    }
+
+    public static HashMap<Long, List<Club>> getClubsByCountry() {
+        return clubsByCountry;
+    }
+
+    public static void setClubsByCountry(HashMap<Long, List<Club>> clubsByCountry) {
+        DatabaseLoader.clubsByCountry = clubsByCountry;
     }
 }
