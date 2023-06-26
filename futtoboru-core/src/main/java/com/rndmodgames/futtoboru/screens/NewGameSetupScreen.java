@@ -88,19 +88,22 @@ public class NewGameSetupScreen implements Screen {
          * Show only the Continents with Active Countries
          */
         for (Continent continent : DatabaseLoader.getInstance().getContinents()) {
+
+//          System.out.println("Continent Details: " + continent.getName());
             
-//            System.out.println("Continent Details: " + continent.getName());
-            
+            // An active Continent will have Countries with active Clubs
+            boolean activeContinent = false;
+            boolean activeCountry = false;
+
             /**
              * Show only the Countries with Active Teams
              */
             for (final Country country : DatabaseLoader.getInstance().getCountriesByContinent(continent)) {
                 
-//                System.out.println("Country Details: " + country.getCommonName());
-                
+                //
                 if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
                     
-//                    System.out.println("Country don't have active Teams!");
+                    // System.out.println("Country don't have active Teams!");
                     
                 } else {
                     
@@ -108,96 +111,80 @@ public class NewGameSetupScreen implements Screen {
                     System.out.println("Continent Details: " + continent.getName());
                     System.out.println("Country Details: " + country.getCommonName());
                     System.out.println("Adding " + DatabaseLoader.getInstance().getClubsByCountry(country).size() + " Country Teams!");
+                 
+                    // Set Continent as active
+                    activeContinent = true;
                 }
             }
             
+            // Add a new Row if this Continent is active
+            if (activeContinent) {
+                
+                activeCountriesTable.row();
+                activeCountriesTable.add(new VisLabel(continent.getName()));
+            }
             
-//            activeCountriesTable.row();
-//            
-//            VisLabel continentLabel = new VisLabel(continent.getName());
-//            
-//            // Add Continent Name Label
-//            activeCountriesTable.add(continentLabel);
-//            
-//            /**
-//             * Show only the Countries with Active Leagues
-//             */
-//            for (final Country country : DatabaseLoader.getInstance().getCountriesByContinent(continent)) {
-//                
-//                System.out.println("Country Details: " + country.getCommonName());
-//
-//                if (DatabaseLoader.getInstance().getLeaguesByCountry(country).isEmpty()) {
-//                    
-//                    System.out.println("Continent don't have active Leagues");
-//                    
-//                    /**
-//                     * Ignore this Country as it doesn't have Active Leagues
-//                     */
-//                    continue;
-//                }
-//                
-//                VisLabel countryLabel = new VisLabel(country.getCommonName());
-//                
-//                final VisCheckBox countryCheckBox = new VisCheckBox("");
-//                
-//                /**
-//                 * TODO: set checked on DEFAULT/RECOMMENDED Countries
-//                 * TODO: add Country Flag ICON
-//                 */
-//                if (this.selectedCountries.contains(country)) {
-//                    
-//                    countryCheckBox.setChecked(true);
-//                }
-//                
-//                /**
-//                 * Set Checked to Default Countries
-//                 * 
-//                 * NOTE: this need to be done only once while setting up this screen, and not after switching screens back and forth with the selected countries list
-//                 */
-//                if (selectedCountries.isEmpty()) {
-//                    
-//                    if (country.getDefaultCountry()) {
-//                        
-//                        countryCheckBox.setChecked(true);
-//                        
-//                        // add to the selected list automatically
-//                        selectedCountries.add(country);
-//                    }
-//                }
-//
-//                countryCheckBox.addListener(new ChangeListener() {
-//                    
-//                    @Override
-//                    public void changed (ChangeEvent event, Actor actor) {
-//                        
-//                        /**
-//                         * Add to selected countries list on check
-//                         *  - remove on uncheck
-//                         */
-//                        if (countryCheckBox.isChecked()) {
-//                           
-//                            if (!selectedCountries.contains(country)) {
-//                                
-//                                selectedCountries.add(country);
-//                            }
-//                            
-//                        } else {
-//                            
-//                            selectedCountries.remove(country);
-//                        }
-//                    }
-//                });
-//
-//                activeCountriesTable.row();
-//                activeCountriesTable.add(countryCheckBox);
-//                activeCountriesTable.add(countryLabel).left();
-//            }
-//            
-//            // Add Horizontal Separator
-//            activeCountriesTable.row();
-//            activeCountriesTable.addSeparator();
+            /**
+             * Add the Active Countries to Pick
+             */
+            for (final Country country : DatabaseLoader.getInstance().getCountriesByContinent(continent)) {
+                
+                if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
+                    
+                    // System.out.println("Country don't have active Teams!");
+                    
+                } else {
+                    
+                    //
+                    VisLabel countryLabel = new VisLabel(country.getCommonName());
+                    final VisCheckBox countryCheckBox = new VisCheckBox("");
+                    
+                    // SET DEFAULT CHECKED COUNTRIES
+                    if (this.selectedCountries.contains(country)) {
+                  
+                        countryCheckBox.setChecked(true);
+                    }
+                    
+                    countryCheckBox.addListener(new ChangeListener() {
+
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+
+                            /**
+                             * Add to selected countries list on check - remove on uncheck
+                             */
+                            if (countryCheckBox.isChecked()) {
+
+                                if (!selectedCountries.contains(country)) {
+
+                                    selectedCountries.add(country);
+                                }
+
+                            } else {
+
+                                selectedCountries.remove(country);
+                            }
+                        }
+                    });
+                    
+                    // TODO: unhardcode this default selection
+                    countryCheckBox.setChecked(true);
+                    
+                    activeCountriesTable.row();
+                    activeCountriesTable.add(countryCheckBox);
+                    activeCountriesTable.add(countryLabel).left();
+                }
+            }
             
-            // 
+            /**
+             * Add Horizontal Separator
+             * 
+             * TODO: only if active continents > 1
+             */
+            if (activeContinent) {
+                activeCountriesTable.row();
+                activeCountriesTable.addSeparator();
+            }
         }
 
         /**

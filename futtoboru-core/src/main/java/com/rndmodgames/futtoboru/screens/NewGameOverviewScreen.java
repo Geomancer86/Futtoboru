@@ -285,9 +285,9 @@ public class NewGameOverviewScreen implements Screen {
             }
         });
         
-        // hacky
-        professionsSelectBox.setSelectedIndex(1);
-        professionsSelectBox.setSelectedIndex(0);
+        // hacky TODO set first selected automatically
+//        professionsSelectBox.setSelectedIndex(1);
+//        professionsSelectBox.setSelectedIndex(0);
         
         //
         gameStartConfigurationTable.add(gameStartDateLabel);
