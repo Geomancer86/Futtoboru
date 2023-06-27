@@ -192,6 +192,8 @@ public class NewGameOverviewScreen implements Screen {
                 
                 /**
                  * The selected Starting Country is Mandatory
+                 * 
+                 * TODO: save on save game / Person location
                  */
                 startingCountry = startingCountrySelectBox.getSelected();
                 
@@ -252,13 +254,13 @@ public class NewGameOverviewScreen implements Screen {
             }
         });
         
-        // hacky TODO set first selected automatically 
-        // hacky TODO set first selected automatically 
-//        professionsSelectBox.setSelectedIndex(1);
-//        professionsSelectBox.setSelectedIndex(0);
-        
+        // default profession to unemployed
+        primaryProfession = professionsSelectBox.getItems().get(0);
+        updateSelectableTeamsByLeagueAndCountry();
+
         //
         gameStartConfigurationTable.add(gameStartDateLabel);
+        gameStartConfigurationTable.add(DatabaseLoader.formatter.format(startingSeason.getStartDate()));
         
         //
         gameStartConfigurationTable.row();
