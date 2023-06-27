@@ -34,24 +34,10 @@ import com.rndmodgames.localization.LanguageModLoader;
  * New Game Overview Screen v1
  * 
  *  - List the Selected Active Countries
- *  - Selectbox with Lowest Active League for each Country
  *  - Game Start Date
- *  - Database Size
- *  
- *  - Advanced Options:
- *      - Use Fake Players
- *      - Disable Player Atribute Masking
- *      
- *  - New Game Details
- *      - Approximate Player Count
- *      - Computer Performance
- *      - Estimated Game Speed
- * 
- * SOURCE SCREENS:
- *  - https://lparchive.org/Football-Manager-2014/Update%2001/2-Football_Manager_2014__New_Game_Choose_Nations.png
- *  - https://lparchive.org/Football-Manager-2014/Update%2001/3-Football_Manager_2014__New_Game_Choose_Nations-2.png
- *  - https://lparchive.org/Football-Manager-2014/Update%2001/4-Game___Untitled_Game___Game_Add_New_Head_Coach.png
- *  - https://lparchive.org/Football-Manager-2014/Update%2001/5-Game___Untitled_Game___Game_Add_New_Head_Coach-2.png
+ *  - Starting Country
+ *  - Selected Profession
+ *      - Selected Club
  * 
  * @author Geomancer86
  */
