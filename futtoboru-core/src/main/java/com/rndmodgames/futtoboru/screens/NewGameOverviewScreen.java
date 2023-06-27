@@ -309,7 +309,7 @@ public class NewGameOverviewScreen implements Screen {
                  *      - Selected Countries        [DONE]
                  *      - Selected Profession       [DONE]
                  *      - Starting Country          [DONE]
-                 *      - Starting Club             [DONE
+                 *      - Starting Club             [DONE]
                  */
                 SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
                 
