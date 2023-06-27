@@ -12,12 +12,20 @@ public class Club implements Serializable {
     private static final long serialVersionUID = -2626184195364944334L;
 
     private Long id;
-    private String name;
-    private String fullName;
-    private String initials;
     
     /**
-     * Foundation Year
+     * Club Official Names
+     * 
+     * TODO: club nicknames need to be temporal/script based
+     */
+    private String name;
+    private String fullName;
+    private String shortName;
+    private String initials;
+    private String urlSource;
+    
+    /**
+     * Foundation Date
      */
     private Integer year;
     private Integer month;
@@ -71,12 +79,28 @@ public class Club implements Serializable {
         this.fullName = fullName;
     }
 
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
     public String getInitials() {
         return initials;
     }
 
     public void setInitials(String initials) {
         this.initials = initials;
+    }
+
+    public String getUrlSource() {
+        return urlSource;
+    }
+
+    public void setUrlSource(String urlSource) {
+        this.urlSource = urlSource;
     }
 
     public Integer getYear() {
@@ -133,6 +157,31 @@ public class Club implements Serializable {
 
     public void setCurrentLeague(League currentLeague) {
         this.currentLeague = currentLeague;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Club other = (Club) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 
     @Override

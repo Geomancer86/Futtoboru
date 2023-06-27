@@ -117,8 +117,13 @@ public class NewGameOverviewScreen implements Screen {
          */
         final VisLabel estimatedPlayerCountLabel = new VisLabel(LanguageModLoader.getValue("estimate_player_count"));
         
+        int activeLeagues = 0;
+        int activeTeams = 0;
         
         for (Country country : selectedCountries) {
+            
+            // Count Active Teams
+            activeTeams += DatabaseLoader.getClubsByCountry().get(country.getId()).size();
             
             VisLabel countryLabel = new VisLabel(country.getCommonName());
             
@@ -127,66 +132,28 @@ public class NewGameOverviewScreen implements Screen {
              */
             selectedCountriesTable.row();
             selectedCountriesTable.add(countryLabel);
-            
-            /**
-             * Lowest Active League SelectBox
-             */
-            final VisSelectBox<League> lowestLeagueSelectBox = new VisSelectBox<>();
-
-            lowestLeagueSelectBox.setItems(DatabaseLoader.getInstance().getLeaguesByCountry(country)
-                                 .toArray(new League[DatabaseLoader.getInstance().getLeaguesByCountry(country).size()]));
-            
-            /**
-             * Set the Country Lowest Active League and Lowest Available League
-             * 
-             * TODO: Filter Selectable Clubs by Lowest Available League
-             */
-            lowestLeagueSelectBox.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    
-                    /**
-                     * The selected Lowest Active League
-                     */
-                    League league = lowestLeagueSelectBox.getSelected();
-                    
-                    if (league != null) {
-                        
-                        country.setLowestActiveLeague(league);
-                        
-                        //
-                        updateEstimatedPlayerCount();
-                    }
-                }
-            });
-            
-            // hacky
-            lowestLeagueSelectBox.setSelectedIndex(1);
-            lowestLeagueSelectBox.setSelectedIndex(0);
-            
-            //
-            selectedCountriesTable.add(lowestLeagueSelectBox);
         }
-        
-        /**
-         * DataBase Select
-         * DataBase Size
-         */
-        VisLabel databaseLabel = new VisLabel(LanguageModLoader.getValue("database"));
-        
-        final VisSelectBox<DataBase> databaseSelectBox = new VisSelectBox<>();
 
-        databaseSelectBox.setItems(DatabaseLoader.getInstance().getDataBases().toArray(new DataBase[DatabaseLoader.getInstance().getDataBases().size()]));
-        
-        selectedCountriesTable.row();
-        selectedCountriesTable.add(databaseLabel);
-        selectedCountriesTable.add(databaseSelectBox);
-        
         /**
          * New Game Details Table
+         * 
+         * TODO: Available Leagues & Teams
          */
         final VisTable newGameDetailsTable = new VisTable(true);
 
+        VisLabel availableLeaguesLabel = new VisLabel(LanguageModLoader.getValue("active_leagues"));
+        VisLabel availableTeamsLabel = new VisLabel(LanguageModLoader.getValue("active_teams"));
+        
+        // Available Leagues
+        newGameDetailsTable.row();
+        newGameDetailsTable.add(availableLeaguesLabel);
+        newGameDetailsTable.add(activeLeagues + " Leagues");
+        
+        // Available Teams
+        newGameDetailsTable.row();
+        newGameDetailsTable.add(availableTeamsLabel);
+        newGameDetailsTable.add(activeTeams + " Teams");
+        
         newGameDetailsTable.row();
         newGameDetailsTable.add(estimatedPlayerCountLabel);
         newGameDetailsTable.add(estimatedPlayerCountValueLabel);
@@ -225,6 +192,8 @@ public class NewGameOverviewScreen implements Screen {
                 
                 /**
                  * The selected Starting Country is Mandatory
+                 * 
+                 * TODO: save on save game / Person location
                  */
                 startingCountry = startingCountrySelectBox.getSelected();
                 
@@ -285,12 +254,13 @@ public class NewGameOverviewScreen implements Screen {
             }
         });
         
-        // hacky
-        professionsSelectBox.setSelectedIndex(1);
-        professionsSelectBox.setSelectedIndex(0);
-        
+        // default profession to unemployed
+        primaryProfession = professionsSelectBox.getItems().get(0);
+        updateSelectableTeamsByLeagueAndCountry();
+
         //
         gameStartConfigurationTable.add(gameStartDateLabel);
+        gameStartConfigurationTable.add(DatabaseLoader.formatter.format(startingSeason.getStartDate()));
         
         //
         gameStartConfigurationTable.row();
@@ -306,7 +276,6 @@ public class NewGameOverviewScreen implements Screen {
         gameStartConfigurationTable.row();
         gameStartConfigurationTable.add(startingClubLabel);
         gameStartConfigurationTable.add(startingClubSelectBox);
-        
         
         /**
          * Back to Setup Button
@@ -448,6 +417,8 @@ public class NewGameOverviewScreen implements Screen {
     
     /**
      * Updates the Starting Club after changes on Starting Country, etc
+     * 
+     * TODO: fix
      */
     private void updateSelectableTeamsByLeagueAndCountry() {
         

@@ -1,4 +1,4 @@
 # 1888-1889 Season Leagues
 # COLUMNS
 # id, name,
-1,1888–89 Football League
+#1,1888–89 Football League
