@@ -321,9 +321,9 @@ public class NewGameOverviewScreen implements Screen {
                  * Set the Selected Countries and Redirect to Main Game Screen:
                  * 
                  *      - Selected Countries        [DONE]
-                 *      - Selected Lowest Leagues   [TODO]
                  *      - Selected Profession       [DONE]
                  *      - Starting Country          [DONE]
+                 *      - Starting Club             [DONE
                  */
                 SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
                 
@@ -332,12 +332,21 @@ public class NewGameOverviewScreen implements Screen {
                 currentGame.getOwner().setPrimaryProfession(primaryProfession);
                 currentGame.getOwner().setCurrentCountry(startingCountry);
                 
-                //
+                // Starting Season
                 if (startingSeason != null) {
                     
-                    System.out.println("DATE DEBUG 1:" + startingSeason.getStartDate());
                     currentGame.setGameStartDate(startingSeason.getStartDate());
                     currentGame.setGameDate(startingSeason.getStartDate());
+                }
+                
+                /**
+                 * Starting Club
+                 * 
+                 * TODO: we also need to set the Person as working at Club level (owner, staff, etc.)
+                 */
+                if (startingClub != null) {
+                    
+                    currentGame.getOwner().setCurrentClub(startingClub);
                 }
                 
                 ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
