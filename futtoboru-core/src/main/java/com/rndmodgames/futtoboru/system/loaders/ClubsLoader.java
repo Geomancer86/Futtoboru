@@ -39,18 +39,19 @@ public class ClubsLoader {
                          * 
                          * COLUMNS
                          * 
-                         *  id, fullname, url_source, foundation_year
+                         *  id, name, fullname, url_source, foundation_year
                          */
                         Club club = new Club();
                         
                         //
                         club.setId(Long.valueOf(splitted[0]));
-                        club.setFullName(splitted[1]);
-                        club.setUrlSource(splitted[2]);
-                        club.setYear(Integer.valueOf(splitted[3]));
+                        club.setName(splitted[1]);
+                        club.setFullName(splitted[2]);
+                        club.setUrlSource(splitted[3]);
+                        club.setYear(Integer.valueOf(splitted[4]));
                         
                         // Country
-                        club.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[4])));
+                        club.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[5])));
                         
                         //
                         season.getClubs().add(club);
