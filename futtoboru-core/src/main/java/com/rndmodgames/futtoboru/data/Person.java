@@ -31,6 +31,7 @@ public class Person implements Serializable {
     private State state;
     private City city;
     
+    //
     private Profession primaryProfession;
     private Country currentCountry;
     private Club currentClub;

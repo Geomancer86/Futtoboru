@@ -22,14 +22,18 @@ public class PersonDetailsScreenTable extends VisTable {
     VisLabel lastNameLabel = new VisLabel(LanguageModLoader.getValue("last_name"));
     VisLabel nationalityLabel = new VisLabel(LanguageModLoader.getValue("nationality"));
     VisLabel ageLabel = new VisLabel(LanguageModLoader.getValue("age"));
+    VisLabel currentCountryLabel = new VisLabel(LanguageModLoader.getValue("current_country"));
     VisLabel currentJobLabel = new VisLabel(LanguageModLoader.getValue("current_job"));
+    VisLabel currentClubLabel = new VisLabel(LanguageModLoader.getValue("current_club"));
     
     // Dynamic Components
     VisLabel nameValueLabel = new VisLabel();
     VisLabel lastNameValueLabel = new VisLabel();
     VisLabel nationalityValueLabel = new VisLabel();
     VisLabel ageValueLabel = new VisLabel();
+    VisLabel currentCountryValueLabel = new VisLabel();
     VisLabel currentJobValueLabel = new VisLabel();
+    VisLabel currentClubValueLabel = new VisLabel();
     
     public PersonDetailsScreenTable(Game parent) {
         
@@ -38,11 +42,7 @@ public class PersonDetailsScreenTable extends VisTable {
         
         //
         this.game = parent;
-
-        // without a size we cannot align
-//        this.setWidth(400);
-//        this.setHeight(600);
-                
+     
         // Name
         this.add(nameLabel);
         this.add(nameValueLabel);
@@ -63,15 +63,23 @@ public class PersonDetailsScreenTable extends VisTable {
         this.add(ageValueLabel);
         this.row();
         
+        // Current Country
+        this.add(currentCountryLabel);
+        this.add(currentCountryValueLabel);
+        this.row();
+        
         // Current Job
         this.add(currentJobLabel);
         this.add(currentJobValueLabel);
         this.row();
+        
+        // Current Club
+        this.add(currentClubLabel);
+        this.add(currentClubValueLabel);
+        this.row();
     }
     
-    /**
-     * TODO: only update once if dirty?
-     */
+    //
     public void updateDynamicPersonComponents(Person person) {
         
         // 
@@ -82,7 +90,18 @@ public class PersonDetailsScreenTable extends VisTable {
             lastNameValueLabel.setText(person.getLastname());
             nationalityValueLabel.setText(person.getCountry().getCommonName());
             ageValueLabel.setText(person.getBirthYear());
+            currentCountryValueLabel.setText(person.getCurrentCountry().getCommonName());
             currentJobValueLabel.setText(person.getPrimaryProfession().getName());
+            
+            //
+            if (person.getCurrentClub() == null) {
+                
+                currentClubValueLabel.setText("UNAVAILABLE");
+                
+            } else {
+                
+                currentClubValueLabel.setText(person.getCurrentClub().getName());
+            }
         }
     }
 }
