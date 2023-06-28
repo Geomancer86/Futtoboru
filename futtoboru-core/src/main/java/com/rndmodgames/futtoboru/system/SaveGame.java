@@ -3,11 +3,13 @@ package com.rndmodgames.futtoboru.system;
 import java.beans.Transient;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 
 /**
  * Save Game v1
@@ -71,6 +73,13 @@ public class SaveGame implements Serializable {
      */
     List<Message> allMessages;
     
+    /**
+     * Scripts Support
+     * 
+     * 
+     */
+    private List<BasicScript> gameScripts = new ArrayList<>();
+    
     // required for de-serializing
     public SaveGame() {
         
@@ -124,5 +133,13 @@ public class SaveGame implements Serializable {
 
     public void setIsSaved(Boolean isSaved) {
         this.isSaved = isSaved;
+    }
+
+    public List<BasicScript> getGameScripts() {
+        return gameScripts;
+    }
+
+    public void setGameScripts(List<BasicScript> gameScripts) {
+        this.gameScripts = gameScripts;
     }
 }

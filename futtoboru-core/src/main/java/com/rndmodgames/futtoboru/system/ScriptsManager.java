@@ -1,6 +1,9 @@
 package com.rndmodgames.futtoboru.system;
 
+import java.util.List;
+
 import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 
 /**
  * Scripts Manager v1
@@ -25,6 +28,13 @@ public class ScriptsManager {
 
     /**
      * TODO WIP
+     */
+    public void interpretBasicScripts(List<BasicScript> scripts) {
+        
+    }
+    
+    /**
+     * TODO WIP
      * 
      *  - This will create a League
      *  
@@ -40,9 +50,13 @@ public class ScriptsManager {
      *          - Relegation and Re-Election
      *          - Etc.
      */
-    public static void executeLeagueCreationScript(String leagueName,
-                                                   String leagueDescription,
-                                                   Country leagueCountry) {
+    public void createLeague(String leagueName,
+                             String leagueDescription,
+                             Country leagueCountry) {
+        
+        //
         
     }
+    
+    
 }

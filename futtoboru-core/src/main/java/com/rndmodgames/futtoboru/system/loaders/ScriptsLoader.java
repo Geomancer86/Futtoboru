@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.system.loaders;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,15 @@ import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 public class ScriptsLoader {
 
     /**
+     * Supported
+     */
+    public static final String LEAGUE_NAME              = "LEAGUE_NAME";
+    public static final String LEAGUE_CREATION_DATE     = "LEAGUE_CREATION_DATE";
+    public static final String LEAGUE_COUNTRY           = "LEAGUE_COUNTRY";
+    public static final String LEAGUE_FOUNDING_TEAMS    = "LEAGUE_FOUNDING_TEAMS";
+    public static final String LEAGUE_RULES             = "LEAGUE_RULES";
+    
+    /**
      * Load the Scripts bundled with a Season
      */
     public static void load(List<Season> seasons) {
@@ -29,6 +40,8 @@ public class ScriptsLoader {
              * Hardcoded LEAGUE_CREATION_SCRIPT
              * 
              * TODO WIP
+             * 
+             *  - 1) this should be loaded from the file system, with files flexible enough to be easy to be edited by game designers
              */
             BasicScript theLeagueCreationScript = new BasicScript();
             
@@ -38,6 +51,31 @@ public class ScriptsLoader {
             
             // Set Script Type
             theLeagueCreationScript.setScriptType(BasicScript.LEAGUE_CREATION_SCRIPT);
+            
+            /**
+             * Add Required Script Values
+             */
+            theLeagueCreationScript.getScriptValues().put(LEAGUE_NAME, "English Football League");
+            theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // Created and named in Manchester during a meeting on 17 April 1888
+            theLeagueCreationScript.getScriptValues().put(LEAGUE_COUNTRY, 1000L); // By ID
+            
+            // League Clubs by ID
+            List<Long> leagueClubIds = new ArrayList<>();
+            leagueClubIds.add(1L);
+            leagueClubIds.add(2L);
+            leagueClubIds.add(3L);
+            leagueClubIds.add(4L);
+            leagueClubIds.add(5L);
+            leagueClubIds.add(6L);
+            leagueClubIds.add(7L);
+            leagueClubIds.add(8L);
+            leagueClubIds.add(9L);
+            leagueClubIds.add(10L);
+            leagueClubIds.add(11L);
+            leagueClubIds.add(12L);
+            
+            theLeagueCreationScript.getScriptValues().put(LEAGUE_FOUNDING_TEAMS, leagueClubIds); // List of IDs
+            theLeagueCreationScript.getScriptValues().put(LEAGUE_RULES, null); // List of League Rule Objects TBD
             
             /**
              * Script Dates:
@@ -64,8 +102,6 @@ public class ScriptsLoader {
              *      - 8 September 1888
              *          - Season Begins
              */
-            
-            
             
             // Season Scripts List
             season.setSeasonScripts(new ArrayList<>());

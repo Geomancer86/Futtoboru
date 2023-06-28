@@ -22,6 +22,7 @@ import com.rndmodgames.futtoboru.screens.NewManagerScreen;
 import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.ScriptsManager;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -75,6 +76,7 @@ public class Futtoboru extends Game {
      * Simulation/Save Game Instance
      */
     private SaveGame currentGame = null;
+    private ScriptsManager scriptsManager = null;
     
     // main constructor
     public Futtoboru() {
@@ -127,6 +129,9 @@ public class Futtoboru extends Game {
         
         // Preload the Database
         DatabaseLoader.getInstance();
+        
+        // Initialize the Script Manager
+        this.scriptsManager = new ScriptsManager();
         
         // Show Main Menu
         changeScreen(MENU_SCREEN);
@@ -268,5 +273,13 @@ public class Futtoboru extends Game {
 
     public void setCurrentGame(SaveGame currentGame) {
         this.currentGame = currentGame;
+    }
+
+    public ScriptsManager getScriptsManager() {
+        return scriptsManager;
+    }
+
+    public void setScriptsManager(ScriptsManager scriptsManager) {
+        this.scriptsManager = scriptsManager;
     }
 }

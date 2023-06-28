@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.tables.main;
+package com.rndmodgames.futtoboru.tables.topmenu;
 
 import java.time.LocalDateTime;
 
@@ -204,6 +204,12 @@ public class MainGameMenuTable extends VisTable {
         LocalDateTime current = ((Futtoboru)(game)).getCurrentGame().getGameDate();
         
         ((Futtoboru)(game)).getCurrentGame().setGameDate(current.plusDays(1));
+        
+        /**
+         * TODO WIP
+         * 
+         *  - if a Script or Message has come to Date, enable/fire/activate it
+         */
         
         //
         dateTimeWidget.updateDynamicComponents();

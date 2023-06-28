@@ -4,18 +4,14 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
-import com.rndmodgames.futtoboru.tables.main.MainGameMenuTable;
-import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.system.ScriptsManager;
+import com.rndmodgames.futtoboru.tables.topmenu.MainGameMenuTable;
 
 /**
  * Main Game Screen v1
@@ -53,12 +49,9 @@ public class MainGameScreen implements Screen {
     public MainGameScreen(Game parent) {
      
         this.game = parent;
-        
-        // set saved game if exist for easier access
-        if (((Futtoboru)game).getCurrentGame() != null){
             
-            this.currentGame = ((Futtoboru)game).getCurrentGame();
-        }
+        // set saved game for easier access
+        this.currentGame = ((Futtoboru)game).getCurrentGame();
         
         //
         stage = new Stage(new ScreenViewport());
