@@ -304,12 +304,15 @@ public class NewGameOverviewScreen implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
  
                 /**
+                 * NEW_GAME_SETUP IS PERFORMED HERE!
+                 * 
                  * Set the Selected Countries and Redirect to Main Game Screen:
                  * 
                  *      - Selected Countries        [DONE]
                  *      - Selected Profession       [DONE]
                  *      - Starting Country          [DONE]
                  *      - Starting Club             [DONE]
+                 *      - Starting Scripts          [WIP]
                  */
                 SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
                 
@@ -334,6 +337,39 @@ public class NewGameOverviewScreen implements Screen {
                     
                     currentGame.getOwner().setCurrentClub(startingClub);
                 }
+                
+                /**
+                 * Starting Scripts
+                 * 
+                 *  WIP:
+                 *  
+                 *      - add some basic scripted messages to appear on the inbox screen listing as the game starts
+                 *      
+                 *  - Basic way to do:
+                 *      - Add a date to scripted messages
+                 *      - If date is in the future, the message "is not sent" isSent = false
+                 *      - Inbox Screen rendering ignores those directly
+                 *      - 
+                 *     
+                 *  - UNEMPLOYED:
+                 *      - Welcome Message, button to JOBS SCREEN
+                 *      
+                 *  - MANAGER:
+                 *      - Welcome Message, buttons to SQUAD, LINEUP, TACTICS, TRAINING, ETC
+                 *      
+                 *  - GENERIC:
+                 *      - The League will be formed on X_DATE
+                 *      
+                 *  TBD: audit save game stuff
+                 *      - game real starting date
+                 *      - game real last saved game date
+                 *      - number of saves
+                 *      - play time
+                 *      - number of clicks
+                 *      - number of key strokes
+                 *      - most visited screens data
+                 *      
+                 */
                 
                 ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
             }

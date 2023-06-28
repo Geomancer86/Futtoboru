@@ -188,18 +188,4 @@ public class SaveLoadSystem {
         
         return person;
     }
-    
-    public static void main (String args []) {
-        
-        Json json = new Json();
-        
-        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
-        
-        SaveGame save = new SaveGame();
-
-        save.setGameDate(LocalDateTime.now());
-        save.setGameStartDate(LocalDateTime.now());
-        
-        System.out.println("SAVE: " + json.prettyPrint(save));
-    }
 }

@@ -113,12 +113,10 @@ public class NewGameScreen implements Screen {
                     
                     System.out.println("LOADING EXISTING MANAGER FROM FILE - CHANGING TO NEW GAME SETUP SCREEN");
                     
-                    /**
-                     * Set the Selected Person as Game Owner
-                     */
+                    // Create new Save Game
                     SaveGame currentGame = new SaveGame();
                     
-                    // set game owner
+                    // Set game owner
                     Person gameOwner = SaveLoadSystem.loadPersonFromFile(savedGame);
                     currentGame.setOwner(gameOwner);
                     
