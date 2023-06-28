@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.system;
 
+import com.rndmodgames.futtoboru.data.Country;
+
 /**
  * Scripts Manager v1
  * 
@@ -21,4 +23,26 @@ package com.rndmodgames.futtoboru.system;
  */
 public class ScriptsManager {
 
+    /**
+     * TODO WIP
+     * 
+     *  - This will create a League
+     *  
+     *  - Requires:
+     *      - League Name
+     *      - Country the league is based on
+     *      - Division number (or automatic)
+     *      - Teams
+     *      - Rules
+     *          - Most important aspect
+     *          - League Style (yearly, home-and-away matches, etc)
+     *          - League standings (win, lose, draw, goal average and points)
+     *          - Relegation and Re-Election
+     *          - Etc.
+     */
+    public static void executeLeagueCreationScript(String leagueName,
+                                                   String leagueDescription,
+                                                   Country leagueCountry) {
+        
+    }
 }

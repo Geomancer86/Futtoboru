@@ -2,8 +2,9 @@ package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
+
+import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 
 /**
  * Season v1
@@ -42,10 +43,13 @@ public class Season implements Serializable {
     private String urlSource;
     private LocalDateTime startDate;
      
-    //
+    // Data
     private List<Country> countries;
     private List<League> leagues;
     private List<Club> clubs;
+    
+    // Scripts
+    private List<BasicScript> seasonScripts;
     
     public Long getId() {
         return id;
@@ -109,6 +113,14 @@ public class Season implements Serializable {
 
     public void setClubs(List<Club> clubs) {
         this.clubs = clubs;
+    }
+
+    public List<BasicScript> getSeasonScripts() {
+        return seasonScripts;
+    }
+
+    public void setSeasonScripts(List<BasicScript> seasonScripts) {
+        this.seasonScripts = seasonScripts;
     }
 
     @Override

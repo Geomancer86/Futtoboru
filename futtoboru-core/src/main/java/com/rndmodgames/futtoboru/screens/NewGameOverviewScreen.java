@@ -21,10 +21,9 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Country;
-import com.rndmodgames.futtoboru.data.DataBase;
-import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -369,7 +368,22 @@ public class NewGameOverviewScreen implements Screen {
                  *      - number of key strokes
                  *      - most visited screens data
                  *      
+                 *      
+                 * -------------------------------------------------------------
+                 * 
                  */
+                
+                System.out.println("--------------------------");
+                System.out.println("ITERATING SEASON SCRIPTS: ");
+                
+                for (BasicScript script : startingSeason.getSeasonScripts()) {
+                    
+                    System.out.println("SEASON SCRIPT: " + script.getName());
+                    System.out.println("DESCRIPTION  : " + script.getDescription());
+                    
+                    
+                    System.out.println("--------------------------");
+                }
                 
                 ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
             }

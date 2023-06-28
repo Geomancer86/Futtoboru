@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.data.DataBase;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 import com.rndmodgames.futtoboru.system.loaders.SeasonsLoader;
 
 /**
@@ -111,6 +112,9 @@ public class DatabaseLoader {
             
             // Load Seasons Data
             SeasonsLoader.load(seasons);
+            
+            // Load Seasons Scripts
+            ScriptsLoader.load(seasons);
         } 
             
         //
