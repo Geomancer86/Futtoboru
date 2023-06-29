@@ -5,9 +5,11 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.menu.buttons.AuthorityButton;
 import com.rndmodgames.futtoboru.menu.buttons.HomeButton;
+import com.rndmodgames.futtoboru.menu.buttons.InboxButton;
 import com.rndmodgames.futtoboru.menu.buttons.PersonalDetailsButton;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
+import com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable;
 import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
 import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
 
@@ -34,7 +36,7 @@ public class MainMenuManager {
     
     // Screen Ids
     public static final int HOME_SCREEN             =  100;
-    private static final int INBOX_SCREEN            =  200;
+    public static final int INBOX_SCREEN            =  200;
     public static final int PERSON_DETAILS_SCREEN   =  300;
     public static final int AUTHORITY_SCREEN        =  400;    
     private static final int LEAGUE_SCREEN           =  500;    
@@ -44,11 +46,13 @@ public class MainMenuManager {
     private VisTextButton homeButton = null;
     private VisTextButton personalDetailsButton = null;
     private VisTextButton authorityButton = null;
+    private VisTextButton inboxButton = null;
     
     //
     private HomeScreenTable homeScreenTable = null;
     private PersonDetailsScreenTable personDetailsScreenTable = null;
     private AuthorityScreenTable authorityScreenTable = null;
+    private InboxScreenTable inboxScreenTable = null;
     
     /**
      * 
@@ -66,19 +70,30 @@ public class MainMenuManager {
         homeScreenTable = new HomeScreenTable(game);
         personDetailsScreenTable = new PersonDetailsScreenTable(game);
         authorityScreenTable = new AuthorityScreenTable(game);
+        inboxScreenTable = new InboxScreenTable(game);
         
         // custom buttons with logic to switch screen/tables
         homeButton = new HomeButton(this);
         personalDetailsButton = new PersonalDetailsButton(this);
         authorityButton = new AuthorityButton(this);
+        inboxButton = new InboxButton(this);
         
         /**
          * TODO: dynamic depending on job/etc
          */
+        // Home
         buttonsMenu.add(homeButton).fill();
         buttonsMenu.row();
+        
+        // Inbox
+        buttonsMenu.add(inboxButton).fill();
+        buttonsMenu.row();
+        
+        // Personal Details
         buttonsMenu.add(personalDetailsButton).fill();
         buttonsMenu.row();
+        
+        // Sport Authorities
         buttonsMenu.add(authorityButton).fill();
         buttonsMenu.row();
     }
@@ -95,11 +110,16 @@ public class MainMenuManager {
 
         //
         case HOME_SCREEN:
-            parentTable.add(homeScreenTable).top().right();
+            parentTable.add(homeScreenTable);
+            break;
+            
+        case INBOX_SCREEN:
+            parentTable.add(inboxScreenTable);
             break;
             
         case AUTHORITY_SCREEN:
-            parentTable.add(authorityScreenTable).top().right();
+            authorityScreenTable.updateDynamicComponents();
+            parentTable.add(authorityScreenTable);
             break;
         
         //  
@@ -114,7 +134,19 @@ public class MainMenuManager {
             break;
         }
         
+        /**
+         * NOTE: this is where we set the final alignment of the MAIN / CENTRAL SCREEN
+         */
         parentTable.top().left();
+    }
+    
+    /**
+     * Allow to call this from other places after data is updated
+     */
+    public void updateDynamicComponents() {
+        
+        // TODO: only call if current screen/visible
+        authorityScreenTable.updateDynamicComponents();
     }
 
     //

@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.simulator;
+package com.rndmodgames.futtoboru.engine.match;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

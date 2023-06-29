@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * League v1
@@ -17,6 +18,8 @@ public class League implements Serializable {
     private String name;
     private Integer level;
     private String sourceLink;
+    
+    private List<Club> leagueClubs;
     
     private transient Country country;
     private transient League parent;
@@ -64,6 +67,14 @@ public class League implements Serializable {
 
     public void setSourceLink(String sourceLink) {
         this.sourceLink = sourceLink;
+    }
+
+    public List<Club> getLeagueClubs() {
+        return leagueClubs;
+    }
+
+    public void setLeagueClubs(List<Club> leagueClubs) {
+        this.leagueClubs = leagueClubs;
     }
 
     public League getParent() {

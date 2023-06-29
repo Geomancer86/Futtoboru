@@ -1,6 +1,5 @@
 package com.rndmodgames.futtoboru.game;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -13,6 +12,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.rndmodgames.PreferencesManager;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
 import com.rndmodgames.futtoboru.screens.NewGameOverviewScreen;
@@ -22,6 +22,7 @@ import com.rndmodgames.futtoboru.screens.NewManagerScreen;
 import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.ScriptsManager;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -75,6 +76,8 @@ public class Futtoboru extends Game {
      * Simulation/Save Game Instance
      */
     private SaveGame currentGame = null;
+    private FuttoboruGameEngine gameEngine = null;
+    private ScriptsManager scriptsManager = null;
     
     // main constructor
     public Futtoboru() {
@@ -127,6 +130,12 @@ public class Futtoboru extends Game {
         
         // Preload the Database
         DatabaseLoader.getInstance();
+
+        // Initialize the Script Manager
+        this.scriptsManager = new ScriptsManager(this);
+        
+        // Initialize the Game Engine
+        this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager));
         
         // Show Main Menu
         changeScreen(MENU_SCREEN);
@@ -268,5 +277,21 @@ public class Futtoboru extends Game {
 
     public void setCurrentGame(SaveGame currentGame) {
         this.currentGame = currentGame;
+    }
+
+    public ScriptsManager getScriptsManager() {
+        return scriptsManager;
+    }
+
+    public void setScriptsManager(ScriptsManager scriptsManager) {
+        this.scriptsManager = scriptsManager;
+    }
+
+    public FuttoboruGameEngine getGameEngine() {
+        return gameEngine;
+    }
+
+    public void setGameEngine(FuttoboruGameEngine gameEngine) {
+        this.gameEngine = gameEngine;
     }
 }

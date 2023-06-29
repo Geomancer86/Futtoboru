@@ -4,6 +4,11 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 
+/**
+ * RndModGames Desktop Launcher v1
+ * 
+ * @author Geomancer86
+ */
 public class DesktopLauncher {
     
     public static void main(String[] args) {

@@ -43,7 +43,7 @@ public class SaveLoadSystem {
             fileHandle.writeString(Base64Coder.encodeString(json.prettyPrint(saveGame)), false);
         } else {
             
-            System.out.println(json.prettyPrint(saveGame));
+//            System.out.println(json.prettyPrint(saveGame));
             
             // Save as Plain Text JSON
             fileHandle.writeString(json.prettyPrint(saveGame), false);
@@ -187,19 +187,5 @@ public class SaveLoadSystem {
         }
         
         return person;
-    }
-    
-    public static void main (String args []) {
-        
-        Json json = new Json();
-        
-        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
-        
-        SaveGame save = new SaveGame();
-
-        save.setGameDate(LocalDateTime.now());
-        save.setGameStartDate(LocalDateTime.now());
-        
-        System.out.println("SAVE: " + json.prettyPrint(save));
     }
 }

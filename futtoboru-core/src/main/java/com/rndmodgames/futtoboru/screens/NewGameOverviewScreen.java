@@ -2,6 +2,7 @@ package com.rndmodgames.futtoboru.screens;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -21,10 +22,9 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Country;
-import com.rndmodgames.futtoboru.data.DataBase;
-import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -304,12 +304,15 @@ public class NewGameOverviewScreen implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
  
                 /**
+                 * NEW_GAME_SETUP IS PERFORMED HERE!
+                 * 
                  * Set the Selected Countries and Redirect to Main Game Screen:
                  * 
                  *      - Selected Countries        [DONE]
                  *      - Selected Profession       [DONE]
                  *      - Starting Country          [DONE]
-                 *      - Starting Club             [DONE
+                 *      - Starting Club             [DONE]
+                 *      - Starting Scripts          [WIP]
                  */
                 SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
                 
@@ -334,6 +337,71 @@ public class NewGameOverviewScreen implements Screen {
                     
                     currentGame.getOwner().setCurrentClub(startingClub);
                 }
+                
+                /**
+                 * Starting Scripts
+                 * 
+                 *  WIP:
+                 *  
+                 *      - add some basic scripted messages to appear on the inbox screen listing as the game starts
+                 *      
+                 *  - Basic way to do:
+                 *      - Add a date to scripted messages
+                 *      - If date is in the future, the message "is not sent" isSent = false
+                 *      - Inbox Screen rendering ignores those directly
+                 *      - 
+                 *     
+                 *  - UNEMPLOYED:
+                 *      - Welcome Message, button to JOBS SCREEN
+                 *      
+                 *  - MANAGER:
+                 *      - Welcome Message, buttons to SQUAD, LINEUP, TACTICS, TRAINING, ETC
+                 *      
+                 *  - GENERIC:
+                 *      - The League will be formed on X_DATE
+                 *      
+                 *  TBD: audit save game stuff
+                 *      - game real starting date
+                 *      - game real last saved game date
+                 *      - number of saves
+                 *      - play time
+                 *      - number of clicks
+                 *      - number of key strokes
+                 *      - most visited screens data
+                 *      
+                 *      
+                 * -------------------------------------------------------------
+                 * 
+                 */
+                
+                System.out.println("--------------------------");
+                System.out.println("ITERATING SEASON SCRIPTS: ");
+                
+                for (BasicScript script : startingSeason.getSeasonScripts()) {
+                    
+                    System.out.println("SEASON SCRIPT: " + script.getName());
+                    System.out.println("DESCRIPTION  : " + script.getDescription());
+                    
+                    /**
+                     * TEXT / SERIALIZED SCRIPT VERSION
+                     */
+                    System.out.println("SCRIPT VALUES: " + script.getScriptValues().size());
+                    
+                    for (Map.Entry<String, Object> entry : script.getScriptValues().entrySet()) {
+                        
+                        //
+                        System.out.println("Script Key = " + entry.getKey() + ", Script Value = " + entry.getValue());
+                        
+                        //
+                    }
+                    
+                    System.out.println("--------------------------");
+                }
+                
+                /**
+                 * Add Season Scripts to SaveGame
+                 */
+                currentGame.getGameScripts().addAll(startingSeason.getSeasonScripts());
                 
                 ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
             }
