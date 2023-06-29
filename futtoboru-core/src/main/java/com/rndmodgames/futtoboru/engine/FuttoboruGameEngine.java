@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.badlogic.gdx.Game;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
  * Game Engine v1
@@ -20,12 +21,15 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
  */
 public class FuttoboruGameEngine {
 
+    // 
     Futtoboru gameInstance;
+    ScriptsManager scriptsManager;
     
-    public FuttoboruGameEngine(Game parent) {
+    public FuttoboruGameEngine(Game parent, ScriptsManager scriptsManager) {
         
         // keep track for easier access
         this.gameInstance = (Futtoboru) parent;
+        this.scriptsManager = scriptsManager;
     }
     
     /**
@@ -44,5 +48,8 @@ public class FuttoboruGameEngine {
         
         // Increment By Required Unit
         gameInstance.getCurrentGame().setGameDate(current.plusDays(1));
+        
+        // Check Game Scripts
+        scriptsManager.checkGameScripts();
     }
 }

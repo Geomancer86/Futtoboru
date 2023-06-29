@@ -56,7 +56,8 @@ public class ScriptsLoader {
              * Add Required Script Values
              */
             theLeagueCreationScript.getScriptValues().put(LEAGUE_NAME, "English Football League");
-            theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // Created and named in Manchester during a meeting on 17 April 1888
+//            theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // Created and named in Manchester during a meeting on 17 April 1888
+            theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, LocalDateTime.of(1888, Month.JANUARY, 17, 19, 30, 00)); // EARLIER DATE FOR QUICKER TESTING!
             theLeagueCreationScript.getScriptValues().put(LEAGUE_COUNTRY, 1000L); // By ID
             
             // League Clubs by ID

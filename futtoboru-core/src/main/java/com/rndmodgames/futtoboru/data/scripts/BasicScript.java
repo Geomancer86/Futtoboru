@@ -49,6 +49,9 @@ public class BasicScript implements Serializable {
     // script ingame execution datetime
     private LocalDateTime executionTime;
     
+    // keep track to avoid executing more than once
+    private Boolean isExecuted;
+    
     //
     public static final Integer LEAGUE_CREATION_SCRIPT = 1000;
 
@@ -98,5 +101,13 @@ public class BasicScript implements Serializable {
 
     public void setExecutionTime(LocalDateTime executionTime) {
         this.executionTime = executionTime;
+    }
+
+    public Boolean getIsExecuted() {
+        return isExecuted;
+    }
+
+    public void setIsExecuted(Boolean isExecuted) {
+        this.isExecuted = isExecuted;
     }
 }

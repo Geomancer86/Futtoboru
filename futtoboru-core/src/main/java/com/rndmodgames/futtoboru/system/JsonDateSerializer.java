@@ -10,7 +10,7 @@ public class JsonDateSerializer implements Json.Serializer<LocalDateTime> {
     @Override
     public void write (Json json, LocalDateTime date, Class knownType) {
         
-        System.out.println("json: " + json + ", date: " + date + " knownType: " + knownType);
+//        System.out.println("json: " + json + ", date: " + date + " knownType: " + knownType);
          
         json.writeObjectStart();
         json.writeType(java.time.LocalDateTime.class);
@@ -21,17 +21,9 @@ public class JsonDateSerializer implements Json.Serializer<LocalDateTime> {
      @Override
      public LocalDateTime read (Json json, JsonValue jsonData, Class type) {
          
-         System.out.println("json: " + json + ", jsonData: " + jsonData + "type: " + type);
+//         System.out.println("json: " + json + ", jsonData: " + jsonData + "type: " + type);
          
-         if (!jsonData.has("value")) {
-             
-             System.out.println("ERROR SERIALIZING LocalDateTime!");
-             System.out.println("jsonData: " + jsonData);
-             
-             return LocalDateTime.now();
-         } else {
-             LocalDateTime date = LocalDateTime.parse(jsonData.getString("value"));
-             return date;
-         }
+         LocalDateTime date = LocalDateTime.parse(jsonData.getString("value"));
+         return date;
      }
 }

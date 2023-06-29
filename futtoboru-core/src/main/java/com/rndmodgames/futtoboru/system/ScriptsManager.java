@@ -1,9 +1,9 @@
 package com.rndmodgames.futtoboru.system;
 
-import java.util.List;
-
+import com.badlogic.gdx.Game;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
+import com.rndmodgames.futtoboru.game.Futtoboru;
 
 /**
  * Scripts Manager v1
@@ -26,11 +26,39 @@ import com.rndmodgames.futtoboru.data.scripts.BasicScript;
  */
 public class ScriptsManager {
 
-    /**
-     * TODO WIP
-     */
-    public void interpretBasicScripts(List<BasicScript> scripts) {
+    //
+    Futtoboru gameInstance;
+    
+    public ScriptsManager(Game parent) {
         
+        // keep track for easier access
+        this.gameInstance = (Futtoboru) parent;
+    }
+    
+    /**
+     * TODO: do not check scripts that executed before
+     */
+    public void checkGameScripts() {
+        
+        System.out.println("CHECKING GAME SCRIPTS!");
+        
+        /**
+         * Iterate all Scripts
+         * 
+         * TODO: iterate all NON EXECUTED scripts to avoid checking over and over
+         */
+        for (BasicScript script : gameInstance.getCurrentGame().getGameScripts()) {
+            
+            //
+            System.out.println("SCRIPT: " + script.toString());
+            
+            /**
+             * TODO:
+             *  - Compare CURRENT_GAME_DATE and SCRIPT_DATE
+             *  - Execute SCRIPT if dates are OK
+             */
+            
+        }
     }
     
     /**

@@ -76,8 +76,8 @@ public class Futtoboru extends Game {
      * Simulation/Save Game Instance
      */
     private SaveGame currentGame = null;
-    private ScriptsManager scriptsManager = null;
     private FuttoboruGameEngine gameEngine = null;
+    private ScriptsManager scriptsManager = null;
     
     // main constructor
     public Futtoboru() {
@@ -130,12 +130,12 @@ public class Futtoboru extends Game {
         
         // Preload the Database
         DatabaseLoader.getInstance();
-        
+
         // Initialize the Script Manager
-        this.scriptsManager = new ScriptsManager();
+        this.scriptsManager = new ScriptsManager(this);
         
         // Initialize the Game Engine
-        this.setGameEngine(new FuttoboruGameEngine(this));
+        this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager));
         
         // Show Main Menu
         changeScreen(MENU_SCREEN);

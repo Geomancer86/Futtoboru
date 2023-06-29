@@ -133,6 +133,9 @@ public class MainMenuManager {
             break;
         }
         
+        /**
+         * NOTE: this is where we set the final alignment of the MAIN / CENTRAL SCREEN
+         */
         parentTable.top().left();
     }
 
