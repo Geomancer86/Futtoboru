@@ -53,7 +53,7 @@ public class BasicScript implements Serializable {
     private Boolean isExecuted;
     
     //
-    public static final Integer LEAGUE_CREATION_SCRIPT = 1000;
+    public static final int LEAGUE_CREATION_SCRIPT = 1000;
 
     public Long getId() {
         return id;

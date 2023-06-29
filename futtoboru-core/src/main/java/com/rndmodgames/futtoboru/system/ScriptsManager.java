@@ -28,11 +28,13 @@ public class ScriptsManager {
 
     //
     Futtoboru gameInstance;
+    SaveGame currentGame;
     
     public ScriptsManager(Game parent) {
         
         // keep track for easier access
         this.gameInstance = (Futtoboru) parent;
+        this.currentGame = gameInstance.getCurrentGame();
     }
     
     /**
@@ -49,15 +51,31 @@ public class ScriptsManager {
          */
         for (BasicScript script : gameInstance.getCurrentGame().getGameScripts()) {
             
-            //
-            System.out.println("SCRIPT: " + script.toString());
-            
-            /**
-             * TODO:
-             *  - Compare CURRENT_GAME_DATE and SCRIPT_DATE
-             *  - Execute SCRIPT if dates are OK
-             */
-            
+            // Execute Scripts Just Once!
+            if (!script.getIsExecuted()) {
+                
+                // Script Date Is Before or Equal to Current Game Date
+                if (script.getExecutionTime().isBefore(currentGame.getGameDate())
+                        || script.getExecutionTime().isEqual(currentGame.getGameDate())) {
+                    
+                    System.out.println("EXECUTING BASIC SCRIPT: " + script.getName());
+                    
+                    switch (script.getScriptType()) {
+                    case BasicScript.LEAGUE_CREATION_SCRIPT:
+                        
+                        /**
+                         * TODO: WIP
+                         */
+                        createLeague();
+                        
+                        break;
+                    
+                    default:
+                        System.out.println("SCRIPT TYPE NOT IMPLEMENTED, IGNORING!");
+                        break;
+                    }
+                }
+            }
         }
     }
     
