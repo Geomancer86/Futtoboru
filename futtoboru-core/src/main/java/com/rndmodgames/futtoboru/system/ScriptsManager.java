@@ -1,9 +1,14 @@
 package com.rndmodgames.futtoboru.system;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Game;
-import com.rndmodgames.futtoboru.data.Country;
+import com.badlogic.gdx.utils.Array;
+import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 
 /**
  * Scripts Manager v1
@@ -34,7 +39,7 @@ public class ScriptsManager {
         
         // keep track for easier access
         this.gameInstance = (Futtoboru) parent;
-        this.currentGame = gameInstance.getCurrentGame();
+        
     }
     
     /**
@@ -43,6 +48,9 @@ public class ScriptsManager {
     public void checkGameScripts() {
         
         System.out.println("CHECKING GAME SCRIPTS!");
+        
+        // keep track for easier access
+        this.currentGame = gameInstance.getCurrentGame();
         
         /**
          * Iterate all Scripts
@@ -63,10 +71,8 @@ public class ScriptsManager {
                     switch (script.getScriptType()) {
                     case BasicScript.LEAGUE_CREATION_SCRIPT:
                         
-                        /**
-                         * TODO: WIP
-                         */
-                        createLeague();
+                        // Create A League
+                        createLeague(script);
                         
                         break;
                     
@@ -96,13 +102,33 @@ public class ScriptsManager {
      *          - Relegation and Re-Election
      *          - Etc.
      */
-    public void createLeague(String leagueName,
-                             String leagueDescription,
-                             Country leagueCountry) {
+    @SuppressWarnings("unchecked")
+    public void createLeague(BasicScript script) {
         
         //
+        System.out.println("EXECUTING LEAGUE CREATION SCRIPT!");
         
+        //
+        League league = new League();
+        league.setName((String) script.getScriptValues().get(ScriptsLoader.LEAGUE_NAME));
+        league.setCountry(DatabaseLoader.getCountryById((Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_COUNTRY)));
+        
+        // Iterate Teams and add them to the League
+        com.badlogic.gdx.utils.Array<Long> test = (Array<Long>) script.getScriptValues().get(ScriptsLoader.LEAGUE_FOUNDING_TEAMS);
+        
+        league.setLeagueClubs(new ArrayList<>());
+        
+        for (Long teamId : test) {
+            
+            Club club = DatabaseLoader.getClubById(teamId);
+            
+            // Add Club to League
+            league.getLeagueClubs().add(club);
+        }
+        
+        // Add the New League to the Game/Data
+        
+        // Mark as executed to avoid running more than once
+        script.setIsExecuted(true);
     }
-    
-    
 }

@@ -53,6 +53,11 @@ public class ScriptsLoader {
             theLeagueCreationScript.setScriptType(BasicScript.LEAGUE_CREATION_SCRIPT);
             
             /**
+             * Script execution date (note this might differ from any dates inside the data)
+             */
+            theLeagueCreationScript.setExecutionTime(LocalDateTime.of(1888, Month.JANUARY, 17, 19, 30, 00));
+            
+            /**
              * Add Required Script Values
              */
             theLeagueCreationScript.getScriptValues().put(LEAGUE_NAME, "English Football League");

@@ -121,6 +121,15 @@ public class AuthorityScreenTable extends VisTable {
     }
     
     /**
+     * TODO WIP:
+     * 
+     * 
+     */
+    public void listActiveLeagues() {
+        
+    }
+    
+    /**
      * TODO: we need to set the Current Season depending on Player Selection on New Game
      *          and the current game DATE TIME
      */

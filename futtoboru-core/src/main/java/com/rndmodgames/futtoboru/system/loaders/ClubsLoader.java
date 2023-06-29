@@ -10,7 +10,7 @@ import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 
 public class ClubsLoader {
-
+    
     /**
      * Load Season Teams
      */
@@ -55,6 +55,12 @@ public class ClubsLoader {
                         
                         //
                         season.getClubs().add(club);
+                        
+                        /**
+                         * TODO WIP:
+                         * 
+                         *  - Add to the Clubs By ID HashMap
+                         */
                     }
 
                     line = reader.readLine();

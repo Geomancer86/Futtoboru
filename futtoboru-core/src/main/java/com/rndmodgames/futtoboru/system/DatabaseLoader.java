@@ -59,6 +59,7 @@ public class DatabaseLoader {
     private static HashMap<Long, Continent> continentsById = new HashMap<>();
     private static HashMap<Long, Country> countriesById = new HashMap<>();
     private static HashMap<Long, League> leaguesById = new HashMap<>();
+    private static HashMap<Long, Club> clubsById = new HashMap<>();
     
     private static HashMap<Long, List<Country>> countriesByContinent = new HashMap<>();
     private static HashMap<Long, List<League>> leaguesByCountry = new HashMap<>();
@@ -227,6 +228,23 @@ public class DatabaseLoader {
     public List<Club> getClubsByCountry(Country country){
         
         return clubsByCountry.get(country.getId());
+    }
+    
+    /**
+     * @param id
+     * @return a Club by ID or null
+     */
+    public static Club getClubById(Long id) {
+
+        for (Club club : clubs) {
+            
+            if (club.getId().equals(id)) {
+                
+                return club;
+            }
+        }
+        
+        return null;
     }
     
     /**
