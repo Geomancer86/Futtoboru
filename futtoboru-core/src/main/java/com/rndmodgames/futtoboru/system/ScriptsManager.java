@@ -127,6 +127,9 @@ public class ScriptsManager {
         }
         
         // Add the New League to the Game/Data
+        DatabaseLoader.getMainAuthority().getLeagues().add(league);
+        
+        System.out.println("Added League: Total Leagues: " + DatabaseLoader.getMainAuthority().getLeagues().size());
         
         // Mark as executed to avoid running more than once
         script.setIsExecuted(true);

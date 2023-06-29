@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.badlogic.gdx.Game;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
@@ -22,8 +23,9 @@ import com.rndmodgames.futtoboru.system.ScriptsManager;
 public class FuttoboruGameEngine {
 
     // 
-    Futtoboru gameInstance;
-    ScriptsManager scriptsManager;
+    private Futtoboru gameInstance;
+    private ScriptsManager scriptsManager;
+    private MainMenuManager mainMenuManager;
     
     public FuttoboruGameEngine(Game parent, ScriptsManager scriptsManager) {
         
@@ -32,6 +34,14 @@ public class FuttoboruGameEngine {
         this.scriptsManager = scriptsManager;
     }
     
+    public MainMenuManager getMainMenuManager() {
+        return mainMenuManager;
+    }
+
+    public void setMainMenuManager(MainMenuManager mainMenuManager) {
+        this.mainMenuManager = mainMenuManager;
+    }
+
     /**
      * Continue Game should be fully automatic, the Engine will take care of how long the game has to move forward
      *  
@@ -51,5 +61,10 @@ public class FuttoboruGameEngine {
         
         // Check Game Scripts
         scriptsManager.checkGameScripts();
+        
+        /**
+         * Update Current Screen Components After Data Changes
+         */
+        mainMenuManager.updateDynamicComponents();
     }
 }

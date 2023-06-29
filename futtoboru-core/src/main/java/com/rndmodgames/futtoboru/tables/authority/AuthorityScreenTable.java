@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
@@ -51,6 +52,7 @@ public class AuthorityScreenTable extends VisTable {
     private static final String IFAB_WIKIPEDIA_URL = "https://en.wikipedia.org/wiki/International_Football_Association_Board";
     
     // Dynamic Components
+    VisTable leaguesListTable = new VisTable(true);
     VisTable teamsListTable = new VisTable(true);
     
     public AuthorityScreenTable(Game parent) {
@@ -62,62 +64,46 @@ public class AuthorityScreenTable extends VisTable {
         this.game = parent;
         
         /**
-         * International Football Association Board [IFAB]
-         * 
-         *  - this will be always the same so not a lot of need to take it out to a file
+         * Main Authority
          */
         VisLabel nameLabel = new VisLabel(LanguageModLoader.getValue("name"));
-        VisLabel nameValueLabel = new VisLabel("International Football Association Board");
-        
-        VisLabel formationLabel = new VisLabel(LanguageModLoader.getValue("formation"));
-        VisLabel formationValueLabel = new VisLabel("2 June 1886");
-        
-        VisLabel sourceLabel = new VisLabel(LanguageModLoader.getValue("source"));
-        LinkLabel sourceLinkLabel = new LinkLabel("IFAB (Wikipedia)", IFAB_WIKIPEDIA_URL);
+        VisLabel nameValueLabel = new VisLabel(DatabaseLoader.getMainAuthority().getName());
         
         // Name
         this.add(nameLabel);
         this.add(nameValueLabel);
         this.row();
         
-        // Formation
-        this.add(formationLabel);
-        this.add(formationValueLabel);
-        this.row();
-        
-        // Source
-        this.add(sourceLabel);
-        this.add(sourceLinkLabel);
-        
         /**
-         * Leagues
-         * 
-         * NOTE: Leagues won't appear until the first league is founded, need scripts!
+         * Authority Leagues
          */
         VisLabel leaguesLabel = new VisLabel(LanguageModLoader.getValue("leagues"));
-        
+
+        // Leagues
         this.row();
         this.addSeparator().colspan(2);
         this.add(leaguesLabel).colspan(2);
+        this.row();
+        this.add(leaguesListTable).colspan(2);
         
-        /**
-         * Teams
-         * 
-         * TODO: WIP
-         * 
-         *  - Existing Teams Widget
-         */
         VisLabel teamsLabel = new VisLabel(LanguageModLoader.getValue("teams"));
-        
-        // update active teams list table
-        listActiveTeams();
-        
+
         this.row();
         this.addSeparator().colspan(2);
         this.add(teamsLabel).colspan(2);
-        
+
         this.row();
         this.add(teamsListTable).colspan(2);
+        
+        //
+        updateDynamicComponents();
+    }
+    
+    public void updateDynamicComponents() {
+        
+        //
+        listActiveLeagues();
+        listActiveTeams();
     }
     
     /**
@@ -127,6 +113,23 @@ public class AuthorityScreenTable extends VisTable {
      */
     public void listActiveLeagues() {
         
+        Authority main = DatabaseLoader.getMainAuthority();
+        
+        leaguesListTable.clear();
+        
+        leaguesListTable.row();
+        
+        // No existing Leagues
+        if (main.getLeagues().isEmpty()) {
+            
+            leaguesListTable.add(new VisLabel("No Active Leagues"));
+            
+        } else {
+            
+            // Add Leagues Component
+            leaguesListTable.add(new VisLabel(LanguageModLoader.getValue("top_level_league")));
+            leaguesListTable.add(new VisLabel(main.getLeagues().get(0).getName()));
+        }
     }
     
     /**

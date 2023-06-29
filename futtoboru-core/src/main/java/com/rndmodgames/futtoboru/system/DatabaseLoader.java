@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Continent;
 import com.rndmodgames.futtoboru.data.Country;
@@ -18,6 +19,7 @@ import com.rndmodgames.futtoboru.data.DataBase;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.system.loaders.AuthoritiesLoader;
 import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 import com.rndmodgames.futtoboru.system.loaders.SeasonsLoader;
 
@@ -50,6 +52,7 @@ public class DatabaseLoader {
     //
     private static List<Season> seasons = new ArrayList<>();
     private static List<DataBase> databases = new ArrayList<>();
+    private static List<Authority> authorities = new ArrayList<>();
     private static List<Continent> continents = new ArrayList<>();
     private static List<Country> countries = new ArrayList<>();
     private static List<League> leagues = new ArrayList<>();
@@ -70,14 +73,15 @@ public class DatabaseLoader {
     private static List<Profession> professions = new ArrayList<>();
     private static List<Profession> selectableProfessions = new ArrayList<>();
     
+    // keep track of main/top authority
+    private static Authority mainAuthority;
+    
     //
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
     
+    // singleton
     private static DatabaseLoader instance;
-    
-    // split loaders
-    private SeasonsLoader seasonsLoader;
-    
+
     public DatabaseLoader() {
 
     }
@@ -101,6 +105,9 @@ public class DatabaseLoader {
             
             // Initialize Countries
             initializeCountries();
+            
+            // Initialize Authorities
+            AuthoritiesLoader.loadAuthorities();
             
             // Initialize Available Leagues
             initializeLeagues();
@@ -138,6 +145,10 @@ public class DatabaseLoader {
         
         //
         return databases;
+    }
+    
+    public List<Authority> getAuthorities() {
+        return authorities;
     }
     
     /**
@@ -643,5 +654,13 @@ public class DatabaseLoader {
 
     public static void setClubsByCountry(HashMap<Long, List<Club>> clubsByCountry) {
         DatabaseLoader.clubsByCountry = clubsByCountry;
+    }
+
+    public static Authority getMainAuthority() {
+        return mainAuthority;
+    }
+
+    public static void setMainAuthority(Authority mainAuthority) {
+        DatabaseLoader.mainAuthority = mainAuthority;
     }
 }

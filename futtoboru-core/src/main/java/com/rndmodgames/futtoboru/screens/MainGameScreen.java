@@ -10,7 +10,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.futtoboru.system.ScriptsManager;
 import com.rndmodgames.futtoboru.tables.topmenu.MainGameMenuTable;
 
 /**
@@ -72,6 +71,9 @@ public class MainGameScreen implements Screen {
         // Takes care of Buttons Menu Dynamically
         mainTable = new VisTable(true);
         menuManager = new MainMenuManager(game, currentGame, mainTable);
+        
+        // Set the reference to allow dynamic screen updates from the Game Engine after data changes
+        ((Futtoboru)game).getGameEngine().setMainMenuManager(menuManager);
         
         //
         gameWindowTable.row();

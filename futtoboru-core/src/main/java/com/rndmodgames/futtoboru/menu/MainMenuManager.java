@@ -118,6 +118,7 @@ public class MainMenuManager {
             break;
             
         case AUTHORITY_SCREEN:
+            authorityScreenTable.updateDynamicComponents();
             parentTable.add(authorityScreenTable);
             break;
         
@@ -137,6 +138,15 @@ public class MainMenuManager {
          * NOTE: this is where we set the final alignment of the MAIN / CENTRAL SCREEN
          */
         parentTable.top().left();
+    }
+    
+    /**
+     * Allow to call this from other places after data is updated
+     */
+    public void updateDynamicComponents() {
+        
+        // TODO: only call if current screen/visible
+        authorityScreenTable.updateDynamicComponents();
     }
 
     //
