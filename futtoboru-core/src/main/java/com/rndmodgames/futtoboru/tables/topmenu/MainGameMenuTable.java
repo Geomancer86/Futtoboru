@@ -194,24 +194,14 @@ public class MainGameMenuTable extends VisTable {
     }
     
     /**
-     * TODO: move this to the Simulation
+     * 
      */
     private void advanceGameTurn() {
         
-        //
-        System.out.println("ADVANCE THE SIMULATION - 1 TURN");
-        
-        LocalDateTime current = ((Futtoboru)(game)).getCurrentGame().getGameDate();
-        
-        ((Futtoboru)(game)).getCurrentGame().setGameDate(current.plusDays(1));
-        
-        /**
-         * TODO WIP
-         * 
-         *  - if a Script or Message has come to Date, enable/fire/activate it
-         */
-        
-        //
+        // Continue the game on the Game Engine
+        ((Futtoboru)(game)).getGameEngine().continueGame();
+                
+        // Update the dynamic date widget
         dateTimeWidget.updateDynamicComponents();
     }
 }

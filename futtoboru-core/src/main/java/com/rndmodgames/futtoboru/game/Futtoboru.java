@@ -1,6 +1,5 @@
 package com.rndmodgames.futtoboru.game;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -13,6 +12,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.rndmodgames.PreferencesManager;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
 import com.rndmodgames.futtoboru.screens.NewGameOverviewScreen;
@@ -77,6 +77,7 @@ public class Futtoboru extends Game {
      */
     private SaveGame currentGame = null;
     private ScriptsManager scriptsManager = null;
+    private FuttoboruGameEngine gameEngine = null;
     
     // main constructor
     public Futtoboru() {
@@ -132,6 +133,9 @@ public class Futtoboru extends Game {
         
         // Initialize the Script Manager
         this.scriptsManager = new ScriptsManager();
+        
+        // Initialize the Game Engine
+        this.setGameEngine(new FuttoboruGameEngine(this));
         
         // Show Main Menu
         changeScreen(MENU_SCREEN);
@@ -281,5 +285,13 @@ public class Futtoboru extends Game {
 
     public void setScriptsManager(ScriptsManager scriptsManager) {
         this.scriptsManager = scriptsManager;
+    }
+
+    public FuttoboruGameEngine getGameEngine() {
+        return gameEngine;
+    }
+
+    public void setGameEngine(FuttoboruGameEngine gameEngine) {
+        this.gameEngine = gameEngine;
     }
 }
