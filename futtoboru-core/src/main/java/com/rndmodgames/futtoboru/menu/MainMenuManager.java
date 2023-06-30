@@ -7,11 +7,13 @@ import com.rndmodgames.futtoboru.menu.buttons.AuthorityButton;
 import com.rndmodgames.futtoboru.menu.buttons.HomeButton;
 import com.rndmodgames.futtoboru.menu.buttons.InboxButton;
 import com.rndmodgames.futtoboru.menu.buttons.PersonalDetailsButton;
+import com.rndmodgames.futtoboru.menu.buttons.SquadButton;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
 import com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable;
 import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
 import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
+import com.rndmodgames.futtoboru.tables.squad.SquadScreenTable;
 
 /**
  * Main Menu Manager v1
@@ -51,12 +53,14 @@ public class MainMenuManager {
     private VisTextButton personalDetailsButton = null;
     private VisTextButton authorityButton = null;
     private VisTextButton inboxButton = null;
+    private VisTextButton squadButton = null;
     
     //
     private HomeScreenTable homeScreenTable = null;
     private PersonDetailsScreenTable personDetailsScreenTable = null;
     private AuthorityScreenTable authorityScreenTable = null;
     private InboxScreenTable inboxScreenTable = null;
+    private SquadScreenTable squadScreenTable = null;
     
     /**
      * 
@@ -75,19 +79,19 @@ public class MainMenuManager {
         personDetailsScreenTable = new PersonDetailsScreenTable(game);
         authorityScreenTable = new AuthorityScreenTable(game);
         inboxScreenTable = new InboxScreenTable(game);
+        squadScreenTable = new SquadScreenTable(game);
         
         // custom buttons with logic to switch screen/tables
         homeButton = new HomeButton(this);
         personalDetailsButton = new PersonalDetailsButton(this);
         authorityButton = new AuthorityButton(this);
         inboxButton = new InboxButton(this);
+        squadButton = new SquadButton(this);
         
         /**
          * Dynamic Buttons Menu depending on the CURRENT_JOB
          */
         setDynamicButtonsMenu();
-        
-
     }
 
     /**
@@ -139,6 +143,10 @@ public class MainMenuManager {
             buttonsMenu.add(inboxButton).fill();
             buttonsMenu.row();
             
+            // Squad
+            buttonsMenu.add(squadButton).fill();
+            buttonsMenu.row();
+            
             // Personal Details
             buttonsMenu.add(personalDetailsButton).fill();
             buttonsMenu.row();
@@ -183,7 +191,7 @@ public class MainMenuManager {
 
         //
         case MAIN_SQUAD_SCREEN:
-            
+            parentTable.add(squadScreenTable);
             break;            
             
         //
