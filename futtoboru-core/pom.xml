@@ -122,6 +122,7 @@
             <groupId>com.badlogicgames.gdx</groupId>
             <artifactId>gdx-freetype-platform</artifactId>
             <version>${libgdx.version}</version>
+            <classifier>natives-desktop</classifier>
         </dependency>
         
         <!-- https://mvnrepository.com/artifact/com.badlogicgames.ashley/ashley -->
@@ -158,6 +159,7 @@
             <groupId>com.badlogicgames.gdx</groupId>
             <artifactId>gdx-box2d-platform</artifactId>
             <version>${libgdx.version}</version>
+            <classifier>natives-desktop</classifier>
         </dependency>
         
         <!-- https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx-bullet-platform -->
@@ -172,7 +174,7 @@
         <dependency>
             <groupId>com.kotcrab.vis</groupId>
             <artifactId>vis-ui</artifactId>
-            <version>1.4.9</version>
+            <version>${vis.ui.version}</version>
         </dependency>
 
         <dependency>

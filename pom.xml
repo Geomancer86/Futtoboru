@@ -32,7 +32,10 @@
    		<jacoco.version>0.8.8</jacoco.version>
    		
    		<!-- LibGDX -->
-   		<libgdx.version>1.10.0</libgdx.version>
+   		<libgdx.version>1.11.0</libgdx.version>
+   		
+   		<!-- VisUI -->
+   		<vis.ui.version>1.5.1</vis.ui.version>
    		
    		<!-- Twitch 4J -->
    		<twitch4j.version>1.9.0</twitch4j.version>

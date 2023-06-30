@@ -132,6 +132,7 @@
             <groupId>com.badlogicgames.gdx</groupId>
             <artifactId>gdx-bullet-platform</artifactId>
             <version>${libgdx.version}</version>
+            <classifier>natives-desktop</classifier>
         </dependency>
                 
         <dependency>
