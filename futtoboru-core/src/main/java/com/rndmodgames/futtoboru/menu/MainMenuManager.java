@@ -79,25 +79,60 @@ public class MainMenuManager {
         inboxButton = new InboxButton(this);
         
         /**
-         * TODO: dynamic depending on job/etc
+         * Dynamic Buttons Menu depending on the CURRENT_JOB
          */
-        // Home
-        buttonsMenu.add(homeButton).fill();
-        buttonsMenu.row();
+        setDynamicButtonsMenu();
         
-        // Inbox
-        buttonsMenu.add(inboxButton).fill();
-        buttonsMenu.row();
-        
-        // Personal Details
-        buttonsMenu.add(personalDetailsButton).fill();
-        buttonsMenu.row();
-        
-        // Sport Authorities
-        buttonsMenu.add(authorityButton).fill();
-        buttonsMenu.row();
+
     }
 
+    /**
+     * 
+     */
+    public void setDynamicButtonsMenu() {
+       
+        // if UNEMPLOYED/RETIRED
+        if (currentGame.getOwner().getPrimaryProfession().getId().equals(2L)) {
+            
+            // Home
+            buttonsMenu.add(homeButton).fill();
+            buttonsMenu.row();
+            
+            // Inbox
+            buttonsMenu.add(inboxButton).fill();
+            buttonsMenu.row();
+            
+            // Personal Details
+            buttonsMenu.add(personalDetailsButton).fill();
+            buttonsMenu.row();
+            
+            // Sport Authorities
+            buttonsMenu.add(authorityButton).fill();
+            buttonsMenu.row();
+            
+        }
+        
+        // if MANAGER
+        if (currentGame.getOwner().getPrimaryProfession().getId().equals(3L)) {
+            
+            // Home
+            buttonsMenu.add(homeButton).fill();
+            buttonsMenu.row();
+            
+            // Inbox
+            buttonsMenu.add(inboxButton).fill();
+            buttonsMenu.row();
+            
+            // Personal Details
+            buttonsMenu.add(personalDetailsButton).fill();
+            buttonsMenu.row();
+            
+            // Sport Authorities
+            buttonsMenu.add(authorityButton).fill();
+            buttonsMenu.row();
+        }
+    }
+    
     /**
      * Handle the Table Switching for the Main Screen
      */
