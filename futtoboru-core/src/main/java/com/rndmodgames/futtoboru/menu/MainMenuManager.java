@@ -38,9 +38,13 @@ public class MainMenuManager {
     public static final int HOME_SCREEN             =  100;
     public static final int INBOX_SCREEN            =  200;
     public static final int PERSON_DETAILS_SCREEN   =  300;
-    public static final int AUTHORITY_SCREEN        =  400;    
+    public static final int AUTHORITY_SCREEN        =  400;
+    
     private static final int LEAGUE_SCREEN           =  500;    
-    private static final int WORLD_SCREEN            =  600;    
+    private static final int WORLD_SCREEN            =  600;
+    
+    //
+    public static final int MAIN_SQUAD_SCREEN = 1000;
         
     // Main Game Buttons
     private VisTextButton homeButton = null;
@@ -112,7 +116,19 @@ public class MainMenuManager {
             
         }
         
-        // if MANAGER
+        /**
+         * if MANAGER
+         * 
+         * TODO WIP:
+         * 
+         *   Team Screens:
+         *      - Squad
+         *      - Schedule
+         *      - Formations/Lineup/Tactics
+         *      - Training
+         *      - Board
+         *      - Staff
+         */
         if (currentGame.getOwner().getPrimaryProfession().getId().equals(3L)) {
             
             // Home
@@ -148,10 +164,12 @@ public class MainMenuManager {
             parentTable.add(homeScreenTable);
             break;
             
+        // 
         case INBOX_SCREEN:
             parentTable.add(inboxScreenTable);
             break;
-            
+           
+        // 
         case AUTHORITY_SCREEN:
             authorityScreenTable.updateDynamicComponents();
             parentTable.add(authorityScreenTable);
@@ -163,6 +181,11 @@ public class MainMenuManager {
             parentTable.add(personDetailsScreenTable);
             break;
 
+        //
+        case MAIN_SQUAD_SCREEN:
+            
+            break;            
+            
         //
         default:
             System.out.println("SCREEN NOT SET UP");
