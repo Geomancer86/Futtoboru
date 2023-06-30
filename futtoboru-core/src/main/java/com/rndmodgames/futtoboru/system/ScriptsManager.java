@@ -126,11 +126,19 @@ public class ScriptsManager {
             league.getLeagueClubs().add(club);
         }
         
+        /**
+         * TODO WIP:
+         *  we also need to add the league on save game
+         *  
+         *  this needs to be well thought
+         *  
+         *  1) When we create a new game object we need to save it on save game, not on the database.
+         */
         // Add the New League to the Game/Data
-        DatabaseLoader.getMainAuthority().getLeagues().add(league);
         
-        System.out.println("Added League: Total Leagues: " + DatabaseLoader.getMainAuthority().getLeagues().size());
-        
+//        DatabaseLoader.getMainAuthority().getLeagues().add(league);
+//        System.out.println("Added League to SaveGame: Total Leagues: " + DatabaseLoader.getMainAuthority().getLeagues().size());
+
         // Mark as executed to avoid running more than once
         script.setIsExecuted(true);
     }

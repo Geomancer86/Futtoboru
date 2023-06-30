@@ -316,6 +316,9 @@ public class NewGameOverviewScreen implements Screen {
                  */
                 SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
                 
+                // Game Authority
+                currentGame.setMainAuthority(DatabaseLoader.getMainAuthority());
+                
                 //
                 currentGame.setSelectedCountries(selectedCountries);
                 currentGame.getOwner().setPrimaryProfession(primaryProfession);

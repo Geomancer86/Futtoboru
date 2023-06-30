@@ -7,7 +7,9 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -47,6 +49,7 @@ public class AuthorityScreenTable extends VisTable {
 
     //
     Game game;
+    SaveGame currentGame;
     
     //
     private static final String IFAB_WIKIPEDIA_URL = "https://en.wikipedia.org/wiki/International_Football_Association_Board";
@@ -62,12 +65,13 @@ public class AuthorityScreenTable extends VisTable {
         
         //
         this.game = parent;
+        this.currentGame = ((Futtoboru)game).getCurrentGame();
         
         /**
          * Main Authority
          */
         VisLabel nameLabel = new VisLabel(LanguageModLoader.getValue("name"));
-        VisLabel nameValueLabel = new VisLabel(DatabaseLoader.getMainAuthority().getName());
+        VisLabel nameValueLabel = new VisLabel(currentGame.getMainAuthority().getName());
         
         // Name
         this.add(nameLabel);

@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
@@ -34,10 +35,27 @@ public class SaveGame implements Serializable {
     private static final long serialVersionUID = -5607039189697722153L;
 
     private Person owner;
+    
+    /**
+     * This is the selection of countries that the player selected to be simulated on a New Game
+     */
     private List<Country> selectedCountries;
     
+    // Game Start Date and Current Game Date (Working)
     private LocalDateTime gameStartDate;
     private LocalDateTime gameDate;
+    
+    /**
+     * We need to Save and Track updated data, the data on Database is mostly static
+     * 
+     *  - TODO
+     *      - save current main authority and keep track of authority hierarchies as new authorities are created and power shifts
+     *      - save current leagues
+     *      - save current teams
+     *      
+     *  - TODO: when the game is being played we have to make sure we always use the most recent/updated data version and not the original static data from the DatabaseLoader
+     */
+    private Authority mainAuthority;
     
     private Boolean isSaved = false; // default to unsaved game
     
@@ -125,6 +143,14 @@ public class SaveGame implements Serializable {
 
     public void setGameDate(LocalDateTime gameDate) {
         this.gameDate = gameDate;
+    }
+
+    public Authority getMainAuthority() {
+        return mainAuthority;
+    }
+
+    public void setMainAuthority(Authority mainAuthority) {
+        this.mainAuthority = mainAuthority;
     }
 
     public Boolean getIsSaved() {
