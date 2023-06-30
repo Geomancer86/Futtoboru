@@ -113,8 +113,12 @@ public class ScriptsManager {
         league.setName((String) script.getScriptValues().get(ScriptsLoader.LEAGUE_NAME));
         league.setCountry(DatabaseLoader.getCountryById((Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_COUNTRY)));
         
-        // Iterate Teams and add them to the League
-        com.badlogic.gdx.utils.Array<Long> test = (Array<Long>) script.getScriptValues().get(ScriptsLoader.LEAGUE_FOUNDING_TEAMS);
+        /**
+         * Iterate Teams and add them to the League
+         * 
+         * NOTE: LibGDX Array to avoid serialization/deserialization issues (script is created with the same class).
+         */
+        Array<Long> test = (Array<Long>) script.getScriptValues().get(ScriptsLoader.LEAGUE_FOUNDING_TEAMS);
         
         league.setLeagueClubs(new ArrayList<>());
         
@@ -126,11 +130,11 @@ public class ScriptsManager {
             league.getLeagueClubs().add(club);
         }
         
-        // Add the New League to the Game/Data
-        DatabaseLoader.getMainAuthority().getLeagues().add(league);
+        // Save the created League on the current game
+        currentGame.getMainAuthority().getLeagues().add(league);
         
-        System.out.println("Added League: Total Leagues: " + DatabaseLoader.getMainAuthority().getLeagues().size());
-        
+        System.out.println("Added League to SaveGame: Total Leagues: " + currentGame.getMainAuthority().getLeagues().size());
+
         // Mark as executed to avoid running more than once
         script.setIsExecuted(true);
     }
