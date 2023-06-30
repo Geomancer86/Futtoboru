@@ -28,7 +28,28 @@ public class SquadScreenTable extends VisTable{
         this.game = ((Futtoboru)parent);
         this.currentGame = game.getCurrentGame();
         
-        // MAIN SQUAD SCREEN WIP
+        /**
+         * SQUAD SCREEN:
+         * 
+         *  TODO WIP:
+         *  
+         *      - No Players Label
+         *      - List of Players Component
+         *      
+         *      - Players Design
+         *      - Random Players Generator
+         *      - Players Script Loader (for existing players/database)
+         *      
+         *          - Name
+         *          - Nationality
+         *          - Birthdate/Age
+         *          - Attributes
+         *          - Contracts/Salaries
+         *          - History
+         *          - Fitness
+         *          - Training
+         *          - Injuries
+         */
         VisLabel nameLabel = new VisLabel(LanguageModLoader.getValue("main_squad"));
         
         // Name

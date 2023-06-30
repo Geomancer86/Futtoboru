@@ -20,6 +20,7 @@ import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.loaders.AuthoritiesLoader;
+import com.rndmodgames.futtoboru.system.loaders.NamesLoader;
 import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 import com.rndmodgames.futtoboru.system.loaders.SeasonsLoader;
 
@@ -106,13 +107,13 @@ public class DatabaseLoader {
             // Initialize Countries
             initializeCountries();
             
+            // Initialize Name Generators (depends on Countries)
+            NamesLoader.loadAllCountryNames(countries);
+            
             // Initialize Authorities
             AuthoritiesLoader.loadAuthorities();
-            
-            // Initialize Available Leagues
-            initializeLeagues();
 
-            // Initialize Available Profession
+            // Initialize Available Professions
             initializeProfessions();
             
             // Initialize Seasons
@@ -120,6 +121,12 @@ public class DatabaseLoader {
             
             // Load Seasons Data
             SeasonsLoader.load(seasons);
+            
+            /**
+             * TODO WIP:
+             * 
+             *  Load or Generate Club Players and Free Agents
+             */
             
             // Load Seasons Scripts
             ScriptsLoader.load(seasons);

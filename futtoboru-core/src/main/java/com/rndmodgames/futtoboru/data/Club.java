@@ -43,6 +43,10 @@ public class Club implements Serializable {
      */
     private League currentLeague;
     
+    /**
+     * 
+     */
+    
     public Club() {
         
     }
