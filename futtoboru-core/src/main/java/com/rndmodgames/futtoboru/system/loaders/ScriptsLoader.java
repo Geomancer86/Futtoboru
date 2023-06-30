@@ -5,6 +5,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.utils.Array;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 
@@ -65,8 +66,12 @@ public class ScriptsLoader {
             theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, LocalDateTime.of(1888, Month.JANUARY, 17, 19, 30, 00)); // EARLIER DATE FOR QUICKER TESTING!
             theLeagueCreationScript.getScriptValues().put(LEAGUE_COUNTRY, 1000L); // By ID
             
-            // League Clubs by ID
-            List<Long> leagueClubIds = new ArrayList<>();
+            /**
+             * League Clubs by ID
+             * 
+             * NOTE: LibGDX Array to avoid serialization/deserialization issues (script is created with the same class).
+             */
+            Array<Long> leagueClubIds = new Array<>();
             leagueClubIds.add(1L);
             leagueClubIds.add(2L);
             leagueClubIds.add(3L);

@@ -117,7 +117,7 @@ public class AuthorityScreenTable extends VisTable {
      */
     public void listActiveLeagues() {
         
-        Authority main = DatabaseLoader.getMainAuthority();
+        Authority main = currentGame.getMainAuthority();
         
         leaguesListTable.clear();
         
