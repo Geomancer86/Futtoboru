@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -34,14 +33,15 @@ public class NamesLoader {
         for (Country country : countries) {
             
             //
-            loadCountryNames(country);
+            loadCountryNames(country, "names.txt", namesByCountry);
+            loadCountryNames(country, "lastnames.txt", lastnamesByCountry);
         }
     }
-    
-    public static void loadCountryNames(Country country) {
+
+    //
+    public static void loadCountryNames(Country country, String file, HashMap<String, List<String>> namesMap) {
         
-        FileHandle countryNamesFile = Gdx.files.internal("mods/names/" + country.getCommonName() + "/names.txt");
-        FileHandle countryLastnamesFile = Gdx.files.internal("mods/names/" + country.getCommonName() + "/lastnames.txt");
+        FileHandle countryNamesFile = Gdx.files.internal("mods/names/" + country.getCommonName() + "/" + file);
         
         // Load Name Files
         if (countryNamesFile.exists()) {
@@ -62,13 +62,13 @@ public class NamesLoader {
 //                        System.out.println("PARSING LINE: " + line);
                         
                         // One Name Per Line
-                        if (!namesByCountry.containsKey(country.getCommonName())) {
+                        if (!namesMap.containsKey(country.getCommonName())) {
                             
-                            namesByCountry.put(country.getCommonName(), new ArrayList<>());
+                            namesMap.put(country.getCommonName(), new ArrayList<>());
                         }
                         
                         // Add name
-                        namesByCountry.get(country.getCommonName()).add(line);
+                        namesMap.get(country.getCommonName()).add(line);
                     }
                     
                     // New Line
@@ -87,15 +87,10 @@ public class NamesLoader {
             // System.out.println("mods/names/" + country.getCommonName() + "/names.txt doesn't exist");
         }
         
-        // Load Lastname Files
-        if (countryLastnamesFile.exists()) {
-            
-        }
-        
         // Stats
-        if (namesByCountry.get(country.getCommonName()) != null) {
+        if (namesMap.get(country.getCommonName()) != null) {
             // 
-            System.out.println("Finished parsing " + country.getCommonName() + " names: " + namesByCountry.get(country.getCommonName()).size());
+            System.out.println("Finished parsing " + country.getCommonName() + " " + file + ": " + namesMap.get(country.getCommonName()).size());
         }
     }
 }

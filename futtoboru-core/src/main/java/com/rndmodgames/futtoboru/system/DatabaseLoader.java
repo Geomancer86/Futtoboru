@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -83,6 +84,9 @@ public class DatabaseLoader {
     // singleton
     private static DatabaseLoader instance;
 
+    //
+    public static Random RNG = new Random();
+    
     public DatabaseLoader() {
 
     }
