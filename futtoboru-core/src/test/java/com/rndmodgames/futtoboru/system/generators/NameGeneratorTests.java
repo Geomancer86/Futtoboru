@@ -86,7 +86,8 @@ public class NameGeneratorTests {
         
         assertNotNull(england);
         
-        int generate = 20;
+        int generate = 400;
+        int invalid = 0;
         
         for (int a = 0; a < generate; a++) {
         
@@ -105,7 +106,10 @@ public class NameGeneratorTests {
                 
                 //
 //                System.out.println("Ignoring Duplicated Person Name!");
+                invalid++;
             }
         }
+        
+        System.out.println("Generated " + application.getCurrentGame().getAllPersons().size() + " Unique Persons with " + invalid + " ignored duplicates.");
     }
 }
