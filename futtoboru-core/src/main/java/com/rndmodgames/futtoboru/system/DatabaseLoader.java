@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -20,6 +21,7 @@ import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.loaders.AuthoritiesLoader;
+import com.rndmodgames.futtoboru.system.loaders.NamesLoader;
 import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 import com.rndmodgames.futtoboru.system.loaders.SeasonsLoader;
 
@@ -82,6 +84,9 @@ public class DatabaseLoader {
     // singleton
     private static DatabaseLoader instance;
 
+    //
+    public static Random RNG = new Random();
+    
     public DatabaseLoader() {
 
     }
@@ -106,13 +111,13 @@ public class DatabaseLoader {
             // Initialize Countries
             initializeCountries();
             
+            // Initialize Name Generators (depends on Countries)
+            NamesLoader.loadAllCountryNames(countries);
+            
             // Initialize Authorities
             AuthoritiesLoader.loadAuthorities();
-            
-            // Initialize Available Leagues
-            initializeLeagues();
 
-            // Initialize Available Profession
+            // Initialize Available Professions
             initializeProfessions();
             
             // Initialize Seasons
@@ -120,6 +125,12 @@ public class DatabaseLoader {
             
             // Load Seasons Data
             SeasonsLoader.load(seasons);
+            
+            /**
+             * TODO WIP:
+             * 
+             *  Load or Generate Club Players and Free Agents
+             */
             
             // Load Seasons Scripts
             ScriptsLoader.load(seasons);

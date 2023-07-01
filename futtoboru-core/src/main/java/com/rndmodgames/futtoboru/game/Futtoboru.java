@@ -23,6 +23,7 @@ import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.ScriptsManager;
+import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -78,6 +79,7 @@ public class Futtoboru extends Game {
     private SaveGame currentGame = null;
     private FuttoboruGameEngine gameEngine = null;
     private ScriptsManager scriptsManager = null;
+    private PersonGenerator personGenerator = null;
     
     // main constructor
     public Futtoboru() {
@@ -119,8 +121,10 @@ public class Futtoboru extends Game {
         // This will take care of Setting the Right Fullscreen/Windowed Resolution mode
         setScreen();
         
-        // Load VisUI
-        VisUI.load(Gdx.files.internal("skin/tixel.json"));
+        // Load VisUI NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
+        if (com.badlogic.gdx.Gdx.gl != null) {
+            VisUI.load(Gdx.files.internal("skin/tixel.json"));
+        }
         
         // 
         manager.finishLoading();
@@ -134,11 +138,16 @@ public class Futtoboru extends Game {
         // Initialize the Script Manager
         this.scriptsManager = new ScriptsManager(this);
         
+        // Initialize the Person Generator
+        this.setPersonGenerator(new PersonGenerator(this));
+        
         // Initialize the Game Engine
         this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager));
         
-        // Show Main Menu
-        changeScreen(MENU_SCREEN);
+        // Show Main Menu NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
+        if (com.badlogic.gdx.Gdx.gl != null) {
+            changeScreen(MENU_SCREEN);
+        }
     }
     
     /**
@@ -285,6 +294,14 @@ public class Futtoboru extends Game {
 
     public void setScriptsManager(ScriptsManager scriptsManager) {
         this.scriptsManager = scriptsManager;
+    }
+
+    public PersonGenerator getPersonGenerator() {
+        return personGenerator;
+    }
+
+    public void setPersonGenerator(PersonGenerator personGenerator) {
+        this.personGenerator = personGenerator;
     }
 
     public FuttoboruGameEngine getGameEngine() {

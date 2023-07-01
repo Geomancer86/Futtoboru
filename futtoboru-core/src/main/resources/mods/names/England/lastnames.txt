@@ -1,0 +1,18 @@
+# English Surnames v1
+# Source: Victorian Surnames in England and Wales - https://www.geriwalton.com/surnames/
+# One name per line
+#
+Allen
+Baker
+Bennett
+Brown
+Carter
+Clark
+Clarke
+Cook
+Cooper
+Davies
+Davis
+Edwards
+Evans
+Green

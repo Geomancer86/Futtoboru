@@ -1,0 +1,14 @@
+# English Names v1
+# Source: Top 200 Most Popular Names in England and Wales in 1850 - https://www.britishbabynames.com/blog/2017/05/top-200-most-popular-names-in-england-and-wales-in-1850.html
+# One name per line
+#
+William
+John
+Thomas
+George
+James
+Henry
+Charles
+Joseph
+Robert
+Edward

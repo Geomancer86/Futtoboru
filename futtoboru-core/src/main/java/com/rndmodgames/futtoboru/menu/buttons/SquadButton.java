@@ -7,19 +7,21 @@ import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * Authority Button v1
+ * Squad Button v1
  * 
- *  - Switches to Main Authority Screen
+ *  - Switches to the Club Main Squad Screen
+ *  
  * 
  * @author Geomancer86
  */
-public class AuthorityButton extends VisTextButton {
+public class SquadButton extends VisTextButton {
 
-    public AuthorityButton(MainMenuManager menuManager) {
+    public SquadButton(MainMenuManager menuManager) {
         
         // TODO: i18n
-        super(LanguageModLoader.getValue("authority"));
+        super(LanguageModLoader.getValue("squad"));
         
+        //
         this.addCaptureListener(new InputListener() {
 
             @Override
@@ -31,7 +33,7 @@ public class AuthorityButton extends VisTextButton {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
                 //
-                menuManager.setActiveMainScreen(MainMenuManager.AUTHORITY_SCREEN);
+                menuManager.setActiveMainScreen(MainMenuManager.MAIN_SQUAD_SCREEN);
             }
         });
     }

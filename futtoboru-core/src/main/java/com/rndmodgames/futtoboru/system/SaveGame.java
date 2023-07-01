@@ -98,6 +98,11 @@ public class SaveGame implements Serializable {
      */
     private List<BasicScript> gameScripts = new ArrayList<>();
     
+    /**
+     * Person Database
+     */
+    private List<Person> allPersons = new ArrayList<>();
+    
     // required for de-serializing
     public SaveGame() {
         
@@ -167,5 +172,13 @@ public class SaveGame implements Serializable {
 
     public void setGameScripts(List<BasicScript> gameScripts) {
         this.gameScripts = gameScripts;
+    }
+
+    public List<Person> getAllPersons() {
+        return allPersons;
+    }
+
+    public void setAllPersons(List<Person> allPersons) {
+        this.allPersons = allPersons;
     }
 }
