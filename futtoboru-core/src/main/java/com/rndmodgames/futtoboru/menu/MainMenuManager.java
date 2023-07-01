@@ -191,7 +191,17 @@ public class MainMenuManager {
 
         //
         case MAIN_SQUAD_SCREEN:
+            
+            // Set the Squad that player controls to show on Squad Screen
+            // NOTE: this will fail if the user wants to access this screen and don't have an assigned club, shouldn't happen
+            squadScreenTable.setCurrentClub(currentGame.getOwner().getCurrentClub());
+            
+            // Update dynamic components
+            squadScreenTable.updateDynamicComponents();
+            
+            // Set as main content
             parentTable.add(squadScreenTable);
+
             break;            
             
         //

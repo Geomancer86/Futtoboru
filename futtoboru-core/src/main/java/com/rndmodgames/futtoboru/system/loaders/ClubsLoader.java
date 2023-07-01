@@ -2,6 +2,7 @@ package com.rndmodgames.futtoboru.system.loaders;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -52,6 +53,9 @@ public class ClubsLoader {
                         
                         // Country
                         club.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[5])));
+                        
+                        // Initialize Players At Club List
+                        club.setPlayers(new ArrayList<>());
                         
                         //
                         season.getClubs().add(club);

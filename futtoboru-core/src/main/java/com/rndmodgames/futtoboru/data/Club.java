@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Club v1
@@ -39,9 +40,18 @@ public class Club implements Serializable {
     private City city;
     
     /**
-     * Current Club League/Division
+     * Current Club League/Division (might be null if there is not a league)
      */
     private League currentLeague;
+    
+    /**
+     * TODO WIP
+     * 
+     * Players At Club
+     * 
+     * This doesn't indicate a true relation as there is no contracts yet
+     */
+    private List<Player> players;
     
     /**
      * 
@@ -161,6 +171,14 @@ public class Club implements Serializable {
 
     public void setCurrentLeague(League currentLeague) {
         this.currentLeague = currentLeague;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 
     @Override

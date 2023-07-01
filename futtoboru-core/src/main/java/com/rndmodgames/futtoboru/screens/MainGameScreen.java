@@ -92,7 +92,7 @@ public class MainGameScreen implements Screen {
         // Initialize Toast Manager
         toastManager = new ToastManager(stage);
         toastManager.setScreenPadding(10, 60); // hardcoded to let the toast show on not under the top menu, 
-        toastManager.toFront(); // showing the toast in front/foreground is not priority as they are mostly for debug
+        toastManager.toFront(); // TODO FIX: showing the toast in front/foreground is not priority as they are mostly for debug
         
         //
         stage.addActor(gameWindowTable);
@@ -109,6 +109,7 @@ public class MainGameScreen implements Screen {
         
         // Add Custom Key Adapter
         InputAdapter keyboardKeysAdapter = new InputAdapter() {
+            
             /**
              * WASD + Other Keys
              * 
@@ -117,6 +118,7 @@ public class MainGameScreen implements Screen {
             @Override
             public boolean keyDown(int keycode) {
                 switch (keycode) {
+                
                 /**
                  * F12 - SCREENSHOT / SCREEN CAPTURE
                  */ 
