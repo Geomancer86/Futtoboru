@@ -11,6 +11,7 @@ import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.SaveGame;
 
 public class NameGeneratorTests {
 
@@ -22,6 +23,9 @@ public class NameGeneratorTests {
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         config.updatesPerSecond = 30;
         application = new Futtoboru();
+        
+        // Initialize the Saved Game
+        application.setCurrentGame(new SaveGame());
         
         new HeadlessApplication(application , config);
     }
@@ -41,7 +45,7 @@ public class NameGeneratorTests {
         // Generates a random game
         String randomName [] = NameGenerator.generateName(england);
    
-        System.out.println("Generated Name: " + randomName);
+        System.out.println("Generated Name: " + randomName[0] + " " + randomName[1]);
         
         assertNotNull(randomName);
     }
@@ -62,7 +66,7 @@ public class NameGeneratorTests {
         assertNotNull(england);
         
         // Existing Persons List
-        Person person = PersonGenerator.generateUniquePerson(england);
+        Person person = application.getPersonGenerator().generateUniquePerson(england, false);
         
         //
         assertNotNull(person);
@@ -74,7 +78,7 @@ public class NameGeneratorTests {
     void generateManyPersonsTest() {
         
         DatabaseLoader dbLoader = DatabaseLoader.getInstance();
-        
+
         assertNotNull(dbLoader);
         
         // England
@@ -87,12 +91,21 @@ public class NameGeneratorTests {
         for (int a = 0; a < generate; a++) {
         
             // Existing Persons List
-            Person person = PersonGenerator.generateUniquePerson(england);
+            Person person = application.getPersonGenerator().generateUniquePerson(england, true);
             
             //
-            assertNotNull(person);
+//            assertNotNull(person);
             
-            System.out.println("Generated Person: " + person.toString());
+            if (person != null) {
+                // Add unduplicated person to Current Saved Game Person List
+                application.getCurrentGame().getAllPersons().add(person);
+                
+                System.out.println("Generated Person: " + person.toString());
+            } else {
+                
+                //
+//                System.out.println("Ignoring Duplicated Person Name!");
+            }
         }
     }
 }

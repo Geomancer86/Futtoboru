@@ -23,7 +23,7 @@ import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.ScriptsManager;
-import com.rndmodgames.futtoboru.system.generators.NameGenerator;
+import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -79,6 +79,7 @@ public class Futtoboru extends Game {
     private SaveGame currentGame = null;
     private FuttoboruGameEngine gameEngine = null;
     private ScriptsManager scriptsManager = null;
+    private PersonGenerator personGenerator = null;
     
     // main constructor
     public Futtoboru() {
@@ -136,6 +137,9 @@ public class Futtoboru extends Game {
 
         // Initialize the Script Manager
         this.scriptsManager = new ScriptsManager(this);
+        
+        // Initialize the Person Generator
+        this.setPersonGenerator(new PersonGenerator(this));
         
         // Initialize the Game Engine
         this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager));
@@ -290,6 +294,14 @@ public class Futtoboru extends Game {
 
     public void setScriptsManager(ScriptsManager scriptsManager) {
         this.scriptsManager = scriptsManager;
+    }
+
+    public PersonGenerator getPersonGenerator() {
+        return personGenerator;
+    }
+
+    public void setPersonGenerator(PersonGenerator personGenerator) {
+        this.personGenerator = personGenerator;
     }
 
     public FuttoboruGameEngine getGameEngine() {
