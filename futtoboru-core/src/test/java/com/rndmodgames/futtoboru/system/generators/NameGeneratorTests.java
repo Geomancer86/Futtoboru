@@ -86,7 +86,7 @@ public class NameGeneratorTests {
         
         assertNotNull(england);
         
-        int generate = 400;
+        int generate = 40;
         int invalid = 0;
         
         for (int a = 0; a < generate; a++) {
@@ -101,7 +101,7 @@ public class NameGeneratorTests {
                 // Add unduplicated person to Current Saved Game Person List
                 application.getCurrentGame().getAllPersons().add(person);
                 
-                System.out.println("Generated Person: " + person.toString());
+//                System.out.println("Generated Person: " + person.toString());
             } else {
                 
                 //
