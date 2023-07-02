@@ -59,7 +59,6 @@ public class PersonGenerator {
          * 
          *  - Generate default birth dates for Players to be 16-40 years old
          *  - Birth Date should be relative to Current Game / Current Date
-         *      - NOTE: This will fail on Unit Tests so Date must be set to default / today in those cases
          */
         
         LocalDateTime randomBirthDate = null;
@@ -83,7 +82,7 @@ public class PersonGenerator {
         } else {
 
             // Set the relative birth date to NOW
-            // Used by Unit Tests
+            // NOTE: Used by Unit Tests
             randomBirthDate = LocalDateTime.now();
         }
         

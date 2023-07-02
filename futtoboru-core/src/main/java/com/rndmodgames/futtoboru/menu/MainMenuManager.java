@@ -7,12 +7,14 @@ import com.rndmodgames.futtoboru.menu.buttons.AuthorityButton;
 import com.rndmodgames.futtoboru.menu.buttons.HomeButton;
 import com.rndmodgames.futtoboru.menu.buttons.InboxButton;
 import com.rndmodgames.futtoboru.menu.buttons.PersonalDetailsButton;
+import com.rndmodgames.futtoboru.menu.buttons.ScheduleButton;
 import com.rndmodgames.futtoboru.menu.buttons.SquadButton;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
 import com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable;
 import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
 import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
+import com.rndmodgames.futtoboru.tables.schedule.ScheduleScreenTable;
 import com.rndmodgames.futtoboru.tables.squad.SquadScreenTable;
 
 /**
@@ -46,7 +48,8 @@ public class MainMenuManager {
     private static final int WORLD_SCREEN            =  600;
     
     //
-    public static final int MAIN_SQUAD_SCREEN = 1000;
+    public static final int MAIN_SQUAD_SCREEN   = 1000;
+    public static final int SCHEDULE_SCREEN     = 2000;
         
     // Main Game Buttons
     private VisTextButton homeButton = null;
@@ -54,6 +57,7 @@ public class MainMenuManager {
     private VisTextButton authorityButton = null;
     private VisTextButton inboxButton = null;
     private VisTextButton squadButton = null;
+    private VisTextButton scheduleButton = null;
     
     //
     private HomeScreenTable homeScreenTable = null;
@@ -61,6 +65,7 @@ public class MainMenuManager {
     private AuthorityScreenTable authorityScreenTable = null;
     private InboxScreenTable inboxScreenTable = null;
     private SquadScreenTable squadScreenTable = null;
+    private ScheduleScreenTable scheduleScreenTable = null;
     
     /**
      * 
@@ -80,6 +85,7 @@ public class MainMenuManager {
         authorityScreenTable = new AuthorityScreenTable(game);
         inboxScreenTable = new InboxScreenTable(game);
         squadScreenTable = new SquadScreenTable(game);
+        scheduleScreenTable = new ScheduleScreenTable(game);
         
         // custom buttons with logic to switch screen/tables
         homeButton = new HomeButton(this);
@@ -87,6 +93,7 @@ public class MainMenuManager {
         authorityButton = new AuthorityButton(this);
         inboxButton = new InboxButton(this);
         squadButton = new SquadButton(this);
+        scheduleButton = new ScheduleButton(this);
         
         /**
          * Dynamic Buttons Menu depending on the CURRENT_JOB
@@ -147,6 +154,10 @@ public class MainMenuManager {
             buttonsMenu.add(squadButton).fill();
             buttonsMenu.row();
             
+            // Schedule
+            buttonsMenu.add(scheduleButton).fill();
+            buttonsMenu.row();
+            
             // Personal Details
             buttonsMenu.add(personalDetailsButton).fill();
             buttonsMenu.row();
@@ -204,6 +215,12 @@ public class MainMenuManager {
 
             break;            
             
+        case SCHEDULE_SCREEN:
+            
+         // Set as main content
+            parentTable.add(scheduleScreenTable);
+            break;
+        
         //
         default:
             System.out.println("SCREEN NOT SET UP");
