@@ -30,7 +30,7 @@ public class SquadScreenTable extends VisTable{
     SaveGame currentGame;
     
     // Dynamic Club
-    private Club currentClub = null;
+    private Club displayedClub = null;
     
     VisLabel clubNameValueLabel = new VisLabel("");
     VisLabel playersCountLabel = new VisLabel("");
@@ -86,6 +86,8 @@ public class SquadScreenTable extends VisTable{
         this.add(playersAtClubLabel);
         this.add(playersCountLabel);
         this.row();
+        
+        // Players List Component
     }
     
     /**
@@ -94,10 +96,10 @@ public class SquadScreenTable extends VisTable{
     public void updateDynamicComponents() {
         
         //
-        clubNameValueLabel.setText(currentClub.getName());
+        clubNameValueLabel.setText(displayedClub.getName());
         
         // No Players at Club
-        if (currentClub.getPlayers().isEmpty()) {
+        if (displayedClub.getPlayers().isEmpty()) {
             
             //
             playersCountLabel.setText(LanguageModLoader.getValue("no_players_at_club"));
@@ -105,15 +107,17 @@ public class SquadScreenTable extends VisTable{
         } else {
             
             // Count of Players & Player List Component
-            playersCountLabel.setText(currentClub.getPlayers().size() + " " + LanguageModLoader.getValue("players_at_club"));
+            playersCountLabel.setText(displayedClub.getPlayers().size() + " " + LanguageModLoader.getValue("players_at_club"));
         }
+        
+        // Update Players List
     }
 
     public Club getCurrentClub() {
-        return currentClub;
+        return displayedClub;
     }
 
     public void setCurrentClub(Club currentClub) {
-        this.currentClub = currentClub;
+        this.displayedClub = currentClub;
     }
 }
