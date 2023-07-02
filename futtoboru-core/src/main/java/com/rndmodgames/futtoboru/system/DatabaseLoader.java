@@ -84,7 +84,10 @@ public class DatabaseLoader {
     // singleton
     private static DatabaseLoader instance;
 
-    //
+    /**
+     * TODO: use the same random generator all over
+     * TODO: set a game seed to allow to replay the same game over and over
+     */
     public static Random RNG = new Random();
     
     public DatabaseLoader() {

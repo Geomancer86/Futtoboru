@@ -10,6 +10,7 @@ import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 
 /**
@@ -93,8 +94,6 @@ public class SaveGame implements Serializable {
     
     /**
      * Scripts Support
-     * 
-     * TODO WIP
      */
     private List<BasicScript> gameScripts = new ArrayList<>();
     
@@ -102,6 +101,11 @@ public class SaveGame implements Serializable {
      * Person Database
      */
     private List<Person> allPersons = new ArrayList<>();
+    
+    /**
+     * Player Database
+     */
+    private List<Player> allPlayers = new ArrayList<>();
     
     // required for de-serializing
     public SaveGame() {
@@ -180,5 +184,13 @@ public class SaveGame implements Serializable {
 
     public void setAllPersons(List<Person> allPersons) {
         this.allPersons = allPersons;
+    }
+
+    public List<Player> getAllPlayers() {
+        return allPlayers;
+    }
+
+    public void setAllPlayers(List<Player> allPlayers) {
+        this.allPlayers = allPlayers;
     }
 }

@@ -17,8 +17,9 @@ import com.rndmodgames.futtoboru.data.Person;
  */
 public class SaveLoadSystem {
 
+    // TODO: parametrize and save in personal preferences
     private static final String USER_HOME = "user.home";
-    private static final String GAME_FOLDER = "/Documents/RndModGames/Futtuboru"; // TBD NAME
+    private static final String GAME_FOLDER = "/Documents/RndModGames/Futtuboru";
     private static final String MANAGERS_FOLDER = "/managers/";
     private static final String SAVEGAMES_FOLDER = "/savegames/";
     

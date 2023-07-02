@@ -2,15 +2,21 @@ package com.rndmodgames.futtoboru.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.topmenu.MainGameMenuTable;
+import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.tools.SharingUtils;
 
 /**
  * Main Game Screen v1
@@ -43,6 +49,9 @@ public class MainGameScreen implements Screen {
     //
     private MainGameMenuTable mainGameMenu = null;
     private VisTable mainTable = null;
+    
+    //
+    private ToastManager toastManager;
     
     //
     public MainGameScreen(Game parent) {
@@ -80,6 +89,11 @@ public class MainGameScreen implements Screen {
         gameWindowTable.add(menuManager.getButtonsMenu()).top();
         gameWindowTable.add(mainTable).grow();
 
+        // Initialize Toast Manager
+        toastManager = new ToastManager(stage);
+        toastManager.setScreenPadding(10, 60); // hardcoded to let the toast show on not under the top menu, 
+        toastManager.toFront(); // TODO FIX: showing the toast in front/foreground is not priority as they are mostly for debug
+        
         //
         stage.addActor(gameWindowTable);
     }
@@ -87,8 +101,48 @@ public class MainGameScreen implements Screen {
     @Override
     public void show() {
         
-        // Add input capabilities
-        Gdx.input.setInputProcessor(stage);
+        // Multiplex Input Processors
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        
+        // UI Stage Adapter
+        inputMultiplexer.addProcessor(stage);
+        
+        // Add Custom Key Adapter
+        InputAdapter keyboardKeysAdapter = new InputAdapter() {
+            
+            /**
+             * WASD + Other Keys
+             * 
+             * TODO: customize key bindings on Settings
+             */
+            @Override
+            public boolean keyDown(int keycode) {
+                switch (keycode) {
+                
+                /**
+                 * F12 - SCREENSHOT / SCREEN CAPTURE
+                 */ 
+                case Keys.F12:
+                    // Screenshot
+
+                    // TODO: unhardcode screenshot folders
+                    SharingUtils.screenshot();
+
+                    // Toast TODO: add folder name to toast text
+                    toastShort(LanguageModLoader.getValue("screenshot_taken"));
+
+                    return true;
+                default:
+                    return false;
+                }
+            }
+        };
+        
+        // Add the Keyboard Keys Adapter to Input Multiplexer
+        inputMultiplexer.addProcessor(keyboardKeysAdapter);
+        
+        // Set multiplexer to take care of all input
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -132,5 +186,18 @@ public class MainGameScreen implements Screen {
     public void dispose() {
         // TODO Auto-generated method stub
         
+    }
+    
+    // Toasts
+    /**
+     * Displays short toast
+     */
+    public void toastShort(String text) {
+        
+        // 
+        toastManager.show(text, 5);
+        
+        //
+        toastManager.toFront();
     }
 }

@@ -59,7 +59,7 @@ public class PersonGenerator {
                 if (person.getName().equals(check.getName())
                         && person.getLastname().equals(check.getLastname())) {
                     
-                    System.out.println("DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
+//                    System.out.println("DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
                     return null;
                 }
             }
