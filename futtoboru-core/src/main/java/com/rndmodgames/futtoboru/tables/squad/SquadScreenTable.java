@@ -32,8 +32,10 @@ public class SquadScreenTable extends VisTable{
     // Dynamic Club
     private Club displayedClub = null;
     
+    // Dynamic Components
     VisLabel clubNameValueLabel = new VisLabel("");
     VisLabel playersCountLabel = new VisLabel("");
+    PlayersListTable playersList = new PlayersListTable();
     
     //
     public SquadScreenTable(Game parent) {
@@ -88,6 +90,8 @@ public class SquadScreenTable extends VisTable{
         this.row();
         
         // Players List Component
+        this.addSeparator().colspan(2);
+        this.add(playersList).colspan(2);
     }
     
     /**
@@ -110,7 +114,9 @@ public class SquadScreenTable extends VisTable{
             playersCountLabel.setText(displayedClub.getPlayers().size() + " " + LanguageModLoader.getValue("players_at_club"));
         }
         
-        // Update Players List
+        // Update Players List Component
+        playersList.setCurrentPlayers(displayedClub.getPlayers());
+        playersList.updateDynamicComponents();
     }
 
     public Club getCurrentClub() {
