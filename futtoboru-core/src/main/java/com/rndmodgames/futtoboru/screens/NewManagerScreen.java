@@ -3,6 +3,9 @@ package com.rndmodgames.futtoboru.screens;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -222,17 +225,22 @@ public class NewManagerScreen implements Screen {
                     
                     Calendar calendar = new GregorianCalendar();
                     calendar.setTime(birthDate);
+
+                    //
+                    manager.setBirthDate(LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()));
                     
-                    manager.setBirthDay(calendar.get(Calendar.DAY_OF_MONTH));
-                    manager.setBirthMonth(calendar.get(Calendar.MONTH));
-                    manager.setBirthYear(calendar.get(Calendar.YEAR));
+                    //
+//                    LocalDateTime birthdate =LocalDateTime.of(LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)), LocalTime.now());
+                    
+                    //
+//                    manager.setBirthDate(birthdate);
                     
                 } catch (ParseException e) {
                     
                     e.printStackTrace();
                 }
-                
-//                manager.setBirthdate(new Date());
+
+                //
                 manager.setCountry(placeOfBirthSelectBox.getSelectedCountry());
                 manager.setState(placeOfBirthSelectBox.getSelectedState());
 

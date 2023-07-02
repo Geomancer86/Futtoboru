@@ -1,5 +1,8 @@
 package com.rndmodgames.futtoboru.tables.person;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -34,6 +37,9 @@ public class PersonDetailsScreenTable extends VisTable {
     VisLabel currentCountryValueLabel = new VisLabel();
     VisLabel currentJobValueLabel = new VisLabel();
     VisLabel currentClubValueLabel = new VisLabel();
+    
+    //
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
     
     public PersonDetailsScreenTable(Game parent) {
         
@@ -89,7 +95,11 @@ public class PersonDetailsScreenTable extends VisTable {
             nameValueLabel.setText(person.getName());
             lastNameValueLabel.setText(person.getLastname());
             nationalityValueLabel.setText(person.getCountry().getCommonName());
-            ageValueLabel.setText(person.getBirthYear());
+            
+            //
+            ageValueLabel.setText(dateFormatter.format(person.getBirthDate()));
+            
+            //
             currentCountryValueLabel.setText(person.getCurrentCountry().getCommonName());
             currentJobValueLabel.setText(person.getPrimaryProfession().getName());
             

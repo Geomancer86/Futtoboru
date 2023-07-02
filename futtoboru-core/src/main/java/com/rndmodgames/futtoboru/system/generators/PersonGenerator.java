@@ -1,8 +1,14 @@
 package com.rndmodgames.futtoboru.system.generators;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
  * Person Generator v1
@@ -12,6 +18,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 public class PersonGenerator {
 
     Futtoboru game;
+    SaveGame currentGame;
     
     public PersonGenerator(Futtoboru parent) {
         
@@ -19,9 +26,10 @@ public class PersonGenerator {
     }
     
     /**
+     * @param season 
      * 
      */
-    public Person generateUniquePerson(Country country, boolean unique) {
+    public Person generateUniquePerson(Country country, Season season, boolean unique) {
         
         /**
          * - Generate Name
@@ -39,10 +47,52 @@ public class PersonGenerator {
         
         String generatedName  [] = NameGenerator.generateName(country);
 
+        // Generated Name
         person.setName(generatedName[0]);
         person.setLastname(generatedName[1]);
+    
+        // Nationality
+        person.setCountry(country);
         
-//        System.out.println("GENERATED NAME: " + person.getName() + " " + person.getLastname());
+        /**
+         * Birthdate / Age
+         * 
+         *  - Generate default birth dates for Players to be 16-40 years old
+         *  - Birth Date should be relative to Current Game / Current Date
+         *      - NOTE: This will fail on Unit Tests so Date must be set to default / today in those cases
+         */
+        
+        LocalDateTime randomBirthDate = null;
+        
+        // Randomize
+        int randomYears = 16 + DatabaseLoader.RNG.nextInt(30);
+        int randomDays = DatabaseLoader.RNG.nextInt(365);
+        
+        if (currentGame != null) {
+            
+            // Set the relative birth date to the Current Game Date
+            // Used in Real Time Person Generation
+            randomBirthDate = currentGame.getGameDate();
+            
+        } else if (season != null) {    
+        
+            // Use the Season Date
+            // Used when generating new data During New Game
+            randomBirthDate = season.getStartDate();
+            
+        } else {
+
+            // Set the relative birth date to NOW
+            // Used by Unit Tests
+            randomBirthDate = LocalDateTime.now();
+        }
+        
+        // Substract the Years and Days to get the Birthdate
+        randomBirthDate = randomBirthDate.minusYears(randomYears);
+        randomBirthDate = randomBirthDate.minusDays(randomDays);
+        
+        //
+        person.setBirthDate(randomBirthDate);
         
         /**
          * Check for Uniqueness
@@ -64,8 +114,10 @@ public class PersonGenerator {
                 }
             }
         }
-        
-//        System.out.println("VALID NAME, CREATE PERSON!");
+
+        /**
+         * TODO: DEBUG/log: pretty print person data
+         */
         
         return person;
     }

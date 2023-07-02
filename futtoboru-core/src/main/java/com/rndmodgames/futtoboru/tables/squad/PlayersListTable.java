@@ -1,10 +1,13 @@
 package com.rndmodgames.futtoboru.tables.squad;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -21,6 +24,9 @@ public class PlayersListTable extends VisTable {
     
     // Dynamic Components
     VisTable mainTable;
+    
+    //
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
     
     public PlayersListTable() {
         
@@ -50,11 +56,28 @@ public class PlayersListTable extends VisTable {
             return;
         }
         
+        /**
+         * Player List Table Header:
+         * 
+         *  - Column Titles                 [WIP]
+         *  - Sort by Clicking on Title     [TBD]
+         *  - Filters                       [TBD]
+         *  - Add and Remove Columns        [TBD] // customization by player saved per screen TBD
+         */
+        
         // iterate players and fill the list,
         for (Player player : currentPlayers) {
             
             this.row();
+            
+            // Age / Birthdate
+            this.add(dateFormatter.format(player.getPerson().getBirthDate()));
+            
+            // Full Name
             this.add(player.getPerson().getName() + " " + player.getPerson().getLastname());
+            
+            
+            // DatabaseLoader.formatter.format(startingSeason.getStartDate())
         }
     }
     

@@ -80,7 +80,7 @@ public class ClubsLoader {
                         for (int a = 0; a < generate; a++) {
                             
                             // Add Random Player to Club
-                            Person person = personGenerator.generateUniquePerson(club.getCountry(), false);
+                            Person person = personGenerator.generateUniquePerson(club.getCountry(), season, false);
                             club.getPlayers().add(playerGenerator.generateRandomPlayer(person));
                         }
                         

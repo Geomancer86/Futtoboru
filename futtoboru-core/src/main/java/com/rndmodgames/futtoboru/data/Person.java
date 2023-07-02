@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * Person v1
@@ -20,9 +21,7 @@ public class Person implements Serializable {
     /**
      * Birth Date
      */
-    private Integer birthDay;
-    private Integer birthMonth;
-    private Integer birthYear;
+    private LocalDateTime birthDate;
     
     /**
      * Birth Place
@@ -65,28 +64,12 @@ public class Person implements Serializable {
         this.lastname = lastname;
     }
 
-    public Integer getBirthDay() {
-        return birthDay;
+    public LocalDateTime getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirthDay(Integer birthDay) {
-        this.birthDay = birthDay;
-    }
-
-    public Integer getBirthMonth() {
-        return birthMonth;
-    }
-
-    public void setBirthMonth(Integer birthMonth) {
-        this.birthMonth = birthMonth;
-    }
-
-    public Integer getBirthYear() {
-        return birthYear;
-    }
-
-    public void setBirthYear(Integer birthYear) {
-        this.birthYear = birthYear;
+    public void setBirthDate(LocalDateTime birthDate) {
+        this.birthDate = birthDate;
     }
 
     public Country getCountry() {
@@ -135,19 +118,5 @@ public class Person implements Serializable {
 
     public void setCurrentClub(Club currentClub) {
         this.currentClub = currentClub;
-    }
-
-    @Override
-    public String toString() {
-        return "Person [" + (id != null ? "id=" + id + ", " : "") + (name != null ? "name=" + name + ", " : "")
-                + (lastname != null ? "lastname=" + lastname + ", " : "")
-                + (birthDay != null ? "birthDay=" + birthDay + ", " : "")
-                + (birthMonth != null ? "birthMonth=" + birthMonth + ", " : "")
-                + (birthYear != null ? "birthYear=" + birthYear + ", " : "")
-                + (country != null ? "country=" + country + ", " : "") + (state != null ? "state=" + state + ", " : "")
-                + (city != null ? "city=" + city + ", " : "")
-                + (primaryProfession != null ? "primaryProfession=" + primaryProfession + ", " : "")
-                + (currentCountry != null ? "currentCountry=" + currentCountry + ", " : "")
-                + (currentClub != null ? "currentClub=" + currentClub : "") + "]";
     }
 }

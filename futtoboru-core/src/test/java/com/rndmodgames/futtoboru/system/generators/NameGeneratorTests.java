@@ -66,7 +66,7 @@ public class NameGeneratorTests {
         assertNotNull(england);
         
         // Existing Persons List
-        Person person = application.getPersonGenerator().generateUniquePerson(england, false);
+        Person person = application.getPersonGenerator().generateUniquePerson(england, null, false);
         
         //
         assertNotNull(person);
@@ -92,7 +92,7 @@ public class NameGeneratorTests {
         for (int a = 0; a < generate; a++) {
         
             // Existing Persons List
-            Person person = application.getPersonGenerator().generateUniquePerson(england, true);
+            Person person = application.getPersonGenerator().generateUniquePerson(england, null, true);
             
             //
 //            assertNotNull(person);
