@@ -7,7 +7,6 @@ import java.util.Locale;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Player;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -69,6 +68,9 @@ public class PlayersListTable extends VisTable {
         for (Player player : currentPlayers) {
             
             this.row();
+            
+            // Nationality / Country
+            this.add(player.getPerson().getCountry().getCommonName());
             
             // Age / Birthdate
             this.add(dateFormatter.format(player.getPerson().getBirthDate()));
