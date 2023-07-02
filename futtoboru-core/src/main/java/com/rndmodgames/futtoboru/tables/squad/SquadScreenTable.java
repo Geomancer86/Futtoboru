@@ -105,7 +105,7 @@ public class SquadScreenTable extends VisTable{
         } else {
             
             // Count of Players & Player List Component
-            playersCountLabel.setText(currentClub.getPlayers().size() + LanguageModLoader.getValue("players_at_club"));
+            playersCountLabel.setText(currentClub.getPlayers().size() + " " + LanguageModLoader.getValue("players_at_club"));
         }
     }
 

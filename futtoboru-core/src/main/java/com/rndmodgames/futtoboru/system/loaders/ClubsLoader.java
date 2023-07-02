@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
+import com.rndmodgames.futtoboru.system.generators.PlayerGenerator;
 
 public class ClubsLoader {
     
@@ -18,6 +21,10 @@ public class ClubsLoader {
     public static void loadSeasonClubs(Season season) {
         
         FileHandle seasonClubsFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/clubs.txt");
+    
+        //
+        PersonGenerator personGenerator = new PersonGenerator(null);
+        PlayerGenerator playerGenerator = new PlayerGenerator(null);
         
         if (seasonClubsFile.exists()) {
             
@@ -54,8 +61,28 @@ public class ClubsLoader {
                         // Country
                         club.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[5])));
                         
-                        // Initialize Players At Club List
+                        /**
+                         * Load or Randomize Players At Club List
+                         * 
+                         * TODO: WIP
+                         * 
+                         *  - TODO/TBD: Load existing Players from File System Data Bundled with the Season
+                         *  - TODO/TBD: Generate random players depending on basic attributes/scripts (for example, average player level = 8) so the clubs strenght is relative to historic values
+                         *  - TODO/TBD: Pick the number and quality of Players to be generated, the stronger club should have more rotation of better players
+                         */
                         club.setPlayers(new ArrayList<>());
+                        
+                        /**
+                         * Quick and dirty random generation just to fill the list and make sure the screen looks Ok
+                         */
+                        int generate = 20;
+                        
+                        for (int a = 0; a < generate; a++) {
+                            
+                            // Add Random Player to Club
+                            Person person = personGenerator.generateUniquePerson(club.getCountry(), false);
+                            club.getPlayers().add(playerGenerator.generateRandomPlayer(person));
+                        }
                         
                         //
                         season.getClubs().add(club);
