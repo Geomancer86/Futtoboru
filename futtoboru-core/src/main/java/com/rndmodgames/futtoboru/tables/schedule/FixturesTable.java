@@ -3,6 +3,7 @@ package com.rndmodgames.futtoboru.tables.schedule;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
  * Fixtures Table v1
@@ -12,9 +13,14 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 public class FixturesTable extends VisTable {
 
     //
-    private Club currentClub;
+    Futtoboru game;
+    SaveGame currentGame;
     
+    //
+    private Club currentClub;
+
     // Dynamic Components
+    VisTable matchListTable = null;
     
     //
     public FixturesTable(Futtoboru parent) {
@@ -22,10 +28,26 @@ public class FixturesTable extends VisTable {
         // vis ui default spacing
         super(true);
         
+        //
+        this.game = parent;
+        this.currentGame = game.getCurrentGame();
+        
         /**
          * Club Current Matches
          */
-        this.add("PLACEHOLDER FIXTURES COMPONENT - WORK IN PROGRESS!");
+        this.add("FIXTURES");
+        this.row();
+        
+        /**
+         * Match List Table
+         */
+        matchListTable = new VisTable(true);
+        
+        //
+        this.add(matchListTable);
+        
+        //
+        updateDynamicComponents();
         
         /**
          * WEEKLY COMPONENT / DAY TO DAY SELECTABLE COMPONENT
@@ -54,8 +76,21 @@ public class FixturesTable extends VisTable {
          */
     }
 
+    /**
+     * 
+     */
     public void updateDynamicComponents() {
         
+        System.out.println("SHOWING CLUB SCHEDULED MATCH LIST!");
+        
+        //
+        matchListTable.clear();
+        
+        matchListTable.add("The Club don't have any planned matches, pick and opponent and conditions and propose a friendly match to see it on this list");
+        
+        /**
+         * Match List
+         */
     }
     
     public Club getCurrentClub() {

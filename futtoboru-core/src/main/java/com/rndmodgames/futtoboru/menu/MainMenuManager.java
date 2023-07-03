@@ -217,6 +217,12 @@ public class MainMenuManager {
             
         case SCHEDULE_SCREEN:
             
+            // Set the Club for the Schedule Screen
+            scheduleScreenTable.setCurrentClub(currentGame.getOwner().getCurrentClub());
+            
+            // Update dynamic components
+            scheduleScreenTable.updateDynamicComponents();
+            
             // Set as main content
             parentTable.add(scheduleScreenTable);
             break;
@@ -240,6 +246,9 @@ public class MainMenuManager {
         
         // TODO: only call if current screen/visible
         authorityScreenTable.updateDynamicComponents();
+        
+        // TODO: same
+        scheduleScreenTable.updateDynamicComponents();
     }
 
     //

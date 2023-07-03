@@ -3,6 +3,7 @@ package com.rndmodgames.futtoboru.tables.schedule;
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
@@ -21,8 +22,12 @@ public class ScheduleScreenTable extends VisTable {
     Futtoboru game;
     SaveGame currentGame;
     
+    //
+    private Club currentClub;
+    
     // Dynamic Components
     FixturesTable fixturesTable = null;
+    ArrangeFriendlyTable arrangeFriendlyTable = null;
     
     public ScheduleScreenTable(Game parent) {
         
@@ -38,9 +43,13 @@ public class ScheduleScreenTable extends VisTable {
         
         // Fixtures Table
         fixturesTable = new FixturesTable(game);
+        
+        // Arrange Friendly Table
+        arrangeFriendlyTable = new ArrangeFriendlyTable(game);
        
         this.row();
         this.add(fixturesTable);
+        this.add(arrangeFriendlyTable);
         
         /**
          * TODO 
@@ -98,5 +107,20 @@ public class ScheduleScreenTable extends VisTable {
      */
     public void updateDynamicComponents() {
         
+        //
+        fixturesTable.setCurrentClub(currentClub);
+        arrangeFriendlyTable.setCurrentClub(currentClub);
+        
+        //
+        fixturesTable.updateDynamicComponents();
+        arrangeFriendlyTable.updateDynamicComponents();
+    }
+
+    public Club getCurrentClub() {
+        return currentClub;
+    }
+
+    public void setCurrentClub(Club currentClub) {
+        this.currentClub = currentClub;
     }
 }
