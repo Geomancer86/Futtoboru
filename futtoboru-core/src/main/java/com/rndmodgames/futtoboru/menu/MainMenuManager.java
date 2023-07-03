@@ -217,7 +217,7 @@ public class MainMenuManager {
             
         case SCHEDULE_SCREEN:
             
-         // Set as main content
+            // Set as main content
             parentTable.add(scheduleScreenTable);
             break;
         

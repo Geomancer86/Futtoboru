@@ -32,4 +32,15 @@ public class ScheduleScreenTable extends VisTable {
         
         this.add(new VisLabel("SCHEDULE SCREEN PLACEHOLDER - WORK IN PROGRESS!"));
     }
+    
+    /**
+     * TODO WIP:
+     * 
+     *  - Add Friendly Button
+     *  - Scheduled Events / Matches List
+     *  - 
+     */
+    public void updateDynamicComponents() {
+        
+    }
 }

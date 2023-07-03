@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.system.generators;
 
+import java.util.ArrayList;
+
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.loaders.NamesLoader;
@@ -12,7 +14,7 @@ import com.rndmodgames.futtoboru.system.loaders.NamesLoader;
  * @author Geomancer86
  */
 public class NameGenerator {
-        
+
     /**
      * Generates an unique Name and Lastname Pair
      * 

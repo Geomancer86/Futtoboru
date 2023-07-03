@@ -14,7 +14,7 @@ import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
 import com.rndmodgames.futtoboru.system.generators.PlayerGenerator;
 
 public class ClubsLoader {
-    
+
     /**
      * Load Season Teams
      */
@@ -22,7 +22,11 @@ public class ClubsLoader {
         
         FileHandle seasonClubsFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/clubs.txt");
     
-        //
+        /**
+         * We need a way to avoid duplicates, as we only check on the Persons generated in the Save Game
+         * 
+         * Note: this is a difference instance of person/player generatorss as doesn't have the game reference
+         */
         PersonGenerator personGenerator = new PersonGenerator(null);
         PlayerGenerator playerGenerator = new PlayerGenerator(null);
         
@@ -80,8 +84,22 @@ public class ClubsLoader {
                         for (int a = 0; a < generate; a++) {
                             
                             // Add Random Player to Club
-                            Person person = personGenerator.generateUniquePerson(club.getCountry(), season, false);
-                            club.getPlayers().add(playerGenerator.generateRandomPlayer(person));
+                            Person person = personGenerator.generateUniquePerson(club.getCountry(), season, true);
+                            
+                            System.out.println("GENERATED: " + person);
+                            
+                            // Add to existing People List if not null (not duplicated)
+                            if (person != null) {
+                                
+                                // 
+                                DatabaseLoader.getPersons().add(person);
+                                
+                                club.getPlayers().add(playerGenerator.generateRandomPlayer(person));
+                                
+                            } else {
+                             
+                                System.out.println("Generated Person Was Duplicated, Ignore!");
+                            }
                         }
                         
                         //
@@ -117,5 +135,6 @@ public class ClubsLoader {
         }
         
         System.out.println("FINISHED LOADING " + season.getClubs().size() + " SEASON CLUBS");
+        System.out.println("FINISHED LOADING / GENERATING " + DatabaseLoader.getPersons().size() + " CLUB PLAYERS");
     }
 }

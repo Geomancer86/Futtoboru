@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.data.Continent;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.DataBase;
 import com.rndmodgames.futtoboru.data.League;
+import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.loaders.AuthoritiesLoader;
@@ -59,6 +60,7 @@ public class DatabaseLoader {
     private static List<Country> countries = new ArrayList<>();
     private static List<League> leagues = new ArrayList<>();
     private static List<Club> clubs = new ArrayList<>();
+    private static List<Person> persons = new ArrayList<>();
     
     //
     private static HashMap<Long, Continent> continentsById = new HashMap<>();
@@ -181,6 +183,14 @@ public class DatabaseLoader {
         return professions;
     }
     
+    public static List<Person> getPersons() {
+        return persons;
+    }
+
+    public static void setPersons(List<Person> persons) {
+        DatabaseLoader.persons = persons;
+    }
+
     /**
      * @param playerSelectable
      * @return the List of selectable or not Player Professions

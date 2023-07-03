@@ -1,7 +1,8 @@
 package com.rndmodgames.futtoboru.system.generators;
 
 import java.time.LocalDateTime;
-import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Person;
@@ -19,6 +20,8 @@ public class PersonGenerator {
 
     Futtoboru game;
     SaveGame currentGame;
+    
+    private List<Person> allPerson = new ArrayList<>();
     
     public PersonGenerator(Futtoboru parent) {
         
@@ -97,19 +100,34 @@ public class PersonGenerator {
          * Check for Uniqueness
          */
         if (unique) {
-            
-            /**
-             * Check against current saved game existing people list
-             */
-            for (Person check : game.getCurrentGame().getAllPersons()) {
-                
-//                System.out.println("CHECKING GENERATED NAME AGAINST: " + check.getName() + " " + check.getLastname());
-                
-                if (person.getName().equals(check.getName())
-                        && person.getLastname().equals(check.getLastname())) {
+
+            // If Generating Before Game Running
+            if (game == null) {
+                                
+                for (Person check : DatabaseLoader.getPersons()) {
                     
-//                    System.out.println("DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
-                    return null;
+//                    System.out.println("CHECKING BEFORE RUNNING - GENERATED NAME AGAINST " + DatabaseLoader.getPersons().size() + " EXISTING PERSON NAMES");
+
+                    if (person.getName().equals(check.getName()) && person.getLastname().equals(check.getLastname())) {
+
+                        System.out.println("DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
+                        return null;
+                    }
+                }
+                
+            } else {
+                
+                // If Generating When Game Running
+                for (Person check : game.getCurrentGame().getAllPersons()) {
+
+                    // System.out.println("CHECKING GENERATED NAME AGAINST: " + check.getName() + " " + check.getLastname());
+//                    System.out.println("CHECKING INGAME - GENERATED NAME AGAINST " + game.getCurrentGame().getAllPersons().size() + " EXISTING PERSON NAMES");
+
+                    if (person.getName().equals(check.getName()) && person.getLastname().equals(check.getLastname())) {
+
+                        System.out.println("DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
+                        return null;
+                    }
                 }
             }
         }
