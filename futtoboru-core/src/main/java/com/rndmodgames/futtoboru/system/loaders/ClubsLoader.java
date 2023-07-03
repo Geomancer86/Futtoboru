@@ -91,7 +91,10 @@ public class ClubsLoader {
                             // Add to existing People List if not null (not duplicated)
                             if (person != null) {
                                 
-                                // 
+                                /**
+                                 * TODO: this list is safe to clear after the new game is started or on loading a new game
+                                 * TODO: not needed to do until we press new game
+                                 */
                                 DatabaseLoader.getPersons().add(person);
                                 
                                 club.getPlayers().add(playerGenerator.generateRandomPlayer(person));
