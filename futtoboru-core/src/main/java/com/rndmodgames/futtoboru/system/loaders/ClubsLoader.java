@@ -86,7 +86,7 @@ public class ClubsLoader {
                             // Add Random Player to Club
                             Person person = personGenerator.generateUniquePerson(club.getCountry(), season, true);
                             
-                            System.out.println("GENERATED: " + person);
+//                            System.out.println("GENERATED: " + person);
                             
                             // Add to existing People List if not null (not duplicated)
                             if (person != null) {

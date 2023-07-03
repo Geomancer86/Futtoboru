@@ -39,6 +39,9 @@ public class ScheduleScreenTable extends VisTable {
      *  - Add Friendly Button
      *  - Scheduled Events / Matches List
      *  - 
+     *  
+     *  
+     *  
      */
     public void updateDynamicComponents() {
         
