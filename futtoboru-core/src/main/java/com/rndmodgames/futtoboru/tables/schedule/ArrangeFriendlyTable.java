@@ -1,10 +1,15 @@
 package com.rndmodgames.futtoboru.tables.schedule;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.EngineParameters;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Arrange Friendly Table v1
@@ -20,6 +25,11 @@ public class ArrangeFriendlyTable extends VisTable {
     //
     private Club currentClub;
     
+    // Selected Component Values
+    String selectedMatchType = null;
+    String selectedVenueType = null;
+    String selectedMatchRulesType = null;
+    
     // Dynamic Components
     
     public ArrangeFriendlyTable(Futtoboru parent) {
@@ -32,21 +42,44 @@ public class ArrangeFriendlyTable extends VisTable {
         this.currentGame = game.getCurrentGame();
         
         //
-        this.add("PLACEHOLDER ARRANGE FRIENDLY");
+        this.add("PLACEHOLDER ARRANGE FRIENDLY").colspan(2);
+        
+        // Match Types
+        VisSelectBox<String> matchTypesSelectBox = new VisSelectBox<String>();
+        matchTypesSelectBox.setItems(EngineParameters.matchTypes);
+
+        // Venue Types
+        VisSelectBox<String> venuesSelectBox = new VisSelectBox<String>();
+        venuesSelectBox.setItems(EngineParameters.matchVenueTypes);
+        
+        // Match Rules
+        VisSelectBox<String> matchRulesSelectBox = new VisSelectBox<String>();
+        matchRulesSelectBox.setItems(EngineParameters.matchRulesTypes);
         
         /**
-         * Match Type
-         * Match Date
+         * Set Default Selected Values
          */
-        VisSelectBox<String> matchTypesSelectBox = new VisSelectBox<String>();
-        VisSelectBox<String> venuesSelectBox = new VisSelectBox<String>();
-        VisSelectBox<String> matchRulesSelectBox = new VisSelectBox<String>();
+        matchTypesSelectBox.setSelectedIndex(0);
+        selectedMatchType = matchTypesSelectBox.getSelected();
+        
+        venuesSelectBox.setSelectedIndex(0);
+        selectedVenueType = venuesSelectBox.getSelected();
+        
+        matchRulesSelectBox.setSelectedIndex(0);
+        selectedMatchRulesType = matchRulesSelectBox.getSelected();
+        
+        /**
+         * List of Clubs (do not include current club)
+         * 
+         *  - TODO: this component is difficult because should allow to do some filtering at least
+         *  - TODO: component shows opponent level/fame
+         */
         VisSelectBox<String> opponentSelectBox = new VisSelectBox<String>();
         
         //
         this.row();
         this.add("Type");
-        this.add(matchTypesSelectBox);
+        this.add(matchTypesSelectBox).fill();
         
         //
         this.row();
@@ -56,22 +89,71 @@ public class ArrangeFriendlyTable extends VisTable {
         //
         this.row();
         this.add("Venue");
-        this.add(venuesSelectBox);
+        this.add(venuesSelectBox).fill();
         
         //
         this.row();
         this.add("Match Rules");
-        this.add(matchRulesSelectBox);
+        this.add(matchRulesSelectBox).fill();
         
         //
         this.row();
         this.add("Opponent");
-        this.add(opponentSelectBox);
+        this.add(opponentSelectBox).fill();
         
         //
         this.row();
+        this.addSeparator().colspan(2);
+        this.row();
         this.add("Fee");
         this.add("Income");
+        
+        /**
+         * Confirm Friendly Button  (adds Friendly Request)
+         * Cancel Button            (clear forms)
+         */
+        VisTextButton confirmFriendlyButton = new VisTextButton(LanguageModLoader.getValue("confirm"));
+        VisTextButton cancelFriendlyButton = new VisTextButton(LanguageModLoader.getValue("cancel"));
+        
+        confirmFriendlyButton.addCaptureListener(new InputListener() {
+            
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                
+                // ADD NEW FRIENDLY DEPENDING ON THE SELECTED ELEMENTS ON THE FORM
+                System.out.println("ADDING A NEW FRIENDLY MATCH!");
+                System.out.println("selectedMatchType:      " + selectedMatchType);
+                System.out.println("selectedVenueType:      " + selectedVenueType);
+                System.out.println("selectedMatchRulesType: " + selectedMatchRulesType);
+            }
+        });
+        
+        cancelFriendlyButton.addCaptureListener(new InputListener() {
+            
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                
+                // CLEAR UI
+                System.out.println("CLEAR ARRANGE FRIENDLY COMPONENT UI!");
+            }
+        });
+        
+        // Confirm Friendly Button Disabled Until Valid Form
+//        confirmFriendlyButton.setDisabled(true);
+        
+        this.row().padTop(100);
+        this.add(confirmFriendlyButton).bottom();
+        this.add(cancelFriendlyButton).bottom();
         
         /**
          * TODO WIP:
