@@ -4,6 +4,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+import com.kotcrab.vis.ui.widget.LinkLabel;
+import com.kotcrab.vis.ui.widget.LinkLabel.LinkLabelListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Player;
@@ -75,11 +77,31 @@ public class PlayersListTable extends VisTable {
             // Age / Birthdate
             this.add(dateFormatter.format(player.getPerson().getBirthDate()));
             
-            // Full Name
-            this.add(player.getPerson().getName() + " " + player.getPerson().getLastname());
+            /**
+             * Full Name
+             * 
+             * TODO WIP: this links to the Player Detail Screen
+             */
+            LinkLabel playerDetailLink = new LinkLabel(player.getPerson().getName() + " " + player.getPerson().getLastname());
             
+            /**
+             * TODO: good label style for players to make sure it's clickable
+             */
+//            LinkLabelStyle whiteLabel = new LinkLabelStyle(VisUI.getSkin().getFont("default-font"), Color.WHITE, VisUI.getSkin().getDrawable("white"));
+//            // Set label stile
+//            playerDetailLink.setStyle(whiteLabel);
             
-            // DatabaseLoader.formatter.format(startingSeason.getStartDate())
+            // maybe create a new component extending link label
+            playerDetailLink.setListener(new LinkLabelListener() {
+                @Override
+                public void clicked (String url) {
+                    //do something here
+                    System.out.println("OPEN PLAYER " + url + " DETAIL SCREEN");
+                }
+            });
+            
+            //
+            this.add(playerDetailLink);
         }
     }
     

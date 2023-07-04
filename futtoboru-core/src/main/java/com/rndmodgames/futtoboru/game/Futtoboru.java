@@ -27,10 +27,9 @@ import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * Rock-Bottom Futtuboru Challenge
+ * Futtuboru v1
  * 
- * @author WORKSTATION
- *
+ * @author Geomancer86
  */
 public class Futtoboru extends Game {
 
