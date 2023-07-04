@@ -167,9 +167,9 @@ public class ArrangeFriendlyTable extends VisTable {
                 
                 // ADD NEW FRIENDLY DEPENDING ON THE SELECTED ELEMENTS ON THE FORM
                 System.out.println("ADDING A NEW FRIENDLY MATCH!");
-                System.out.println("selectedMatchType:      " + selectedMatchType);
-                System.out.println("selectedVenueType:      " + selectedVenueType);
-                System.out.println("selectedMatchRulesType: " + selectedMatchRulesType);
+                System.out.println("selectedMatchType       : " + selectedMatchType);
+                System.out.println("selectedVenueType       : " + selectedVenueType);
+                System.out.println("selectedMatchRulesType  : " + selectedMatchRulesType);
                 System.out.println("selectedOpponentClub    : " + opponentSelectBox.getSelected());
             }
         });
@@ -216,9 +216,9 @@ public class ArrangeFriendlyTable extends VisTable {
              *  TODO unhardcode available clubs for friendly
              *  TODO filter out current club
              *  TODO filter out clubs with matches on the selected day so they cannot play/accept other match
+             *  
+             *  TODO UNHARDCODE availableClubs BEFORE WE IMPLEMENT MORE TEAMS/LEAGUES
              */
-            
-            // TODO UNHARDCODE THIS BEFORE WE IMPLEMENT MORE TEAMS/LEAGUES
             List<Club> availableClubs = new ArrayList<>();
             
             // 
