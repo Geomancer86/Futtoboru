@@ -6,6 +6,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -24,8 +28,12 @@ public class FixturesTable extends VisTable {
     SaveGame currentGame;
     
     //
+    ScheduleScreenTable parentTable;
+    
+    //
     private Club currentClub;
-
+    private LocalDateTime selectedDate;
+    
     // Dynamic Components
     VisTable matchListTable = null;
     
@@ -35,7 +43,7 @@ public class FixturesTable extends VisTable {
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
     
     //
-    public FixturesTable(Futtoboru parent) {
+    public FixturesTable(Futtoboru parent, ScheduleScreenTable scheduleScreenTable) {
         
         // vis ui default spacing
         super(true);
@@ -43,6 +51,9 @@ public class FixturesTable extends VisTable {
         //
         this.game = parent;
         this.currentGame = game.getCurrentGame();
+        
+        //
+        this.parentTable = scheduleScreenTable;
         
         /**
          * Club Current Matches
@@ -156,25 +167,66 @@ public class FixturesTable extends VisTable {
             isCurrentDay = renderDate.isEqual(currentDate);
             
             // Add Calendar Cell
-            matchListTable.add(getDailyCalendarTable(shortFormatter.format(renderDate), null, isCurrentDay));
+            matchListTable.add(getDailyCalendarTable(renderDate, shortFormatter.format(renderDate), null, isCurrentDay));
             
             // Keep track of rendered days for weekly breaks / new rows
             renderedDays++;
             
-            System.out.println("RENDERED " + renderedDays + " DAYS");
+//            System.out.println("RENDERED " + renderedDays + " DAYS");
             
             // New Week, New Row
             if (renderedDays % 7 == 0) {
 
-                System.out.println("END OF WEEK NEW ROW");
+//                System.out.println("END OF WEEK NEW ROW");
                 matchListTable.row();
             }
         }
     }
     
-    public VisTable getDailyCalendarTable(String dateLabel, String matchLabel, Boolean selected) {
+    /**
+     * Clickable Table / Cell
+     * 
+     *  - Selected Day Checkbox or Button (for quick ID).
+     *  - 
+     */
+    public VisTable getDailyCalendarTable(LocalDateTime date, String dateLabel, String matchLabel, Boolean selected) {
         
         VisTable table = new VisTable(true);
+        
+        table.setTouchable(Touchable.enabled); 
+        
+        table.addListener(new ClickListener(){
+            
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                
+//                System.out.println("CLICKED DATE: " + formatter.format(date));
+                
+                // Set to be retrieved on other components
+                selectedDate = date;
+                
+                //
+                parentTable.updateDynamicComponents();
+            }
+        });
+        
+        /**
+         * SELECTED DATE CHECK
+         * 
+         * defaults to Current Game Date on unselected
+         */
+        if (selectedDate == null) {
+            if (date.isEqual(currentGame.getGameDate())) {
+                
+                table.add(new VisCheckBox("", true));
+                
+            }
+        } else {
+            if (selectedDate.isEqual(date)) {
+                
+                table.add(new VisCheckBox("", true));
+            }
+        }
         
         table.add(dateLabel);
         
@@ -187,5 +239,13 @@ public class FixturesTable extends VisTable {
 
     public void setCurrentClub(Club currentClub) {
         this.currentClub = currentClub;
+    }
+
+    public LocalDateTime getSelectedDate() {
+        return selectedDate;
+    }
+
+    public void setSelectedDate(LocalDateTime selectedDate) {
+        this.selectedDate = selectedDate;
     }
 }

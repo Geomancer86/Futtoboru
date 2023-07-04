@@ -1,7 +1,10 @@
 package com.rndmodgames.futtoboru.tables.schedule;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -57,11 +60,20 @@ public class ArrangeFriendlyTable extends VisTable {
     Club selectedClub = null;
     Club selectedOpponentClub = null;
     
+    /**
+     * Selected Date NOTE: this is set on the FixturesTable Component
+     */
+    private LocalDateTime selectedDate;
+    
     // Dynamic Components
+    VisLabel selectedDateLabel = new VisLabel(LanguageModLoader.getValue("select_a_date"));
     VisLabel feeValueLabel = new VisLabel("$0");
     VisLabel incomeValueLabel = new VisLabel("$0");
     VisSelectBox<Club> opponentSelectBox = new VisSelectBox<Club>();
     VisTextButton confirmFriendlyButton = new VisTextButton(LanguageModLoader.getValue("confirm"));
+    
+    //
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
     
     public ArrangeFriendlyTable(Futtoboru parent) {
         
@@ -119,7 +131,7 @@ public class ArrangeFriendlyTable extends VisTable {
         //
         this.row();
         this.add("Date");
-        this.add("[DATEPICKER WIP]");
+        this.add(selectedDateLabel);
         
         //
         this.row();
@@ -203,6 +215,16 @@ public class ArrangeFriendlyTable extends VisTable {
     //
     public void updateDynamicComponents() {
         
+        //
+        if (selectedDate != null) {
+            
+            selectedDateLabel.setText(dateFormatter.format(selectedDate));
+            
+        } else {
+            
+            selectedDateLabel.setText(LanguageModLoader.getValue("select_a_date"));
+        }
+        
         // 
         if (currentClub != null) {
             
@@ -250,5 +272,13 @@ public class ArrangeFriendlyTable extends VisTable {
 
     public void setCurrentClub(Club currentClub) {
         this.currentClub = currentClub;
+    }
+
+    public LocalDateTime getSelectedDate() {
+        return selectedDate;
+    }
+
+    public void setSelectedDate(LocalDateTime selectedDate) {
+        this.selectedDate = selectedDate;
     }
 }

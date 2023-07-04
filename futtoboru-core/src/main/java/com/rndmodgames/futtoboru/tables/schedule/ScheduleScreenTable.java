@@ -45,7 +45,7 @@ public class ScheduleScreenTable extends VisTable {
         this.row();
         
         // Fixtures Table
-        fixturesTable = new FixturesTable(game);
+        fixturesTable = new FixturesTable(game, this);
         
         // Arrange Friendly Table
         arrangeFriendlyTable = new ArrangeFriendlyTable(game);
@@ -113,6 +113,9 @@ public class ScheduleScreenTable extends VisTable {
         //
         fixturesTable.setCurrentClub(currentClub);
         arrangeFriendlyTable.setCurrentClub(currentClub);
+        
+        //
+        arrangeFriendlyTable.setSelectedDate(fixturesTable.getSelectedDate());
         
         //
         fixturesTable.updateDynamicComponents();
