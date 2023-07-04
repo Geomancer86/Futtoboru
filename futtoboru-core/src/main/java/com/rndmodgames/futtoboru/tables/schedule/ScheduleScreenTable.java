@@ -1,5 +1,8 @@
 package com.rndmodgames.futtoboru.tables.schedule;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;

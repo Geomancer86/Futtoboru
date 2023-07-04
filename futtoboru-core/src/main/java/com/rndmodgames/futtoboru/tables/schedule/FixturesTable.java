@@ -1,9 +1,16 @@
 package com.rndmodgames.futtoboru.tables.schedule;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Locale;
+
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Fixtures Table v1
@@ -21,6 +28,10 @@ public class FixturesTable extends VisTable {
 
     // Dynamic Components
     VisTable matchListTable = null;
+    
+    //
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
+    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
     
     //
     public FixturesTable(Futtoboru parent) {
@@ -45,9 +56,6 @@ public class FixturesTable extends VisTable {
         
         //
         this.add(matchListTable);
-        
-        //
-        updateDynamicComponents();
         
         /**
          * WEEKLY COMPONENT / DAY TO DAY SELECTABLE COMPONENT
@@ -86,7 +94,48 @@ public class FixturesTable extends VisTable {
         //
         matchListTable.clear();
         
-        matchListTable.add("The Club don't have any planned matches, pick and opponent and conditions and propose a friendly match to see it on this list");
+        /**
+         * WEEKLY CALENDAR PROTOTYPE
+         */
+        matchListTable.add(LanguageModLoader.getValue("MONDAY"));
+        matchListTable.add(LanguageModLoader.getValue("TUESDAY"));
+        matchListTable.add(LanguageModLoader.getValue("WEDNESDAY"));
+        matchListTable.add(LanguageModLoader.getValue("THURSDAY"));
+        matchListTable.add(LanguageModLoader.getValue("FRIDAY"));
+        matchListTable.add(LanguageModLoader.getValue("SATURDAY"));
+        matchListTable.add(LanguageModLoader.getValue("SUNDAY"));
+        
+        /**
+         * Automatic Days By Current Date & Current Season Start Date
+         */
+        LocalDateTime seasonStartDate = currentGame.getGameStartDate();
+        LocalDateTime currentDate = currentGame.getGameDate();
+        
+        LocalDateTime firstMonday = LocalDateTime.from(currentDate).with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
+        
+        //
+        matchListTable.row();
+        matchListTable.add("Season Start Date");
+        matchListTable.add(formatter.format(seasonStartDate));
+        
+        //
+        matchListTable.row();
+        matchListTable.add("Current Date");
+        matchListTable.add(formatter.format(currentDate));
+        
+        //
+        matchListTable.row();
+        matchListTable.add("First Season Monday");
+        matchListTable.add(formatter.format(firstMonday));
+        
+        /**
+         * - Calculate the earliest Monday to be the first day to show on the Calendar
+         * - Mark the Current Day with a Highlight / Marker
+         * - The Calendar cannot be infinite, mark the last day as the end of the Season or Start + 365 days
+         * 
+         * - Show Match Days
+         * - Selected Calendar Cell will set a Selected Date.
+         */
         
         /**
          * Match List
