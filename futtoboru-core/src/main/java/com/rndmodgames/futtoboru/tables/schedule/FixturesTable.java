@@ -218,13 +218,13 @@ public class FixturesTable extends VisTable {
         if (selectedDate == null) {
             if (date.isEqual(currentGame.getGameDate())) {
                 
-                table.add(new VisCheckBox("", true));
+                table.add(new VisCheckBox("TODAY", true));
                 
             }
         } else {
             if (selectedDate.isEqual(date)) {
                 
-                table.add(new VisCheckBox("", true));
+                table.add(new VisCheckBox("SELECTED", true));
             }
         }
         

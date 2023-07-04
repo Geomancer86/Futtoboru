@@ -51,6 +51,9 @@ public class ArrangeFriendlyTable extends VisTable {
     SaveGame currentGame;
     
     //
+    ScheduleScreenTable parentTable;
+    
+    //
     private Club currentClub;
     
     // Selected Component Values
@@ -75,7 +78,7 @@ public class ArrangeFriendlyTable extends VisTable {
     //
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
     
-    public ArrangeFriendlyTable(Futtoboru parent) {
+    public ArrangeFriendlyTable(Futtoboru parent, ScheduleScreenTable scheduleScreenTable) {
         
         // default vis spacing
         super(true);
@@ -83,6 +86,9 @@ public class ArrangeFriendlyTable extends VisTable {
         //
         this.game = parent;
         this.currentGame = game.getCurrentGame();
+        
+        //
+        this.parentTable = scheduleScreenTable;
         
         //
         this.add("PLACEHOLDER ARRANGE FRIENDLY").colspan(2);
@@ -177,12 +183,20 @@ public class ArrangeFriendlyTable extends VisTable {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 
+                //
+                if (selectedDate == null) {
+                    
+                    System.out.println("MATCH DATE IS REQUIRED");
+                    return;
+                }
+                
                 // ADD NEW FRIENDLY DEPENDING ON THE SELECTED ELEMENTS ON THE FORM
                 System.out.println("ADDING A NEW FRIENDLY MATCH!");
                 System.out.println("selectedMatchType       : " + selectedMatchType);
                 System.out.println("selectedVenueType       : " + selectedVenueType);
                 System.out.println("selectedMatchRulesType  : " + selectedMatchRulesType);
                 System.out.println("selectedOpponentClub    : " + opponentSelectBox.getSelected());
+                System.out.println("selectedMatchDate       : " + dateFormatter.format(selectedDate));
             }
         });
         
@@ -198,6 +212,19 @@ public class ArrangeFriendlyTable extends VisTable {
                 
                 // CLEAR UI
                 System.out.println("CLEAR ARRANGE FRIENDLY COMPONENT UI!");
+                
+                // clear selected date
+                selectedDate = null;
+                
+                // clear components
+                opponentSelectBox.setSelected(null);
+                
+                // 
+                updateDynamicComponents();
+                
+                // CLEAR SELECTION ON FIXTURE SCREEN
+                parentTable.fixturesTable.setSelectedDate(null);
+                parentTable.fixturesTable.updateDynamicComponents();
             }
         });
         

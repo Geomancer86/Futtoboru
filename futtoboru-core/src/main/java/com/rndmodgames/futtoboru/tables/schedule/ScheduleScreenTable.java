@@ -48,7 +48,7 @@ public class ScheduleScreenTable extends VisTable {
         fixturesTable = new FixturesTable(game, this);
         
         // Arrange Friendly Table
-        arrangeFriendlyTable = new ArrangeFriendlyTable(game);
+        arrangeFriendlyTable = new ArrangeFriendlyTable(game, this);
        
         this.row();
         this.add(fixturesTable);
