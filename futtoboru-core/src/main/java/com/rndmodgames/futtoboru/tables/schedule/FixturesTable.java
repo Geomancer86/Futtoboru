@@ -31,6 +31,7 @@ public class FixturesTable extends VisTable {
     
     //
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
+    DateTimeFormatter shortFormatter = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH);
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
     
     //
@@ -51,6 +52,8 @@ public class FixturesTable extends VisTable {
         
         /**
          * Match List Table
+         * 
+         * TODO: MAKE SCROLLABLE TO AVOID FILLING THE SCREEN ON LONG SEASONS
          */
         matchListTable = new VisTable(true);
         
@@ -95,23 +98,19 @@ public class FixturesTable extends VisTable {
         matchListTable.clear();
         
         /**
-         * WEEKLY CALENDAR PROTOTYPE
-         */
-        matchListTable.add(LanguageModLoader.getValue("MONDAY"));
-        matchListTable.add(LanguageModLoader.getValue("TUESDAY"));
-        matchListTable.add(LanguageModLoader.getValue("WEDNESDAY"));
-        matchListTable.add(LanguageModLoader.getValue("THURSDAY"));
-        matchListTable.add(LanguageModLoader.getValue("FRIDAY"));
-        matchListTable.add(LanguageModLoader.getValue("SATURDAY"));
-        matchListTable.add(LanguageModLoader.getValue("SUNDAY"));
-        
-        /**
          * Automatic Days By Current Date & Current Season Start Date
          */
+        int renderWeeks = 10;
+        int renderDays = renderWeeks * 7; // TODO: render until the end of season or until no more schedules can be done
+        
         LocalDateTime seasonStartDate = currentGame.getGameStartDate();
         LocalDateTime currentDate = currentGame.getGameDate();
         
+        // Calculated Earlier Monday (Start of Week)
         LocalDateTime firstMonday = LocalDateTime.from(currentDate).with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
+        
+        // Calculated Season End (Number of Weeks)
+        LocalDateTime seasonEnd = firstMonday.plusDays(renderDays);
         
         //
         matchListTable.row();
@@ -129,17 +128,57 @@ public class FixturesTable extends VisTable {
         matchListTable.add(formatter.format(firstMonday));
         
         /**
-         * - Calculate the earliest Monday to be the first day to show on the Calendar
-         * - Mark the Current Day with a Highlight / Marker
-         * - The Calendar cannot be infinite, mark the last day as the end of the Season or Start + 365 days
-         * 
-         * - Show Match Days
-         * - Selected Calendar Cell will set a Selected Date.
+         * WEEKLY CALENDAR PROTOTYPE
          */
+        matchListTable.row();
+        matchListTable.add(LanguageModLoader.getValue("MONDAY"));
+        matchListTable.add(LanguageModLoader.getValue("TUESDAY"));
+        matchListTable.add(LanguageModLoader.getValue("WEDNESDAY"));
+        matchListTable.add(LanguageModLoader.getValue("THURSDAY"));
+        matchListTable.add(LanguageModLoader.getValue("FRIDAY"));
+        matchListTable.add(LanguageModLoader.getValue("SATURDAY"));
+        matchListTable.add(LanguageModLoader.getValue("SUNDAY"));
         
         /**
-         * Match List
+         * Iterate days starting from firstMonday
          */
+        int renderedDays = 0;
+        boolean isCurrentDay = false;
+        
+        //
+        matchListTable.row();
+        
+        // Iterate Season Dates
+        // Keep count of days for Week Rendering
+        for (LocalDateTime renderDate = firstMonday; renderDate.isBefore(seasonEnd); renderDate = renderDate.plusDays(1)) {
+            
+            // Current Day will be selected by default
+            isCurrentDay = renderDate.isEqual(currentDate);
+            
+            // Add Calendar Cell
+            matchListTable.add(getDailyCalendarTable(shortFormatter.format(renderDate), null, isCurrentDay));
+            
+            // Keep track of rendered days for weekly breaks / new rows
+            renderedDays++;
+            
+            System.out.println("RENDERED " + renderedDays + " DAYS");
+            
+            // New Week, New Row
+            if (renderedDays % 7 == 0) {
+
+                System.out.println("END OF WEEK NEW ROW");
+                matchListTable.row();
+            }
+        }
+    }
+    
+    public VisTable getDailyCalendarTable(String dateLabel, String matchLabel, Boolean selected) {
+        
+        VisTable table = new VisTable(true);
+        
+        table.add(dateLabel);
+        
+        return table;
     }
     
     public Club getCurrentClub() {
