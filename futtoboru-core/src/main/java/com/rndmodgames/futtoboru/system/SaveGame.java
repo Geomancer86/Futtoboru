@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rndmodgames.futtoboru.data.Authority;
+import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
@@ -103,6 +104,11 @@ public class SaveGame implements Serializable {
     private List<BasicScript> gameScripts = new ArrayList<>();
     
     /**
+     * Clubs Database
+     */
+    private List<Club> allClubs = new ArrayList<>();
+    
+    /**
      * Person Database
      */
     private List<Person> allPersons = new ArrayList<>();
@@ -185,6 +191,14 @@ public class SaveGame implements Serializable {
 
     public void setGameScripts(List<BasicScript> gameScripts) {
         this.gameScripts = gameScripts;
+    }
+
+    public List<Club> getAllClubs() {
+        return allClubs;
+    }
+
+    public void setAllClubs(List<Club> allClubs) {
+        this.allClubs = allClubs;
     }
 
     public List<Person> getAllPersons() {

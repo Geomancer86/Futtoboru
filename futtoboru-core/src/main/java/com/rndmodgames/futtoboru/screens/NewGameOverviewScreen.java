@@ -332,13 +332,34 @@ public class NewGameOverviewScreen implements Screen {
                 }
                 
                 /**
+                 * Clubs Database
+                 */
+                currentGame.setAllClubs(new ArrayList<>());
+                
+                for (Country country : selectedCountries) {
+                    
+                    // Add all Clubs for the selected countries to be simulated
+                    currentGame.getAllClubs().addAll(DatabaseLoader.getClubsByCountry().get(country.getId()));
+                }
+
+                /**
                  * Starting Club
                  * 
                  * TODO: we also need to set the Person as working at Club level (owner, staff, etc.)
                  */
                 if (startingClub != null) {
-                    
-                    currentGame.getOwner().setCurrentClub(startingClub);
+
+                    /**
+                     * Make sure current club is a club instance on currentGame.currentclubs to avoid split instances
+                     */
+                    for (Club club : currentGame.getAllClubs()) {
+                        
+                        if (startingClub.getId().equals(club.getId())) {
+                            
+                            //
+                            currentGame.getOwner().setCurrentClub(club);
+                        }
+                    }
                 }
                 
                 /**

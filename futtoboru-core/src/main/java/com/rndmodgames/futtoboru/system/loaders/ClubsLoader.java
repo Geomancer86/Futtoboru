@@ -93,7 +93,7 @@ public class ClubsLoader {
                                 
                                 /**
                                  * TODO: this list is safe to clear after the new game is started or on loading a new game
-                                 * TODO: not needed to do until we press new game
+                                 * TODO: delay until we press new game
                                  */
                                 DatabaseLoader.getPersons().add(person);
                                 
@@ -109,10 +109,10 @@ public class ClubsLoader {
                         season.getClubs().add(club);
                         
                         /**
-                         * TODO WIP:
-                         * 
-                         *  - Add to the Clubs By ID HashMap
+                         * TODO WIP Load Club Stadium
                          */
+                        
+                        // Add to the Clubs By ID HashMap
                         DatabaseLoader.addClub(club);
                     }
 

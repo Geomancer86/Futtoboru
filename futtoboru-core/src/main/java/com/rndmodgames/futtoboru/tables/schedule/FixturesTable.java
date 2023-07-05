@@ -115,7 +115,7 @@ public class FixturesTable extends VisTable {
          * Automatic Days By Current Date & Current Season Start Date
          */
         int renderWeeks = 10;
-        int renderDays = renderWeeks * 7; // TODO: render until the end of season or until no more schedules can be done
+        int renderDays = renderWeeks * 12; // TODO: render until the end of season or until no more schedules can be done
         
         LocalDateTime seasonStartDate = currentGame.getGameStartDate();
         LocalDateTime currentDate = currentGame.getGameDate();
@@ -178,6 +178,8 @@ public class FixturesTable extends VisTable {
              */
             Match match = null;
             
+            // ITERATE PROPOSED
+            // TODO LABEL THEM AS PROPOSED
             for (Match proposed : currentGame.getOwner().getCurrentClub().getProposedMatches()) {
                 
                 if (proposed.getMatchDateTime().isEqual(renderDate)) {
@@ -187,18 +189,27 @@ public class FixturesTable extends VisTable {
                 }
             }
             
+            // ITERATE SCHEDULED
+            // TODO: LABEL THEM AS SCHEDULED
+            for (Match scheduled : currentGame.getOwner().getCurrentClub().getScheduledMatches()) {
+                
+                if (scheduled.getMatchDateTime().isEqual(renderDate)) {
+                    
+                    // 
+                    match = scheduled;
+                }
+            }
+            
             // Add Calendar Cell
             matchListTable.add(getDailyCalendarTable(renderDate, shortFormatter.format(renderDate), match, isCurrentDay));
-            
+
             // Keep track of rendered days for weekly breaks / new rows
             renderedDays++;
-            
-//            System.out.println("RENDERED " + renderedDays + " DAYS");
-            
+
             // New Week, New Row
             if (renderedDays % 7 == 0) {
 
-//                System.out.println("END OF WEEK NEW ROW");
+                // new week
                 matchListTable.row();
             }
         }
@@ -291,6 +302,17 @@ public class FixturesTable extends VisTable {
                 // Away Venue
                 table.row();
                 table.add("Away");
+            }
+            
+            // REQUEST v SCHEDULED
+            if (match.getIsAccepted()) {
+                
+                table.row();
+                table.add("SCHEDULED");
+            } else {
+                
+                table.row();
+                table.add("PROPOSED");
             }
         }
         

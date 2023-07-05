@@ -41,6 +41,11 @@ public class Club implements Serializable {
     private City city;
     
     /**
+     * Club Ground
+     */
+    private Stadium clubGround;
+    
+    /**
      * Current Club League/Division (might be null if there is not a league)
      */
     private League currentLeague;
@@ -171,6 +176,14 @@ public class Club implements Serializable {
 
     public void setCity(City city) {
         this.city = city;
+    }
+
+    public Stadium getClubGround() {
+        return clubGround;
+    }
+
+    public void setClubGround(Stadium clubGround) {
+        this.clubGround = clubGround;
     }
 
     public League getCurrentLeague() {
