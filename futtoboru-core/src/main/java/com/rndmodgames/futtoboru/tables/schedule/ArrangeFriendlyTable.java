@@ -15,6 +15,7 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.EngineParameters;
@@ -197,6 +198,47 @@ public class ArrangeFriendlyTable extends VisTable {
                 System.out.println("selectedMatchRulesType  : " + selectedMatchRulesType);
                 System.out.println("selectedOpponentClub    : " + opponentSelectBox.getSelected());
                 System.out.println("selectedMatchDate       : " + dateFormatter.format(selectedDate));
+                
+                // Create New Match
+                Match match = new Match();
+                
+                // TODO: implement true dynamic match type depending on selection (friendly cup/etc)
+                match.setMatchType(Match.FRIENDLY_MATCH);
+                
+                // home and away club logic
+                // TODO: this will fail if we localize the Home text instead of using a TYPE or ENUM/INT
+                if (selectedVenueType.equals("Home")) {
+                    
+                    //
+                    match.setHomeClubId(currentClub.getId());
+                    match.setAwayClubId(opponentSelectBox.getSelected().getId());
+                    
+                } else {
+                    
+                    //
+                    match.setHomeClubId(opponentSelectBox.getSelected().getId());
+                    match.setAwayClubId(currentClub.getId());
+                }
+                
+                // proposed date is current game date
+                match.setProposeDateTime(currentGame.getGameDate());
+                
+                // TODO: time of day will be set by the SCHEDULER, this only take the day into account
+                match.setMatchDateTime(selectedDate);
+                
+                //
+                match.setIsProposed(true);
+
+                // Save to Proposed Matches List
+                currentGame.getOwner().getCurrentClub().getProposedMatches().add(match);
+                
+                /**
+                 * Clear/Update Screen
+                 * 
+                 *  TODO: this should show the freshly requested matches as PENDING
+                 *          if the player advances game time they should change to accepted or be deleted
+                 */
+                clearForm();
             }
         });
         
@@ -213,18 +255,8 @@ public class ArrangeFriendlyTable extends VisTable {
                 // CLEAR UI
                 System.out.println("CLEAR ARRANGE FRIENDLY COMPONENT UI!");
                 
-                // clear selected date
-                selectedDate = null;
-                
-                // clear components
-                opponentSelectBox.setSelected(null);
-                
-                // 
-                updateDynamicComponents();
-                
-                // CLEAR SELECTION ON FIXTURE SCREEN
-                parentTable.fixturesTable.setSelectedDate(null);
-                parentTable.fixturesTable.updateDynamicComponents();
+                //
+                clearForm();
             }
         });
         
@@ -237,6 +269,23 @@ public class ArrangeFriendlyTable extends VisTable {
         
         //
         updateDynamicComponents();
+    }
+    
+    // 
+    public void clearForm() {
+        
+     // clear selected date
+        selectedDate = null;
+        
+        // clear components
+        opponentSelectBox.setSelected(null);
+        
+        // 
+        updateDynamicComponents();
+        
+        // CLEAR SELECTION ON FIXTURE SCREEN
+        parentTable.fixturesTable.setSelectedDate(null);
+        parentTable.fixturesTable.updateDynamicComponents();
     }
     
     //
