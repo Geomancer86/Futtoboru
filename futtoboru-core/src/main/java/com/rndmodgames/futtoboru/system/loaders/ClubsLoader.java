@@ -113,6 +113,7 @@ public class ClubsLoader {
                          * 
                          *  - Add to the Clubs By ID HashMap
                          */
+                        DatabaseLoader.addClub(club);
                     }
 
                     line = reader.readLine();
