@@ -50,6 +50,8 @@ public class FuttoboruGameEngine {
      *  - Day
      *  - Hours
      *  - Etc
+     *  
+     *  TODO: add a loading screen or processing indicator
      */
     public void continueGame() {
         

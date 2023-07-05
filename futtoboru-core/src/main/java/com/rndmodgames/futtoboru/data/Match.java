@@ -41,9 +41,9 @@ public class Match implements Serializable {
     private Integer matchRules;
     
     //
-    private Boolean isProposed;
-    private Boolean isAccepted;
-    private Boolean isPlayed;
+    private Boolean isProposed = false;
+    private Boolean isAccepted = false;
+    private Boolean isPlayed = false;
     
     // Keep it basic, for now there is no penalty kicks/score/tiebreaker
     private Integer homeGoals;
