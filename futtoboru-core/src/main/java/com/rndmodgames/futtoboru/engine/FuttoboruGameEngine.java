@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.badlogic.gdx.Game;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
@@ -61,6 +62,17 @@ public class FuttoboruGameEngine {
         
         // Check Game Scripts
         scriptsManager.checkGameScripts();
+        
+        /**
+         * TODO: WIP:
+         * 
+         *  - Check Proposed Friendly Matches (AI accepts or cancel) MVP: either hardcode it or accept always if schedule is OK
+         *  - Check Scheduled Matches
+         *      - On Scheduled Match Day
+         *          - Continue Button Changes to Match Button
+         *              - Call the Simulation Engine (fully random result)
+         */
+//        gameInstance.getCurrentGame()
         
         /**
          * Update Current Screen Components After Data Changes

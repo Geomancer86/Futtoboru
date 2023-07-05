@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,8 +55,15 @@ public class Club implements Serializable {
     private List<Player> players;
     
     /**
-     * 
+     * Proposed Matches (this will be almost always clean/empty)
+     *  - AI or Player needs to reply them for YES/NO and move them to scheduled or delete them
      */
+    
+    /**
+     * Club Proposed & Scheduled Matches
+     */
+    private List<Match> proposedMatches = new ArrayList<>();
+    private List<Match> scheduledMatches = new ArrayList<>();
     
     public Club() {
         
@@ -175,6 +183,22 @@ public class Club implements Serializable {
 
     public List<Player> getPlayers() {
         return players;
+    }
+
+    public List<Match> getProposedMatches() {
+        return proposedMatches;
+    }
+
+    public void setProposedMatches(List<Match> proposedMatches) {
+        this.proposedMatches = proposedMatches;
+    }
+
+    public List<Match> getScheduledMatches() {
+        return scheduledMatches;
+    }
+
+    public void setScheduledMatches(List<Match> scheduledMatches) {
+        this.scheduledMatches = scheduledMatches;
     }
 
     public void setPlayers(List<Player> players) {

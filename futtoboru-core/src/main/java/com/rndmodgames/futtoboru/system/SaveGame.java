@@ -35,6 +35,11 @@ public class SaveGame implements Serializable {
 
     private static final long serialVersionUID = -5607039189697722153L;
 
+    /**
+     * Owner
+     *      > Current Club
+     *      
+     */
     private Person owner;
     
     /**
@@ -106,6 +111,10 @@ public class SaveGame implements Serializable {
      * Player Database
      */
     private List<Player> allPlayers = new ArrayList<>();
+    
+    /**
+     * Proposed Matches
+     */
     
     // required for de-serializing
     public SaveGame() {
