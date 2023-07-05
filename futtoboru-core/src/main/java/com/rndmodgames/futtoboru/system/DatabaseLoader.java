@@ -271,9 +271,8 @@ public class DatabaseLoader {
      */
     public static Club getClubById(Long id) {
 
-        System.out.println("GET CLUB BY ID: " + id);
-        
-        System.out.println("Total Clubs: " + clubs.size());
+//        System.out.println("GET CLUB BY ID: " + id);
+//        System.out.println("Total Clubs: " + clubs.size());
         
         for (Club club : clubs) {
             
@@ -291,7 +290,7 @@ public class DatabaseLoader {
      */
     public static void addClub(Club club) {
         
-        System.out.println("ADD CLUB ID: " + club.getId() + ", NAME: " + club.getName());
+//        System.out.println("ADD CLUB ID: " + club.getId() + ", NAME: " + club.getName());
         
         //
         if (!clubs.contains(club)) {
