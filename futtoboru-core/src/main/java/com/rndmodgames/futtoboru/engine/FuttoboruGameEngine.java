@@ -104,7 +104,9 @@ public class FuttoboruGameEngine {
     /**
      * TODO PROTOTYPE - MOVE TO A SEPARATE CLASS
      * 
-     *  - 
+     *  - TODO:
+     *      - DO NOT LET TO REQUEST A FRIENDLY ON A GAME WITH EITHER AN EXISTING REQUEST OR AN SCHEDULED MATCH
+     *      - 
      */
     public void clubAcceptsFriendlyMatchRequest(Club club) {
         
