@@ -108,7 +108,6 @@ public class Futtoboru extends Game {
         /**
          * Check for Saved Settings
          */
-
         FULLSCREEN = preferences.getFullscreen();
         
         // avoid crashing on empty or missing preferences file

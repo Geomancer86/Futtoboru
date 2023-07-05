@@ -3,9 +3,9 @@ package com.rndmodgames.futtoboru.engine;
 import java.time.LocalDateTime;
 
 import com.badlogic.gdx.Game;
+import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
@@ -44,7 +44,7 @@ public class FuttoboruGameEngine {
     }
 
     /**
-     * Continue Game should be fully automatic, the Engine will take care of how long the game has to move forward
+     * TODO: Continue Game should be fully automatic, the Engine will take care of how long the game has to move forward
      *  
      *  - Day
      *  - Hours
@@ -72,11 +72,33 @@ public class FuttoboruGameEngine {
          *          - Continue Button Changes to Match Button
          *              - Call the Simulation Engine (fully random result)
          */
-//        gameInstance.getCurrentGame()
         
+        /**
+         * Iterate all clubs and solve friendly match requests
+         *  - Each club will have the friendlies their manager requested
+         *      - Initially only the player can request friendlies
+         *      
+         *  - Avoid conflicts if different clubs request friendlies, depending on the order of acceptance
+         *  - Avoid scheduling conflicts, if a club accepts a friendly for X day, then it cannot accept the next requests, all should be cancelled by default
+         */
+        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+
+            //
+            clubAcceptsFriendlyMatchRequest(club);
+        }
+
         /**
          * Update Current Screen Components After Data Changes
          */
         mainMenuManager.updateDynamicComponents();
+    }
+    
+    /**
+     * TODO PROTOTYPE - MOVE TO A SEPARATE CLASS
+     */
+    public void clubAcceptsFriendlyMatchRequest(Club club) {
+        
+        // 
+        System.out.println("SOLVING AI FOR CLUB: " + club.getName());
     }
 }

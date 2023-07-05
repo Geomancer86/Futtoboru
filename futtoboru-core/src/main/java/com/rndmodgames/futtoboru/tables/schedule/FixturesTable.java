@@ -115,7 +115,7 @@ public class FixturesTable extends VisTable {
          * Automatic Days By Current Date & Current Season Start Date
          */
         int renderWeeks = 10;
-        int renderDays = renderWeeks * 7; // TODO: render until the end of season or until no more schedules can be done
+        int renderDays = renderWeeks * 12; // TODO: render until the end of season or until no more schedules can be done
         
         LocalDateTime seasonStartDate = currentGame.getGameStartDate();
         LocalDateTime currentDate = currentGame.getGameDate();
