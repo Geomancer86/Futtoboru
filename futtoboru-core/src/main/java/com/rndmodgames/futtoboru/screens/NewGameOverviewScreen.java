@@ -356,8 +356,8 @@ public class NewGameOverviewScreen implements Screen {
                         
                         if (startingClub.getId().equals(club.getId())) {
                             
-                            //
-                            currentGame.getOwner().setCurrentClub(club);
+                            // We only save the current club ID to avoid saving repeated times on JSON file
+                            currentGame.getOwner().setCurrentClubId(club.getId());
                         }
                     }
                 }

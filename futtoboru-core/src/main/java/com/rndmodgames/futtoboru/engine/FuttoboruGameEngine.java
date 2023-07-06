@@ -7,6 +7,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
@@ -85,12 +86,14 @@ public class FuttoboruGameEngine {
          *  - Avoid scheduling conflicts, if a club accepts a friendly for X day, then it cannot accept the next requests, all should be cancelled by default
          */
 
-        clubAcceptsFriendlyMatchRequest(gameInstance.getCurrentGame().getOwner().getCurrentClub());
+        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+        
+        clubAcceptsFriendlyMatchRequest(currentClub);
         
         for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
 
             // ignore own club in this list
-            if (!club.getId().equals(gameInstance.getCurrentGame().getOwner().getCurrentClub().getId())) {
+            if (!club.getId().equals(currentClub.getId())) {
                 clubAcceptsFriendlyMatchRequest(club);
             }
         }
@@ -107,6 +110,11 @@ public class FuttoboruGameEngine {
      *  - TODO:
      *      - DO NOT LET TO REQUEST A FRIENDLY ON A GAME WITH EITHER AN EXISTING REQUEST OR AN SCHEDULED MATCH
      *      - 
+     *      
+     *  TODO: do not split the clubs between existing clubs list and current club because this serializes two objects and ends up
+     *          with changes only done on a single side of them
+     *          
+     *          - just save the current club id on save game and always use the single club instance
      */
     public void clubAcceptsFriendlyMatchRequest(Club club) {
         
@@ -155,6 +163,5 @@ public class FuttoboruGameEngine {
         // we clear the list and everything that is not accepted will be gone
         club.getProposedMatches().clear();
         System.out.println("CLUB PROPOSED MATCHES: " + club.getProposedMatches());
-        System.out.println("CLUB PROPOSED MATCHES 2: " + gameInstance.getCurrentGame().getOwner().getCurrentClub().getProposedMatches().size());
     }
 }

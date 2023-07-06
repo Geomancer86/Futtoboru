@@ -6,7 +6,10 @@ import java.util.Locale;
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -104,13 +107,15 @@ public class PersonDetailsScreenTable extends VisTable {
             currentJobValueLabel.setText(person.getPrimaryProfession().getName());
             
             //
-            if (person.getCurrentClub() == null) {
+            if (person.getCurrentClubId() == null) {
                 
                 currentClubValueLabel.setText("UNAVAILABLE");
                 
             } else {
                 
-                currentClubValueLabel.setText(person.getCurrentClub().getName());
+                Club currentClub = ((Futtoboru)game).getCurrentGame().getCurrentClub();
+                
+                currentClubValueLabel.setText(currentClub.getName());
             }
         }
     }

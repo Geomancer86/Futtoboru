@@ -30,11 +30,16 @@ public class Person implements Serializable {
     private State state;
     private City city;
     
-    //
+    /**
+     * NOTE: we keep track of the IDs for saving and loading / serializing, 
+     * 
+     *          and then we load the transient objects if/when needed
+     */
+    private Long currentClubId;
+    
     private Profession primaryProfession;
     private Country currentCountry;
-    private Club currentClub;
-    
+
     //
     public Person() {
         
@@ -112,11 +117,11 @@ public class Person implements Serializable {
         this.currentCountry = currentCountry;
     }
 
-    public Club getCurrentClub() {
-        return currentClub;
+    public Long getCurrentClubId() {
+        return currentClubId;
     }
 
-    public void setCurrentClub(Club currentClub) {
-        this.currentClub = currentClub;
+    public void setCurrentClubId(Long currentClubId) {
+        this.currentClubId = currentClubId;
     }
 }

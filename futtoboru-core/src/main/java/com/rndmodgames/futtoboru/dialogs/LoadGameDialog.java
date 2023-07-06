@@ -68,7 +68,7 @@ public class LoadGameDialog extends VisDialog{
                      * Load Saved Game From File
                      */
                     ((Futtoboru)(game)).setCurrentGame(SaveLoadSystem.loadGame(savedGameName));
-                    
+
                     /**
                      * Redirect to Main Game Screen with Game Loaded
                      */
