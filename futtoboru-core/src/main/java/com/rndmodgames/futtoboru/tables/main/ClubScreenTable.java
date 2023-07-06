@@ -9,6 +9,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.tables.club.ClubGeneralTable;
 import com.rndmodgames.futtoboru.tables.club.ClubProfileTable;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -89,7 +90,9 @@ public class ClubScreenTable extends VisTable {
          * 
          * - Defaults to Player Current Club
          */
-        updateClubScreenDynamicMenu(((Futtoboru)game).getCurrentGame().getOwner().getCurrentClub());
+        Club currentClub = ((Futtoboru)parent).getCurrentGame().getCurrentClub();
+        
+        updateClubScreenDynamicMenu(currentClub);
         
         // add the Club Screen Table
         this.add(clubScreenTable).expand().top().left();

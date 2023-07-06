@@ -70,6 +70,10 @@ public class LoadGameDialog extends VisDialog{
                     ((Futtoboru)(game)).setCurrentGame(SaveLoadSystem.loadGame(savedGameName));
                     
                     /**
+                     * TODO: any logic on LOAD GAME that requires converting saved LONG/INT IDS to OBJECTS that need to be loaded
+                     */
+                    
+                    /**
                      * Redirect to Main Game Screen with Game Loaded
                      */
                     ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);

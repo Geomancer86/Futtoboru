@@ -3,12 +3,14 @@ package com.rndmodgames.futtoboru.menu;
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.menu.buttons.AuthorityButton;
 import com.rndmodgames.futtoboru.menu.buttons.HomeButton;
 import com.rndmodgames.futtoboru.menu.buttons.InboxButton;
 import com.rndmodgames.futtoboru.menu.buttons.PersonalDetailsButton;
 import com.rndmodgames.futtoboru.menu.buttons.ScheduleButton;
 import com.rndmodgames.futtoboru.menu.buttons.SquadButton;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
 import com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable;
@@ -176,6 +178,9 @@ public class MainMenuManager {
         // Clear the main table
         parentTable.clear();
 
+        //
+        Club currentClub = DatabaseLoader.getClubById(currentGame.getOwner().getCurrentClubId());
+        
         switch (screen) {
 
         //
@@ -205,7 +210,7 @@ public class MainMenuManager {
             
             // Set the Squad that player controls to show on Squad Screen
             // NOTE: this will fail if the user wants to access this screen and don't have an assigned club, shouldn't happen
-            squadScreenTable.setCurrentClub(currentGame.getOwner().getCurrentClub());
+            squadScreenTable.setCurrentClub(currentClub);
             
             // Update dynamic components
             squadScreenTable.updateDynamicComponents();
@@ -216,9 +221,9 @@ public class MainMenuManager {
             break;            
             
         case SCHEDULE_SCREEN:
-            
+
             // Set the Club for the Schedule Screen
-            scheduleScreenTable.setCurrentClub(currentGame.getOwner().getCurrentClub());
+            scheduleScreenTable.setCurrentClub(currentClub);
             
             // Update dynamic components
             scheduleScreenTable.updateDynamicComponents();

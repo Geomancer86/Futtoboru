@@ -136,6 +136,35 @@ public class SaveGame implements Serializable {
         this.setSelectedCountries(selectedCountries);
     }
 
+    /**
+     * Get Current Club Utility Method
+     */
+    public Club getCurrentClub() {
+        
+        return getClubById(owner.getCurrentClubId());
+    }
+    
+    /**
+     * Get Club Utility Method:
+     * 
+     *  - During ingame, do not use DatabaseLoader as the clubs returned will be static and not the saved on file
+     */
+    public Club getClubById(Long id) {
+        
+        for (Club club : allClubs) {
+            
+            if (club.getId().equals(id)) {
+             
+                //
+                return club;
+            }
+        }
+        
+        //
+        return null;
+    }
+    
+    //
     public Person getOwner() {
         return owner;
     }

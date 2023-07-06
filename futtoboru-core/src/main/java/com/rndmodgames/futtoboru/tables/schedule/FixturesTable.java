@@ -164,6 +164,8 @@ public class FixturesTable extends VisTable {
         
         System.out.println("CURRENT CLUB PROPOSED FRIENDLY MATCHES: " + currentClub.getProposedMatches().size());
         
+        Club currentClub = currentGame.getCurrentClub();
+        
         // Iterate Season Dates
         // Keep count of days for Week Rendering
         for (LocalDateTime renderDate = firstMonday; renderDate.isBefore(seasonEnd); renderDate = renderDate.plusDays(1)) {
@@ -180,7 +182,7 @@ public class FixturesTable extends VisTable {
             
             // ITERATE PROPOSED
             // TODO LABEL THEM AS PROPOSED
-            for (Match proposed : currentGame.getOwner().getCurrentClub().getProposedMatches()) {
+            for (Match proposed : currentClub.getProposedMatches()) {
                 
                 if (proposed.getMatchDateTime().isEqual(renderDate)) {
                     
@@ -191,7 +193,7 @@ public class FixturesTable extends VisTable {
             
             // ITERATE SCHEDULED
             // TODO: LABEL THEM AS SCHEDULED
-            for (Match scheduled : currentGame.getOwner().getCurrentClub().getScheduledMatches()) {
+            for (Match scheduled : currentClub.getScheduledMatches()) {
                 
                 if (scheduled.getMatchDateTime().isEqual(renderDate)) {
                     

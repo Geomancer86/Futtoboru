@@ -230,7 +230,9 @@ public class ArrangeFriendlyTable extends VisTable {
                 match.setIsProposed(true);
 
                 // Save to Proposed Matches List
-                currentGame.getOwner().getCurrentClub().getProposedMatches().add(match);
+                Club currentClub = currentGame.getCurrentClub();
+                
+                currentClub.getProposedMatches().add(match);
                 
                 /**
                  * Clear/Update Screen
