@@ -77,6 +77,25 @@ public class FuttoboruGameEngine {
         // Update UI
         mainMenuManager.updateDynamicComponents();
         
+        // Current Club
+        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+
+        /**
+         * Check Proposed Friendlies
+         */
+        scheduler.checkClubProposedMatches(currentClub);
+        
+        /**
+         * Check Scheduled Matches
+         */
+        scheduler.checkClubSheduledMatches(currentClub);
+        
+        /**
+         * Update UI
+         */
+        mainMenuManager.updateDynamicComponents();
+
+        
 //        System.out.println("ADVANCING THE SIMULATION - 1 DAY");
 //        
 //        // Get Current Day
@@ -89,7 +108,7 @@ public class FuttoboruGameEngine {
 //        scriptsManager.checkGameScripts();
 //        
 //        //
-//        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+//        
         
         /**
          * TODO WIP:
