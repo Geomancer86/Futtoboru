@@ -1,10 +1,8 @@
 package com.rndmodgames.futtoboru.tables.schedule;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -47,12 +45,18 @@ public class ScheduleScreenTable extends VisTable {
         // Fixtures Table
         fixturesTable = new FixturesTable(game, this);
         
+        // Fixtures ScrollPane (auto scrollable without clicking)
+//        AutoFocusScrollPane fixturesScrollPane = new AutoFocusScrollPane(fixturesTable);
+        VisScrollPane fixturesScrollPane = new VisScrollPane(fixturesTable);
+        
         // Arrange Friendly Table
         arrangeFriendlyTable = new ArrangeFriendlyTable(game, this);
        
         this.row();
-        this.add(fixturesTable);
+        this.add(fixturesScrollPane).fill();
         this.add(arrangeFriendlyTable);
+        
+        this.pack();
         
         /**
          * TODO 
