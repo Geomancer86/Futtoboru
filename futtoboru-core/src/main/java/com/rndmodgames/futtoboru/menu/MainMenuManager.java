@@ -53,6 +53,9 @@ public class MainMenuManager {
     public static final int MAIN_SQUAD_SCREEN   = 1000;
     public static final int SCHEDULE_SCREEN     = 2000;
         
+    //
+    public static int CURRENT_SCREEN = HOME_SCREEN; // default to home scren
+    
     // Main Game Buttons
     private VisTextButton homeButton = null;
     private VisTextButton personalDetailsButton = null;
@@ -177,6 +180,9 @@ public class MainMenuManager {
 
         // Clear the main table
         parentTable.clear();
+        
+        // Set the active screen
+        CURRENT_SCREEN = screen;
 
         //
         Club currentClub = DatabaseLoader.getClubById(currentGame.getOwner().getCurrentClubId());
@@ -195,14 +201,20 @@ public class MainMenuManager {
            
         // 
         case AUTHORITY_SCREEN:
+            
+            //
             authorityScreenTable.updateDynamicComponents();
-            parentTable.add(authorityScreenTable);
+            parentTable.add(authorityScreenTable).grow();
+            
             break;
         
         //  
         case PERSON_DETAILS_SCREEN:
+            
+            //
             personDetailsScreenTable.updateDynamicPersonComponents(currentGame.getOwner());
-            parentTable.add(personDetailsScreenTable);
+            parentTable.add(personDetailsScreenTable).grow();
+            
             break;
 
         //
@@ -216,12 +228,16 @@ public class MainMenuManager {
             squadScreenTable.updateDynamicComponents();
             
             // Set as main content
-            parentTable.add(squadScreenTable);
+            parentTable.add(squadScreenTable).grow();
 
             break;            
             
         case SCHEDULE_SCREEN:
 
+            /**
+             * TODO: fix the calendar/fixtures screen not updating the complete width until we click or do continue game.
+             */
+            
             // Set the Club for the Schedule Screen
             scheduleScreenTable.setCurrentClub(currentClub);
             
@@ -229,7 +245,8 @@ public class MainMenuManager {
             scheduleScreenTable.updateDynamicComponents();
             
             // Set as main content
-            parentTable.add(scheduleScreenTable);
+            parentTable.add(scheduleScreenTable).grow();
+            
             break;
         
         //
@@ -249,11 +266,20 @@ public class MainMenuManager {
      */
     public void updateDynamicComponents() {
         
-        // TODO: only call if current screen/visible
-        authorityScreenTable.updateDynamicComponents();
+        switch(CURRENT_SCREEN) {
         
-        // TODO: same
-        scheduleScreenTable.updateDynamicComponents();
+        case AUTHORITY_SCREEN:
+            authorityScreenTable.updateDynamicComponents();
+            break;
+        
+        case SCHEDULE_SCREEN:
+            scheduleScreenTable.updateDynamicComponents();
+            break;
+
+        default:
+                //ignore
+                break;
+        }
     }
 
     //

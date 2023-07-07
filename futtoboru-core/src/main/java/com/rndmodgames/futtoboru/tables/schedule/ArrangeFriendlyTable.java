@@ -92,7 +92,7 @@ public class ArrangeFriendlyTable extends VisTable {
         this.parentTable = scheduleScreenTable;
         
         //
-        this.add("PLACEHOLDER ARRANGE FRIENDLY").colspan(2);
+        this.add(LanguageModLoader.getValue("arrange_friendly")).colspan(2);
         
         // Match Types
         VisSelectBox<String> matchTypesSelectBox = new VisSelectBox<String>();

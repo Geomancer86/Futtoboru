@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import com.badlogic.gdx.Game;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
@@ -30,11 +30,17 @@ public class FuttoboruGameEngine {
     private ScriptsManager scriptsManager;
     private MainMenuManager mainMenuManager;
     
+    //
+    MatchScheduler scheduler;
+    
     public FuttoboruGameEngine(Game parent, ScriptsManager scriptsManager) {
         
         // keep track for easier access
         this.gameInstance = (Futtoboru) parent;
         this.scriptsManager = scriptsManager;
+        
+        //
+        this.scheduler = new MatchScheduler();
     }
     
     public MainMenuManager getMainMenuManager() {
@@ -56,7 +62,8 @@ public class FuttoboruGameEngine {
      */
     public void continueGame() {
         
-        System.out.println("ADVANCING THE SIMULATION - 1 DAY");
+        //
+        System.out.println("ADVANCING THE SIMULATION");
         
         // Get Current Day
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
@@ -66,6 +73,43 @@ public class FuttoboruGameEngine {
         
         // Check Game Scripts
         scriptsManager.checkGameScripts();
+        
+        // Update UI
+        mainMenuManager.updateDynamicComponents();
+        
+//        System.out.println("ADVANCING THE SIMULATION - 1 DAY");
+//        
+//        // Get Current Day
+//        LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
+//        
+//        // Increment By Required Unit
+//        gameInstance.getCurrentGame().setGameDate(current.plusDays(1));
+//        
+//        // Check Game Scripts
+//        scriptsManager.checkGameScripts();
+//        
+//        //
+//        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+        
+        /**
+         * TODO WIP:
+         * 
+         *  - Match Preview and Match Simulation
+         *  
+         *      - Calculate if we have a match TODAY
+         *      - Show the Match Preview Button in that case
+         *          - This will disable the continue game for 1 click avoiding missing the match
+         *          - The match preview shows basic match data:
+         *              - Clubs,
+         *              - Average values for clubs
+         *              - Key Players?
+         *              - Odds
+         *              
+         *      - Show the Simulate Match/ Match Result buttons
+         *          - Time goes forward 90 minutes (180-etc)
+         *          - Game shows the Match Result Screen.
+         *              - Continue Game Button is back as normal.
+         */
         
         /**
          * TODO: WIP:
@@ -77,6 +121,8 @@ public class FuttoboruGameEngine {
          *              - Call the Simulation Engine (fully random result)
          */
         
+        
+        
         /**
          * Iterate all clubs and solve friendly match requests
          *  - Each club will have the friendlies their manager requested
@@ -86,22 +132,21 @@ public class FuttoboruGameEngine {
          *  - Avoid scheduling conflicts, if a club accepts a friendly for X day, then it cannot accept the next requests, all should be cancelled by default
          */
 
-        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
-        
-        clubAcceptsFriendlyMatchRequest(currentClub);
-        
-        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
-
-            // ignore own club in this list
-            if (!club.getId().equals(currentClub.getId())) {
-                clubAcceptsFriendlyMatchRequest(club);
-            }
-        }
+//        // TODO: match requests need to be replied by the player
+//        clubAcceptsFriendlyMatchRequest(currentClub);
+//        
+//        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+//
+//            // ignore own club in this list
+//            if (!club.getId().equals(currentClub.getId())) {
+//                clubAcceptsFriendlyMatchRequest(club);
+//            }
+//        }
 
         /**
          * Update Current Screen Components After Data Changes
          */
-        mainMenuManager.updateDynamicComponents();
+//        mainMenuManager.updateDynamicComponents();
     }
     
     /**

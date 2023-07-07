@@ -61,8 +61,8 @@ public class FixturesTable extends VisTable {
         /**
          * Club Current Matches
          */
-        this.add("FIXTURES");
-        this.row();
+//        this.add("FIXTURES");
+//        this.row();
         
         /**
          * Match List Table
@@ -89,7 +89,7 @@ public class FixturesTable extends VisTable {
         int renderWeeks = 10;
         int renderDays = renderWeeks * 12; // TODO: render until the end of season or until no more schedules can be done
         
-        LocalDateTime seasonStartDate = currentGame.getGameStartDate();
+//        LocalDateTime seasonStartDate = currentGame.getGameStartDate();
         LocalDateTime currentDate = currentGame.getGameDate();
         
         // Calculated Earlier Monday (Start of Week)
@@ -99,19 +99,19 @@ public class FixturesTable extends VisTable {
         LocalDateTime seasonEnd = firstMonday.plusDays(renderDays);
         
         //
-        matchListTable.row();
-        matchListTable.add("Season Start Date");
-        matchListTable.add(formatter.format(seasonStartDate));
-        
-        //
-        matchListTable.row();
-        matchListTable.add("Current Date");
-        matchListTable.add(formatter.format(currentDate));
-        
-        //
-        matchListTable.row();
-        matchListTable.add("First Season Monday");
-        matchListTable.add(formatter.format(firstMonday));
+//        matchListTable.row();
+//        matchListTable.add("Season Start Date");
+//        matchListTable.add(formatter.format(seasonStartDate));
+//        
+//        //
+//        matchListTable.row();
+//        matchListTable.add("Current Date");
+//        matchListTable.add(formatter.format(currentDate));
+//        
+//        //
+//        matchListTable.row();
+//        matchListTable.add("First Season Monday");
+//        matchListTable.add(formatter.format(firstMonday));
         
         /**
          * WEEKLY CALENDAR PROTOTYPE
@@ -187,6 +187,8 @@ public class FixturesTable extends VisTable {
                 matchListTable.row();
             }
         }
+        
+//        matchListTable.pack();
     }
     
     /**
