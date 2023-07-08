@@ -1,7 +1,11 @@
 package com.rndmodgames.futtoboru.engine.temporal;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.game.Futtoboru;
 
 /**
  * Match Scheduler v1
@@ -19,6 +23,16 @@ import com.rndmodgames.futtoboru.data.Match;
  */
 public class MatchScheduler {
 
+    //
+    private Futtoboru game;
+    
+    //
+    public MatchScheduler(Futtoboru parent) {
+        
+        //
+        this.game = parent;
+    }
+    
     /**
      * Check Club Scheduled Matches
      * 
@@ -27,7 +41,62 @@ public class MatchScheduler {
     public void checkClubSheduledMatches(Club club) {
         
         //
-        System.out.println("CLUB SCHEDULED MATCHES: " + club.getScheduledMatches());
+        System.out.println("CLUB SCHEDULED MATCHES: " + club.getScheduledMatches().size());
+        
+        /**
+         * SOLVE MATCHES:
+         * 
+         *  - the next match will always be the first on the scheduled matches list
+         *  - if current date equals match date
+         *      - change the CONTINUE button to MATCH PREVIEW
+         *          - requires logic on main menu manager / easy
+         *          
+         *  - the basic match preview screen will show 
+         *      - the MATCH PREVIEW button will change to MATCH RESULT
+         *      
+         *  - the basic match result screen will show
+         *      - the MATCH RESULT button will change back to CONTINUE
+         *  - 
+         */
+        
+        // Sort Scheduled Matches by Match Date
+//        Comparator.comparing(Match::matchDateTime);
+        
+        Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
+                                                                .compareTo(match2.getMatchDateTime());
+ 
+ 
+        // 2.1 pass above Comparator and sort in ascending order
+        Collections.sort(club.getScheduledMatches(), comparatorChronological);
+        
+        // Check we have at least one match
+        if (!club.getScheduledMatches().isEmpty()) {
+            
+            /**
+             * TODO: this require the list of scheduled matches sorted BY DATETIME
+             * 
+             *  First scheduled match on list will be the next
+             */
+            Match nextMatch = club.getScheduledMatches().get(0);
+            
+            System.out.println("NEXT MATCH DATE: " + nextMatch.getMatchDateTime());
+            
+            // Compare the next match date with Current Date
+            if (nextMatch.getMatchDateTime().isEqual(game.getCurrentGame().getGameDate())) {
+                
+                System.out.println("MATCH DAY!");
+                System.out.println(nextMatch.getHomeClubId() + " vs " + nextMatch.getAwayClubId());
+                
+                // Set match as played
+                nextMatch.setIsPlayed(true);
+                
+                // Add to Played Matches
+                club.getPlayedMatches().add(nextMatch);
+                
+                // Remove from Scheduled Matches
+                club.getScheduledMatches().remove(nextMatch);
+            }
+        }
     }
     
     /**

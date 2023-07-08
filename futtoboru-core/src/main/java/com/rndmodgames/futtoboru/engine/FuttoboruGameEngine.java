@@ -40,7 +40,7 @@ public class FuttoboruGameEngine {
         this.scriptsManager = scriptsManager;
         
         //
-        this.scheduler = new MatchScheduler();
+        this.scheduler = new MatchScheduler(gameInstance);
     }
     
     public MainMenuManager getMainMenuManager() {
