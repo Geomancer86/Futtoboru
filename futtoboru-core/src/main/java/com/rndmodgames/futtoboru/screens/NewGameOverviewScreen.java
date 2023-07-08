@@ -346,8 +346,11 @@ public class NewGameOverviewScreen implements Screen {
                  * Starting Club
                  * 
                  * TODO: we also need to set the Person as working at Club level (owner, staff, etc.)
+                 * 
+                 * NOTE: starting club cannot be null because we insert a ghost UNAVAILABLE Club
                  */
-                if (startingClub != null) {
+                if (startingClub != null
+                        && startingClub.getId() != null) {
 
                     /**
                      * Make sure current club is a club instance on currentGame.currentclubs to avoid split instances

@@ -1,7 +1,5 @@
 package com.rndmodgames.futtoboru.tables.topmenu;
 
-import java.time.LocalDateTime;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -21,7 +19,7 @@ import com.rndmodgames.localization.LanguageModLoader;
 /**
  * Top Game Menu Table
  * 
- * 
+ * TODO:
  * 
  * @author Geomancer86
  */
@@ -44,6 +42,8 @@ public class MainGameMenuTable extends VisTable {
      * Screen Components
      */
     VisTextButton continueGameButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
+    VisTextButton matchPreviewButton = new VisTextButton(LanguageModLoader.getValue("match_preview"));
+    
     CurrentDateAndTimeWidget dateTimeWidget = null;
     
     public MainGameMenuTable(Game game, Stage stage) {
@@ -139,7 +139,7 @@ public class MainGameMenuTable extends VisTable {
                 } else {
 
                     // 
-                    advanceGameTurn();
+                    continueGame();
                 }
             }
         });
@@ -148,12 +148,33 @@ public class MainGameMenuTable extends VisTable {
          * Continue Game Tooltip [SAVE GAME FIRST]
          * 
          * NOTE: button disabled until saving game at least once
+         * 
+         * TODO: fix the tooltip not showing with the button disabled
+         * TODO: the tooltip is completely broken, does not show any text at all
          */
         if (!((Futtoboru)(game)).getCurrentGame().getIsSaved()) {
             
-            continueGameButton.addListener(new TextTooltip("Save Game Before Advancing the Simulation", VisUI.getSkin()));
+//            continueGameButton.addListener(new TextTooltip("Save Game Before Advancing the Simulation", VisUI.getSkin()));
             continueGameButton.setDisabled(true);
         }
+        
+        /**
+         * Match Preview Button
+         */
+        matchPreviewButton.addCaptureListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                //
+                matchPreview();
+            }
+        });
         
         // dynamic menu table
         dynamicMainGameMenuTable = new VisTable(true);
@@ -171,32 +192,18 @@ public class MainGameMenuTable extends VisTable {
     }
     
     /**
-     * Dynamically sets the Main Game Menu depending on the Selected Screen
+     * 
      */
-    public void setMainGameMenu(int screen, VisTable screenTable) {
+    public void matchPreview() {
         
-//        dynamicMainGameMenuTable.clear();
-//        
-//        switch (screen) {
-//        
-//        case MainGameScreen.CLUB_SCREEN:
-//            /**
-//             * Profile, General, News, Facilities, Affiliates, History
-//             */
-//            dynamicMainGameMenuTable.add(((ClubScreenTable) screenTable).getClubScreenDynamicMenu());
-//            break;
-//        
-//        default:
-//            System.out.println("MAIN GAME MENU NOT IMPLEMENTED");
-//            break;
-//        }
-
+        //
+        System.out.println("LOADING MATCH PREVIEW SCREEN!");
     }
     
     /**
      * 
      */
-    private void advanceGameTurn() {
+    private void continueGame() {
         
         // Continue the game on the Game Engine
         ((Futtoboru)(game)).getGameEngine().continueGame();

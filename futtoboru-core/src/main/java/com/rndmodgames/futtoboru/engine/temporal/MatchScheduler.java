@@ -6,6 +6,7 @@ import java.util.Comparator;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 
 /**
  * Match Scheduler v1
@@ -58,15 +59,13 @@ public class MatchScheduler {
          *      - the MATCH RESULT button will change back to CONTINUE
          *  - 
          */
-        
-        // Sort Scheduled Matches by Match Date
-//        Comparator.comparing(Match::matchDateTime);
-        
+
+        // TODO: do not recreate the comparator every time 
         Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
-                                                                .compareTo(match2.getMatchDateTime());
+                                                            .compareTo(match2.getMatchDateTime());
  
- 
-        // 2.1 pass above Comparator and sort in ascending order
+        // TODO: not required to do on every turn, only on insert new scheduled match
+        // Sort
         Collections.sort(club.getScheduledMatches(), comparatorChronological);
         
         // Check we have at least one match
@@ -85,16 +84,20 @@ public class MatchScheduler {
             if (nextMatch.getMatchDateTime().isEqual(game.getCurrentGame().getGameDate())) {
                 
                 System.out.println("MATCH DAY!");
-                System.out.println(nextMatch.getHomeClubId() + " vs " + nextMatch.getAwayClubId());
+                
+                Club homeClub = DatabaseLoader.getClubById(nextMatch.getHomeClubId());
+                Club awayClub = DatabaseLoader.getClubById(nextMatch.getAwayClubId());
+                
+                System.out.println(homeClub.getName() + " vs " + awayClub.getName());
                 
                 // Set match as played
-                nextMatch.setIsPlayed(true);
-                
-                // Add to Played Matches
-                club.getPlayedMatches().add(nextMatch);
-                
-                // Remove from Scheduled Matches
-                club.getScheduledMatches().remove(nextMatch);
+//                nextMatch.setIsPlayed(true);
+//                
+//                // Add to Played Matches
+//                club.getPlayedMatches().add(nextMatch);
+//                
+//                // Remove from Scheduled Matches
+//                club.getScheduledMatches().remove(nextMatch);
             }
         }
     }
