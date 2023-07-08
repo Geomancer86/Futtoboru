@@ -154,7 +154,7 @@ public class MainGameMenuTable extends VisTable {
          */
         if (!((Futtoboru)(game)).getCurrentGame().getIsSaved()) {
             
-//            continueGameButton.addListener(new TextTooltip("Save Game Before Advancing the Simulation", VisUI.getSkin()));
+            continueGameButton.addListener(new TextTooltip("Save Game Before Advancing the Simulation", VisUI.getSkin()));
             continueGameButton.setDisabled(true);
         }
         
