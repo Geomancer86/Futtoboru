@@ -33,6 +33,10 @@ public class FuttoboruGameEngine {
     //
     MatchScheduler scheduler;
     
+    //
+    public static final int CONTINUE_GAME_ACTION = 1;
+    public static final int MATCH_DAY_ACTION = 2;
+    
     public FuttoboruGameEngine(Game parent, ScriptsManager scriptsManager) {
         
         // keep track for easier access
@@ -51,6 +55,31 @@ public class FuttoboruGameEngine {
         this.mainMenuManager = mainMenuManager;
     }
 
+    /**
+     * Check if the Game can CONTINUE or MATCH PREVIEW
+     * 
+     * 1: CONTINUE GAME
+     * 2: MATCH PREVIEW
+     */
+    public int getNextGameAction() {
+
+        // Current Club
+        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+        
+        /**
+         * Check if Current Club has a MATCH TODAY
+         */
+        boolean matchDay = scheduler.checkClubMatchDay(currentClub);
+        
+        //
+        if (matchDay) {
+            
+            return MATCH_DAY_ACTION;
+        }
+
+        return CONTINUE_GAME_ACTION;
+    }
+    
     /**
      * TODO: Continue Game should be fully automatic, the Engine will take care of how long the game has to move forward
      *  

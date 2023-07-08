@@ -12,6 +12,7 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
+import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.tables.widgets.CurrentDateAndTimeWidget;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -36,11 +37,12 @@ public class MainGameMenuTable extends VisTable {
     /**
      * Dynamic Main Game Menu table
      */
-    private VisTable dynamicMainGameMenuTable = null;
-        
+    private VisTable dynamicMainGameMenuTable = null;   
+    
     /**
      * Screen Components
      */
+    VisTable mainButtonContainer = new VisTable(true);
     VisTextButton continueGameButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
     VisTextButton matchPreviewButton = new VisTextButton(LanguageModLoader.getValue("match_preview"));
     
@@ -113,11 +115,9 @@ public class MainGameMenuTable extends VisTable {
          * Current Date & Time Widget
          */
         dateTimeWidget = new CurrentDateAndTimeWidget(game);
-        
+
         /**
          * Continue Game Button
-         * 
-         * - This will be disabled until the Game is Saved Once
          */
         continueGameButton.addCaptureListener(new InputListener() {
 
@@ -129,34 +129,13 @@ public class MainGameMenuTable extends VisTable {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
-                /**
-                 * Continue Game Simulation
-                 */
-                if (continueGameButton.isDisabled()) {
-
-                    System.out.println("SAVE GAME BEFORE ADVANCING THE SIMULATION!");
-
-                } else {
-
-                    // 
-                    continueGame();
-                }
+                //
+                continueGame();
+                
+                //
+                setMainContainerButton();
             }
         });
-
-        /**
-         * Continue Game Tooltip [SAVE GAME FIRST]
-         * 
-         * NOTE: button disabled until saving game at least once
-         * 
-         * TODO: fix the tooltip not showing with the button disabled
-         * TODO: the tooltip is completely broken, does not show any text at all
-         */
-        if (!((Futtoboru)(game)).getCurrentGame().getIsSaved()) {
-            
-            continueGameButton.addListener(new TextTooltip("Save Game Before Advancing the Simulation", VisUI.getSkin()));
-            continueGameButton.setDisabled(true);
-        }
         
         /**
          * Match Preview Button
@@ -173,8 +152,14 @@ public class MainGameMenuTable extends VisTable {
 
                 //
                 matchPreview();
+                
+                //
+                setMainContainerButton();
             }
         });
+        
+        // dynamic main button
+        setMainContainerButton();
         
         // dynamic menu table
         dynamicMainGameMenuTable = new VisTable(true);
@@ -186,9 +171,44 @@ public class MainGameMenuTable extends VisTable {
         
         rightMenu.add(gameSettingsSelectBox).right();
         rightMenu.add(dateTimeWidget).width(100).right();
-        rightMenu.add(continueGameButton).right();
+        rightMenu.add(mainButtonContainer).right();
         
+        //
         add(rightMenu).expandX().right();
+    }
+    
+    /**
+     * Sets the Main Button depending on the state of the game
+     */
+    public void setMainContainerButton() {
+        
+        // get next action from game engine
+        int nextGameAction = ((Futtoboru)(game)).getGameEngine().getNextGameAction();
+        
+        System.out.println("SETTING NEXT GAME ACTION BUTTON: " + nextGameAction);
+        
+        switch(nextGameAction) {
+        
+        //
+        case FuttoboruGameEngine.CONTINUE_GAME_ACTION:
+            
+            // Set continue game button
+            mainButtonContainer.clear();
+            mainButtonContainer.add(continueGameButton);
+            
+            break;
+            
+        case FuttoboruGameEngine.MATCH_DAY_ACTION:
+
+            // Set match preview button
+            mainButtonContainer.clear();
+            mainButtonContainer.add(matchPreviewButton);
+            
+            break;
+        
+        default:
+            System.out.println("GAME ACTION " + nextGameAction + " NOT IMPLEMENTED!");
+        }
     }
     
     /**

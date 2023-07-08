@@ -35,6 +35,45 @@ public class MatchScheduler {
     }
     
     /**
+     * Returns true if the Club has a Match TODAY (save game current game date)
+     */
+    public boolean checkClubMatchDay(Club club) {
+        
+        System.out.println("CHECKING IF TODAY IS A MATCH DAY!");
+        
+        // TODO: do not recreate the comparator every time
+        Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
+                                                             .compareTo(match2.getMatchDateTime());
+        
+        // TODO: not required to do on every turn, only on insert new scheduled match
+        // Sort
+        Collections.sort(club.getScheduledMatches(), comparatorChronological);
+        
+        // Check we have at least one match
+        if (!club.getScheduledMatches().isEmpty()) {
+            
+            // First scheduled match on list will be the next
+            Match nextMatch = club.getScheduledMatches().get(0);
+            
+            System.out.println("NEXT MATCH DATE: " + nextMatch.getMatchDateTime());
+            
+            if (nextMatch.getMatchDateTime().isEqual(game.getCurrentGame().getGameDate())) {
+                
+                System.out.println("MATCH DAY!");
+                
+                Club homeClub = DatabaseLoader.getClubById(nextMatch.getHomeClubId());
+                Club awayClub = DatabaseLoader.getClubById(nextMatch.getAwayClubId());
+
+                System.out.println(homeClub.getName() + " vs " + awayClub.getName());
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
      * Check Club Scheduled Matches
      * 
      *  -
@@ -61,45 +100,45 @@ public class MatchScheduler {
          */
 
         // TODO: do not recreate the comparator every time 
-        Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
-                                                            .compareTo(match2.getMatchDateTime());
- 
-        // TODO: not required to do on every turn, only on insert new scheduled match
-        // Sort
-        Collections.sort(club.getScheduledMatches(), comparatorChronological);
-        
-        // Check we have at least one match
-        if (!club.getScheduledMatches().isEmpty()) {
-            
-            /**
-             * TODO: this require the list of scheduled matches sorted BY DATETIME
-             * 
-             *  First scheduled match on list will be the next
-             */
-            Match nextMatch = club.getScheduledMatches().get(0);
-            
-            System.out.println("NEXT MATCH DATE: " + nextMatch.getMatchDateTime());
-            
-            // Compare the next match date with Current Date
-            if (nextMatch.getMatchDateTime().isEqual(game.getCurrentGame().getGameDate())) {
-                
-                System.out.println("MATCH DAY!");
-                
-                Club homeClub = DatabaseLoader.getClubById(nextMatch.getHomeClubId());
-                Club awayClub = DatabaseLoader.getClubById(nextMatch.getAwayClubId());
-                
-                System.out.println(homeClub.getName() + " vs " + awayClub.getName());
-                
-                // Set match as played
-//                nextMatch.setIsPlayed(true);
+//        Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
+//                                                            .compareTo(match2.getMatchDateTime());
+// 
+//        // TODO: not required to do on every turn, only on insert new scheduled match
+//        // Sort
+//        Collections.sort(club.getScheduledMatches(), comparatorChronological);
+//        
+//        // Check we have at least one match
+//        if (!club.getScheduledMatches().isEmpty()) {
+//            
+//            /**
+//             * TODO: this require the list of scheduled matches sorted BY DATETIME
+//             * 
+//             *  First scheduled match on list will be the next
+//             */
+//            Match nextMatch = club.getScheduledMatches().get(0);
+//            
+//            System.out.println("NEXT MATCH DATE: " + nextMatch.getMatchDateTime());
+//            
+//            // Compare the next match date with Current Date
+//            if (nextMatch.getMatchDateTime().isEqual(game.getCurrentGame().getGameDate())) {
 //                
-//                // Add to Played Matches
-//                club.getPlayedMatches().add(nextMatch);
+//                System.out.println("MATCH DAY!");
 //                
-//                // Remove from Scheduled Matches
-//                club.getScheduledMatches().remove(nextMatch);
-            }
-        }
+//                Club homeClub = DatabaseLoader.getClubById(nextMatch.getHomeClubId());
+//                Club awayClub = DatabaseLoader.getClubById(nextMatch.getAwayClubId());
+//                
+//                System.out.println(homeClub.getName() + " vs " + awayClub.getName());
+//                
+//                // Set match as played
+////                nextMatch.setIsPlayed(true);
+////                
+////                // Add to Played Matches
+////                club.getPlayedMatches().add(nextMatch);
+////                
+////                // Remove from Scheduled Matches
+////                club.getScheduledMatches().remove(nextMatch);
+//            }
+//        }
     }
     
     /**
