@@ -84,6 +84,12 @@ public class MainGameScreen implements Screen {
         // Set the reference to allow dynamic screen updates from the Game Engine after data changes
         ((Futtoboru)game).getGameEngine().setMainMenuManager(menuManager);
         
+        /**
+         * Set the reference to allow calling screen changes from the top menu
+         * TODO: fix / decouple / couple the menu managers to avoid too much passing objects around
+         */
+        mainGameMenu.setMainMenuManager(menuManager);
+        
         //
         gameWindowTable.row();
         gameWindowTable.add(menuManager.getButtonsMenu()).top();

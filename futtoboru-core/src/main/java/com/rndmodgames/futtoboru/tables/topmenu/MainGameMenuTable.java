@@ -5,15 +5,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.tables.widgets.CurrentDateAndTimeWidget;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -28,6 +27,9 @@ public class MainGameMenuTable extends VisTable {
 
     //
     Game game;
+    
+    // Main Menu Manager reference to switch screens / etc
+    private MainMenuManager mainMenuManager = null;
     
     /**
      * Dialogs
@@ -45,6 +47,7 @@ public class MainGameMenuTable extends VisTable {
     VisTable mainButtonContainer = new VisTable(true);
     VisTextButton continueGameButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
     VisTextButton matchPreviewButton = new VisTextButton(LanguageModLoader.getValue("match_preview"));
+    VisTextButton matchResultButton = new VisTextButton(LanguageModLoader.getValue("match_result"));
     
     CurrentDateAndTimeWidget dateTimeWidget = null;
     
@@ -158,6 +161,27 @@ public class MainGameMenuTable extends VisTable {
             }
         });
         
+        /**
+         * Match Result Button
+         */
+        matchResultButton.addCaptureListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                //
+                matchResult();
+                
+                //
+                setMainContainerButton();
+            }
+        });
+        
         // dynamic main button
         setMainContainerButton();
         
@@ -187,13 +211,14 @@ public class MainGameMenuTable extends VisTable {
         
         System.out.println("SETTING NEXT GAME ACTION BUTTON: " + nextGameAction);
         
+        mainButtonContainer.clear();
+        
         switch(nextGameAction) {
         
         //
         case FuttoboruGameEngine.CONTINUE_GAME_ACTION:
             
             // Set continue game button
-            mainButtonContainer.clear();
             mainButtonContainer.add(continueGameButton);
             
             break;
@@ -201,14 +226,31 @@ public class MainGameMenuTable extends VisTable {
         case FuttoboruGameEngine.MATCH_DAY_ACTION:
 
             // Set match preview button
-            mainButtonContainer.clear();
             mainButtonContainer.add(matchPreviewButton);
             
             break;
         
+        case FuttoboruGameEngine.MATCH_PREVIEW_ACTION:
+            
+            // Set the match result button
+            mainButtonContainer.add(matchResultButton);
+            
+            break;
+            
         default:
             System.out.println("GAME ACTION " + nextGameAction + " NOT IMPLEMENTED!");
         }
+    }
+    
+    /**
+     * 
+     */
+    public void matchResult() {
+       
+        //
+        System.out.println("LOADING MATCH RESULT SCREEN!");
+        
+        // TODO: set the GAME TIME to MATCH END DATE AND UPDATE DYNAMIC COMPONENTS
     }
     
     /**
@@ -218,6 +260,14 @@ public class MainGameMenuTable extends VisTable {
         
         //
         System.out.println("LOADING MATCH PREVIEW SCREEN!");
+        
+        mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_PREVIEW_SCREEN);
+        
+        /**
+         * RESET BUTTON TO MATCH RESULT
+         *  - If the player goes back to any other screen, the BUTTON should be reset back to MATCH PREVIEW because
+         *      there is no other way to go to the screen for now, no buttons to get there clicking on a match list
+         */
     }
     
     /**
@@ -230,5 +280,13 @@ public class MainGameMenuTable extends VisTable {
                 
         // Update the dynamic date widget
         dateTimeWidget.updateDynamicComponents();
+    }
+
+    public MainMenuManager getMainMenuManager() {
+        return mainMenuManager;
+    }
+
+    public void setMainMenuManager(MainMenuManager mainMenuManager) {
+        this.mainMenuManager = mainMenuManager;
     }
 }

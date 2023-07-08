@@ -1,6 +1,8 @@
 package com.rndmodgames.futtoboru.tables.match;
 
+import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.rndmodgames.futtoboru.game.Futtoboru;
 
 /**
  * Match Preview Screen Table v1
@@ -20,4 +22,16 @@ import com.kotcrab.vis.ui.widget.VisTable;
  */
 public class MatchPreviewScreenTable extends VisTable {
 
+    //
+    Futtoboru game;
+    
+    public MatchPreviewScreenTable(Game parent) {
+        
+        //
+        super(true);
+        
+        this.game = (Futtoboru) parent;
+        
+        this.add("PREVIEW SCREEN PLACEHOLDER - WORK IN PROGRESS!");
+    }
 }

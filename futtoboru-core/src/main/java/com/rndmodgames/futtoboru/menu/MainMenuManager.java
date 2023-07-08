@@ -15,6 +15,7 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
 import com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable;
 import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
+import com.rndmodgames.futtoboru.tables.match.MatchPreviewScreenTable;
 import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
 import com.rndmodgames.futtoboru.tables.schedule.ScheduleScreenTable;
 import com.rndmodgames.futtoboru.tables.squad.SquadScreenTable;
@@ -52,6 +53,9 @@ public class MainMenuManager {
     //
     public static final int MAIN_SQUAD_SCREEN   = 1000;
     public static final int SCHEDULE_SCREEN     = 2000;
+    
+    //
+    public static final int MATCH_PREVIEW_SCREEN = 10000;
         
     //
     public static int CURRENT_SCREEN = HOME_SCREEN; // default to home scren
@@ -71,6 +75,7 @@ public class MainMenuManager {
     private InboxScreenTable inboxScreenTable = null;
     private SquadScreenTable squadScreenTable = null;
     private ScheduleScreenTable scheduleScreenTable = null;
+    private MatchPreviewScreenTable matchPreviewScreenTable = null;
     
     /**
      * 
@@ -91,6 +96,7 @@ public class MainMenuManager {
         inboxScreenTable = new InboxScreenTable(game);
         squadScreenTable = new SquadScreenTable(game);
         scheduleScreenTable = new ScheduleScreenTable(game);
+        matchPreviewScreenTable = new MatchPreviewScreenTable(game);
         
         // custom buttons with logic to switch screen/tables
         homeButton = new HomeButton(this);
@@ -246,6 +252,13 @@ public class MainMenuManager {
             
             // Set as main content
             parentTable.add(scheduleScreenTable).grow();
+            
+            break;
+            
+        case MATCH_PREVIEW_SCREEN:
+            
+            // Set as main content
+            parentTable.add(matchPreviewScreenTable).grow();
             
             break;
         

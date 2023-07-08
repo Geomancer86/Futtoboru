@@ -36,6 +36,7 @@ public class FuttoboruGameEngine {
     //
     public static final int CONTINUE_GAME_ACTION = 1;
     public static final int MATCH_DAY_ACTION = 2;
+    public static final int MATCH_PREVIEW_ACTION = 3;
     
     public FuttoboruGameEngine(Game parent, ScriptsManager scriptsManager) {
         
@@ -55,6 +56,13 @@ public class FuttoboruGameEngine {
         this.mainMenuManager = mainMenuManager;
     }
 
+    /**
+     * 
+     */
+    public void getMatchResult() {
+        
+    }
+    
     /**
      * Check if the Game can CONTINUE or MATCH PREVIEW
      * 
