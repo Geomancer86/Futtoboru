@@ -35,9 +35,9 @@ public class FuttoboruGameEngine {
     
     //
     public static final int CONTINUE_GAME_ACTION = 1;
-    public static final int MATCH_DAY_ACTION = 2;
-    public static final int MATCH_PREVIEW_ACTION = 3;
-    
+    public static final int MATCH_PREVIEW_ACTION = 2;
+    public static final int MATCH_RESULT_ACTION = 3;
+
     public FuttoboruGameEngine(Game parent, ScriptsManager scriptsManager) {
         
         // keep track for easier access
@@ -54,13 +54,6 @@ public class FuttoboruGameEngine {
 
     public void setMainMenuManager(MainMenuManager mainMenuManager) {
         this.mainMenuManager = mainMenuManager;
-    }
-
-    /**
-     * 
-     */
-    public void getMatchResult() {
-        
     }
     
     /**
@@ -81,11 +74,23 @@ public class FuttoboruGameEngine {
         
         //
         if (matchDay) {
-            
-            return MATCH_DAY_ACTION;
+
+            return MATCH_PREVIEW_ACTION;
         }
 
         return CONTINUE_GAME_ACTION;
+    }
+    
+    /**
+     * 
+     */
+    public void getMatchResult() {
+        
+        //
+        System.out.println("MATCH RESULT - ADVANCED THE SIMULATION - 90 MINUTES");
+        
+        // Get Current Day
+        LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
     }
     
     /**

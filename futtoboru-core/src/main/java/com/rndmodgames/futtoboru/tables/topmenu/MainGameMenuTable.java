@@ -155,9 +155,6 @@ public class MainGameMenuTable extends VisTable {
 
                 //
                 matchPreview();
-                
-                //
-                setMainContainerButton();
             }
         });
         
@@ -176,9 +173,6 @@ public class MainGameMenuTable extends VisTable {
 
                 //
                 matchResult();
-                
-                //
-                setMainContainerButton();
             }
         });
         
@@ -205,7 +199,7 @@ public class MainGameMenuTable extends VisTable {
      * Sets the Main Button depending on the state of the game
      */
     public void setMainContainerButton() {
-        
+
         // get next action from game engine
         int nextGameAction = ((Futtoboru)(game)).getGameEngine().getNextGameAction();
         
@@ -223,17 +217,10 @@ public class MainGameMenuTable extends VisTable {
             
             break;
             
-        case FuttoboruGameEngine.MATCH_DAY_ACTION:
+        case FuttoboruGameEngine.MATCH_PREVIEW_ACTION:
 
             // Set match preview button
             mainButtonContainer.add(matchPreviewButton);
-            
-            break;
-        
-        case FuttoboruGameEngine.MATCH_PREVIEW_ACTION:
-            
-            // Set the match result button
-            mainButtonContainer.add(matchResultButton);
             
             break;
             
@@ -250,6 +237,11 @@ public class MainGameMenuTable extends VisTable {
         //
         System.out.println("LOADING MATCH RESULT SCREEN!");
         
+        mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_RESULT_SCREEN);
+        
+        mainButtonContainer.clear();
+        mainButtonContainer.add(continueGameButton);
+        
         // TODO: set the GAME TIME to MATCH END DATE AND UPDATE DYNAMIC COMPONENTS
     }
     
@@ -264,10 +256,12 @@ public class MainGameMenuTable extends VisTable {
         mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_PREVIEW_SCREEN);
         
         /**
-         * RESET BUTTON TO MATCH RESULT
+         * TODO: RESET BUTTON TO MATCH RESULT
          *  - If the player goes back to any other screen, the BUTTON should be reset back to MATCH PREVIEW because
          *      there is no other way to go to the screen for now, no buttons to get there clicking on a match list
          */
+        mainButtonContainer.clear();
+        mainButtonContainer.add(matchResultButton);
     }
     
     /**

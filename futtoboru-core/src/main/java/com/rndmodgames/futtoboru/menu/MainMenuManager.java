@@ -56,6 +56,7 @@ public class MainMenuManager {
     
     //
     public static final int MATCH_PREVIEW_SCREEN = 10000;
+    public static final int MATCH_RESULT_SCREEN  = 20000;
         
     //
     public static int CURRENT_SCREEN = HOME_SCREEN; // default to home scren
@@ -241,7 +242,8 @@ public class MainMenuManager {
         case SCHEDULE_SCREEN:
 
             /**
-             * TODO: fix the calendar/fixtures screen not updating the complete width until we click or do continue game.
+             * TODO: fix the calendar/fixtures screen not filling the complete width until we click or do continue game.
+             *  NOTE: issue seems related to the scrollbars
              */
             
             // Set the Club for the Schedule Screen
@@ -290,8 +292,8 @@ public class MainMenuManager {
             break;
 
         default:
-                //ignore
-                break;
+            //ignore
+            break;
         }
     }
 
