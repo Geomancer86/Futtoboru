@@ -201,12 +201,6 @@ public class MainMenuManager {
         // Clear the main table
         parentTable.clear();
         
-        //
-        if (PREVIOUS_SCREEN == -1) {
-            
-            PREVIOUS_SCREEN = screen;
-        }
-        
         // Set it before changing it
         PREVIOUS_SCREEN = CURRENT_SCREEN;
         
