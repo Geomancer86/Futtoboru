@@ -15,7 +15,8 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
 import com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable;
 import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
-import com.rndmodgames.futtoboru.tables.match.MatchPreviewScreenTable;
+import com.rndmodgames.futtoboru.tables.match.preview.MatchPreviewScreenTable;
+import com.rndmodgames.futtoboru.tables.match.result.MatchResultScreenTable;
 import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
 import com.rndmodgames.futtoboru.tables.schedule.ScheduleScreenTable;
 import com.rndmodgames.futtoboru.tables.squad.SquadScreenTable;
@@ -41,7 +42,11 @@ public class MainMenuManager {
     //
     private VisTable buttonsMenu = new VisTable();
     
-    // Screen Ids
+    /**
+     * Screen Ids
+     * 
+     * NOTE: screen ids don't make any sense, we will keep this scheme for v1 but needs rework (with menu system)
+     */
     public static final int HOME_SCREEN             =  100;
     public static final int INBOX_SCREEN            =  200;
     public static final int PERSON_DETAILS_SCREEN   =  300;
@@ -57,6 +62,7 @@ public class MainMenuManager {
     //
     public static final int MATCH_PREVIEW_SCREEN = 10000;
     public static final int MATCH_RESULT_SCREEN  = 20000;
+    public static final int MATCH_HISTORY_SCREEN = 30000;
         
     //
     public static int PREVIOUS_SCREEN = -1; // 
@@ -79,6 +85,7 @@ public class MainMenuManager {
     private SquadScreenTable squadScreenTable = null;
     private ScheduleScreenTable scheduleScreenTable = null;
     private MatchPreviewScreenTable matchPreviewScreenTable = null;
+    private MatchResultScreenTable matchResultScreenTable = null;
     
     /**
      * 
@@ -100,6 +107,7 @@ public class MainMenuManager {
         squadScreenTable = new SquadScreenTable(game);
         scheduleScreenTable = new ScheduleScreenTable(game);
         matchPreviewScreenTable = new MatchPreviewScreenTable(game);
+        matchResultScreenTable = new MatchResultScreenTable(game);
         
         // custom buttons with logic to switch screen/tables
         homeButton = new HomeButton(this);
@@ -108,6 +116,9 @@ public class MainMenuManager {
         inboxButton = new InboxButton(this);
         squadButton = new SquadButton(this);
         scheduleButton = new ScheduleButton(this);
+        
+        // set the current screen by default
+        setActiveMainScreen(CURRENT_SCREEN);
         
         /**
          * Dynamic Buttons Menu depending on the CURRENT_JOB
@@ -276,8 +287,20 @@ public class MainMenuManager {
             // Set as main content
             parentTable.add(matchPreviewScreenTable).grow();
             
-            // to get back to this screen after the match
+            // to get back to the previous screen after the match
             BEFORE_MATCH_SCREEN = PREVIOUS_SCREEN;
+            
+            break;
+            
+        case MATCH_RESULT_SCREEN:
+            
+            System.out.println("SHOWING MATCH RESULT SCREEN!");
+            
+            // Update dynamic components
+            matchResultScreenTable.updateDynamicComponents();
+            
+            // Set as main content
+            parentTable.add(matchResultScreenTable).grow();
             
             break;
         

@@ -59,7 +59,7 @@ public class Futtoboru extends Game {
     
     // Simulation
     public static final int GAME_SCREEN                 = 100;
-    public static final int GAME_ADD_PLAYER_SCREEN      = 101;
+    public static final int GAME_ADD_PLAYER_SCREEN      = 101; // not implemented, not used
     
     /**
      * GRAPHIC SETTINGS 
@@ -131,7 +131,9 @@ public class Futtoboru extends Game {
         // 
         LanguageModLoader.setBundle(manager.get("mods/language/BaseBundle", I18NBundle.class));
         
-        // Preload the Database
+        /**
+         * Preload the Database
+         */
         DatabaseLoader.getInstance();
 
         // Initialize the Script Manager
@@ -143,7 +145,8 @@ public class Futtoboru extends Game {
         // Initialize the Game Engine
         this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager));
         
-        // Show Main Menu NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
+        // Show Main Menu 
+        // NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
         if (com.badlogic.gdx.Gdx.gl != null) {
             changeScreen(MENU_SCREEN);
         }
@@ -160,6 +163,7 @@ public class Futtoboru extends Game {
         
         switch(screen) {
         
+        // TODO: restore splash screen before the main menu screen
 //        case SPLASH_SCREEN:
 //            this.setScreen(new SplashScreen(this));
 //            break;
@@ -169,7 +173,6 @@ public class Futtoboru extends Game {
             break;
             
         case NEW_GAME_SCREEN:
-//            this.setScreen(new NewGameScreen(this));
             this.setScreen(new NewGameSeasonScreen(this));
             break;
             

@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.tables.match;
+package com.rndmodgames.futtoboru.tables.match.preview;
 
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisTable;
