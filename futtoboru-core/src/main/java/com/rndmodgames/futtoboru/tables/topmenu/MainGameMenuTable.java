@@ -237,12 +237,13 @@ public class MainGameMenuTable extends VisTable {
         //
         System.out.println("LOADING MATCH RESULT SCREEN!");
         
+        // Simulate Match and Advance Time
+        ((Futtoboru)(game)).getGameEngine().getMatchResult();
+        
         mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_RESULT_SCREEN);
         
         mainButtonContainer.clear();
         mainButtonContainer.add(continueGameButton);
-        
-        // TODO: set the GAME TIME to MATCH END DATE AND UPDATE DYNAMIC COMPONENTS
     }
     
     /**

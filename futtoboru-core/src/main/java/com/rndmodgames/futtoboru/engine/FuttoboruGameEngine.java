@@ -1,6 +1,8 @@
 package com.rndmodgames.futtoboru.engine;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.badlogic.gdx.Game;
 import com.rndmodgames.futtoboru.data.Club;
@@ -8,6 +10,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
@@ -91,6 +94,39 @@ public class FuttoboruGameEngine {
         
         // Get Current Day
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
+        
+        // Increment By Required Unit
+        // TODO: fix matches not appearing because we change the time of day
+//        gameInstance.getCurrentGame().setGameDate(current.plusMinutes(90));
+        
+        // Mark match as Played
+        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+        
+        // TODO: do not recreate the comparator every time
+        Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
+                                                             .compareTo(match2.getMatchDateTime());
+        
+        // TODO: not required to do on every turn, only on insert new scheduled match
+        // Sort
+        Collections.sort(currentClub.getScheduledMatches(), comparatorChronological);
+        
+        // Check we have at least one match
+        if (!currentClub.getScheduledMatches().isEmpty()) {
+            
+            // First scheduled match on list will be the next
+            Match nextMatch = currentClub.getScheduledMatches().get(0);
+            
+            nextMatch.setIsPlayed(true);
+            
+            // add to played
+            currentClub.getPlayedMatches().add(nextMatch);
+            
+            // remove from scheduled
+            currentClub.getScheduledMatches().remove(nextMatch);
+        }
+        
+        // Update UI
+        mainMenuManager.updateDynamicComponents();
     }
     
     /**
