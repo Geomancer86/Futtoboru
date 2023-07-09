@@ -13,8 +13,8 @@ import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable;
 import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.futtoboru.tables.topmenu.MainGameMenuTable;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.tools.SharingUtils;
 

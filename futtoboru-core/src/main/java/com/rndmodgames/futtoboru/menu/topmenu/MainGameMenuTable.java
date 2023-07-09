@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.tables.topmenu;
+package com.rndmodgames.futtoboru.menu.topmenu;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -137,6 +137,13 @@ public class MainGameMenuTable extends VisTable {
                 
                 //
                 setMainContainerButton();
+                
+                // if current screen is Match Result, get back to PREVIOUS SCREEN or OTHER / HOME SCREEN
+                if (MainMenuManager.CURRENT_SCREEN == MainMenuManager.MATCH_RESULT_SCREEN) {
+                    
+                    // Return to previous screen
+                    mainMenuManager.setActiveMainScreen(MainMenuManager.BEFORE_MATCH_SCREEN);
+                }
             }
         });
         
@@ -244,6 +251,8 @@ public class MainGameMenuTable extends VisTable {
         
         mainButtonContainer.clear();
         mainButtonContainer.add(continueGameButton);
+        
+        // TODO: after a match the continue game button should take the player back to a screen
     }
     
     /**

@@ -59,7 +59,9 @@ public class MainMenuManager {
     public static final int MATCH_RESULT_SCREEN  = 20000;
         
     //
-    public static int CURRENT_SCREEN = HOME_SCREEN; // default to home scren
+    public static int PREVIOUS_SCREEN = -1; // 
+    public static int BEFORE_MATCH_SCREEN = -1; //
+    public static int CURRENT_SCREEN = HOME_SCREEN; // default to home screen
     
     // Main Game Buttons
     private VisTextButton homeButton = null;
@@ -188,7 +190,16 @@ public class MainMenuManager {
         // Clear the main table
         parentTable.clear();
         
-        // Set the active screen
+        //
+        if (PREVIOUS_SCREEN == -1) {
+            
+            PREVIOUS_SCREEN = screen;
+        }
+        
+        // Set it before changing it
+        PREVIOUS_SCREEN = CURRENT_SCREEN;
+        
+        // Set/Change the active screen
         CURRENT_SCREEN = screen;
 
         //
@@ -259,8 +270,14 @@ public class MainMenuManager {
             
         case MATCH_PREVIEW_SCREEN:
             
+            // Update dynamic components
+            matchPreviewScreenTable.updateDynamicComponents();
+            
             // Set as main content
             parentTable.add(matchPreviewScreenTable).grow();
+            
+            // to get back to this screen after the match
+            BEFORE_MATCH_SCREEN = PREVIOUS_SCREEN;
             
             break;
         
