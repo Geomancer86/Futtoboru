@@ -65,10 +65,11 @@ public class Club implements Serializable {
      */
     
     /**
-     * Club Proposed & Scheduled Matches
+     * Club Proposed, Scheduled and Played Matches
      */
     private List<Match> proposedMatches = new ArrayList<>();
     private List<Match> scheduledMatches = new ArrayList<>();
+    private List<Match> playedMatches = new ArrayList<>();
     
     public Club() {
         
@@ -212,6 +213,14 @@ public class Club implements Serializable {
 
     public void setScheduledMatches(List<Match> scheduledMatches) {
         this.scheduledMatches = scheduledMatches;
+    }
+
+    public List<Match> getPlayedMatches() {
+        return playedMatches;
+    }
+
+    public void setPlayedMatches(List<Match> playedMatches) {
+        this.playedMatches = playedMatches;
     }
 
     public void setPlayers(List<Player> players) {

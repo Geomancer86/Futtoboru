@@ -1,27 +1,25 @@
 package com.rndmodgames.futtoboru.tables.topmenu;
 
-import java.time.LocalDateTime;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
+import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.tables.widgets.CurrentDateAndTimeWidget;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Top Game Menu Table
  * 
- * 
+ * TODO:
  * 
  * @author Geomancer86
  */
@@ -29,6 +27,9 @@ public class MainGameMenuTable extends VisTable {
 
     //
     Game game;
+    
+    // Main Menu Manager reference to switch screens / etc
+    private MainMenuManager mainMenuManager = null;
     
     /**
      * Dialogs
@@ -38,12 +39,16 @@ public class MainGameMenuTable extends VisTable {
     /**
      * Dynamic Main Game Menu table
      */
-    private VisTable dynamicMainGameMenuTable = null;
-        
+    private VisTable dynamicMainGameMenuTable = null;   
+    
     /**
      * Screen Components
      */
+    VisTable mainButtonContainer = new VisTable(true);
     VisTextButton continueGameButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
+    VisTextButton matchPreviewButton = new VisTextButton(LanguageModLoader.getValue("match_preview"));
+    VisTextButton matchResultButton = new VisTextButton(LanguageModLoader.getValue("match_result"));
+    
     CurrentDateAndTimeWidget dateTimeWidget = null;
     
     public MainGameMenuTable(Game game, Stage stage) {
@@ -113,11 +118,9 @@ public class MainGameMenuTable extends VisTable {
          * Current Date & Time Widget
          */
         dateTimeWidget = new CurrentDateAndTimeWidget(game);
-        
+
         /**
          * Continue Game Button
-         * 
-         * - This will be disabled until the Game is Saved Once
          */
         continueGameButton.addCaptureListener(new InputListener() {
 
@@ -129,31 +132,52 @@ public class MainGameMenuTable extends VisTable {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
-                /**
-                 * Continue Game Simulation
-                 */
-                if (continueGameButton.isDisabled()) {
-
-                    System.out.println("SAVE GAME BEFORE ADVANCING THE SIMULATION!");
-
-                } else {
-
-                    // 
-                    advanceGameTurn();
-                }
+                //
+                continueGame();
+                
+                //
+                setMainContainerButton();
             }
         });
-
+        
         /**
-         * Continue Game Tooltip [SAVE GAME FIRST]
-         * 
-         * NOTE: button disabled until saving game at least once
+         * Match Preview Button
          */
-        if (!((Futtoboru)(game)).getCurrentGame().getIsSaved()) {
-            
-            continueGameButton.addListener(new TextTooltip("Save Game Before Advancing the Simulation", VisUI.getSkin()));
-            continueGameButton.setDisabled(true);
-        }
+        matchPreviewButton.addCaptureListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                //
+                matchPreview();
+            }
+        });
+        
+        /**
+         * Match Result Button
+         */
+        matchResultButton.addCaptureListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                //
+                matchResult();
+            }
+        });
+        
+        // dynamic main button
+        setMainContainerButton();
         
         // dynamic menu table
         dynamicMainGameMenuTable = new VisTable(true);
@@ -165,43 +189,99 @@ public class MainGameMenuTable extends VisTable {
         
         rightMenu.add(gameSettingsSelectBox).right();
         rightMenu.add(dateTimeWidget).width(100).right();
-        rightMenu.add(continueGameButton).right();
+        rightMenu.add(mainButtonContainer).right();
         
+        //
         add(rightMenu).expandX().right();
     }
     
     /**
-     * Dynamically sets the Main Game Menu depending on the Selected Screen
+     * Sets the Main Button depending on the state of the game
      */
-    public void setMainGameMenu(int screen, VisTable screenTable) {
-        
-//        dynamicMainGameMenuTable.clear();
-//        
-//        switch (screen) {
-//        
-//        case MainGameScreen.CLUB_SCREEN:
-//            /**
-//             * Profile, General, News, Facilities, Affiliates, History
-//             */
-//            dynamicMainGameMenuTable.add(((ClubScreenTable) screenTable).getClubScreenDynamicMenu());
-//            break;
-//        
-//        default:
-//            System.out.println("MAIN GAME MENU NOT IMPLEMENTED");
-//            break;
-//        }
+    public void setMainContainerButton() {
 
+        // get next action from game engine
+        int nextGameAction = ((Futtoboru)(game)).getGameEngine().getNextGameAction();
+        
+        System.out.println("SETTING NEXT GAME ACTION BUTTON: " + nextGameAction);
+        
+        mainButtonContainer.clear();
+        
+        switch(nextGameAction) {
+        
+        //
+        case FuttoboruGameEngine.CONTINUE_GAME_ACTION:
+            
+            // Set continue game button
+            mainButtonContainer.add(continueGameButton);
+            
+            break;
+            
+        case FuttoboruGameEngine.MATCH_PREVIEW_ACTION:
+
+            // Set match preview button
+            mainButtonContainer.add(matchPreviewButton);
+            
+            break;
+            
+        default:
+            System.out.println("GAME ACTION " + nextGameAction + " NOT IMPLEMENTED!");
+        }
     }
     
     /**
      * 
      */
-    private void advanceGameTurn() {
+    public void matchResult() {
+       
+        //
+        System.out.println("LOADING MATCH RESULT SCREEN!");
+        
+        // Simulate Match and Advance Time
+        ((Futtoboru)(game)).getGameEngine().getMatchResult();
+        
+        mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_RESULT_SCREEN);
+        
+        mainButtonContainer.clear();
+        mainButtonContainer.add(continueGameButton);
+    }
+    
+    /**
+     * 
+     */
+    public void matchPreview() {
+        
+        //
+        System.out.println("LOADING MATCH PREVIEW SCREEN!");
+        
+        mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_PREVIEW_SCREEN);
+        
+        /**
+         * TODO: RESET BUTTON TO MATCH RESULT
+         *  - If the player goes back to any other screen, the BUTTON should be reset back to MATCH PREVIEW because
+         *      there is no other way to go to the screen for now, no buttons to get there clicking on a match list
+         */
+        mainButtonContainer.clear();
+        mainButtonContainer.add(matchResultButton);
+    }
+    
+    /**
+     * 
+     */
+    private void continueGame() {
         
         // Continue the game on the Game Engine
         ((Futtoboru)(game)).getGameEngine().continueGame();
                 
         // Update the dynamic date widget
         dateTimeWidget.updateDynamicComponents();
+    }
+
+    public MainMenuManager getMainMenuManager() {
+        return mainMenuManager;
+    }
+
+    public void setMainMenuManager(MainMenuManager mainMenuManager) {
+        this.mainMenuManager = mainMenuManager;
     }
 }

@@ -15,6 +15,7 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
 import com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable;
 import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
+import com.rndmodgames.futtoboru.tables.match.MatchPreviewScreenTable;
 import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
 import com.rndmodgames.futtoboru.tables.schedule.ScheduleScreenTable;
 import com.rndmodgames.futtoboru.tables.squad.SquadScreenTable;
@@ -52,7 +53,14 @@ public class MainMenuManager {
     //
     public static final int MAIN_SQUAD_SCREEN   = 1000;
     public static final int SCHEDULE_SCREEN     = 2000;
+    
+    //
+    public static final int MATCH_PREVIEW_SCREEN = 10000;
+    public static final int MATCH_RESULT_SCREEN  = 20000;
         
+    //
+    public static int CURRENT_SCREEN = HOME_SCREEN; // default to home scren
+    
     // Main Game Buttons
     private VisTextButton homeButton = null;
     private VisTextButton personalDetailsButton = null;
@@ -68,6 +76,7 @@ public class MainMenuManager {
     private InboxScreenTable inboxScreenTable = null;
     private SquadScreenTable squadScreenTable = null;
     private ScheduleScreenTable scheduleScreenTable = null;
+    private MatchPreviewScreenTable matchPreviewScreenTable = null;
     
     /**
      * 
@@ -88,6 +97,7 @@ public class MainMenuManager {
         inboxScreenTable = new InboxScreenTable(game);
         squadScreenTable = new SquadScreenTable(game);
         scheduleScreenTable = new ScheduleScreenTable(game);
+        matchPreviewScreenTable = new MatchPreviewScreenTable(game);
         
         // custom buttons with logic to switch screen/tables
         homeButton = new HomeButton(this);
@@ -177,6 +187,9 @@ public class MainMenuManager {
 
         // Clear the main table
         parentTable.clear();
+        
+        // Set the active screen
+        CURRENT_SCREEN = screen;
 
         //
         Club currentClub = DatabaseLoader.getClubById(currentGame.getOwner().getCurrentClubId());
@@ -195,14 +208,20 @@ public class MainMenuManager {
            
         // 
         case AUTHORITY_SCREEN:
+            
+            //
             authorityScreenTable.updateDynamicComponents();
-            parentTable.add(authorityScreenTable);
+            parentTable.add(authorityScreenTable).grow();
+            
             break;
         
         //  
         case PERSON_DETAILS_SCREEN:
+            
+            //
             personDetailsScreenTable.updateDynamicPersonComponents(currentGame.getOwner());
-            parentTable.add(personDetailsScreenTable);
+            parentTable.add(personDetailsScreenTable).grow();
+            
             break;
 
         //
@@ -216,12 +235,17 @@ public class MainMenuManager {
             squadScreenTable.updateDynamicComponents();
             
             // Set as main content
-            parentTable.add(squadScreenTable);
+            parentTable.add(squadScreenTable).grow();
 
             break;            
             
         case SCHEDULE_SCREEN:
 
+            /**
+             * TODO: fix the calendar/fixtures screen not filling the complete width until we click or do continue game.
+             *  NOTE: issue seems related to the scrollbars
+             */
+            
             // Set the Club for the Schedule Screen
             scheduleScreenTable.setCurrentClub(currentClub);
             
@@ -229,7 +253,15 @@ public class MainMenuManager {
             scheduleScreenTable.updateDynamicComponents();
             
             // Set as main content
-            parentTable.add(scheduleScreenTable);
+            parentTable.add(scheduleScreenTable).grow();
+            
+            break;
+            
+        case MATCH_PREVIEW_SCREEN:
+            
+            // Set as main content
+            parentTable.add(matchPreviewScreenTable).grow();
+            
             break;
         
         //
@@ -249,11 +281,20 @@ public class MainMenuManager {
      */
     public void updateDynamicComponents() {
         
-        // TODO: only call if current screen/visible
-        authorityScreenTable.updateDynamicComponents();
+        switch(CURRENT_SCREEN) {
         
-        // TODO: same
-        scheduleScreenTable.updateDynamicComponents();
+        case AUTHORITY_SCREEN:
+            authorityScreenTable.updateDynamicComponents();
+            break;
+        
+        case SCHEDULE_SCREEN:
+            scheduleScreenTable.updateDynamicComponents();
+            break;
+
+        default:
+            //ignore
+            break;
+        }
     }
 
     //

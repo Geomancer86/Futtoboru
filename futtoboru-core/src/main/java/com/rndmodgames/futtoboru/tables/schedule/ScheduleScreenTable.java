@@ -1,11 +1,9 @@
 package com.rndmodgames.futtoboru.tables.schedule;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.rndmodgames.components.AutoFocusScrollPane;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -41,17 +39,20 @@ public class ScheduleScreenTable extends VisTable {
         this.game = ((Futtoboru) parent);
         this.currentGame = game.getCurrentGame();
         
-        this.add(new VisLabel("SCHEDULE SCREEN PLACEHOLDER - WORK IN PROGRESS!")).colspan(2);
-        this.row();
+//        this.add(new VisLabel("SCHEDULE SCREEN PLACEHOLDER - WORK IN PROGRESS!")).colspan(2);
+//        this.row();
         
         // Fixtures Table
         fixturesTable = new FixturesTable(game, this);
+        
+        // Fixtures ScrollPane (auto scrollable without clicking)
+        AutoFocusScrollPane fixturesScrollPane = new AutoFocusScrollPane(fixturesTable);
         
         // Arrange Friendly Table
         arrangeFriendlyTable = new ArrangeFriendlyTable(game, this);
        
         this.row();
-        this.add(fixturesTable);
+        this.add(fixturesScrollPane).fill();
         this.add(arrangeFriendlyTable);
         
         /**
