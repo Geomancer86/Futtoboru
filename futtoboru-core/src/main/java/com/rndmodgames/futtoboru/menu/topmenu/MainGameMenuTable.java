@@ -142,7 +142,6 @@ public class MainGameMenuTable extends VisTable {
                 if (MainMenuManager.CURRENT_SCREEN == MainMenuManager.MATCH_RESULT_SCREEN) {
                     
                     // Return to previous screen
-//                    mainMenuManager.setActiveMainScreen(MainMenuManager.SCHEDULE_SCREEN);
                     mainMenuManager.setActiveMainScreen(MainMenuManager.BEFORE_MATCH_SCREEN);
                 }
             }
