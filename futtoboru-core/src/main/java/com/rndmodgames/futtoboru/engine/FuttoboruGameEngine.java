@@ -125,6 +125,8 @@ public class FuttoboruGameEngine {
             currentClub.getScheduledMatches().remove(nextMatch);
         }
         
+        System.out.println("CLUB PLAYED MATCHES: " + currentClub.getPlayedMatches().size());
+        
         // Update UI
         mainMenuManager.updateDynamicComponents();
     }

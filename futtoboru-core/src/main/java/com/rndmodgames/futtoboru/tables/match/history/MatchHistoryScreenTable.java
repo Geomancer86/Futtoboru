@@ -17,6 +17,9 @@ public class MatchHistoryScreenTable extends VisTable {
     //
     Futtoboru game;
     
+    // Dynamic Club
+    private Club currentClub;
+    
     // Dynamic Components
     VisTable mainTable = new VisTable(true);
     
@@ -26,13 +29,12 @@ public class MatchHistoryScreenTable extends VisTable {
         super(true);
         
         this.game = (Futtoboru) parent;
-        
-        //
-        updateDynamicComponents();
     }
     
     // 
     public void updateDynamicComponents() {
+        
+        System.out.println("SHOWING MATCH HISTORY SCREEN - PLAYED MATCHES: " + currentClub.getPlayedMatches().size());
         
         this.clear();
         
@@ -47,15 +49,32 @@ public class MatchHistoryScreenTable extends VisTable {
          *      - past seasons or years, paginated
          */
         
-        // Current Match Preview will always be the first on the Scheduled Match List
-//        Match match = game.getCurrentGame().getCurrentClub().getScheduledMatches().get(0);
-//        
-//        //
-//        Club homeClub = DatabaseLoader.getClubById(match.getHomeClubId());
-//        Club awayClub = DatabaseLoader.getClubById(match.getAwayClubId());
-//
-//        //
-//        this.row();
-//        this.add(homeClub.getName() + " vs " + awayClub.getName());
+        //
+        this.add("MATCH HISTORY PLACEHOLDER - WORK IN PROGRESS");
+        
+        /**
+         * Quick and dirty match history
+         * 
+         * NOTE:
+         *  
+         */
+        for (Match match : currentClub.getPlayedMatches()) {
+
+            //
+            Club homeClub = DatabaseLoader.getClubById(match.getHomeClubId());
+            Club awayClub = DatabaseLoader.getClubById(match.getAwayClubId());
+
+            //
+            this.row();
+            this.add(homeClub.getName() + " vs " + awayClub.getName());
+        }
+    }
+
+    public Club getCurrentClub() {
+        return currentClub;
+    }
+
+    public void setCurrentClub(Club currentClub) {
+        this.currentClub = currentClub;
     }
 }
