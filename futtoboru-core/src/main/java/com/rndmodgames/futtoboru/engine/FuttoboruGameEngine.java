@@ -116,6 +116,12 @@ public class FuttoboruGameEngine {
             // First scheduled match on list will be the next
             Match nextMatch = currentClub.getScheduledMatches().get(0);
             
+            /**
+             * TODO WIP:
+             * 
+             *      - simulate match
+             *      - save MatchResult objects
+             */
             nextMatch.setIsPlayed(true);
             
             // add to played
