@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.engine.temporal;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -26,6 +28,12 @@ public class MatchScheduler {
 
     //
     private Futtoboru game;
+    
+    //
+    private static BigDecimal FRIENDLY_TICKET_PRICE = new BigDecimal("0.5");
+    
+    //
+    DecimalFormat df = new DecimalFormat("#,###.00");
     
     //
     public MatchScheduler(Futtoboru parent) {
@@ -84,61 +92,31 @@ public class MatchScheduler {
         System.out.println("CLUB SCHEDULED MATCHES: " + club.getScheduledMatches().size());
         
         /**
-         * SOLVE MATCHES:
+         * Iterate all scheduled matches
          * 
-         *  - the next match will always be the first on the scheduled matches list
-         *  - if current date equals match date
-         *      - change the CONTINUE button to MATCH PREVIEW
-         *          - requires logic on main menu manager / easy
-         *          
-         *  - the basic match preview screen will show 
-         *      - the MATCH PREVIEW button will change to MATCH RESULT
-         *      
-         *  - the basic match result screen will show
-         *      - the MATCH RESULT button will change back to CONTINUE
-         *  - 
+         *  - add money to the club balance depending on the tickets sold
+         *  - random tickets by day
+         *  - randomize by club reputation TODO
+         *  - sales should stop if the stadium is full
+         *  
+         *  
+         *  
+         *  
          */
-
-        // TODO: do not recreate the comparator every time 
-//        Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
-//                                                            .compareTo(match2.getMatchDateTime());
-// 
-//        // TODO: not required to do on every turn, only on insert new scheduled match
-//        // Sort
-//        Collections.sort(club.getScheduledMatches(), comparatorChronological);
-//        
-//        // Check we have at least one match
-//        if (!club.getScheduledMatches().isEmpty()) {
-//            
-//            /**
-//             * TODO: this require the list of scheduled matches sorted BY DATETIME
-//             * 
-//             *  First scheduled match on list will be the next
-//             */
-//            Match nextMatch = club.getScheduledMatches().get(0);
-//            
-//            System.out.println("NEXT MATCH DATE: " + nextMatch.getMatchDateTime());
-//            
-//            // Compare the next match date with Current Date
-//            if (nextMatch.getMatchDateTime().isEqual(game.getCurrentGame().getGameDate())) {
-//                
-//                System.out.println("MATCH DAY!");
-//                
-//                Club homeClub = DatabaseLoader.getClubById(nextMatch.getHomeClubId());
-//                Club awayClub = DatabaseLoader.getClubById(nextMatch.getAwayClubId());
-//                
-//                System.out.println(homeClub.getName() + " vs " + awayClub.getName());
-//                
-//                // Set match as played
-////                nextMatch.setIsPlayed(true);
-////                
-////                // Add to Played Matches
-////                club.getPlayedMatches().add(nextMatch);
-////                
-////                // Remove from Scheduled Matches
-////                club.getScheduledMatches().remove(nextMatch);
-//            }
-//        }
+        for (Match scheduled : club.getScheduledMatches()) {
+            
+            /**
+             * RANDOM TICKETS
+             */
+            int randomTickets = 10 + DatabaseLoader.RNG.nextInt(10, 100);
+            
+            BigDecimal dayCash = new BigDecimal(randomTickets).multiply(FRIENDLY_TICKET_PRICE);
+            
+            System.out.println("MATCH DAY CASH IS: $" + df.format(dayCash));
+            
+            // ADD TO CLUB
+            club.setClubBalance(club.getClubBalance().add(dayCash));
+        }
     }
     
     /**

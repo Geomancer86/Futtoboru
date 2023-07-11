@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.system;
+package com.rndmodgames.futtoboru.system.serializers;
 
 import java.time.LocalDateTime;
 

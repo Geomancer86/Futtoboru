@@ -49,6 +49,15 @@ public class FinancesScreenTable extends VisTable {
         this.add(LanguageModLoader.getValue("overall_balance"));
         this.add("$" + df.format(game.getCurrentGame().getCurrentClub().getClubBalance()));
         
+        /**
+         * Income (This Season)
+         * 
+         * TODO: 
+         *  - sell tickets for scheduled matches
+         *  - 
+         */
+        
+        // Expenditure (This Season)
         
         
         /**

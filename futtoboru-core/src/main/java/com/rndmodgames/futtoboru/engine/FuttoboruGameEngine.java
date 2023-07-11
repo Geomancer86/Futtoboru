@@ -175,7 +175,7 @@ public class FuttoboruGameEngine {
         /**
          * Check Scheduled Matches
          * 
-         * TODO: this does nothing because the matches are played elsewhere
+         * TODO: sell tickets every day up to match starting time
          */
         scheduler.checkClubSheduledMatches(currentClub);
         
