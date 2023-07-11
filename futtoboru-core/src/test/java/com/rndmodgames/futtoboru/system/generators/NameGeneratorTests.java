@@ -27,6 +27,9 @@ public class NameGeneratorTests {
         // Initialize the Saved Game
         application.setCurrentGame(new SaveGame());
         
+        // Set the Person Generator
+        application.setPersonGenerator(new PersonGenerator(application));
+        
         new HeadlessApplication(application , config);
     }
     
