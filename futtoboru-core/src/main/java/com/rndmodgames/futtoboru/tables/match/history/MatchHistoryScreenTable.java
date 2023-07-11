@@ -57,16 +57,6 @@ public class MatchHistoryScreenTable extends VisTable {
          *      - the played matches list might become too big so we need a way to archive them
          *      - past seasons or years, paginated
          */
-        
-        //
-//        this.add("MATCH HISTORY PLACEHOLDER - WORK IN PROGRESS");
-        
-        /**
-         * Quick and dirty match history
-         * 
-         * NOTE:
-         *  
-         */
         for (Match match : currentClub.getPlayedMatches()) {
 
             //
@@ -84,7 +74,7 @@ public class MatchHistoryScreenTable extends VisTable {
             this.add("Attendance");
             this.add(match.getAttendance() + "");
             
-            //
+            // Match Separator
             this.row();
             this.addSeparator().colspan(2);
         }

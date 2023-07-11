@@ -1,5 +1,4 @@
 pipeline {
-    agent {label 'SECONDARY'}
 
     environment {
         customImage = null
@@ -45,15 +44,6 @@ pipeline {
                 }
             }
         }
-        
-        // 
-        //stage("Build") {
-        //    steps {
-        //        wrap([$class: 'Xvfb']) {
-        //            sh 'mvn install'
-        //        }
-        //    }
-        //}
         
         stage("Test Reports") {
             steps {
