@@ -93,6 +93,7 @@ public class FuttoboruGameEngine {
         System.out.println("MATCH RESULT - ADVANCED THE SIMULATION - 90 MINUTES");
         
         // Get Current Day
+        // TODO: not used? where do the date comparison is done?
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
         
         // Increment By Required Unit
@@ -173,145 +174,40 @@ public class FuttoboruGameEngine {
         
         /**
          * Check Scheduled Matches
+         * 
+         * TODO: sell tickets every day up to match starting time
          */
         scheduler.checkClubSheduledMatches(currentClub);
+        
+        /**
+         * TODO WIP:
+         * 
+         *  - Club Ticket Sales:
+         *      - Iterate future incoming matches
+         *          - If the match is close enough (7-10 days, parametrizable) there is a chance of ticket sales
+         *          - If the match is completely sold, no tickets are sold, but we might save this uncovered demand number to show the player
+         *          - If there is space, tickets are randomly sold
+         *              - ticket demand multiplier:
+         *                  - league match  : 100%
+         *                  - friendly match: 50% or less
+         *                  - cup match     : 150-300%
+         *                  - classic match : 150-200%
+         *                  - bonuses add
+         *                  - cheaper and expensive tickets with more demand (half cost for friendly, double or triple cost for cups, finals might be even more)
+         *                  
+         *          
+         *          - tickets sold this thay for this match must be saved
+         *              - if we save them directly to the match is easier but we won't have a record for daily sales
+         *              - if we create a daily sales object the addition is more difficult and more logic involved but we can show a chart
+         *                  - doesn't make lots of sense for individual matches if sales are starting 10 days before, too much effort for very little info
+         *                      - also the user cannot change ticket prices or influence in any direct way besides winning more matches
+         *                      
+         *          - charting TBD
+         */                 
         
         /**
          * Update UI
          */
         mainMenuManager.updateDynamicComponents();
-
-        
-//        System.out.println("ADVANCING THE SIMULATION - 1 DAY");
-//        
-//        // Get Current Day
-//        LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
-//        
-//        // Increment By Required Unit
-//        gameInstance.getCurrentGame().setGameDate(current.plusDays(1));
-//        
-//        // Check Game Scripts
-//        scriptsManager.checkGameScripts();
-//        
-//        //
-//        
-        
-        /**
-         * TODO WIP:
-         * 
-         *  - Match Preview and Match Simulation
-         *  
-         *      - Calculate if we have a match TODAY
-         *      - Show the Match Preview Button in that case
-         *          - This will disable the continue game for 1 click avoiding missing the match
-         *          - The match preview shows basic match data:
-         *              - Clubs,
-         *              - Average values for clubs
-         *              - Key Players?
-         *              - Odds
-         *              
-         *      - Show the Simulate Match/ Match Result buttons
-         *          - Time goes forward 90 minutes (180-etc)
-         *          - Game shows the Match Result Screen.
-         *              - Continue Game Button is back as normal.
-         */
-        
-        /**
-         * TODO: WIP:
-         * 
-         *  - Check Proposed Friendly Matches (AI accepts or cancel) MVP: either hardcode it or accept always if schedule is OK
-         *  - Check Scheduled Matches
-         *      - On Scheduled Match Day
-         *          - Continue Button Changes to Match Button
-         *              - Call the Simulation Engine (fully random result)
-         */
-        
-        
-        
-        /**
-         * Iterate all clubs and solve friendly match requests
-         *  - Each club will have the friendlies their manager requested
-         *      - Initially only the player can request friendlies
-         *      
-         *  - Avoid conflicts if different clubs request friendlies, depending on the order of acceptance
-         *  - Avoid scheduling conflicts, if a club accepts a friendly for X day, then it cannot accept the next requests, all should be cancelled by default
-         */
-
-//        // TODO: match requests need to be replied by the player
-//        clubAcceptsFriendlyMatchRequest(currentClub);
-//        
-//        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
-//
-//            // ignore own club in this list
-//            if (!club.getId().equals(currentClub.getId())) {
-//                clubAcceptsFriendlyMatchRequest(club);
-//            }
-//        }
-
-        /**
-         * Update Current Screen Components After Data Changes
-         */
-//        mainMenuManager.updateDynamicComponents();
-    }
-    
-    /**
-     * TODO PROTOTYPE - MOVE TO A SEPARATE CLASS
-     * 
-     *  - TODO:
-     *      - DO NOT LET TO REQUEST A FRIENDLY ON A GAME WITH EITHER AN EXISTING REQUEST OR AN SCHEDULED MATCH
-     *      - 
-     *      
-     *  TODO: do not split the clubs between existing clubs list and current club because this serializes two objects and ends up
-     *          with changes only done on a single side of them
-     *          
-     *          - just save the current club id on save game and always use the single club instance
-     */
-    public void clubAcceptsFriendlyMatchRequest(Club club) {
-        
-        // 
-        System.out.println("SOLVING AI FOR CLUB: " + club.getName());
-        System.out.println("CLUB PROPOSED MATCHES: " + club.getProposedMatches());
-        
-        //
-        for (Match match : club.getProposedMatches()) {
-            
-            /**
-             * Accept or Reject Friendly Match
-             * 
-             *  - TODO: Team shouldn't have a Match in the same day
-             *  - TODO: Team shouldn't have other Matches x days before and after (parametrize, this would be how careful is the manager).
-             */
-            
-            boolean freeSchedule = true;
-            
-            // 
-            System.out.println("CHECKING FRIENDY PROPOSAL AGAINST " + club.getScheduledMatches().size() + " SCHEDULED MATCHES");
-            
-            for (Match scheduled : club.getScheduledMatches()) {
-                
-            }
-            
-            //
-            if (freeSchedule) {
-                
-                //
-                System.out.println("Schedule is free, accepting friendly request!");
-                
-                match.setIsAccepted(true);
-                
-                // add to accepted matches
-                club.getScheduledMatches().add(match);
-                
-            } else {
-                
-                System.out.println("Friendly request cannot be accepted, scheduling conflicts!");
-            }
-            
-//            LocalDateTime beforeDate = match.getProposeDateTime().plusDays(3).at;
-        }
-        
-        // we clear the list and everything that is not accepted will be gone
-        club.getProposedMatches().clear();
-        System.out.println("CLUB PROPOSED MATCHES: " + club.getProposedMatches());
     }
 }

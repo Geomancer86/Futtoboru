@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +71,11 @@ public class Club implements Serializable {
     private List<Match> proposedMatches = new ArrayList<>();
     private List<Match> scheduledMatches = new ArrayList<>();
     private List<Match> playedMatches = new ArrayList<>();
+    
+    /**
+     * Club Finances
+     */
+    private BigDecimal clubBalance;
     
     public Club() {
         
@@ -225,6 +231,14 @@ public class Club implements Serializable {
 
     public void setPlayers(List<Player> players) {
         this.players = players;
+    }
+
+    public BigDecimal getClubBalance() {
+        return clubBalance;
+    }
+
+    public void setClubBalance(BigDecimal clubBalance) {
+        this.clubBalance = clubBalance;
     }
 
     @Override

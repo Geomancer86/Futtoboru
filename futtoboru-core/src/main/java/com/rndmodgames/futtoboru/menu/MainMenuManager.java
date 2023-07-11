@@ -5,15 +5,18 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.menu.buttons.AuthorityButton;
+import com.rndmodgames.futtoboru.menu.buttons.ClubInfoButton;
+import com.rndmodgames.futtoboru.menu.buttons.FinancesButton;
 import com.rndmodgames.futtoboru.menu.buttons.HomeButton;
 import com.rndmodgames.futtoboru.menu.buttons.InboxButton;
 import com.rndmodgames.futtoboru.menu.buttons.MatchHistoryButton;
 import com.rndmodgames.futtoboru.menu.buttons.PersonalDetailsButton;
 import com.rndmodgames.futtoboru.menu.buttons.ScheduleButton;
 import com.rndmodgames.futtoboru.menu.buttons.SquadButton;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
+import com.rndmodgames.futtoboru.tables.club.ClubInfoScreenTable;
+import com.rndmodgames.futtoboru.tables.finances.FinancesScreenTable;
 import com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable;
 import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
 import com.rndmodgames.futtoboru.tables.match.history.MatchHistoryScreenTable;
@@ -61,6 +64,9 @@ public class MainMenuManager {
     public static final int MAIN_SQUAD_SCREEN   = 1000;
     public static final int SCHEDULE_SCREEN     = 2000;
     
+    public static final int CLUB_INFO_SCREEN    = 3000;
+    public static final int FINANCES_SCREEN     = 4000;
+    
     //
     public static final int MATCH_PREVIEW_SCREEN = 10000;
     public static final int MATCH_RESULT_SCREEN  = 20000;
@@ -79,6 +85,8 @@ public class MainMenuManager {
     private VisTextButton squadButton = null;
     private VisTextButton scheduleButton = null;
     private VisTextButton matchHistoryButton = null;
+    private VisTextButton clubInfoButton = null;
+    private VisTextButton financesButton = null;
     
     //
     private HomeScreenTable homeScreenTable = null;
@@ -90,6 +98,8 @@ public class MainMenuManager {
     private MatchPreviewScreenTable matchPreviewScreenTable = null;
     private MatchResultScreenTable matchResultScreenTable = null;
     private MatchHistoryScreenTable matchHistoryScreenTable = null;
+    private ClubInfoScreenTable clubInfoScreenTable = null;
+    private FinancesScreenTable financesScreenTable = null;
     
     /**
      * 
@@ -113,6 +123,8 @@ public class MainMenuManager {
         matchPreviewScreenTable = new MatchPreviewScreenTable(game);
         matchResultScreenTable = new MatchResultScreenTable(game);
         matchHistoryScreenTable = new MatchHistoryScreenTable(game);
+        clubInfoScreenTable = new ClubInfoScreenTable(game);
+        financesScreenTable = new FinancesScreenTable(game);
         
         // custom buttons with logic to switch screen/tables
         homeButton = new HomeButton(this);
@@ -122,6 +134,8 @@ public class MainMenuManager {
         squadButton = new SquadButton(this);
         scheduleButton = new ScheduleButton(this);
         matchHistoryButton = new MatchHistoryButton(this);
+        clubInfoButton = new ClubInfoButton(this);
+        financesButton = new FinancesButton(this);
         
         
         // set the current screen by default
@@ -195,6 +209,17 @@ public class MainMenuManager {
             
             // Match History
             buttonsMenu.add(matchHistoryButton).fill();
+            buttonsMenu.row();
+            
+            // Club Area Separator
+            buttonsMenu.addSeparator();
+            
+            // Club Info
+            buttonsMenu.add(clubInfoButton).fill();
+            buttonsMenu.row();
+            
+            // Finances
+            buttonsMenu.add(financesButton).fill();
             buttonsMenu.row();
             
             // Separator
@@ -316,9 +341,7 @@ public class MainMenuManager {
             break;
             
         case MATCH_HISTORY_SCREEN:
-            
-            System.out.println("SHOWING MATCH HISTORY SCREEN!");
-            
+
             // Set Match History Current Club
             matchHistoryScreenTable.setCurrentClub(currentClub);
             
@@ -327,6 +350,26 @@ public class MainMenuManager {
             
             // Set as main content
             parentTable.add(matchHistoryScreenTable).grow();
+            
+            break;
+            
+        case CLUB_INFO_SCREEN:
+            
+            // Update dynamic components
+            clubInfoScreenTable.updateDynamicComponents();
+            
+            // Set as main content
+            parentTable.add(clubInfoScreenTable).grow();
+            
+            break;
+            
+        case FINANCES_SCREEN:
+            
+            // Update dynamic components
+            financesScreenTable.updateDynamicComponents();
+            
+            // Set as main content
+            parentTable.add(financesScreenTable).grow();
             
             break;
         

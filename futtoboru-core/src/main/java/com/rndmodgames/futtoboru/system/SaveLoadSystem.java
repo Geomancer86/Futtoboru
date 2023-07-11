@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.system;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +10,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.system.serializers.BigDecimalSerializer;
+import com.rndmodgames.futtoboru.system.serializers.JsonDateSerializer;
 
 /**
  * Saving & Loading Game Systems
+ * 
+ * TODO: use the same instance for serializer and deserializer everywhere
  * 
  * @author Geomancer86
  */
@@ -35,6 +40,7 @@ public class SaveLoadSystem {
         
         Json json = new Json();
         json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
+        json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
 
         FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + SAVEGAMES_FOLDER + filename + SAVE_EXTENSION);
         
@@ -60,6 +66,7 @@ public class SaveLoadSystem {
 
         Json json = new Json();
         json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
+        json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
         
         String userHomePath = System.getProperty(USER_HOME);
         FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + SAVEGAMES_FOLDER + saveGameName);
@@ -119,6 +126,7 @@ public class SaveLoadSystem {
         
         Json json = new Json();
         json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
+        json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
 
         FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + MANAGERS_FOLDER + filename + SAVE_EXTENSION);
         
@@ -177,6 +185,7 @@ public class SaveLoadSystem {
         
         Json json = new Json();
         json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
+        json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
         
         FileHandle fileHandle = Gdx.files.absolute(filename);
 

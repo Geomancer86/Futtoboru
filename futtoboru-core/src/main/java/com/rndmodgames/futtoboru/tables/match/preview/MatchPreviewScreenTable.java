@@ -71,9 +71,6 @@ public class MatchPreviewScreenTable extends VisTable {
         super(true);
         
         this.game = (Futtoboru) parent;
-        
-        //
-        updateDynamicComponents();
     }
     
     // 
