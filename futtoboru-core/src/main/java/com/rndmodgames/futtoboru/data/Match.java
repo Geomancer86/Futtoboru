@@ -46,8 +46,11 @@ public class Match implements Serializable {
     private Boolean isPlayed = false;
     
     // Keep it basic, for now there is no penalty kicks/score/tiebreaker
-    private Integer homeGoals;
-    private Integer awayGoals;
+    private Integer homeGoals = 0;
+    private Integer awayGoals = 0;
+    
+    // Basic attendance stats to avoid overselling a Match
+    private Integer attendance = 0;
     
     //
     public static final int FRIENDLY_MATCH = 1;
@@ -147,5 +150,13 @@ public class Match implements Serializable {
 
     public void setAwayGoals(Integer awayGoals) {
         this.awayGoals = awayGoals;
+    }
+
+    public Integer getAttendance() {
+        return attendance;
+    }
+
+    public void setAttendance(Integer attendance) {
+        this.attendance = attendance;
     }
 }

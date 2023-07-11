@@ -110,6 +110,11 @@ public class MatchScheduler {
              */
             int randomTickets = 10 + DatabaseLoader.RNG.nextInt(10, 100);
             
+            /**
+             * Add to Match Attendance - TODO Stadiums / Capacity
+             */
+            scheduled.setAttendance(scheduled.getAttendance() + randomTickets);
+            
             BigDecimal dayCash = new BigDecimal(randomTickets).multiply(FRIENDLY_TICKET_PRICE);
             
             System.out.println("MATCH DAY CASH IS: $" + df.format(dayCash));

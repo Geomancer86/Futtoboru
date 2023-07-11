@@ -59,7 +59,7 @@ public class MatchHistoryScreenTable extends VisTable {
          */
         
         //
-        this.add("MATCH HISTORY PLACEHOLDER - WORK IN PROGRESS");
+//        this.add("MATCH HISTORY PLACEHOLDER - WORK IN PROGRESS");
         
         /**
          * Quick and dirty match history
@@ -73,9 +73,20 @@ public class MatchHistoryScreenTable extends VisTable {
             Club homeClub = DatabaseLoader.getClubById(match.getHomeClubId());
             Club awayClub = DatabaseLoader.getClubById(match.getAwayClubId());
 
+            // New Row
+            this.row();
+            
+            // Clubs
+            this.add(homeClub.getName() + " vs " + awayClub.getName()).colspan(2);
+            
+            // Attendance
+            this.row();
+            this.add("Attendance");
+            this.add(match.getAttendance() + "");
+            
             //
             this.row();
-            this.add(homeClub.getName() + " vs " + awayClub.getName());
+            this.addSeparator().colspan(2);
         }
     }
 
