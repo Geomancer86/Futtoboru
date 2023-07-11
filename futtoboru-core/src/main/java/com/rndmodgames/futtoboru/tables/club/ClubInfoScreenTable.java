@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.tables.finances;
+package com.rndmodgames.futtoboru.tables.club;
 
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -6,18 +6,18 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
- * Finances Screen Table v1
+ * Club Info Screen Table v1
  * 
  * @author Geomancer86
- *
  */
-public class FinancesScreenTable extends VisTable {
+public class ClubInfoScreenTable extends VisTable {
 
     // keep track for easy access
     Futtoboru game;
     SaveGame currentGame;
     
-    public FinancesScreenTable(Game parent) {
+    //
+    public ClubInfoScreenTable(Game parent) {
         
         // automatic vis spacing
         super(true);
@@ -35,6 +35,6 @@ public class FinancesScreenTable extends VisTable {
         //
         this.clear();
         
-        this.add("FINANCES SCREEN PLACEHOLDER - WORK IN PROGRESS");
+        this.add("CLUB INFO SCREEN PLACEHOLDER - WORK IN PROGRESS");
     }
 }
