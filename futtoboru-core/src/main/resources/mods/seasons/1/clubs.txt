@@ -1,17 +1,17 @@
 # 1888–89 Football League Teams
 #
 # COLUMNS
-# id, name, fullname, url_source, foundation_year, state, city, 
+# id, name, fullname, club_balance, url_source, foundation_year, state, city, 
 #
-1,Preston North End,Preston North End Football Club,https://en.wikipedia.org/wiki/Preston_North_End_F.C.,1880,1000
-2,Aston Villa,Aston Villa Football Club,https://en.wikipedia.org/wiki/Aston_Villa_F.C.,1874,1000
-3,Wolverhampton Wanderers,Wolverhampton Wanderers Football Club,https://en.wikipedia.org/wiki/Wolverhampton_Wanderers_F.C.,1877,1000
-4,Blackburn Rovers,Blackburn Rovers Football Club,https://en.wikipedia.org/wiki/Blackburn_Rovers_F.C.,1875,1000
-5,Bolton Wanderers,Bolton Wanderers Football Club,https://en.wikipedia.org/wiki/Bolton_Wanderers_F.C.,1874,1000
-6,West Bromwich Albion,West Bromwich Albion Football Club,https://en.wikipedia.org/wiki/West_Bromwich_Albion_F.C.,1878,1000
-7,Accrington,Accrington Football Club,https://en.wikipedia.org/wiki/Accrington_F.C.,1878,1000
-8,Everton,Everton Football Club,https://en.wikipedia.org/wiki/Everton_F.C.,1878,1000
-9,Burnley,Burnley Football Club,https://en.wikipedia.org/wiki/Burnley_F.C.,1882,1000
-10,Derby County,Derby County Football Club,https://en.wikipedia.org/wiki/Derby_County_F.C.,1884,1000
-11,Notts County,Notts County Football Club,https://en.wikipedia.org/wiki/Notts_County_F.C,1862,1000
-12,Stoke,Stoke City Football Club,https://en.wikipedia.org/wiki/Stoke_City_F.C.,1868,1000
+1,Preston North End,Preston North End Football Club,10000,https://en.wikipedia.org/wiki/Preston_North_End_F.C.,1880,1000
+2,Aston Villa,Aston Villa Football Club,10000,https://en.wikipedia.org/wiki/Aston_Villa_F.C.,1874,1000
+3,Wolverhampton Wanderers,Wolverhampton Wanderers Football Club,10000,https://en.wikipedia.org/wiki/Wolverhampton_Wanderers_F.C.,1877,1000
+4,Blackburn Rovers,Blackburn Rovers Football Club,10000,https://en.wikipedia.org/wiki/Blackburn_Rovers_F.C.,1875,1000
+5,Bolton Wanderers,Bolton Wanderers Football Club,10000,https://en.wikipedia.org/wiki/Bolton_Wanderers_F.C.,1874,1000
+6,West Bromwich Albion,West Bromwich Albion Football Club,10000,https://en.wikipedia.org/wiki/West_Bromwich_Albion_F.C.,1878,1000
+7,Accrington,Accrington Football Club,10000,https://en.wikipedia.org/wiki/Accrington_F.C.,1878,1000
+8,Everton,Everton Football Club,10000,https://en.wikipedia.org/wiki/Everton_F.C.,1878,1000
+9,Burnley,Burnley Football Club,10000,https://en.wikipedia.org/wiki/Burnley_F.C.,1882,1000
+10,Derby County,Derby County Football Club,10000,https://en.wikipedia.org/wiki/Derby_County_F.C.,1884,1000
+11,Notts County,Notts County Football Club,10000,https://en.wikipedia.org/wiki/Notts_County_F.C,1862,1000
+12,Stoke,Stoke City Football Club,10000,https://en.wikipedia.org/wiki/Stoke_City_F.C.,1868,1000

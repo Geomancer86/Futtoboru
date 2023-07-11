@@ -2,6 +2,7 @@ package com.rndmodgames.futtoboru.system.loaders;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -51,7 +52,7 @@ public class ClubsLoader {
                          * 
                          * COLUMNS
                          * 
-                         *  id, name, fullname, url_source, foundation_year
+                         *  id, name, fullname, club_balance, url_source, foundation_year, 
                          */
                         Club club = new Club();
                         
@@ -59,11 +60,15 @@ public class ClubsLoader {
                         club.setId(Long.valueOf(splitted[0]));
                         club.setName(splitted[1]);
                         club.setFullName(splitted[2]);
-                        club.setUrlSource(splitted[3]);
-                        club.setYear(Integer.valueOf(splitted[4]));
+                        
+                        // Club Balance
+                        club.setClubBalance(new BigDecimal(splitted[3]));
+                        
+                        club.setUrlSource(splitted[4]);
+                        club.setYear(Integer.valueOf(splitted[5]));                
                         
                         // Country
-                        club.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[5])));
+                        club.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[6])));
                         
                         /**
                          * Load or Randomize Players At Club List
