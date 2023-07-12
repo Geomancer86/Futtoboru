@@ -58,7 +58,7 @@ public class Club implements Serializable {
      * 
      * This doesn't indicate a true relation as there is no contracts yet
      */
-    private List<Player> players;
+    private List<Player> players = new ArrayList<>();
     
     /**
      * Proposed Matches (this will be almost always clean/empty)

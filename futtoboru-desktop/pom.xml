@@ -14,11 +14,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-
     <properties>
         <sonar.tests>${project.basedir}/src/test/</sonar.tests>
     </properties>
-
 
     <build>
         <sourceDirectory>\${basedir}/src/main/java</sourceDirectory>
