@@ -49,7 +49,7 @@ public class PlayersLoader {
      
         System.out.println("LOADING " + club.getName() + " PLAYERS FROM FILE SYSTEM.");
         
-        FileHandle playersClubsFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/clubs/" + club.getId() + ".txt");
+        FileHandle playersClubsFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/players_clubs/" + club.getId() + ".txt");
         
         // 
         if (playersClubsFile.exists()) {
