@@ -387,10 +387,16 @@ public class MainMenuManager {
     
     /**
      * Allow to call this from other places after data is updated
+     * 
+     *  - this is used to automatically update the current screen, as it will have dynamic data
      */
     public void updateDynamicComponents() {
         
         switch(CURRENT_SCREEN) {
+        
+        case MAIN_SQUAD_SCREEN:
+            squadScreenTable.updateDynamicComponents();
+            break;
         
         case AUTHORITY_SCREEN:
             authorityScreenTable.updateDynamicComponents();
