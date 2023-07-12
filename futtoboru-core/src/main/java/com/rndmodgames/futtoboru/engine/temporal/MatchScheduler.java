@@ -98,29 +98,63 @@ public class MatchScheduler {
          *  - random tickets by day
          *  - randomize by club reputation TODO
          *  - sales should stop if the stadium is full
-         *  
-         *  
-         *  
-         *  
          */
         for (Match scheduled : club.getScheduledMatches()) {
             
             /**
-             * RANDOM TICKETS
+             * RANDOM TICKETS:
+             * 
+             *  - number of max random tickets should be less or equal to the number of available tickets for sale
+             *  - we need all the stadiums to compare or this wont work
              */
-            int randomTickets = 10 + DatabaseLoader.RNG.nextInt(10, 100);
+            int maxTickets = club.getStadium().getCapacity() - scheduled.getAttendance();
             
-            /**
-             * Add to Match Attendance - TODO Stadiums / Capacity
-             */
-            scheduled.setAttendance(scheduled.getAttendance() + randomTickets);
+            System.out.println("MATCH: " + DatabaseLoader.getClubById(scheduled.getHomeClubId()).getName() + " vs " + DatabaseLoader.getClubById(scheduled.getAwayClubId()).getName());
+            System.out.println("STADIUM " + club.getStadium().getName() + " HAS A FULL CAPACITY OF " + club.getStadium().getCapacity());
+            System.out.println("CURRENT AVAILABLE TICKETS (CAPACITY): " + maxTickets);
             
-            BigDecimal dayCash = new BigDecimal(randomTickets).multiply(FRIENDLY_TICKET_PRICE);
-            
-            System.out.println("MATCH DAY CASH IS: $" + df.format(dayCash));
-            
-            // ADD TO CLUB
-            club.setClubBalance(club.getClubBalance().add(dayCash));
+            if (maxTickets > 0) {
+                
+                /**
+                 * TODO: balance match day sales
+                 */
+                int maxPerDay = maxTickets / 7; // sell out on 7 days
+                int minPerDay = 20;
+                
+                //
+                System.out.println("TICKETS TO SELL TODAY: min: " + minPerDay + ", max: " + maxPerDay);
+                
+                int randomTickets;
+                
+                // TODO: fix matches not selling out
+                if (minPerDay < maxPerDay) {
+                    
+                    randomTickets = DatabaseLoader.RNG.nextInt(minPerDay, maxPerDay);
+                    
+                } else {
+                    
+                    // sell out
+                    randomTickets = maxPerDay;
+                }
+                
+                /**
+                 * Add to Match Attendance - TODO Stadiums / Capacity
+                 */
+                scheduled.setAttendance(scheduled.getAttendance() + randomTickets);
+                
+                BigDecimal dayCash = new BigDecimal(randomTickets).multiply(FRIENDLY_TICKET_PRICE);
+                
+                System.out.println("SOLD TICKETS: " + randomTickets);
+                System.out.println("MATCH DAY CASH IS: $" + df.format(dayCash));
+                
+                // ADD TO CLUB
+                club.setClubBalance(club.getClubBalance().add(dayCash));
+                
+            } else {
+                
+                //
+                System.out.println("NOT SELLING TICKETS FOR MATCH, SOLD OUT!");
+            }
         }
     }
     
