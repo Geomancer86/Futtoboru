@@ -95,6 +95,9 @@ public class ClubsLoader {
                             // 
                             System.out.println("Loading existing Player data from Season Folder.");
                             
+                            //
+                            PlayersLoader.loadSeasonClubPlayers(season, club);
+                            
                         } else {
                             
                             //

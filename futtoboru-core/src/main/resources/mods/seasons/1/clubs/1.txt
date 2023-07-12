@@ -1,0 +1,8 @@
+# Preston North End FC - Players File for 1888-89 League
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season
+#
+# COLUMNS
+# id, name, lastname, country, 

@@ -1,8 +1,13 @@
 package com.rndmodgames.futtoboru.system.loaders;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Season;
 
 /**
  * Players Loader v1
@@ -24,40 +29,52 @@ import com.rndmodgames.futtoboru.data.Club;
 public class PlayersLoader {
 
     /**
-     * Load the existing Club Players from file
-     * 
-     *  - file structure:
-     *      - all players on single file, kind of messi, easy at the beginning
-     *      - one folder for players and one file per club by club id
-     *          - complex but more flexible
-     *          
-     *      - one folder per club and a players file per club
+     * Load the existing Season Club Players from file
+     *      
+     *      - One folder per club and a players file per club
      *      
      *  
-     * 
-     * @param clubs
      */
-    public static void loadClubPlayers(List<Club> clubs) {
+    public static void loadSeasonClubPlayers(Season season, Club club) {
+     
+        System.out.println("LOADING " + club.getName() + " PLAYERS FROM FILE SYSTEM.");
         
+        FileHandle playersClubsFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/clubs/" + club.getId() + ".txt");
+        
+        // 
+        if (playersClubsFile.exists()) {
+            
+            BufferedReader reader = new BufferedReader(playersClubsFile.reader());
+            
+            String line;
+
+            try {
+                line = reader.readLine();
+
+                // Use # symbol to comment a line
+                while (line != null) {
+
+                    if (!line.startsWith("#")) {
+
+                        System.out.println(line);
+                        
+                        String[] splitted = line.split(",");
+                        
+                    }
+                    
+                    line = reader.readLine();
+                }
+
+            } catch (IOException e) {
+                // TODO: If error, restore default resolutions.txt file
+                e.printStackTrace();
+            }
+            
+        } else {
+            
+            System.out.println("mods/seasons/" + season.getId() + "/club/" + club.getId() + ".txt doesnt exist");
+        }
     }
-    
-    /**
-     * Load Club Players
-     */
-//    public static void loadClubPlayers(Club club) {
-//        
-//        /**
-//         * TODO: WIP
-//         * 
-//         *  - Load or Generate Players for the Season according to the game bundled files / database / seasons data
-//         *  
-//         *  - Existing Players will need contracts with the club to be generated
-//         *  - We save the current players attached to the club
-//         *  - We also need to save the player transfer history
-//         *  
-//         *  
-//         */
-//    }
     
     /**
      * Generate a Random Player
