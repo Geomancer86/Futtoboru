@@ -19,7 +19,7 @@
 1,Fred,Dewhurst,1000,1863-12-16,
 2,George,Drummond,1001,1865
 3,Jack,Edwards,1001,1867
-4,Archie,Goodall,3,1865-01-03
+4,Archie,Goodall,83,1865-01-03
 5,John,Goodall,1000,1863-06-19
 6,Jack,Gordon,1001,1861-04-28
 7,Johnny,Graham,1001,1857-02-23
