@@ -1,9 +1,13 @@
 package com.rndmodgames.futtoboru.tables.squad;
 
+import java.text.DecimalFormat;
+import java.time.temporal.ChronoUnit;
+
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -34,8 +38,14 @@ public class SquadScreenTable extends VisTable{
     
     // Dynamic Components
     VisLabel clubNameValueLabel = new VisLabel("");
-    VisLabel playersCountLabel = new VisLabel("");
-    PlayersListTable playersList = new PlayersListTable();
+    VisLabel playersCountValueLabel = new VisLabel("");
+    VisLabel averagePlayerAgeValueLabel = new VisLabel("");
+    
+    //
+    PlayersListTable playersList;
+    
+    //
+    DecimalFormat averageYearsFormat = new DecimalFormat("#.0"); 
     
     //
     public SquadScreenTable(Game parent) {
@@ -46,6 +56,9 @@ public class SquadScreenTable extends VisTable{
         //
         this.game = ((Futtoboru)parent);
         this.currentGame = game.getCurrentGame();
+        
+        // 
+        playersList = new PlayersListTable(game);
         
         /**
          * SQUAD SCREEN:
@@ -78,6 +91,7 @@ public class SquadScreenTable extends VisTable{
          */
         VisLabel nameLabel = new VisLabel(LanguageModLoader.getValue("main_squad"));
         VisLabel playersAtClubLabel = new VisLabel(LanguageModLoader.getValue("players_at_club"));
+        VisLabel averageAgeLabel = new VisLabel(LanguageModLoader.getValue("average_player_age"));
         
         // Name
         this.add(nameLabel);
@@ -86,7 +100,12 @@ public class SquadScreenTable extends VisTable{
         
         // Players at Club Count
         this.add(playersAtClubLabel);
-        this.add(playersCountLabel);
+        this.add(playersCountValueLabel);
+        this.row();
+        
+        // Average Players Age
+        this.add(averageAgeLabel);
+        this.add(averagePlayerAgeValueLabel);
         this.row();
         
         // Players List Component
@@ -106,16 +125,40 @@ public class SquadScreenTable extends VisTable{
         if (displayedClub.getPlayers().isEmpty()) {
             
             //
-            playersCountLabel.setText(LanguageModLoader.getValue("no_players_at_club"));
+            playersCountValueLabel.setText(LanguageModLoader.getValue("no_players_at_club"));
             
         } else {
             
             // Count of Players & Player List Component
-            playersCountLabel.setText(displayedClub.getPlayers().size() + " " + LanguageModLoader.getValue("players_at_club"));
+            playersCountValueLabel.setText(displayedClub.getPlayers().size() + " " + LanguageModLoader.getValue("players_at_club"));
+            
+            /**
+             * Average Player Age
+             * 
+             * TODO: this calculation might be used on many places, move elsewhere
+             * 
+             * TODO: count MONTHS for decimal years and a better year average
+             */
+            long accumulatedAge = 0;
+            
+            for (Player player : displayedClub.getPlayers()) {
+                
+                long yearsOld = ChronoUnit.YEARS.between(player.getPerson().getBirthDate(), game.getCurrentGame().getGameDate());
+                
+                // add up players age
+                accumulatedAge += yearsOld;
+            }
+            
+            double averagePlayerAge = (double) accumulatedAge / (double) displayedClub.getPlayers().size();
+            
+            //
+            averagePlayerAgeValueLabel.setText(averageYearsFormat.format(averagePlayerAge) + " years old");
         }
         
         // Update Players List Component
         playersList.setCurrentPlayers(displayedClub.getPlayers());
+        
+        //
         playersList.updateDynamicComponents();
     }
 

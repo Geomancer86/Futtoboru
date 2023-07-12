@@ -1,4 +1,4 @@
-# 1888–89 Football League Teams
+# 1888–89 Football League Clubs
 #
 # COLUMNS
 # id, name, fullname, club_balance, url_source, foundation_year, state, city, 

@@ -17,6 +17,13 @@ import com.rndmodgames.futtoboru.system.generators.PlayerGenerator;
 public class ClubsLoader {
 
     /**
+     * GAME OPTIONS - PARAMETERS
+     * 
+     * TODO: allow easy player change through Game Settings Screen
+     */
+    public static final boolean USE_REAL_PLAYERS = true;
+    
+    /**
      * Load Season Teams
      */
     public static void loadSeasonClubs(Season season) {
@@ -26,7 +33,7 @@ public class ClubsLoader {
         /**
          * We need a way to avoid duplicates, as we only check on the Persons generated in the Save Game
          * 
-         * Note: this is a difference instance of person/player generatorss as doesn't have the game reference
+         * Note: this is a different instance of person/player generators as doesn't have the game reference
          */
         PersonGenerator personGenerator = new PersonGenerator(null);
         PlayerGenerator playerGenerator = new PlayerGenerator(null);
@@ -79,34 +86,50 @@ public class ClubsLoader {
                          *  - TODO/TBD: Generate random players depending on basic attributes/scripts (for example, average player level = 8) so the clubs strenght is relative to historic values
                          *  - TODO/TBD: Pick the number and quality of Players to be generated, the stronger club should have more rotation of better players
                          */
-                        club.setPlayers(new ArrayList<>());
                         
-                        /**
-                         * Quick and dirty random generation just to fill the list and make sure the screen looks Ok
-                         */
-                        int generate = 20;
+                        System.out.println("Setting Players At Club! - USE_REAL_PLAYERS: " + USE_REAL_PLAYERS);
                         
-                        for (int a = 0; a < generate; a++) {
+                        
+                        if (USE_REAL_PLAYERS) {
                             
-                            // Add Random Player to Club
-                            Person person = personGenerator.generateUniquePerson(club.getCountry(), season, true);
+                            // 
+                            System.out.println("Loading existing Player data from Season Folder.");
                             
-//                            System.out.println("GENERATED: " + person);
+                            //
+                            PlayersLoader.loadSeasonClubPlayers(season, club);
                             
-                            // Add to existing People List if not null (not duplicated)
-                            if (person != null) {
-                                
-                                /**
-                                 * TODO: this list is safe to clear after the new game is started or on loading a new game
-                                 * TODO: delay until we press new game
-                                 */
-                                DatabaseLoader.getPersons().add(person);
-                                
-                                club.getPlayers().add(playerGenerator.generateRandomPlayer(person));
-                                
-                            } else {
-                             
-                                System.out.println("Generated Person Was Duplicated, Ignore!");
+                        } else {
+                            
+                            //
+                            System.out.println("Randomly generating Club Players.");
+                            
+                            // Quick and dirty
+                            int generate = 20;
+                            
+                            for (int a = 0; a < generate; a++) {
+
+                                // Add Random Player to Club
+                                Person person = personGenerator.generateUniquePerson(club.getCountry(), season, true);
+
+//                              System.out.println("GENERATED: " + person);
+
+                                // Add to existing People List if not null (not duplicated)
+                                if (person != null) {
+
+                                    /**
+                                     * TODO: this list is safe to clear after the new game is started or on loading
+                                     *          a new game 
+                                     * 
+                                     * TODO: delay until we press new game
+                                     */
+                                    DatabaseLoader.getPersons().add(person);
+
+                                    club.getPlayers().add(playerGenerator.generateRandomPlayer(person));
+
+                                } else {
+
+                                    System.out.println("Generated Person Was Duplicated, Ignore!");
+                                }
                             }
                         }
                         
