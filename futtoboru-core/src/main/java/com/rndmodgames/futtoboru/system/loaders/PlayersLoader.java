@@ -2,12 +2,19 @@ package com.rndmodgames.futtoboru.system.loaders;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 
 /**
  * Players Loader v1
@@ -28,6 +35,9 @@ import com.rndmodgames.futtoboru.data.Season;
  */
 public class PlayersLoader {
 
+    //
+    public static DateTimeFormatter birthDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        
     /**
      * Load the existing Season Club Players from file
      *      
@@ -58,8 +68,63 @@ public class PlayersLoader {
 
                         System.out.println(line);
                         
+                        /**
+                         * File Format - COLUMNS
+                         * 
+                         * id, name, lastname, birthdate, country, 
+                         */
                         String[] splitted = line.split(",");
                         
+                        /**
+                         * Create new Person to hold the personal data for this Player (name, nationality, age, etc).
+                         */
+                        Person person = new Person();
+                        
+                        // Name and Lastname
+                        person.setId(Long.valueOf(splitted[0]));
+                        person.setName(splitted[1]);
+                        person.setLastname(splitted[2]);
+                        
+                        // Country of birth
+                        person.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[3])));
+                        
+                        /**
+                         * Birthdate
+                         * 
+                         * NOTES: 
+                         *  - all dates ingame are LocalDateTime
+                         *  - cannot parse a localdatetime without the time portion
+                         *  - do we really need the time for birthdates/etc?
+                         *      
+                         */
+                        try {
+                            person.setBirthDate(LocalDate.parse(splitted[4], PlayersLoader.birthDateFormatter).atStartOfDay());
+                        
+                        } catch (DateTimeParseException de) {
+                            
+                            /**
+                             * unknown date, but year is OK, randomize day and month
+                             * 
+                             * TODO: proper day of month generation, this will overflow february and other 30 day months
+                             */
+                            int month = DatabaseLoader.RNG.nextInt(12) + 1;
+                            int day = DatabaseLoader.RNG.nextInt(30) + 1;
+                            
+                            // Set random birthday for this year
+                            person.setBirthDate(LocalDate.of(Integer.valueOf(splitted[4]), month, day).atStartOfDay());
+                        }
+                        
+                        /**
+                         * Create new Player
+                         * 
+                         * TODO: basic player attributes, positions, etc
+                         */
+                        Player player = new Player();
+                        
+                        player.setPerson(person);
+                        
+                        // Add to Players at Club list
+                        club.getPlayers().add(player);
                     }
                     
                     line = reader.readLine();

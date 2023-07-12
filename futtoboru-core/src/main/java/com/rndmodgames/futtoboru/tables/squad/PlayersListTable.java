@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.tables.squad;
 
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
 
@@ -9,6 +10,7 @@ import com.kotcrab.vis.ui.widget.LinkLabel.LinkLabelListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -21,6 +23,10 @@ import com.rndmodgames.localization.LanguageModLoader;
  */
 public class PlayersListTable extends VisTable {
 
+    //
+    Futtoboru game;
+    
+    //
     private List<Player> currentPlayers;
     
     // Dynamic Components
@@ -29,12 +35,13 @@ public class PlayersListTable extends VisTable {
     //
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
     
-    public PlayersListTable() {
+    public PlayersListTable(Futtoboru parent) {
         
         // default table spacing
         super(true);
         
         // 
+        this.game = parent;
         
         //
         updateDynamicComponents();
@@ -74,8 +81,13 @@ public class PlayersListTable extends VisTable {
             // Nationality / Country
             this.add(player.getPerson().getCountry().getCommonName());
             
-            // Age / Birthdate
+            long yearsOld = ChronoUnit.YEARS.between(player.getPerson().getBirthDate(), game.getCurrentGame().getGameDate());
+            
+            // Birthdate
             this.add(dateFormatter.format(player.getPerson().getBirthDate()));
+            
+            // Years Old
+            this.add("(" + yearsOld + " years old)");
             
             /**
              * Full Name
