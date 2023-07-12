@@ -38,10 +38,7 @@ public class ScheduleScreenTable extends VisTable {
         //
         this.game = ((Futtoboru) parent);
         this.currentGame = game.getCurrentGame();
-        
-//        this.add(new VisLabel("SCHEDULE SCREEN PLACEHOLDER - WORK IN PROGRESS!")).colspan(2);
-//        this.row();
-        
+
         // Fixtures Table
         fixturesTable = new FixturesTable(game, this);
         

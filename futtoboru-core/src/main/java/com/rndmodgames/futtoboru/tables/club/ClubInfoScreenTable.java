@@ -34,7 +34,19 @@ public class ClubInfoScreenTable extends VisTable {
         
         //
         this.clear();
+
+        // Basic Club Info
+        this.row();
+        this.add(currentGame.getCurrentClub().getName()).colspan(2);
         
-        this.add("CLUB INFO SCREEN PLACEHOLDER - WORK IN PROGRESS");
+        // Stadium Name
+        this.row();
+        this.add("stadium");
+        this.add(currentGame.getCurrentClub().getStadium().getName());
+        
+        // Stadium Capacity
+        this.row();
+        this.add("capacity");
+        this.add(currentGame.getCurrentClub().getStadium().getCapacity() + "");
     }
 }
