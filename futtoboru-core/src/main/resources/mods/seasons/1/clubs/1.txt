@@ -4,5 +4,33 @@
 #
 # Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season
 #
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name, for example Archie Goodall was called Archibald Lee Goodall
+#
+# NOTE 3: Willie Graham birth month is known (January) but is not yet supported by the Players Loader logic (TODO TBD) (other players too)
+#
+# NOTE 3: Richard Wittle historic record shows that he was born on the Quarter 4 1864 (lol, TODO TBD)
+#
 # COLUMNS
-# id, name, lastname, country, 
+# id, name, lastname, country, birthdate 
+1,Fred,Dewhurst,1000,1863-12-16,
+2,George,Drummond,1001,1865
+3,Jack,Edwards,1001,1867
+4,Archie,Goodall,3,1865-01-03
+5,John,Goodall,1000,1863-06-19
+6,Jack,Gordon,1001,1861-04-28
+7,Johnny,Graham,1001,1857-02-23
+8,Willie,Graham,1001,1866
+9,Robert,Holmes,1000,1867-06-23
+10,Bob,Howarth,1000,1865-06-20
+11,Jock,Inglis,1001,1859
+12,Robert,Mills-Roberts,1002,1862-08-05
+13,Sandy,Robertson,1001,1860
+14,Jimmy,Ross,1001,1866-03-28
+15,David,Russel,1001,1863-07-06
+16,Sam,Thomson,1001,1862-02-14
+17,James,Trainer,1002,1863-01-07
+18,Richard,Whittle,1000,1864
