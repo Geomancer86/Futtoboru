@@ -29,8 +29,17 @@ public class MatchScheduler {
     //
     private Futtoboru game;
     
-    //
-    private static BigDecimal FRIENDLY_TICKET_PRICE = new BigDecimal("0.5");
+    /**
+     * TODO: historically match ticket prices for friendlies, league and national/international cup matches
+     * TODO: currencies
+     * 
+     * 1888:
+     *  - 1 pound is divided in 20 shillings
+     *  - 1 shilling is divided into 12 pence
+     *  
+     *  - FRIENDLY: 1 penny = 1/240 pounds
+     */
+    private static BigDecimal FRIENDLY_TICKET_PRICE = new BigDecimal("0.00416666666"); // A penny
     
     //
     DecimalFormat df = new DecimalFormat("#,###.00");
@@ -98,6 +107,12 @@ public class MatchScheduler {
          *  - random tickets by day
          *  - randomize by club reputation TODO
          *  - sales should stop if the stadium is full
+         *  
+         *  TODO: all club stadiums
+         *  TODO: split money between clubs in friendlies
+         *  TODO: research about real world ticket splitting (or they just pay the fee)
+         *  TODO: friendly match fees
+         *  TODO: differentiate between match and league matches so the ticket values are different
          */
         for (Match scheduled : club.getScheduledMatches()) {
             
@@ -109,16 +124,25 @@ public class MatchScheduler {
              */
             int maxTickets = club.getStadium().getCapacity() - scheduled.getAttendance();
             
-            System.out.println("MATCH: " + DatabaseLoader.getClubById(scheduled.getHomeClubId()).getName() + " vs " + DatabaseLoader.getClubById(scheduled.getAwayClubId()).getName());
-            System.out.println("STADIUM " + club.getStadium().getName() + " HAS A FULL CAPACITY OF " + club.getStadium().getCapacity());
-            System.out.println("CURRENT AVAILABLE TICKETS (CAPACITY): " + maxTickets);
+            System.out.println("MATCH            : " + DatabaseLoader.getClubById(scheduled.getHomeClubId()).getName() + " vs " + DatabaseLoader.getClubById(scheduled.getAwayClubId()).getName());
+            System.out.println("STADIUM NAME     : " + club.getStadium().getName());
+            System.out.println("STADIUM CAPACITY : " + club.getStadium().getCapacity());
+            System.out.println("TICKETS SOLD     : " + scheduled.getAttendance());
+            System.out.println("TICKETS AVAILABLE: " + maxTickets);
             
             if (maxTickets > 0) {
                 
                 /**
                  * TODO: balance match day sales
                  */
-                int maxPerDay = maxTickets / 7; // sell out on 7 days
+                int maxPerDay = club.getStadium().getCapacity() / 7; // sell out on 7 days
+                
+                // Cap it at max capacity just in case
+                if (maxPerDay > maxTickets) {
+                    //
+                    maxPerDay = maxTickets;
+                }
+                
                 int minPerDay = 20;
                 
                 //
@@ -132,13 +156,16 @@ public class MatchScheduler {
                     randomTickets = DatabaseLoader.RNG.nextInt(minPerDay, maxPerDay);
                     
                 } else {
-                    
+
                     // sell out
                     randomTickets = maxPerDay;
                 }
                 
                 /**
-                 * Add to Match Attendance - TODO Stadiums / Capacity
+                 * Add to Match Attendance
+                 * 
+                 * TODO: we can make the attendance go slightly over stadium capacity depending on the stadium type, original stadiums
+                 *          were open and the limits aren set in stone (standing people)
                  */
                 scheduled.setAttendance(scheduled.getAttendance() + randomTickets);
                 
