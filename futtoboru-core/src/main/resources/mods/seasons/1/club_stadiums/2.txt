@@ -1,0 +1,10 @@
+# Aston Villa - 1888-89 Club Stadium File
+#
+# Stadium is Wellington Road
+#
+# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season
+#          https://en.wikipedia.org/wiki/Wellington_Road_(Perry_Barr)
+#
+# COLUMNS
+# id, name, year, capacity, 
+2,Wellington Road,1876,26849

@@ -1,10 +1,8 @@
-# Preston North End - Club Stadium File
+# Preston North End - 1888-89 Club Stadium File
 #
 # Stadium is Deepdale
 #
 # Source: https://en.wikipedia.org/wiki/Deepdale
-#
-# NOTE: we dont need owners id because we know what club is by the file name (club id . txt)
 #
 # COLUMNS
 # id, name, year, capacity, 

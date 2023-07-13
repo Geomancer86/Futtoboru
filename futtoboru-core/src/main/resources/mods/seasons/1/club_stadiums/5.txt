@@ -1,0 +1,10 @@
+# Boltom Wanderers - 1888-89 Club Stadium File
+#
+# Stadium is Pikes Lane
+#
+# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season
+#          https://en.wikipedia.org/wiki/Pike%27s_Lane
+#
+# COLUMNS
+# id, name, year, capacity, 
+5,Pikes Lane,1880,20000
