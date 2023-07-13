@@ -405,6 +405,10 @@ public class MainMenuManager {
         case SCHEDULE_SCREEN:
             scheduleScreenTable.updateDynamicComponents();
             break;
+            
+        case FINANCES_SCREEN:
+            financesScreenTable.updateDynamicComponents();
+            break;
 
         default:
             //ignore
