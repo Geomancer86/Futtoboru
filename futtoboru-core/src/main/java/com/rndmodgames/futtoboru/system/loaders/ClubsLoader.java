@@ -136,9 +136,8 @@ public class ClubsLoader {
                         //
                         season.getClubs().add(club);
                         
-                        /**
-                         * TODO WIP Load Club Stadium
-                         */
+                        // Load Club Stadium
+                        StadiumsLoader.loadStadium(season, club);
                         
                         // Add to the Clubs By ID HashMap
                         DatabaseLoader.addClub(club);

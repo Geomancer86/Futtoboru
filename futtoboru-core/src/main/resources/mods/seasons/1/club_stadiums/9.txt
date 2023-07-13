@@ -1,0 +1,10 @@
+# Burnley F.C. - 1888-89 Club Stadium File
+#
+# Stadium is Turf Moor
+#
+# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season
+#          https://en.wikipedia.org/wiki/Turf_Moor
+#
+# COLUMNS
+# id, name, year, capacity, 
+9,Turf Moor,1883,12000

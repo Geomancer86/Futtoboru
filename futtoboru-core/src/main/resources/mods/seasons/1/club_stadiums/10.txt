@@ -1,0 +1,10 @@
+# Derby County F.C. - 1888-89 Club Stadium File
+#
+# Stadium is Racecourse Ground (also called County Ground)
+#
+# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season
+#          https://en.wikipedia.org/wiki/County_Cricket_Ground,_Derby
+#
+# COLUMNS
+# id, name, year, capacity, 
+10,Racecourse Ground,1863,12000

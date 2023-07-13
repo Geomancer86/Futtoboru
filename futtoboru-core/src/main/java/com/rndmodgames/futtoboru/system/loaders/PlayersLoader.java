@@ -49,12 +49,12 @@ public class PlayersLoader {
      
         System.out.println("LOADING " + club.getName() + " PLAYERS FROM FILE SYSTEM.");
         
-        FileHandle playersClubsFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/clubs/" + club.getId() + ".txt");
+        FileHandle clubPlayersFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/club_players/" + club.getId() + ".txt");
         
         // 
-        if (playersClubsFile.exists()) {
+        if (clubPlayersFile.exists()) {
             
-            BufferedReader reader = new BufferedReader(playersClubsFile.reader());
+            BufferedReader reader = new BufferedReader(clubPlayersFile.reader());
             
             String line;
 

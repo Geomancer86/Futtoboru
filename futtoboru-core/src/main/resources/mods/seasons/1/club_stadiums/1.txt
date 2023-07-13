@@ -1,0 +1,9 @@
+# Preston North End - 1888-89 Club Stadium File
+#
+# Stadium is Deepdale
+#
+# Source: https://en.wikipedia.org/wiki/Deepdale
+#
+# COLUMNS
+# id, name, year, capacity, 
+1,Deepdale,1875,10000

@@ -1,0 +1,10 @@
+# Accrington F.C. - 1888-89 Club Stadium File
+#
+# Stadium is Thorneyholme Road
+#
+# Sources: https://en.wikipedia.org/wiki/Accrington_F.C.
+#          https://en.wikipedia.org/wiki/Thorneyholme_Road
+#
+# COLUMNS
+# id, name, year, capacity, 
+7,Thorneyholme Road,1878,10000

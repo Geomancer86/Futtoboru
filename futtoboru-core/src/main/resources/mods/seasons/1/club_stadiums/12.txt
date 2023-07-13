@@ -1,0 +1,10 @@
+# Stoke F.C. - 1888-89 Club Stadium File
+#
+# Stadium is Victoria Ground
+#
+# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season
+#          https://en.wikipedia.org/wiki/Victoria_Ground
+#
+# COLUMNS
+# id, name, year, capacity, 
+12,Victoria Ground,1878,5000

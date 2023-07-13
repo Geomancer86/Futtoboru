@@ -20,22 +20,26 @@ public class SocialNetworkLinksComponent extends VisTable {
     public static final String FACEBOOK_URL = "https://www.facebook.com/RndModGames";
     public static final String INSTAGRAM_URL = "https://www.instagram.com/rndmodgames";
     public static final String RNDMODGAMES_URL = "https://rndmodgames.com";
+    public static final String FUTTOBORU_GITHUB_URL = "https://github.com/Geomancer86/Futtoboru";
     
     public SocialNetworkLinksComponent() {
 
         row();
-        add(new LinkLabel("Patreon", PATREON_URL));
+        add(new LinkLabel("Nicolas Alvargonzalez @ Patreon", PATREON_URL)).right();
         
         row();
-        add(new LinkLabel("Twitter", TWITTER_URL));
+        add(new LinkLabel("RndModGames @ Twitter", TWITTER_URL)).right();
         
         row();
-        add(new LinkLabel("Facebook", FACEBOOK_URL));
+        add(new LinkLabel("RndModGames @ Facebook", FACEBOOK_URL)).right();
         
         row();
-        add(new LinkLabel("Instagram", INSTAGRAM_URL));
+        add(new LinkLabel("RndModGames @ Instagram", INSTAGRAM_URL)).right();
         
         row();
-        add(new LinkLabel("RndModGames", RNDMODGAMES_URL));
+        add(new LinkLabel("RndModGames.com", RNDMODGAMES_URL)).right();
+        
+        row();
+        add(new LinkLabel("Futtoboru @ Github", FUTTOBORU_GITHUB_URL)).right();
     }
 }

@@ -1,0 +1,10 @@
+# Notts County F.C. - 1888-89 Club Stadium File
+#
+# Stadium is Trent Bridge
+#
+# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Notts_County_F.C._season
+#          https://en.wikipedia.org/wiki/Trent_Bridge
+#
+# COLUMNS
+# id, name, year, capacity, 
+11,Trent Bridge,1838,15000
