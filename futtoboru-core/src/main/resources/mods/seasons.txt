@@ -1,4 +1,4 @@
 # SEASONS v1
 # COLUMNS
 # id, name, description, urlSource, startDate
-1,1888-1889 Season,"The Most Important Football Season Ever, The One That Started It All.",https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League,01-01-1888 04:00:00 AM
+18,1888-1889 Season,"The Most Important Football Season Ever, The One That Started It All.",https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League,01-01-1888 04:00:00 AM
