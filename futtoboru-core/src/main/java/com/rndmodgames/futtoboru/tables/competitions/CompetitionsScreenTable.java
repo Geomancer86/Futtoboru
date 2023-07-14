@@ -31,8 +31,39 @@ public class CompetitionsScreenTable extends VisTable {
 
         //
         this.clear();
+        
+        // 
 
-        //
-        this.add("CLUB COMPETITIONS SCREEN PLACEHOLDER - WORK IN PROGRESS!");
+        /**
+         * TODO WIP:
+         *  
+         *      - Competitions Loader:
+         *          - Load FA CUP from file
+         *              - Load history, year created
+         *              - Load past winners
+         *                  - year
+         *                  - invited clubs
+         *                  - participant clubs
+         *                  - winner, runner ups, etc
+         *                  
+         *              - We need hundreds of ghost teams
+         *              
+         *      - Authority:
+         *          - Current Year (1888-89) Cup Rules
+         *          - Show all invited teams
+         *          - Show all participant teams
+         *              - Needs to be preloaded on file system for historic reasons
+         *              - Next cups are replied randomly (more reputation more %, try to get the historic % participating)
+         *              
+         *          - Cup Draw: interactive/automatic
+         *          - Cup Match Scheduling: automatic
+         *          
+         *          - Cup Playoffs and Rules:
+         *              - Byes
+         *              - Indefinite Rematches (no penalties)
+         *              
+         *          - Competition Prizes
+         */
+        
     }
 }
