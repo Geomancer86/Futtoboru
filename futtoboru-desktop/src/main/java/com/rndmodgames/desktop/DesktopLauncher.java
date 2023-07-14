@@ -12,6 +12,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 public class DesktopLauncher {
     
     public static void main(String[] args) {
+        
         createApplication();
     }
 
