@@ -16,5 +16,6 @@ public class CompetitionsLoader {
      */
     public static void loadCompetitions(Season season) {
         
+        
     }
 }

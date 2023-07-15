@@ -8,6 +8,31 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 /**
  * Competitions Screen Table v1
  * 
+ *  - This screen will show all the Competitions the Club is registered to play on
+ *  
+ *      - National Cups
+ *      - Leagues
+ *      - International Cups (TBD)
+ *      - Relegation/Promotion (TBD)
+ *      - SuperCups (league winners vs cup winners) (TBD)
+ *      - Etc.
+ *  
+ *  - Each Competition name will be a Link Type button/label and clicking it will redirect
+ *      to the Competition Detail Screen showing:
+ *          
+ *          - Founding Year
+ *          - Past editions history:
+ *              - Invited Teams
+ *              - Participating Teams
+ *              - Match History         (TBD)
+ *              - Winner, Runner Up
+ *              - Prizes
+ *              
+ *      The Competition Detail Page will show 
+ *          
+ *          - When the next edition starts and ends
+ *          - When the CUP DRAW will take place
+ * 
  * @author Geomancer86
  */
 public class CompetitionsScreenTable extends VisTable {
@@ -33,6 +58,19 @@ public class CompetitionsScreenTable extends VisTable {
         this.clear();
         
         // 
+        this.row().colspan(2);
+        this.add("CLUB COMPETITIONS SCREEN - WORK IN PROGRESS!");
+        
+        // Club Cups
+        this.row();
+        this.add("club_cups");
+        this.add("FA CUP");
+        
+        // Club Leagues
+        this.row();
+        this.add("club_leagues");
+        this.add("English League");
+        
 
         /**
          * TODO WIP:
