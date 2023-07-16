@@ -22,6 +22,7 @@ public class CompetitionsLoader {
      */
     public static void load(List<Competition> competitions) {
         
+        //
         Gdx.app.log("CompetitionsLoader", "LOADING COMPETITIONS FROM FILE SYSTEM!");
         
         FileHandle competitionsFile = Gdx.files.internal("mods/competitions.txt");
@@ -40,8 +41,6 @@ public class CompetitionsLoader {
 
                     if (!line.startsWith("#")) {
 
-                        System.out.println(line);
-                        
                         String[] splitted = line.split(",");
                         
                         /**
@@ -51,8 +50,10 @@ public class CompetitionsLoader {
                          */
                         Competition competition = new Competition();
                         
-                        competition.setName(splitted[0]);
-                        competition.setFullname(splitted[1]);
+                        competition.setId(Long.valueOf(splitted[0]));
+                        competition.setName(splitted[1]);
+                        competition.setFullname(splitted[2]);
+                        competition.setUrlSource(splitted[3]);
                         
                         // Add to Database competitions list
                         competitions.add(competition);
@@ -75,7 +76,5 @@ public class CompetitionsLoader {
         
         //
         Gdx.app.log("CompetitionsLoader", "Finished loading " + competitions.size() + " Competitions from file.");
-
-        // TODO: Add to Competitions By ID Map/Cache
     }
 }

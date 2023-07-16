@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.rndmodgames.futtoboru.data.Competition;
@@ -54,7 +55,8 @@ class CompetitionsLoaderTests {
         
         assertNotNull(faCup);
 
-        System.out.println("Total Competitions Loaded are: " + allCompetitions.size());
+        //
+        Gdx.app.debug("CompetitionsLoaderTests", "Total Competitions Loaded are: " + allCompetitions.size());
     }
     
     @Test
@@ -72,6 +74,7 @@ class CompetitionsLoaderTests {
         //
         assertNotNull(faCup.getEditions());
         
-        System.out.println(faCup.getName() + " has " + faCup.getEditions().size() + " saved Editions");
+        //
+        Gdx.app.debug("CompetitionsLoaderTests", faCup.getName() + " has: " + faCup.getEditions().size() + " saved Editions");
     }
 }

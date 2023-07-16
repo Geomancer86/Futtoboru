@@ -57,9 +57,62 @@ public class CompetitionsScreenTable extends VisTable {
         //
         this.clear();
         
-        // 
+        /**
+         * In this screen we will list the Current Club Competitions
+         * 
+         * Clicking on a Competition Name Label will send the user to the Competition Details Screen for that competition
+         * 
+         * TODO:
+         *  - competitions x clubs relationship
+         *  
+         *  - CompetitionEdition
+         *      - Name
+         *      - Description
+         *      - Competition ID
+         *      - Edition
+         *      - Start Date
+         *      - End Date
+         *      - Participant Clubs
+         *      - Rules
+         *      
+         *      // then you have the scheduled matches, match results, etc. (related objects)
+         *      
+         *      
+         *  - get club affiliations: country/top level (we need to simulate the football association because that's different from the authority)
+         *  - get club competitions: country/top level
+         *  
+         */
+        
         this.row().colspan(2);
-        this.add("CLUB COMPETITIONS SCREEN - WORK IN PROGRESS!");
+        this.add("CLUB COMPETITIONS SCREEN");
+        
+        /**
+         * The Club might be associated or not, a club needs association to participate of most games / competitions
+         */
+        this.row();
+        this.add("club_association");
+        this.add("PLACEHOLDER - WIP");
+        
+        /**
+         * The club can participate in many cup style competitions, as long as scheduling permits
+         */
+        this.row();
+        this.add("club_cups");
+        this.add("PLACEHOLDER - WIP");
+        
+        /**
+         * The club can participate in many leagues but more than one doesn't make sense and usually it's just one
+         * 
+         * NOTE: historically in 1888 there were two leagues but just one complete (and is still played today) the other wasn't finished,
+         *          but some teams played both leagues that year.
+         */
+        this.row();
+        this.add("club_league");
+        this.add("PLACEHOLDER - WIP");
+        
+        // 
+//        this.row().colspan(2);
+//        this.add("CLUB COMPETITIONS SCREEN - WORK IN PROGRESS!");
         
         /**
          * TODO: WIP:
@@ -80,15 +133,15 @@ public class CompetitionsScreenTable extends VisTable {
          *      
          */
         
-        // Club Cups
-        this.row();
-        this.add("club_cups");
-        this.add("FA CUP");
-        
-        // Club Leagues
-        this.row();
-        this.add("club_leagues");
-        this.add("English League");
+//        // Club Cups
+//        this.row();
+//        this.add("club_cups");
+//        this.add("FA CUP");
+//        
+//        // Club Leagues
+//        this.row();
+//        this.add("club_leagues");
+//        this.add("English League");
         
 
         /**
