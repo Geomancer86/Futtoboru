@@ -9,8 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import com.rndmodgames.futtoboru.data.Club;
-import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -42,23 +41,37 @@ class CompetitionsLoaderTests {
         /**
          * Load the Competitions from File, should have 17 historic seasons
          */
+        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
         
-//        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
-//        
-//        assertNotNull(dbLoader);
-//        
-//        /**
-//         * Iterate all clubs and make sure all stadiums are there
-//         */
-//        Country england = DatabaseLoader.getCountryById(1000L);
-//        
-//        List<Club> allClubs = dbLoader.getClubsByCountry(england);
-//        
-//        for (Club club : allClubs) {
-//            
-//            assertNotNull(club.getStadium());
-//        }
-//        
-//        System.out.println("All " + allClubs.size() + " Have a Stadium File.");
+        assertNotNull(dbLoader);
+        
+        // FA Cup should be loaded
+        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        
+        assertNotNull(allCompetitions);
+        
+        Competition faCup = allCompetitions.get(0);
+        
+        assertNotNull(faCup);
+
+        System.out.println("Total Competitions Loaded are: " + allCompetitions.size());
+    }
+    
+    @Test
+    void loadCompetitionHistoryTest() {
+        
+        /**
+         * The Competition FA Cup should Exist,
+         * 
+         * 17 years of history should be preloaded
+         */
+        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        
+        Competition faCup = allCompetitions.get(0);
+        
+        //
+        assertNotNull(faCup.getEditions());
+        
+        System.out.println(faCup.getName() + " has " + faCup.getEditions().size() + " saved Editions");
     }
 }

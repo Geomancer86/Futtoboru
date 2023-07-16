@@ -61,6 +61,25 @@ public class CompetitionsScreenTable extends VisTable {
         this.row().colspan(2);
         this.add("CLUB COMPETITIONS SCREEN - WORK IN PROGRESS!");
         
+        /**
+         * TODO: WIP:
+         * 
+         *  - Load existing competitions from file system: this will only load the existing FA CUP and previous seasons history as needed/loaded
+         *  - We need a way to differentiate teams like:
+         *      - PLAYABLE
+         *      - GHOST
+         *      
+         *  - The 18th Edition of the FA CUP has hundreds of invited and participant teams
+         *  
+         *  - After we have everything loaded, we need to simulate/script the CUP DRAW:
+         *  
+         *  - randomly pick teams one by one according to the rules
+         *      
+         *      - THIS YEAR RULES: seems like the league teams might get the first round for free (research!)
+         *      
+         *      
+         */
+        
         // Club Cups
         this.row();
         this.add("club_cups");
