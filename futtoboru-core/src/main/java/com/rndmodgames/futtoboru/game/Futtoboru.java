@@ -3,11 +3,11 @@ package com.rndmodgames.futtoboru.game;
 import java.util.List;
 import java.util.Locale;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
-import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.kotcrab.vis.ui.VisUI;
 import com.rndmodgames.PreferencesManager;
@@ -74,6 +74,14 @@ public class Futtoboru extends Game {
     public static boolean FULLSCREEN = false;                 // Working
     
     /**
+     * DEBUGGING SETTINGS
+     * 
+     * TODO: set from game settings screen
+     */
+    public static boolean DEBUG_MODE = false; // default to false
+    public static int LIBGDX_LOG_LEVEL = Application.LOG_DEBUG;
+    
+    /**
      * Simulation/Save Game Instance
      */
     private SaveGame currentGame = null;
@@ -127,6 +135,11 @@ public class Futtoboru extends Game {
         
         // 
         manager.finishLoading();
+        
+        /**
+         * TODO: load debug setting from saved user preferences / settings screen
+         */
+        Gdx.app.setLogLevel(LIBGDX_LOG_LEVEL);
         
         // 
         LanguageModLoader.setBundle(manager.get("mods/language/BaseBundle", I18NBundle.class));
