@@ -136,6 +136,9 @@ public class DatabaseLoader {
             // Initialize Competitions
             CompetitionsLoader.load(competitions);
             
+            // Initialize Competitions History
+            CompetitionsLoader.loadCompetitionEditions(competitions, seasons);
+            
             // Load Seasons Data
             SeasonsLoader.load(seasons);
             

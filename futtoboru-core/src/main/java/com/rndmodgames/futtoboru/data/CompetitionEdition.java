@@ -2,6 +2,8 @@ package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Competition Edition v1
@@ -40,6 +42,9 @@ public class CompetitionEdition implements Serializable {
     
     private Long championsId;
     private Long runnersUpId;
+    
+    //
+    private List<Long> participantClubsIds = new ArrayList<>();
 
     // 
     public Long getId() {
@@ -136,5 +141,13 @@ public class CompetitionEdition implements Serializable {
 
     public void setRunnersUpId(Long runnersUpId) {
         this.runnersUpId = runnersUpId;
+    }
+
+    public List<Long> getParticipantClubsIds() {
+        return participantClubsIds;
+    }
+
+    public void setParticipantClubsIds(List<Long> participantClubsIds) {
+        this.participantClubsIds = participantClubsIds;
     }
 }

@@ -93,6 +93,8 @@ public class CompetitionsScreenTable extends VisTable {
         this.add("club_association");
         this.add("PLACEHOLDER - WIP");
         
+//        currentGame.getCurrentClub()
+        
         /**
          * The club can participate in many cup style competitions, as long as scheduling permits
          */

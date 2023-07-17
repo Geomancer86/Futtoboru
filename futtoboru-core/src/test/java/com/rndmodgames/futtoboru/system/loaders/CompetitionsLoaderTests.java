@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.system.loaders;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
@@ -40,7 +41,7 @@ class CompetitionsLoaderTests {
     void loadCompetitionsTest() {
         
         /**
-         * Load the Competitions from File, should have 17 historic seasons
+         * Load the Competitions from File
          */
         DatabaseLoader dbLoader = DatabaseLoader.getInstance();
         
@@ -62,19 +63,42 @@ class CompetitionsLoaderTests {
     @Test
     void loadCompetitionHistoryTest() {
         
+        // 
+        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
+        
+        assertNotNull(dbLoader);
+        
         /**
-         * The Competition FA Cup should Exist,
-         * 
-         * 17 years of history should be preloaded
+         * The Competition FA Cup should Exist
          */
         List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
         
         Competition faCup = allCompetitions.get(0);
         
-        //
+        /**
+         * TODO: we need the current edition of the cup with:
+         *          - edition number
+         *          - name
+         *          - description
+         *          - start date
+         *          - end date
+         *          - invited teams
+         *          - participant teams
+         *          
+         *  32 participants, 5 rounds through the finals
+         */
         assertNotNull(faCup.getEditions());
         
         //
         Gdx.app.debug("CompetitionsLoaderTests", faCup.getName() + " has: " + faCup.getEditions().size() + " saved Editions");
+
+        // Participant Clubs exist
+        assertNotNull(faCup.getEditions().get(0).getParticipantClubsIds());
+        
+        // 32 Participant Clubs
+        assertEquals(32, faCup.getEditions().get(0).getParticipantClubsIds().size());
+        
+        //
+        Gdx.app.debug("CompetitionsLoaderTests", faCup.getEditions().get(0).getName() + " has: " + faCup.getEditions().get(0).getParticipantClubsIds().size() + " Participant Clubs");
     }
 }
