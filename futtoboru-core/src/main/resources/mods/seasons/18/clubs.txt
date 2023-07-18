@@ -1,0 +1,40 @@
+# 1888–89 Football League Clubs
+#
+# COLUMNS
+# id, name, fullname, club_balance, url_source, foundation_year, state, city, 
+#
+1,Preston North End,Preston North End Football Club,10000,https://en.wikipedia.org/wiki/Preston_North_End_F.C.,1880,1000
+2,Aston Villa,Aston Villa Football Club,10000,https://en.wikipedia.org/wiki/Aston_Villa_F.C.,1874,1000
+3,Wolverhampton Wanderers,Wolverhampton Wanderers Football Club,10000,https://en.wikipedia.org/wiki/Wolverhampton_Wanderers_F.C.,1877,1000
+4,Blackburn Rovers,Blackburn Rovers Football Club,10000,https://en.wikipedia.org/wiki/Blackburn_Rovers_F.C.,1875,1000
+5,Bolton Wanderers,Bolton Wanderers Football Club,10000,https://en.wikipedia.org/wiki/Bolton_Wanderers_F.C.,1874,1000
+6,West Bromwich Albion,West Bromwich Albion Football Club,10000,https://en.wikipedia.org/wiki/West_Bromwich_Albion_F.C.,1878,1000
+7,Accrington,Accrington Football Club,10000,https://en.wikipedia.org/wiki/Accrington_F.C.,1878,1000
+8,Everton,Everton Football Club,10000,https://en.wikipedia.org/wiki/Everton_F.C.,1878,1000
+9,Burnley,Burnley Football Club,10000,https://en.wikipedia.org/wiki/Burnley_F.C.,1882,1000
+10,Derby County,Derby County Football Club,10000,https://en.wikipedia.org/wiki/Derby_County_F.C.,1884,1000
+11,Notts County,Notts County Football Club,10000,https://en.wikipedia.org/wiki/Notts_County_F.C,1862,1000
+12,Stoke,Stoke City Football Club,10000,https://en.wikipedia.org/wiki/Stoke_City_F.C.,1868,1000
+13,Old Westminsters,Old Westminsters Football Club,0,https://en.wikipedia.org/wiki/Old_Westminsters_F.C.,1880,1000
+14,Swifts,Swifts Football Club,0,https://en.wikipedia.org/wiki/Swifts_F.C.,1869,1000
+15,Old Brightonians,Old Brightonians Football Club,0,https://en.wikipedia.org/wiki/Old_Brightonians_F.C.,1881,1000
+16,Wrexham,Wrexham Association Football Club,0,https://en.wikipedia.org/wiki/Wrexham_A.F.C.,1864,1002
+17,Nottingham Forest,Nottingham Forest Football Club,0,https://en.wikipedia.org/wiki/Nottingham_Forest_F.C.,1865,1000
+18,Linfield,Linfield Football Club,0,https://en.wikipedia.org/wiki/Linfield_F.C.,1886,83
+19,Witton Albion,Witton Albion Football Club,0,https://en.wikipedia.org/wiki/Witton_Albion_F.C.,1887,1000
+20,Bootle,Bootle Football Club,0,https://en.wikipedia.org/wiki/Bootle_F.C._(1879),1879,1000
+21,Chatham Town,Chatham Town Football Club,0,https://en.wikipedia.org/wiki/Chatham_Town_F.C.,1882,1000
+22,South Shore,South Shore Football Club,0,https://en.wikipedia.org/wiki/South_Shore_F.C.,1879,1000
+23,Grimsby Town,Grimsby Town Football Club,0,https://en.wikipedia.org/wiki/Grimsby_Town_F.C.,1878,1000
+24,Sunderland Albion,Sunderland Albion Football Club,0,https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.,1888,1000
+25,Halliwell,Halliwell Football Club,0,https://en.wikipedia.org/wiki/Halliwell_F.C.,1877,1000
+26,Crewe Alexandra,Crewe Alexandra Football Club,0,https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.,1877,1000
+27,Old Carthusians,Old Carthusians Football Club,0,https://en.wikipedia.org/wiki/Old_Carthusians_F.C.,1876,1000
+28,Derby Junction,Derby Junction Football Club,0,https://en.wikipedia.org/wiki/Derby_Junction_F.C.,1870,1000
+29,Notts Rangers,Notts Rangers Football Club,0,https://en.wikipedia.org/wiki/Notts_Rangers_F.C.,1868,1000
+30,Sheffield Wednesday,Sheffield Wednesday Football Club,0,https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.,1867,1000
+31,Birmingham St George's,Birmingham St. George's Football Club,0,https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.,1875,1000
+32,Long Eaton Rangers,Long Eaton Rangers Football Club,0,https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C.,1881,1000
+33,Small Heath,Small Heath Football Club,0,https://en.wikipedia.org/wiki/Birmingham_City_F.C.,1875,1000
+34,Walsall,Walsall Football Club,0,https://en.wikipedia.org/wiki/Walsall_F.C.,1888,1000
+35,Heeley,Heeley Football Club,0,https://en.wikipedia.org/wiki/Heeley_F.C.,1862,1000

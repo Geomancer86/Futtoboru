@@ -1,0 +1,55 @@
+# English Surnames v1
+# Source: Victorian Surnames in England and Wales - https://www.geriwalton.com/surnames/
+# Another Source (unused yet): https://listophile.com/names/last/victorian/
+# One name per line
+#
+Allen
+Baker
+Bennett
+Brown
+Carter
+Clark
+Clarke
+Cook
+Cooper
+Davies
+Davis
+Edwards
+Evans
+Green
+Griffiths
+Hall
+Harris
+Harrison
+Hill
+Hughes
+Jackson
+James
+Johnson
+Jones
+King
+Lee
+Lewis
+Martin
+Moore
+Morgan
+Morris
+Parker
+Phillips
+Prince
+Roberts
+Robinson
+Shaw
+Smith
+Taylor
+Thomas
+Thompson
+Turner
+Walker
+Ward
+Watson
+White
+Williams
+Wilson
+Wood
+Wright

@@ -5,8 +5,8 @@ Build Instructions
 
 Desktop:
 
-./gradlew desktop:dist
+mvn clean install
 
 Run from Command Line:
 
-java -jar ./desktop-1.0.jar
+java -jar ./futtoboru-desktop-0.0.1-SNAPSHOT.jar

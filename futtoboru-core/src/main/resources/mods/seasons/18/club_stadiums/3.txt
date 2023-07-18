@@ -1,0 +1,12 @@
+# Wolverhampton Wanderers - 1888-89 Club Stadium File
+#
+# Stadium is Dudley Road
+#
+# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Wolverhampton_Wanderers_F.C._season
+#          https://en.wikipedia.org/wiki/Dudley_Road
+#
+# NOTE: we dont need owners id because we know what club is by the file name (club id . txt)
+#
+# COLUMNS
+# id, name, year, capacity, 
+3,Dudley Road,1881,10000

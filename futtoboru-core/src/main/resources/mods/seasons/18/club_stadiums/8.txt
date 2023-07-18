@@ -1,0 +1,11 @@
+# Everton F.C. - 1888-89 Club Stadium File
+#
+# Stadium is Anfield
+#
+# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season
+#          https://en.wikipedia.org/wiki/Anfield
+#          https://www.evertonfc.com/club/history/our-former-homes
+#
+# COLUMNS
+# id, name, year, capacity, 
+8,Anfield,1884,20000
