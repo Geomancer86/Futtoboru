@@ -96,21 +96,21 @@ public class NewGameSetupScreen implements Screen {
             boolean activeCountry = false;
 
             /**
-             * Show only the Countries with Active Teams
+             * Show only the Countries with Active Clubs
              */
             for (final Country country : DatabaseLoader.getInstance().getCountriesByContinent(continent)) {
                 
                 //
                 if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
                     
-                    // System.out.println("Country don't have active Teams!");
+                    // System.out.println("Country don't have active Clubs!");
                     
                 } else {
                     
                     // ADD COMPONENTS
                     System.out.println("Continent Details: " + continent.getName());
                     System.out.println("Country Details: " + country.getCommonName());
-                    System.out.println("Adding " + DatabaseLoader.getInstance().getClubsByCountry(country).size() + " Country Teams!");
+                    System.out.println("Adding " + DatabaseLoader.getInstance().getClubsByCountry(country).size() + " Country Clubs!");
                  
                     // Set Continent as active
                     activeContinent = true;
@@ -131,7 +131,7 @@ public class NewGameSetupScreen implements Screen {
                 
                 if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
                     
-                    // System.out.println("Country don't have active Teams!");
+                    // System.out.println("Country don't have active Clubs!");
                     
                 } else {
                     

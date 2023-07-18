@@ -461,28 +461,31 @@ public class NewGameOverviewScreen implements Screen {
                  * 
                  */
                 
-                System.out.println("--------------------------");
-                System.out.println("ITERATING SEASON SCRIPTS: ");
-                
-                for (BasicScript script : startingSeason.getSeasonScripts()) {
-                    
-                    System.out.println("SEASON SCRIPT: " + script.getName());
-                    System.out.println("DESCRIPTION  : " + script.getDescription());
-                    
-                    /**
-                     * TEXT / SERIALIZED SCRIPT VERSION
-                     */
-                    System.out.println("SCRIPT VALUES: " + script.getScriptValues().size());
-                    
-                    for (Map.Entry<String, Object> entry : script.getScriptValues().entrySet()) {
-                        
-                        //
-                        System.out.println("Script Key = " + entry.getKey() + ", Script Value = " + entry.getValue());
-                        
-                        //
-                    }
+                if (Futtoboru.DEBUG_MODE) {
                     
                     System.out.println("--------------------------");
+                    System.out.println("ITERATING SEASON SCRIPTS: ");
+                    
+                    for (BasicScript script : startingSeason.getSeasonScripts()) {
+                        
+                        System.out.println("SEASON SCRIPT: " + script.getName());
+                        System.out.println("DESCRIPTION  : " + script.getDescription());
+                        
+                        /**
+                         * TEXT / SERIALIZED SCRIPT VERSION
+                         */
+                        System.out.println("SCRIPT VALUES: " + script.getScriptValues().size());
+                        
+                        for (Map.Entry<String, Object> entry : script.getScriptValues().entrySet()) {
+                            
+                            //
+                            System.out.println("Script Key = " + entry.getKey() + ", Script Value = " + entry.getValue());
+                            
+                            //
+                        }
+                        
+                        System.out.println("--------------------------");
+                    }
                 }
                 
                 /**

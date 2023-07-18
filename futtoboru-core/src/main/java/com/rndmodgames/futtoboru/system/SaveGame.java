@@ -58,7 +58,7 @@ public class SaveGame implements Serializable {
      *  - TODO
      *      - save current main authority and keep track of authority hierarchies as new authorities are created and power shifts
      *      - save current leagues
-     *      - save current teams
+     *      - save current clubs
      *      
      *  - TODO: when the game is being played we have to make sure we always use the most recent/updated data version and not the original static data from the DatabaseLoader
      */
@@ -87,14 +87,14 @@ public class SaveGame implements Serializable {
      *  - Scripts will be loaded during new game when picking a Season, and will need to be saved within the SaveGame
      *      until they are fired.
      *  
-     *  - Some events will allow the player to decide, for example: other team got historically relegated, but the player can choose to keep it in the league 
+     *  - Some events will allow the player to decide, for example: other clubs got historically relegated, but the player can choose to keep it in the league 
      *  
      *  
      * Inbox Manager
      * 
      * Scripts Manager
      *  - Basic Script:
-     *      - Forms The League on [X DATE] with [X TEAMS] and [X RULES]
+     *      - Forms The League on [X DATE] with [X CLUBS] and [X RULES]
      */
     List<Message> allMessages;
     
