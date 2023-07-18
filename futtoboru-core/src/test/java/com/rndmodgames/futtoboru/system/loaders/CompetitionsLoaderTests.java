@@ -138,10 +138,17 @@ class CompetitionsLoaderTests {
     
     /**
      * This calls the Authority/AI manager for the Competition and do a randomized cup draw
+     * 
+     *  - NOTE: the clubs in the competition are saved by historic match order, so the draw can be recreated or fully randomized for the player to choose
      */
     @Test
     void competitionCupDrawTest() {
         
+        /**
+         * TODO:
+         *  - basic cup draw with exact number of teams (no byes)
+         *      - 1888-89 FA Cup had playoffs that were played with byes/etc until enough clubs were qualified to enter (league teams + qualified = 32 clubs).
+         */
     }
     
     /**

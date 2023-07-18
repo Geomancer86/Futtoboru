@@ -19,19 +19,22 @@
 14,Swifts,Swifts Football Club,0,https://en.wikipedia.org/wiki/Swifts_F.C.,1869,1000
 15,Old Brightonians,Old Brightonians Football Club,0,https://en.wikipedia.org/wiki/Old_Brightonians_F.C.,1881,1000
 16,Wrexham,Wrexham Association Football Club,0,https://en.wikipedia.org/wiki/Wrexham_A.F.C.,1864,1002
-#17,
-#18,
-#19,
-#20,
-#21,
-#22,
-#23,
-#24,
-#25,
-#26,
-#27,
-#28,
-#29,
-#30,
-#31,
-#32,
+17,Nottingham Forest,Nottingham Forest Football Club,0,https://en.wikipedia.org/wiki/Nottingham_Forest_F.C.,1865,1000
+18,Linfield,Linfield Football Club,0,https://en.wikipedia.org/wiki/Linfield_F.C.,1886,83
+19,Witton Albion,Witton Albion Football Club,0,https://en.wikipedia.org/wiki/Witton_Albion_F.C.,1887,1000
+20,Bootle,Bootle Football Club,0,https://en.wikipedia.org/wiki/Bootle_F.C._(1879),1879,1000
+21,Chatham Town,Chatham Town Football Club,0,https://en.wikipedia.org/wiki/Chatham_Town_F.C.,1882,1000
+22,South Shore,South Shore Football Club,0,https://en.wikipedia.org/wiki/South_Shore_F.C.,1879,1000
+23,Grimsby Town,Grimsby Town Football Club,0,https://en.wikipedia.org/wiki/Grimsby_Town_F.C.,1878,1000
+24,Sunderland Albion,Sunderland Albion Football Club,0,https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.,1888,1000
+25,Halliwell,Halliwell Football Club,0,https://en.wikipedia.org/wiki/Halliwell_F.C.,1877,1000
+26,Crewe Alexandra,Crewe Alexandra Football Club,0,https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.,1877,1000
+27,Old Carthusians,Old Carthusians Football Club,0,https://en.wikipedia.org/wiki/Old_Carthusians_F.C.,1876,1000
+28,Derby Junction,Derby Junction Football Club,0,https://en.wikipedia.org/wiki/Derby_Junction_F.C.,1870,1000
+29,Notts Rangers,Notts Rangers Football Club,0,https://en.wikipedia.org/wiki/Notts_Rangers_F.C.,1868,1000
+30,Sheffield Wednesday,Sheffield Wednesday Football Club,0,https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.,1867,1000
+31,Birmingham St George's,Birmingham St. George's Football Club,0,https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.,1875,1000
+32,Long Eaton Rangers,Long Eaton Rangers Football Club,0,https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C.,1881,1000
+33,Small Heath,Small Heath Football Club,0,https://en.wikipedia.org/wiki/Birmingham_City_F.C.,1875,1000
+34,Walsall,Walsall Football Club,0,https://en.wikipedia.org/wiki/Walsall_F.C.,1888,1000
+35,Heeley,Heeley Football Club,0,https://en.wikipedia.org/wiki/Heeley_F.C.,1862,1000
