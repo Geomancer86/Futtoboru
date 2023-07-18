@@ -56,6 +56,6 @@ class StadiumsLoaderTests {
 //            assertNotNull(club.getStadium());
         }
         
-        System.out.println("All " + allClubs.size() + " Have a Stadium File.");
+        System.out.println("All " + allClubs.size() + " Clubs Have a Stadium File.");
     }
 }

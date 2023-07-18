@@ -44,7 +44,7 @@ class PlayersLoaderTests {
         assertNotNull(dbLoader);
         
         /**
-         * Iterate all clubs and make sure all stadiums are there
+         * Iterate all clubs and make sure all players are there
          */
         Country england = DatabaseLoader.getCountryById(1000L);
         
@@ -56,6 +56,6 @@ class PlayersLoaderTests {
             System.out.println("Club: " + club.getName() + ", Players: " + club.getPlayers().size());
         }
         
-        System.out.println("All " + allClubs.size() + " Have a Players File.");
+        System.out.println("All " + allClubs.size() + " Clubs Have a Players File.");
     }
 }

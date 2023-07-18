@@ -34,34 +34,34 @@ public class CompetitionScheduler {
         
         Gdx.app.log("CompetitionScheduler", "Randomizing Competition Draw for: " + competition.getName() + ", Clubs: " + clubIds.size());
         
+        List<Long> auxiliarClubsIds = new ArrayList<>(clubIds);
         List<Match> competitionMatches = new ArrayList<>();
         
-        while (!clubIds.isEmpty()) {
+        while (!auxiliarClubsIds.isEmpty()) {
             
-            Gdx.app.log("CompetitionScheduler", "Clubs Left: " + clubIds.size() + ", Matches: " + competitionMatches.size());
+            Gdx.app.log("CompetitionScheduler", "Clubs Left: " + auxiliarClubsIds.size() + ", Matches: " + competitionMatches.size());
             
             // pick random clubs and create new match
             Match match = new Match();
             
             //
-            match.setHomeClubId(clubIds.get(DatabaseLoader.RNG.nextInt(clubIds.size() - 1)));
+            match.setHomeClubId(auxiliarClubsIds.get(DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size() - 1)));
             
             // concurrent modification exception?
-            clubIds.remove(match.getHomeClubId());
+            auxiliarClubsIds.remove(match.getHomeClubId());
             
             // take care of just 1 club in the list
-            if (clubIds.size() == 1) {
+            if (auxiliarClubsIds.size() == 1) {
                 
-                match.setAwayClubId(clubIds.get(0));
+                match.setAwayClubId(auxiliarClubsIds.get(0));
                 
             } else {
                 
-                match.setAwayClubId(clubIds.get(DatabaseLoader.RNG.nextInt(clubIds.size() - 1)));
+                match.setAwayClubId(auxiliarClubsIds.get(DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size() - 1)));
             }
             
-            
             // concurrent modification exception?
-            clubIds.remove(match.getAwayClubId());
+            auxiliarClubsIds.remove(match.getAwayClubId());
             
             //
             competitionMatches.add(match);
