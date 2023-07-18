@@ -94,7 +94,7 @@ public class ScriptsManager {
      *      - League Name
      *      - Country the league is based on
      *      - Division number (or automatic)
-     *      - Teams
+     *      - Clubs
      *      - Rules
      *          - Most important aspect
      *          - League Style (yearly, home-and-away matches, etc)
@@ -122,9 +122,9 @@ public class ScriptsManager {
         
         league.setLeagueClubs(new ArrayList<>());
         
-        for (Long teamId : test) {
+        for (Long clubId : test) {
             
-            Club club = DatabaseLoader.getClubById(teamId);
+            Club club = DatabaseLoader.getClubById(clubId);
             
             // Add Club to League
             league.getLeagueClubs().add(club);

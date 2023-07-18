@@ -207,7 +207,7 @@
 197,Vatican City,,3,
 198,Venezuela,,5,
 199,Vietnam,,2,
-1002,Wales,,1,
+1002,Wales,,3,
 200,Yemen,,2,
 201,Zambia,,1,
 202,Zimbabwe,,1,

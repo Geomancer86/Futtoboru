@@ -49,7 +49,7 @@ public class CompetitionsLoader {
                         /**
                          * File Format - COLUMNS
                          * 
-                         * id, name, fullname, url_source
+                         * id, name, fullname, url_source, competition_type
                          */
                         Competition competition = new Competition();
                         
@@ -57,6 +57,7 @@ public class CompetitionsLoader {
                         competition.setName(splitted[1]);
                         competition.setFullname(splitted[2]);
                         competition.setUrlSource(splitted[3]);
+                        competition.setCompetitionType(splitted[4]);
                         
                         // Add to Database competitions list
                         competitions.add(competition);

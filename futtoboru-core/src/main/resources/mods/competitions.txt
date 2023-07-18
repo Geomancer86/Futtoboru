@@ -4,4 +4,4 @@
 #
 # COLUMNS
 # id, name, longname, url_source, authority_id
-1,FA Cup,The Football Association Challenge Cup,https://en.wikipedia.org/wiki/FA_Cup
+1,FA Cup,The Football Association Challenge Cup,https://en.wikipedia.org/wiki/FA_Cup,CUP

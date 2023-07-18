@@ -41,11 +41,15 @@ public class Competition implements Serializable {
     private Long id;
     private String name;
     private String fullname;
+    private String competitionType;
     private String urlSource;
     private Long authorityId;
     private Long countryId;
     private Integer level;
     private LocalDateTime creationDate;
+    
+    public static final String COMPETITION_CUP = "CUP";
+    public static final String COMPETITION_LEAGUE = "LEAGUE";
     
     /**
      * Each yearly occurence:
@@ -73,6 +77,14 @@ public class Competition implements Serializable {
 
     public String getFullname() {
         return fullname;
+    }
+
+    public String getCompetitionType() {
+        return competitionType;
+    }
+
+    public void setCompetitionType(String competitionType) {
+        this.competitionType = competitionType;
     }
 
     public String getUrlSource() {
