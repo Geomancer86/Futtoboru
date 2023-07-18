@@ -26,7 +26,7 @@ public class DesktopLauncher {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         
         // TODO: add release - build version - etc from MAVEN
-        configuration.setTitle("Futtoboru v0.2.0");
+        configuration.setTitle("Futtoboru v0.3.0-SNAPSHOT");
         configuration.useVsync(true);
         
         // Limits FPS to the refresh rate of the currently active monitor.
