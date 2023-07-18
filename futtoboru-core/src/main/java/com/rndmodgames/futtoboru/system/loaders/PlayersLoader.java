@@ -98,17 +98,29 @@ public class PlayersLoader {
                          *      
                          */
                         try {
+                            
                             person.setBirthDate(LocalDate.parse(splitted[4], PlayersLoader.birthDateFormatter).atStartOfDay());
                         
                         } catch (DateTimeParseException de) {
                             
                             /**
                              * unknown date, but year is OK, randomize day and month
-                             * 
-                             * TODO: proper day of month generation, this will overflow february and other 30 day months
                              */
+                            int day;
                             int month = DatabaseLoader.RNG.nextInt(12) + 1;
-                            int day = DatabaseLoader.RNG.nextInt(30) + 1;
+                            
+                            switch(month) {
+                            case 1,3,5,7,10,12:
+                                day = DatabaseLoader.RNG.nextInt(31) + 1;
+                                break;
+                            case 2:
+                                day = DatabaseLoader.RNG.nextInt(28) + 1;
+                                break;
+                                
+                            default:
+                                day = DatabaseLoader.RNG.nextInt(30) + 1;
+                                break;
+                            }
                             
                             // Set random birthday for this year
                             person.setBirthDate(LocalDate.of(Integer.valueOf(splitted[4]), month, day).atStartOfDay());

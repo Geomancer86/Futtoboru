@@ -14,6 +14,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.Continent;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.DataBase;
@@ -22,8 +23,8 @@ import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.loaders.AuthoritiesLoader;
+import com.rndmodgames.futtoboru.system.loaders.CompetitionsLoader;
 import com.rndmodgames.futtoboru.system.loaders.NamesLoader;
-import com.rndmodgames.futtoboru.system.loaders.PlayersLoader;
 import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 import com.rndmodgames.futtoboru.system.loaders.SeasonsLoader;
 
@@ -32,6 +33,8 @@ import com.rndmodgames.futtoboru.system.loaders.SeasonsLoader;
  * 
  *  - Use this class to load all the Game Objects from /mods and /mods/* folders
  *  - Keep the data on memory to be accessed later
+ * 
+ * TODO: ugliest part of the entire system, massive candidate for redo in v2
  * 
  * @author Geomancer86
  */
@@ -57,6 +60,7 @@ public class DatabaseLoader {
     private static List<Season> seasons = new ArrayList<>();
     private static List<DataBase> databases = new ArrayList<>();
     private static List<Authority> authorities = new ArrayList<>();
+    private static List<Competition> competitions = new ArrayList<>();
     private static List<Continent> continents = new ArrayList<>();
     private static List<Country> countries = new ArrayList<>();
     private static List<League> leagues = new ArrayList<>();
@@ -129,11 +133,14 @@ public class DatabaseLoader {
             // Initialize Seasons
             initializeSeasons();
             
+            // Initialize Competitions
+            CompetitionsLoader.load(competitions);
+            
+            // Initialize Competitions History
+            CompetitionsLoader.loadCompetitionEditions(competitions, seasons);
+            
             // Load Seasons Data
             SeasonsLoader.load(seasons);
-            
-            // Load Club Players
-//            PlayersLoader.loadClubPlayers(null);
             
             // Load Seasons Scripts
             ScriptsLoader.load(seasons);
@@ -492,6 +499,8 @@ public class DatabaseLoader {
         
         FileHandle countriesTxt = Gdx.files.internal(COUNTRIES_FILE);
 
+        System.out.println("COUNTRIES FILE: " + countriesTxt.path());
+        
         if (countriesTxt.exists()){
             
             BufferedReader reader = new BufferedReader(countriesTxt.reader());
@@ -502,6 +511,8 @@ public class DatabaseLoader {
                 
                 line = reader.readLine();
 
+                System.out.println(line);
+                
                 // Use # symbol as starting for comment (to enable or disable available resolutions)
                 while (line != null) {
                     
@@ -694,6 +705,14 @@ public class DatabaseLoader {
 
     public static void setClubsByCountry(HashMap<Long, List<Club>> clubsByCountry) {
         DatabaseLoader.clubsByCountry = clubsByCountry;
+    }
+
+    public static List<Competition> getCompetitions() {
+        return competitions;
+    }
+
+    public static void setCompetitions(List<Competition> competitions) {
+        DatabaseLoader.competitions = competitions;
     }
 
     public static Authority getMainAuthority() {
