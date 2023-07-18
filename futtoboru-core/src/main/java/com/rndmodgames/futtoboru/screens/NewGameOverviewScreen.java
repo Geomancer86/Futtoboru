@@ -21,6 +21,7 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
@@ -61,8 +62,6 @@ public class NewGameOverviewScreen implements Screen {
     // Selected Starting Club
     Club startingClub = null;
     
-    Integer estimatedPlayers = 0;
-    
     // Globally available components
     final VisLabel estimatedPlayerCountValueLabel = new VisLabel();
     final VisSelectBox<Club> startingClubSelectBox = new VisSelectBox<>();
@@ -98,18 +97,63 @@ public class NewGameOverviewScreen implements Screen {
         
         /**
          * Estimated Player Count
-         *  - Number of Countries x Number of Leagues x Number of Teams x 99 Players
-         *  - 
+         *  - Count real players
+         *  - Add x players per team without players (number to be generated at runtime)
          */
         final VisLabel estimatedPlayerCountLabel = new VisLabel(LanguageModLoader.getValue("estimate_player_count"));
         
+        /**
+         * Iterate all Competitions and count each Cup and League
+         */
+        int activeCups = 0;
         int activeLeagues = 0;
         int activeTeams = 0;
+        int activePlayers = 0;
         
+        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        
+        for (Competition competition : allCompetitions) {
+            
+            switch(competition.getCompetitionType()) {
+            
+            case Competition.COMPETITION_LEAGUE:
+                activeLeagues++;
+                break;
+            
+            case Competition.COMPETITION_CUP:
+            default:
+                activeCups++;
+                break;
+            }
+        }
+        
+        /**
+         * Iterate active countries
+         */
         for (Country country : selectedCountries) {
             
             // Count Active Teams
             activeTeams += DatabaseLoader.getClubsByCountry().get(country.getId()).size();
+            
+            // Iterate country clubs and count players
+            List<Club> allClubs = DatabaseLoader.getInstance().getClubsByCountry(country);
+            
+            // 
+            for (Club club : allClubs) {
+                
+                // for clubs without real players
+                if (club.getPlayers().isEmpty()) {
+                 
+                    // generated players should be this number
+                    // TODO how many to generate should be recorded on club as a parameter
+                    //       to generate new players if they arent loaded when game starts
+                    activePlayers += 20;
+                } else {
+                    
+                    //
+                    activePlayers += club.getPlayers().size();
+                }
+            }
             
             VisLabel countryLabel = new VisLabel(country.getCommonName());
             
@@ -119,16 +163,32 @@ public class NewGameOverviewScreen implements Screen {
             selectedCountriesTable.row();
             selectedCountriesTable.add(countryLabel);
         }
+        
+        /**
+         * Also we add some extra players as we will generate a pool of free agents
+         * 
+         * TODO: free agent pool size and other parameters
+         */
+        activePlayers = (int) (activePlayers * 1.5f);
+        
+        // Update active player label
+        estimatedPlayerCountValueLabel.setText(activePlayers + " Players");
 
         /**
          * New Game Details Table
          * 
-         * TODO: Available Leagues & Teams
+         * Available Leagues & Teams
          */
         final VisTable newGameDetailsTable = new VisTable(true);
 
+        VisLabel availableCupsLabel = new VisLabel(LanguageModLoader.getValue("active_cups"));
         VisLabel availableLeaguesLabel = new VisLabel(LanguageModLoader.getValue("active_leagues"));
         VisLabel availableTeamsLabel = new VisLabel(LanguageModLoader.getValue("active_teams"));
+        
+        // Available Cups
+        newGameDetailsTable.row();
+        newGameDetailsTable.add(availableCupsLabel);
+        newGameDetailsTable.add(activeCups + " Cups");
         
         // Available Leagues
         newGameDetailsTable.row();
@@ -558,31 +618,6 @@ public class NewGameOverviewScreen implements Screen {
         default:
             break;
         }
-    }
-    
-    /**
-     * Estimate the number of players in the database depending on countries and leagues selected
-     */
-    private void updateEstimatedPlayerCount() {
-
-        // reset to zero to avoid adding up
-        estimatedPlayers = 0;
-        
-        for (Country country : selectedCountries) {
-
-            if (country.getLowestActiveLeague() != null) {
-                
-                System.out.println(country.getCommonName() + ", Lowest Active League: " + country.getLowestActiveLeague().getName() + ", level: "
-                        + country.getLowestActiveLeague().getLevel());
-
-                // update players x teams x divisions x countries
-                estimatedPlayers += (99 * country.getLowestActiveLeague().getLevel() * 22); // 99 players * 22 teams per division
-            }
-        }
-        
-        estimatedPlayerCountValueLabel.setText(estimatedPlayers + "");
-        
-        System.out.println("NEW ESTIMATE PLAYER COUNT: " + estimatedPlayers);
     }
     
     @Override
