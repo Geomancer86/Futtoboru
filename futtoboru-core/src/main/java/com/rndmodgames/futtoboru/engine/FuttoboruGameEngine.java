@@ -7,10 +7,10 @@ import java.util.Comparator;
 import com.badlogic.gdx.Game;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
@@ -34,6 +34,7 @@ public class FuttoboruGameEngine {
     private MainMenuManager mainMenuManager;
     
     //
+    CompetitionScheduler competitionScheduler;
     MatchScheduler scheduler;
     
     //
@@ -49,6 +50,7 @@ public class FuttoboruGameEngine {
         
         //
         this.scheduler = new MatchScheduler(gameInstance);
+        this.competitionScheduler = new CompetitionScheduler(gameInstance);
     }
     
     public MainMenuManager getMainMenuManager() {
@@ -209,5 +211,13 @@ public class FuttoboruGameEngine {
          * Update UI
          */
         mainMenuManager.updateDynamicComponents();
+    }
+
+    public CompetitionScheduler getCompetitionScheduler() {
+        return competitionScheduler;
+    }
+
+    public void setCompetitionScheduler(CompetitionScheduler competitionScheduler) {
+        this.competitionScheduler = competitionScheduler;
     }
 }

@@ -13,6 +13,8 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
+import com.rndmodgames.futtoboru.data.CompetitionEdition;
+import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -148,7 +150,44 @@ class CompetitionsLoaderTests {
          * TODO:
          *  - basic cup draw with exact number of teams (no byes)
          *      - 1888-89 FA Cup had playoffs that were played with byes/etc until enough clubs were qualified to enter (league teams + qualified = 32 clubs).
+         *      
+         *  WIP:
+         *      - 1: authority does the club draw
+         *      - 2: authority generates matches between clubs, with order but no scheduled date besides (start - end) for the cup and makes sure all matches are played
+         *      - 3: if a match is tied, a rematch is played 7 days later
+         *      
+         *      - 4: once no rematchs are left, the competition advances to the next round
+         *          - round numbers calculated automatically depending on participant clubs number
          */
+        
+        // 
+        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
+        
+        assertNotNull(dbLoader);
+        
+        //
+        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        
+        assertNotNull(faCup.getEditions());
+        
+        CompetitionEdition faCupEdition = faCup.getEditions().get(0);
+        
+        assertNotNull(faCupEdition);
+        
+        /**
+         * Cup Draw
+         */
+        List<Match> competitionMatches = application.getGameEngine().getCompetitionScheduler().competitionDraw(faCup, faCupEdition.getParticipantClubsIds());
+        
+        assertNotNull(competitionMatches);
+        
+        for (Match match : competitionMatches) {
+            
+            Club homeClub = DatabaseLoader.getClubById(match.getHomeClubId());
+            Club awayClub = DatabaseLoader.getClubById(match.getAwayClubId());
+            
+            Gdx.app.debug("CompetitionsLoaderTests", "Competition Match: " + homeClub.getName() + " v " + awayClub.getName());
+        }
     }
     
     /**
