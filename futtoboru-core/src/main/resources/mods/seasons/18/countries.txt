@@ -1,6 +1,8 @@
 # 1888-1889 Season
 # Countries List
-#   ID: 1000 (England) 
+#   ID: 1000 (England)
+#       1002 (Wales)
 # COLUMNS
 # id, 
 1000,
+#1002,

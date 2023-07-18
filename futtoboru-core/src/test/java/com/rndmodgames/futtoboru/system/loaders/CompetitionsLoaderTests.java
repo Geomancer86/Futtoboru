@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
+import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
@@ -100,5 +101,55 @@ class CompetitionsLoaderTests {
         
         //
         Gdx.app.debug("CompetitionsLoaderTests", faCup.getEditions().get(0).getName() + " has: " + faCup.getEditions().get(0).getParticipantClubsIds().size() + " Participant Clubs");
+    }
+    
+    /**
+     * This test iterates all the participant Clubs IDs and makes sure DatabaseLoader.getClubById returns an existing/loaded Club
+     * 
+     * TODO: 12 League Clubs + 20 Playoff Qualifiers
+     */
+    @Test
+    void loadCompetitionParticipantClubsTest() {
+        
+        // 
+        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
+        
+        assertNotNull(dbLoader);
+        
+        //
+        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        
+        assertNotNull(faCup.getEditions());
+        
+        //
+        Gdx.app.debug("CompetitionsLoaderTests", "Testing if " + faCup.getEditions().get(0).getParticipantClubsIds().size() + " Participant Clubs exist on the Database");
+        
+        //
+        for (Long clubId : faCup.getEditions().get(0).getParticipantClubsIds()) {
+            
+            Club club = DatabaseLoader.getClubById(clubId);
+            
+            //
+            assertNotNull(club, "Club ID: " + clubId + " doesn't exist on Database");
+            
+            Gdx.app.debug("CompetitionsLoaderTests", "Club ID: " + clubId + ", Club: " + club.getName());
+        }
+    }
+    
+    /**
+     * This calls the Authority/AI manager for the Competition and do a randomized cup draw
+     */
+    @Test
+    void competitionCupDrawTest() {
+        
+    }
+    
+    /**
+     * This calls the Authority/AI manager for the Competition and moves time forward one day by one and calls the Match Scheduler
+     * making sure no errors on scheduling are happening (this should end with a complete cup, winners, etc).
+     */
+    @Test
+    void competitionCupScheduleTest() {
+        
     }
 }

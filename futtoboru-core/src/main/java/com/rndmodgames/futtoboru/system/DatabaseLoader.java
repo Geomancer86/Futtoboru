@@ -499,6 +499,8 @@ public class DatabaseLoader {
         
         FileHandle countriesTxt = Gdx.files.internal(COUNTRIES_FILE);
 
+        System.out.println("COUNTRIES FILE: " + countriesTxt.path());
+        
         if (countriesTxt.exists()){
             
             BufferedReader reader = new BufferedReader(countriesTxt.reader());
@@ -509,6 +511,8 @@ public class DatabaseLoader {
                 
                 line = reader.readLine();
 
+                System.out.println(line);
+                
                 // Use # symbol as starting for comment (to enable or disable available resolutions)
                 while (line != null) {
                     

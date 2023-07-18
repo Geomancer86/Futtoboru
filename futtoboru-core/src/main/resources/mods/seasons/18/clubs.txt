@@ -15,3 +15,23 @@
 10,Derby County,Derby County Football Club,10000,https://en.wikipedia.org/wiki/Derby_County_F.C.,1884,1000
 11,Notts County,Notts County Football Club,10000,https://en.wikipedia.org/wiki/Notts_County_F.C,1862,1000
 12,Stoke,Stoke City Football Club,10000,https://en.wikipedia.org/wiki/Stoke_City_F.C.,1868,1000
+13,Old Westminsters,Old Westminsters Football Club,0,https://en.wikipedia.org/wiki/Old_Westminsters_F.C.,1880,1000
+14,Swifts,Swifts Football Club,0,https://en.wikipedia.org/wiki/Swifts_F.C.,1869,1000
+15,Old Brightonians,Old Brightonians Football Club,0,https://en.wikipedia.org/wiki/Old_Brightonians_F.C.,1881,1000
+16,Wrexham,Wrexham Association Football Club,0,https://en.wikipedia.org/wiki/Wrexham_A.F.C.,1864,1002
+#17,
+#18,
+#19,
+#20,
+#21,
+#22,
+#23,
+#24,
+#25,
+#26,
+#27,
+#28,
+#29,
+#30,
+#31,
+#32,
