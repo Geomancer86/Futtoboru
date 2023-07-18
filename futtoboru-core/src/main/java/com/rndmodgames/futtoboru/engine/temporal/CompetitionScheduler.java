@@ -51,8 +51,11 @@ public class CompetitionScheduler {
             
             // take care of just 1 club in the list
             if (clubIds.size() == 1) {
+                
                 match.setAwayClubId(clubIds.get(0));
+                
             } else {
+                
                 match.setAwayClubId(clubIds.get(DatabaseLoader.RNG.nextInt(clubIds.size() - 1)));
             }
             
