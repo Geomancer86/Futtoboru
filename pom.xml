@@ -25,17 +25,20 @@
     </profiles>
     
     <properties>
+        <!-- Project Encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
     	<!-- junit -->
    		<junit.version>5.4.0</junit.version>
    		
    		<!-- JaCoCo -->
-   		<jacoco.version>0.8.8</jacoco.version>
+   		<jacoco.version>0.8.10</jacoco.version>
    		
    		<!-- LibGDX -->
-   		<libgdx.version>1.11.0</libgdx.version>
+   		<libgdx.version>1.12.0</libgdx.version>
    		
    		<!-- VisUI -->
-   		<vis.ui.version>1.5.1</vis.ui.version>
+   		<vis.ui.version>1.5.2</vis.ui.version>
    		
    		<!-- Twitch 4J -->
    		<twitch4j.version>1.9.0</twitch4j.version>

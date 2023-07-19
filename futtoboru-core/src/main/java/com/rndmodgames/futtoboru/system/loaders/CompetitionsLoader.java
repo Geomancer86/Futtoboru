@@ -89,8 +89,8 @@ public class CompetitionsLoader {
      *  - 
      *  
      *  
-     *  - 1887–88 FA Cup: 149 teams, all placed on the first round
-     *  - 1888–89 FA Cup: Following the formation of the Football League, this season saw the introduction qualifying rounds,
+     *  - 1887-88 FA Cup: 149 teams, all placed on the first round
+     *  - 1888-89 FA Cup: Following the formation of the Football League, this season saw the introduction qualifying rounds,
      *                       with League clubs given the right to request automatic exemption to the first round proper.
      *                       
      *  

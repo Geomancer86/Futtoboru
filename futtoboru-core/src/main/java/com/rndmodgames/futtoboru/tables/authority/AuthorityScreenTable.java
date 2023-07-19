@@ -25,7 +25,7 @@ import com.rndmodgames.localization.LanguageModLoader;
  *  
  *  
  *  ----------------------------------
- *  Fédération internationale de football association [FIFA] https://en.wikipedia.org/wiki/FIFA
+ *  Federation internationale de football association [FIFA] https://en.wikipedia.org/wiki/FIFA
  *  
  *  - Foundation: 21 May 1904
  *  - HQ       : Zurich, Switzerland
