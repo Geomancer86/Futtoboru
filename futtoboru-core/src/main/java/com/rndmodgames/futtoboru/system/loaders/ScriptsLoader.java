@@ -48,7 +48,7 @@ public class ScriptsLoader {
             
             // Name & Description
             theLeagueCreationScript.setName("The English Football League Creation");
-            theLeagueCreationScript.setDescription("This will create The 1888–89 Football League with it's Rules and add the initial 12 English Teams");
+            theLeagueCreationScript.setDescription("This will create The 1888-89 Football League with it's Rules and add the initial 12 English Teams");
             
             // Set Script Type
             theLeagueCreationScript.setScriptType(BasicScript.LEAGUE_CREATION_SCRIPT);
