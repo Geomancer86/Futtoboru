@@ -445,7 +445,7 @@ public class DatabaseLoader {
             try {
                 line = reader.readLine();
 
-                // Use # symbol as starting for comment (to enable or disable available resolutions)
+                // Use # symbol as starting for comment (to enable or disable available continents)
                 while (line != null) {
                     
                     if (!line.startsWith("#")) {
@@ -470,7 +470,7 @@ public class DatabaseLoader {
                 }
                 
             } catch (IOException e) {
-                // TODO: If error, restore default resolutions.txt file
+                // TODO: If error, restore default continents.txt file
                 e.printStackTrace();
             }
             
@@ -513,7 +513,7 @@ public class DatabaseLoader {
 
                 System.out.println(line);
                 
-                // Use # symbol as starting for comment (to enable or disable available resolutions)
+                // Use # symbol as starting for comment (to enable or disable available countries)
                 while (line != null) {
                     
                     if (!line.startsWith("#")) {
@@ -553,7 +553,7 @@ public class DatabaseLoader {
                 }
                 
             } catch (IOException e) {
-                // TODO: If error, restore default resolutions.txt file
+                // TODO: If error, restore default xountries.txt file
                 e.printStackTrace();
             }
             
