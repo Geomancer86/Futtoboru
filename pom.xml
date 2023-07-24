@@ -29,7 +29,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
     	<!-- junit -->
-   		<junit.version>5.4.0</junit.version>
+   		<junit.version>5.10.0</junit.version>
    		
    		<!-- JaCoCo -->
    		<jacoco.version>0.8.10</jacoco.version>
@@ -42,6 +42,24 @@
    		
    		<!-- Twitch 4J -->
    		<twitch4j.version>1.9.0</twitch4j.version>
+   		
+   		<!-- Maven Compiler Plugin -->
+   		<maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+   		
+   		<!-- Maven Assembly Plugin -->
+   		<maven.assembly.plugin.version>3.6.0</maven.assembly.plugin.version>
+   		
+   		<!-- Maven Jar Plugin -->
+   		<maven.jar.plugin.version>3.3.0</maven.jar.plugin.version>
+   		
+   		<!-- Maven Surefire Plugin -->
+   		<maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
+   		
+   		<!-- Java Source Version -->
+   		<java.source.version>17</java.source.version>
+   		
+   		<!-- Java Target Version -->
+   		<java.target.version>17</java.target.version>
     </properties>
 
 	<repositories>
