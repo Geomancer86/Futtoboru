@@ -1,12 +1,6 @@
-package com.rndmodgames.futtoboru.engine;
+package com.rndmodgames.futtoboru.engine.temporal;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,17 +8,17 @@ import org.junit.jupiter.api.Test;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
-import com.rndmodgames.futtoboru.BaseTestTools;
-import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Competition;
+import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Country;
-import com.rndmodgames.futtoboru.data.League;
-import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
+import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
-public class ScriptManagerTests {
+public class CompetitionSchedulerTests {
 
     private static Futtoboru application;
     
@@ -60,43 +54,47 @@ public class ScriptManagerTests {
     }
     
     @Test
-    void leagueCreationTest() {
+    void basicCompetitionDrawTest() {
         
         // Init the DataBase
         DatabaseLoader dbLoader = DatabaseLoader.getInstance();
         
         assertNotNull(dbLoader);
         
-        // Base country
+        /**
+         * This should start the game, progress time as needed and the 18th Edition for the FA Cup
+         *  will have their 32 teams picked and the playoff/rounds drawn.
+         *  
+         *  The test must make sure days go by, matches get played, rematches get played, and the rounds progress
+         *      until the finals and a winner is chosen
+         */
+        
+        // Base Country
         Country england = DatabaseLoader.getCountryById(1000L);
         
-        List<Club> allClubs = dbLoader.getClubsByCountry(england);
+        assertNotNull(england);
         
-        Gdx.app.debug("ScriptManagerTests", "All Clubs: " + allClubs.size());
+        // Base Club
+        Club preston = DatabaseLoader.getClubById(1L);
+        
+        assertNotNull(preston);
+        
+        // Base Competition
+        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        
+        assertNotNull(faCup);
 
-        SaveGame saveGame = BaseTestTools.initializeV1SaveGame();
+        // Competition Season
+        CompetitionEdition faCupSeason = faCup.getEditions().get(0);
         
-        // Set a New Game as Current Game
-        application.setCurrentGame(saveGame);
-
-        int daysToContinue = 30;
+        assertNotNull(faCupSeason);
         
-        for (int a = 0; a < daysToContinue; a++){
-            
-            // Fire a League Creation Script
-            scriptsManager.checkGameScripts();
-            
-            // Progress game time
-            application.getGameEngine().continueGame();
-        }
+        // Game start date is April 1, 1888 (FA Cup scheduled matches shouldn't exist yet)
         
-        // Assert a League was Created
-        List<League> allLeagues = application.getCurrentGame().getMainAuthority().getLeagues();
         
-        assertNotNull(allLeagues);
-        
-        assertNotEquals(true, allLeagues.isEmpty());
-        
-        Gdx.app.debug("ScriptManagerTests", "League Creation Script is Correct, now Leagues are: " + allLeagues.size());
+        // 
+        Gdx.app.debug("CompetitionSchedulerTests", "Club               : " + preston.getName());
+        Gdx.app.debug("CompetitionSchedulerTests", "Competition        : " + faCup.getName());
+        Gdx.app.debug("CompetitionSchedulerTests", "Competition Edition: " + faCupSeason.getName());
     }
 }
