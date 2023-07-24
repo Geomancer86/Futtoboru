@@ -56,4 +56,17 @@ class PreferenceManagerTests {
         // Resolution should be set to the default
         assertEquals(PreferencesManager.DEFAULT_RESOLUTION, application.preferences.getResolution());
     }
+    
+    @Test
+    void savePreferenceTest() {
+        
+        //
+        String settingsResolutionPref = application.preferences.getPreference(PreferencesManager.SETTINGS_RESOLUTION_PREF);
+        
+        //
+        assertNotNull(settingsResolutionPref);
+        
+        //
+        Gdx.app.log("PreferenceManagerTests", "settingsResolutionPref: " + settingsResolutionPref);
+    }
 }
