@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
@@ -151,7 +152,7 @@ public class FuttoboruGameEngine {
     public void continueGame() {
         
         //
-        System.out.println("ADVANCING THE SIMULATION");
+        Gdx.app.debug("FuttoboruGameEngine", "ADVANCING THE SIMULATION");
         
         // Get Current Day
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
@@ -162,18 +163,29 @@ public class FuttoboruGameEngine {
         // Check Game Scripts
         scriptsManager.checkGameScripts();
         
-        // Current Club
-        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+        /**
+         * Current Club
+         * 
+         * NOTE: player might not have a CURRENT_CLUB
+         *       
+         *       - simulate all clubs, not only player controlled
+         */
+        for (Club currentClub : gameInstance.getCurrentGame().getAllClubs()) {
 
-        /**
-         * Check Proposed Friendlies
-         */
-        scheduler.checkClubProposedMatches(currentClub);
-        
-        /**
-         * Check Scheduled Matches
-         */
-        scheduler.checkClubSheduledMatches(currentClub);
+            //
+            Gdx.app.debug("FuttoboruGameEngine", "PROCESSING CLUB: " + currentClub.getName());
+            
+            /**
+             * Check Proposed Friendlies
+             */
+            scheduler.checkClubProposedMatches(currentClub);
+            
+            /**
+             * Check Scheduled Matches
+             */
+            scheduler.checkClubSheduledMatches(currentClub);
+            
+        }
         
         /**
          * Update UI
