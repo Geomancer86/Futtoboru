@@ -1,4 +1,4 @@
-package com.rndmodgames.futtoboru.system;
+package com.rndmodgames.futtoboru.engine;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,8 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 
 /**
@@ -47,7 +49,7 @@ public class ScriptsManager {
      */
     public void checkGameScripts() {
         
-        System.out.println("CHECKING GAME SCRIPTS!");
+        System.out.println("CHECKING GAME SCRIPTS! " + gameInstance.getCurrentGame().getGameScripts().size());
         
         // keep track for easier access
         this.currentGame = gameInstance.getCurrentGame();
@@ -110,6 +112,7 @@ public class ScriptsManager {
         
         //
         League league = new League();
+        
         league.setName((String) script.getScriptValues().get(ScriptsLoader.LEAGUE_NAME));
         league.setCountry(DatabaseLoader.getCountryById((Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_COUNTRY)));
         

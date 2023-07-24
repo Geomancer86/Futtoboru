@@ -14,6 +14,7 @@ import com.rndmodgames.PreferencesManager;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
+import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
 import com.rndmodgames.futtoboru.screens.NewGameOverviewScreen;
@@ -23,7 +24,6 @@ import com.rndmodgames.futtoboru.screens.NewManagerScreen;
 import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.futtoboru.system.ScriptsManager;
 import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 

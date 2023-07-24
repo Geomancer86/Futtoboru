@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Country;
@@ -141,6 +142,7 @@ public class SaveGame implements Serializable {
      */
     public Club getCurrentClub() {
         
+        //
         return getClubById(owner.getCurrentClubId());
     }
     

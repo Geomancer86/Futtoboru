@@ -393,6 +393,8 @@ public class NewGameOverviewScreen implements Screen {
                 
                 /**
                  * Clubs Database
+                 * 
+                 * TODO: this should be loaded in a more automatic way, so we don't need to do that much setup on unit tests
                  */
                 currentGame.setAllClubs(new ArrayList<>());
                 

@@ -11,7 +11,6 @@ import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
  * Game Engine v1
@@ -163,9 +162,6 @@ public class FuttoboruGameEngine {
         // Check Game Scripts
         scriptsManager.checkGameScripts();
         
-        // Update UI
-        mainMenuManager.updateDynamicComponents();
-        
         // Current Club
         Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
 
@@ -176,41 +172,17 @@ public class FuttoboruGameEngine {
         
         /**
          * Check Scheduled Matches
-         * 
-         * TODO: sell tickets every day up to match starting time
          */
         scheduler.checkClubSheduledMatches(currentClub);
         
         /**
-         * TODO WIP:
-         * 
-         *  - Club Ticket Sales:
-         *      - Iterate future incoming matches
-         *          - If the match is close enough (7-10 days, parametrizable) there is a chance of ticket sales
-         *          - If the match is completely sold, no tickets are sold, but we might save this uncovered demand number to show the player
-         *          - If there is space, tickets are randomly sold
-         *              - ticket demand multiplier:
-         *                  - league match  : 100%
-         *                  - friendly match: 50% or less
-         *                  - cup match     : 150-300%
-         *                  - classic match : 150-200%
-         *                  - bonuses add
-         *                  - cheaper and expensive tickets with more demand (half cost for friendly, double or triple cost for cups, finals might be even more)
-         *                  
-         *          
-         *          - tickets sold this thay for this match must be saved
-         *              - if we save them directly to the match is easier but we won't have a record for daily sales
-         *              - if we create a daily sales object the addition is more difficult and more logic involved but we can show a chart
-         *                  - doesn't make lots of sense for individual matches if sales are starting 10 days before, too much effort for very little info
-         *                      - also the user cannot change ticket prices or influence in any direct way besides winning more matches
-         *                      
-         *          - charting TBD
-         */                 
-        
-        /**
          * Update UI
+         * NOTE: this can be null on Unit Tests
          */
-        mainMenuManager.updateDynamicComponents();
+        if (mainMenuManager != null) {
+            
+            mainMenuManager.updateDynamicComponents();
+        }
     }
 
     public CompetitionScheduler getCompetitionScheduler() {
