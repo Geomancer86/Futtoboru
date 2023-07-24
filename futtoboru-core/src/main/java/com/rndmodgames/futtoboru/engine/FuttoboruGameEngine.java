@@ -177,7 +177,7 @@ public class FuttoboruGameEngine {
         
         /**
          * Update UI
-         * NOTE: this can be null on Unit Tests
+         * NOTE: this will be null on Unit Tests
          */
         if (mainMenuManager != null) {
             
