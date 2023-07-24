@@ -56,7 +56,7 @@ public class ScriptsLoader {
             /**
              * Script execution date (note this might differ from any dates inside the data)
              */
-            theLeagueCreationScript.setExecutionTime(LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // EARLIER DATE FOR QUICKER TESTING!
+            theLeagueCreationScript.setExecutionTime(LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // 17 April 1888
             
             /**
              * Add Required Script Values
