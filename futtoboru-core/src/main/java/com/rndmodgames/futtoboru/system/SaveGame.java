@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
@@ -64,6 +64,12 @@ public class SaveGame implements Serializable {
      *  - TODO: when the game is being played we have to make sure we always use the most recent/updated data version and not the original static data from the DatabaseLoader
      */
     private Authority mainAuthority;
+    
+    /**
+     * Competitions
+     */
+    private List<Competition> allCups = new ArrayList<>();
+    private List<Competition> allLeagues = new ArrayList<>();
     
     private Boolean isSaved = false; // default to unsaved game
     
@@ -206,6 +212,22 @@ public class SaveGame implements Serializable {
 
     public void setMainAuthority(Authority mainAuthority) {
         this.mainAuthority = mainAuthority;
+    }
+
+    public List<Competition> getAllCups() {
+        return allCups;
+    }
+
+    public void setAllCups(List<Competition> allCups) {
+        this.allCups = allCups;
+    }
+
+    public List<Competition> getAllLeagues() {
+        return allLeagues;
+    }
+
+    public void setAllLeagues(List<Competition> allLeagues) {
+        this.allLeagues = allLeagues;
     }
 
     public Boolean getIsSaved() {

@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.engine.temporal;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
+import com.rndmodgames.futtoboru.BaseTestTools;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
@@ -54,6 +56,27 @@ public class CompetitionSchedulerTests {
     }
     
     @Test
+    void initializeCompetitionsTest() {
+        
+        /**
+         * This makes sure a new SaveGame has competitions for the selected clubs/countries during NEW GAME
+         */
+        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
+        
+        assertNotNull(dbLoader);
+        
+        // Game start date is April 1, 1888 (FA Cup scheduled matches shouldn't exist yet)
+        SaveGame saveGame = BaseTestTools.initializeV1SaveGame();
+        
+        // Set a New Game as Current Game
+        application.setCurrentGame(saveGame);
+        
+        //
+        assertNotNull(saveGame.getAllCups());
+        assertNotEquals(true, saveGame.getAllCups().isEmpty());
+    }
+    
+    @Test
     void basicCompetitionDrawTest() {
         
         // Init the DataBase
@@ -90,11 +113,27 @@ public class CompetitionSchedulerTests {
         assertNotNull(faCupSeason);
         
         // Game start date is April 1, 1888 (FA Cup scheduled matches shouldn't exist yet)
+        SaveGame saveGame = BaseTestTools.initializeV1SaveGame();
         
+        // Set a New Game as Current Game
+        application.setCurrentGame(saveGame);
+
+        int daysToContinue = 7;
+        
+        for (int a = 0; a < daysToContinue; a++){
+            
+            // Progress game time
+            // NOTE: scripts are checked there
+            application.getGameEngine().continueGame();
+        }
+        
+        // Preston should have scheduled matches in the FA Cup
+//        assertNotEquals(true, preston.getScheduledMatches().isEmpty());
         
         // 
         Gdx.app.debug("CompetitionSchedulerTests", "Club               : " + preston.getName());
         Gdx.app.debug("CompetitionSchedulerTests", "Competition        : " + faCup.getName());
         Gdx.app.debug("CompetitionSchedulerTests", "Competition Edition: " + faCupSeason.getName());
+        Gdx.app.debug("CompetitionSchedulerTests", "Club Matches       : " + preston.getScheduledMatches().size());
     }
 }
