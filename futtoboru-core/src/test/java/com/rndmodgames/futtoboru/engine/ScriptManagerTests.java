@@ -75,7 +75,8 @@ public class ScriptManagerTests {
         Gdx.app.debug("ScriptManagerTests", "All Clubs: " + allClubs.size());
 
         // Initialize savegame
-        BaseTestTools.initializeV1SaveGame(application.getCurrentGame());
+        BaseTestTools tools = new BaseTestTools();
+        tools.initializeV1SaveGame(application.getCurrentGame());
 
         int daysToContinue = 30;
         
