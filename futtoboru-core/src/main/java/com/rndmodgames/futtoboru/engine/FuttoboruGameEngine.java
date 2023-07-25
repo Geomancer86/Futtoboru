@@ -6,6 +6,7 @@ import java.util.Comparator;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
@@ -157,8 +158,49 @@ public class FuttoboruGameEngine {
         // Get Current Day
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
         
-        // Increment By Required Unit
+        /**
+         * Increment By Required Unit
+         * 
+         * TODO: make it AM/PM or advance in smaller amount of time depending on time of season/etc as in FM
+         */
         gameInstance.getCurrentGame().setGameDate(current.plusDays(1));
+        
+        /**
+         * Authorities AI
+         * 
+         *  - iterates all over the game authorities
+         *      - check if cups are without scheduled draws and/or matches
+         *          - schedule/draw accordingly
+         *          
+         *      - check if rounds are finished
+         *          - advance rounds
+         *          
+         *      - check if rematches need to be scheduled
+         *          - schedule rematches
+         *          
+         *      - give match prizes/entry to clubs (cup splits 50/50 and league is 70/30) TODO make it parametrizable
+         *      
+         *      - give competition prizes for winners/runners up at the end of competition
+         *      
+         *      - handle re-elections and relegation
+         *      
+         *      - make sure the competitions are perpetual (ie: they should be played once a year forever as long as no scripts change something).
+         *      
+         *  TODO: iterate hierarchy of authorities
+         *  TODO: draw FA Cup
+         *  TODO: play FA Cup
+         *  TODO: finish/restart FA Cup
+         */
+        Authority mainAuthority = gameInstance.getCurrentGame().getMainAuthority();
+        
+        // FA Cup
+//        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+//
+//        // FA Cup, season 18 (first v1 game season)
+//        CompetitionEdition faCupSeason = faCup.getEditions().get(0);
+
+//        competitionScheduler.initializeCompetition();
+        
         
         // Check Game Scripts
         scriptsManager.checkGameScripts();

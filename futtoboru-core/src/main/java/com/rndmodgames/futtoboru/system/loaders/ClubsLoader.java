@@ -74,7 +74,7 @@ public class ClubsLoader {
                         club.setYear(Integer.valueOf(splitted[5]));                
                         
                         // Country
-                        club.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[6])));
+                        club.setCountry(DatabaseLoader.getInstance().getCountryById(Long.valueOf(splitted[6])));
                         
                         /**
                          * Load or Randomize Players At Club List

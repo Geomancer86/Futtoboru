@@ -110,7 +110,7 @@ public class NewGameOverviewScreen implements Screen {
         int activeTeams = 0;
         int activePlayers = 0;
         
-        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        List<Competition> allCompetitions = DatabaseLoader.getInstance().getCompetitions();
         
         for (Competition competition : allCompetitions) {
             

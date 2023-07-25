@@ -25,7 +25,7 @@ public class AuthoritiesLoader {
         ifab.setName("International Football Association Board");
         ifab.setShortName("IFAB");
         ifab.setFoundingDate(LocalDateTime.of(1886, Month.JUNE, 2, 19, 30, 00)); // 2 June 1886
-        ifab.setCountry(DatabaseLoader.getCountryById(1000L)); // England
+        ifab.setCountry(DatabaseLoader.getInstance().getCountryById(1000L)); // England
         ifab.setLevel(1); // Top Level
         ifab.setParent(null); // No Authority on Top
         

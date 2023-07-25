@@ -46,7 +46,7 @@ class StadiumsLoaderTests {
         /**
          * Iterate all clubs and make sure all stadiums are there
          */
-        Country england = DatabaseLoader.getCountryById(1000L);
+        Country england = dbLoader.getCountryById(1000L);
         
         List<Club> allClubs = dbLoader.getClubsByCountry(england);
         

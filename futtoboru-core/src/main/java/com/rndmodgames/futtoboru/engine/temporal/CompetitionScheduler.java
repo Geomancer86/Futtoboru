@@ -27,6 +27,18 @@ public class CompetitionScheduler {
     }
     
     /**
+     * This will run once on NEW GAME
+     * 
+     * Iterates all the competitions and creates instances on Save Game depending on the players selections on new game settings screen
+     * 
+     *  - Existing Continent Cups
+     *  - Existing Country Cups and Leagues
+     */
+    public void initializeCompetitions() {
+        
+    }
+    
+    /**
      * TODO: Competition Rules are Parametrized
      * @return 
      */

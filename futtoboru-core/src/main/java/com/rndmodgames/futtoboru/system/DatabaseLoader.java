@@ -218,12 +218,22 @@ public class DatabaseLoader {
         return selectableProfessions;
     }
 
+    public List<Competition> getCompetitionsByAuthority(Authority authority){
+        
+        return null;
+    }
+    
+    public List<Competition> getCompetitionsByCountry(Country country) {
+        
+        return null;
+    }
+    
     /**
      * Returns a Country by ID or null if doesn't exist
      * @param id
      * @return
      */
-    public static Country getCountryById(Long id) {
+    public Country getCountryById(Long id) {
  
         for (Country country : countries) {
 
@@ -707,7 +717,7 @@ public class DatabaseLoader {
         DatabaseLoader.clubsByCountry = clubsByCountry;
     }
 
-    public static List<Competition> getCompetitions() {
+    public List<Competition> getCompetitions() {
         return competitions;
     }
 

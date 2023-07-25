@@ -3,8 +3,6 @@ package com.rndmodgames.futtoboru.system.loaders;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -86,7 +84,7 @@ public class PlayersLoader {
                         person.setLastname(splitted[2]);
                         
                         // Country of birth
-                        person.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[3])));
+                        person.setCountry(DatabaseLoader.getInstance().getCountryById(Long.valueOf(splitted[3])));
                         
                         /**
                          * Birthdate
