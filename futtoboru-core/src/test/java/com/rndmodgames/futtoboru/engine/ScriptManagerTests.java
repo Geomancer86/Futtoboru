@@ -3,9 +3,6 @@ package com.rndmodgames.futtoboru.engine;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -15,11 +12,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.rndmodgames.futtoboru.BaseTestTools;
-import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.League;
-import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -29,8 +24,9 @@ public class ScriptManagerTests {
     private static Futtoboru application;
     
     //
-    static ScriptsManager scriptsManager;
     static FuttoboruGameEngine gameEngine;
+    static ScriptsManager scriptsManager;
+    static AuthorityManager authorityManager;
     
     @BeforeAll
     static void preload() {
@@ -47,8 +43,11 @@ public class ScriptManagerTests {
         // Initialize Script Manager
         scriptsManager = new ScriptsManager(application);
 
+        // Initialize the Authority Manager
+        authorityManager = new AuthorityManager(application);
+        
         // Initialize Game Engine
-        gameEngine = new FuttoboruGameEngine(application, scriptsManager);
+        gameEngine = new FuttoboruGameEngine(application, scriptsManager, authorityManager);
         
         // Set the Script Manager
         application.setScriptsManager(scriptsManager);
