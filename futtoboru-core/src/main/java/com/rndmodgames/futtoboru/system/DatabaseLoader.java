@@ -234,7 +234,6 @@ public class DatabaseLoader {
      * @return
      */
     public static Country getCountryById(Long id) {
-    public Country getCountryById(Long id) {
  
         for (Country country : countries) {
 
@@ -719,7 +718,6 @@ public class DatabaseLoader {
     }
 
     public static List<Competition> getCompetitions() {
-    public List<Competition> getCompetitions() {
         return competitions;
     }
 

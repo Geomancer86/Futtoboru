@@ -116,10 +116,10 @@ class DatabaseLoaderTests {
         DatabaseLoader dbLoader = DatabaseLoader.getInstance();
         
         // 
-        List<Competition> allCompetitions = dbLoader.getCompetitions();
+        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
         
         // England
-        Country england = dbLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryById(1000L);
         
         // FA Cup
         Competition faCup = allCompetitions.get(0);
