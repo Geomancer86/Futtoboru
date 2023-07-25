@@ -13,6 +13,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.engine.AuthorityManager;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -24,8 +25,9 @@ public class CompetitionSchedulerTests {
     private static Futtoboru application;
     
     //
-    static ScriptsManager scriptsManager;
     static FuttoboruGameEngine gameEngine;
+    static ScriptsManager scriptsManager;
+    static AuthorityManager authorityManager;
     
     @BeforeAll
     static void preload() {
@@ -42,8 +44,11 @@ public class CompetitionSchedulerTests {
         // Initialize Script Manager
         scriptsManager = new ScriptsManager(application);
 
+        // Initialize the Authority Manager
+        authorityManager = new AuthorityManager(application);
+        
         // Initialize Game Engine
-        gameEngine = new FuttoboruGameEngine(application, scriptsManager);
+        gameEngine = new FuttoboruGameEngine(application, scriptsManager, authorityManager);
         
         // Set the Script Manager
         application.setScriptsManager(scriptsManager);

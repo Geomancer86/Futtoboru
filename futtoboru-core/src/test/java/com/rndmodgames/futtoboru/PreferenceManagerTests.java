@@ -10,17 +10,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.rndmodgames.PreferencesManager;
+import com.rndmodgames.futtoboru.engine.AuthorityManager;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.SaveGame;
 
 class PreferenceManagerTests {
 
     private static Futtoboru application;
     
     //
-    static ScriptsManager scriptsManager;
     static FuttoboruGameEngine gameEngine;
+    static ScriptsManager scriptsManager;
+    static AuthorityManager authorityManager;
     
     @BeforeAll
     static void preload() {
@@ -30,6 +33,24 @@ class PreferenceManagerTests {
 
         // 
         application = new Futtoboru();
+        
+        // Initialize the Saved Game
+        application.setCurrentGame(new SaveGame());
+
+        // Initialize Script Manager
+        scriptsManager = new ScriptsManager(application);
+
+        // Initialize the Authority Manager
+        authorityManager = new AuthorityManager(application);
+        
+        // Initialize Game Engine
+        gameEngine = new FuttoboruGameEngine(application, scriptsManager, authorityManager);
+        
+        // Set the Script Manager
+        application.setScriptsManager(scriptsManager);
+        
+        // Set the Game Engine
+        application.setGameEngine(gameEngine);
 
         new HeadlessApplication(application , config);
     }
