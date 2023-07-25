@@ -67,15 +67,13 @@ public class CompetitionSchedulerTests {
         // Base Country
         Country england = DatabaseLoader.getCountryById(1000L);
         
-        // Game start date is April 1, 1888 (FA Cup scheduled matches shouldn't exist yet)
-        SaveGame saveGame = BaseTestTools.initializeV1SaveGame();
+        // Initialize the Saved Game
+        BaseTestTools.initializeV1SaveGame(application.getCurrentGame());
         
         //
-        saveGame.getSelectedCountries().add(england);
-        saveGame.setAllClubs(DatabaseLoader.getInstance().getClubsByCountry(england));
-        
-        // Set a New Game as Current Game
-        application.setCurrentGame(saveGame);
+        application.getCurrentGame().getSelectedCountries().add(england);
+        application.getCurrentGame().setAllClubs(DatabaseLoader.getInstance().getClubsByCountry(england));
+
         
         // Without advancing the date, the clubs should be attached to a competition
         // BUT NO A SEASON
@@ -128,10 +126,8 @@ public class CompetitionSchedulerTests {
         assertNotNull(faCupSeason);
         
         // Game start date is April 1, 1888 (FA Cup scheduled matches shouldn't exist yet)
-        SaveGame saveGame = BaseTestTools.initializeV1SaveGame();
-        
-        // Set a New Game as Current Game
-        application.setCurrentGame(saveGame);
+        BaseTestTools.initializeV1SaveGame(application.getCurrentGame());
+
 
         int daysToContinue = 7;
         

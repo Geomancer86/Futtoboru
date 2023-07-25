@@ -25,11 +25,8 @@ public class BaseTestTools {
      *  
      *  NOTE: some GDX stuff is not available during the static @before tests so that needs to be done in the actual @test
      */
-    public static SaveGame initializeV1SaveGame() {
-        
-        // base save game
-        SaveGame saveGame = new SaveGame();
-        
+    public static SaveGame initializeV1SaveGame(SaveGame saveGame) {
+
         // game start date
         saveGame.setGameDate(LocalDateTime.of(1888, Month.APRIL, 1, 4, 00, 00)); // Game start date is April 1, 1888
         
