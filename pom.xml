@@ -29,7 +29,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
     	<!-- junit -->
-   		<junit.version>5.10.0</junit.version>
+   		<junit.version>5.4.0</junit.version>
    		
    		<!-- JaCoCo -->
    		<jacoco.version>0.8.10</jacoco.version>
