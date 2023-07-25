@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
+import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.Continent;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.DataBase;
@@ -107,5 +108,23 @@ class DatabaseLoaderTests {
         assertNotNull(season.getCountries());
         
         assertNotEquals(true, season.getCountries().isEmpty());
+    }
+    
+    @Test
+    void loadCompetitionsTest() {
+        
+        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
+        
+        // 
+        List<Competition> allCompetitions = dbLoader.getCompetitions();
+        
+        // England
+        Country england = dbLoader.getCountryById(1000L);
+        
+        // FA Cup
+        Competition faCup = allCompetitions.get(0);
+        
+        //
+        assertNotNull(faCup);
     }
 }

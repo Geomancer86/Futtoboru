@@ -47,7 +47,7 @@ public class SaveGame implements Serializable {
     /**
      * This is the selection of countries that the player selected to be simulated on a New Game
      */
-    private List<Country> selectedCountries;
+    private List<Country> selectedCountries = new ArrayList<>();
     
     // Game Start Date and Current Game Date (Working)
     private LocalDateTime gameStartDate;

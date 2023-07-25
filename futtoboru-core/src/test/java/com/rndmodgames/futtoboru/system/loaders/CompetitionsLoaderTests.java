@@ -59,7 +59,7 @@ class CompetitionsLoaderTests {
         assertNotNull(dbLoader);
         
         // FA Cup should be loaded
-        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        List<Competition> allCompetitions = dbLoader.getCompetitions();
         
         assertNotNull(allCompetitions);
         
@@ -82,7 +82,7 @@ class CompetitionsLoaderTests {
         /**
          * The Competition FA Cup should Exist
          */
-        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        List<Competition> allCompetitions = dbLoader.getCompetitions();
         
         Competition faCup = allCompetitions.get(0);
         
@@ -127,7 +127,7 @@ class CompetitionsLoaderTests {
         assertNotNull(dbLoader);
         
         //
-        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        Competition faCup = dbLoader.getCompetitions().get(0);
         
         assertNotNull(faCup.getEditions());
         
@@ -174,7 +174,7 @@ class CompetitionsLoaderTests {
         assertNotNull(dbLoader);
         
         //
-        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        Competition faCup = dbLoader.getCompetitions().get(0);
         
         assertNotNull(faCup.getEditions());
         

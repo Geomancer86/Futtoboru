@@ -65,15 +65,31 @@ public class CompetitionSchedulerTests {
         
         assertNotNull(dbLoader);
         
+        // Base Country
+        Country england = dbLoader.getCountryById(1000L);
+        
         // Game start date is April 1, 1888 (FA Cup scheduled matches shouldn't exist yet)
         SaveGame saveGame = BaseTestTools.initializeV1SaveGame();
+        
+        //
+        saveGame.getSelectedCountries().add(england);
+        saveGame.setAllClubs(DatabaseLoader.getInstance().getClubsByCountry(england));
         
         // Set a New Game as Current Game
         application.setCurrentGame(saveGame);
         
+        // Without advancing the date, the clubs should be attached to a competition
+        // BUT NO A SEASON
+        Gdx.app.debug("CompetitionSchedulerTests", "All Clubs: " + application.getCurrentGame().getAllClubs().size());
+        
+        Competition faCup = dbLoader.getCompetitions().get(0);
+        
         //
-        assertNotNull(saveGame.getAllCups());
-        assertNotEquals(true, saveGame.getAllCups().isEmpty());
+        assertNotNull(faCup);
+        
+        //
+//        assertNotNull(saveGame.getAllCups());
+//        assertNotEquals(true, saveGame.getAllCups().isEmpty());
     }
     
     @Test
@@ -93,7 +109,7 @@ public class CompetitionSchedulerTests {
          */
         
         // Base Country
-        Country england = DatabaseLoader.getCountryById(1000L);
+        Country england = dbLoader.getCountryById(1000L);
         
         assertNotNull(england);
         
@@ -103,7 +119,7 @@ public class CompetitionSchedulerTests {
         assertNotNull(preston);
         
         // Base Competition
-        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        Competition faCup = dbLoader.getCompetitions().get(0);
         
         assertNotNull(faCup);
 

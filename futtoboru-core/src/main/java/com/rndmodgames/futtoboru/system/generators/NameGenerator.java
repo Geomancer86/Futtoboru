@@ -1,7 +1,5 @@
 package com.rndmodgames.futtoboru.system.generators;
 
-import java.util.ArrayList;
-
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.loaders.NamesLoader;

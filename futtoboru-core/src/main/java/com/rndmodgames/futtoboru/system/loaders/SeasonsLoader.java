@@ -99,7 +99,7 @@ public class SeasonsLoader {
                         /**
                          * FORMAT: COLUMNS id,
                          */
-                        season.getCountries().add(DatabaseLoader.getCountryById(Long.valueOf(splitted[0])));
+                        season.getCountries().add(DatabaseLoader.getInstance().getCountryById(Long.valueOf(splitted[0])));
                     }
 
                     line = reader.readLine();
