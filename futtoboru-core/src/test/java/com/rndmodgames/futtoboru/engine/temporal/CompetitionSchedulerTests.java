@@ -65,7 +65,7 @@ public class CompetitionSchedulerTests {
         assertNotNull(dbLoader);
         
         // Base Country
-        Country england = dbLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryById(1000L);
         
         // Game start date is April 1, 1888 (FA Cup scheduled matches shouldn't exist yet)
         SaveGame saveGame = BaseTestTools.initializeV1SaveGame();

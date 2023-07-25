@@ -117,7 +117,7 @@ public class ScriptsManager {
         League league = new League();
         
         league.setName((String) script.getScriptValues().get(ScriptsLoader.LEAGUE_NAME));
-        league.setCountry(dbLoader.getCountryById((Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_COUNTRY)));
+        league.setCountry(DatabaseLoader.getCountryById((Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_COUNTRY)));
         
         /**
          * Iterate Teams and add them to the League

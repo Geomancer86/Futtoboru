@@ -68,7 +68,7 @@ public class ScriptManagerTests {
         assertNotNull(dbLoader);
         
         // Base country
-        Country england = dbLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryById(1000L);
         
         List<Club> allClubs = dbLoader.getClubsByCountry(england);
         

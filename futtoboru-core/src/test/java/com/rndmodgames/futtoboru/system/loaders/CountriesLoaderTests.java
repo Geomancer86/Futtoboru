@@ -46,11 +46,11 @@ class CountriesLoaderTests {
         /**
          * Iterate all clubs and make sure all stadiums are there
          */
-        Country england = dbLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryById(1000L);
         
         assertNotNull(england);
         
-        Country wales = dbLoader.getCountryById(1002L);
+        Country wales = DatabaseLoader.getCountryById(1002L);
         
         assertNotNull(wales);
     }

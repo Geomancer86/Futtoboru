@@ -42,7 +42,7 @@ public class NameGeneratorTests {
         assertNotNull(dbLoader);
         
         // England
-        Country england = dbLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryById(1000L);
         
         assertNotNull(england);
         
@@ -66,7 +66,7 @@ public class NameGeneratorTests {
         assertNotNull(dbLoader);
         
         // England
-        Country england = dbLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryById(1000L);
         
         assertNotNull(england);
         
@@ -88,7 +88,7 @@ public class NameGeneratorTests {
         assertNotNull(dbLoader);
         
         // England
-        Country england = dbLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryById(1000L);
         
         assertNotNull(england);
         

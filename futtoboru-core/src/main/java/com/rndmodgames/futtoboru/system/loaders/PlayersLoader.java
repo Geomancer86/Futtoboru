@@ -84,7 +84,7 @@ public class PlayersLoader {
                         person.setLastname(splitted[2]);
                         
                         // Country of birth
-                        person.setCountry(DatabaseLoader.getInstance().getCountryById(Long.valueOf(splitted[3])));
+                        person.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[3])));
                         
                         /**
                          * Birthdate
