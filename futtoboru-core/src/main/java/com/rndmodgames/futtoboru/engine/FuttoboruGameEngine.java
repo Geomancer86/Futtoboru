@@ -31,7 +31,10 @@ public class FuttoboruGameEngine {
 
     // 
     private Futtoboru gameInstance;
+    private AuthorityManager authorityManager;
     private ScriptsManager scriptsManager;
+    
+    //
     private MainMenuManager mainMenuManager;
     
     //
@@ -43,11 +46,14 @@ public class FuttoboruGameEngine {
     public static final int MATCH_PREVIEW_ACTION = 2;
     public static final int MATCH_RESULT_ACTION = 3;
 
-    public FuttoboruGameEngine(Game parent, ScriptsManager scriptsManager) {
+    public FuttoboruGameEngine(Game parent,
+                               ScriptsManager scriptsManager,
+                               AuthorityManager authorityManager) {
         
         // keep track for easier access
         this.gameInstance = (Futtoboru) parent;
         this.scriptsManager = scriptsManager;
+        this.authorityManager = authorityManager;
         
         //
         this.scheduler = new MatchScheduler(gameInstance);
@@ -165,45 +171,11 @@ public class FuttoboruGameEngine {
          */
         gameInstance.getCurrentGame().setGameDate(current.plusDays(1));
         
-        /**
-         * Authorities AI
-         * 
-         *  - iterates all over the game authorities
-         *      - check if cups are without scheduled draws and/or matches
-         *          - schedule/draw accordingly
-         *          
-         *      - check if rounds are finished
-         *          - advance rounds
-         *          
-         *      - check if rematches need to be scheduled
-         *          - schedule rematches
-         *          
-         *      - give match prizes/entry to clubs (cup splits 50/50 and league is 70/30) TODO make it parametrizable
-         *      
-         *      - give competition prizes for winners/runners up at the end of competition
-         *      
-         *      - handle re-elections and relegation
-         *      
-         *      - make sure the competitions are perpetual (ie: they should be played once a year forever as long as no scripts change something).
-         *      
-         *  TODO: iterate hierarchy of authorities
-         *  TODO: draw FA Cup
-         *  TODO: play FA Cup
-         *  TODO: finish/restart FA Cup
-         */
-        Authority mainAuthority = gameInstance.getCurrentGame().getMainAuthority();
-        
-        // FA Cup
-//        Competition faCup = DatabaseLoader.getCompetitions().get(0);
-//
-//        // FA Cup, season 18 (first v1 game season)
-//        CompetitionEdition faCupSeason = faCup.getEditions().get(0);
-
-//        competitionScheduler.initializeCompetition();
-        
-        
         // Check Game Scripts
         scriptsManager.checkGameScripts();
+        
+        // Check Competition Schedules
+        authorityManager.checkCompetitionsSchedule();
         
         /**
          * Current Club

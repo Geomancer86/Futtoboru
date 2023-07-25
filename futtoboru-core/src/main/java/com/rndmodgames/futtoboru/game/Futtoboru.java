@@ -13,6 +13,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.rndmodgames.PreferencesManager;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.engine.AuthorityManager;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
@@ -86,6 +87,7 @@ public class Futtoboru extends Game {
      */
     private SaveGame currentGame = null;
     private FuttoboruGameEngine gameEngine = null;
+    private AuthorityManager authorityManager = null;
     private ScriptsManager scriptsManager = null;
     private PersonGenerator personGenerator = null;
     
@@ -155,8 +157,11 @@ public class Futtoboru extends Game {
         // Initialize the Person Generator
         this.setPersonGenerator(new PersonGenerator(this));
         
+        // Initialize the Authority Manager
+        this.authorityManager = new AuthorityManager(this);
+        
         // Initialize the Game Engine
-        this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager));
+        this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager, authorityManager));
         
         // Show Main Menu 
         // NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
