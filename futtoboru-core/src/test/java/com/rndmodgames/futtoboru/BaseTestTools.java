@@ -27,6 +27,9 @@ public class BaseTestTools {
      */
     public static SaveGame initializeV1SaveGame(SaveGame saveGame) {
 
+        //
+        DatabaseLoader.getInstance();
+        
         // game start date
         saveGame.setGameDate(LocalDateTime.of(1888, Month.APRIL, 1, 4, 00, 00)); // Game start date is April 1, 1888
         
