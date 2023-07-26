@@ -74,7 +74,7 @@ public class CompetitionSchedulerTests {
         
         // Initialize savegame
         BaseTestTools tools = new BaseTestTools();
-        tools.initializeV1SaveGame(application.getCurrentGame());
+        tools.initializeV1SaveGame(application.getCurrentGame(), dbLoader);
         
         //
         application.getCurrentGame().getSelectedCountries().add(england);
@@ -133,8 +133,7 @@ public class CompetitionSchedulerTests {
         
         // Initialize savegame
         BaseTestTools tools = new BaseTestTools();
-        tools.initializeV1SaveGame(application.getCurrentGame());
-
+        tools.initializeV1SaveGame(application.getCurrentGame(), dbLoader);
 
         int daysToContinue = 7;
         

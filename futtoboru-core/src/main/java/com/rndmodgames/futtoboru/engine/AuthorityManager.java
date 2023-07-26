@@ -42,7 +42,6 @@ public class AuthorityManager {
         //
         this.game = parent;
         this.currentGame = game.getCurrentGame();
-        this.mainAuthority = game.getCurrentGame().getMainAuthority();
     }
     
     /**

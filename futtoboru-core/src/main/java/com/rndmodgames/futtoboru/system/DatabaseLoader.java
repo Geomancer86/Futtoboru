@@ -102,9 +102,7 @@ public class DatabaseLoader {
     }
 
     /**
-     * Initialize the Game Data in Required Order
-     * 
-     * TODO: revamp for script use
+     * Initialize the Game Data and Scripts in required order
      */
     public static DatabaseLoader getInstance() {
         
@@ -144,8 +142,8 @@ public class DatabaseLoader {
             
             // Load Seasons Scripts
             ScriptsLoader.load(seasons);
-        } 
-            
+        }
+
         //
         return instance;
     }
