@@ -3,6 +3,7 @@ package com.rndmodgames.futtoboru;
 import java.time.LocalDateTime;
 import java.time.Month;
 
+import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -28,6 +29,10 @@ public class BaseTestTools {
      */
     public SaveGame initializeV1SaveGame(SaveGame saveGame, DatabaseLoader dbLoader) {
 
+        Gdx.app.debug("BaseTestTools", "initializeV1SaveGame()      : " + saveGame.getGameScripts().size());
+        Gdx.app.debug("BaseTestTools", "dbLoader                    : " + dbLoader);
+        Gdx.app.debug("BaseTestTools", "dbLoader.getSeasons().size(): " + dbLoader.getSeasons().size());
+        
         // game start date
         saveGame.setGameDate(LocalDateTime.of(1888, Month.APRIL, 1, 4, 00, 00)); // Game start date is April 1, 1888
         

@@ -68,6 +68,7 @@ public class CompetitionSchedulerTests {
         DatabaseLoader dbLoader = DatabaseLoader.getInstance();
         
         assertNotNull(dbLoader);
+        assertNotNull(dbLoader.getSeasons().get(0).getSeasonScripts());
         
         // Base Country
         Country england = DatabaseLoader.getCountryById(1000L);
