@@ -149,6 +149,14 @@ public class DatabaseLoader {
     }
     
     /**
+     * Used between some unit tests to avoid issues with missing data
+     */
+    public static void resetDatabaseLoaderInstance() {
+        
+        instance = null;
+    }
+    
+    /**
      * @return the complete list of Seasons
      */
     public List<Season> getSeasons() {

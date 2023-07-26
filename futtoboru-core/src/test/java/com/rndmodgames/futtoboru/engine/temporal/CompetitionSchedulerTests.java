@@ -65,6 +65,7 @@ public class CompetitionSchedulerTests {
         /**
          * This makes sure a new SaveGame has competitions for the selected clubs/countries during NEW GAME
          */
+        DatabaseLoader.resetDatabaseLoaderInstance();
         DatabaseLoader dbLoader = DatabaseLoader.getInstance();
         
         assertNotNull(dbLoader);
