@@ -2,62 +2,18 @@ package com.rndmodgames.futtoboru.engine.temporal;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
+import com.rndmodgames.futtoboru.BaseTest;
 import com.rndmodgames.futtoboru.BaseTestTools;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Country;
-import com.rndmodgames.futtoboru.engine.AuthorityManager;
-import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
-import com.rndmodgames.futtoboru.engine.ScriptsManager;
-import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
-import com.rndmodgames.futtoboru.system.SaveGame;
 
-public class CompetitionSchedulerTests {
-
-    private static Futtoboru application;
-    
-    //
-    static FuttoboruGameEngine gameEngine;
-    static ScriptsManager scriptsManager;
-    static AuthorityManager authorityManager;
-    
-    @BeforeAll
-    static void preload() {
-        
-        HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
-        config.updatesPerSecond = 30;
-
-        // 
-        application = new Futtoboru();
-        
-        // Initialize the Saved Game
-        application.setCurrentGame(new SaveGame());
-
-        // Initialize Script Manager
-        scriptsManager = new ScriptsManager(application);
-
-        // Initialize the Authority Manager
-        authorityManager = new AuthorityManager(application);
-        
-        // Initialize Game Engine
-        gameEngine = new FuttoboruGameEngine(application, scriptsManager, authorityManager);
-        
-        // Set the Script Manager
-        application.setScriptsManager(scriptsManager);
-        
-        // Set the Game Engine
-        application.setGameEngine(gameEngine);
-        
-        new HeadlessApplication(application , config);
-    }
+public class CompetitionSchedulerTests extends BaseTest {
     
     @Test
     void initializeCompetitionsTest() {
@@ -82,7 +38,6 @@ public class CompetitionSchedulerTests {
         application.getCurrentGame().getSelectedCountries().add(england);
         application.getCurrentGame().setAllClubs(DatabaseLoader.getInstance().getClubsByCountry(england));
 
-        
         // Without advancing the date, the clubs should be attached to a competition
         // BUT NO A SEASON
         Gdx.app.debug("CompetitionSchedulerTests", "All Clubs: " + application.getCurrentGame().getAllClubs().size());
