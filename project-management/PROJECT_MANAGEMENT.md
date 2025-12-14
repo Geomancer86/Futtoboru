@@ -9,28 +9,31 @@
 ## 🎯 Project Status Overview
 
 ### Current Phase
-**Phase 1: Critical Bug Fixes & Stability** → **Phase 2: Match Engine Core**
+**MVP Development** - Focused sprint toward Minimum Viable Product
 
-### Overall Progress: ~15% Complete
+### Overall Progress: ~15% Complete (MVP Focus)
 - ✅ Foundation: Project structure, build system, basic UI
 - ⚠️ Core Systems: Partially implemented
-- ❌ Gameplay Loop: Match simulation missing (critical blocker)
+- 🚧 Match Engine: In active development (separate agent)
+- 🎯 Goal: Playable MVP with core gameplay loop functional
 
 ---
 
 ## 📊 Sprint Status
 
 ### Current Sprint Focus
-**Priority:** Unemployed Job System (Active Development)
-- **Branch:** `cursor/feature-unemployed-job-system`
-- **Status:** Implementation in progress
-- **Blockers:** Button click listeners not working (CRITICAL)
+**MVP Development Sprint**
+- **Match Engine:** In active development (separate agent working on this)
+- **Job System:** Foundation complete, UI fixes needed
+- **Goal:** Complete core gameplay loop for MVP
+- **Timeline:** Focused push toward playable MVP
 
-### Next Sprint Priorities
-1. Fix critical button click issues in job system
-2. Complete match engine core
-3. Player attribute system
-4. Save/Load system completion
+### MVP Priorities
+1. **Match Engine Core** (Active - separate agent) ⚡
+2. Complete job system UI fixes
+3. Player attribute system (basic)
+4. Save/Load system (basic persistence)
+5. Essential screens completion
 
 ---
 
@@ -272,9 +275,10 @@
 ## 🎮 Community Engagement
 
 ### Patreon Updates
-- **Last Update:** TBD
-- **Next Update:** This week
-- **Update Frequency:** Weekly/Bi-weekly
+- **Last Update:** MVP Journey Story (Dec 2024)
+- **Next Update:** After MVP milestone
+- **Update Frequency:** Major milestones + monthly progress
+- **Current Focus:** MVP development story published
 
 ### Community Feedback
 - Track feature requests
