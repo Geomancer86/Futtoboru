@@ -255,9 +255,10 @@ public class NewGameSeasonScreen implements Screen {
         });
         
         //
+        table.row();
         table.add(startGame).pad(5);
         
-        // Main Menu Button - Add right next to Start button
+        // Main Menu Button - Add right next to Start button in same row
         final MainMenuButton backButton = new MainMenuButton(game);
         table.add(backButton).pad(5);
         
