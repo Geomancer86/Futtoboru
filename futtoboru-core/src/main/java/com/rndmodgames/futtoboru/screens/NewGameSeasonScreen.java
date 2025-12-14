@@ -65,6 +65,11 @@ public class NewGameSeasonScreen implements Screen {
         VisTable mainContainer = new VisTable();
         mainContainer.pad(50).setFillParent(true);
     
+        // HARDCODED MAIN MENU BUTTON AT TOP - GUARANTEED VISIBLE
+        mainContainer.row();
+        final MainMenuButton hardcodedBackButton = new MainMenuButton(game);
+        mainContainer.add(hardcodedBackButton).top().right().pad(10);
+        
         // 
         final VisTable table = new VisTable(true);
         
