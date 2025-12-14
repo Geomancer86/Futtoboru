@@ -270,6 +270,11 @@ public class NewGameSeasonScreen implements Screen {
         // Add table to main container
         mainContainer.add(table);
         
+        // MAIN MENU BUTTON - ADDED AFTER TABLE TO ENSURE IT'S VISIBLE
+        mainContainer.row();
+        final MainMenuButton visibleBackButton = new MainMenuButton(game);
+        mainContainer.add(visibleBackButton).right().padTop(20).padBottom(10);
+        
         // Add Settings Screen Main Container to Stage
         stage.addActor(mainContainer);
     }
