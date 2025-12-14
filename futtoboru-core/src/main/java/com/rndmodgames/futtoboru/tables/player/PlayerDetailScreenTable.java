@@ -3,20 +3,20 @@ package com.rndmodgames.futtoboru.tables.player;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 
 /**
  * Player Detail Screen Table v1
@@ -34,8 +34,8 @@ public class PlayerDetailScreenTable extends VisTable {
     // Current player being displayed
     private Player currentPlayer;
     
-    // Last viewed attributes (for change tracking)
-    private Map<String, Float> lastViewedAttributes = new HashMap<>();
+    // Attribute change calculator (30-day tracking)
+    private AttributeChangeCalculator changeCalculator;
     
     // Formatting
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
@@ -44,6 +44,8 @@ public class PlayerDetailScreenTable extends VisTable {
     // UI Components
     private VisTextButton backButton;
     private VisLabel playerNameLabel;
+    private VisTable contentTable; // Main content table that will be scrollable
+    private VisScrollPane scrollPane; // Scroll pane for the content
     private VisTable infoTable;
     private VisTable physicalAttributesTable;
     private VisTable mentalAttributesTable;
@@ -53,6 +55,11 @@ public class PlayerDetailScreenTable extends VisTable {
     public PlayerDetailScreenTable(Game parent) {
         super(true);
         this.futtoboru = (Futtoboru) parent;
+        
+        // Initialize change calculator
+        if (futtoboru != null && futtoboru.getCurrentGame() != null) {
+            this.changeCalculator = new AttributeChangeCalculator(futtoboru.getCurrentGame());
+        }
         
         // Back button
         backButton = new VisTextButton("← Back to Squad");
@@ -74,12 +81,24 @@ public class PlayerDetailScreenTable extends VisTable {
         playerNameLabel = new VisLabel("");
         playerNameLabel.setFontScale(1.5f);
         
-        // Initialize tables
+        // Initialize content table (will be inside scroll pane)
+        contentTable = new VisTable(true);
+        
+        // Initialize attribute tables
         infoTable = new VisTable(true);
         physicalAttributesTable = new VisTable(true);
         mentalAttributesTable = new VisTable(true);
         technicalAttributesTable = new VisTable(true);
         goalkeeperAttributesTable = new VisTable(true);
+        
+        // Create scroll pane for content
+        scrollPane = new VisScrollPane(contentTable);
+        scrollPane.setFadeScrollBars(false);
+        
+        // Add scroll pane to main table (this will stay, only contentTable will be cleared/updated)
+        // Note: Using just .grow() to match other screens, not .grow().fill()
+        this.row();
+        this.add(scrollPane).grow();
     }
     
     /**
@@ -93,42 +112,44 @@ public class PlayerDetailScreenTable extends VisTable {
         
         this.currentPlayer = player;
         
-        // Clear everything
-        this.clear();
+        // Update change calculator if game changed
+        if (changeCalculator == null && futtoboru != null && futtoboru.getCurrentGame() != null) {
+            this.changeCalculator = new AttributeChangeCalculator(futtoboru.getCurrentGame());
+        }
         
-        // Store current attributes as "last viewed" for next time
-        storeCurrentAttributes();
+        // Clear content table (not the main table - that has the scroll pane)
+        contentTable.clear();
         
         // Top section: Back button and player name
-        this.row();
-        this.add(backButton).left().padBottom(10);
-        this.row();
-        this.add(playerNameLabel).colspan(2).center().padBottom(20);
-        this.row();
+        contentTable.row();
+        contentTable.add(backButton).left().padBottom(10);
+        contentTable.row();
+        contentTable.add(playerNameLabel).colspan(2).center().padBottom(20);
+        contentTable.row();
         
         // Player Information Section
         buildInfoSection();
-        this.row();
-        this.addSeparator().colspan(2).pad(10);
-        this.row();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.row();
         
         // Physical Attributes Section
         buildPhysicalAttributesSection();
-        this.row();
-        this.addSeparator().colspan(2).pad(10);
-        this.row();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.row();
         
         // Mental Attributes Section
         buildMentalAttributesSection();
-        this.row();
-        this.addSeparator().colspan(2).pad(10);
-        this.row();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.row();
         
         // Technical Attributes Section
         buildTechnicalAttributesSection();
-        this.row();
-        this.addSeparator().colspan(2).pad(10);
-        this.row();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.row();
         
         // Goalkeeper Attributes Section
         buildGoalkeeperAttributesSection();
@@ -177,7 +198,7 @@ public class PlayerDetailScreenTable extends VisTable {
         }
         infoTable.add(new VisLabel(clubName)).left();
         
-        this.add(infoTable).left().pad(10);
+        contentTable.add(infoTable).left().pad(10);
     }
     
     /**
@@ -198,7 +219,7 @@ public class PlayerDetailScreenTable extends VisTable {
         addAttributeRow(physicalAttributesTable, "Jumping", currentPlayer.getJumping());
         addAttributeRow(physicalAttributesTable, "Dexterity", currentPlayer.getDexterity());
         
-        this.add(physicalAttributesTable).left().pad(10);
+        contentTable.add(physicalAttributesTable).left().pad(10);
     }
     
     /**
@@ -219,7 +240,7 @@ public class PlayerDetailScreenTable extends VisTable {
         addAttributeRow(mentalAttributesTable, "Positioning", currentPlayer.getPositioning());
         addAttributeRow(mentalAttributesTable, "Teamwork", currentPlayer.getTeamwork());
         
-        this.add(mentalAttributesTable).left().pad(10);
+        contentTable.add(mentalAttributesTable).left().pad(10);
     }
     
     /**
@@ -245,7 +266,7 @@ public class PlayerDetailScreenTable extends VisTable {
         addAttributeRow(technicalAttributesTable, "Marking", currentPlayer.getMarking());
         addAttributeRow(technicalAttributesTable, "Tackling", currentPlayer.getTackling());
         
-        this.add(technicalAttributesTable).left().pad(10);
+        contentTable.add(technicalAttributesTable).left().pad(10);
     }
     
     /**
@@ -265,7 +286,7 @@ public class PlayerDetailScreenTable extends VisTable {
         addAttributeRow(goalkeeperAttributesTable, "Rushing Out", currentPlayer.getRushingOut());
         addAttributeRow(goalkeeperAttributesTable, "Area Positioning", currentPlayer.getAreaPositioning());
         
-        this.add(goalkeeperAttributesTable).left().pad(10);
+        contentTable.add(goalkeeperAttributesTable).left().pad(10);
     }
     
     /**
@@ -282,88 +303,44 @@ public class PlayerDetailScreenTable extends VisTable {
         VisLabel valueLabel = new VisLabel(valueText);
         table.add(valueLabel).left().width(80);
         
-        // Change indicator
+        // Change indicator (30-day tracking)
         String changeText = formatAttributeChange(attributeName, currentValue);
         VisLabel changeLabel = new VisLabel(changeText);
-        if (changeText.contains("🟢")) {
-            changeLabel.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green
-        } else if (changeText.contains("🔴")) {
-            changeLabel.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red
+        
+        // Color coding based on trend
+        if (changeText.contains("↑↑") || changeText.contains("↑")) {
+            changeLabel.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green for improvement
+        } else if (changeText.contains("↓↓") || changeText.contains("↓")) {
+            changeLabel.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red for decline
+        } else if (changeText.contains("=")) {
+            changeLabel.setColor(0.8f, 0.8f, 0.8f, 1.0f); // Gray for stable
         }
-        table.add(changeLabel).left().width(100);
+        
+        table.add(changeLabel).left().width(120);
     }
     
     /**
-     * Format attribute change for display
+     * Format attribute change for display using 30-day tracking
      */
     private String formatAttributeChange(String attributeName, Float currentValue) {
-        if (currentValue == null) {
-            return "";
+        if (currentValue == null || changeCalculator == null || currentPlayer == null) {
+            return "[=]"; // Show stable if no data
         }
         
-        Float lastValue = lastViewedAttributes.get(attributeName);
-        if (lastValue == null) {
-            return ""; // First time viewing
+        // Calculate change over default period (30 days)
+        AttributeChangeCalculator.AttributeChangeResult result = 
+            changeCalculator.calculateAttributeChange(currentPlayer, attributeName);
+        
+        if (result == null) {
+            return "[=]"; // Show stable if calculation failed
         }
         
-        float change = currentValue - lastValue;
-        
-        if (Math.abs(change) < 0.1f) {
-            return "[=]"; // No significant change
+        // If no historical data, show stable (not empty)
+        if (result.getDisplayText().equals("No historical data") || result.getDisplayText().isEmpty()) {
+            return "[=]";
         }
         
-        String sign = change > 0 ? "+" : "";
-        String indicator = change > 0 ? "🟢" : "🔴";
-        return String.format("[%s%.1f] %s", sign, change, indicator);
-    }
-    
-    /**
-     * Store current attributes as "last viewed" for next comparison
-     */
-    private void storeCurrentAttributes() {
-        if (currentPlayer == null) return;
-        
-        lastViewedAttributes.clear();
-        
-        // Physical
-        if (currentPlayer.getAcceleration() != null) lastViewedAttributes.put("Acceleration", currentPlayer.getAcceleration());
-        if (currentPlayer.getSpeed() != null) lastViewedAttributes.put("Speed", currentPlayer.getSpeed());
-        if (currentPlayer.getStamina() != null) lastViewedAttributes.put("Stamina", currentPlayer.getStamina());
-        if (currentPlayer.getStrength() != null) lastViewedAttributes.put("Strength", currentPlayer.getStrength());
-        if (currentPlayer.getEndurance() != null) lastViewedAttributes.put("Endurance", currentPlayer.getEndurance());
-        if (currentPlayer.getJumping() != null) lastViewedAttributes.put("Jumping", currentPlayer.getJumping());
-        if (currentPlayer.getDexterity() != null) lastViewedAttributes.put("Dexterity", currentPlayer.getDexterity());
-        
-        // Mental
-        if (currentPlayer.getConcentration() != null) lastViewedAttributes.put("Concentration", currentPlayer.getConcentration());
-        if (currentPlayer.getCourage() != null) lastViewedAttributes.put("Courage", currentPlayer.getCourage());
-        if (currentPlayer.getDetermination() != null) lastViewedAttributes.put("Determination", currentPlayer.getDetermination());
-        if (currentPlayer.getLeadership() != null) lastViewedAttributes.put("Leadership", currentPlayer.getLeadership());
-        if (currentPlayer.getPerception() != null) lastViewedAttributes.put("Perception", currentPlayer.getPerception());
-        if (currentPlayer.getPositioning() != null) lastViewedAttributes.put("Positioning", currentPlayer.getPositioning());
-        if (currentPlayer.getTeamwork() != null) lastViewedAttributes.put("Teamwork", currentPlayer.getTeamwork());
-        
-        // Technical
-        if (currentPlayer.getPassing() != null) lastViewedAttributes.put("Passing", currentPlayer.getPassing());
-        if (currentPlayer.getKicking() != null) lastViewedAttributes.put("Kicking", currentPlayer.getKicking());
-        if (currentPlayer.getLongShots() != null) lastViewedAttributes.put("Long Shots", currentPlayer.getLongShots());
-        if (currentPlayer.getTrickShots() != null) lastViewedAttributes.put("Trick Shots", currentPlayer.getTrickShots());
-        if (currentPlayer.getHeading() != null) lastViewedAttributes.put("Heading", currentPlayer.getHeading());
-        if (currentPlayer.getOneTwos() != null) lastViewedAttributes.put("One-Twos", currentPlayer.getOneTwos());
-        if (currentPlayer.getFreeKicks() != null) lastViewedAttributes.put("Free Kicks", currentPlayer.getFreeKicks());
-        if (currentPlayer.getCornerKicks() != null) lastViewedAttributes.put("Corner Kicks", currentPlayer.getCornerKicks());
-        if (currentPlayer.getPenaltyKicks() != null) lastViewedAttributes.put("Penalty Kicks", currentPlayer.getPenaltyKicks());
-        if (currentPlayer.getThrowIns() != null) lastViewedAttributes.put("Throw-Ins", currentPlayer.getThrowIns());
-        if (currentPlayer.getMarking() != null) lastViewedAttributes.put("Marking", currentPlayer.getMarking());
-        if (currentPlayer.getTackling() != null) lastViewedAttributes.put("Tackling", currentPlayer.getTackling());
-        
-        // Goalkeeper
-        if (currentPlayer.getShotStopping() != null) lastViewedAttributes.put("Shot Stopping", currentPlayer.getShotStopping());
-        if (currentPlayer.getAreaControl() != null) lastViewedAttributes.put("Area Control", currentPlayer.getAreaControl());
-        if (currentPlayer.getPunching() != null) lastViewedAttributes.put("Punching", currentPlayer.getPunching());
-        if (currentPlayer.getHandToHand() != null) lastViewedAttributes.put("Hand to Hand", currentPlayer.getHandToHand());
-        if (currentPlayer.getRushingOut() != null) lastViewedAttributes.put("Rushing Out", currentPlayer.getRushingOut());
-        if (currentPlayer.getAreaPositioning() != null) lastViewedAttributes.put("Area Positioning", currentPlayer.getAreaPositioning());
+        return result.getDisplayText();
     }
     
     public void setMenuManager(MainMenuManager menuManager) {

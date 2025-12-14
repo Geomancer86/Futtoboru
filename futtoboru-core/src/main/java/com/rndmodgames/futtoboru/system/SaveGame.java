@@ -13,6 +13,7 @@ import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.data.jobs.JobApplication;
 import com.rndmodgames.futtoboru.data.jobs.JobOffer;
 import com.rndmodgames.futtoboru.data.jobs.JobOpening;
@@ -134,6 +135,12 @@ public class SaveGame implements Serializable {
     private List<JobOpening> activeJobOpenings = new ArrayList<>();
     private List<JobApplication> allApplications = new ArrayList<>();
     private List<JobOffer> pendingOffers = new ArrayList<>();
+    
+    /**
+     * Attribute Tracking System (v1.0)
+     * Stores weekly snapshots of player attributes for change tracking
+     */
+    private List<PlayerAttributeSnapshot> playerAttributeSnapshots = new ArrayList<>();
     
     /**
      * Proposed Matches
@@ -338,5 +345,35 @@ public class SaveGame implements Serializable {
 
     public void setAllMessages(List<Message> allMessages) {
         this.allMessages = allMessages;
+    }
+    
+    /**
+     * Attribute Tracking System Getters/Setters (v1.0)
+     */
+    public List<PlayerAttributeSnapshot> getPlayerAttributeSnapshots() {
+        if (playerAttributeSnapshots == null) {
+            playerAttributeSnapshots = new ArrayList<>();
+        }
+        return playerAttributeSnapshots;
+    }
+
+    public void setPlayerAttributeSnapshots(List<PlayerAttributeSnapshot> playerAttributeSnapshots) {
+        this.playerAttributeSnapshots = playerAttributeSnapshots;
+    }
+    
+    /**
+     * Get snapshots for a specific player
+     */
+    public List<PlayerAttributeSnapshot> getPlayerSnapshots(Long playerId) {
+        List<PlayerAttributeSnapshot> result = new ArrayList<>();
+        if (playerAttributeSnapshots == null || playerId == null) {
+            return result;
+        }
+        for (PlayerAttributeSnapshot snapshot : playerAttributeSnapshots) {
+            if (snapshot != null && snapshot.getPlayerId() != null && snapshot.getPlayerId().equals(playerId)) {
+                result.add(snapshot);
+            }
+        }
+        return result;
     }
 }

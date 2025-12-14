@@ -31,6 +31,7 @@ import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -676,6 +677,17 @@ public class NewGameOverviewScreen implements Screen {
                         // Don't throw - attributes can be generated later if needed
                     }
                     
+                    // Create initial attribute snapshots for change tracking (v1.0)
+                    try {
+                        Gdx.app.log("NewGameOverviewScreen", "Step 12: Creating initial attribute snapshots...");
+                        createInitialAttributeSnapshots(currentGame);
+                        Gdx.app.log("NewGameOverviewScreen", "Step 12: OK - Initial snapshots created");
+                    } catch (Exception e) {
+                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 12 (createInitialAttributeSnapshots):", e);
+                        e.printStackTrace();
+                        // Don't throw - snapshots can be created later
+                    }
+                    
                     Gdx.app.log("NewGameOverviewScreen", "Step 12: Changing to GAME_SCREEN...");
                     ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
                     Gdx.app.log("NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
@@ -885,5 +897,35 @@ public class NewGameOverviewScreen implements Screen {
         }
         
         Gdx.app.log("NewGameOverviewScreen", "Generated attributes for " + playersGenerated + " players");
+    }
+    
+    /**
+     * Create initial attribute snapshots for all players (v1.0)
+     * This allows change tracking to work immediately from day 1
+     */
+    private void createInitialAttributeSnapshots(SaveGame currentGame) {
+        LocalDateTime gameDate = currentGame.getGameDate();
+        
+        int snapshotsCreated = 0;
+        for (Club club : currentGame.getAllClubs()) {
+            for (Player player : club.getPlayers()) {
+                if (player != null && player.getPerson() != null && player.getPerson().getId() != null) {
+                    // Only create snapshot if player has attributes
+                    if (player.getAcceleration() != null) {
+                        PlayerAttributeSnapshot snapshot = PlayerAttributeSnapshot.fromPlayer(
+                            player, 
+                            gameDate, 
+                            "INITIAL"
+                        );
+                        if (snapshot != null) {
+                            currentGame.getPlayerAttributeSnapshots().add(snapshot);
+                            snapshotsCreated++;
+                        }
+                    }
+                }
+            }
+        }
+        
+        Gdx.app.log("NewGameOverviewScreen", "Created " + snapshotsCreated + " initial attribute snapshots");
     }
 }

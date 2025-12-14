@@ -18,6 +18,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -35,6 +36,9 @@ public class PlayersListTable extends VisTable {
     //
     Futtoboru game;
     
+    // Attribute change calculator for showing tendencies
+    private AttributeChangeCalculator changeCalculator;
+    
     //
     private List<Player> currentPlayers;
     private List<Player> sortedPlayers; // Sorted copy for display
@@ -43,11 +47,25 @@ public class PlayersListTable extends VisTable {
     private String currentSortColumn = null;
     private boolean sortAscending = true;
     
-    // Column visibility (v1.0 - basic implementation)
-    private boolean showStrength = true;
+    // Column visibility - Expanded based on Football Manager squad screen
+    // Physical attributes
+    private boolean showAcceleration = true;
     private boolean showSpeed = true;
-    private boolean showPassing = true;
+    private boolean showStrength = true;
     private boolean showStamina = true;
+    private boolean showJumping = true;
+    
+    // Technical attributes
+    private boolean showPassing = true;
+    private boolean showLongShots = true;
+    private boolean showHeading = true;
+    private boolean showTackling = true;
+    private boolean showMarking = true;
+    
+    // Mental attributes
+    private boolean showDetermination = true;
+    private boolean showPositioning = true;
+    private boolean showTeamwork = true;
     
     // Dynamic Components
     VisTable mainTable;
@@ -64,6 +82,11 @@ public class PlayersListTable extends VisTable {
         // 
         this.game = parent;
         
+        // Initialize change calculator
+        if (game != null && game.getCurrentGame() != null) {
+            this.changeCalculator = new AttributeChangeCalculator(game.getCurrentGame());
+        }
+        
         //
         updateDynamicComponents();
     }
@@ -78,13 +101,7 @@ public class PlayersListTable extends VisTable {
         
         // No Players
         if (currentPlayers == null || currentPlayers.isEmpty()) {
-            // Calculate column count for empty message
-            int columnCount = 3; // Name, Age, Country (always shown)
-            if (showStrength) columnCount++;
-            if (showSpeed) columnCount++;
-            if (showPassing) columnCount++;
-            if (showStamina) columnCount++;
-            
+            int columnCount = getColumnCount();
             this.row();
             this.add(new VisLabel(LanguageModLoader.getValue("no_registered_players_at_club"))).colspan(columnCount);
             return;
@@ -97,11 +114,7 @@ public class PlayersListTable extends VisTable {
         }
         
         // Calculate actual number of columns
-        int columnCount = 3; // Name, Age, Country (always shown)
-        if (showStrength) columnCount++;
-        if (showSpeed) columnCount++;
-        if (showPassing) columnCount++;
-        if (showStamina) columnCount++;
+        int columnCount = getColumnCount();
         
         /**
          * Header Row with Sortable Columns
@@ -111,18 +124,49 @@ public class PlayersListTable extends VisTable {
         this.add(createSortableHeader("Age", "age")).width(80);
         this.add(createSortableHeader("Country", "country")).width(100);
         
-        // Attribute columns
-        if (showStrength) {
-            this.add(createSortableHeader("Strength", "strength")).width(80);
+        // Physical attribute columns
+        if (showAcceleration) {
+            this.add(createSortableHeader("Accel", "acceleration")).width(70);
         }
         if (showSpeed) {
-            this.add(createSortableHeader("Speed", "speed")).width(80);
+            this.add(createSortableHeader("Speed", "speed")).width(70);
         }
-        if (showPassing) {
-            this.add(createSortableHeader("Passing", "passing")).width(80);
+        if (showStrength) {
+            this.add(createSortableHeader("Str", "strength")).width(70);
         }
         if (showStamina) {
-            this.add(createSortableHeader("Stamina", "stamina")).width(80);
+            this.add(createSortableHeader("Sta", "stamina")).width(70);
+        }
+        if (showJumping) {
+            this.add(createSortableHeader("Jump", "jumping")).width(70);
+        }
+        
+        // Technical attribute columns
+        if (showPassing) {
+            this.add(createSortableHeader("Pass", "passing")).width(70);
+        }
+        if (showLongShots) {
+            this.add(createSortableHeader("Long", "longShots")).width(70);
+        }
+        if (showHeading) {
+            this.add(createSortableHeader("Head", "heading")).width(70);
+        }
+        if (showTackling) {
+            this.add(createSortableHeader("Tack", "tackling")).width(70);
+        }
+        if (showMarking) {
+            this.add(createSortableHeader("Mark", "marking")).width(70);
+        }
+        
+        // Mental attribute columns
+        if (showDetermination) {
+            this.add(createSortableHeader("Det", "determination")).width(70);
+        }
+        if (showPositioning) {
+            this.add(createSortableHeader("Pos", "positioning")).width(70);
+        }
+        if (showTeamwork) {
+            this.add(createSortableHeader("Team", "teamwork")).width(70);
         }
         
         // Add separator with correct column span
@@ -162,26 +206,49 @@ public class PlayersListTable extends VisTable {
                 player.getPerson().getCountry().getCommonName() : "N/A";
             this.add(new VisLabel(countryName)).width(100);
             
-            // Attributes (with formatting)
-            if (showStrength) {
-                Float strength = player.getStrength();
-                String strengthText = strength != null ? attributeFormat.format(strength) : "N/A";
-                this.add(new VisLabel(strengthText)).width(80);
+            // Physical attributes (with change indicators)
+            if (showAcceleration) {
+                addAttributeCell(player, "Acceleration", player.getAcceleration());
             }
             if (showSpeed) {
-                Float speed = player.getSpeed();
-                String speedText = speed != null ? attributeFormat.format(speed) : "N/A";
-                this.add(new VisLabel(speedText)).width(80);
+                addAttributeCell(player, "Speed", player.getSpeed());
             }
-            if (showPassing) {
-                Float passing = player.getPassing();
-                String passingText = passing != null ? attributeFormat.format(passing) : "N/A";
-                this.add(new VisLabel(passingText)).width(80);
+            if (showStrength) {
+                addAttributeCell(player, "Strength", player.getStrength());
             }
             if (showStamina) {
-                Float stamina = player.getStamina();
-                String staminaText = stamina != null ? attributeFormat.format(stamina) : "N/A";
-                this.add(new VisLabel(staminaText)).width(80);
+                addAttributeCell(player, "Stamina", player.getStamina());
+            }
+            if (showJumping) {
+                addAttributeCell(player, "Jumping", player.getJumping());
+            }
+            
+            // Technical attributes (with change indicators)
+            if (showPassing) {
+                addAttributeCell(player, "Passing", player.getPassing());
+            }
+            if (showLongShots) {
+                addAttributeCell(player, "Long Shots", player.getLongShots());
+            }
+            if (showHeading) {
+                addAttributeCell(player, "Heading", player.getHeading());
+            }
+            if (showTackling) {
+                addAttributeCell(player, "Tackling", player.getTackling());
+            }
+            if (showMarking) {
+                addAttributeCell(player, "Marking", player.getMarking());
+            }
+            
+            // Mental attributes (with change indicators)
+            if (showDetermination) {
+                addAttributeCell(player, "Determination", player.getDetermination());
+            }
+            if (showPositioning) {
+                addAttributeCell(player, "Positioning", player.getPositioning());
+            }
+            if (showTeamwork) {
+                addAttributeCell(player, "Teamwork", player.getTeamwork());
             }
         }
     }
@@ -253,6 +320,33 @@ public class PlayersListTable extends VisTable {
             case "stamina":
                 comparator = Comparator.comparing(p -> p.getStamina() != null ? p.getStamina() : 0.0f);
                 break;
+            case "acceleration":
+                comparator = Comparator.comparing(p -> p.getAcceleration() != null ? p.getAcceleration() : 0.0f);
+                break;
+            case "jumping":
+                comparator = Comparator.comparing(p -> p.getJumping() != null ? p.getJumping() : 0.0f);
+                break;
+            case "longshots":
+                comparator = Comparator.comparing(p -> p.getLongShots() != null ? p.getLongShots() : 0.0f);
+                break;
+            case "heading":
+                comparator = Comparator.comparing(p -> p.getHeading() != null ? p.getHeading() : 0.0f);
+                break;
+            case "tackling":
+                comparator = Comparator.comparing(p -> p.getTackling() != null ? p.getTackling() : 0.0f);
+                break;
+            case "marking":
+                comparator = Comparator.comparing(p -> p.getMarking() != null ? p.getMarking() : 0.0f);
+                break;
+            case "determination":
+                comparator = Comparator.comparing(p -> p.getDetermination() != null ? p.getDetermination() : 0.0f);
+                break;
+            case "positioning":
+                comparator = Comparator.comparing(p -> p.getPositioning() != null ? p.getPositioning() : 0.0f);
+                break;
+            case "teamwork":
+                comparator = Comparator.comparing(p -> p.getTeamwork() != null ? p.getTeamwork() : 0.0f);
+                break;
         }
         
         if (comparator != null) {
@@ -261,6 +355,63 @@ public class PlayersListTable extends VisTable {
             }
             Collections.sort(players, comparator);
         }
+    }
+    
+    /**
+     * Calculates the total number of columns currently displayed.
+     */
+    private int getColumnCount() {
+        int count = 3; // Name, Age, Country (always shown)
+        
+        // Physical
+        if (showAcceleration) count++;
+        if (showSpeed) count++;
+        if (showStrength) count++;
+        if (showStamina) count++;
+        if (showJumping) count++;
+        
+        // Technical
+        if (showPassing) count++;
+        if (showLongShots) count++;
+        if (showHeading) count++;
+        if (showTackling) count++;
+        if (showMarking) count++;
+        
+        // Mental
+        if (showDetermination) count++;
+        if (showPositioning) count++;
+        if (showTeamwork) count++;
+        
+        return count;
+    }
+    
+    /**
+     * Add an attribute cell with value and change indicator
+     */
+    private void addAttributeCell(Player player, String attributeName, Float value) {
+        String valueText = value != null ? attributeFormat.format(value) : "N/A";
+        
+        // Get change indicator
+        String changeText = "";
+        if (changeCalculator != null && value != null) {
+            AttributeChangeCalculator.AttributeChangeResult result = 
+                changeCalculator.calculateAttributeChange(player, attributeName);
+            if (result != null && !result.getDisplayText().isEmpty() && 
+                !result.getDisplayText().equals("No historical data")) {
+                changeText = " " + result.getDisplayText();
+            }
+        }
+        
+        VisLabel label = new VisLabel(valueText + changeText);
+        
+        // Color coding based on change
+        if (changeText.contains("↑↑") || changeText.contains("↑")) {
+            label.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green for improvement
+        } else if (changeText.contains("↓↓") || changeText.contains("↓")) {
+            label.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red for decline
+        }
+        
+        this.add(label).width(70);
     }
     
     public List<Player> getCurrentPlayers() {

@@ -615,6 +615,13 @@ public class MainMenuManager {
         case FINANCES_SCREEN:
             financesScreenTable.updateDynamicComponents();
             break;
+            
+        case PLAYER_DETAIL_SCREEN:
+            // Refresh player detail screen if a player is selected
+            if (selectedPlayer != null) {
+                playerDetailScreenTable.updateDynamicComponents(selectedPlayer);
+            }
+            break;
 
         default:
             //ignore
