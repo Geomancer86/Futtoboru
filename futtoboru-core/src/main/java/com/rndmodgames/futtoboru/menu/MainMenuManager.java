@@ -187,6 +187,7 @@ public class MainMenuManager {
         jobOfferScreenTable.setMenuManager(this);
         negotiationScreenTable.setMenuManager(this);
         myApplicationsScreenTable.setMenuManager(this);
+        matchHistoryScreenTable.setMainMenuManager(this);
         
         
         // custom buttons with logic to switch screen/tables
