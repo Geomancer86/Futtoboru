@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Player;
@@ -43,6 +44,7 @@ public class SquadScreenTable extends VisTable{
     
     //
     PlayersListTable playersList;
+    VisScrollPane playersScrollPane;
     
     //
     DecimalFormat averageYearsFormat = new DecimalFormat("#.0"); 
@@ -59,6 +61,11 @@ public class SquadScreenTable extends VisTable{
         
         // 
         playersList = new PlayersListTable(game);
+        
+        // Wrap players list in scroll pane for horizontal scrolling (v1.0)
+        playersScrollPane = new VisScrollPane(playersList);
+        playersScrollPane.setFadeScrollBars(false);
+        playersScrollPane.setScrollingDisabled(false, false); // Enable both horizontal and vertical scrolling
         
         /**
          * SQUAD SCREEN:
@@ -108,9 +115,10 @@ public class SquadScreenTable extends VisTable{
         this.add(averagePlayerAgeValueLabel);
         this.row();
         
-        // Players List Component
+        // Players List Component (wrapped in scroll pane for horizontal scrolling)
         this.addSeparator().colspan(2);
-        this.add(playersList).colspan(2);
+        this.row();
+        this.add(playersScrollPane).colspan(2).grow().fill();
     }
     
     /**

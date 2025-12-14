@@ -82,6 +82,9 @@ public class MainMenuManager {
     public static final int MY_APPLICATIONS_SCREEN = 10004;
     public static final int JOB_OFFER_SCREEN = 10005;
     public static final int NEGOTIATION_SCREEN = 10006;
+    
+    // Player Detail Screen (v1.0)
+    public static final int PLAYER_DETAIL_SCREEN = 10007;
         
     //
     public static int PREVIOUS_SCREEN = -1; //
@@ -130,9 +133,15 @@ public class MainMenuManager {
     private com.rndmodgames.futtoboru.tables.jobs.JobOfferScreenTable jobOfferScreenTable = null;
     private com.rndmodgames.futtoboru.tables.jobs.NegotiationScreenTable negotiationScreenTable = null;
     
+    // Player Detail Screen (v1.0)
+    private com.rndmodgames.futtoboru.tables.player.PlayerDetailScreenTable playerDetailScreenTable = null;
+    
     // Selected club for detail view and job application
     private Club selectedClubForDetail = null;
     private Club selectedClubForJobApplication = null;
+    
+    // Selected player for detail view (v1.0)
+    private com.rndmodgames.futtoboru.data.Player selectedPlayer = null;
     
     /**
      * 
@@ -167,6 +176,10 @@ public class MainMenuManager {
         myApplicationsScreenTable = new com.rndmodgames.futtoboru.tables.jobs.MyApplicationsScreenTable(game);
         jobOfferScreenTable = new com.rndmodgames.futtoboru.tables.jobs.JobOfferScreenTable(game);
         negotiationScreenTable = new com.rndmodgames.futtoboru.tables.jobs.NegotiationScreenTable(game);
+        
+        // Player Detail Screen (v1.0)
+        playerDetailScreenTable = new com.rndmodgames.futtoboru.tables.player.PlayerDetailScreenTable(game);
+        playerDetailScreenTable.setMenuManager(this);
         
         // Set menu manager references
         clubBrowserScreenTable.setMenuManager(this);
@@ -555,6 +568,16 @@ public class MainMenuManager {
             negotiationScreenTable.updateDynamicComponents();
             parentTable.add(negotiationScreenTable).grow();
             break;
+            
+        case PLAYER_DETAIL_SCREEN:
+            if (selectedPlayer != null) {
+                playerDetailScreenTable.updateDynamicComponents(selectedPlayer);
+                parentTable.add(playerDetailScreenTable).grow();
+            } else {
+                Gdx.app.error("MainMenuManager", "No player selected for detail view");
+                setActiveMainScreen(MAIN_SQUAD_SCREEN);
+            }
+            break;
         
         //
         default:
@@ -591,6 +614,13 @@ public class MainMenuManager {
             
         case FINANCES_SCREEN:
             financesScreenTable.updateDynamicComponents();
+            break;
+            
+        case PLAYER_DETAIL_SCREEN:
+            // Refresh player detail screen if a player is selected
+            if (selectedPlayer != null) {
+                playerDetailScreenTable.updateDynamicComponents(selectedPlayer);
+            }
             break;
 
         default:
@@ -641,5 +671,19 @@ public class MainMenuManager {
      */
     public Club getSelectedClubForJobApplication() {
         return selectedClubForJobApplication;
+    }
+    
+    /**
+     * Set selected player for detail view (v1.0)
+     */
+    public void setSelectedPlayer(com.rndmodgames.futtoboru.data.Player player) {
+        this.selectedPlayer = player;
+    }
+    
+    /**
+     * Get selected player for detail view (v1.0)
+     */
+    public com.rndmodgames.futtoboru.data.Player getSelectedPlayer() {
+        return selectedPlayer;
     }
 }

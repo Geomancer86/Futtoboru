@@ -6,13 +6,17 @@ import java.util.Comparator;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.rndmodgames.futtoboru.data.AttributeTrackingConstants;
 import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 
 /**
  * Game Engine v1
@@ -41,6 +45,9 @@ public class FuttoboruGameEngine {
     CompetitionScheduler competitionScheduler;
     MatchScheduler scheduler;
     
+    // Player Attribute Generator (v1.0)
+    private PlayerAttributeGenerator attributeGenerator;
+    
     //
     public static final int CONTINUE_GAME_ACTION = 1;
     public static final int MATCH_PREVIEW_ACTION = 2;
@@ -58,6 +65,7 @@ public class FuttoboruGameEngine {
         //
         this.scheduler = new MatchScheduler(gameInstance);
         this.competitionScheduler = new CompetitionScheduler(gameInstance);
+        this.attributeGenerator = new PlayerAttributeGenerator();
     }
     
     public MainMenuManager getMainMenuManager() {
@@ -190,6 +198,18 @@ public class FuttoboruGameEngine {
         }
         
         /**
+         * Update Player Attributes (v1.0 - Testing)
+         * TODO: Replace with proper training system in Phase 3
+         */
+        updatePlayerAttributesDaily();
+        
+        /**
+         * Create Weekly Attribute Snapshots (v1.0)
+         * Creates snapshots every 7 days for attribute change tracking
+         */
+        createWeeklyAttributeSnapshots();
+        
+        /**
          * Current Club
          * 
          * NOTE: player might not have a CURRENT_CLUB
@@ -233,5 +253,136 @@ public class FuttoboruGameEngine {
 
     public void setCompetitionScheduler(CompetitionScheduler competitionScheduler) {
         this.competitionScheduler = competitionScheduler;
+    }
+    
+    /**
+     * Update player attributes daily (v1.0 - Testing)
+     * TODO: Replace with proper training system in Phase 3
+     */
+    private void updatePlayerAttributesDaily() {
+        if (gameInstance == null || gameInstance.getCurrentGame() == null) {
+            return;
+        }
+        
+        Gdx.app.debug("FuttoboruGameEngine", "Updating player attributes daily...");
+        
+        int playersUpdated = 0;
+        LocalDateTime currentDate = gameInstance.getCurrentGame().getGameDate();
+        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+            for (Player player : club.getPlayers()) {
+                if (player != null && player.getPerson() != null) {
+                    attributeGenerator.applyDailyAttributeChanges(player, currentDate);
+                    playersUpdated++;
+                }
+            }
+        }
+        
+        Gdx.app.debug("FuttoboruGameEngine", "Updated attributes for " + playersUpdated + " players");
+    }
+    
+    /**
+     * Create weekly attribute snapshots for all players (v1.0)
+     * Snapshots are created every 7 days to track attribute changes over time
+     */
+    private void createWeeklyAttributeSnapshots() {
+        if (gameInstance == null || gameInstance.getCurrentGame() == null) {
+            return;
+        }
+        
+        LocalDateTime currentDate = gameInstance.getCurrentGame().getGameDate();
+        
+        // Check if we need to create snapshots (every 7 days)
+        // Get the last snapshot date
+        LocalDateTime lastSnapshotDate = getLastSnapshotDate();
+        
+        if (lastSnapshotDate != null) {
+            long daysSinceLastSnapshot = java.time.temporal.ChronoUnit.DAYS.between(lastSnapshotDate, currentDate);
+            if (daysSinceLastSnapshot < AttributeTrackingConstants.SNAPSHOT_INTERVAL_DAYS) {
+                // Not time for a new snapshot yet
+                return;
+            }
+        }
+        
+        // Create snapshots for all players
+        int snapshotsCreated = 0;
+        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+            for (Player player : club.getPlayers()) {
+                if (player != null && player.getPerson() != null && player.getPerson().getId() != null) {
+                    PlayerAttributeSnapshot snapshot = PlayerAttributeSnapshot.fromPlayer(
+                        player, 
+                        currentDate, 
+                        "WEEKLY"
+                    );
+                    if (snapshot != null) {
+                        gameInstance.getCurrentGame().getPlayerAttributeSnapshots().add(snapshot);
+                        snapshotsCreated++;
+                    }
+                }
+            }
+        }
+        
+        // Cleanup old snapshots (keep only last 365 days)
+        cleanupOldSnapshots(currentDate);
+        
+        if (snapshotsCreated > 0) {
+            Gdx.app.log("FuttoboruGameEngine", "Created " + snapshotsCreated + " weekly attribute snapshots");
+        }
+    }
+    
+    /**
+     * Get the date of the most recent snapshot
+     */
+    private LocalDateTime getLastSnapshotDate() {
+        if (gameInstance == null || gameInstance.getCurrentGame() == null) {
+            return null;
+        }
+        
+        java.util.List<PlayerAttributeSnapshot> snapshots = gameInstance.getCurrentGame().getPlayerAttributeSnapshots();
+        if (snapshots == null || snapshots.isEmpty()) {
+            return null;
+        }
+        
+        LocalDateTime lastDate = null;
+        for (PlayerAttributeSnapshot snapshot : snapshots) {
+            if (snapshot != null && snapshot.getSnapshotDate() != null) {
+                if (lastDate == null || snapshot.getSnapshotDate().isAfter(lastDate)) {
+                    lastDate = snapshot.getSnapshotDate();
+                }
+            }
+        }
+        
+        return lastDate;
+    }
+    
+    /**
+     * Remove snapshots older than MAX_SNAPSHOT_AGE_DAYS
+     */
+    private void cleanupOldSnapshots(LocalDateTime currentDate) {
+        if (gameInstance == null || gameInstance.getCurrentGame() == null) {
+            return;
+        }
+        
+        java.util.List<PlayerAttributeSnapshot> snapshots = gameInstance.getCurrentGame().getPlayerAttributeSnapshots();
+        if (snapshots == null || snapshots.isEmpty()) {
+            return;
+        }
+        
+        LocalDateTime cutoffDate = currentDate.minusDays(AttributeTrackingConstants.MAX_SNAPSHOT_AGE_DAYS);
+        int removed = 0;
+        
+        java.util.Iterator<PlayerAttributeSnapshot> iterator = snapshots.iterator();
+        while (iterator.hasNext()) {
+            PlayerAttributeSnapshot snapshot = iterator.next();
+            if (snapshot != null && snapshot.getSnapshotDate() != null) {
+                if (snapshot.getSnapshotDate().isBefore(cutoffDate)) {
+                    iterator.remove();
+                    removed++;
+                }
+            }
+        }
+        
+        if (removed > 0) {
+            Gdx.app.log("FuttoboruGameEngine", "Cleaned up " + removed + " old attribute snapshots");
+        }
     }
 }
