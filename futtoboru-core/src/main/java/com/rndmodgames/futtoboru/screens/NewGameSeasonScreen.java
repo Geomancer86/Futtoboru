@@ -263,7 +263,7 @@ public class NewGameSeasonScreen implements Screen {
         // Back to Main Menu Button
         mainContainer.row();
         final MainMenuButton backButton = new MainMenuButton(game);
-        mainContainer.add(backButton).right().padTop(20);
+        mainContainer.add(backButton).right().colspan(2).padTop(20);
         
         // Add Settings Screen Main Container to Stage
         stage.addActor(mainContainer);
