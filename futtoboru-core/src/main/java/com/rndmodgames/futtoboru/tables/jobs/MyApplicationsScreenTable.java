@@ -33,6 +33,7 @@ public class MyApplicationsScreenTable extends VisTable {
     
     VisTable applicationsListTable;
     VisScrollPane applicationsScrollPane;
+    MainMenuManager menuManager;
     
     public MyApplicationsScreenTable(Game parent) {
         super(true);
