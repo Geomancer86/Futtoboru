@@ -307,6 +307,24 @@ public class DatabaseLoader {
     }
     
     /**
+     * @param id
+     * @return a Profession by ID or null
+     */
+    public static Profession getProfessionById(Long id) {
+        if (id == null) {
+            return null;
+        }
+        
+        for (Profession profession : professions) {
+            if (profession.getId().equals(id)) {
+                return profession;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
      * Add a Club
      */
     public static void addClub(Club club) {

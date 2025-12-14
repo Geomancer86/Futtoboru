@@ -3,7 +3,9 @@ package com.rndmodgames.futtoboru.data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Club v1
@@ -76,6 +78,14 @@ public class Club implements Serializable {
      * Club Finances
      */
     private BigDecimal clubBalance;
+    
+    /**
+     * Club Staff Tracking (v1.0)
+     * 
+     * Maps profession ID to person ID holding that position.
+     * null value means position is vacant.
+     */
+    private Map<Long, Long> staff = new HashMap<>(); // Profession ID -> Person ID
     
     public Club() {
         
@@ -264,6 +274,48 @@ public class Club implements Serializable {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    /**
+     * Club Staff Management (v1.0)
+     */
+    public Map<Long, Long> getStaff() {
+        if (staff == null) {
+            staff = new HashMap<>();
+        }
+        return staff;
+    }
+
+    public void setStaff(Map<Long, Long> staff) {
+        this.staff = staff;
+    }
+
+    /**
+     * Utility: Get staff member ID for a profession
+     */
+    public Long getStaffId(Long professionId) {
+        return staff != null ? staff.get(professionId) : null;
+    }
+
+    /**
+     * Utility: Set staff member ID for a profession
+     */
+    public void setStaffId(Long professionId, Long personId) {
+        if (staff == null) {
+            staff = new HashMap<>();
+        }
+        if (personId == null) {
+            staff.remove(professionId);
+        } else {
+            staff.put(professionId, personId);
+        }
+    }
+
+    /**
+     * Utility: Check if position is vacant
+     */
+    public boolean isPositionVacant(Long professionId) {
+        return staff == null || staff.get(professionId) == null;
     }
 
     @Override
