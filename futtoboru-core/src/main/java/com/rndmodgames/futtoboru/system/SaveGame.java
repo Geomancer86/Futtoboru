@@ -13,6 +13,9 @@ import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.jobs.JobApplication;
+import com.rndmodgames.futtoboru.data.jobs.JobOffer;
+import com.rndmodgames.futtoboru.data.jobs.JobOpening;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 
 /**
@@ -103,7 +106,7 @@ public class SaveGame implements Serializable {
      *  - Basic Script:
      *      - Forms The League on [X DATE] with [X CLUBS] and [X RULES]
      */
-    List<Message> allMessages;
+    private List<Message> allMessages = new ArrayList<>();
     
     /**
      * Scripts Support
@@ -126,6 +129,13 @@ public class SaveGame implements Serializable {
     private List<Player> allPlayers = new ArrayList<>();
     
     /**
+     * Job System Data (v1.0)
+     */
+    private List<JobOpening> activeJobOpenings = new ArrayList<>();
+    private List<JobApplication> allApplications = new ArrayList<>();
+    private List<JobOffer> pendingOffers = new ArrayList<>();
+    
+    /**
      * Proposed Matches
      */
     
@@ -145,10 +155,13 @@ public class SaveGame implements Serializable {
 
     /**
      * Get Current Club Utility Method
+     * 
+     * Returns null if player is unemployed (no current club)
      */
     public Club getCurrentClub() {
-        
-        //
+        if (owner == null || owner.getCurrentClubId() == null) {
+            return null; // Player is unemployed
+        }
         return getClubById(owner.getCurrentClubId());
     }
     
@@ -158,18 +171,25 @@ public class SaveGame implements Serializable {
      *  - During ingame, do not use DatabaseLoader as the clubs returned will be static and not the saved on file
      */
     public Club getClubById(Long id) {
+        if (id == null) {
+            return null; // Null ID means no club
+        }
+        
+        if (allClubs == null) {
+            return null; // No clubs loaded
+        }
         
         for (Club club : allClubs) {
+            if (club == null || club.getId() == null) {
+                continue; // Skip null clubs or clubs with null IDs
+            }
             
             if (club.getId().equals(id)) {
-             
-                //
                 return club;
             }
         }
         
-        //
-        return null;
+        return null; // Club not found
     }
     
     //
@@ -268,5 +288,55 @@ public class SaveGame implements Serializable {
 
     public void setAllPlayers(List<Player> allPlayers) {
         this.allPlayers = allPlayers;
+    }
+    
+    /**
+     * Job System Getters and Setters (v1.0)
+     */
+    public List<JobOpening> getActiveJobOpenings() {
+        if (activeJobOpenings == null) {
+            activeJobOpenings = new ArrayList<>();
+        }
+        return activeJobOpenings;
+    }
+
+    public void setActiveJobOpenings(List<JobOpening> activeJobOpenings) {
+        this.activeJobOpenings = activeJobOpenings;
+    }
+
+    public List<JobApplication> getAllApplications() {
+        if (allApplications == null) {
+            allApplications = new ArrayList<>();
+        }
+        return allApplications;
+    }
+
+    public void setAllApplications(List<JobApplication> allApplications) {
+        this.allApplications = allApplications;
+    }
+
+    public List<JobOffer> getPendingOffers() {
+        if (pendingOffers == null) {
+            pendingOffers = new ArrayList<>();
+        }
+        return pendingOffers;
+    }
+
+    public void setPendingOffers(List<JobOffer> pendingOffers) {
+        this.pendingOffers = pendingOffers;
+    }
+    
+    /**
+     * Inbox Messages Getters and Setters
+     */
+    public List<Message> getAllMessages() {
+        if (allMessages == null) {
+            allMessages = new ArrayList<>();
+        }
+        return allMessages;
+    }
+
+    public void setAllMessages(List<Message> allMessages) {
+        this.allMessages = allMessages;
     }
 }

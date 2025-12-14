@@ -76,18 +76,19 @@ public class FuttoboruGameEngine {
      */
     public int getNextGameAction() {
 
-        // Current Club
+        // Current Club (can be null for unemployed players)
         Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
         
         /**
          * Check if Current Club has a MATCH TODAY
+         * NOTE: If player is unemployed (no club), skip match check
          */
-        boolean matchDay = scheduler.checkClubMatchDay(currentClub);
-        
-        //
-        if (matchDay) {
-
-            return MATCH_PREVIEW_ACTION;
+        if (currentClub != null) {
+            boolean matchDay = scheduler.checkClubMatchDay(currentClub);
+            
+            if (matchDay) {
+                return MATCH_PREVIEW_ACTION;
+            }
         }
 
         return CONTINUE_GAME_ACTION;
@@ -111,6 +112,12 @@ public class FuttoboruGameEngine {
         
         // Mark match as Played
         Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+        
+        // Null check: unemployed players don't have a club
+        if (currentClub == null || currentClub.getScheduledMatches() == null) {
+            Gdx.app.log("FuttoboruGameEngine", "Cannot process match result: player is unemployed (no club)");
+            return;
+        }
         
         // TODO: do not recreate the comparator every time
         Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
@@ -173,9 +180,14 @@ public class FuttoboruGameEngine {
         
         // Check Game Scripts
         scriptsManager.checkGameScripts();
-        
+
         // Check Competition Schedules
         authorityManager.checkCompetitionsSchedule();
+        
+        // Update Job Openings (v1.0)
+        if (gameInstance.getJobManager() != null) {
+            gameInstance.getJobManager().updateJobOpenings();
+        }
         
         /**
          * Current Club
@@ -206,9 +218,13 @@ public class FuttoboruGameEngine {
          * NOTE: this will be null on Unit Tests
          */
         if (mainMenuManager != null) {
-            
             mainMenuManager.updateDynamicComponents();
+            Gdx.app.log("FuttoboruGameEngine", "UI updated after continueGame()");
+        } else {
+            Gdx.app.log("FuttoboruGameEngine", "WARNING: mainMenuManager is null, UI not updated");
         }
+        
+        Gdx.app.log("FuttoboruGameEngine", "continueGame() completed. New date: " + gameInstance.getCurrentGame().getGameDate());
     }
 
     public CompetitionScheduler getCompetitionScheduler() {
