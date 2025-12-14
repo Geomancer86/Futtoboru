@@ -128,14 +128,27 @@ public class MyApplicationsScreenTable extends VisTable {
             
             // If offer received, add button to view offer
             if (application.getStatus() == ApplicationStatus.OFFER_RECEIVED) {
+                final com.rndmodgames.futtoboru.data.jobs.JobOpening finalJobOpening = jobOpening; // Make final for inner class
                 applicationsListTable.row();
                 VisTextButton viewOfferButton = new VisTextButton("View Offer");
-                viewOfferButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+                viewOfferButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                     @Override
-                    public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                        // Switch to job offer screen (will be handled by menu manager)
-                        if (menuManager != null) {
-                            menuManager.setActiveMainScreen(MainMenuManager.JOB_OFFER_SCREEN);
+                    public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                        return true;
+                    }
+                    
+                    @Override
+                    public void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                        if (viewOfferButton.isPressed()) {
+                            // Find the actual JobOffer object
+                            com.rndmodgames.futtoboru.data.jobs.JobOffer offer = jobManager.getPlayerOffers(currentGame.getOwner()).stream()
+                                .filter(o -> o.getJobOpeningId().equals(finalJobOpening.getId()))
+                                .findFirst().orElse(null);
+                            
+                            if (offer != null && menuManager != null) {
+                                menuManager.setCurrentNegotiationOffer(offer);
+                                menuManager.setActiveMainScreen(MainMenuManager.JOB_OFFER_SCREEN);
+                            }
                         }
                     }
                 });

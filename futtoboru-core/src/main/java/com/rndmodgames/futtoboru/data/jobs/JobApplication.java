@@ -52,6 +52,12 @@ public class JobApplication implements Serializable {
     
     public JobApplication(Person applicant, com.rndmodgames.futtoboru.data.jobs.JobOpening jobOpening) {
         this();
+        if (applicant == null || applicant.getId() == null) {
+            throw new IllegalArgumentException("JobApplication constructor: applicant or applicant.getId() is null!");
+        }
+        if (jobOpening == null || jobOpening.getId() == null) {
+            throw new IllegalArgumentException("JobApplication constructor: jobOpening or jobOpening.getId() is null!");
+        }
         this.applicantId = applicant.getId();
         this.jobOpeningId = jobOpening.getId();
     }

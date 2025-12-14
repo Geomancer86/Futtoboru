@@ -7,8 +7,8 @@ package com.rndmodgames.futtoboru.data.jobs;
  */
 public class JobConstants {
     
-    // Application limits
-    public static final int MAX_APPLICATIONS_PER_WEEK = 3;
+    // Application limits (set to very high number to effectively allow unlimited applications)
+    public static final int MAX_APPLICATIONS_PER_WEEK = 999; // Effectively unlimited
     
     // Offer expiration
     public static final int OFFER_EXPIRATION_DAYS = 7;

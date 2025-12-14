@@ -145,17 +145,28 @@ public class JobOfferScreenTable extends VisTable {
             
             // Accept button
             VisTextButton acceptButton = new VisTextButton("Accept");
-            acceptButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            acceptButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                 @Override
-                public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                    if (jobManager != null) {
-                        jobManager.acceptOffer(offer);
-                        Gdx.app.log("JobOfferScreenTable", "Accepted offer: " + offer.getId());
-                        // Refresh menu to show manager screens
-                        if (menuManager != null) {
-                            menuManager.setDynamicButtonsMenu();
+                public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                    return true;
+                }
+                
+                @Override
+                public void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                    if (acceptButton.isPressed() && jobManager != null) {
+                        boolean success = jobManager.acceptOffer(offer);
+                        if (success) {
+                            Gdx.app.log("JobOfferScreenTable", "Accepted offer: " + offer.getId());
+                            System.out.println("[JobOfferScreenTable] Offer accepted successfully");
+                            // Refresh menu to show manager screens
+                            if (menuManager != null) {
+                                menuManager.setDynamicButtonsMenu();
+                            }
+                            updateDynamicComponents();
+                        } else {
+                            Gdx.app.error("JobOfferScreenTable", "Failed to accept offer: " + offer.getId());
+                            System.err.println("[JobOfferScreenTable] ERROR: Failed to accept offer!");
                         }
-                        updateDynamicComponents();
                     }
                 }
             });
@@ -163,10 +174,15 @@ public class JobOfferScreenTable extends VisTable {
             
             // Reject button
             VisTextButton rejectButton = new VisTextButton("Reject");
-            rejectButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            rejectButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                 @Override
-                public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                    if (jobManager != null) {
+                public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                    return true;
+                }
+                
+                @Override
+                public void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                    if (rejectButton.isPressed() && jobManager != null) {
                         jobManager.rejectOffer(offer);
                         Gdx.app.log("JobOfferScreenTable", "Rejected offer: " + offer.getId());
                         updateDynamicComponents();
@@ -179,10 +195,15 @@ public class JobOfferScreenTable extends VisTable {
             LocalDateTime gameDate = currentGame != null ? currentGame.getGameDate() : null;
             if (offer.canNegotiate(gameDate)) {
                 VisTextButton negotiateButton = new VisTextButton("Negotiate");
-                negotiateButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+                negotiateButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                     @Override
-                    public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                        if (menuManager != null) {
+                    public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                        return true;
+                    }
+                    
+                    @Override
+                    public void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                        if (negotiateButton.isPressed() && menuManager != null) {
                             // Store current offer for negotiation screen
                             menuManager.setCurrentNegotiationOffer(offer);
                             menuManager.setActiveMainScreen(MainMenuManager.NEGOTIATION_SCREEN);

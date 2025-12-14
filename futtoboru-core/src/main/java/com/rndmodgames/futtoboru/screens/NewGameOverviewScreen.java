@@ -409,6 +409,45 @@ public class NewGameOverviewScreen implements Screen {
                         Gdx.app.error("NewGameOverviewScreen", "ERROR: currentGame.getOwner() is NULL!");
                         throw new IllegalStateException("Game owner is null. Manager must be created before starting game.");
                     }
+                    
+                    // CRITICAL: Ensure owner has an ID for job system to work
+                    if (currentGame.getOwner().getId() == null) {
+                        Gdx.app.log("NewGameOverviewScreen", "Step 4a: Owner has no ID, assigning unique ID...");
+                        // Generate a unique ID (use negative range to avoid conflicts with database-loaded persons)
+                        // Find the highest existing person ID, or use -1 as starting point
+                        Long maxId = -1L;
+                        if (currentGame.getAllPersons() != null && !currentGame.getAllPersons().isEmpty()) {
+                            for (com.rndmodgames.futtoboru.data.Person p : currentGame.getAllPersons()) {
+                                if (p != null && p.getId() != null && p.getId() < 0 && p.getId() < maxId) {
+                                    maxId = p.getId();
+                                }
+                            }
+                        }
+                        // Assign ID (decrement from maxId, so -1, -2, -3, etc.)
+                        Long newOwnerId = maxId - 1;
+                        currentGame.getOwner().setId(newOwnerId);
+                        Gdx.app.log("NewGameOverviewScreen", "Step 4a: Assigned owner ID: " + newOwnerId);
+                        System.out.println("[NewGameOverviewScreen] Assigned owner ID: " + newOwnerId);
+                        
+                        // Add owner to allPersons list if not already there
+                        if (currentGame.getAllPersons() == null) {
+                            currentGame.setAllPersons(new ArrayList<>());
+                        }
+                        boolean ownerInList = false;
+                        for (com.rndmodgames.futtoboru.data.Person p : currentGame.getAllPersons()) {
+                            if (p != null && p.getId() != null && p.getId().equals(newOwnerId)) {
+                                ownerInList = true;
+                                break;
+                            }
+                        }
+                        if (!ownerInList) {
+                            currentGame.getAllPersons().add(currentGame.getOwner());
+                            Gdx.app.log("NewGameOverviewScreen", "Step 4a: Added owner to allPersons list");
+                        }
+                    } else {
+                        Gdx.app.log("NewGameOverviewScreen", "Step 4a: Owner already has ID: " + currentGame.getOwner().getId());
+                    }
+                    
                     if (primaryProfession == null) {
                         Gdx.app.error("NewGameOverviewScreen", "ERROR: primaryProfession is NULL!");
                         throw new IllegalStateException("Primary profession is null.");

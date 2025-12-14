@@ -76,10 +76,12 @@ public class MainMenuManager {
     public static final int MATCH_HISTORY_SCREEN = 30000;
     
     // Job System Screens (v1.0)
-    public static final int JOB_BOARD_SCREEN = 10001;
-    public static final int MY_APPLICATIONS_SCREEN = 10002;
-    public static final int JOB_OFFER_SCREEN = 10003;
-    public static final int NEGOTIATION_SCREEN = 10004;
+    public static final int CLUB_BROWSER_SCREEN = 10001;
+    public static final int CLUB_DETAIL_SCREEN = 10002;
+    public static final int JOB_BOARD_SCREEN = 10003;
+    public static final int MY_APPLICATIONS_SCREEN = 10004;
+    public static final int JOB_OFFER_SCREEN = 10005;
+    public static final int NEGOTIATION_SCREEN = 10006;
         
     //
     public static int PREVIOUS_SCREEN = -1; //
@@ -102,6 +104,7 @@ public class MainMenuManager {
     private VisTextButton competitionsButton = null;
     
     // Job System Buttons (v1.0)
+    private VisTextButton clubBrowserButton = null;
     private VisTextButton jobBoardButton = null;
     private VisTextButton myApplicationsButton = null;
     
@@ -120,10 +123,16 @@ public class MainMenuManager {
     private CompetitionsScreenTable competitionsScreenTable = null;
     
     // Job System Screens (v1.0)
+    private com.rndmodgames.futtoboru.tables.jobs.ClubBrowserScreenTable clubBrowserScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.club.ClubDetailScreenTable clubDetailScreenTable = null;
     private com.rndmodgames.futtoboru.tables.jobs.JobBoardScreenTable jobBoardScreenTable = null;
     private com.rndmodgames.futtoboru.tables.jobs.MyApplicationsScreenTable myApplicationsScreenTable = null;
     private com.rndmodgames.futtoboru.tables.jobs.JobOfferScreenTable jobOfferScreenTable = null;
     private com.rndmodgames.futtoboru.tables.jobs.NegotiationScreenTable negotiationScreenTable = null;
+    
+    // Selected club for detail view and job application
+    private Club selectedClubForDetail = null;
+    private Club selectedClubForJobApplication = null;
     
     /**
      * 
@@ -152,12 +161,16 @@ public class MainMenuManager {
         competitionsScreenTable = new CompetitionsScreenTable(game);
         
         // Job System Screens (v1.0)
+        clubBrowserScreenTable = new com.rndmodgames.futtoboru.tables.jobs.ClubBrowserScreenTable(game);
+        clubDetailScreenTable = new com.rndmodgames.futtoboru.tables.club.ClubDetailScreenTable(game);
         jobBoardScreenTable = new com.rndmodgames.futtoboru.tables.jobs.JobBoardScreenTable(game);
         myApplicationsScreenTable = new com.rndmodgames.futtoboru.tables.jobs.MyApplicationsScreenTable(game);
         jobOfferScreenTable = new com.rndmodgames.futtoboru.tables.jobs.JobOfferScreenTable(game);
         negotiationScreenTable = new com.rndmodgames.futtoboru.tables.jobs.NegotiationScreenTable(game);
         
         // Set menu manager references
+        clubBrowserScreenTable.setMenuManager(this);
+        clubDetailScreenTable.setMenuManager(this);
         jobOfferScreenTable.setMenuManager(this);
         negotiationScreenTable.setMenuManager(this);
         myApplicationsScreenTable.setMenuManager(this);
@@ -176,6 +189,7 @@ public class MainMenuManager {
         competitionsButton = new CompetitionsButton(this);
         
         // Job System Buttons (v1.0)
+        clubBrowserButton = new com.rndmodgames.futtoboru.menu.buttons.ClubBrowserButton(this);
         jobBoardButton = new com.rndmodgames.futtoboru.menu.buttons.JobBoardButton(this);
         myApplicationsButton = new com.rndmodgames.futtoboru.menu.buttons.MyApplicationsButton(this);
         
@@ -214,6 +228,9 @@ public class MainMenuManager {
             buttonsMenu.row();
             
             // Job System (v1.0)
+            buttonsMenu.add(clubBrowserButton).fill();
+            buttonsMenu.row();
+            
             buttonsMenu.add(jobBoardButton).fill();
             buttonsMenu.row();
             
@@ -466,6 +483,79 @@ public class MainMenuManager {
             
             break;
         
+        // Job System Screens (v1.0)
+        case CLUB_BROWSER_SCREEN:
+            clubBrowserScreenTable.updateDynamicComponents();
+            parentTable.add(clubBrowserScreenTable).grow();
+            break;
+            
+        case CLUB_DETAIL_SCREEN:
+            Gdx.app.log("MainMenuManager", "=== Switching to CLUB_DETAIL_SCREEN ===");
+            System.out.println("[MainMenuManager] ===== Switching to CLUB_DETAIL_SCREEN =====");
+            System.out.println("[MainMenuManager] clubDetailScreenTable: " + (clubDetailScreenTable != null ? "OK" : "NULL"));
+            System.out.println("[MainMenuManager] selectedClubForDetail: " + (selectedClubForDetail != null ? selectedClubForDetail.getName() : "NULL"));
+            
+            if (selectedClubForDetail != null) {
+                Gdx.app.log("MainMenuManager", "Calling updateDynamicComponents with club: " + selectedClubForDetail.getName());
+                System.out.println("[MainMenuManager] Calling updateDynamicComponents...");
+                clubDetailScreenTable.updateDynamicComponents(selectedClubForDetail);
+                
+                Gdx.app.log("MainMenuManager", "Adding clubDetailScreenTable to parentTable...");
+                System.out.println("[MainMenuManager] Adding clubDetailScreenTable to parentTable...");
+                parentTable.add(clubDetailScreenTable).grow();
+                
+                Gdx.app.log("MainMenuManager", "Screen added successfully");
+                System.out.println("[MainMenuManager] CLUB_DETAIL_SCREEN added to parentTable");
+            } else {
+                Gdx.app.error("MainMenuManager", "No club selected for detail view");
+                System.err.println("[MainMenuManager] ERROR: No club selected, redirecting to CLUB_BROWSER_SCREEN");
+                setActiveMainScreen(CLUB_BROWSER_SCREEN);
+            }
+            break;
+            
+        case JOB_BOARD_SCREEN:
+            System.err.println("[MainMenuManager] ===== Switching to JOB_BOARD_SCREEN =====");
+            System.err.println("[MainMenuManager] jobBoardScreenTable: " + (jobBoardScreenTable != null ? "OK" : "NULL"));
+            System.err.flush();
+            System.out.println("[MainMenuManager] ===== Switching to JOB_BOARD_SCREEN =====");
+            System.out.flush();
+            Gdx.app.log("MainMenuManager", "=== Switching to JOB_BOARD_SCREEN ===");
+            
+            if (jobBoardScreenTable != null) {
+                Gdx.app.log("MainMenuManager", "Calling updateDynamicComponents...");
+                System.out.println("[MainMenuManager] Calling updateDynamicComponents...");
+                jobBoardScreenTable.updateDynamicComponents();
+                
+                Gdx.app.log("MainMenuManager", "Adding jobBoardScreenTable to parentTable...");
+                System.out.println("[MainMenuManager] Adding jobBoardScreenTable to parentTable...");
+                parentTable.add(jobBoardScreenTable).grow();
+                
+                Gdx.app.log("MainMenuManager", "Screen added successfully");
+                System.out.println("[MainMenuManager] JOB_BOARD_SCREEN added to parentTable");
+            } else {
+                Gdx.app.error("MainMenuManager", "jobBoardScreenTable is NULL!");
+                System.err.println("[MainMenuManager] ERROR: jobBoardScreenTable is NULL!");
+            }
+            break;
+            
+        case MY_APPLICATIONS_SCREEN:
+            myApplicationsScreenTable.updateDynamicComponents();
+            parentTable.add(myApplicationsScreenTable).grow();
+            break;
+            
+        case JOB_OFFER_SCREEN:
+            jobOfferScreenTable.updateDynamicComponents();
+            parentTable.add(jobOfferScreenTable).grow();
+            break;
+            
+        case NEGOTIATION_SCREEN:
+            if (currentNegotiationOffer != null) {
+                negotiationScreenTable.setCurrentOffer(currentNegotiationOffer);
+            }
+            negotiationScreenTable.updateDynamicComponents();
+            parentTable.add(negotiationScreenTable).grow();
+            break;
+        
         //
         default:
             System.out.println("SCREEN NOT SET UP");
@@ -523,5 +613,33 @@ public class MainMenuManager {
      */
     public void setCurrentNegotiationOffer(com.rndmodgames.futtoboru.data.jobs.JobOffer offer) {
         this.currentNegotiationOffer = offer;
+    }
+    
+    /**
+     * Set selected club for detail view (v1.0)
+     */
+    public void setSelectedClubForDetail(Club club) {
+        this.selectedClubForDetail = club;
+    }
+    
+    /**
+     * Set selected club for job application (v1.0)
+     */
+    public void setSelectedClubForJobApplication(Club club) {
+        this.selectedClubForJobApplication = club;
+    }
+    
+    /**
+     * Get selected club for detail view (v1.0)
+     */
+    public Club getSelectedClubForDetail() {
+        return selectedClubForDetail;
+    }
+    
+    /**
+     * Get selected club for job application (v1.0)
+     */
+    public Club getSelectedClubForJobApplication() {
+        return selectedClubForJobApplication;
     }
 }

@@ -331,12 +331,45 @@ public class JobManager {
             return;
         }
         
-        // Expire old openings
         LocalDateTime gameDate = currentGame.getGameDate();
+        
+        Gdx.app.log("JobManager", "=== updateJobOpenings START ===");
+        System.out.println("[JobManager] Daily update: " + gameDate);
+        
+        // Expire old openings
         for (JobOpening opening : new ArrayList<>(currentGame.getActiveJobOpenings())) {
             if (opening.isExpired(gameDate)) {
                 opening.setStatus(JobStatus.EXPIRED);
                 Gdx.app.log("JobManager", "Expired job opening: " + opening.getId());
+                System.out.println("[JobManager] Expired job opening: " + opening.getId());
+            }
+        }
+        
+        // Process pending applications (v1.0: instant processing, but check daily for any missed)
+        if (currentGame.getAllApplications() != null) {
+            int processedCount = 0;
+            for (JobApplication application : new ArrayList<>(currentGame.getAllApplications())) {
+                if (application == null) {
+                    continue;
+                }
+                
+                // Process applications that are still pending
+                if (application.getStatus() == ApplicationStatus.PENDING) {
+                    try {
+                        Gdx.app.log("JobManager", "Processing pending application: " + application.getId());
+                        System.out.println("[JobManager] Processing pending application: " + application.getId());
+                        processApplication(application);
+                        processedCount++;
+                    } catch (Exception e) {
+                        Gdx.app.error("JobManager", "ERROR processing application " + application.getId() + " in daily update!", e);
+                        System.err.println("[JobManager] ERROR processing application " + application.getId() + ":");
+                        e.printStackTrace();
+                    }
+                }
+            }
+            if (processedCount > 0) {
+                Gdx.app.log("JobManager", "Processed " + processedCount + " pending applications");
+                System.out.println("[JobManager] Processed " + processedCount + " pending applications");
             }
         }
         
@@ -363,6 +396,8 @@ public class JobManager {
                 }
             }
         }
+        
+        Gdx.app.log("JobManager", "=== updateJobOpenings COMPLETE ===");
     }
 
     // ========== Applications ==========
@@ -375,58 +410,181 @@ public class JobManager {
      * @return The created application, or null if application failed
      */
     public JobApplication applyForJob(Person applicant, JobOpening jobOpening) {
-        if (applicant == null || jobOpening == null) {
-            return null;
-        }
-        
-        // Validate application
-        if (!applicant.canApplyForJob()) {
-            Gdx.app.log("JobManager", "Application limit reached for " + applicant.getName());
-            return null;
-        }
-        
-        LocalDateTime gameDate = currentGame.getGameDate();
-        if (!jobOpening.isAcceptingApplications(gameDate)) {
-            Gdx.app.log("JobManager", "Job opening not accepting applications: " + jobOpening.getId());
-            return null;
-        }
-        
-        // Check if already applied
-        for (JobApplication existing : getPlayerApplications(applicant)) {
-            if (existing.getJobOpeningId().equals(jobOpening.getId()) && 
-                existing.isActive()) {
-                Gdx.app.log("JobManager", "Already applied for job: " + jobOpening.getId());
-                return existing;
+        try {
+            Gdx.app.log("JobManager", "=== applyForJob START ===");
+            Gdx.app.log("JobManager", "Applicant: " + (applicant != null ? applicant.getName() : "NULL"));
+            Gdx.app.log("JobManager", "JobOpening: " + (jobOpening != null ? jobOpening.getId() : "NULL"));
+            
+            if (applicant == null || jobOpening == null) {
+                Gdx.app.error("JobManager", "applyForJob: applicant or jobOpening is null!");
+                System.err.println("[JobManager] ERROR: applyForJob called with null parameters!");
+                return null;
             }
+            
+            if (currentGame == null) {
+                Gdx.app.error("JobManager", "applyForJob: currentGame is null!");
+                System.err.println("[JobManager] ERROR: currentGame is null!");
+                return null;
+            }
+            
+            Gdx.app.log("JobManager", "Step 1: Getting game date...");
+            LocalDateTime gameDate = currentGame.getGameDate();
+            if (gameDate == null) {
+                Gdx.app.error("JobManager", "applyForJob: gameDate is null!");
+                System.err.println("[JobManager] ERROR: gameDate is null!");
+                return null;
+            }
+            
+            Gdx.app.log("JobManager", "Step 2: Validating application limits...");
+            // Validate application (use game date, not real-world time)
+            if (!applicant.canApplyForJob(gameDate)) {
+                Gdx.app.log("JobManager", "Application limit reached for " + applicant.getName() + 
+                           " (applications this week: " + applicant.getApplicationsThisWeek() + "/3)");
+                System.err.println("[JobManager] ERROR: Application limit reached! " + 
+                                 applicant.getApplicationsThisWeek() + "/3 applications this week.");
+                return null;
+            }
+            
+            Gdx.app.log("JobManager", "Step 3: Checking if job opening accepts applications...");
+            if (gameDate == null) {
+                Gdx.app.error("JobManager", "applyForJob: gameDate is null!");
+                System.err.println("[JobManager] ERROR: gameDate is null!");
+                return null;
+            }
+            
+            if (!jobOpening.isAcceptingApplications(gameDate)) {
+                Gdx.app.log("JobManager", "Job opening not accepting applications: " + jobOpening.getId());
+                return null;
+            }
+            
+            Gdx.app.log("JobManager", "Step 3: Checking for existing applications...");
+            // Check if already applied
+            List<JobApplication> playerApplications = getPlayerApplications(applicant);
+            if (playerApplications != null) {
+                for (JobApplication existing : playerApplications) {
+                    if (existing != null && existing.getJobOpeningId() != null && 
+                        existing.getJobOpeningId().equals(jobOpening.getId()) && 
+                        existing.isActive()) {
+                        Gdx.app.log("JobManager", "Already applied for job: " + jobOpening.getId());
+                        return existing;
+                    }
+                }
+            }
+            
+            Gdx.app.log("JobManager", "Step 5: Validating applicant and jobOpening IDs...");
+            // Validate applicant and jobOpening have IDs before creating application
+            if (applicant.getId() == null) {
+                Gdx.app.error("JobManager", "CRITICAL: Applicant ID is null! Cannot create application.");
+                System.err.println("[JobManager] CRITICAL ERROR: Applicant ID is null!");
+                return null;
+            }
+            if (jobOpening.getId() == null) {
+                Gdx.app.error("JobManager", "CRITICAL: JobOpening ID is null! Cannot create application.");
+                System.err.println("[JobManager] CRITICAL ERROR: JobOpening ID is null!");
+                return null;
+            }
+            
+            Gdx.app.log("JobManager", "Step 6: Creating new application...");
+            // Create application
+            JobApplication application;
+            try {
+                application = new JobApplication(applicant, jobOpening);
+            } catch (IllegalArgumentException e) {
+                Gdx.app.error("JobManager", "Failed to create JobApplication: " + e.getMessage(), e);
+                System.err.println("[JobManager] ERROR: Failed to create JobApplication: " + e.getMessage());
+                e.printStackTrace();
+                return null;
+            }
+            
+            if (application == null) {
+                Gdx.app.error("JobManager", "Failed to create JobApplication object!");
+                System.err.println("[JobManager] ERROR: Failed to create JobApplication!");
+                return null;
+            }
+            
+            // Double-check applicantId was set correctly
+            if (application.getApplicantId() == null) {
+                Gdx.app.error("JobManager", "CRITICAL: Application created but applicantId is null! Setting manually...");
+                System.err.println("[JobManager] CRITICAL ERROR: Application applicantId is null! Attempting to fix...");
+                application.setApplicantId(applicant.getId());
+                if (application.getApplicantId() == null) {
+                    Gdx.app.error("JobManager", "CRITICAL: Could not set applicantId! Aborting application creation.");
+                    System.err.println("[JobManager] CRITICAL ERROR: Could not set applicantId!");
+                    return null;
+                }
+            }
+            
+            application.setId(nextId++);
+            application.setApplicationDate(gameDate);
+            
+            Gdx.app.log("JobManager", "Step 7: Calculating match percentage...");
+            // Calculate match percentage (v1.0: simple - based on reputation)
+            Integer matchPercentage = calculateMatchPercentage(applicant, jobOpening);
+            application.setMatchPercentage(matchPercentage);
+            Gdx.app.log("JobManager", "Match percentage: " + matchPercentage + "%");
+            
+            Gdx.app.log("JobManager", "Step 8: Adding application to SaveGame...");
+            // Add to SaveGame
+            if (currentGame.getAllApplications() == null) {
+                Gdx.app.error("JobManager", "getAllApplications() returned null! Initializing...");
+                System.err.println("[JobManager] ERROR: getAllApplications() is null!");
+                // This should not happen, but let's be safe
+                return null;
+            }
+            currentGame.getAllApplications().add(application);
+            
+            Gdx.app.log("JobManager", "Step 9: Adding application ID to job opening...");
+            // Add to job opening
+            if (jobOpening.getApplicationIds() == null) {
+                Gdx.app.error("JobManager", "jobOpening.getApplicationIds() returned null!");
+                System.err.println("[JobManager] ERROR: jobOpening.getApplicationIds() is null!");
+                return null;
+            }
+            jobOpening.getApplicationIds().add(application.getId());
+            
+            Gdx.app.log("JobManager", "Step 10: Updating applicant records...");
+            // Update applicant
+            if (applicant.getActiveApplicationIds() == null) {
+                Gdx.app.error("JobManager", "applicant.getActiveApplicationIds() returned null!");
+                System.err.println("[JobManager] ERROR: applicant.getActiveApplicationIds() is null!");
+                return null;
+            }
+            applicant.getActiveApplicationIds().add(application.getId());
+            applicant.incrementApplicationCount(gameDate); // Use game date, not real-world time
+            
+            Gdx.app.log("JobManager", "Application created successfully: " + applicant.getName() + 
+                       " for job " + jobOpening.getId());
+            System.out.println("[JobManager] Application created: " + applicant.getName() + 
+                             " for job " + jobOpening.getId());
+            
+            Gdx.app.log("JobManager", "Step 11: Processing application...");
+            // Process application (v1.0: instant processing)
+            if (JobConstants.APPLICATION_PROCESSING_DELAY_DAYS == 0) {
+                try {
+                    processApplication(application);
+                    Gdx.app.log("JobManager", "Application processed successfully.");
+                } catch (Exception e) {
+                    Gdx.app.error("JobManager", "ERROR processing application!", e);
+                    System.err.println("[JobManager] ERROR processing application:");
+                    e.printStackTrace();
+                    // Don't return null - application was created, just processing failed
+                }
+            }
+            
+            Gdx.app.log("JobManager", "=== applyForJob SUCCESS ===");
+            return application;
+            
+        } catch (Exception e) {
+            Gdx.app.error("JobManager", "CRITICAL ERROR in applyForJob!", e);
+            System.err.println("========================================");
+            System.err.println("[JobManager] CRITICAL ERROR in applyForJob!");
+            System.err.println("Exception: " + e.getClass().getName());
+            System.err.println("Message: " + e.getMessage());
+            System.err.println("========================================");
+            e.printStackTrace();
+            System.err.println("========================================");
+            return null;
         }
-        
-        // Create application
-        JobApplication application = new JobApplication(applicant, jobOpening);
-        application.setId(nextId++);
-        application.setApplicationDate(currentGame.getGameDate());
-        
-        // Calculate match percentage (v1.0: simple - based on reputation)
-        application.setMatchPercentage(calculateMatchPercentage(applicant, jobOpening));
-        
-        // Add to SaveGame
-        currentGame.getAllApplications().add(application);
-        
-        // Add to job opening
-        jobOpening.getApplicationIds().add(application.getId());
-        
-        // Update applicant
-        applicant.getActiveApplicationIds().add(application.getId());
-        applicant.incrementApplicationCount();
-        
-        Gdx.app.log("JobManager", "Application created: " + applicant.getName() + 
-                   " for job " + jobOpening.getId());
-        
-        // Process application (v1.0: instant processing)
-        if (JobConstants.APPLICATION_PROCESSING_DELAY_DAYS == 0) {
-            processApplication(application);
-        }
-        
-        return application;
     }
 
     /**
@@ -462,12 +620,14 @@ public class JobManager {
      * @return List of applications
      */
     public List<JobApplication> getPlayerApplications(Person player) {
-        if (player == null || currentGame == null || currentGame.getAllApplications() == null) {
+        if (player == null || player.getId() == null || currentGame == null || currentGame.getAllApplications() == null) {
+            Gdx.app.log("JobManager", "getPlayerApplications: Invalid parameters, returning empty list");
             return new ArrayList<>();
         }
         
+        Long playerId = player.getId();
         return currentGame.getAllApplications().stream()
-            .filter(app -> app.getApplicantId().equals(player.getId()))
+            .filter(app -> app != null && app.getApplicantId() != null && app.getApplicantId().equals(playerId))
             .collect(Collectors.toList());
     }
 
@@ -477,34 +637,83 @@ public class JobManager {
      * @param application The application
      */
     private void processApplication(JobApplication application) {
-        if (application.getStatus() != ApplicationStatus.PENDING) {
-            return;
-        }
-        
-        JobOpening jobOpening = getJobOpeningById(application.getJobOpeningId());
-        if (jobOpening == null) {
-            return;
-        }
-        
-        Person applicant = getPersonById(application.getApplicantId());
-        if (applicant == null) {
-            return;
-        }
-        
-        // v1.0: Simple logic - make offer if match percentage >= 70%
-        if (application.getMatchPercentage() != null && application.getMatchPercentage() >= 70) {
-            // Make offer
-            JobOffer offer = makeOffer(jobOpening, applicant);
-            if (offer != null) {
-                application.setStatus(ApplicationStatus.OFFER_RECEIVED);
-                Gdx.app.log("JobManager", "Offer made for application: " + application.getId());
-            } else {
-                application.setStatus(ApplicationStatus.REJECTED);
+        try {
+            Gdx.app.log("JobManager", "=== processApplication START ===");
+            Gdx.app.log("JobManager", "Application ID: " + (application != null ? application.getId() : "NULL"));
+            
+            if (application == null) {
+                Gdx.app.error("JobManager", "processApplication: application is null!");
+                System.err.println("[JobManager] ERROR: processApplication called with null application!");
+                return;
             }
-        } else {
-            // Reject application
-            application.setStatus(ApplicationStatus.REJECTED);
-            Gdx.app.log("JobManager", "Application rejected: " + application.getId());
+            
+            if (application.getStatus() != ApplicationStatus.PENDING) {
+                Gdx.app.log("JobManager", "Application status is not PENDING: " + application.getStatus());
+                return;
+            }
+            
+            Gdx.app.log("JobManager", "Step 1: Getting job opening...");
+            JobOpening jobOpening = getJobOpeningById(application.getJobOpeningId());
+            if (jobOpening == null) {
+                Gdx.app.error("JobManager", "processApplication: jobOpening not found for ID: " + application.getJobOpeningId());
+                System.err.println("[JobManager] ERROR: jobOpening not found!");
+                return;
+            }
+            Gdx.app.log("JobManager", "Job opening found: " + jobOpening.getId());
+            
+            Gdx.app.log("JobManager", "Step 2: Getting applicant...");
+            Person applicant = getPersonById(application.getApplicantId());
+            if (applicant == null) {
+                Gdx.app.error("JobManager", "processApplication: applicant not found for ID: " + application.getApplicantId());
+                System.err.println("[JobManager] ERROR: applicant not found!");
+                return;
+            }
+            Gdx.app.log("JobManager", "Applicant found: " + applicant.getName());
+            
+            Gdx.app.log("JobManager", "Step 3: Checking match percentage...");
+            Integer matchPercentage = application.getMatchPercentage();
+            Gdx.app.log("JobManager", "Match percentage: " + (matchPercentage != null ? matchPercentage + "%" : "NULL"));
+            
+            // v1.0: Simple logic - make offer if match percentage >= 70%
+            if (matchPercentage != null && matchPercentage >= 70) {
+                Gdx.app.log("JobManager", "Match percentage is sufficient, making offer...");
+                // Make offer
+                try {
+                    JobOffer offer = makeOffer(jobOpening, applicant);
+                    if (offer != null) {
+                        application.setStatus(ApplicationStatus.OFFER_RECEIVED);
+                        Gdx.app.log("JobManager", "Offer made successfully for application: " + application.getId());
+                        System.out.println("[JobManager] Offer made for application: " + application.getId());
+                    } else {
+                        Gdx.app.error("JobManager", "makeOffer returned null for application: " + application.getId());
+                        System.err.println("[JobManager] ERROR: makeOffer returned null!");
+                        application.setStatus(ApplicationStatus.REJECTED);
+                    }
+                } catch (Exception e) {
+                    Gdx.app.error("JobManager", "ERROR in makeOffer!", e);
+                    System.err.println("[JobManager] ERROR in makeOffer:");
+                    e.printStackTrace();
+                    application.setStatus(ApplicationStatus.REJECTED);
+                }
+            } else {
+                // Reject application
+                Gdx.app.log("JobManager", "Match percentage too low, rejecting application...");
+                application.setStatus(ApplicationStatus.REJECTED);
+                Gdx.app.log("JobManager", "Application rejected: " + application.getId() + " (match: " + matchPercentage + "%)");
+                System.out.println("[JobManager] Application rejected: " + application.getId());
+            }
+            
+            Gdx.app.log("JobManager", "=== processApplication SUCCESS ===");
+            
+        } catch (Exception e) {
+            Gdx.app.error("JobManager", "CRITICAL ERROR in processApplication!", e);
+            System.err.println("========================================");
+            System.err.println("[JobManager] CRITICAL ERROR in processApplication!");
+            System.err.println("Exception: " + e.getClass().getName());
+            System.err.println("Message: " + e.getMessage());
+            System.err.println("========================================");
+            e.printStackTrace();
+            System.err.println("========================================");
         }
     }
 
@@ -573,12 +782,14 @@ public class JobManager {
      * @return List of offers
      */
     public List<JobOffer> getPlayerOffers(Person player) {
-        if (player == null || currentGame == null || currentGame.getPendingOffers() == null) {
+        if (player == null || player.getId() == null || currentGame == null || currentGame.getPendingOffers() == null) {
+            Gdx.app.log("JobManager", "getPlayerOffers: Invalid parameters, returning empty list");
             return new ArrayList<>();
         }
         
+        Long playerId = player.getId();
         return currentGame.getPendingOffers().stream()
-            .filter(offer -> offer.getRecipientId().equals(player.getId()))
+            .filter(offer -> offer != null && offer.getRecipientId() != null && offer.getRecipientId().equals(playerId))
             .filter(offer -> offer.getStatus() == OfferStatus.PENDING || 
                             offer.getStatus() == OfferStatus.NEGOTIATING)
             .collect(Collectors.toList());
@@ -587,35 +798,103 @@ public class JobManager {
     /**
      * Accept a job offer
      * 
+     * CRITICAL: Only allows one active job at a time. Accepting a new job automatically:
+     * - Cancels all other pending offers
+     * - Rejects all other pending applications
+     * - Removes person from previous club (if employed)
+     * 
      * @param offer The offer
+     * @return true if accepted successfully, false if failed
      */
-    public void acceptOffer(JobOffer offer) {
+    public boolean acceptOffer(JobOffer offer) {
         if (offer == null || offer.getStatus() != OfferStatus.PENDING) {
-            return;
+            Gdx.app.error("JobManager", "acceptOffer: Invalid offer or status not PENDING");
+            return false;
         }
         
         JobOpening jobOpening = getJobOpeningById(offer.getJobOpeningId());
         if (jobOpening == null) {
-            return;
+            Gdx.app.error("JobManager", "acceptOffer: Job opening not found");
+            return false;
         }
         
         Person recipient = getPersonById(offer.getRecipientId());
         if (recipient == null) {
-            return;
+            Gdx.app.error("JobManager", "acceptOffer: Recipient not found");
+            return false;
         }
         
         Club club = currentGame.getClubById(jobOpening.getClubId());
         if (club == null) {
-            return;
+            Gdx.app.error("JobManager", "acceptOffer: Club not found");
+            return false;
         }
         
         Profession profession = DatabaseLoader.getProfessionById(jobOpening.getProfessionId());
         if (profession == null) {
-            return;
+            Gdx.app.error("JobManager", "acceptOffer: Profession not found");
+            return false;
         }
         
-        // Hire the person
+        Gdx.app.log("JobManager", "=== acceptOffer START ===");
+        Gdx.app.log("JobManager", "Recipient: " + recipient.getName());
+        Gdx.app.log("JobManager", "Club: " + club.getName());
+        Gdx.app.log("JobManager", "Profession: " + profession.getName());
+        
+        // CRITICAL FIX: Check if person already has a job
+        if (recipient.getCurrentClubId() != null) {
+            Club currentClub = currentGame.getClubById(recipient.getCurrentClubId());
+            if (currentClub != null) {
+                Gdx.app.log("JobManager", "Person already employed at: " + currentClub.getName());
+                System.out.println("[JobManager] WARNING: Person already employed at " + currentClub.getName() + 
+                                 ". Removing from previous club...");
+                
+                // Remove from previous club (set staff to null for that profession)
+                clubStaffManager.setClubStaff(currentClub, profession, null);
+                recipient.setCurrentClubId(null);
+                Gdx.app.log("JobManager", "Removed from previous club");
+            }
+        }
+        
+        // CRITICAL FIX: Cancel ALL other pending offers
+        Gdx.app.log("JobManager", "Cancelling all other pending offers...");
+        int cancelledOffers = 0;
+        for (JobOffer otherOffer : new ArrayList<>(currentGame.getPendingOffers())) {
+            if (otherOffer != null && 
+                otherOffer.getRecipientId() != null && 
+                otherOffer.getRecipientId().equals(recipient.getId()) &&
+                !otherOffer.getId().equals(offer.getId()) &&
+                (otherOffer.getStatus() == OfferStatus.PENDING || otherOffer.getStatus() == OfferStatus.NEGOTIATING)) {
+                
+                otherOffer.setStatus(OfferStatus.REJECTED);
+                recipient.getPendingOfferIds().remove(otherOffer.getId());
+                cancelledOffers++;
+                Gdx.app.log("JobManager", "Cancelled offer: " + otherOffer.getId());
+            }
+        }
+        System.out.println("[JobManager] Cancelled " + cancelledOffers + " other pending offers");
+        
+        // CRITICAL FIX: Reject ALL other pending applications
+        Gdx.app.log("JobManager", "Rejecting all other pending applications...");
+        int rejectedApps = 0;
+        for (JobApplication app : currentGame.getAllApplications()) {
+            if (app != null &&
+                app.getApplicantId() != null &&
+                app.getApplicantId().equals(recipient.getId()) &&
+                !app.getJobOpeningId().equals(jobOpening.getId()) &&
+                (app.getStatus() == ApplicationStatus.PENDING || app.getStatus() == ApplicationStatus.OFFER_RECEIVED)) {
+                
+                app.setStatus(ApplicationStatus.REJECTED);
+                recipient.getActiveApplicationIds().remove(app.getId());
+                rejectedApps++;
+                Gdx.app.log("JobManager", "Rejected application: " + app.getId());
+            }
+        }
+        System.out.println("[JobManager] Rejected " + rejectedApps + " other pending applications");
+        
+        // Hire the person at the new club
         clubStaffManager.hireStaff(club, profession, recipient);
+        recipient.setCurrentClubId(club.getId());
         
         // Update offer status
         offer.setStatus(OfferStatus.ACCEPTED);
@@ -626,8 +905,8 @@ public class JobManager {
         
         // Update all applications for this job
         for (JobApplication app : currentGame.getAllApplications()) {
-            if (app.getJobOpeningId().equals(jobOpening.getId())) {
-                if (app.getApplicantId().equals(recipient.getId())) {
+            if (app != null && app.getJobOpeningId() != null && app.getJobOpeningId().equals(jobOpening.getId())) {
+                if (app.getApplicantId() != null && app.getApplicantId().equals(recipient.getId())) {
                     app.setStatus(ApplicationStatus.ACCEPTED);
                 } else {
                     app.setStatus(ApplicationStatus.REJECTED);
@@ -638,8 +917,12 @@ public class JobManager {
         // Remove from pending offers
         recipient.getPendingOfferIds().remove(offer.getId());
         
-        Gdx.app.log("JobManager", "Offer accepted: " + offer.getId() + 
-                   " by " + recipient.getName());
+        Gdx.app.log("JobManager", "=== acceptOffer SUCCESS ===");
+        Gdx.app.log("JobManager", "Offer accepted: " + offer.getId() + " by " + recipient.getName());
+        System.out.println("[JobManager] Offer accepted: " + offer.getId() + 
+                         " | Cancelled " + cancelledOffers + " offers | Rejected " + rejectedApps + " applications");
+        
+        return true;
     }
 
     /**

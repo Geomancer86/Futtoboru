@@ -109,6 +109,15 @@ public class Futtoboru extends Game {
     // create
     @Override
     public void create() {
+        // TEST LOGGING - This should appear immediately
+        System.err.println("========================================");
+        System.err.println("FUTTOBORU GAME CREATE() CALLED");
+        System.err.println("========================================");
+        System.err.flush();
+        System.out.println("========================================");
+        System.out.println("FUTTOBORU GAME CREATE() CALLED");
+        System.out.println("========================================");
+        System.out.flush();
         
         // Create Asset Manager
         manager = new AssetManager();

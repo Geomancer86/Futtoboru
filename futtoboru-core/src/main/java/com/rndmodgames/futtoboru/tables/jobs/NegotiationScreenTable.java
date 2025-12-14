@@ -111,9 +111,17 @@ public class NegotiationScreenTable extends VisTable {
         
         // Submit counter-offer button
         VisTextButton submitButton = new VisTextButton("Submit Counter-Offer");
-        submitButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+        submitButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
             @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+            public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            
+            @Override
+            public void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                if (!submitButton.isPressed()) {
+                    return;
+                }
                 if (jobManager != null && currentOffer != null) {
                     try {
                         BigDecimal newSalary = new BigDecimal(salaryField.getText());
@@ -142,10 +150,15 @@ public class NegotiationScreenTable extends VisTable {
         
         // Cancel button
         VisTextButton cancelButton = new VisTextButton("Cancel");
-        cancelButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+        cancelButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
             @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                if (menuManager != null) {
+            public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            
+            @Override
+            public void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                if (cancelButton.isPressed() && menuManager != null) {
                     menuManager.setActiveMainScreen(MainMenuManager.JOB_OFFER_SCREEN);
                 }
             }

@@ -210,25 +210,58 @@ public class Person implements Serializable {
 
     /**
      * Utility: Check if can apply for more jobs this week
+     * 
+     * @param currentGameDate The current game date (not real-world time)
+     * @return true if can apply, false if limit reached
      */
-    public boolean canApplyForJob() {
+    public boolean canApplyForJob(LocalDateTime currentGameDate) {
+        if (currentGameDate == null) {
+            // Fallback to real-world time if game date not available (shouldn't happen)
+            currentGameDate = LocalDateTime.now();
+        }
+        
         // Reset counter if new week
         if (lastJobApplicationDate != null) {
-            LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+            LocalDateTime weekAgo = currentGameDate.minusDays(7);
             if (lastJobApplicationDate.isBefore(weekAgo)) {
                 applicationsThisWeek = 0;
             }
         }
-        return getApplicationsThisWeek() < 3; // Max 3 per week
+        return getApplicationsThisWeek() < com.rndmodgames.futtoboru.data.jobs.JobConstants.MAX_APPLICATIONS_PER_WEEK;
+    }
+    
+    /**
+     * Legacy method for backward compatibility - uses real-world time (not recommended)
+     * @deprecated Use canApplyForJob(LocalDateTime) instead
+     */
+    @Deprecated
+    public boolean canApplyForJob() {
+        return canApplyForJob(LocalDateTime.now());
     }
 
     /**
      * Utility: Increment application counter
+     * 
+     * @param currentGameDate The current game date (not real-world time)
      */
-    public void incrementApplicationCount() {
-        if (canApplyForJob()) {
-            setApplicationsThisWeek(getApplicationsThisWeek() + 1);
-            lastJobApplicationDate = LocalDateTime.now();
+    public void incrementApplicationCount(LocalDateTime currentGameDate) {
+        if (currentGameDate == null) {
+            // Fallback to real-world time if game date not available (shouldn't happen)
+            currentGameDate = LocalDateTime.now();
         }
+        
+        if (canApplyForJob(currentGameDate)) {
+            setApplicationsThisWeek(getApplicationsThisWeek() + 1);
+            lastJobApplicationDate = currentGameDate;
+        }
+    }
+    
+    /**
+     * Legacy method for backward compatibility - uses real-world time (not recommended)
+     * @deprecated Use incrementApplicationCount(LocalDateTime) instead
+     */
+    @Deprecated
+    public void incrementApplicationCount() {
+        incrementApplicationCount(LocalDateTime.now());
     }
 }

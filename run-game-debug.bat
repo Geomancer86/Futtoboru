@@ -25,7 +25,8 @@ echo ========================================
 echo.
 
 REM Run Java with all output visible AND logged to file (Windows compatible)
-java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.3.0-SNAPSHOT-jar-with-dependencies.jar > game-debug.log 2>&1
+REM Using PowerShell to tee output to both console and file
+powershell -Command "java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.3.0-SNAPSHOT-jar-with-dependencies.jar 2>&1 | Tee-Object -FilePath game-debug.log"
 
 echo.
 echo ========================================
