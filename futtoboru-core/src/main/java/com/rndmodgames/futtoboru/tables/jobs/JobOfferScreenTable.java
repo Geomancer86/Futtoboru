@@ -2,6 +2,7 @@ package com.rndmodgames.futtoboru.tables.jobs;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.badlogic.gdx.Game;
@@ -175,7 +176,8 @@ public class JobOfferScreenTable extends VisTable {
             buttonsTable.add(rejectButton);
             
             // Negotiate button (only if can negotiate)
-            if (offer.canNegotiate()) {
+            LocalDateTime gameDate = currentGame != null ? currentGame.getGameDate() : null;
+            if (offer.canNegotiate(gameDate)) {
                 VisTextButton negotiateButton = new VisTextButton("Negotiate");
                 negotiateButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
                     @Override

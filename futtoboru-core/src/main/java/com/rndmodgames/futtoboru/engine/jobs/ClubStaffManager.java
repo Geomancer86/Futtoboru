@@ -100,22 +100,43 @@ public class ClubStaffManager {
     public List<Profession> getVacantPositions(Club club) {
         List<Profession> vacant = new ArrayList<>();
         
-        if (club == null) {
-            return vacant;
-        }
-        
-        // Check all selectable professions (v1.0: Manager, Director, Scout)
-        List<Profession> selectableProfessions = DatabaseLoader.getInstance().getSelectableProfessions();
-        
-        for (Profession profession : selectableProfessions) {
-            // Skip Player and Retired Player (not staff positions)
-            if (profession.getId().equals(1L) || profession.getId().equals(2L)) {
-                continue;
+        try {
+            if (club == null) {
+                Gdx.app.log("ClubStaffManager", "getVacantPositions: club is null");
+                return vacant;
             }
             
-            if (isPositionVacant(club, profession)) {
-                vacant.add(profession);
+            // Check all selectable professions (v1.0: Manager, Director, Scout)
+            DatabaseLoader dbLoader = DatabaseLoader.getInstance();
+            if (dbLoader == null) {
+                Gdx.app.error("ClubStaffManager", "DatabaseLoader.getInstance() returned null");
+                return vacant;
             }
+            
+            List<Profession> selectableProfessions = dbLoader.getSelectableProfessions();
+            if (selectableProfessions == null) {
+                Gdx.app.error("ClubStaffManager", "getSelectableProfessions() returned null");
+                return vacant;
+            }
+            
+            for (Profession profession : selectableProfessions) {
+                if (profession == null || profession.getId() == null) {
+                    continue;
+                }
+                
+                // Skip Player and Retired Player (not staff positions)
+                if (profession.getId().equals(1L) || profession.getId().equals(2L)) {
+                    continue;
+                }
+                
+                if (isPositionVacant(club, profession)) {
+                    vacant.add(profession);
+                }
+            }
+        } catch (Exception e) {
+            Gdx.app.error("ClubStaffManager", "ERROR in getVacantPositions() for club: " + 
+                         (club != null ? club.getName() : "null"), e);
+            e.printStackTrace();
         }
         
         return vacant;

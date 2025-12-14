@@ -74,7 +74,18 @@ public class JobOpening implements Serializable {
         this();
         this.clubId = club.getId();
         this.professionId = profession.getId();
-        this.postedDate = LocalDateTime.now();
+        // Note: postedDate and deadline will be set by JobManager using game date
+        // This constructor is kept for compatibility but dates should be set explicitly
+    }
+    
+    /**
+     * Create job opening with game date (preferred constructor)
+     */
+    public JobOpening(Club club, Profession profession, LocalDateTime gameDate) {
+        this();
+        this.clubId = club.getId();
+        this.professionId = profession.getId();
+        this.postedDate = gameDate != null ? gameDate : LocalDateTime.now();
         // Default deadline: 30 days from posting
         this.applicationDeadline = this.postedDate.plusDays(JobConstants.JOB_OPENING_DEFAULT_DEADLINE_DAYS);
     }
@@ -173,19 +184,35 @@ public class JobOpening implements Serializable {
     
     /**
      * Utility: Check if opening is still accepting applications
+     * 
+     * @param currentGameDate The current game date (not real-world date)
      */
-    public boolean isAcceptingApplications() {
+    public boolean isAcceptingApplications(LocalDateTime currentGameDate) {
+        if (currentGameDate == null) {
+            // Fallback to real-world time if game date not provided (shouldn't happen)
+            return status == JobStatus.OPEN && 
+                   applicationDeadline != null &&
+                   applicationDeadline.isAfter(LocalDateTime.now());
+        }
         return status == JobStatus.OPEN && 
                applicationDeadline != null &&
-               applicationDeadline.isAfter(LocalDateTime.now());
+               applicationDeadline.isAfter(currentGameDate);
     }
     
     /**
      * Utility: Check if opening has expired
+     * 
+     * @param currentGameDate The current game date (not real-world date)
      */
-    public boolean isExpired() {
+    public boolean isExpired(LocalDateTime currentGameDate) {
+        if (currentGameDate == null) {
+            // Fallback to real-world time if game date not provided (shouldn't happen)
+            return applicationDeadline != null &&
+                   applicationDeadline.isBefore(LocalDateTime.now()) && 
+                   status == JobStatus.OPEN;
+        }
         return applicationDeadline != null &&
-               applicationDeadline.isBefore(LocalDateTime.now()) && 
+               applicationDeadline.isBefore(currentGameDate) && 
                status == JobStatus.OPEN;
     }
 }

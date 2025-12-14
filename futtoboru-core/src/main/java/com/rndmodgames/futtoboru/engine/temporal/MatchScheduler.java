@@ -56,7 +56,17 @@ public class MatchScheduler {
      */
     public boolean checkClubMatchDay(Club club) {
         
+        // Null check: unemployed players don't have a club
+        if (club == null) {
+            return false;
+        }
+        
         System.out.println("CHECKING IF TODAY IS A MATCH DAY!");
+        
+        // Null check: club might not have scheduled matches initialized
+        if (club.getScheduledMatches() == null) {
+            return false;
+        }
         
         // TODO: do not recreate the comparator every time
         Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()

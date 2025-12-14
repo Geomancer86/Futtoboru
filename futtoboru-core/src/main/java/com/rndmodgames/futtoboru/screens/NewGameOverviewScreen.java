@@ -599,20 +599,49 @@ public class NewGameOverviewScreen implements Screen {
                     Gdx.app.log("NewGameOverviewScreen", "Step 8: OK - Added " + startingSeason.getSeasonScripts().size() + " season scripts");
                     
                     Gdx.app.log("NewGameOverviewScreen", "Step 9: Initializing job system...");
-                    ((Futtoboru) game).initializeJobSystem();
-                    Gdx.app.log("NewGameOverviewScreen", "Step 9: OK - Job system initialized");
+                    try {
+                        ((Futtoboru) game).initializeJobSystem();
+                        Gdx.app.log("NewGameOverviewScreen", "Step 9: OK - Job system initialized");
+                    } catch (Exception e) {
+                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 9 (initializeJobSystem):", e);
+                        e.printStackTrace();
+                        throw e; // Re-throw to be caught by outer catch
+                    }
                     
                     Gdx.app.log("NewGameOverviewScreen", "Step 10: Creating initial job openings...");
-                    if (((Futtoboru) game).getJobManager() != null) {
-                        ((Futtoboru) game).getJobManager().initializeJobOpenings();
+                    try {
+                        if (((Futtoboru) game).getJobManager() != null) {
+                            ((Futtoboru) game).getJobManager().initializeJobOpenings();
+                            Gdx.app.log("NewGameOverviewScreen", "Step 10: OK - Initial job openings created");
+                        } else {
+                            Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 10: JobManager is NULL!");
+                            throw new IllegalStateException("JobManager is null after initialization");
+                        }
+                    } catch (Exception e) {
+                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 10 (initializeJobOpenings):", e);
+                        e.printStackTrace();
+                        throw e; // Re-throw to be caught by outer catch
                     }
-                    Gdx.app.log("NewGameOverviewScreen", "Step 10: OK - Initial job openings created");
                     
                     Gdx.app.log("NewGameOverviewScreen", "Step 11: Changing to GAME_SCREEN...");
                     ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
                     Gdx.app.log("NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
                     
                 } catch (Exception e) {
+                    // Print to console (System.out) so it shows in debug window
+                    System.err.println("========================================");
+                    System.err.println("CRITICAL ERROR DURING GAME STARTUP!");
+                    System.err.println("========================================");
+                    System.err.println("Exception type: " + e.getClass().getName());
+                    System.err.println("Exception message: " + e.getMessage());
+                    if (e.getCause() != null) {
+                        System.err.println("Caused by: " + e.getCause().getClass().getName() + " - " + e.getCause().getMessage());
+                    }
+                    System.err.println("----------------------------------------");
+                    e.printStackTrace(System.err);
+                    System.err.println("========================================");
+                    
+                    // Also log via Gdx for consistency
                     Gdx.app.error("NewGameOverviewScreen", "CRITICAL ERROR during game startup!", e);
                     Gdx.app.error("NewGameOverviewScreen", "Exception type: " + e.getClass().getName());
                     Gdx.app.error("NewGameOverviewScreen", "Exception message: " + e.getMessage());
@@ -623,14 +652,18 @@ public class NewGameOverviewScreen implements Screen {
                     
                     // Print full stack trace to console
                     StackTraceElement[] stackTrace = e.getStackTrace();
+                    System.err.println("Full stack trace:");
                     Gdx.app.error("NewGameOverviewScreen", "Stack trace:");
-                    for (int i = 0; i < Math.min(20, stackTrace.length); i++) {
+                    for (int i = 0; i < Math.min(30, stackTrace.length); i++) {
+                        System.err.println("  at " + stackTrace[i].toString());
                         Gdx.app.error("NewGameOverviewScreen", "  at " + stackTrace[i].toString());
                     }
+                    System.err.println("========================================");
                     
                     // Don't throw - show error dialog instead to prevent window from closing
                     // TODO: Show error dialog to user
                     Gdx.app.error("NewGameOverviewScreen", "Game startup failed. Window will remain open for debugging.");
+                    System.err.println("Game startup failed. Window will remain open for debugging.");
                     return; // Exit the button handler without changing screens
                 }
             }

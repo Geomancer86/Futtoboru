@@ -55,8 +55,9 @@ public class JobManager {
             return new ArrayList<>();
         }
         
+        LocalDateTime gameDate = currentGame.getGameDate();
         return currentGame.getActiveJobOpenings().stream()
-            .filter(job -> job.isAcceptingApplications())
+            .filter(job -> job.isAcceptingApplications(gameDate))
             .collect(Collectors.toList());
     }
 
@@ -100,43 +101,78 @@ public class JobManager {
      * @return The created job opening, or null if creation failed
      */
     public JobOpening createJobOpening(Club club, Profession profession) {
-        if (club == null || profession == null) {
-            return null;
-        }
-        
-        // Check if position is actually vacant
-        if (!clubStaffManager.isPositionVacant(club, profession)) {
-            Gdx.app.log("JobManager", "Position not vacant: " + profession.getName() + 
-                       " at " + club.getName());
-            return null;
-        }
-        
-        // Check if opening already exists
-        for (JobOpening existing : getAvailableJobs(club)) {
-            if (existing.getProfessionId().equals(profession.getId())) {
-                Gdx.app.log("JobManager", "Job opening already exists: " + profession.getName() + 
-                           " at " + club.getName());
-                return existing;
+        try {
+            if (club == null || profession == null) {
+                Gdx.app.error("JobManager", "Cannot create job opening: club or profession is null");
+                return null;
             }
+            
+            if (club.getId() == null) {
+                Gdx.app.error("JobManager", "Cannot create job opening: club.getId() is null for club: " + club.getName());
+                return null;
+            }
+            
+            if (profession.getId() == null) {
+                Gdx.app.error("JobManager", "Cannot create job opening: profession.getId() is null for profession: " + profession.getName());
+                return null;
+            }
+            
+            if (clubStaffManager == null) {
+                Gdx.app.error("JobManager", "Cannot create job opening: clubStaffManager is null");
+                return null;
+            }
+            
+            // Check if position is actually vacant
+            if (!clubStaffManager.isPositionVacant(club, profession)) {
+                Gdx.app.log("JobManager", "Position not vacant: " + profession.getName() + 
+                           " at " + club.getName());
+                return null;
+            }
+            
+            // Check if opening already exists
+            for (JobOpening existing : getAvailableJobs(club)) {
+                if (existing != null && existing.getProfessionId() != null && 
+                    existing.getProfessionId().equals(profession.getId())) {
+                    Gdx.app.log("JobManager", "Job opening already exists: " + profession.getName() + 
+                               " at " + club.getName());
+                    return existing;
+                }
+            }
+            
+            // Create new job opening with game date
+            LocalDateTime gameDate = currentGame.getGameDate();
+            if (gameDate == null) {
+                Gdx.app.error("JobManager", "Cannot create job opening: gameDate is null");
+                return null;
+            }
+            JobOpening opening = new JobOpening(club, profession, gameDate);
+            opening.setId(nextId++);
+            
+            // Calculate salary based on club finances and profession (v1.0: simple)
+            opening.setSalary(calculateJobSalary(club, profession));
+            
+            // Set requirements (v1.0: simple - only reputation)
+            opening.setMinReputation(calculateMinReputation(club, profession));
+            
+            // Add to SaveGame
+            if (currentGame.getActiveJobOpenings() == null) {
+                Gdx.app.error("JobManager", "Cannot add job opening: getActiveJobOpenings() is null");
+                return null;
+            }
+            
+            currentGame.getActiveJobOpenings().add(opening);
+            
+            Gdx.app.log("JobManager", "Created job opening: " + profession.getName() + 
+                       " at " + club.getName());
+            
+            return opening;
+        } catch (Exception e) {
+            Gdx.app.error("JobManager", "ERROR in createJobOpening() for " + 
+                         (profession != null ? profession.getName() : "null profession") + 
+                         " at " + (club != null ? club.getName() : "null club"), e);
+            e.printStackTrace();
+            return null;
         }
-        
-        // Create new job opening
-        JobOpening opening = new JobOpening(club, profession);
-        opening.setId(nextId++);
-        
-        // Calculate salary based on club finances and profession (v1.0: simple)
-        opening.setSalary(calculateJobSalary(club, profession));
-        
-        // Set requirements (v1.0: simple - only reputation)
-        opening.setMinReputation(calculateMinReputation(club, profession));
-        
-        // Add to SaveGame
-        currentGame.getActiveJobOpenings().add(opening);
-        
-        Gdx.app.log("JobManager", "Created job opening: " + profession.getName() + 
-                   " at " + club.getName());
-        
-        return opening;
     }
 
     /**
@@ -198,42 +234,91 @@ public class JobManager {
      * Creates job openings for all clubs that have vacant positions.
      */
     public void initializeJobOpenings() {
-        if (currentGame == null || currentGame.getAllClubs() == null) {
-            return;
-        }
-        
-        Gdx.app.log("JobManager", "Initializing job openings for all clubs...");
-        
-        int openingsCreated = 0;
-        
-        // Create openings for vacant positions in all clubs
-        for (Club club : currentGame.getAllClubs()) {
-            if (club == null) {
-                continue;
+        try {
+            if (currentGame == null) {
+                Gdx.app.error("JobManager", "Cannot initialize job openings: currentGame is null");
+                return;
             }
             
-            List<Profession> vacant = clubStaffManager.getVacantPositions(club);
+            if (currentGame.getAllClubs() == null) {
+                Gdx.app.error("JobManager", "Cannot initialize job openings: getAllClubs() is null");
+                return;
+            }
             
-            for (Profession profession : vacant) {
-                // Check if opening already exists
-                boolean exists = false;
-                for (JobOpening existing : getAvailableJobs(club)) {
-                    if (existing.getProfessionId().equals(profession.getId())) {
-                        exists = true;
-                        break;
-                    }
+            if (clubStaffManager == null) {
+                Gdx.app.error("JobManager", "Cannot initialize job openings: clubStaffManager is null");
+                return;
+            }
+            
+            if (currentGame.getActiveJobOpenings() == null) {
+                Gdx.app.error("JobManager", "Cannot initialize job openings: getActiveJobOpenings() is null");
+                return;
+            }
+            
+            Gdx.app.log("JobManager", "Initializing job openings for all clubs...");
+            Gdx.app.log("JobManager", "Total clubs: " + currentGame.getAllClubs().size());
+            
+            int openingsCreated = 0;
+            
+            // Create openings for vacant positions in all clubs
+            for (Club club : currentGame.getAllClubs()) {
+                if (club == null) {
+                    Gdx.app.log("JobManager", "Skipping null club");
+                    continue;
                 }
                 
-                if (!exists) {
-                    JobOpening opening = createJobOpening(club, profession);
-                    if (opening != null) {
-                        openingsCreated++;
+                try {
+                    List<Profession> vacant = clubStaffManager.getVacantPositions(club);
+                    
+                    if (vacant == null) {
+                        Gdx.app.log("JobManager", "getVacantPositions returned null for club: " + club.getName());
+                        continue;
                     }
+                    
+                    for (Profession profession : vacant) {
+                        if (profession == null) {
+                            Gdx.app.log("JobManager", "Skipping null profession");
+                            continue;
+                        }
+                        
+                        // Check if opening already exists
+                        boolean exists = false;
+                        try {
+                            for (JobOpening existing : getAvailableJobs(club)) {
+                                if (existing != null && existing.getProfessionId() != null && 
+                                    existing.getProfessionId().equals(profession.getId())) {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                        } catch (Exception e) {
+                            Gdx.app.error("JobManager", "Error checking existing jobs for club: " + club.getName(), e);
+                            continue;
+                        }
+                        
+                        if (!exists) {
+                            try {
+                                JobOpening opening = createJobOpening(club, profession);
+                                if (opening != null) {
+                                    openingsCreated++;
+                                }
+                            } catch (Exception e) {
+                                Gdx.app.error("JobManager", "Error creating job opening for " + profession.getName() + 
+                                           " at " + club.getName(), e);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Gdx.app.error("JobManager", "Error processing club: " + club.getName(), e);
+                    continue;
                 }
             }
+            
+            Gdx.app.log("JobManager", "Initialized " + openingsCreated + " job openings");
+        } catch (Exception e) {
+            Gdx.app.error("JobManager", "CRITICAL ERROR in initializeJobOpenings()", e);
+            e.printStackTrace();
         }
-        
-        Gdx.app.log("JobManager", "Initialized " + openingsCreated + " job openings");
     }
 
     /**
@@ -247,8 +332,9 @@ public class JobManager {
         }
         
         // Expire old openings
+        LocalDateTime gameDate = currentGame.getGameDate();
         for (JobOpening opening : new ArrayList<>(currentGame.getActiveJobOpenings())) {
-            if (opening.isExpired()) {
+            if (opening.isExpired(gameDate)) {
                 opening.setStatus(JobStatus.EXPIRED);
                 Gdx.app.log("JobManager", "Expired job opening: " + opening.getId());
             }
@@ -299,7 +385,8 @@ public class JobManager {
             return null;
         }
         
-        if (!jobOpening.isAcceptingApplications()) {
+        LocalDateTime gameDate = currentGame.getGameDate();
+        if (!jobOpening.isAcceptingApplications(gameDate)) {
             Gdx.app.log("JobManager", "Job opening not accepting applications: " + jobOpening.getId());
             return null;
         }
@@ -586,7 +673,8 @@ public class JobManager {
      * @return The counter-offer, or null if negotiation failed
      */
     public JobOffer submitCounterOffer(JobOffer originalOffer, BigDecimal newSalary, Integer newContractLength) {
-        if (originalOffer == null || !originalOffer.canNegotiate()) {
+        LocalDateTime gameDate = currentGame != null ? currentGame.getGameDate() : null;
+        if (originalOffer == null || !originalOffer.canNegotiate(gameDate)) {
             return null;
         }
         

@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.menu;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
@@ -303,6 +304,7 @@ public class MainMenuManager {
 
         /**
          * Get the Current Club Instance
+         * Can be null for unemployed players
          */
         Club currentClub = currentGame.getCurrentClub();
         
@@ -340,7 +342,12 @@ public class MainMenuManager {
         case MAIN_SQUAD_SCREEN:
             
             // Set the Squad that player controls to show on Squad Screen
-            // NOTE: this will fail if the user wants to access this screen and don't have an assigned club, shouldn't happen
+            // NOTE: Redirect to home if unemployed (no club)
+            if (currentClub == null) {
+                Gdx.app.log("MainMenuManager", "Cannot access Squad screen: player is unemployed (no club)");
+                setActiveMainScreen(HOME_SCREEN);
+                return;
+            }
             squadScreenTable.setCurrentClub(currentClub);
             
             // Update dynamic components
@@ -359,6 +366,12 @@ public class MainMenuManager {
              */
             
             // Set the Club for the Schedule Screen
+            // NOTE: Redirect to home if unemployed (no club)
+            if (currentClub == null) {
+                Gdx.app.log("MainMenuManager", "Cannot access Schedule screen: player is unemployed (no club)");
+                setActiveMainScreen(HOME_SCREEN);
+                return;
+            }
             scheduleScreenTable.setCurrentClub(currentClub);
             
             // Update dynamic components
@@ -395,6 +408,12 @@ public class MainMenuManager {
         case MATCH_HISTORY_SCREEN:
 
             // Set Match History Current Club
+            // NOTE: Redirect to home if unemployed (no club)
+            if (currentClub == null) {
+                Gdx.app.log("MainMenuManager", "Cannot access Match History screen: player is unemployed (no club)");
+                setActiveMainScreen(HOME_SCREEN);
+                return;
+            }
             matchHistoryScreenTable.setCurrentClub(currentClub);
             
             // Update dynamic components
@@ -418,6 +437,12 @@ public class MainMenuManager {
         case CLUB_INFO_SCREEN:
             
             // Update dynamic components
+            // NOTE: Redirect to home if unemployed (no club)
+            if (currentClub == null) {
+                Gdx.app.log("MainMenuManager", "Cannot access Club Info screen: player is unemployed (no club)");
+                setActiveMainScreen(HOME_SCREEN);
+                return;
+            }
             clubInfoScreenTable.updateDynamicComponents();
             
             // Set as main content
@@ -428,6 +453,12 @@ public class MainMenuManager {
         case FINANCES_SCREEN:
             
             // Update dynamic components
+            // NOTE: Redirect to home if unemployed (no club)
+            if (currentClub == null) {
+                Gdx.app.log("MainMenuManager", "Cannot access Finances screen: player is unemployed (no club)");
+                setActiveMainScreen(HOME_SCREEN);
+                return;
+            }
             financesScreenTable.updateDynamicComponents();
             
             // Set as main content

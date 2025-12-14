@@ -178,19 +178,29 @@ public class JobOffer implements Serializable {
     
     /**
      * Utility: Check if offer has expired
+     * 
+     * @param currentGameDate The current game date (not real-world date)
      */
-    public boolean isExpired() {
+    public boolean isExpired(LocalDateTime currentGameDate) {
+        if (currentGameDate == null) {
+            // Fallback to real-world time if game date not provided (shouldn't happen)
+            return expirationDate != null &&
+                   expirationDate.isBefore(LocalDateTime.now()) && 
+                   status == OfferStatus.PENDING;
+        }
         return expirationDate != null &&
-               expirationDate.isBefore(LocalDateTime.now()) && 
+               expirationDate.isBefore(currentGameDate) && 
                status == OfferStatus.PENDING;
     }
     
     /**
      * Utility: Check if offer can be negotiated
+     * 
+     * @param currentGameDate The current game date (not real-world date)
      */
-    public boolean canNegotiate() {
+    public boolean canNegotiate(LocalDateTime currentGameDate) {
         return status == OfferStatus.PENDING && 
-               !isExpired() && 
+               !isExpired(currentGameDate) && 
                getNegotiationRound() < JobConstants.MAX_NEGOTIATION_ROUNDS;
     }
 }

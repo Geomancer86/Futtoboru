@@ -155,10 +155,13 @@ public class SaveGame implements Serializable {
 
     /**
      * Get Current Club Utility Method
+     * 
+     * Returns null if player is unemployed (no current club)
      */
     public Club getCurrentClub() {
-        
-        //
+        if (owner == null || owner.getCurrentClubId() == null) {
+            return null; // Player is unemployed
+        }
         return getClubById(owner.getCurrentClubId());
     }
     
@@ -168,18 +171,25 @@ public class SaveGame implements Serializable {
      *  - During ingame, do not use DatabaseLoader as the clubs returned will be static and not the saved on file
      */
     public Club getClubById(Long id) {
+        if (id == null) {
+            return null; // Null ID means no club
+        }
+        
+        if (allClubs == null) {
+            return null; // No clubs loaded
+        }
         
         for (Club club : allClubs) {
+            if (club == null || club.getId() == null) {
+                continue; // Skip null clubs or clubs with null IDs
+            }
             
             if (club.getId().equals(id)) {
-             
-                //
                 return club;
             }
         }
         
-        //
-        return null;
+        return null; // Club not found
     }
     
     //
