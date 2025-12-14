@@ -33,6 +33,7 @@ public class Authority implements Serializable {
     private Authority parent;
     
     // 
+    @Deprecated
     private List<League> leagues = new ArrayList<>();
 
     // 

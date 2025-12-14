@@ -102,9 +102,7 @@ public class DatabaseLoader {
     }
 
     /**
-     * Initialize the Game Data in Required Order
-     * 
-     * TODO: revamp for script use
+     * Initialize the Game Data and Scripts in required order
      */
     public static DatabaseLoader getInstance() {
         
@@ -144,10 +142,18 @@ public class DatabaseLoader {
             
             // Load Seasons Scripts
             ScriptsLoader.load(seasons);
-        } 
-            
+        }
+
         //
         return instance;
+    }
+    
+    /**
+     * Used between some unit tests to avoid issues with missing data
+     */
+    public static void resetDatabaseLoaderInstance() {
+        
+        instance = null;
     }
     
     /**
@@ -218,6 +224,16 @@ public class DatabaseLoader {
         return selectableProfessions;
     }
 
+    public List<Competition> getCompetitionsByAuthority(Authority authority){
+        
+        return null;
+    }
+    
+    public List<Competition> getCompetitionsByCountry(Country country) {
+        
+        return null;
+    }
+    
     /**
      * Returns a Country by ID or null if doesn't exist
      * @param id
@@ -284,6 +300,24 @@ public class DatabaseLoader {
             if (club.getId().equals(id)) {
                 
                 return club;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * @param id
+     * @return a Profession by ID or null
+     */
+    public static Profession getProfessionById(Long id) {
+        if (id == null) {
+            return null;
+        }
+        
+        for (Profession profession : professions) {
+            if (profession.getId().equals(id)) {
+                return profession;
             }
         }
         
@@ -445,7 +479,7 @@ public class DatabaseLoader {
             try {
                 line = reader.readLine();
 
-                // Use # symbol as starting for comment (to enable or disable available resolutions)
+                // Use # symbol as starting for comment (to enable or disable available continents)
                 while (line != null) {
                     
                     if (!line.startsWith("#")) {
@@ -470,7 +504,7 @@ public class DatabaseLoader {
                 }
                 
             } catch (IOException e) {
-                // TODO: If error, restore default resolutions.txt file
+                // TODO: If error, restore default continents.txt file
                 e.printStackTrace();
             }
             
@@ -513,7 +547,7 @@ public class DatabaseLoader {
 
                 System.out.println(line);
                 
-                // Use # symbol as starting for comment (to enable or disable available resolutions)
+                // Use # symbol as starting for comment (to enable or disable available countries)
                 while (line != null) {
                     
                     if (!line.startsWith("#")) {
@@ -553,7 +587,7 @@ public class DatabaseLoader {
                 }
                 
             } catch (IOException e) {
-                // TODO: If error, restore default resolutions.txt file
+                // TODO: If error, restore default xountries.txt file
                 e.printStackTrace();
             }
             

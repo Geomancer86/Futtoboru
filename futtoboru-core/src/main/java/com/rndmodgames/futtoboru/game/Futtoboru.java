@@ -13,7 +13,11 @@ import com.kotcrab.vis.ui.VisUI;
 import com.rndmodgames.PreferencesManager;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.engine.AuthorityManager;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
+import com.rndmodgames.futtoboru.engine.ScriptsManager;
+import com.rndmodgames.futtoboru.engine.jobs.ClubStaffManager;
+import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
 import com.rndmodgames.futtoboru.screens.NewGameOverviewScreen;
@@ -23,7 +27,6 @@ import com.rndmodgames.futtoboru.screens.NewManagerScreen;
 import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.futtoboru.system.ScriptsManager;
 import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -86,8 +89,15 @@ public class Futtoboru extends Game {
      */
     private SaveGame currentGame = null;
     private FuttoboruGameEngine gameEngine = null;
+    private AuthorityManager authorityManager = null;
     private ScriptsManager scriptsManager = null;
     private PersonGenerator personGenerator = null;
+    
+    /**
+     * Job System Managers (v1.0)
+     */
+    private ClubStaffManager clubStaffManager = null;
+    private JobManager jobManager = null;
     
     // main constructor
     public Futtoboru() {
@@ -99,6 +109,15 @@ public class Futtoboru extends Game {
     // create
     @Override
     public void create() {
+        // TEST LOGGING - This should appear immediately
+        System.err.println("========================================");
+        System.err.println("FUTTOBORU GAME CREATE() CALLED");
+        System.err.println("========================================");
+        System.err.flush();
+        System.out.println("========================================");
+        System.out.println("FUTTOBORU GAME CREATE() CALLED");
+        System.out.println("========================================");
+        System.out.flush();
         
         // Create Asset Manager
         manager = new AssetManager();
@@ -155,8 +174,11 @@ public class Futtoboru extends Game {
         // Initialize the Person Generator
         this.setPersonGenerator(new PersonGenerator(this));
         
+        // Initialize the Authority Manager
+        this.authorityManager = new AuthorityManager(this);
+        
         // Initialize the Game Engine
-        this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager));
+        this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager, authorityManager));
         
         // Show Main Menu 
         // NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
@@ -198,7 +220,20 @@ public class Futtoboru extends Game {
             break;
             
         case GAME_SCREEN:
-            this.setScreen(new MainGameScreen(this));
+            Gdx.app.log("Futtoboru", "Changing to GAME_SCREEN...");
+            Gdx.app.log("Futtoboru", "Current game: " + (currentGame != null ? "exists" : "NULL"));
+            Gdx.app.log("Futtoboru", "Game engine: " + (gameEngine != null ? "exists" : "NULL"));
+            try {
+                this.setScreen(new MainGameScreen(this));
+                Gdx.app.log("Futtoboru", "GAME_SCREEN created successfully");
+            } catch (Exception e) {
+                Gdx.app.error("Futtoboru", "ERROR creating GAME_SCREEN!", e);
+                Gdx.app.error("Futtoboru", "Exception: " + e.getClass().getName());
+                Gdx.app.error("Futtoboru", "Message: " + e.getMessage());
+                e.printStackTrace();
+                // Don't rethrow - keep the current screen
+                Gdx.app.error("Futtoboru", "Failed to create GAME_SCREEN. Staying on current screen.");
+            }
             break;
             
         case SETTINGS_SCREEN:
@@ -325,5 +360,44 @@ public class Futtoboru extends Game {
 
     public void setGameEngine(FuttoboruGameEngine gameEngine) {
         this.gameEngine = gameEngine;
+    }
+    
+    /**
+     * Initialize Job System (v1.0)
+     * 
+     * Called when a game is loaded or started to initialize job system managers.
+     * This must be called after currentGame is set.
+     */
+    public void initializeJobSystem() {
+        if (currentGame == null) {
+            Gdx.app.error("Futtoboru", "Cannot initialize job system: currentGame is null");
+            return;
+        }
+        
+        // Initialize Club Staff Manager
+        if (clubStaffManager == null) {
+            clubStaffManager = new ClubStaffManager(this);
+        }
+        
+        // Initialize Job Manager
+        if (jobManager == null) {
+            jobManager = new JobManager(this, clubStaffManager);
+        }
+        
+        Gdx.app.log("Futtoboru", "Job system initialized");
+    }
+    
+    /**
+     * Get Club Staff Manager
+     */
+    public ClubStaffManager getClubStaffManager() {
+        return clubStaffManager;
+    }
+    
+    /**
+     * Get Job Manager
+     */
+    public JobManager getJobManager() {
+        return jobManager;
     }
 }

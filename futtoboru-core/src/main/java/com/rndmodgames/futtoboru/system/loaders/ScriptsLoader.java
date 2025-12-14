@@ -48,7 +48,7 @@ public class ScriptsLoader {
             
             // Name & Description
             theLeagueCreationScript.setName("The English Football League Creation");
-            theLeagueCreationScript.setDescription("This will create The 1888–89 Football League with it's Rules and add the initial 12 English Teams");
+            theLeagueCreationScript.setDescription("This will create The 1888-89 Football League with it's Rules and add the initial 12 English Teams");
             
             // Set Script Type
             theLeagueCreationScript.setScriptType(BasicScript.LEAGUE_CREATION_SCRIPT);
@@ -56,7 +56,7 @@ public class ScriptsLoader {
             /**
              * Script execution date (note this might differ from any dates inside the data)
              */
-            theLeagueCreationScript.setExecutionTime(LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // EARLIER DATE FOR QUICKER TESTING!
+            theLeagueCreationScript.setExecutionTime(LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // 17 April 1888
             
             /**
              * Add Required Script Values

@@ -21,7 +21,7 @@ public class SeasonsLoader {
     /**
      * TODO WIP
      * 
-     *  - 1888–89 Football League
+     *  - 1888-89 Football League
      *  - https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League
      *  
      *  - 1st League Ever

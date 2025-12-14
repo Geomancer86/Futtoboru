@@ -5,13 +5,14 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.ScriptsManager;
 
 /**
  * Game Engine v1
@@ -30,7 +31,10 @@ public class FuttoboruGameEngine {
 
     // 
     private Futtoboru gameInstance;
+    private AuthorityManager authorityManager;
     private ScriptsManager scriptsManager;
+    
+    //
     private MainMenuManager mainMenuManager;
     
     //
@@ -42,11 +46,14 @@ public class FuttoboruGameEngine {
     public static final int MATCH_PREVIEW_ACTION = 2;
     public static final int MATCH_RESULT_ACTION = 3;
 
-    public FuttoboruGameEngine(Game parent, ScriptsManager scriptsManager) {
+    public FuttoboruGameEngine(Game parent,
+                               ScriptsManager scriptsManager,
+                               AuthorityManager authorityManager) {
         
         // keep track for easier access
         this.gameInstance = (Futtoboru) parent;
         this.scriptsManager = scriptsManager;
+        this.authorityManager = authorityManager;
         
         //
         this.scheduler = new MatchScheduler(gameInstance);
@@ -69,18 +76,19 @@ public class FuttoboruGameEngine {
      */
     public int getNextGameAction() {
 
-        // Current Club
+        // Current Club (can be null for unemployed players)
         Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
         
         /**
          * Check if Current Club has a MATCH TODAY
+         * NOTE: If player is unemployed (no club), skip match check
          */
-        boolean matchDay = scheduler.checkClubMatchDay(currentClub);
-        
-        //
-        if (matchDay) {
-
-            return MATCH_PREVIEW_ACTION;
+        if (currentClub != null) {
+            boolean matchDay = scheduler.checkClubMatchDay(currentClub);
+            
+            if (matchDay) {
+                return MATCH_PREVIEW_ACTION;
+            }
         }
 
         return CONTINUE_GAME_ACTION;
@@ -104,6 +112,12 @@ public class FuttoboruGameEngine {
         
         // Mark match as Played
         Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+        
+        // Null check: unemployed players don't have a club
+        if (currentClub == null || currentClub.getScheduledMatches() == null) {
+            Gdx.app.log("FuttoboruGameEngine", "Cannot process match result: player is unemployed (no club)");
+            return;
+        }
         
         // TODO: do not recreate the comparator every time
         Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
@@ -152,65 +166,65 @@ public class FuttoboruGameEngine {
     public void continueGame() {
         
         //
-        System.out.println("ADVANCING THE SIMULATION");
+        Gdx.app.debug("FuttoboruGameEngine", "ADVANCING THE SIMULATION");
         
         // Get Current Day
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
         
-        // Increment By Required Unit
+        /**
+         * Increment By Required Unit
+         * 
+         * TODO: make it AM/PM or advance in smaller amount of time depending on time of season/etc as in FM
+         */
         gameInstance.getCurrentGame().setGameDate(current.plusDays(1));
         
         // Check Game Scripts
         scriptsManager.checkGameScripts();
-        
-        // Update UI
-        mainMenuManager.updateDynamicComponents();
-        
-        // Current Club
-        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
 
-        /**
-         * Check Proposed Friendlies
-         */
-        scheduler.checkClubProposedMatches(currentClub);
+        // Check Competition Schedules
+        authorityManager.checkCompetitionsSchedule();
+        
+        // Update Job Openings (v1.0)
+        if (gameInstance.getJobManager() != null) {
+            gameInstance.getJobManager().updateJobOpenings();
+        }
         
         /**
-         * Check Scheduled Matches
+         * Current Club
          * 
-         * TODO: sell tickets every day up to match starting time
+         * NOTE: player might not have a CURRENT_CLUB
+         *       
+         *       - simulate all clubs, not only player controlled
          */
-        scheduler.checkClubSheduledMatches(currentClub);
-        
-        /**
-         * TODO WIP:
-         * 
-         *  - Club Ticket Sales:
-         *      - Iterate future incoming matches
-         *          - If the match is close enough (7-10 days, parametrizable) there is a chance of ticket sales
-         *          - If the match is completely sold, no tickets are sold, but we might save this uncovered demand number to show the player
-         *          - If there is space, tickets are randomly sold
-         *              - ticket demand multiplier:
-         *                  - league match  : 100%
-         *                  - friendly match: 50% or less
-         *                  - cup match     : 150-300%
-         *                  - classic match : 150-200%
-         *                  - bonuses add
-         *                  - cheaper and expensive tickets with more demand (half cost for friendly, double or triple cost for cups, finals might be even more)
-         *                  
-         *          
-         *          - tickets sold this thay for this match must be saved
-         *              - if we save them directly to the match is easier but we won't have a record for daily sales
-         *              - if we create a daily sales object the addition is more difficult and more logic involved but we can show a chart
-         *                  - doesn't make lots of sense for individual matches if sales are starting 10 days before, too much effort for very little info
-         *                      - also the user cannot change ticket prices or influence in any direct way besides winning more matches
-         *                      
-         *          - charting TBD
-         */                 
+        for (Club currentClub : gameInstance.getCurrentGame().getAllClubs()) {
+
+            //
+            Gdx.app.debug("FuttoboruGameEngine", "PROCESSING CLUB: " + currentClub.getName());
+            
+            /**
+             * Check Proposed Friendlies
+             */
+            scheduler.checkClubProposedMatches(currentClub);
+            
+            /**
+             * Check Scheduled Matches
+             */
+            scheduler.checkClubSheduledMatches(currentClub);
+            
+        }
         
         /**
          * Update UI
+         * NOTE: this will be null on Unit Tests
          */
-        mainMenuManager.updateDynamicComponents();
+        if (mainMenuManager != null) {
+            mainMenuManager.updateDynamicComponents();
+            Gdx.app.log("FuttoboruGameEngine", "UI updated after continueGame()");
+        } else {
+            Gdx.app.log("FuttoboruGameEngine", "WARNING: mainMenuManager is null, UI not updated");
+        }
+        
+        Gdx.app.log("FuttoboruGameEngine", "continueGame() completed. New date: " + gameInstance.getCurrentGame().getGameDate());
     }
 
     public CompetitionScheduler getCompetitionScheduler() {

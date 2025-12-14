@@ -1,6 +1,5 @@
 package com.rndmodgames.futtoboru.data;
 
-import java.beans.Transient;
 import java.io.Serializable;
 
 /**

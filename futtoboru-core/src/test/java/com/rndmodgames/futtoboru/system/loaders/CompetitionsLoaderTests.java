@@ -15,16 +15,20 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.AuthorityManager;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
+import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.futtoboru.system.ScriptsManager;
 import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
 
 class CompetitionsLoaderTests {
 
     private static Futtoboru application;
+    
+    //
+    static AuthorityManager authorityManager;
     
     @BeforeAll
     static void beforeAll() {
@@ -39,8 +43,11 @@ class CompetitionsLoaderTests {
         // Scripts Manager
         ScriptsManager scriptManager = new ScriptsManager(application);
         
+        // Initialize the Authority Manager
+        authorityManager = new AuthorityManager(application);
+        
         // Set Game Engine
-        application.setGameEngine(new FuttoboruGameEngine(application, scriptManager));
+        application.setGameEngine(new FuttoboruGameEngine(application, scriptManager, authorityManager));
         
         // Set the Person Generator
         application.setPersonGenerator(new PersonGenerator(application));

@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable;
@@ -61,6 +62,12 @@ public class MainGameScreen implements Screen {
         // set saved game for easier access
         this.currentGame = ((Futtoboru)game).getCurrentGame();
         
+        // Validate that a game is loaded
+        if (this.currentGame == null) {
+            Gdx.app.error("MainGameScreen", "No game loaded! Cannot initialize MainGameScreen without a SaveGame.");
+            throw new IllegalStateException("MainGameScreen requires a loaded SaveGame. Please start a new game or load an existing one.");
+        }
+        
         //
         stage = new Stage(new ScreenViewport());
         
@@ -82,7 +89,12 @@ public class MainGameScreen implements Screen {
         menuManager = new MainMenuManager(game, currentGame, mainTable);
         
         // Set the reference to allow dynamic screen updates from the Game Engine after data changes
-        ((Futtoboru)game).getGameEngine().setMainMenuManager(menuManager);
+        FuttoboruGameEngine gameEngine = ((Futtoboru)game).getGameEngine();
+        if (gameEngine != null) {
+            gameEngine.setMainMenuManager(menuManager);
+        } else {
+            Gdx.app.error("MainGameScreen", "GameEngine is null! Some features may not work correctly.");
+        }
         
         /**
          * Set the reference to allow calling screen changes from the top menu

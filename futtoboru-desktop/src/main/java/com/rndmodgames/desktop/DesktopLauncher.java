@@ -13,7 +13,42 @@ public class DesktopLauncher {
     
     public static void main(String[] args) {
         
-        createApplication();
+        // Set up global exception handler to prevent window from closing on uncaught exceptions
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                System.err.println("========================================");
+                System.err.println("UNCAUGHT EXCEPTION IN THREAD: " + t.getName());
+                System.err.println("========================================");
+                System.err.println("Exception: " + e.getClass().getName());
+                System.err.println("Message: " + e.getMessage());
+                System.err.println("========================================");
+                e.printStackTrace();
+                System.err.println("========================================");
+                System.err.println("Window will remain open for debugging.");
+                System.err.println("Check the console output above for details.");
+                System.err.println("========================================");
+            }
+        });
+        
+        try {
+            createApplication();
+        } catch (Exception e) {
+            System.err.println("========================================");
+            System.err.println("CRITICAL ERROR DURING APPLICATION STARTUP");
+            System.err.println("========================================");
+            System.err.println("Exception: " + e.getClass().getName());
+            System.err.println("Message: " + e.getMessage());
+            System.err.println("========================================");
+            e.printStackTrace();
+            System.err.println("========================================");
+            System.err.println("Press Enter to exit...");
+            try {
+                System.in.read();
+            } catch (Exception ex) {
+                // Ignore
+            }
+        }
     }
 
     private static Lwjgl3Application createApplication() {
@@ -26,7 +61,7 @@ public class DesktopLauncher {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         
         // TODO: add release - build version - etc from MAVEN
-        configuration.setTitle("Futtoboru v0.2.0");
+        configuration.setTitle("Futtoboru v0.3.0-SNAPSHOT");
         configuration.useVsync(true);
         
         // Limits FPS to the refresh rate of the currently active monitor.

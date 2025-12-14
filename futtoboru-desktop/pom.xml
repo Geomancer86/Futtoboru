@@ -4,14 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
     
     <artifactId>futtoboru-desktop</artifactId>
-    <packaging>jar</packaging>
     
     <name>futtoboru.desktop</name>
 
     <parent>
         <groupId>com.rndmodgames</groupId>
         <artifactId>futtoboru</artifactId>
-        <version>0.2.0</version>
+        <version>0.4.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -43,17 +42,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>${java.source.version}</source>
+                    <target>${java.target.version}</target>
                 </configuration>
             </plugin>
             <plugin>
               <artifactId>maven-assembly-plugin</artifactId>
-              <version>3.6.0</version>
+              <version>${maven.assembly.plugin.version}</version>
               <configuration>
-                <appendAssemblyId>false</appendAssemblyId>
+                <appendAssemblyId>true</appendAssemblyId>
                 <archive>
                   <manifest>
                     <mainClass>com.rndmodgames.desktop.DesktopLauncher</mainClass>
@@ -71,24 +70,12 @@
                     <goal>single</goal>
                   </goals>
                 </execution>
+                <execution>
+                    <id>default-jar</id>
+                    <phase>none</phase>
+                </execution>
               </executions>
             </plugin>
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <mainClass>com.rndmodgames.desktop.DesktopLauncher</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <Implementation-Build>${buildNumber}</Implementation-Build>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>-->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -137,7 +124,7 @@
         <dependency>
               <groupId>com.rndmodgames</groupId>
               <artifactId>futtoboru-core</artifactId>
-              <version>0.2.0</version>
+              <version>0.4.0-SNAPSHOT</version>
         </dependency>
         
     </dependencies>

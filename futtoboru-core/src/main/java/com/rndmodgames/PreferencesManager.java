@@ -47,7 +47,7 @@ public class PreferencesManager {
 	public static final String DISABLED = "disabled";
 	
 	// DEFAULT VALUES
-	public static String DEFAULT_RESOLUTION = "640x480";
+	public static String DEFAULT_RESOLUTION = "1280x1024";
 	public static String DEFAULT_LOCALE = "en_US";
 	
 	public PreferencesManager() {
@@ -59,6 +59,8 @@ public class PreferencesManager {
 		    
 		    System.out.println("PREFS IS NULL");
 		}
+		
+		Gdx.app.log("PreferencesManager", "Preferences file is: " + PREFERENCES_NAME);
 	}
 	
 	/**

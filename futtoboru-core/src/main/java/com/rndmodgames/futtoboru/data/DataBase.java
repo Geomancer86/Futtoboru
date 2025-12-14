@@ -1,7 +1,6 @@
 package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * DataBase v1

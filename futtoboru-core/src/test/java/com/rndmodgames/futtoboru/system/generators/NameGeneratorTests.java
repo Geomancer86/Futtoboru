@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.rndmodgames.futtoboru.data.Country;
@@ -48,9 +49,10 @@ public class NameGeneratorTests {
         // Generates a random game
         String randomName [] = NameGenerator.generateName(england);
    
-        System.out.println("Generated Name: " + randomName[0] + " " + randomName[1]);
-        
         assertNotNull(randomName);
+        
+        // 
+        Gdx.app.log("NameGeneratorTests", "Generated Name: " + randomName[0] + " " + randomName[1]);
     }
     
     @Test
@@ -74,7 +76,8 @@ public class NameGeneratorTests {
         //
         assertNotNull(person);
         
-        System.out.println("Generated Person: " + person.toString());
+        //
+        Gdx.app.log("NameGeneratorTests", "Generated Person: " + person.toString());
     }
     
     @Test
@@ -101,18 +104,17 @@ public class NameGeneratorTests {
 //            assertNotNull(person);
             
             if (person != null) {
+                
                 // Add unduplicated person to Current Saved Game Person List
                 application.getCurrentGame().getAllPersons().add(person);
-                
-//                System.out.println("Generated Person: " + person.toString());
             } else {
                 
                 //
-//                System.out.println("Ignoring Duplicated Person Name!");
                 invalid++;
             }
         }
         
-        System.out.println("Generated " + application.getCurrentGame().getAllPersons().size() + " Unique Persons with " + invalid + " ignored duplicates.");
+        //
+        Gdx.app.log("NameGeneratorTests", "Generated " + application.getCurrentGame().getAllPersons().size() + " Unique Persons with " + invalid + " ignored duplicates.");
     }
 }
