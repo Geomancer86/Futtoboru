@@ -49,10 +49,25 @@ futtoboru_cursor_pm/
 ## How to Use
 
 ### For PM/CM Agent
-1. Update `project-management/PROJECT_MANAGEMENT.md` regularly
-2. Create weekly reports in `project-management/weekly-reports/`
-3. Draft Patreon updates in `community-management/patreon/drafts/`
-4. Track community feedback in `community-management/community-feedback/`
+1. **Monitor Progress:**
+   - Check `project-management/BRANCH_MONITORING.md` for branch status
+   - Run `project-management/scripts/check_branch_status.ps1` to get current status
+   - Update status reports regularly
+
+2. **Project Management:**
+   - Update `project-management/PROJECT_MANAGEMENT.md` regularly
+   - Create weekly reports in `project-management/weekly-reports/`
+   - Track progress across all branches
+
+3. **Community Management:**
+   - Draft Patreon updates in `community-management/patreon/drafts/`
+   - Use iterative workflow from `project-management/PATREON_POST_WORKFLOW.md`
+   - Track community feedback in `community-management/community-feedback/`
+
+4. **Status Reporting:**
+   - Provide status updates on request
+   - Monitor other agents' progress
+   - Track integration status
 
 ### For Developers
 - Reference this repo for:
@@ -60,6 +75,7 @@ futtoboru_cursor_pm/
   - Sprint goals
   - Community update schedules
   - Project status
+  - Branch monitoring information
 
 ## Main Futtoboru Repository
 
