@@ -18,6 +18,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.components.MainMenuButton;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -258,6 +259,11 @@ public class NewGameSeasonScreen implements Screen {
         
         // 
         mainContainer.add(table);
+        
+        // Back to Main Menu Button
+        mainContainer.row();
+        final MainMenuButton backButton = new MainMenuButton(game);
+        mainContainer.add(backButton).right().padTop(20);
         
         // Add Settings Screen Main Container to Stage
         stage.addActor(mainContainer);
