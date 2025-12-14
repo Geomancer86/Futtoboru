@@ -257,10 +257,9 @@ public class NewGameSeasonScreen implements Screen {
         //
         table.add(startGame).pad(5);
         
-        // Back to Main Menu Button - Add directly to table
-        table.row();
+        // Main Menu Button - Add right next to Start button
         final MainMenuButton backButton = new MainMenuButton(game);
-        table.add(backButton).right().colspan(2).padTop(20).padBottom(10);
+        table.add(backButton).pad(5);
         
         // Add table to main container
         mainContainer.add(table);
