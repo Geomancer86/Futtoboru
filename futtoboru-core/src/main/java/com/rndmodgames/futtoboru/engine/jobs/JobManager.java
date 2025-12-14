@@ -193,6 +193,50 @@ public class JobManager {
     }
 
     /**
+     * Initialize job openings for all vacant positions (called when game starts)
+     * 
+     * Creates job openings for all clubs that have vacant positions.
+     */
+    public void initializeJobOpenings() {
+        if (currentGame == null || currentGame.getAllClubs() == null) {
+            return;
+        }
+        
+        Gdx.app.log("JobManager", "Initializing job openings for all clubs...");
+        
+        int openingsCreated = 0;
+        
+        // Create openings for vacant positions in all clubs
+        for (Club club : currentGame.getAllClubs()) {
+            if (club == null) {
+                continue;
+            }
+            
+            List<Profession> vacant = clubStaffManager.getVacantPositions(club);
+            
+            for (Profession profession : vacant) {
+                // Check if opening already exists
+                boolean exists = false;
+                for (JobOpening existing : getAvailableJobs(club)) {
+                    if (existing.getProfessionId().equals(profession.getId())) {
+                        exists = true;
+                        break;
+                    }
+                }
+                
+                if (!exists) {
+                    JobOpening opening = createJobOpening(club, profession);
+                    if (opening != null) {
+                        openingsCreated++;
+                    }
+                }
+            }
+        }
+        
+        Gdx.app.log("JobManager", "Initialized " + openingsCreated + " job openings");
+    }
+
+    /**
      * Update job openings (called daily by game engine)
      * - Expire old openings
      * - Create openings for vacant positions

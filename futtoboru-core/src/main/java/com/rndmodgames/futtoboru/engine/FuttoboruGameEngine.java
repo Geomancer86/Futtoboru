@@ -173,9 +173,14 @@ public class FuttoboruGameEngine {
         
         // Check Game Scripts
         scriptsManager.checkGameScripts();
-        
+
         // Check Competition Schedules
         authorityManager.checkCompetitionsSchedule();
+        
+        // Update Job Openings (v1.0)
+        if (gameInstance.getJobManager() != null) {
+            gameInstance.getJobManager().updateJobOpenings();
+        }
         
         /**
          * Current Club

@@ -16,6 +16,8 @@ import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.engine.AuthorityManager;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.ScriptsManager;
+import com.rndmodgames.futtoboru.engine.jobs.ClubStaffManager;
+import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
 import com.rndmodgames.futtoboru.screens.NewGameOverviewScreen;
@@ -90,6 +92,12 @@ public class Futtoboru extends Game {
     private AuthorityManager authorityManager = null;
     private ScriptsManager scriptsManager = null;
     private PersonGenerator personGenerator = null;
+    
+    /**
+     * Job System Managers (v1.0)
+     */
+    private ClubStaffManager clubStaffManager = null;
+    private JobManager jobManager = null;
     
     // main constructor
     public Futtoboru() {

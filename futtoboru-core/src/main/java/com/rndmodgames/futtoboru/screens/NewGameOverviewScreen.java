@@ -598,7 +598,17 @@ public class NewGameOverviewScreen implements Screen {
                     currentGame.getGameScripts().addAll(startingSeason.getSeasonScripts());
                     Gdx.app.log("NewGameOverviewScreen", "Step 8: OK - Added " + startingSeason.getSeasonScripts().size() + " season scripts");
                     
-                    Gdx.app.log("NewGameOverviewScreen", "Step 9: Changing to GAME_SCREEN...");
+                    Gdx.app.log("NewGameOverviewScreen", "Step 9: Initializing job system...");
+                    ((Futtoboru) game).initializeJobSystem();
+                    Gdx.app.log("NewGameOverviewScreen", "Step 9: OK - Job system initialized");
+                    
+                    Gdx.app.log("NewGameOverviewScreen", "Step 10: Creating initial job openings...");
+                    if (((Futtoboru) game).getJobManager() != null) {
+                        ((Futtoboru) game).getJobManager().initializeJobOpenings();
+                    }
+                    Gdx.app.log("NewGameOverviewScreen", "Step 10: OK - Initial job openings created");
+                    
+                    Gdx.app.log("NewGameOverviewScreen", "Step 11: Changing to GAME_SCREEN...");
                     ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
                     Gdx.app.log("NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
                     
