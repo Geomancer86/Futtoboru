@@ -12,6 +12,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
+import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -103,22 +104,15 @@ public class FuttoboruGameEngine {
     }
     
     /**
+     * Process match result - simulate match and update game state
      * 
+     * v1.0: Uses MatchSimulator to generate actual match results
      */
     public void getMatchResult() {
         
-        //
-        System.out.println("MATCH RESULT - ADVANCED THE SIMULATION - 90 MINUTES");
+        System.out.println("MATCH RESULT - SIMULATING MATCH");
         
-        // Get Current Day
-        // TODO: not used? where do the date comparison is done?
-        LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
-        
-        // Increment By Required Unit
-        // TODO: fix matches not appearing because we change the time of day
-//        gameInstance.getCurrentGame().setGameDate(current.plusMinutes(90));
-        
-        // Mark match as Played
+        // Get Current Club
         Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
         
         // Null check: unemployed players don't have a club
@@ -127,39 +121,59 @@ public class FuttoboruGameEngine {
             return;
         }
         
-        // TODO: do not recreate the comparator every time
+        // Sort matches chronologically
         Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
                                                              .compareTo(match2.getMatchDateTime());
-        
-        // TODO: not required to do on every turn, only on insert new scheduled match
-        // Sort
         Collections.sort(currentClub.getScheduledMatches(), comparatorChronological);
         
         // Check we have at least one match
-        if (!currentClub.getScheduledMatches().isEmpty()) {
-            
-            // First scheduled match on list will be the next
-            Match nextMatch = currentClub.getScheduledMatches().get(0);
-            
-            /**
-             * TODO WIP:
-             * 
-             *      - simulate match
-             *      - save MatchResult objects
-             */
-            nextMatch.setIsPlayed(true);
-            
-            // add to played
-            currentClub.getPlayedMatches().add(nextMatch);
-            
-            // remove from scheduled
-            currentClub.getScheduledMatches().remove(nextMatch);
+        if (currentClub.getScheduledMatches().isEmpty()) {
+            Gdx.app.log("FuttoboruGameEngine", "No scheduled matches to simulate");
+            return;
         }
         
-        System.out.println("CLUB PLAYED MATCHES: " + currentClub.getPlayedMatches().size());
+        // Get the next match (first in chronological order)
+        Match nextMatch = currentClub.getScheduledMatches().get(0);
+        
+        // Create match simulator
+        MatchSimulator simulator = new MatchSimulator(gameInstance);
+        
+        // Simulate the match
+        boolean simulated = simulator.simulateMatch(nextMatch);
+        
+        if (!simulated) {
+            Gdx.app.error("FuttoboruGameEngine", "Failed to simulate match");
+            return;
+        }
+        
+        // Get both clubs (home and away) to update their match lists
+        Club homeClub = gameInstance.getCurrentGame().getClubById(nextMatch.getHomeClubId());
+        Club awayClub = gameInstance.getCurrentGame().getClubById(nextMatch.getAwayClubId());
+        
+        // Update home club's match lists
+        if (homeClub != null) {
+            homeClub.getScheduledMatches().remove(nextMatch);
+            if (!homeClub.getPlayedMatches().contains(nextMatch)) {
+                homeClub.getPlayedMatches().add(nextMatch);
+            }
+        }
+        
+        // Update away club's match lists
+        if (awayClub != null) {
+            awayClub.getScheduledMatches().remove(nextMatch);
+            if (!awayClub.getPlayedMatches().contains(nextMatch)) {
+                awayClub.getPlayedMatches().add(nextMatch);
+            }
+        }
+        
+        System.out.println("Match simulated: " + (homeClub != null ? homeClub.getName() : "Unknown") + 
+                          " " + nextMatch.getHomeGoals() + " - " + nextMatch.getAwayGoals() + 
+                          " " + (awayClub != null ? awayClub.getName() : "Unknown"));
         
         // Update UI
-        mainMenuManager.updateDynamicComponents();
+        if (mainMenuManager != null) {
+            mainMenuManager.updateDynamicComponents();
+        }
     }
     
     /**

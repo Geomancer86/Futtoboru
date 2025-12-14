@@ -304,3 +304,4 @@ public class PlayerAttributeSnapshot implements Serializable {
     public void setAreaPositioning(Float areaPositioning) { this.areaPositioning = areaPositioning; }
 }
 
+
