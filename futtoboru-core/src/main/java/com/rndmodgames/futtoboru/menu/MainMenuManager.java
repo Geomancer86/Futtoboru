@@ -73,11 +73,20 @@ public class MainMenuManager {
     public static final int MATCH_PREVIEW_SCREEN = 10000;
     public static final int MATCH_RESULT_SCREEN  = 20000;
     public static final int MATCH_HISTORY_SCREEN = 30000;
+    
+    // Job System Screens (v1.0)
+    public static final int JOB_BOARD_SCREEN = 10001;
+    public static final int MY_APPLICATIONS_SCREEN = 10002;
+    public static final int JOB_OFFER_SCREEN = 10003;
+    public static final int NEGOTIATION_SCREEN = 10004;
         
     //
-    public static int PREVIOUS_SCREEN = -1; // 
+    public static int PREVIOUS_SCREEN = -1; //
     public static int BEFORE_MATCH_SCREEN = -1; //
     public static int CURRENT_SCREEN = HOME_SCREEN; // default to home screen
+    
+    // Current negotiation offer (v1.0)
+    private com.rndmodgames.futtoboru.data.jobs.JobOffer currentNegotiationOffer = null;
     
     // Main Game Buttons
     private VisTextButton homeButton = null;
@@ -90,6 +99,10 @@ public class MainMenuManager {
     private VisTextButton clubInfoButton = null;
     private VisTextButton financesButton = null;
     private VisTextButton competitionsButton = null;
+    
+    // Job System Buttons (v1.0)
+    private VisTextButton jobBoardButton = null;
+    private VisTextButton myApplicationsButton = null;
     
     //
     private HomeScreenTable homeScreenTable = null;
@@ -104,6 +117,12 @@ public class MainMenuManager {
     private ClubInfoScreenTable clubInfoScreenTable = null;
     private FinancesScreenTable financesScreenTable = null;
     private CompetitionsScreenTable competitionsScreenTable = null;
+    
+    // Job System Screens (v1.0)
+    private com.rndmodgames.futtoboru.tables.jobs.JobBoardScreenTable jobBoardScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.jobs.MyApplicationsScreenTable myApplicationsScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.jobs.JobOfferScreenTable jobOfferScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.jobs.NegotiationScreenTable negotiationScreenTable = null;
     
     /**
      * 
@@ -131,6 +150,17 @@ public class MainMenuManager {
         financesScreenTable = new FinancesScreenTable(game);
         competitionsScreenTable = new CompetitionsScreenTable(game);
         
+        // Job System Screens (v1.0)
+        jobBoardScreenTable = new com.rndmodgames.futtoboru.tables.jobs.JobBoardScreenTable(game);
+        myApplicationsScreenTable = new com.rndmodgames.futtoboru.tables.jobs.MyApplicationsScreenTable(game);
+        jobOfferScreenTable = new com.rndmodgames.futtoboru.tables.jobs.JobOfferScreenTable(game);
+        negotiationScreenTable = new com.rndmodgames.futtoboru.tables.jobs.NegotiationScreenTable(game);
+        
+        // Set menu manager references
+        jobOfferScreenTable.setMenuManager(this);
+        negotiationScreenTable.setMenuManager(this);
+        myApplicationsScreenTable.setMenuManager(this);
+        
         
         // custom buttons with logic to switch screen/tables
         homeButton = new HomeButton(this);
@@ -143,6 +173,10 @@ public class MainMenuManager {
         clubInfoButton = new ClubInfoButton(this);
         financesButton = new FinancesButton(this);
         competitionsButton = new CompetitionsButton(this);
+        
+        // Job System Buttons (v1.0)
+        jobBoardButton = new com.rndmodgames.futtoboru.menu.buttons.JobBoardButton(this);
+        myApplicationsButton = new com.rndmodgames.futtoboru.menu.buttons.MyApplicationsButton(this);
         
         
         // set the current screen by default
@@ -176,6 +210,13 @@ public class MainMenuManager {
             
             // Sport Authorities
             buttonsMenu.add(authorityButton).fill();
+            buttonsMenu.row();
+            
+            // Job System (v1.0)
+            buttonsMenu.add(jobBoardButton).fill();
+            buttonsMenu.row();
+            
+            buttonsMenu.add(myApplicationsButton).fill();
             buttonsMenu.row();
             
         }
@@ -444,5 +485,12 @@ public class MainMenuManager {
 
     public void setButtonsMenu(VisTable buttonsMenu) {
         this.buttonsMenu = buttonsMenu;
+    }
+    
+    /**
+     * Set current negotiation offer (v1.0)
+     */
+    public void setCurrentNegotiationOffer(com.rndmodgames.futtoboru.data.jobs.JobOffer offer) {
+        this.currentNegotiationOffer = offer;
     }
 }

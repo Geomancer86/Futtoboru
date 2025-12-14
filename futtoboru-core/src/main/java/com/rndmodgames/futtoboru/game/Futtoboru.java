@@ -352,4 +352,43 @@ public class Futtoboru extends Game {
     public void setGameEngine(FuttoboruGameEngine gameEngine) {
         this.gameEngine = gameEngine;
     }
+    
+    /**
+     * Initialize Job System (v1.0)
+     * 
+     * Called when a game is loaded or started to initialize job system managers.
+     * This must be called after currentGame is set.
+     */
+    public void initializeJobSystem() {
+        if (currentGame == null) {
+            Gdx.app.error("Futtoboru", "Cannot initialize job system: currentGame is null");
+            return;
+        }
+        
+        // Initialize Club Staff Manager
+        if (clubStaffManager == null) {
+            clubStaffManager = new ClubStaffManager(this);
+        }
+        
+        // Initialize Job Manager
+        if (jobManager == null) {
+            jobManager = new JobManager(this, clubStaffManager);
+        }
+        
+        Gdx.app.log("Futtoboru", "Job system initialized");
+    }
+    
+    /**
+     * Get Club Staff Manager
+     */
+    public ClubStaffManager getClubStaffManager() {
+        return clubStaffManager;
+    }
+    
+    /**
+     * Get Job Manager
+     */
+    public JobManager getJobManager() {
+        return jobManager;
+    }
 }
