@@ -203,7 +203,20 @@ public class Futtoboru extends Game {
             break;
             
         case GAME_SCREEN:
-            this.setScreen(new MainGameScreen(this));
+            Gdx.app.log("Futtoboru", "Changing to GAME_SCREEN...");
+            Gdx.app.log("Futtoboru", "Current game: " + (currentGame != null ? "exists" : "NULL"));
+            Gdx.app.log("Futtoboru", "Game engine: " + (gameEngine != null ? "exists" : "NULL"));
+            try {
+                this.setScreen(new MainGameScreen(this));
+                Gdx.app.log("Futtoboru", "GAME_SCREEN created successfully");
+            } catch (Exception e) {
+                Gdx.app.error("Futtoboru", "ERROR creating GAME_SCREEN!", e);
+                Gdx.app.error("Futtoboru", "Exception: " + e.getClass().getName());
+                Gdx.app.error("Futtoboru", "Message: " + e.getMessage());
+                e.printStackTrace();
+                // Don't rethrow - keep the current screen
+                Gdx.app.error("Futtoboru", "Failed to create GAME_SCREEN. Staying on current screen.");
+            }
             break;
             
         case SETTINGS_SCREEN:
