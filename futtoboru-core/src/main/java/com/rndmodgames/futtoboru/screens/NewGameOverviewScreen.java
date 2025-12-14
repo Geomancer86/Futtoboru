@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.screens;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +24,14 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -662,7 +665,18 @@ public class NewGameOverviewScreen implements Screen {
                         throw e; // Re-throw to be caught by outer catch
                     }
                     
-                    Gdx.app.log("NewGameOverviewScreen", "Step 11: Changing to GAME_SCREEN...");
+                    // Generate attributes for all players (v1.0)
+                    try {
+                        Gdx.app.log("NewGameOverviewScreen", "Step 11: Generating player attributes...");
+                        generateAttributesForAllPlayers(currentGame);
+                        Gdx.app.log("NewGameOverviewScreen", "Step 11: OK - Player attributes generated");
+                    } catch (Exception e) {
+                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 11 (generateAttributesForAllPlayers):", e);
+                        e.printStackTrace();
+                        // Don't throw - attributes can be generated later if needed
+                    }
+                    
+                    Gdx.app.log("NewGameOverviewScreen", "Step 12: Changing to GAME_SCREEN...");
                     ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
                     Gdx.app.log("NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
                     
@@ -848,5 +862,28 @@ public class NewGameOverviewScreen implements Screen {
 
         // Dispose on screen change
         stage.dispose();
+    }
+    
+    /**
+     * Generate attributes for all players in the game (v1.0)
+     */
+    private void generateAttributesForAllPlayers(SaveGame currentGame) {
+        PlayerAttributeGenerator attrGen = new PlayerAttributeGenerator();
+        LocalDateTime gameDate = currentGame.getGameDate();
+        
+        int playersGenerated = 0;
+        for (Club club : currentGame.getAllClubs()) {
+            for (Player player : club.getPlayers()) {
+                if (player != null && player.getPerson() != null) {
+                    // Only generate if attributes are null (not already generated)
+                    if (player.getAcceleration() == null) {
+                        attrGen.generatePlayerAttributes(player, player.getPerson(), gameDate);
+                        playersGenerated++;
+                    }
+                }
+            }
+        }
+        
+        Gdx.app.log("NewGameOverviewScreen", "Generated attributes for " + playersGenerated + " players");
     }
 }

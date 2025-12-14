@@ -133,6 +133,14 @@ public class PlayersLoader {
                         
                         player.setPerson(person);
                         
+                        // Generate attributes for loaded player (v1.0)
+                        // Note: We need the season start date for proper age calculation
+                        // For now, use person's birth date + 20 years as fallback
+                        java.time.LocalDateTime estimatedDate = person.getBirthDate().plusYears(20);
+                        com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator attrGen = 
+                            new com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator();
+                        attrGen.generatePlayerAttributes(player, person, estimatedDate);
+                        
                         // Add to Players at Club list
                         club.getPlayers().add(player);
                     }

@@ -9,10 +9,12 @@ import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 
 /**
  * Game Engine v1
@@ -41,6 +43,9 @@ public class FuttoboruGameEngine {
     CompetitionScheduler competitionScheduler;
     MatchScheduler scheduler;
     
+    // Player Attribute Generator (v1.0)
+    private PlayerAttributeGenerator attributeGenerator;
+    
     //
     public static final int CONTINUE_GAME_ACTION = 1;
     public static final int MATCH_PREVIEW_ACTION = 2;
@@ -58,6 +63,7 @@ public class FuttoboruGameEngine {
         //
         this.scheduler = new MatchScheduler(gameInstance);
         this.competitionScheduler = new CompetitionScheduler(gameInstance);
+        this.attributeGenerator = new PlayerAttributeGenerator();
     }
     
     public MainMenuManager getMainMenuManager() {
@@ -190,6 +196,12 @@ public class FuttoboruGameEngine {
         }
         
         /**
+         * Update Player Attributes (v1.0 - Testing)
+         * TODO: Replace with proper training system in Phase 3
+         */
+        updatePlayerAttributesDaily();
+        
+        /**
          * Current Club
          * 
          * NOTE: player might not have a CURRENT_CLUB
@@ -233,5 +245,30 @@ public class FuttoboruGameEngine {
 
     public void setCompetitionScheduler(CompetitionScheduler competitionScheduler) {
         this.competitionScheduler = competitionScheduler;
+    }
+    
+    /**
+     * Update player attributes daily (v1.0 - Testing)
+     * TODO: Replace with proper training system in Phase 3
+     */
+    private void updatePlayerAttributesDaily() {
+        if (gameInstance == null || gameInstance.getCurrentGame() == null) {
+            return;
+        }
+        
+        Gdx.app.debug("FuttoboruGameEngine", "Updating player attributes daily...");
+        
+        int playersUpdated = 0;
+        LocalDateTime currentDate = gameInstance.getCurrentGame().getGameDate();
+        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+            for (Player player : club.getPlayers()) {
+                if (player != null && player.getPerson() != null) {
+                    attributeGenerator.applyDailyAttributeChanges(player, currentDate);
+                    playersUpdated++;
+                }
+            }
+        }
+        
+        Gdx.app.debug("FuttoboruGameEngine", "Updated attributes for " + playersUpdated + " players");
     }
 }
