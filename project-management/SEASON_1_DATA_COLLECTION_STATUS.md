@@ -9,9 +9,9 @@
 ## 📊 Current Status
 
 ### Overall Progress
-- **Complete:** 2/12 clubs (16.7%)
-- **Remaining:** 10/12 clubs (83.3%)
-- **Total Players Collected:** 36 players (18 + 18)
+- **Complete:** 3/12 clubs (25.0%)
+- **Remaining:** 9/12 clubs (75.0%)
+- **Total Players Collected:** 55 players (18 + 18 + 19)
 
 ---
 
@@ -50,9 +50,8 @@
 
 ## ⏳ Pending Clubs
 
-### Remaining Clubs (10/12)
-1. ❌ Wolverhampton Wanderers (ID: 3)
-2. ❌ Blackburn Rovers (ID: 4)
+### Remaining Clubs (9/12)
+1. ❌ Blackburn Rovers (ID: 4)
 3. ❌ Bolton Wanderers (ID: 5)
 4. ❌ West Bromwich Albion (ID: 6)
 5. ❌ Accrington (ID: 7)
