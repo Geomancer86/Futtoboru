@@ -128,48 +128,52 @@ public class AuthorityManager {
                 Gdx.app.debug("AuthorityManager", "No leagues found in main authority");
                 return;
             }
-        
-        // Get season start date (use game start date or season start date)
-        LocalDateTime seasonStart = getSeasonStartDate();
-        LocalDateTime seasonEnd = getSeasonEndDate(seasonStart);
-        
-        Gdx.app.log("AuthorityManager", "Season dates: " + seasonStart + " to " + seasonEnd);
-        
-        for (League league : leagues) {
-            if (league == null) {
-                Gdx.app.error("AuthorityManager", "Found null league in list");
-                continue;
-            }
             
-            Gdx.app.log("AuthorityManager", "Checking league: " + league.getName());
+            // Get season start date (use game start date or season start date)
+            LocalDateTime seasonStart = getSeasonStartDate();
+            LocalDateTime seasonEnd = getSeasonEndDate(seasonStart);
             
-            if (league.getLeagueClubs() == null) {
-                Gdx.app.error("AuthorityManager", "League " + league.getName() + " has null leagueClubs list");
-                continue;
-            }
+            Gdx.app.log("AuthorityManager", "Season dates: " + seasonStart + " to " + seasonEnd);
             
-            if (league.getLeagueClubs().isEmpty()) {
-                Gdx.app.error("AuthorityManager", "League " + league.getName() + " has no clubs");
-                continue;
-            }
-            
-            Gdx.app.log("AuthorityManager", "League " + league.getName() + " has " + league.getLeagueClubs().size() + " clubs");
-            
-            // Check if fixtures are already scheduled
-            boolean hasFixtures = fixtureGenerator.hasFixturesScheduled(league);
-            Gdx.app.log("AuthorityManager", "League " + league.getName() + " has fixtures scheduled: " + hasFixtures);
-            
-            if (!hasFixtures) {
-                Gdx.app.log("AuthorityManager", "Generating fixtures for league: " + league.getName());
+            for (League league : leagues) {
+                if (league == null) {
+                    Gdx.app.error("AuthorityManager", "Found null league in list");
+                    continue;
+                }
                 
-                // Generate fixtures
-                List<com.rndmodgames.futtoboru.data.Match> fixtures = 
-                    fixtureGenerator.generateLeagueFixtures(league, seasonStart, seasonEnd);
+                Gdx.app.log("AuthorityManager", "Checking league: " + league.getName());
                 
-                Gdx.app.log("AuthorityManager", "Generated " + fixtures.size() + " fixtures for " + league.getName());
-            } else {
-                Gdx.app.debug("AuthorityManager", "League " + league.getName() + " already has fixtures scheduled");
+                if (league.getLeagueClubs() == null) {
+                    Gdx.app.error("AuthorityManager", "League " + league.getName() + " has null leagueClubs list");
+                    continue;
+                }
+                
+                if (league.getLeagueClubs().isEmpty()) {
+                    Gdx.app.error("AuthorityManager", "League " + league.getName() + " has no clubs");
+                    continue;
+                }
+                
+                Gdx.app.log("AuthorityManager", "League " + league.getName() + " has " + league.getLeagueClubs().size() + " clubs");
+                
+                // Check if fixtures are already scheduled
+                boolean hasFixtures = fixtureGenerator.hasFixturesScheduled(league);
+                Gdx.app.log("AuthorityManager", "League " + league.getName() + " has fixtures scheduled: " + hasFixtures);
+                
+                if (!hasFixtures) {
+                    Gdx.app.log("AuthorityManager", "Generating fixtures for league: " + league.getName());
+                    
+                    // Generate fixtures
+                    List<com.rndmodgames.futtoboru.data.Match> fixtures = 
+                        fixtureGenerator.generateLeagueFixtures(league, seasonStart, seasonEnd);
+                    
+                    Gdx.app.log("AuthorityManager", "Generated " + fixtures.size() + " fixtures for " + league.getName());
+                } else {
+                    Gdx.app.debug("AuthorityManager", "League " + league.getName() + " already has fixtures scheduled");
+                }
             }
+        } catch (Exception e) {
+            Gdx.app.error("AuthorityManager", "Error in checkAndScheduleLeagueFixtures()", e);
+            e.printStackTrace();
         }
     }
     
