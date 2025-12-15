@@ -168,6 +168,7 @@ public class ScriptsManager {
          * Generate fixtures immediately when league is created
          * This ensures fixtures are ready right away, not waiting for daily check
          */
+        java.util.List<com.rndmodgames.futtoboru.data.Match> fixtures = null;
         try {
             com.badlogic.gdx.Gdx.app.log("ScriptsManager", "Generating fixtures for newly created league: " + league.getName());
             
@@ -183,8 +184,7 @@ public class ScriptsManager {
             com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator fixtureGenerator = 
                 new com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator(gameInstance);
             
-            java.util.List<com.rndmodgames.futtoboru.data.Match> fixtures = 
-                fixtureGenerator.generateLeagueFixtures(league, seasonStart, seasonEnd);
+            fixtures = fixtureGenerator.generateLeagueFixtures(league, seasonStart, seasonEnd);
             
             System.out.println("Generated " + fixtures.size() + " fixtures for league " + league.getName());
             com.badlogic.gdx.Gdx.app.log("ScriptsManager", "Successfully generated " + fixtures.size() + " fixtures for league " + league.getName());
