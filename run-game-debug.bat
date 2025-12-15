@@ -56,7 +56,14 @@ echo.
 
 REM Run Java with all output visible AND logged to file (Windows compatible)
 REM Using PowerShell to tee output to both console and file
-powershell -Command "java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar 2>&1 | Tee-Object -FilePath game-debug.log"
+echo Running game...
+powershell -NoProfile -Command "java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar 2>&1 | Tee-Object -FilePath game-debug.log"
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo PowerShell command failed with exit code: %ERRORLEVEL%
+    echo Trying simple redirection instead...
+    java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar > game-debug.log 2>&1
+)
 
 echo.
 echo ========================================
