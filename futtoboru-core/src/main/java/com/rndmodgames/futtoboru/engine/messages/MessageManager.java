@@ -98,14 +98,27 @@ public class MessageManager {
     
     /**
      * Deliver a message immediately (add to inbox)
+     * 
+     * NOTE: If message is already in scheduledMessages, remove it first
      */
     public void deliverMessage(Message message) {
         if (message == null) {
             return;
         }
         
+        // Remove from scheduled if it exists there
+        if (currentGame.getScheduledMessages() != null && currentGame.getScheduledMessages().contains(message)) {
+            currentGame.getScheduledMessages().remove(message);
+        }
+        
         if (currentGame.getAllMessages() == null) {
             currentGame.setAllMessages(new ArrayList<>());
+        }
+        
+        // Don't add if already in allMessages
+        if (currentGame.getAllMessages().contains(message)) {
+            Gdx.app.log("MessageManager", "Message already delivered: " + message.getTitle());
+            return;
         }
         
         message.setId(nextMessageId++);

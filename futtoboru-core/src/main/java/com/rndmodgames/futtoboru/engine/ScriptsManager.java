@@ -208,12 +208,16 @@ public class ScriptsManager {
                     com.rndmodgames.futtoboru.data.Message leagueMessage = 
                         messageManager.createLeagueCreationMessage(league);
                     
-                    // Schedule for league creation date (current date when league is created)
+                    // Schedule for current date (will be delivered immediately or next day)
+                    // Use current date so it appears in inbox right away
                     java.time.LocalDateTime leagueCreationDate = currentGame.getGameDate();
                     leagueMessage.setScheduledDate(leagueCreationDate);
                     messageManager.scheduleMessage(leagueMessage);
                     
-                    System.out.println("Scheduled league creation message for " + leagueCreationDate);
+                    // Also deliver immediately to ensure it appears
+                    messageManager.deliverMessage(leagueMessage);
+                    
+                    System.out.println("Created and delivered league creation message for " + leagueCreationDate);
                     
                     // Schedule fixture release message (1 day after league creation)
                     if (fixtures != null && fixtures.size() > 0) {

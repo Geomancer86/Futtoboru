@@ -203,13 +203,20 @@ public class FuttoboruGameEngine {
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
         
         /**
+         * Deliver scheduled messages BEFORE advancing date
+         * This ensures messages scheduled for the current date are delivered
+         */
+        messageManager.deliverScheduledMessages(current);
+        
+        /**
          * Increment By Required Unit
          * 
          * TODO: make it AM/PM or advance in smaller amount of time depending on time of season/etc as in FM
          */
-        gameInstance.getCurrentGame().setGameDate(current.plusDays(1));
+        LocalDateTime newDate = current.plusDays(1);
+        gameInstance.getCurrentGame().setGameDate(newDate);
         
-        // Check Game Scripts
+        // Check Game Scripts (may create new scheduled messages)
         scriptsManager.checkGameScripts();
 
         // Check Competition Schedules
@@ -219,6 +226,12 @@ public class FuttoboruGameEngine {
         if (gameInstance.getJobManager() != null) {
             gameInstance.getJobManager().updateJobOpenings();
         }
+        
+        /**
+         * Deliver scheduled messages AFTER advancing date
+         * This catches messages scheduled for the new date (same day events)
+         */
+        messageManager.deliverScheduledMessages(newDate);
         
         /**
          * Update Player Attributes (v1.0 - Testing)

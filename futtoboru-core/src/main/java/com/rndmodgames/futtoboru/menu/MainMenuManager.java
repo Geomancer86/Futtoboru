@@ -348,7 +348,9 @@ public class MainMenuManager {
             
         // 
         case INBOX_SCREEN:
-            parentTable.add(inboxScreenTable);
+            // Update inbox to show latest messages
+            inboxScreenTable.updateDynamicComponents();
+            parentTable.add(inboxScreenTable).grow();
             break;
            
         // 
