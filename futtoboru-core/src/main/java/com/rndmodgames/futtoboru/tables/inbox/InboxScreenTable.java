@@ -78,6 +78,9 @@ public class InboxScreenTable extends VisTable {
      */
     public void updateDynamicComponents() {
         
+        // Refresh currentGame reference to avoid stale references
+        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        
         // Clear all tables
         this.clear();
         filtersTable.clear();
@@ -95,10 +98,20 @@ public class InboxScreenTable extends VisTable {
         
         // All messages button
         VisTextButton allButton = new VisTextButton("All");
+        if (currentFilter == null) {
+            // Highlight selected
+            allButton.setColor(0.5f, 0.8f, 1.0f, 1.0f); // Light blue for selected
+        }
         allButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 currentFilter = null;
+                System.out.println("InboxScreenTable: Filter changed to ALL");
                 updateDynamicComponents();
             }
         });
@@ -113,8 +126,14 @@ public class InboxScreenTable extends VisTable {
             }
             categoryButton.addListener(new InputListener() {
                 @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    return true;
+                }
+                
+                @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     currentFilter = category;
+                    System.out.println("InboxScreenTable: Filter changed to " + category.name());
                     updateDynamicComponents();
                 }
             });
@@ -196,6 +215,11 @@ public class InboxScreenTable extends VisTable {
             titleButton.setColor(0.5f, 0.8f, 1.0f, 1.0f); // Light blue for selected
         }
         titleButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 selectedMessage = message;
@@ -316,8 +340,16 @@ public class InboxScreenTable extends VisTable {
             }
             
             // Apply category filter
-            if (currentFilter != null && message.getCategory() != currentFilter) {
-                continue;
+            if (currentFilter != null) {
+                if (message.getCategory() == null) {
+                    // Message has no category, skip if filtering
+                    System.out.println("InboxScreenTable: Message '" + message.getTitle() + "' has no category, skipping (filter: " + currentFilter.name() + ")");
+                    continue;
+                }
+                if (message.getCategory() != currentFilter) {
+                    // Category doesn't match filter
+                    continue;
+                }
             }
             
             filtered.add(message);

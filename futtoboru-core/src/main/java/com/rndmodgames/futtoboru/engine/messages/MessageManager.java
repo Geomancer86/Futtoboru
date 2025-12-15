@@ -171,6 +171,21 @@ public class MessageManager {
             for (Message existing : currentGame.getAllMessages()) {
                 if (existing != null && existing.getId() != null && existing.getId().equals(message.getId())) {
                     Gdx.app.log("MessageManager", "Message with ID " + message.getId() + " already delivered: " + message.getTitle());
+                    System.out.println("MessageManager: Message with ID " + message.getId() + " already delivered: " + message.getTitle());
+                    return;
+                }
+            }
+        }
+        
+        // Also check for duplicate messages by type and title (for welcome messages, etc.)
+        // This prevents creating multiple welcome messages if updateDynamicComponents is called multiple times
+        if (message.getMessageType() != null && message.getTitle() != null) {
+            for (Message existing : currentGame.getAllMessages()) {
+                if (existing != null && 
+                    existing.getMessageType() != null && existing.getMessageType().equals(message.getMessageType()) &&
+                    existing.getTitle() != null && existing.getTitle().equals(message.getTitle())) {
+                    Gdx.app.log("MessageManager", "Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
+                    System.out.println("MessageManager: Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
                     return;
                 }
             }
