@@ -184,12 +184,28 @@ if not defined JAVA_HOME (
 )
 
 REM Set JAVA_HOME in current session for Maven to use
-set "JAVA_HOME=%JAVA_HOME%"
+REM Put Java bin at the START of PATH so Maven uses it first
 set "PATH=%JAVA_HOME%\bin;%PATH%"
 
 REM Verify Maven sees the correct Java
 echo Verifying Maven is using correct Java...
 "%MAVEN_CMD%" -version
+echo.
+
+REM Check what Java version Maven is actually using
+for /f "tokens=*" %%i in ('"%MAVEN_CMD%" -version 2^>^&1 ^| findstr /C:"Java version"') do (
+    echo Maven Java Info: %%i
+    echo %%i | findstr /C:"21" >nul
+    if %ERRORLEVEL% NEQ 0 (
+        echo %%i | findstr /C:"17" >nul
+        if %ERRORLEVEL% NEQ 0 (
+            echo.
+            echo WARNING: Maven may not be using Java 17 or 21!
+            echo This could cause compilation errors.
+            echo.
+        )
+    )
+)
 echo.
 
 REM Run Maven clean install with Java 21
