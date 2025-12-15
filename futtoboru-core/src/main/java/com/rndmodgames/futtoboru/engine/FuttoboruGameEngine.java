@@ -12,6 +12,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
+import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
@@ -49,6 +50,9 @@ public class FuttoboruGameEngine {
     // Player Attribute Generator (v1.0)
     private PlayerAttributeGenerator attributeGenerator;
     
+    // Message Manager (v2.0)
+    private MessageManager messageManager;
+    
     //
     public static final int CONTINUE_GAME_ACTION = 1;
     public static final int MATCH_PREVIEW_ACTION = 2;
@@ -67,6 +71,11 @@ public class FuttoboruGameEngine {
         this.scheduler = new MatchScheduler(gameInstance);
         this.competitionScheduler = new CompetitionScheduler(gameInstance);
         this.attributeGenerator = new PlayerAttributeGenerator();
+        this.messageManager = new MessageManager(gameInstance);
+    }
+    
+    public MessageManager getMessageManager() {
+        return messageManager;
     }
     
     public MainMenuManager getMainMenuManager() {

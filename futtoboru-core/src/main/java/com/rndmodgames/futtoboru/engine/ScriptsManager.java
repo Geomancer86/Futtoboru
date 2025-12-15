@@ -194,5 +194,43 @@ public class ScriptsManager {
             e.printStackTrace();
             com.badlogic.gdx.Gdx.app.error("ScriptsManager", "Failed to generate fixtures for league " + league.getName(), e);
         }
+        
+        /**
+         * Schedule league creation announcement message (v2.0)
+         */
+        try {
+            if (gameInstance.getGameEngine() != null) {
+                com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
+                    gameInstance.getGameEngine().getMessageManager();
+                
+                if (messageManager != null) {
+                    // Create league creation message
+                    com.rndmodgames.futtoboru.data.Message leagueMessage = 
+                        messageManager.createLeagueCreationMessage(league);
+                    
+                    // Schedule for league creation date (current date when league is created)
+                    java.time.LocalDateTime leagueCreationDate = currentGame.getGameDate();
+                    leagueMessage.setScheduledDate(leagueCreationDate);
+                    messageManager.scheduleMessage(leagueMessage);
+                    
+                    System.out.println("Scheduled league creation message for " + leagueCreationDate);
+                    
+                    // Schedule fixture release message (1 day after league creation)
+                    if (fixtures != null && fixtures.size() > 0) {
+                        com.rndmodgames.futtoboru.data.Message fixtureMessage = 
+                            messageManager.createFixtureReleaseMessage(league);
+                        
+                        java.time.LocalDateTime fixtureReleaseDate = currentGame.getGameDate().plusDays(1);
+                        fixtureMessage.setScheduledDate(fixtureReleaseDate);
+                        messageManager.scheduleMessage(fixtureMessage);
+                        
+                        System.out.println("Scheduled fixture release message for " + fixtureReleaseDate);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("ERROR scheduling league messages: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
