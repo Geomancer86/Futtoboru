@@ -107,26 +107,27 @@ public class AuthorityManager {
      * Check all leagues and generate fixtures if they don't have any scheduled
      */
     private void checkAndScheduleLeagueFixtures() {
-        Gdx.app.log("AuthorityManager", "checkAndScheduleLeagueFixtures() called");
-        
-        if (mainAuthority == null) {
-            Gdx.app.error("AuthorityManager", "mainAuthority is null!");
-            return;
-        }
-        
-        if (mainAuthority.getLeagues() == null) {
-            Gdx.app.error("AuthorityManager", "mainAuthority.getLeagues() is null!");
-            return;
-        }
-        
-        List<League> leagues = mainAuthority.getLeagues();
-        
-        Gdx.app.log("AuthorityManager", "Found " + leagues.size() + " leagues in main authority");
-        
-        if (leagues.isEmpty()) {
-            Gdx.app.log("AuthorityManager", "No leagues found in main authority");
-            return;
-        }
+        try {
+            Gdx.app.log("AuthorityManager", "checkAndScheduleLeagueFixtures() called");
+            
+            if (mainAuthority == null) {
+                Gdx.app.debug("AuthorityManager", "mainAuthority is null - no leagues to check");
+                return;
+            }
+            
+            if (mainAuthority.getLeagues() == null) {
+                Gdx.app.debug("AuthorityManager", "mainAuthority.getLeagues() is null - no leagues to check");
+                return;
+            }
+            
+            List<League> leagues = mainAuthority.getLeagues();
+            
+            Gdx.app.log("AuthorityManager", "Found " + leagues.size() + " leagues in main authority");
+            
+            if (leagues.isEmpty()) {
+                Gdx.app.debug("AuthorityManager", "No leagues found in main authority");
+                return;
+            }
         
         // Get season start date (use game start date or season start date)
         LocalDateTime seasonStart = getSeasonStartDate();
