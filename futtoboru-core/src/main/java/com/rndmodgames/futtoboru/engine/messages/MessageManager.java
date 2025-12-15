@@ -555,6 +555,11 @@ public class MessageManager {
         message.setIsRead(false);
         message.setIsDeleted(false);
         
+        // Store club ID in actionData so we can filter messages by club
+        if (club != null && club.getId() != null) {
+            message.setActionData(club.getId());
+        }
+        
         return message;
     }
     

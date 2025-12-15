@@ -317,27 +317,42 @@ public class ScriptsManager {
                     }
                     java.time.LocalDateTime seasonEnd = seasonStart.plusMonths(9);
                     
-                    if (league.getLeagueClubs() != null) {
-                        for (com.rndmodgames.futtoboru.data.Club club : league.getLeagueClubs()) {
-                            if (club != null) {
-                                com.rndmodgames.futtoboru.data.Message welcomeMessage = 
-                                    messageManager.createLeagueWelcomeMessage(league, club, seasonStart, seasonEnd);
-                                
-                                if (welcomeMessage != null) {
-                                    // Schedule welcome message for same day as league creation
-                                    welcomeMessage.setScheduledDate(leagueCreationDate);
-                                    messageManager.scheduleMessage(welcomeMessage);
-                                    messageManager.deliverMessage(welcomeMessage);
-                                    System.out.println("Created and delivered welcome message for " + club.getName());
-                                    System.out.println("Welcome message ID: " + welcomeMessage.getId());
-                                }
+                    // Only send league welcome message to player's club (if player has a club)
+                    com.rndmodgames.futtoboru.data.Club playerClub = currentGame.getCurrentClub();
+                    if (playerClub != null && league.getLeagueClubs() != null) {
+                        // Check if player's club is in the league
+                        boolean playerClubInLeague = false;
+                        for (com.rndmodgames.futtoboru.data.Club leagueClub : league.getLeagueClubs()) {
+                            if (leagueClub != null && leagueClub.getId() != null && 
+                                playerClub.getId() != null && leagueClub.getId().equals(playerClub.getId())) {
+                                playerClubInLeague = true;
+                                break;
                             }
                         }
                         
-                        // Verify all messages were added
-                        int finalMessageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
-                        System.out.println("Total messages after all deliveries: " + finalMessageCount);
+                        // Only create welcome message if player's club is in the league
+                        if (playerClubInLeague) {
+                            com.rndmodgames.futtoboru.data.Message welcomeMessage = 
+                                messageManager.createLeagueWelcomeMessage(league, playerClub, seasonStart, seasonEnd);
+                            
+                            if (welcomeMessage != null) {
+                                // Schedule welcome message for same day as league creation
+                                welcomeMessage.setScheduledDate(leagueCreationDate);
+                                messageManager.scheduleMessage(welcomeMessage);
+                                messageManager.deliverMessage(welcomeMessage);
+                                System.out.println("Created and delivered league welcome message for player's club: " + playerClub.getName());
+                                System.out.println("Welcome message ID: " + welcomeMessage.getId());
+                            }
+                        } else {
+                            System.out.println("Player's club " + playerClub.getName() + " is not in league " + league.getName() + ", skipping welcome message");
+                        }
+                    } else {
+                        System.out.println("Player has no club or league has no clubs, skipping league welcome messages");
                     }
+                    
+                    // Verify all messages were added
+                    int finalMessageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
+                    System.out.println("Total messages after all deliveries: " + finalMessageCount);
                     
                     // Schedule fixture release message (1 day after league creation)
                     if (fixtures != null && fixtures.size() > 0) {

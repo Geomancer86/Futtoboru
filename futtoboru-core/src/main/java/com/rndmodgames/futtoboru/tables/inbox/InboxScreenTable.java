@@ -37,6 +37,7 @@ public class InboxScreenTable extends VisTable {
     
     // Current filter
     private MessageCategory currentFilter = null; // null = all messages
+    private boolean unreadFilter = false; // true = only unread messages
     
     // Layout components
     private VisTable filtersTable = null;
@@ -98,7 +99,7 @@ public class InboxScreenTable extends VisTable {
         
         // All messages button
         VisTextButton allButton = new VisTextButton("All");
-        if (currentFilter == null) {
+        if (currentFilter == null && !unreadFilter) {
             // Highlight selected
             allButton.setColor(0.5f, 0.8f, 1.0f, 1.0f); // Light blue for selected
         }
@@ -111,11 +112,36 @@ public class InboxScreenTable extends VisTable {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 currentFilter = null;
+                unreadFilter = false;
                 System.out.println("InboxScreenTable: Filter changed to ALL");
                 updateDynamicComponents();
             }
         });
         filtersTable.add(allButton).width(120).pad(2).row();
+        
+        // Unread filter button
+        VisTextButton unreadButton = new VisTextButton("Unread");
+        if (unreadFilter) {
+            // Highlight selected
+            unreadButton.setColor(0.5f, 0.8f, 1.0f, 1.0f); // Light blue for selected
+        }
+        unreadButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                unreadFilter = true;
+                currentFilter = null; // Clear category filter when using unread filter
+                System.out.println("InboxScreenTable: Filter changed to UNREAD");
+                updateDynamicComponents();
+            }
+        });
+        filtersTable.add(unreadButton).width(120).pad(2).row();
+        
+        filtersTable.add().height(10).row(); // Spacing
         
         // Category filter buttons
         for (MessageCategory category : MessageCategory.values()) {
@@ -133,6 +159,7 @@ public class InboxScreenTable extends VisTable {
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     currentFilter = category;
+                    unreadFilter = false; // Clear unread filter when using category filter
                     System.out.println("InboxScreenTable: Filter changed to " + category.name());
                     updateDynamicComponents();
                 }
@@ -209,10 +236,17 @@ public class InboxScreenTable extends VisTable {
         messageRow.add(indicatorLabel).width(20);
         
         // Title (clickable)
-        VisTextButton titleButton = new VisTextButton(message.getTitle() != null ? message.getTitle() : "No Title");
+        String titleText = message.getTitle() != null ? message.getTitle() : "No Title";
+        VisTextButton titleButton = new VisTextButton(titleText);
         if (message == selectedMessage) {
             // Highlight selected by changing color
             titleButton.setColor(0.5f, 0.8f, 1.0f, 1.0f); // Light blue for selected
+        } else if (message.getIsRead() == null || !message.getIsRead()) {
+            // Unread messages: make text bold/darker
+            titleButton.setColor(0.9f, 0.9f, 0.9f, 1.0f); // Lighter color for unread
+        } else {
+            // Read messages: normal color
+            titleButton.setColor(0.6f, 0.6f, 0.6f, 1.0f); // Gray for read
         }
         titleButton.addListener(new InputListener() {
             @Override
@@ -339,6 +373,11 @@ public class InboxScreenTable extends VisTable {
                 continue;
             }
             
+            // Filter by player's club (only show messages relevant to player)
+            if (!isMessageRelevantToPlayer(message)) {
+                continue; // Skip messages not relevant to player
+            }
+            
             // Apply category filter
             if (currentFilter != null) {
                 if (message.getCategory() == null) {
@@ -349,6 +388,13 @@ public class InboxScreenTable extends VisTable {
                 if (message.getCategory() != currentFilter) {
                     // Category doesn't match filter
                     continue;
+                }
+            }
+            
+            // Apply unread filter
+            if (unreadFilter) {
+                if (message.getIsRead() != null && message.getIsRead()) {
+                    continue; // Skip read messages when unread filter is active
                 }
             }
             
@@ -376,6 +422,94 @@ public class InboxScreenTable extends VisTable {
             }
         }
         return count;
+    }
+    
+    /**
+     * Check if message is relevant to the player
+     * 
+     * Messages are relevant if:
+     * - They are system messages (category SYSTEM)
+     * - They are league-wide announcements (LEAGUE_CREATION, FIXTURE_RELEASE)
+     * - They are for the player's current club (if player has a club)
+     * - They are for the player's owner (job offers, etc.)
+     */
+    private boolean isMessageRelevantToPlayer(Message message) {
+        if (currentGame == null || message == null) {
+            return false;
+        }
+        
+        // System messages are always relevant
+        if (message.getCategory() == MessageCategory.SYSTEM) {
+            return true;
+        }
+        
+        // League-wide messages (creation, fixture release) are relevant to all
+        if (message.getMessageType() != null) {
+            if (message.getMessageType().equals("LEAGUE_CREATION") || 
+                message.getMessageType().equals("FIXTURE_RELEASE")) {
+                return true;
+            }
+        }
+        
+        // Get player's current club
+        com.rndmodgames.futtoboru.data.Club playerClub = currentGame.getCurrentClub();
+        
+        // If player has no club, only show system messages and league-wide messages
+        if (playerClub == null) {
+            // For unemployed players, show system messages and job-related messages
+            return message.getCategory() == MessageCategory.SYSTEM || 
+                   message.getCategory() == MessageCategory.JOB;
+        }
+        
+        // Check if message is for player's club
+        // Messages with actionData containing club ID, or messages with specific club context
+        if (message.getActionData() != null) {
+            // If actionData is a Long (club ID), check if it matches player's club
+            if (message.getActionData() instanceof Long) {
+                Long clubId = (Long) message.getActionData();
+                if (playerClub.getId() != null && playerClub.getId().equals(clubId)) {
+                    return true;
+                }
+            }
+        }
+        
+        // League welcome messages: check if message content mentions player's club
+        // This is a simple check - in the future, we should store club ID in message
+        if (message.getMessageType() != null && message.getMessageType().equals("LEAGUE_WELCOME")) {
+            // Check if message content contains player's club name
+            if (message.getPlainTextMessage() != null && playerClub.getName() != null) {
+                if (message.getPlainTextMessage().contains(playerClub.getName())) {
+                    return true;
+                }
+            }
+        }
+        
+        // Authority and league-wide messages are relevant
+        if (message.getCategory() == MessageCategory.AUTHORITY || 
+            message.getCategory() == MessageCategory.LEAGUE) {
+            // Check if it's a league-wide message (not club-specific)
+            if (message.getMessageType() == null || 
+                message.getMessageType().equals("LEAGUE_CREATION") ||
+                message.getMessageType().equals("FIXTURE_RELEASE")) {
+                return true;
+            }
+        }
+        
+        // Match messages: check if they involve player's club
+        if (message.getCategory() == MessageCategory.MATCH) {
+            // Match messages should be relevant if they involve player's club
+            // For now, show all match messages (we'll refine this later)
+            return true;
+        }
+        
+        // Job messages are always relevant
+        if (message.getCategory() == MessageCategory.JOB) {
+            return true;
+        }
+        
+        // Default: show message if we can't determine relevance
+        // This is safer than hiding potentially important messages
+        return true;
     }
     
     /**
