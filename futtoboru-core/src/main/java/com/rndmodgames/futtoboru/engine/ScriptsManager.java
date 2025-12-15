@@ -107,14 +107,56 @@ public class ScriptsManager {
     @SuppressWarnings("unchecked")
     public void createLeague(BasicScript script) {
         
-        //
+        System.out.println("========================================");
         System.out.println("EXECUTING LEAGUE CREATION SCRIPT!");
+        System.out.println("========================================");
+        
+        // Verify SaveGame is available
+        if (currentGame == null) {
+            System.out.println("ERROR: currentGame is null! Cannot create league.");
+            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "currentGame is null in createLeague()");
+            return;
+        }
+        
+        // Verify mainAuthority exists
+        if (currentGame.getMainAuthority() == null) {
+            System.out.println("ERROR: mainAuthority is null! Cannot add league.");
+            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "mainAuthority is null in createLeague()");
+            return;
+        }
+        
+        // Initialize leagues list if null
+        if (currentGame.getMainAuthority().getLeagues() == null) {
+            System.out.println("WARNING: mainAuthority.getLeagues() is null, initializing...");
+            currentGame.getMainAuthority().setLeagues(new java.util.ArrayList<>());
+        }
+        
+        System.out.println("Current leagues count before creation: " + currentGame.getMainAuthority().getLeagues().size());
         
         //
         League league = new League();
         
-        league.setName((String) script.getScriptValues().get(ScriptsLoader.LEAGUE_NAME));
-        league.setCountry(DatabaseLoader.getCountryById((Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_COUNTRY)));
+        // Get league name
+        String leagueName = (String) script.getScriptValues().get(ScriptsLoader.LEAGUE_NAME);
+        if (leagueName == null) {
+            System.out.println("ERROR: League name is null in script!");
+            return;
+        }
+        league.setName(leagueName);
+        System.out.println("Creating league: " + leagueName);
+        
+        // Get league country
+        Long countryId = (Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_COUNTRY);
+        if (countryId == null) {
+            System.out.println("ERROR: League country ID is null in script!");
+            return;
+        }
+        league.setCountry(DatabaseLoader.getCountryById(countryId));
+        if (league.getCountry() == null) {
+            System.out.println("ERROR: Country with ID " + countryId + " not found!");
+            return;
+        }
+        System.out.println("League country: " + league.getCountry().getCommonName());
         
         /**
          * Iterate Teams and add them to the League
@@ -124,11 +166,29 @@ public class ScriptsManager {
          * CRITICAL FIX: Ensure league clubs are in SaveGame, not just DatabaseLoader.
          * This fixes the issue where fixture generator can't find clubs.
          */
-        Array<Long> test = (Array<Long>) script.getScriptValues().get(ScriptsLoader.LEAGUE_FOUNDING_TEAMS);
+        Array<Long> clubIds = (Array<Long>) script.getScriptValues().get(ScriptsLoader.LEAGUE_FOUNDING_TEAMS);
+        
+        if (clubIds == null || clubIds.size == 0) {
+            System.out.println("ERROR: No club IDs found in script!");
+            return;
+        }
+        
+        System.out.println("Found " + clubIds.size + " club IDs in script");
         
         league.setLeagueClubs(new ArrayList<>());
         
-        for (Long clubId : test) {
+        // Ensure allClubs list exists
+        if (currentGame.getAllClubs() == null) {
+            currentGame.setAllClubs(new ArrayList<>());
+            System.out.println("Initialized allClubs list");
+        }
+        
+        int clubsAdded = 0;
+        for (Long clubId : clubIds) {
+            if (clubId == null) {
+                System.out.println("WARNING: Null club ID in list, skipping");
+                continue;
+            }
             
             // Try to get club from SaveGame first (preferred)
             Club club = currentGame.getClubById(clubId);
@@ -140,9 +200,6 @@ public class ScriptsManager {
                 if (club != null) {
                     // Add to SaveGame so fixture generator can find it
                     System.out.println("Adding club " + club.getName() + " (ID: " + clubId + ") to SaveGame from DatabaseLoader");
-                    if (currentGame.getAllClubs() == null) {
-                        currentGame.setAllClubs(new ArrayList<>());
-                    }
                     currentGame.getAllClubs().add(club);
                 } else {
                     System.out.println("ERROR: Club ID " + clubId + " not found in DatabaseLoader or SaveGame!");
@@ -152,14 +209,26 @@ public class ScriptsManager {
             
             // Add Club to League (now guaranteed to be in SaveGame)
             league.getLeagueClubs().add(club);
+            clubsAdded++;
             System.out.println("Added club " + club.getName() + " (ID: " + clubId + ") to league " + league.getName());
+        }
+        
+        System.out.println("Total clubs added to league: " + clubsAdded + " / " + clubIds.size);
+        
+        if (league.getLeagueClubs().isEmpty()) {
+            System.out.println("ERROR: No clubs were added to league! Cannot create empty league.");
+            return;
         }
         
         // Save the created League on the current game
         currentGame.getMainAuthority().getLeagues().add(league);
         
-        System.out.println("Added League to SaveGame: Total Leagues: " + currentGame.getMainAuthority().getLeagues().size());
-        System.out.println("League " + league.getName() + " has " + league.getLeagueClubs().size() + " clubs");
+        System.out.println("========================================");
+        System.out.println("LEAGUE CREATION SUCCESSFUL!");
+        System.out.println("League Name: " + league.getName());
+        System.out.println("League Clubs: " + league.getLeagueClubs().size());
+        System.out.println("Total Leagues in SaveGame: " + currentGame.getMainAuthority().getLeagues().size());
+        System.out.println("========================================");
 
         // Mark as executed to avoid running more than once
         script.setIsExecuted(true);
