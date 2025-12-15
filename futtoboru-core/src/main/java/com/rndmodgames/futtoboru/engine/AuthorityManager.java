@@ -107,14 +107,24 @@ public class AuthorityManager {
      * Check all leagues and generate fixtures if they don't have any scheduled
      */
     private void checkAndScheduleLeagueFixtures() {
-        if (mainAuthority == null || mainAuthority.getLeagues() == null) {
+        Gdx.app.log("AuthorityManager", "checkAndScheduleLeagueFixtures() called");
+        
+        if (mainAuthority == null) {
+            Gdx.app.error("AuthorityManager", "mainAuthority is null!");
+            return;
+        }
+        
+        if (mainAuthority.getLeagues() == null) {
+            Gdx.app.error("AuthorityManager", "mainAuthority.getLeagues() is null!");
             return;
         }
         
         List<League> leagues = mainAuthority.getLeagues();
         
+        Gdx.app.log("AuthorityManager", "Found " + leagues.size() + " leagues in main authority");
+        
         if (leagues.isEmpty()) {
-            Gdx.app.debug("AuthorityManager", "No leagues found in main authority");
+            Gdx.app.log("AuthorityManager", "No leagues found in main authority");
             return;
         }
         
@@ -122,13 +132,33 @@ public class AuthorityManager {
         LocalDateTime seasonStart = getSeasonStartDate();
         LocalDateTime seasonEnd = getSeasonEndDate(seasonStart);
         
+        Gdx.app.log("AuthorityManager", "Season dates: " + seasonStart + " to " + seasonEnd);
+        
         for (League league : leagues) {
-            if (league == null || league.getLeagueClubs() == null || league.getLeagueClubs().isEmpty()) {
+            if (league == null) {
+                Gdx.app.error("AuthorityManager", "Found null league in list");
                 continue;
             }
             
+            Gdx.app.log("AuthorityManager", "Checking league: " + league.getName());
+            
+            if (league.getLeagueClubs() == null) {
+                Gdx.app.error("AuthorityManager", "League " + league.getName() + " has null leagueClubs list");
+                continue;
+            }
+            
+            if (league.getLeagueClubs().isEmpty()) {
+                Gdx.app.error("AuthorityManager", "League " + league.getName() + " has no clubs");
+                continue;
+            }
+            
+            Gdx.app.log("AuthorityManager", "League " + league.getName() + " has " + league.getLeagueClubs().size() + " clubs");
+            
             // Check if fixtures are already scheduled
-            if (!fixtureGenerator.hasFixturesScheduled(league)) {
+            boolean hasFixtures = fixtureGenerator.hasFixturesScheduled(league);
+            Gdx.app.log("AuthorityManager", "League " + league.getName() + " has fixtures scheduled: " + hasFixtures);
+            
+            if (!hasFixtures) {
                 Gdx.app.log("AuthorityManager", "Generating fixtures for league: " + league.getName());
                 
                 // Generate fixtures

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+
+import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
@@ -77,17 +79,36 @@ public class LeagueFixtureGenerator {
         scheduleMatchesAcrossSeason(allMatches, seasonStartDate, seasonEndDate);
         
         // Add matches to clubs' scheduledMatches lists
+        int matchesAddedToClubs = 0;
         for (Match match : allMatches) {
             Club homeClub = currentGame.getClubById(match.getHomeClubId());
             Club awayClub = currentGame.getClubById(match.getAwayClubId());
             
-            if (homeClub != null && homeClub.getScheduledMatches() != null) {
-                homeClub.getScheduledMatches().add(match);
+            if (homeClub == null) {
+                Gdx.app.error("LeagueFixtureGenerator", "Home club not found in SaveGame for ID: " + match.getHomeClubId());
+                continue;
             }
-            if (awayClub != null && awayClub.getScheduledMatches() != null) {
-                awayClub.getScheduledMatches().add(match);
+            if (awayClub == null) {
+                Gdx.app.error("LeagueFixtureGenerator", "Away club not found in SaveGame for ID: " + match.getAwayClubId());
+                continue;
             }
+            
+            // Initialize scheduledMatches if null
+            if (homeClub.getScheduledMatches() == null) {
+                homeClub.setScheduledMatches(new ArrayList<>());
+                Gdx.app.log("LeagueFixtureGenerator", "Initialized scheduledMatches for home club: " + homeClub.getName());
+            }
+            if (awayClub.getScheduledMatches() == null) {
+                awayClub.setScheduledMatches(new ArrayList<>());
+                Gdx.app.log("LeagueFixtureGenerator", "Initialized scheduledMatches for away club: " + awayClub.getName());
+            }
+            
+            homeClub.getScheduledMatches().add(match);
+            awayClub.getScheduledMatches().add(match);
+            matchesAddedToClubs += 2;
         }
+        
+        Gdx.app.log("LeagueFixtureGenerator", "Added " + matchesAddedToClubs + " match references to clubs (2 per match)");
         
         Gdx.app.log("LeagueFixtureGenerator", "Generated " + allMatches.size() + " league fixtures");
         
