@@ -36,8 +36,8 @@
 11,Alec,Cannon,1001,1866
 12,William,Rose,1000,1865
 13,Walter,White,1000,1866
-14,Tommy,Hunter,1000,1865
+14,Tommy,Hunter,1000,1863
 15,Joe,Cooper,1000,1865
 16,John,Benton,1000,1866
 17,Nick,Anderson,1000,1867
-18,Alec,Cannon,1001,1866
+18,R,Dudley,1000,1865
