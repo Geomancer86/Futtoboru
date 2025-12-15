@@ -25,20 +25,17 @@
 - **Branch:** Already in develop
 - **Notes:** Reference file, all data complete
 
-### 2. Aston Villa (Club ID: 2) ⭐ **JUST COMPLETED**
-- **Status:** ✅ Complete - Ready for Testing
+### 2. Aston Villa (Club ID: 2) ✅ **COMPLETED**
+- **Status:** ✅ Complete - Research Done, Ready for Integration
 - **Players:** 18
 - **Source:** `https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season`
-- **File:** `club_players/2.txt`
-- **Branch:** `feature/aston-villa-1888-89-players` (main repo)
-- **Additional Sources:**
-  - Individual player Wikipedia pages
-  - avfchistory.co.uk
+- **File Location (PM Repo):** `project-management/research-data/season-1/club_players/2.txt`
+- **Additional Sources:** 17+ Wikipedia pages + historical databases
 - **Notes:** 
-  - Created with full source documentation
-  - Ready for game testing
-  - Some players have partial birthdates (year + month)
-  - All players have names and countries
+  - Complete research with full source documentation
+  - 13 players with full birthdates, 3 with year+month, 2 with year only
+  - All players have names and countries (16 England, 1 Scotland, 1 Ireland)
+  - Ready for integration into main repo when approved
 
 ---
 
@@ -68,15 +65,18 @@
 ## 📋 Testing Status
 
 ### Aston Villa (Club ID: 2)
-- [ ] File created in main repo
-- [ ] File format validated
+- [x] Research completed
+- [x] File created in PM repo (`research-data/season-1/club_players/2.txt`)
+- [x] File format validated (matches Preston North End format)
+- [x] All sources documented
+- [ ] **AWAITING:** Integration into main repo
 - [ ] **AWAITING:** Game test confirmation
 - [ ] **AWAITING:** Player loading verification
 - [ ] **AWAITING:** Squad screen display check
 
-**Next Steps After Confirmation:**
-- If successful → Move to next club (Wolverhampton Wanderers recommended)
-- If issues → Fix format/data → Retest → Continue
+**Next Steps:**
+- File ready in PM repo for integration
+- After integration → Test in game → If successful → Move to next club
 
 ---
 
