@@ -104,31 +104,51 @@ public class MessageManager {
      */
     public void deliverMessage(Message message) {
         if (message == null) {
+            Gdx.app.error("MessageManager", "Cannot deliver null message");
             return;
         }
         
-        // Remove from scheduled if it exists there
-        if (currentGame.getScheduledMessages() != null && currentGame.getScheduledMessages().contains(message)) {
-            currentGame.getScheduledMessages().remove(message);
-        }
-        
+        // Ensure allMessages list exists
         if (currentGame.getAllMessages() == null) {
             currentGame.setAllMessages(new ArrayList<>());
+            Gdx.app.log("MessageManager", "Initialized allMessages list");
         }
         
-        // Don't add if already in allMessages
-        if (currentGame.getAllMessages().contains(message)) {
-            Gdx.app.log("MessageManager", "Message already delivered: " + message.getTitle());
-            return;
+        // Check if message with same ID already exists (more reliable than contains())
+        if (message.getId() != null) {
+            for (Message existing : currentGame.getAllMessages()) {
+                if (existing != null && existing.getId() != null && existing.getId().equals(message.getId())) {
+                    Gdx.app.log("MessageManager", "Message with ID " + message.getId() + " already delivered: " + message.getTitle());
+                    return;
+                }
+            }
         }
         
-        message.setId(nextMessageId++);
+        // Remove from scheduled if it exists there (by ID if available, otherwise by reference)
+        if (currentGame.getScheduledMessages() != null) {
+            if (message.getId() != null) {
+                currentGame.getScheduledMessages().removeIf(m -> m != null && m.getId() != null && m.getId().equals(message.getId()));
+            } else {
+                currentGame.getScheduledMessages().remove(message);
+            }
+        }
+        
+        // Set message ID if not set
+        if (message.getId() == null) {
+            message.setId(nextMessageId++);
+        }
+        
+        // Set message time if not set
         if (message.getMessageTime() == null) {
             message.setMessageTime(currentGame.getGameDate());
         }
+        
+        // Add to allMessages
         currentGame.getAllMessages().add(message);
         
-        Gdx.app.log("MessageManager", "Delivered message: " + message.getTitle());
+        int totalMessages = currentGame.getAllMessages().size();
+        Gdx.app.log("MessageManager", "Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
+        System.out.println("MessageManager: Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
     }
     
     // ========================================

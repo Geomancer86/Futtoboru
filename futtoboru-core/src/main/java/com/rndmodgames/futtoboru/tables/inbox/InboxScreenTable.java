@@ -291,16 +291,29 @@ public class InboxScreenTable extends VisTable {
      * Get filtered messages based on current filter
      */
     private List<Message> getFilteredMessages() {
-        if (currentGame == null || currentGame.getAllMessages() == null) {
+        if (currentGame == null) {
+            System.out.println("InboxScreenTable: currentGame is null");
+            return new ArrayList<>();
+        }
+        
+        if (currentGame.getAllMessages() == null) {
+            System.out.println("InboxScreenTable: getAllMessages() is null");
             return new ArrayList<>();
         }
         
         List<Message> allMessages = currentGame.getAllMessages();
+        System.out.println("InboxScreenTable: Total messages in SaveGame: " + allMessages.size());
+        
         List<Message> filtered = new ArrayList<>();
         
         for (Message message : allMessages) {
-            if (message == null) continue;
-            if (message.getIsDeleted() != null && message.getIsDeleted()) continue;
+            if (message == null) {
+                System.out.println("InboxScreenTable: Found null message in list");
+                continue;
+            }
+            if (message.getIsDeleted() != null && message.getIsDeleted()) {
+                continue;
+            }
             
             // Apply category filter
             if (currentFilter != null && message.getCategory() != currentFilter) {
@@ -310,6 +323,7 @@ public class InboxScreenTable extends VisTable {
             filtered.add(message);
         }
         
+        System.out.println("InboxScreenTable: Filtered messages count: " + filtered.size());
         return filtered;
     }
     

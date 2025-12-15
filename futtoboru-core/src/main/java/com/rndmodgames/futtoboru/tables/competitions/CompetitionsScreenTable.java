@@ -47,6 +47,7 @@ public class CompetitionsScreenTable extends VisTable {
     // keep track for easy access
     Futtoboru game;
     SaveGame currentGame;
+    com.rndmodgames.futtoboru.menu.MainMenuManager menuManager;
     
     public CompetitionsScreenTable(Game parent) {
     
@@ -56,6 +57,10 @@ public class CompetitionsScreenTable extends VisTable {
         //
         this.game = ((Futtoboru) parent);
         this.currentGame = game.getCurrentGame();
+    }
+    
+    public void setMenuManager(com.rndmodgames.futtoboru.menu.MainMenuManager menuManager) {
+        this.menuManager = menuManager;
     }
     
     //
@@ -115,8 +120,9 @@ public class CompetitionsScreenTable extends VisTable {
                 continue;
             }
             
-            // League name (clickable in future)
+            // League name (clickable)
             VisTextButton leagueButton = new VisTextButton(league.getName() != null ? league.getName() : "Unnamed League");
+            final League leagueForClick = league; // Final reference for inner class
             leagueButton.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -125,8 +131,11 @@ public class CompetitionsScreenTable extends VisTable {
                 
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    // TODO: Navigate to league detail screen
-                    System.out.println("Clicked on league: " + league.getName());
+                    // Navigate to league detail screen
+                    if (menuManager != null) {
+                        menuManager.setSelectedLeague(leagueForClick);
+                        menuManager.setActiveMainScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.LEAGUE_DETAIL_SCREEN);
+                    }
                 }
             });
             

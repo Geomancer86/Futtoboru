@@ -268,12 +268,29 @@ public class ScriptsManager {
          * Schedule league creation announcement message (v2.0)
          */
         try {
-            if (gameInstance.getGameEngine() != null) {
-                com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
-                    gameInstance.getGameEngine().getMessageManager();
-                
-                if (messageManager != null) {
-                    // Create league creation message
+            System.out.println("ScriptsManager: Attempting to create messages for league: " + league.getName());
+            
+            if (gameInstance == null) {
+                System.out.println("ERROR: gameInstance is null!");
+                return;
+            }
+            
+            if (gameInstance.getGameEngine() == null) {
+                System.out.println("ERROR: gameEngine is null!");
+                return;
+            }
+            
+            com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
+                gameInstance.getGameEngine().getMessageManager();
+            
+            if (messageManager == null) {
+                System.out.println("ERROR: messageManager is null!");
+                return;
+            }
+            
+            System.out.println("ScriptsManager: MessageManager found, creating messages...");
+            
+            // Create league creation message
                     com.rndmodgames.futtoboru.data.Message leagueMessage = 
                         messageManager.createLeagueCreationMessage(league);
                     
@@ -287,6 +304,11 @@ public class ScriptsManager {
                     messageManager.deliverMessage(leagueMessage);
                     
                     System.out.println("Created and delivered league creation message for " + leagueCreationDate);
+                    System.out.println("Message ID: " + leagueMessage.getId() + ", Title: " + leagueMessage.getTitle());
+                    
+                    // Verify message was added
+                    int messageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
+                    System.out.println("Total messages in SaveGame after delivery: " + messageCount);
                     
                     // Send welcome message to each club in the league
                     java.time.LocalDateTime seasonStart = currentGame.getGameStartDate();
@@ -307,9 +329,14 @@ public class ScriptsManager {
                                     messageManager.scheduleMessage(welcomeMessage);
                                     messageManager.deliverMessage(welcomeMessage);
                                     System.out.println("Created and delivered welcome message for " + club.getName());
+                                    System.out.println("Welcome message ID: " + welcomeMessage.getId());
                                 }
                             }
                         }
+                        
+                        // Verify all messages were added
+                        int finalMessageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
+                        System.out.println("Total messages after all deliveries: " + finalMessageCount);
                     }
                     
                     // Schedule fixture release message (1 day after league creation)
@@ -322,12 +349,14 @@ public class ScriptsManager {
                         messageManager.scheduleMessage(fixtureMessage);
                         
                         System.out.println("Scheduled fixture release message for " + fixtureReleaseDate);
+                        System.out.println("Fixture message ID: " + fixtureMessage.getId());
+                    } else {
+                        System.out.println("WARNING: No fixtures generated, skipping fixture release message");
                     }
-                }
-            }
         } catch (Exception e) {
             System.out.println("ERROR scheduling league messages: " + e.getMessage());
             e.printStackTrace();
+            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "Error creating messages", e);
         }
     }
 }
