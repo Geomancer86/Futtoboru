@@ -11,8 +11,9 @@ echo.
 echo ========================================
 echo.
 
-REM Run Java and log ALL output to file (stdout and stderr)
-java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar > game-debug.log 2>&1
+REM Run Java with output visible on screen AND logged to file
+REM Using tee-like functionality: output goes to both console and file
+java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar 2>&1 | powershell -Command "$input | Tee-Object -FilePath game-debug.log"
 
 echo.
 echo ========================================
