@@ -625,6 +625,10 @@ public class MainMenuManager {
                 playerDetailScreenTable.updateDynamicComponents(selectedPlayer);
             }
             break;
+            
+        case INBOX_SCREEN:
+            inboxScreenTable.updateDynamicComponents();
+            break;
 
         default:
             //ignore
