@@ -165,10 +165,35 @@ echo ========================================
 echo This may take a minute...
 echo.
 
-REM Set JAVA_HOME for Maven
-set "ORIGINAL_JAVA_HOME=%JAVA_HOME%"
+REM Verify Java version before building
+if defined JAVA_HOME (
+    echo Verifying Java version...
+    "%JAVA_HOME%\bin\java.exe" -version
+    echo.
+) else (
+    echo Verifying Java version from PATH...
+    java -version
+    echo.
+)
+
+REM Set JAVA_HOME for Maven (ensure it's set)
+if not defined JAVA_HOME (
+    echo ERROR: JAVA_HOME is not set! Cannot build.
+    pause
+    exit /b 1
+)
+
+REM Set JAVA_HOME in current session for Maven to use
+set "JAVA_HOME=%JAVA_HOME%"
+set "PATH=%JAVA_HOME%\bin;%PATH%"
+
+REM Verify Maven sees the correct Java
+echo Verifying Maven is using correct Java...
+"%MAVEN_CMD%" -version
+echo.
 
 REM Run Maven clean install with Java 21
+echo Starting Maven build...
 call "%MAVEN_CMD%" clean install -DskipTests
 
 if %ERRORLEVEL% NEQ 0 (
