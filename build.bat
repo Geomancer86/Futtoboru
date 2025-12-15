@@ -10,6 +10,9 @@ echo ========================================
 echo Futtoboru Build Script
 echo ========================================
 echo.
+echo This window will stay open to show build progress...
+echo.
+pause
 
 REM ========================================
 REM Step 1: Find Java 21 (Zulu)

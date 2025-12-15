@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 REM Futtoboru Build and Run Script
 REM Builds the project and then runs it in debug mode
 
@@ -13,6 +14,11 @@ echo.
 REM First, build the project
 echo Step 1: Building project...
 echo.
+echo NOTE: The build window will open separately.
+echo Please wait for build to complete...
+echo.
+
+REM Run build.bat in same window (not separate)
 call build.bat
 set BUILD_EXIT_CODE=%ERRORLEVEL%
 
