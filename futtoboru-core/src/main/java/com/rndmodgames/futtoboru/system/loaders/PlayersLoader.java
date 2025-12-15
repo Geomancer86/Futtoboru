@@ -105,26 +105,59 @@ public class PlayersLoader {
                         } catch (DateTimeParseException de) {
                             
                             /**
-                             * unknown date, but year is OK, randomize day and month
+                             * Date parsing failed - could be:
+                             * 1. Just a year: "1867"
+                             * 2. Year and month: "1867-07"
+                             * 3. Invalid format
+                             * 
+                             * Extract the year and randomize missing parts
                              */
+                            String dateStr = splitted[4].trim();
+                            int year;
+                            int month;
                             int day;
-                            int month = DatabaseLoader.RNG.nextInt(12) + 1;
                             
+                            // Try to extract year from the date string
+                            if (dateStr.contains("-")) {
+                                // Has dashes, try to parse year-month or year-month-day
+                                String[] dateParts = dateStr.split("-");
+                                if (dateParts.length >= 1) {
+                                    year = Integer.valueOf(dateParts[0]);
+                                } else {
+                                    year = 1865; // Default fallback year
+                                }
+                                
+                                if (dateParts.length >= 2) {
+                                    // Month is provided
+                                    month = Integer.valueOf(dateParts[1]);
+                                } else {
+                                    // Randomize month
+                                    month = DatabaseLoader.RNG.nextInt(12) + 1;
+                                }
+                            } else {
+                                // Just a year
+                                year = Integer.valueOf(dateStr);
+                                month = DatabaseLoader.RNG.nextInt(12) + 1;
+                            }
+                            
+                            // Randomize day based on month
                             switch(month) {
-                            case 1,3,5,7,10,12:
+                            case 1,3,5,7,8,10,12:
                                 day = DatabaseLoader.RNG.nextInt(31) + 1;
                                 break;
                             case 2:
                                 day = DatabaseLoader.RNG.nextInt(28) + 1;
                                 break;
-                                
                             default:
                                 day = DatabaseLoader.RNG.nextInt(30) + 1;
                                 break;
                             }
                             
-                            // Set random birthday for this year
-                            person.setBirthDate(LocalDate.of(Integer.valueOf(splitted[4]), month, day).atStartOfDay());
+                            // Set random birthday
+                            person.setBirthDate(LocalDate.of(year, month, day).atStartOfDay());
+                            
+                            System.out.println("WARNING: Could not parse birthdate '" + dateStr + "' for " + person.getName() + " " + person.getLastname() + 
+                                             ", using randomized date: " + year + "-" + month + "-" + day);
                         }
                         
                         /**
