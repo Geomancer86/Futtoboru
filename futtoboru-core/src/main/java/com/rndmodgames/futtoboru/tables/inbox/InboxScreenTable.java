@@ -501,6 +501,11 @@ public class InboxScreenTable extends VisTable {
                 message.getMessageType().equals("FIXTURE_RELEASE")) {
                 return true;
             }
+            // LEAGUE_WELCOME messages are club-specific, so they should have been handled above
+            // If we get here and it's a LEAGUE_WELCOME, it means it's not for this player's club
+            if (message.getMessageType() != null && message.getMessageType().equals("LEAGUE_WELCOME")) {
+                return false; // LEAGUE_WELCOME is club-specific, not league-wide
+            }
         }
         
         // Match messages: check if they involve player's club
