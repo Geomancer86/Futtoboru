@@ -10,9 +10,6 @@ echo ========================================
 echo Futtoboru Build Script
 echo ========================================
 echo.
-echo This window will stay open to show build progress...
-echo.
-pause
 
 REM ========================================
 REM Step 1: Find Java 21 (Zulu)
@@ -74,7 +71,10 @@ if %ERRORLEVEL% EQU 0 (
     )
 )
 
+echo.
+echo ========================================
 echo ERROR: Java 21 not found!
+echo ========================================
 echo.
 echo Searched locations:
 echo   - JAVA_HOME environment variable
@@ -84,9 +84,10 @@ echo.
 echo Please either:
 echo   1. Set JAVA_HOME to your Java 21 installation, OR
 echo   2. Add Java 21 to your PATH, OR
-echo   3. Edit build.bat and add your Java path to ZULU_PATHS array
+echo   3. Edit build.bat and add your Java path
 echo.
-pause
+echo Press any key to close...
+pause >nul
 exit /b 1
 
 :check_java_version
@@ -143,7 +144,10 @@ if defined MAVEN_HOME (
 )
 
 REM Maven not found - show error
+echo.
+echo ========================================
 echo ERROR: Maven not found!
+echo ========================================
 echo.
 echo Searched locations:
 echo   - PATH environment variable
@@ -155,7 +159,8 @@ echo   1. Add Maven to your PATH, OR
 echo   2. Set MAVEN_HOME environment variable, OR
 echo   3. Edit build.bat and set MAVEN_PATH to your Maven location
 echo.
-pause
+echo Press any key to close...
+pause >nul
 exit /b 1
 
 :build
@@ -181,8 +186,13 @@ if defined JAVA_HOME (
 
 REM Set JAVA_HOME for Maven (ensure it's set)
 if not defined JAVA_HOME (
+    echo.
+    echo ========================================
     echo ERROR: JAVA_HOME is not set! Cannot build.
-    pause
+    echo ========================================
+    echo.
+    echo Press any key to close...
+    pause >nul
     exit /b 1
 )
 
