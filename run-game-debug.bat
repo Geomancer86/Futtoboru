@@ -12,6 +12,36 @@ echo ========================================
 echo Futtoboru Game Launcher (Debug Mode)
 echo ========================================
 echo.
+
+REM Check if JAR exists, if not, prompt to build
+if not exist ".\futtoboru-desktop\target\futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar" (
+    echo ERROR: JAR file not found!
+    echo.
+    echo The game needs to be built first.
+    echo.
+    echo Would you like to build now? (Y/N)
+    set /p BUILD_NOW=
+    if /i "%BUILD_NOW%"=="Y" (
+        echo.
+        echo Building project...
+        call build.bat
+        if %ERRORLEVEL% NEQ 0 (
+            echo.
+            echo Build failed! Cannot run game.
+            pause
+            exit /b 1
+        )
+        echo.
+        echo Build complete! Starting game...
+        echo.
+    ) else (
+        echo.
+        echo Please run build.bat first, or use build-and-run.bat
+        pause
+        exit /b 1
+    )
+)
+
 echo Starting game with error logging...
 echo All errors will be displayed in this window
 echo AND saved to: game-debug.log
