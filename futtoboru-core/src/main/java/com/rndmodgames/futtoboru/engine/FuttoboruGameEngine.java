@@ -179,6 +179,21 @@ public class FuttoboruGameEngine {
                           " " + nextMatch.getHomeGoals() + " - " + nextMatch.getAwayGoals() + 
                           " " + (awayClub != null ? awayClub.getName() : "Unknown"));
         
+        // Create match result message for both clubs
+        if (messageManager != null && homeClub != null && awayClub != null) {
+            com.rndmodgames.futtoboru.data.Message matchResultMessage = 
+                messageManager.createMatchResultMessage(nextMatch, homeClub, awayClub);
+            
+            if (matchResultMessage != null) {
+                // Deliver immediately to both clubs' inboxes
+                // For now, we'll send to current club if they're involved
+                // TODO: In future, each club should have their own inbox or we filter by club
+                messageManager.deliverMessage(matchResultMessage);
+                Gdx.app.log("FuttoboruGameEngine", "Created match result message for " + 
+                           homeClub.getName() + " vs " + awayClub.getName());
+            }
+        }
+        
         // Update UI
         if (mainMenuManager != null) {
             mainMenuManager.updateDynamicComponents();

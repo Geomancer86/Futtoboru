@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.badlogic.gdx.Gdx;
+import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.MessageCategory;
@@ -225,6 +226,288 @@ public class MessageManager {
         content.append(formatDate(seasonStartDate));
         content.append(".\n\n");
         content.append("Make sure your squad is ready for the upcoming matches.");
+        
+        message.setPlainTextMessage(content.toString());
+        message.setRemitent(null);
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        return message;
+    }
+    
+    /**
+     * Create a league welcome message for a specific club
+     * Sent to each club when they join a league
+     */
+    public Message createLeagueWelcomeMessage(League league, Club club, LocalDateTime seasonStart, LocalDateTime seasonEnd) {
+        if (league == null || club == null) {
+            return null;
+        }
+        
+        Message message = new Message();
+        message.setCategory(MessageCategory.LEAGUE);
+        message.setMessageType("LEAGUE_WELCOME");
+        message.setPriority(MessagePriority.NORMAL);
+        message.setTitle("Welcome to the " + league.getName());
+        
+        StringBuilder content = new StringBuilder();
+        content.append("Congratulations! Your club, ");
+        content.append(club.getName());
+        content.append(", has been accepted into the ");
+        content.append(league.getName());
+        content.append(" for the upcoming season.\n\n");
+        
+        if (league.getLeagueClubs() != null) {
+            content.append("The league consists of ");
+            content.append(league.getLeagueClubs().size());
+            content.append(" clubs, and you will play each team twice (home and away) throughout the season.\n\n");
+        }
+        
+        content.append("The season begins on ");
+        content.append(formatDate(seasonStart));
+        content.append(" and concludes on ");
+        content.append(formatDate(seasonEnd));
+        content.append(".\n\n");
+        
+        content.append("Good luck!");
+        
+        message.setPlainTextMessage(content.toString());
+        message.setRemitent(null);
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        return message;
+    }
+    
+    // ========================================
+    // CUP MESSAGE CREATION METHODS
+    // ========================================
+    
+    /**
+     * Create a cup welcome message
+     */
+    public Message createCupWelcomeMessage(com.rndmodgames.futtoboru.data.Competition cup, Club club) {
+        if (cup == null || club == null) {
+            return null;
+        }
+        
+        Message message = new Message();
+        message.setCategory(MessageCategory.CUP);
+        message.setMessageType("CUP_WELCOME");
+        message.setPriority(MessagePriority.NORMAL);
+        message.setTitle("Welcome to the " + cup.getName());
+        
+        StringBuilder content = new StringBuilder();
+        content.append("Your club, ");
+        content.append(club.getName());
+        content.append(", has been invited to participate in the ");
+        content.append(cup.getName());
+        content.append(".\n\n");
+        content.append("The competition will begin shortly. Good luck!");
+        
+        message.setPlainTextMessage(content.toString());
+        message.setRemitent(null);
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        return message;
+    }
+    
+    /**
+     * Create a cup draw date announcement message
+     */
+    public Message createCupDrawAnnouncementMessage(com.rndmodgames.futtoboru.data.Competition cup, LocalDateTime drawDate) {
+        if (cup == null) {
+            return null;
+        }
+        
+        Message message = new Message();
+        message.setCategory(MessageCategory.CUP);
+        message.setMessageType("CUP_DRAW_ANNOUNCEMENT");
+        message.setPriority(MessagePriority.NORMAL);
+        message.setTitle(cup.getName() + " Draw Date Announced");
+        
+        StringBuilder content = new StringBuilder();
+        content.append("The Football Association has announced that the draw for the First Round of the ");
+        content.append(cup.getName());
+        content.append(" will take place on ");
+        content.append(formatDate(drawDate));
+        content.append(".\n\n");
+        content.append("All participating clubs will be notified of their opponents following the draw.");
+        
+        message.setPlainTextMessage(content.toString());
+        message.setRemitent(null);
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        return message;
+    }
+    
+    /**
+     * Create a cup draw result message
+     */
+    public Message createCupDrawResultMessage(com.rndmodgames.futtoboru.data.Competition cup, Club club, Club opponent, LocalDateTime matchDate, String roundName) {
+        if (cup == null || club == null || opponent == null) {
+            return null;
+        }
+        
+        Message message = new Message();
+        message.setCategory(MessageCategory.CUP);
+        message.setMessageType("CUP_DRAW_RESULT");
+        message.setPriority(MessagePriority.NORMAL);
+        message.setTitle(cup.getName() + " " + (roundName != null ? roundName : "Draw"));
+        
+        StringBuilder content = new StringBuilder();
+        content.append("The draw for the ");
+        if (roundName != null) {
+            content.append(roundName);
+            content.append(" of the ");
+        }
+        content.append(cup.getName());
+        content.append(" has been completed.\n\n");
+        content.append("Your club, ");
+        content.append(club.getName());
+        content.append(", has been drawn against ");
+        content.append(opponent.getName());
+        content.append(".\n\n");
+        
+        if (matchDate != null) {
+            content.append("The match will be played on ");
+            content.append(formatDate(matchDate));
+            content.append(".");
+        } else {
+            content.append("The match date will be announced shortly.");
+        }
+        
+        message.setPlainTextMessage(content.toString());
+        message.setRemitent(null);
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        return message;
+    }
+    
+    // ========================================
+    // MATCH MESSAGE CREATION METHODS
+    // ========================================
+    
+    /**
+     * Create a match result message
+     */
+    public Message createMatchResultMessage(com.rndmodgames.futtoboru.data.Match match, Club homeClub, Club awayClub) {
+        if (match == null || homeClub == null || awayClub == null) {
+            return null;
+        }
+        
+        Message message = new Message();
+        message.setCategory(MessageCategory.MATCH);
+        message.setMessageType("MATCH_RESULT");
+        message.setPriority(MessagePriority.NORMAL);
+        message.setTitle("Match Result: " + homeClub.getName() + " " + 
+                         match.getHomeGoals() + " - " + match.getAwayGoals() + " " + awayClub.getName());
+        
+        StringBuilder content = new StringBuilder();
+        content.append(homeClub.getName());
+        content.append(" ");
+        content.append(match.getHomeGoals());
+        content.append(" - ");
+        content.append(match.getAwayGoals());
+        content.append(" ");
+        content.append(awayClub.getName());
+        content.append("\n\n");
+        
+        if (match.getMatchDateTime() != null) {
+            content.append("Date: ");
+            content.append(formatDate(match.getMatchDateTime()));
+            content.append("\n");
+        }
+        
+        if (match.getAttendance() != null) {
+            content.append("Attendance: ");
+            content.append(match.getAttendance());
+            content.append("\n");
+        }
+        
+        // Match type
+        String matchType = "Friendly";
+        if (match.getMatchType() != null) {
+            if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.LEAGUE_MATCH) {
+                matchType = "League Match";
+            } else if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.CUP_MATCH) {
+                matchType = "Cup Match";
+            }
+        }
+        content.append("Type: ");
+        content.append(matchType);
+        content.append("\n\n");
+        
+        // Result summary
+        if (match.getHomeGoals() > match.getAwayGoals()) {
+            content.append(homeClub.getName());
+            content.append(" won the match.");
+        } else if (match.getAwayGoals() > match.getHomeGoals()) {
+            content.append(awayClub.getName());
+            content.append(" won the match.");
+        } else {
+            content.append("The match ended in a draw.");
+        }
+        
+        message.setPlainTextMessage(content.toString());
+        message.setRemitent(null);
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        return message;
+    }
+    
+    /**
+     * Create a match preview message
+     */
+    public Message createMatchPreviewMessage(com.rndmodgames.futtoboru.data.Match match, Club homeClub, Club awayClub) {
+        if (match == null || homeClub == null || awayClub == null) {
+            return null;
+        }
+        
+        Message message = new Message();
+        message.setCategory(MessageCategory.MATCH);
+        message.setMessageType("MATCH_PREVIEW");
+        message.setPriority(MessagePriority.NORMAL);
+        message.setTitle("Upcoming Match: " + homeClub.getName() + " vs " + awayClub.getName());
+        
+        StringBuilder content = new StringBuilder();
+        content.append("Your next match is scheduled for ");
+        if (match.getMatchDateTime() != null) {
+            content.append(formatDate(match.getMatchDateTime()));
+        } else {
+            content.append("TBD");
+        }
+        content.append(".\n\n");
+        
+        content.append("Match Details:\n");
+        content.append("Home: ");
+        content.append(homeClub.getName());
+        content.append("\n");
+        content.append("Away: ");
+        content.append(awayClub.getName());
+        content.append("\n");
+        
+        if (homeClub.getStadium() != null) {
+            content.append("Venue: ");
+            content.append(homeClub.getStadium().getName());
+            content.append("\n");
+        }
+        
+        // Match type
+        String matchType = "Friendly";
+        if (match.getMatchType() != null) {
+            if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.LEAGUE_MATCH) {
+                matchType = "League Match";
+            } else if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.CUP_MATCH) {
+                matchType = "Cup Match";
+            }
+        }
+        content.append("Type: ");
+        content.append(matchType);
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);

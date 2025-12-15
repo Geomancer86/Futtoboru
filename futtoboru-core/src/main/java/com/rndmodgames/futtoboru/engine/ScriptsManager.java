@@ -219,6 +219,30 @@ public class ScriptsManager {
                     
                     System.out.println("Created and delivered league creation message for " + leagueCreationDate);
                     
+                    // Send welcome message to each club in the league
+                    java.time.LocalDateTime seasonStart = currentGame.getGameStartDate();
+                    if (seasonStart == null) {
+                        seasonStart = currentGame.getGameDate();
+                    }
+                    java.time.LocalDateTime seasonEnd = seasonStart.plusMonths(9);
+                    
+                    if (league.getLeagueClubs() != null) {
+                        for (com.rndmodgames.futtoboru.data.Club club : league.getLeagueClubs()) {
+                            if (club != null) {
+                                com.rndmodgames.futtoboru.data.Message welcomeMessage = 
+                                    messageManager.createLeagueWelcomeMessage(league, club, seasonStart, seasonEnd);
+                                
+                                if (welcomeMessage != null) {
+                                    // Schedule welcome message for same day as league creation
+                                    welcomeMessage.setScheduledDate(leagueCreationDate);
+                                    messageManager.scheduleMessage(welcomeMessage);
+                                    messageManager.deliverMessage(welcomeMessage);
+                                    System.out.println("Created and delivered welcome message for " + club.getName());
+                                }
+                            }
+                        }
+                    }
+                    
                     // Schedule fixture release message (1 day after league creation)
                     if (fixtures != null && fixtures.size() > 0) {
                         com.rndmodgames.futtoboru.data.Message fixtureMessage = 
