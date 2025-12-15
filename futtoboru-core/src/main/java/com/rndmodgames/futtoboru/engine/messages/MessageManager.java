@@ -30,12 +30,21 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 public class MessageManager {
     
     private Futtoboru gameInstance;
-    private SaveGame currentGame;
     private long nextMessageId = 1L;
     
     public MessageManager(Futtoboru game) {
         this.gameInstance = game;
-        this.currentGame = game.getCurrentGame();
+    }
+    
+    /**
+     * Get current SaveGame (always fresh from game instance)
+     * This ensures we always have the latest SaveGame reference
+     */
+    private SaveGame getCurrentGame() {
+        if (gameInstance == null) {
+            return null;
+        }
+        return gameInstance.getCurrentGame();
     }
     
     /**
@@ -44,6 +53,7 @@ public class MessageManager {
      * Called daily in game engine to check for messages to deliver
      */
     public void deliverScheduledMessages(LocalDateTime currentDate) {
+        SaveGame currentGame = getCurrentGame();
         if (currentGame == null || currentGame.getScheduledMessages() == null) {
             return;
         }
@@ -114,6 +124,12 @@ public class MessageManager {
             return;
         }
         
+        SaveGame currentGame = getCurrentGame();
+        if (currentGame == null) {
+            Gdx.app.error("MessageManager", "Cannot schedule message: SaveGame is null");
+            return;
+        }
+        
         // Add to scheduled messages
         if (currentGame.getScheduledMessages() == null) {
             currentGame.setScheduledMessages(new ArrayList<>());
@@ -136,10 +152,18 @@ public class MessageManager {
             return;
         }
         
+        SaveGame currentGame = getCurrentGame();
+        if (currentGame == null) {
+            Gdx.app.error("MessageManager", "Cannot deliver message: SaveGame is null");
+            System.out.println("MessageManager ERROR: SaveGame is null, cannot deliver message: " + message.getTitle());
+            return;
+        }
+        
         // Ensure allMessages list exists
         if (currentGame.getAllMessages() == null) {
             currentGame.setAllMessages(new ArrayList<>());
             Gdx.app.log("MessageManager", "Initialized allMessages list");
+            System.out.println("MessageManager: Initialized allMessages list");
         }
         
         // Check if message with same ID already exists (more reliable than contains())
@@ -177,6 +201,90 @@ public class MessageManager {
         int totalMessages = currentGame.getAllMessages().size();
         Gdx.app.log("MessageManager", "Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
         System.out.println("MessageManager: Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
+    }
+    
+    // ========================================
+    // WELCOME MESSAGE CREATION METHODS
+    // ========================================
+    
+    /**
+     * Create a welcome message for new game start
+     * 
+     * This message is personalized based on:
+     * - Player's profession
+     * - Starting club (if any)
+     * - Starting country
+     * - Game start date
+     */
+    public Message createWelcomeMessage(com.rndmodgames.futtoboru.data.Person owner, 
+                                        com.rndmodgames.futtoboru.data.Profession profession,
+                                        com.rndmodgames.futtoboru.data.Country country,
+                                        com.rndmodgames.futtoboru.data.Club startingClub,
+                                        java.time.LocalDateTime gameStartDate) {
+        if (owner == null) {
+            return null;
+        }
+        
+        Message message = new Message();
+        message.setCategory(MessageCategory.SYSTEM);
+        message.setMessageType("WELCOME");
+        message.setPriority(MessagePriority.NORMAL);
+        message.setTitle("Welcome to Futtoboru!");
+        
+        StringBuilder content = new StringBuilder();
+        content.append("Welcome, ");
+        
+        // Add player name
+        if (owner.getName() != null && owner.getLastname() != null) {
+            content.append(owner.getName()).append(" ").append(owner.getLastname());
+        } else if (owner.getName() != null) {
+            content.append(owner.getName());
+        } else {
+            content.append("Manager");
+        }
+        
+        content.append("!\n\n");
+        
+        // Add profession
+        if (profession != null) {
+            content.append("You are starting your career as a ");
+            content.append(profession.getName() != null ? profession.getName() : "Professional");
+            content.append(".\n\n");
+        }
+        
+        // Add starting club or unemployed status
+        if (startingClub != null) {
+            content.append("You are currently managing ");
+            content.append(startingClub.getName() != null ? startingClub.getName() : "a club");
+            if (country != null) {
+                content.append(" in ").append(country.getCommonName() != null ? country.getCommonName() : "your country");
+            }
+            content.append(".\n\n");
+        } else {
+            content.append("You are currently unemployed and looking for your first opportunity.\n\n");
+            if (country != null) {
+                content.append("You are based in ");
+                content.append(country.getCommonName() != null ? country.getCommonName() : "your country");
+                content.append(".\n\n");
+            }
+        }
+        
+        // Add game start date
+        if (gameStartDate != null) {
+            content.append("The year is ");
+            content.append(gameStartDate.getYear());
+            content.append(".\n\n");
+        }
+        
+        content.append("Good luck in your career!\n\n");
+        content.append("Check your inbox regularly for important messages and opportunities.");
+        
+        message.setPlainTextMessage(content.toString());
+        message.setRemitent(null); // System message
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        return message;
     }
     
     // ========================================
@@ -622,6 +730,7 @@ public class MessageManager {
      * Get all unread messages
      */
     public List<Message> getUnreadMessages() {
+        SaveGame currentGame = getCurrentGame();
         if (currentGame == null || currentGame.getAllMessages() == null) {
             return new ArrayList<>();
         }
@@ -637,6 +746,7 @@ public class MessageManager {
      * Get messages by category
      */
     public List<Message> getMessagesByCategory(MessageCategory category) {
+        SaveGame currentGame = getCurrentGame();
         if (currentGame == null || currentGame.getAllMessages() == null) {
             return new ArrayList<>();
         }
@@ -659,6 +769,7 @@ public class MessageManager {
      * Get all messages (excluding deleted)
      */
     public List<Message> getAllActiveMessages() {
+        SaveGame currentGame = getCurrentGame();
         if (currentGame == null || currentGame.getAllMessages() == null) {
             return new ArrayList<>();
         }
