@@ -90,11 +90,20 @@ exit /b 1
 REM Verify Java version (should be 21)
 echo.
 echo Checking Java version...
-"%JAVA_HOME%\bin\java.exe" -version 2>&1 | findstr /C:"version" | findstr /C:"21" >nul
-if %ERRORLEVEL% NEQ 0 (
-    echo WARNING: Java version may not be 21. Continuing anyway...
+if defined JAVA_HOME (
+    "%JAVA_HOME%\bin\java.exe" -version 2>&1 | findstr /C:"version" | findstr /C:"21" >nul
+    if %ERRORLEVEL% NEQ 0 (
+        echo WARNING: Java version may not be 21. Continuing anyway...
+    ) else (
+        echo Java 21 detected!
+    )
 ) else (
-    echo Java 21 detected!
+    java -version 2>&1 | findstr /C:"version" | findstr /C:"21" >nul
+    if %ERRORLEVEL% NEQ 0 (
+        echo WARNING: Java version may not be 21. Continuing anyway...
+    ) else (
+        echo Java 21 detected!
+    )
 )
 
 REM ========================================
