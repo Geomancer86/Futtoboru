@@ -12,7 +12,7 @@ echo ========================================
 echo.
 
 REM Run Java and log ALL output to file (stdout and stderr)
-java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.3.0-SNAPSHOT-jar-with-dependencies.jar > game-debug.log 2>&1
+java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar > game-debug.log 2>&1
 
 echo.
 echo ========================================
