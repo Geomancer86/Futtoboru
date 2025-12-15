@@ -143,7 +143,30 @@ public class PlayersLoader {
                              * 
                              * Extract the year and randomize missing parts
                              */
-                            String dateStr = splitted[4].trim();
+                            // Check if birthdate column exists before accessing it
+                            if (splitted.length < 5 || splitted[4].trim().isEmpty()) {
+                                // No birthdate provided, randomize
+                                int year = 1865;
+                                int month = DatabaseLoader.RNG.nextInt(12) + 1;
+                                int day;
+                                
+                                switch(month) {
+                                case 1,3,5,7,8,10,12:
+                                    day = DatabaseLoader.RNG.nextInt(31) + 1;
+                                    break;
+                                case 2:
+                                    day = DatabaseLoader.RNG.nextInt(28) + 1;
+                                    break;
+                                default:
+                                    day = DatabaseLoader.RNG.nextInt(30) + 1;
+                                    break;
+                                }
+                                
+                                person.setBirthDate(LocalDate.of(year, month, day).atStartOfDay());
+                                System.out.println("WARNING: No birthdate provided for " + person.getName() + " " + person.getLastname() + 
+                                                 ", using randomized date: " + year + "-" + month + "-" + day);
+                            } else {
+                                String dateStr = splitted[4].trim();
                             int year;
                             int month;
                             int day;
