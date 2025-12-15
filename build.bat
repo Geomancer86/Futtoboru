@@ -10,6 +10,9 @@ echo ========================================
 echo Futtoboru Build Script
 echo ========================================
 echo.
+echo Starting build process...
+echo Current directory: %CD%
+echo.
 
 REM ========================================
 REM Step 1: Find Java 21 (Zulu)
