@@ -96,7 +96,7 @@ public class MatchSimulator {
                           " - " + awayScore + " " + awayClub.getName());
         
         // Update club statistics
-        updateClubStatistics(homeClub, awayClub, homeScore, awayScore);
+        updateClubStatistics(match, homeClub, awayClub, homeScore, awayScore);
         
         return true;
     }
@@ -104,12 +104,13 @@ public class MatchSimulator {
     /**
      * Update club statistics after a match
      * 
+     * @param match The match that was played
      * @param homeClub Home club
      * @param awayClub Away club
      * @param homeScore Home team score
      * @param awayScore Away team score
      */
-    private void updateClubStatistics(Club homeClub, Club awayClub, int homeScore, int awayScore) {
+    private void updateClubStatistics(Match match, Club homeClub, Club awayClub, int homeScore, int awayScore) {
         if (homeClub == null || awayClub == null) {
             return;
         }
@@ -125,22 +126,33 @@ public class MatchSimulator {
         awayClub.setGoalsConceded(awayClub.getGoalsConceded() + homeScore);
         
         // Determine result and update wins/draws/losses
+        // NOTE: Points are only awarded for league matches, not friendlies or cups
+        boolean isLeagueMatch = match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH;
+        
         if (homeScore > awayScore) {
             // Home win
             homeClub.setMatchesWon(homeClub.getMatchesWon() + 1);
-            homeClub.setPoints(homeClub.getPoints() + 3);
+            if (isLeagueMatch) {
+                homeClub.setPoints(homeClub.getPoints() + 3);
+            }
             awayClub.setMatchesLost(awayClub.getMatchesLost() + 1);
         } else if (awayScore > homeScore) {
             // Away win
             awayClub.setMatchesWon(awayClub.getMatchesWon() + 1);
-            awayClub.setPoints(awayClub.getPoints() + 3);
+            if (isLeagueMatch) {
+                awayClub.setPoints(awayClub.getPoints() + 3);
+            }
             homeClub.setMatchesLost(homeClub.getMatchesLost() + 1);
         } else {
             // Draw
             homeClub.setMatchesDrawn(homeClub.getMatchesDrawn() + 1);
-            homeClub.setPoints(homeClub.getPoints() + 1);
+            if (isLeagueMatch) {
+                homeClub.setPoints(homeClub.getPoints() + 1);
+            }
             awayClub.setMatchesDrawn(awayClub.getMatchesDrawn() + 1);
-            awayClub.setPoints(awayClub.getPoints() + 1);
+            if (isLeagueMatch) {
+                awayClub.setPoints(awayClub.getPoints() + 1);
+            }
         }
     }
     
