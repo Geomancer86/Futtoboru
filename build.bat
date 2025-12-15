@@ -1,6 +1,6 @@
 @echo off
 REM Futtoboru Build Script
-REM Builds the project using Maven
+REM Builds the project using Maven with Java 21 (Zulu)
 
 title Futtoboru Build
 color 0B
@@ -9,6 +9,78 @@ echo ========================================
 echo Futtoboru Build Script
 echo ========================================
 echo.
+
+REM ========================================
+REM Step 1: Find Java 21 (Zulu)
+REM ========================================
+echo Checking for Java 21 (Zulu)...
+
+REM Check JAVA_HOME first
+if defined JAVA_HOME (
+    "%JAVA_HOME%\bin\java.exe" -version >nul 2>&1
+    if %ERRORLEVEL% EQU 0 (
+        echo Using Java from JAVA_HOME: %JAVA_HOME%
+        goto :check_java_version
+    )
+)
+
+REM Check common Zulu 21 locations
+set ZULU_PATHS[0]=C:\Program Files\Zulu\zulu-21
+set ZULU_PATHS[1]=C:\Program Files\Microsoft\jdk-21.0.0
+set ZULU_PATHS[2]=C:\Program Files\Eclipse Adoptium\jdk-21.0.0
+set ZULU_PATHS[3]=C:\Program Files\Java\jdk-21
+set ZULU_PATHS[4]=C:\Program Files (x86)\Zulu\zulu-21
+
+for /L %%i in (0,1,4) do (
+    call set "ZULU_PATH=%%ZULU_PATHS[%%i]%%"
+    if exist "!ZULU_PATH!\bin\java.exe" (
+        set "JAVA_HOME=!ZULU_PATH!"
+        echo Found Java at: !ZULU_PATH!
+        goto :check_java_version
+    )
+)
+
+REM Check if java is in PATH
+where java >nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+    java -version >nul 2>&1
+    if %ERRORLEVEL% EQU 0 (
+        echo Using Java from PATH...
+        goto :check_java_version
+    )
+)
+
+echo ERROR: Java 21 not found!
+echo.
+echo Searched locations:
+echo   - JAVA_HOME environment variable
+echo   - Common Zulu/Java 21 installation paths
+echo   - PATH environment variable
+echo.
+echo Please either:
+echo   1. Set JAVA_HOME to your Java 21 installation, OR
+echo   2. Add Java 21 to your PATH, OR
+echo   3. Edit build.bat and add your Java path to ZULU_PATHS array
+echo.
+pause
+exit /b 1
+
+:check_java_version
+REM Verify Java version (should be 21)
+echo.
+echo Checking Java version...
+"%JAVA_HOME%\bin\java.exe" -version 2>&1 | findstr /C:"version" | findstr /C:"21" >nul
+if %ERRORLEVEL% NEQ 0 (
+    echo WARNING: Java version may not be 21. Continuing anyway...
+) else (
+    echo Java 21 detected!
+)
+
+REM ========================================
+REM Step 2: Find Maven
+REM ========================================
+echo.
+echo Checking for Maven...
 
 REM Set Maven path (default location)
 set MAVEN_PATH=C:\apache-maven-3.6.3\bin\mvn.cmd
@@ -55,11 +127,18 @@ exit /b 1
 
 :build
 echo.
+echo ========================================
 echo Building project with Maven...
+echo Using Java: %JAVA_HOME%
+echo Using Maven: %MAVEN_CMD%
+echo ========================================
 echo This may take a minute...
 echo.
 
-REM Run Maven clean install
+REM Set JAVA_HOME for Maven
+set "ORIGINAL_JAVA_HOME=%JAVA_HOME%"
+
+REM Run Maven clean install with Java 21
 call "%MAVEN_CMD%" clean install -DskipTests
 
 if %ERRORLEVEL% NEQ 0 (
