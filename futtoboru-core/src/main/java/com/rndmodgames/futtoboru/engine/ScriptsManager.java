@@ -234,39 +234,77 @@ public class ScriptsManager {
         script.setIsExecuted(true);
         
         /**
-         * Generate fixtures immediately when league is created
+         * STEP 2: Generate fixtures immediately when league is created
          * This ensures fixtures are ready right away, not waiting for daily check
          */
+        System.out.println("========================================");
+        System.out.println("STEP 2: GENERATING FIXTURES");
+        System.out.println("========================================");
+        
         java.util.List<com.rndmodgames.futtoboru.data.Match> fixtures = null;
         try {
             com.badlogic.gdx.Gdx.app.log("ScriptsManager", "Generating fixtures for newly created league: " + league.getName());
+            System.out.println("ScriptsManager: Generating fixtures for league: " + league.getName());
             
             // Get season dates (use game start date or current date)
             java.time.LocalDateTime seasonStart = currentGame.getGameStartDate();
             if (seasonStart == null) {
                 seasonStart = currentGame.getGameDate();
+                System.out.println("WARNING: gameStartDate is null, using current date: " + seasonStart);
             }
+            System.out.println("Season start date: " + seasonStart);
+            
             // Season typically runs September to May (9 months)
             java.time.LocalDateTime seasonEnd = seasonStart.plusMonths(9);
+            System.out.println("Season end date: " + seasonEnd);
             
             // Generate fixtures
+            System.out.println("Creating LeagueFixtureGenerator...");
             com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator fixtureGenerator = 
                 new com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator(gameInstance);
             
+            System.out.println("Calling generateLeagueFixtures()...");
             fixtures = fixtureGenerator.generateLeagueFixtures(league, seasonStart, seasonEnd);
             
-            System.out.println("Generated " + fixtures.size() + " fixtures for league " + league.getName());
+            System.out.println("========================================");
+            System.out.println("FIXTURE GENERATION RESULT:");
+            System.out.println("Generated " + (fixtures != null ? fixtures.size() : 0) + " fixtures for league " + league.getName());
+            System.out.println("========================================");
+            
+            if (fixtures == null) {
+                System.out.println("ERROR: fixtures list is NULL!");
+            } else if (fixtures.isEmpty()) {
+                System.out.println("ERROR: fixtures list is EMPTY! No matches were generated.");
+            } else {
+                System.out.println("SUCCESS: " + fixtures.size() + " fixtures generated");
+                // Verify matches were added to clubs
+                int totalMatchesInClubs = 0;
+                for (com.rndmodgames.futtoboru.data.Club club : league.getLeagueClubs()) {
+                    if (club != null && club.getScheduledMatches() != null) {
+                        totalMatchesInClubs += club.getScheduledMatches().size();
+                    }
+                }
+                System.out.println("Total match references in clubs' scheduledMatches: " + totalMatchesInClubs + " (expected: " + (fixtures.size() * 2) + ")");
+            }
+            
             com.badlogic.gdx.Gdx.app.log("ScriptsManager", "Successfully generated " + fixtures.size() + " fixtures for league " + league.getName());
             
         } catch (Exception e) {
-            System.out.println("ERROR generating fixtures for league " + league.getName() + ": " + e.getMessage());
+            System.out.println("========================================");
+            System.out.println("ERROR GENERATING FIXTURES!");
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("========================================");
             e.printStackTrace();
             com.badlogic.gdx.Gdx.app.error("ScriptsManager", "Failed to generate fixtures for league " + league.getName(), e);
         }
         
         /**
-         * Schedule league creation announcement message (v2.0)
+         * STEP 3: Schedule league creation announcement message and draw message
          */
+        System.out.println("========================================");
+        System.out.println("STEP 3: CREATING MESSAGES");
+        System.out.println("========================================");
+        
         try {
             System.out.println("ScriptsManager: Attempting to create messages for league: " + league.getName());
             
@@ -354,19 +392,61 @@ public class ScriptsManager {
                     int finalMessageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
                     System.out.println("Total messages after all deliveries: " + finalMessageCount);
                     
-                    // Schedule fixture release message (1 day after league creation)
+                    // STEP 3.1: Create mandatory draw message (1 day after league creation)
+                    // This message blocks time advancement until the draw is viewed
+                    System.out.println("STEP 3.1: Creating draw message...");
+                    System.out.println("Fixtures status: " + (fixtures != null ? "NOT NULL" : "NULL") + 
+                                     ", Size: " + (fixtures != null ? fixtures.size() : 0));
+                    
                     if (fixtures != null && fixtures.size() > 0) {
-                        com.rndmodgames.futtoboru.data.Message fixtureMessage = 
-                            messageManager.createFixtureReleaseMessage(league);
+                        System.out.println("Calling createLeagueDrawMessage()...");
+                        com.rndmodgames.futtoboru.data.Message drawMessage = 
+                            messageManager.createLeagueDrawMessage(league);
                         
-                        java.time.LocalDateTime fixtureReleaseDate = currentGame.getGameDate().plusDays(1);
-                        fixtureMessage.setScheduledDate(fixtureReleaseDate);
-                        messageManager.scheduleMessage(fixtureMessage);
-                        
-                        System.out.println("Scheduled fixture release message for " + fixtureReleaseDate);
-                        System.out.println("Fixture message ID: " + fixtureMessage.getId());
+                        if (drawMessage != null) {
+                            System.out.println("Draw message created successfully!");
+                            java.time.LocalDateTime drawDate = currentGame.getGameDate().plusDays(1);
+                            System.out.println("Setting scheduled date to: " + drawDate);
+                            drawMessage.setScheduledDate(drawDate);
+                            
+                            System.out.println("Scheduling message...");
+                            messageManager.scheduleMessage(drawMessage);
+                            
+                            // Verify message was scheduled
+                            int scheduledCount = (currentGame.getScheduledMessages() != null) ? currentGame.getScheduledMessages().size() : 0;
+                            System.out.println("Total scheduled messages after draw message: " + scheduledCount);
+                            
+                            System.out.println("========================================");
+                            System.out.println("MANDATORY DRAW MESSAGE CREATED!");
+                            System.out.println("Draw message scheduled for: " + drawDate);
+                            System.out.println("Draw message ID: " + drawMessage.getId());
+                            System.out.println("Is Mandatory: " + drawMessage.getIsMandatory());
+                            System.out.println("Message Type: " + drawMessage.getMessageType());
+                            System.out.println("Action Screen: " + drawMessage.getActionScreen());
+                            System.out.println("Action Data (League ID): " + drawMessage.getActionData());
+                            System.out.println("========================================");
+                            
+                            // Also create a non-mandatory fixture release message for reference
+                            com.rndmodgames.futtoboru.data.Message fixtureMessage = 
+                                messageManager.createFixtureReleaseMessage(league);
+                            if (fixtureMessage != null) {
+                                fixtureMessage.setScheduledDate(drawDate);
+                                messageManager.scheduleMessage(fixtureMessage);
+                                System.out.println("Scheduled fixture release message for " + drawDate);
+                            }
+                        } else {
+                            System.out.println("========================================");
+                            System.out.println("ERROR: createLeagueDrawMessage returned null!");
+                            System.out.println("========================================");
+                        }
                     } else {
-                        System.out.println("WARNING: No fixtures generated, skipping fixture release message");
+                        System.out.println("========================================");
+                        System.out.println("WARNING: No fixtures generated, skipping draw message");
+                        System.out.println("Fixtures is null: " + (fixtures == null));
+                        if (fixtures != null) {
+                            System.out.println("Fixtures size: " + fixtures.size());
+                        }
+                        System.out.println("========================================");
                     }
         } catch (Exception e) {
             System.out.println("ERROR scheduling league messages: " + e.getMessage());

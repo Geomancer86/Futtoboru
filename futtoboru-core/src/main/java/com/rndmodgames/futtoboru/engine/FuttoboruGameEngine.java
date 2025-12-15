@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 
 /**
@@ -57,6 +58,7 @@ public class FuttoboruGameEngine {
     public static final int CONTINUE_GAME_ACTION = 1;
     public static final int MATCH_PREVIEW_ACTION = 2;
     public static final int MATCH_RESULT_ACTION = 3;
+    public static final int DRAW_ACTION = 4;  // Mandatory draw screen (blocks time advancement)
 
     public FuttoboruGameEngine(Game parent,
                                ScriptsManager scriptsManager,
@@ -87,15 +89,73 @@ public class FuttoboruGameEngine {
     }
     
     /**
-     * Check if the Game can CONTINUE or MATCH PREVIEW
+     * Check if the Game can CONTINUE or MATCH PREVIEW or DRAW
      * 
      * 1: CONTINUE GAME
      * 2: MATCH PREVIEW
+     * 4: DRAW (mandatory - blocks time advancement)
      */
     public int getNextGameAction() {
+        
+        SaveGame currentGame = gameInstance.getCurrentGame();
+        
+        /**
+         * Check for mandatory messages that block time advancement
+         * (e.g., draw screens that must be viewed)
+         */
+        if (currentGame != null && currentGame.getAllMessages() != null) {
+            System.out.println("FuttoboruGameEngine: Checking for mandatory messages. Total messages: " + currentGame.getAllMessages().size());
+            
+            for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
+                if (message != null) {
+                    boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
+                    boolean isUnread = message.getIsRead() == null || !message.getIsRead();
+                    boolean isNotDeleted = message.getIsDeleted() == null || !message.getIsDeleted();
+                    String messageType = message.getMessageType();
+                    
+                    if (isMandatory && isUnread && isNotDeleted) {
+                        System.out.println("FuttoboruGameEngine: Found mandatory message - Type: " + messageType + 
+                                         ", Title: " + message.getTitle() + ", IsMandatory: " + isMandatory + 
+                                         ", IsRead: " + message.getIsRead());
+                        
+                        // Check if it's a draw-related message
+                        if (messageType != null && 
+                            (messageType.equals("LEAGUE_DRAW") || 
+                             messageType.equals("CUP_DRAW") ||
+                             messageType.equals("FIXTURE_DRAW"))) {
+                            Gdx.app.log("FuttoboruGameEngine", "Mandatory draw message found, blocking time advancement");
+                            System.out.println("FuttoboruGameEngine: BLOCKING TIME ADVANCEMENT - Mandatory draw message: " + message.getTitle());
+                            return DRAW_ACTION;
+                        }
+                    }
+                }
+            }
+            
+            // Also check scheduled messages for mandatory draws
+            if (currentGame.getScheduledMessages() != null) {
+                System.out.println("FuttoboruGameEngine: Checking scheduled messages. Total scheduled: " + currentGame.getScheduledMessages().size());
+                for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
+                    if (message != null && 
+                        message.getIsMandatory() != null && message.getIsMandatory() &&
+                        message.getMessageType() != null && 
+                        (message.getMessageType().equals("LEAGUE_DRAW") || 
+                         message.getMessageType().equals("CUP_DRAW") ||
+                         message.getMessageType().equals("FIXTURE_DRAW"))) {
+                        
+                        // Check if scheduled date is today or past
+                        if (message.getScheduledDate() != null && 
+                            !message.getScheduledDate().isAfter(currentGame.getGameDate())) {
+                            System.out.println("FuttoboruGameEngine: Found scheduled mandatory draw message that should be delivered: " + message.getTitle());
+                            // Message should be delivered, but if it hasn't been, we should still block
+                            // This is a safety check
+                        }
+                    }
+                }
+            }
+        }
 
         // Current Club (can be null for unemployed players)
-        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+        Club currentClub = currentGame.getCurrentClub();
         
         /**
          * Check if Current Club has a MATCH TODAY
@@ -218,10 +278,22 @@ public class FuttoboruGameEngine {
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
         
         /**
-         * Deliver scheduled messages BEFORE advancing date
+         * STEP 4: Deliver scheduled messages BEFORE advancing date
          * This ensures messages scheduled for the current date are delivered
          */
+        System.out.println("STEP 4: Delivering scheduled messages for date: " + current);
+        int scheduledCountBefore = (gameInstance.getCurrentGame().getScheduledMessages() != null) ? 
+            gameInstance.getCurrentGame().getScheduledMessages().size() : 0;
+        System.out.println("Scheduled messages before delivery: " + scheduledCountBefore);
+        
         messageManager.deliverScheduledMessages(current);
+        
+        int scheduledCountAfter = (gameInstance.getCurrentGame().getScheduledMessages() != null) ? 
+            gameInstance.getCurrentGame().getScheduledMessages().size() : 0;
+        int allMessagesCount = (gameInstance.getCurrentGame().getAllMessages() != null) ? 
+            gameInstance.getCurrentGame().getAllMessages().size() : 0;
+        System.out.println("Scheduled messages after delivery: " + scheduledCountAfter);
+        System.out.println("Total messages in inbox: " + allMessagesCount);
         
         /**
          * Increment By Required Unit
@@ -243,10 +315,18 @@ public class FuttoboruGameEngine {
         }
         
         /**
-         * Deliver scheduled messages AFTER advancing date
+         * STEP 5: Deliver scheduled messages AFTER advancing date
          * This catches messages scheduled for the new date (same day events)
          */
+        System.out.println("STEP 5: Delivering scheduled messages for new date: " + newDate);
         messageManager.deliverScheduledMessages(newDate);
+        
+        int finalScheduledCount = (gameInstance.getCurrentGame().getScheduledMessages() != null) ? 
+            gameInstance.getCurrentGame().getScheduledMessages().size() : 0;
+        int finalAllMessagesCount = (gameInstance.getCurrentGame().getAllMessages() != null) ? 
+            gameInstance.getCurrentGame().getAllMessages().size() : 0;
+        System.out.println("Final scheduled messages: " + finalScheduledCount);
+        System.out.println("Final total messages in inbox: " + finalAllMessagesCount);
         
         /**
          * Update Player Attributes (v1.0 - Testing)

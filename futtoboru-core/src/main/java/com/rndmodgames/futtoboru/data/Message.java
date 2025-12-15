@@ -35,6 +35,7 @@ public class Message implements Serializable {
     private Integer actionScreen;  // Screen ID to link to (e.g., MainMenuManager.LEAGUE_STANDINGS_SCREEN)
     private Serializable actionData;  // Data to pass to action screen (e.g., league ID)
     private LocalDateTime expirationDate;  // When message expires (optional)
+    private Boolean isMandatory;  // If true, blocks time advancement until viewed/actioned (e.g., draw screen)
 
     public Long getId() {
         return id;
@@ -162,5 +163,13 @@ public class Message implements Serializable {
      */
     public boolean isExpired(LocalDateTime currentDate) {
         return expirationDate != null && currentDate.isAfter(expirationDate);
+    }
+    
+    public Boolean getIsMandatory() {
+        return isMandatory;
+    }
+    
+    public void setIsMandatory(Boolean isMandatory) {
+        this.isMandatory = isMandatory;
     }
 }

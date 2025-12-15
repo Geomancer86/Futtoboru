@@ -31,6 +31,7 @@ public class InboxScreenTable extends VisTable {
     //
     Game game;
     SaveGame currentGame;
+    private com.rndmodgames.futtoboru.menu.MainMenuManager menuManager = null;
     
     // Selected message
     private Message selectedMessage = null;
@@ -72,6 +73,10 @@ public class InboxScreenTable extends VisTable {
         
         // Load screen
         updateDynamicComponents();
+    }
+    
+    public void setMenuManager(com.rndmodgames.futtoboru.menu.MainMenuManager menuManager) {
+        this.menuManager = menuManager;
     }
     
     /**
@@ -325,8 +330,49 @@ public class InboxScreenTable extends VisTable {
         // Action button (if applicable)
         if (message.getActionScreen() != null) {
             messageDetailTable.add().height(10).row();
-            VisTextButton actionButton = new VisTextButton("View Related Screen");
-            // TODO: Implement action button navigation
+            
+            String buttonText = "View Draw";
+            if (message.getMessageType() != null && message.getMessageType().equals("LEAGUE_DRAW")) {
+                buttonText = "View League Draw";
+            } else {
+                buttonText = "View Related Screen";
+            }
+            
+            VisTextButton actionButton = new VisTextButton(buttonText);
+            actionButton.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    return true;
+                }
+                
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    // Navigate to action screen
+                    if (message.getActionScreen() != null) {
+                        // Get league ID from actionData
+                        if (message.getActionData() instanceof Long) {
+                            Long leagueId = (Long) message.getActionData();
+                            com.rndmodgames.futtoboru.data.League league = null;
+                            
+                            // Find league in SaveGame
+                            if (currentGame != null && currentGame.getMainAuthority() != null && 
+                                currentGame.getMainAuthority().getLeagues() != null) {
+                                for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
+                                    if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
+                                        league = l;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if (league != null && menuManager != null) {
+                                menuManager.setSelectedLeague(league);
+                                menuManager.setActiveMainScreen(message.getActionScreen());
+                            }
+                        }
+                    }
+                }
+            });
             messageDetailTable.add(actionButton).pad(5).row();
         }
         
@@ -451,10 +497,11 @@ public class InboxScreenTable extends VisTable {
             return true;
         }
         
-        // League-wide messages (creation, fixture release) are relevant to all
+        // League-wide messages (creation, fixture release, draw) are relevant to all
         if (message.getMessageType() != null) {
             if (message.getMessageType().equals("LEAGUE_CREATION") || 
-                message.getMessageType().equals("FIXTURE_RELEASE")) {
+                message.getMessageType().equals("FIXTURE_RELEASE") ||
+                message.getMessageType().equals("LEAGUE_DRAW")) {
                 return true;
             }
         }

@@ -97,7 +97,19 @@ public class MessageManager {
             if (!alreadyDelivered) {
                 currentGame.getAllMessages().add(message);
                 Gdx.app.log("MessageManager", "Delivered scheduled message ID " + message.getId() + ": " + message.getTitle());
-                System.out.println("MessageManager: Delivered scheduled message ID " + message.getId() + ": " + message.getTitle());
+                System.out.println("MessageManager: Delivered scheduled message ID " + message.getId() + ": " + message.getTitle() + 
+                                 " (Type: " + message.getMessageType() + ", Mandatory: " + message.getIsMandatory() + ")");
+                
+                // If it's a mandatory message, log it prominently
+                if (message.getIsMandatory() != null && message.getIsMandatory()) {
+                    System.out.println("========================================");
+                    System.out.println("MANDATORY MESSAGE DELIVERED!");
+                    System.out.println("Message ID: " + message.getId());
+                    System.out.println("Title: " + message.getTitle());
+                    System.out.println("Type: " + message.getMessageType());
+                    System.out.println("This message blocks time advancement until viewed!");
+                    System.out.println("========================================");
+                }
             } else {
                 Gdx.app.log("MessageManager", "Scheduled message ID " + message.getId() + " already delivered: " + message.getTitle());
             }
@@ -353,6 +365,52 @@ public class MessageManager {
     /**
      * Create a fixture release message
      */
+    /**
+     * Create a mandatory league draw message
+     * This message blocks time advancement until the draw is viewed
+     * 
+     * @param league The league for which the draw is being made
+     * @return Message with isMandatory=true and actionScreen=LEAGUE_DRAW_SCREEN
+     */
+    public Message createLeagueDrawMessage(League league) {
+        if (league == null) {
+            return null;
+        }
+        
+        Message message = new Message();
+        message.setCategory(MessageCategory.LEAGUE);
+        message.setMessageType("LEAGUE_DRAW");
+        message.setPriority(MessagePriority.URGENT);
+        message.setTitle("League Fixture Draw - " + league.getName());
+        message.setIsMandatory(true);  // CRITICAL: Blocks time advancement
+        
+        StringBuilder content = new StringBuilder();
+        content.append("The fixture draw for the ");
+        content.append(league.getName());
+        content.append(" is ready to be revealed.\n\n");
+        content.append("Click below to view the draw and see all fixtures for the upcoming season.\n\n");
+        content.append("You must view the complete draw before continuing.");
+        
+        message.setPlainTextMessage(content.toString());
+        message.setRemitent(null);
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        message.setActionScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.LEAGUE_DRAW_SCREEN);
+        message.setActionData(league.getId());  // Store league ID for navigation
+        
+        // Set message ID if not set
+        if (message.getId() == null) {
+            message.setId(nextMessageId++);
+        }
+        
+        Gdx.app.log("MessageManager", "Created mandatory league draw message for league: " + league.getName() + 
+                    " (ID: " + message.getId() + ", Mandatory: " + message.getIsMandatory() + ")");
+        System.out.println("MessageManager: Created mandatory league draw message for league: " + league.getName() + 
+                         " (ID: " + message.getId() + ", Mandatory: " + message.getIsMandatory() + ")");
+        
+        return message;
+    }
+    
     public Message createFixtureReleaseMessage(League league) {
         if (league == null) {
             return null;

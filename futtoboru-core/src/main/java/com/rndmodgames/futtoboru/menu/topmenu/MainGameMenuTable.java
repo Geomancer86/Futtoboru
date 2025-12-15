@@ -48,6 +48,7 @@ public class MainGameMenuTable extends VisTable {
     VisTextButton continueGameButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
     VisTextButton matchPreviewButton = new VisTextButton(LanguageModLoader.getValue("match_preview"));
     VisTextButton matchResultButton = new VisTextButton(LanguageModLoader.getValue("match_result"));
+    VisTextButton drawButton = new VisTextButton("INBOX -> DRAW");  // Mandatory draw button
     
     CurrentDateAndTimeWidget dateTimeWidget = null;
     
@@ -228,6 +229,15 @@ public class MainGameMenuTable extends VisTable {
 
             // Set match preview button
             mainButtonContainer.add(matchPreviewButton);
+            
+            break;
+            
+        case FuttoboruGameEngine.DRAW_ACTION:
+            
+            // Set draw button (mandatory - blocks time advancement)
+            // Button text: "INBOX -> DRAW"
+            drawButton.setDisabled(false);  // Enable button
+            mainButtonContainer.add(drawButton);
             
             break;
             

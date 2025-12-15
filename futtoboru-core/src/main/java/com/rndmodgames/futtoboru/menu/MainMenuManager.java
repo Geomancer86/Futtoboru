@@ -86,6 +86,9 @@ public class MainMenuManager {
     
     // Player Detail Screen (v1.0)
     public static final int PLAYER_DETAIL_SCREEN = 10007;
+    
+    // Draw Screen (v1.0)
+    public static final int LEAGUE_DRAW_SCREEN = 10008;
         
     //
     public static int PREVIOUS_SCREEN = -1; //
@@ -126,6 +129,7 @@ public class MainMenuManager {
     private FinancesScreenTable financesScreenTable = null;
     private CompetitionsScreenTable competitionsScreenTable = null;
     private com.rndmodgames.futtoboru.tables.competitions.LeagueDetailScreenTable leagueDetailScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.draw.LeagueDrawScreenTable leagueDrawScreenTable = null;
     
     // Selected league for detail view
     private com.rndmodgames.futtoboru.data.League selectedLeague = null;
@@ -165,6 +169,7 @@ public class MainMenuManager {
         personDetailsScreenTable = new PersonDetailsScreenTable(game);
         authorityScreenTable = new AuthorityScreenTable(game);
         inboxScreenTable = new InboxScreenTable(game);
+        inboxScreenTable.setMenuManager(this);
         squadScreenTable = new SquadScreenTable(game);
         scheduleScreenTable = new ScheduleScreenTable(game);
         matchPreviewScreenTable = new MatchPreviewScreenTable(game);
@@ -176,6 +181,10 @@ public class MainMenuManager {
         competitionsScreenTable.setMenuManager(this);
         leagueDetailScreenTable = new com.rndmodgames.futtoboru.tables.competitions.LeagueDetailScreenTable(game);
         leagueDetailScreenTable.setMenuManager(this);
+        
+        // Draw Screen (v1.0)
+        leagueDrawScreenTable = new com.rndmodgames.futtoboru.tables.draw.LeagueDrawScreenTable(game);
+        leagueDrawScreenTable.setMenuManager(this);
         
         // Job System Screens (v1.0)
         clubBrowserScreenTable = new com.rndmodgames.futtoboru.tables.jobs.ClubBrowserScreenTable(game);
@@ -651,6 +660,18 @@ public class MainMenuManager {
             
             // Set as main content
             parentTable.add(leagueDetailScreenTable).grow();
+            
+            break;
+            
+        case LEAGUE_DRAW_SCREEN:
+            
+            // Update dynamic components with selected league
+            if (selectedLeague != null) {
+                leagueDrawScreenTable.setSelectedLeague(selectedLeague);
+            }
+            
+            // Set as main content
+            parentTable.add(leagueDrawScreenTable).grow();
             
             break;
 

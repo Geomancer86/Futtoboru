@@ -46,19 +46,35 @@ public class LeagueFixtureGenerator {
      * @return List of generated matches
      */
     public List<Match> generateLeagueFixtures(League league, LocalDateTime seasonStartDate, LocalDateTime seasonEndDate) {
+        System.out.println("========================================");
+        System.out.println("LeagueFixtureGenerator.generateLeagueFixtures() CALLED");
+        System.out.println("League: " + (league != null ? league.getName() : "NULL"));
+        System.out.println("Season Start: " + seasonStartDate);
+        System.out.println("Season End: " + seasonEndDate);
+        System.out.println("========================================");
+        
         Gdx.app.log("LeagueFixtureGenerator", "Starting fixture generation for league: " + (league != null ? league.getName() : "NULL"));
         
-        if (league == null || league.getLeagueClubs() == null || league.getLeagueClubs().isEmpty()) {
-            Gdx.app.error("LeagueFixtureGenerator", "Cannot generate fixtures: league is null or has no clubs");
+        if (league == null) {
+            System.out.println("ERROR: league is NULL!");
+            Gdx.app.error("LeagueFixtureGenerator", "Cannot generate fixtures: league is null");
+            return new ArrayList<>();
+        }
+        
+        if (league.getLeagueClubs() == null || league.getLeagueClubs().isEmpty()) {
+            System.out.println("ERROR: league.getLeagueClubs() is " + (league.getLeagueClubs() == null ? "NULL" : "EMPTY"));
+            Gdx.app.error("LeagueFixtureGenerator", "Cannot generate fixtures: league has no clubs");
             return new ArrayList<>();
         }
         
         List<Club> clubs = new ArrayList<>(league.getLeagueClubs());
         int numClubs = clubs.size();
         
+        System.out.println("League has " + numClubs + " clubs");
         Gdx.app.log("LeagueFixtureGenerator", "League has " + numClubs + " clubs");
         
         if (numClubs < 2) {
+            System.out.println("ERROR: League has less than 2 clubs (" + numClubs + ")");
             Gdx.app.error("LeagueFixtureGenerator", "Cannot generate fixtures: league has less than 2 clubs");
             return new ArrayList<>();
         }
@@ -110,27 +126,36 @@ public class LeagueFixtureGenerator {
         scheduleMatchesAcrossSeason(allMatches, seasonStartDate, seasonEndDate);
         
         // Add matches to clubs' scheduledMatches lists
+        System.out.println("Adding " + allMatches.size() + " matches to clubs' scheduledMatches lists...");
         int matchesAddedToClubs = 0;
+        int matchesSkipped = 0;
+        
         for (Match match : allMatches) {
             Club homeClub = currentGame.getClubById(match.getHomeClubId());
             Club awayClub = currentGame.getClubById(match.getAwayClubId());
             
             if (homeClub == null) {
+                System.out.println("ERROR: Home club not found for ID: " + match.getHomeClubId());
                 Gdx.app.error("LeagueFixtureGenerator", "Home club not found in SaveGame for ID: " + match.getHomeClubId());
+                matchesSkipped++;
                 continue;
             }
             if (awayClub == null) {
+                System.out.println("ERROR: Away club not found for ID: " + match.getAwayClubId());
                 Gdx.app.error("LeagueFixtureGenerator", "Away club not found in SaveGame for ID: " + match.getAwayClubId());
+                matchesSkipped++;
                 continue;
             }
             
             // Initialize scheduledMatches if null
             if (homeClub.getScheduledMatches() == null) {
                 homeClub.setScheduledMatches(new ArrayList<>());
+                System.out.println("Initialized scheduledMatches for home club: " + homeClub.getName());
                 Gdx.app.log("LeagueFixtureGenerator", "Initialized scheduledMatches for home club: " + homeClub.getName());
             }
             if (awayClub.getScheduledMatches() == null) {
                 awayClub.setScheduledMatches(new ArrayList<>());
+                System.out.println("Initialized scheduledMatches for away club: " + awayClub.getName());
                 Gdx.app.log("LeagueFixtureGenerator", "Initialized scheduledMatches for away club: " + awayClub.getName());
             }
             
@@ -139,8 +164,23 @@ public class LeagueFixtureGenerator {
             matchesAddedToClubs += 2;
         }
         
-        Gdx.app.log("LeagueFixtureGenerator", "Added " + matchesAddedToClubs + " match references to clubs (2 per match)");
+        System.out.println("========================================");
+        System.out.println("MATCHES ADDED TO CLUBS:");
+        System.out.println("Matches added: " + matchesAddedToClubs + " references (2 per match)");
+        System.out.println("Matches skipped: " + matchesSkipped);
+        System.out.println("Expected: " + (allMatches.size() * 2) + " references");
+        System.out.println("========================================");
         
+        // Verify matches were actually added
+        int totalMatchesInClubs = 0;
+        for (Club club : clubs) {
+            if (club != null && club.getScheduledMatches() != null) {
+                totalMatchesInClubs += club.getScheduledMatches().size();
+            }
+        }
+        System.out.println("VERIFICATION: Total matches in all clubs' scheduledMatches: " + totalMatchesInClubs);
+        
+        Gdx.app.log("LeagueFixtureGenerator", "Added " + matchesAddedToClubs + " match references to clubs (2 per match)");
         Gdx.app.log("LeagueFixtureGenerator", "Generated " + allMatches.size() + " league fixtures");
         
         return allMatches;
