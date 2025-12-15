@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 REM Futtoboru Build Script
 REM Builds the project using Maven with Java 21 (Zulu)
 
