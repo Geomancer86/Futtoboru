@@ -87,6 +87,19 @@ public class Club implements Serializable {
      */
     private Map<Long, Long> staff = new HashMap<>(); // Profession ID -> Person ID
     
+    /**
+     * Club Statistics (v1.0)
+     * 
+     * Track club performance across all competitions
+     */
+    private Integer matchesPlayed = 0;
+    private Integer matchesWon = 0;
+    private Integer matchesDrawn = 0;
+    private Integer matchesLost = 0;
+    private Integer goalsScored = 0;
+    private Integer goalsConceded = 0;
+    private Integer points = 0; // For league competitions (3 for win, 1 for draw, 0 for loss)
+    
     public Club() {
         
     }
@@ -316,6 +329,72 @@ public class Club implements Serializable {
      */
     public boolean isPositionVacant(Long professionId) {
         return staff == null || staff.get(professionId) == null;
+    }
+
+    /**
+     * Club Statistics Getters and Setters
+     */
+    public Integer getMatchesPlayed() {
+        return matchesPlayed != null ? matchesPlayed : 0;
+    }
+
+    public void setMatchesPlayed(Integer matchesPlayed) {
+        this.matchesPlayed = matchesPlayed != null ? matchesPlayed : 0;
+    }
+
+    public Integer getMatchesWon() {
+        return matchesWon != null ? matchesWon : 0;
+    }
+
+    public void setMatchesWon(Integer matchesWon) {
+        this.matchesWon = matchesWon != null ? matchesWon : 0;
+    }
+
+    public Integer getMatchesDrawn() {
+        return matchesDrawn != null ? matchesDrawn : 0;
+    }
+
+    public void setMatchesDrawn(Integer matchesDrawn) {
+        this.matchesDrawn = matchesDrawn != null ? matchesDrawn : 0;
+    }
+
+    public Integer getMatchesLost() {
+        return matchesLost != null ? matchesLost : 0;
+    }
+
+    public void setMatchesLost(Integer matchesLost) {
+        this.matchesLost = matchesLost != null ? matchesLost : 0;
+    }
+
+    public Integer getGoalsScored() {
+        return goalsScored != null ? goalsScored : 0;
+    }
+
+    public void setGoalsScored(Integer goalsScored) {
+        this.goalsScored = goalsScored != null ? goalsScored : 0;
+    }
+
+    public Integer getGoalsConceded() {
+        return goalsConceded != null ? goalsConceded : 0;
+    }
+
+    public void setGoalsConceded(Integer goalsConceded) {
+        this.goalsConceded = goalsConceded != null ? goalsConceded : 0;
+    }
+
+    public Integer getPoints() {
+        return points != null ? points : 0;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points != null ? points : 0;
+    }
+    
+    /**
+     * Utility: Get goal difference (goals scored - goals conceded)
+     */
+    public Integer getGoalDifference() {
+        return getGoalsScored() - getGoalsConceded();
     }
 
     @Override
