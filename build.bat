@@ -20,6 +20,10 @@ if defined JAVA_HOME (
     set "PATH=%JAVA_HOME%\bin;%PATH%"
 )
 
+echo Generating build information...
+call generate-build-info.bat
+echo.
+
 echo Building project...
 echo.
 call C:\apache-maven-3.6.3\bin\mvn.cmd clean install -DskipTests

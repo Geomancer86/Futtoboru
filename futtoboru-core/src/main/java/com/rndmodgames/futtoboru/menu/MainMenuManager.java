@@ -176,8 +176,6 @@ public class MainMenuManager {
         competitionsScreenTable.setMenuManager(this);
         leagueDetailScreenTable = new com.rndmodgames.futtoboru.tables.competitions.LeagueDetailScreenTable(game);
         leagueDetailScreenTable.setMenuManager(this);
-        leagueDetailScreenTable = new com.rndmodgames.futtoboru.tables.competitions.LeagueDetailScreenTable(game);
-        leagueDetailScreenTable.setMenuManager(this);
         
         // Job System Screens (v1.0)
         clubBrowserScreenTable = new com.rndmodgames.futtoboru.tables.jobs.ClubBrowserScreenTable(game);
@@ -645,9 +643,15 @@ public class MainMenuManager {
             break;
             
         case LEAGUE_DETAIL_SCREEN:
+            
+            // Update dynamic components with selected league
             if (selectedLeague != null) {
-                leagueDetailScreenTable.updateDynamicComponents();
+                leagueDetailScreenTable.setSelectedLeague(selectedLeague);
             }
+            
+            // Set as main content
+            parentTable.add(leagueDetailScreenTable).grow();
+            
             break;
 
         default:

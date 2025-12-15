@@ -61,14 +61,42 @@ public class MessageManager {
         // Move to delivered messages
         for (Message message : toDeliver) {
             currentGame.getScheduledMessages().remove(message);
-            message.setMessageTime(currentDate); // Set delivery time
-            currentGame.getAllMessages().add(message);
             
-            Gdx.app.log("MessageManager", "Delivered scheduled message: " + message.getTitle());
+            // Ensure message has ID
+            if (message.getId() == null) {
+                message.setId(nextMessageId++);
+            }
+            
+            // Set delivery time
+            message.setMessageTime(currentDate);
+            
+            // Ensure allMessages list exists
+            if (currentGame.getAllMessages() == null) {
+                currentGame.setAllMessages(new ArrayList<>());
+            }
+            
+            // Check if already delivered (by ID)
+            boolean alreadyDelivered = false;
+            for (Message existing : currentGame.getAllMessages()) {
+                if (existing != null && existing.getId() != null && existing.getId().equals(message.getId())) {
+                    alreadyDelivered = true;
+                    break;
+                }
+            }
+            
+            if (!alreadyDelivered) {
+                currentGame.getAllMessages().add(message);
+                Gdx.app.log("MessageManager", "Delivered scheduled message ID " + message.getId() + ": " + message.getTitle());
+                System.out.println("MessageManager: Delivered scheduled message ID " + message.getId() + ": " + message.getTitle());
+            } else {
+                Gdx.app.log("MessageManager", "Scheduled message ID " + message.getId() + " already delivered: " + message.getTitle());
+            }
         }
         
         if (!toDeliver.isEmpty()) {
-            Gdx.app.log("MessageManager", "Delivered " + toDeliver.size() + " scheduled messages");
+            int totalMessages = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
+            Gdx.app.log("MessageManager", "Delivered " + toDeliver.size() + " scheduled messages. Total messages: " + totalMessages);
+            System.out.println("MessageManager: Delivered " + toDeliver.size() + " scheduled messages. Total messages: " + totalMessages);
         }
     }
     
