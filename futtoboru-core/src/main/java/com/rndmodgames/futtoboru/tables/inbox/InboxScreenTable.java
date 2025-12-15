@@ -337,8 +337,16 @@ public class InboxScreenTable extends VisTable {
         );
         readButton.addListener(new InputListener() {
             @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            
+            @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                message.setIsRead(!(message.getIsRead() != null && message.getIsRead()));
+                // Toggle read status
+                boolean currentReadStatus = (message.getIsRead() != null && message.getIsRead());
+                message.setIsRead(!currentReadStatus);
+                System.out.println("InboxScreenTable: Message '" + message.getTitle() + "' marked as " + (!currentReadStatus ? "read" : "unread"));
                 updateDynamicComponents();
             }
         });
