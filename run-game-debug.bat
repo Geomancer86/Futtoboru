@@ -1,10 +1,4 @@
 @echo off
-REM Force console window to stay visible
-if not "%1"=="console" (
-    start "Futtoboru Debug Console" cmd /k "%~f0" console
-    exit
-)
-
 title Futtoboru Debug Console
 color 0A
 cls
