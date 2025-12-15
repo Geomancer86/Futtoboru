@@ -1,0 +1,43 @@
+# West Bromwich Albion FC - Players File for 1888-89 League
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Billy_Bassett
+#   - https://en.wikipedia.org/wiki/Tom_Pearson_%28footballer%29
+#   - https://en.wikipedia.org/wiki/Bob_Roberts_%28footballer%2C_born_1859%29
+#   - https://en.wikipedia.org/wiki/George_Timmins_%28footballer%29
+#   - https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29
+#   - https://en.wikipedia.org/wiki/Luther_Walker
+#   - https://en.wikipedia.org/wiki/George_Woodhall
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Billy,Bassett,1000,1869-01-27
+2,Jem,Bayliss,1000,1865
+3,Fredrick,Crabtree,1000,1866
+4,Harry,Green,1000,1865
+5,George,Haynes,1000,1866
+6,Billy,Hendry,1000,1865
+7,Ezra,Horton,1000,1864
+8,Jack,Horton,1000,1863
+9,Albert,Millard,1000,1866
+10,Harold,Oliver,1000,1865
+11,Tom,Pearson,1000,1866-05-20
+12,Charlie,Perry,1000,1864
+13,Walter,Perry,1000,1865
+14,Alexander,Ramsey,1000,1865
+15,Bob,Roberts,1000,1859-04-09
+16,Charlie,Shaw,1000,1866
+17,George,Timmins,1000,1863
+18,Luther,Walker,1000,1862
+19,Joe,Wilson,1000,1865
+20,George,Woodhall,1000,1864

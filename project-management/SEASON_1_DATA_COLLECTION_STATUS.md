@@ -65,6 +65,19 @@
   - File format validated (matches Preston North End structure)
   - Ready for game testing
 
+### 5. Bolton Wanderers (Club ID: 5) ✅ **COMPLETED**
+- **Status:** ✅ Complete - Research Done, Ready for Testing
+- **Players:** 24
+- **Source:** `https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season`
+- **File Location (PM Repo):** `project-management/research-data/season-1/club_players/5.txt`
+- **Additional Sources:** 11+ Wikipedia pages + worldfootball.net
+- **Notes:** 
+  - Complete research with full source documentation
+  - 12 players with full birthdates (`yyyy-MM-dd`), 12 with year only (`yyyy`)
+  - All players have names and countries (19 England, 3 Scotland, 2 Wales)
+  - File format validated (matches Preston North End structure)
+  - Ready for game testing
+
 ---
 
 ## 🚧 In Progress
@@ -76,9 +89,8 @@
 
 ## ⏳ Pending Clubs
 
-### Remaining Clubs (8/12)
-1. ❌ Bolton Wanderers (ID: 5)
-4. ❌ West Bromwich Albion (ID: 6)
+### Remaining Clubs (7/12)
+1. ❌ West Bromwich Albion (ID: 6)
 5. ❌ Accrington (ID: 7)
 6. ❌ Everton (ID: 8)
 7. ❌ Burnley (ID: 9)
@@ -125,9 +137,9 @@
 
 ## 🎯 Next Club Priority
 
-### Recommended Next: Bolton Wanderers (ID: 5)
+### Recommended Next: West Bromwich Albion (ID: 6)
 - **Reason:** Large club, likely well documented
-- **Wikipedia:** `https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season`
+- **Wikipedia:** `https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season`
 - **Estimated Time:** 1-2 hours (research + file creation + testing)
 
 ---
