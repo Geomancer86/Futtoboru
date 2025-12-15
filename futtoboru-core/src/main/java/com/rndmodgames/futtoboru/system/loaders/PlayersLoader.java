@@ -83,11 +83,14 @@ public class PlayersLoader {
                         person.setName(splitted[1]);
                         person.setLastname(splitted[2]);
                         
-                        // Country of birth
+                        // Country of birth (column 3 in actual file format)
                         person.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[3])));
                         
                         /**
-                         * Birthdate
+                         * Birthdate (column 4 in actual file format)
+                         * 
+                         * NOTE: File format is: id, name, lastname, country, birthdate
+                         * NOT: id, name, lastname, birthdate, country (as commented in code)
                          * 
                          * NOTES: 
                          *  - all dates ingame are LocalDateTime

@@ -1,0 +1,51 @@
+# Aston Villa FC - Players File for 1888-89 League
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Archie_Hunter
+#   - https://en.wikipedia.org/wiki/Dennis_Hodgetts
+#   - https://en.wikipedia.org/wiki/Frank_Coulton
+#   - https://en.wikipedia.org/wiki/Batty_Garvey
+#   - https://en.wikipedia.org/wiki/Arthur_Dixon_%28footballer%2C_born_1867%29
+#   - https://en.wikipedia.org/wiki/Arthur_Wollaston
+#   - https://en.wikipedia.org/wiki/Albert_Allen
+#   - https://en.wikipedia.org/wiki/Tommy_Green_%28footballer%2C_born_1863%29
+#   - https://en.wikipedia.org/wiki/Harry_Yates_%28footballer%2C_born_1861%29
+#   - https://en.wikipedia.org/wiki/Thomas_Harrison_%28footballer%29
+#   - https://en.wikipedia.org/wiki/John_Burton_%28footballer%2C_born_1863%29
+#   - https://en.wikipedia.org/wiki/Frankie_Dawson
+#   - https://en.wikipedia.org/wiki/Arthur_Brown_%28footballer%2C_born_1858%29
+#   - https://en.wikipedia.org/wiki/Harry_Devey
+#   - https://en.wikipedia.org/wiki/Walter_Ashmore
+#   - https://www.avfchistory.co.uk/aston-villa/squad/1888-89
+#   - https://www.national-football-teams.com/player/61842/Dennis_Hodgetts.html
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Albert,Allen,1000,1867-04-01
+2,Walter,Ashmore,1000,1861
+3,Arthur,Brown,1000,1858-12-03
+4,John,Burton,1000,1863-09-18
+5,Frank,Coulton,1000,1866
+6,Gershom,Cox,1000,1863-09-28
+7,Frankie,Dawson,1000,1862-06-23
+8,Harry,Devey,1000,1864-09-25
+9,Arthur,Dixon,1000,1867-07
+10,Batty,Garvey,1000,1865-10-05
+11,Archie,Goodall,83,1865-01-03
+12,Tommy,Green,1000,1863-08-07
+13,Thomas,Harrison,1000,1866-01-31
+14,Dennis,Hodgetts,1000,1863-11-28
+15,Archie,Hunter,1001,1859-09-23
+16,Jimmy,Warner,1000,1865-04-15
+17,Arthur,Wollaston,1000,1865-03
+18,Harry,Yates,1000,1861-10-14

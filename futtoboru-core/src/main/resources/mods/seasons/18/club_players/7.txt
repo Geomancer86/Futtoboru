@@ -1,0 +1,39 @@
+# Accrington FC - Players File for 1888-89 League
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Billy,Barbour,1000,1865
+2,Jim,Bonar,1000,1866
+3,Bob,Brand,1000,1865
+4,Peter,Chippendale,1000,1864
+5,Hugh,Galbraith,1000,1866
+6,Pat,Gallocher,1001,1865
+7,George,Haworth,1000,1863
+8,J,Holden,1000,1865
+9,Johnny,Horne,1000,1862-01-17
+10,John,Kirkham,1000,1869-02-26
+11,Joe,Lofthouse,1000,1864
+12,Robert,Macbeth,1000,1866
+13,John,McLellan,1000,1863
+14,Henry,Parkinson,1000,1865
+15,Luther,Pemberton,1000,1864
+16,J,Robertson,1000,1865
+17,Stephen,Smith-Singleton,1000,1863
+18,John,Stevenson,1000,1862
+19,James,Tattersall,1000,1864
+20,Arthur,Wilkinson,1000,1865
+21,Jonathan,Wilkinson,1000,1864
+22,J,Woods,1000,1865

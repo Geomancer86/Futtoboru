@@ -1,0 +1,46 @@
+# Derby County FC - Players File for 1888-89 League
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29
+#   - https://en.wikipedia.org/wiki/Lawrence_Plackett
+#   - https://en.wikipedia.org/wiki/Lewis_Cooper
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,George,Bakewell,1000,1865
+2,E.W.,Bellhouse,1000,1865
+3,Harold,Bestwick,1000,1865
+4,Enos,Bromage,1000,1864
+5,William,Chatterton,1000,1865
+6,G,Clifton,1000,1865
+7,Lewis,Cooper,1000,1864
+8,Archibald,Ferguson,1000,1863
+9,H,Harbour,1000,1865
+10,Ernest,Hickinbottom,1000,1864
+11,Alex,Higgins,1001,1863-11-07
+12,William,Hopewell,1000,1864
+13,Arthur,Latham,1000,1863
+14,John,Lees,1000,1865
+15,Joseph,Marshall,1000,1863
+16,Isaac,Monks,1000,1864
+17,Haydn,Morley,1000,1864
+18,Thomas,Needham,1000,1865
+19,Ruben,Pitman,1000,1864
+20,Harry,Plackett,1000,1866
+21,Lawrence,Plackett,1000,1869-01-16
+22,Frank,Roulstone,1000,1865
+23,Walter,Roulstone,1000,1864
+24,J,Smith,1000,1864
+25,Benjamin,Spilsbury,1000,1865
+26,Albert,Williamson,1000,1864
+27,Levi,Wright,1000,1864

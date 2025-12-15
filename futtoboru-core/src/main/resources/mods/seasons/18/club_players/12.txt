@@ -1,0 +1,51 @@
+# Stoke FC - Players File for 1888-89 League
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Bob_McSkimming
+#   - https://en.wikipedia.org/wiki/Tommy_Clare
+#   - https://en.wikipedia.org/wiki/Alf_Underwood
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Bill,Rowley,1000,1863
+2,Wilf,Merritt,1000,1865
+3,Charlie,Hassall,1000,1864
+4,Tommy,Clare,1000,1865-03-12
+5,Alf,Underwood,1000,1869
+6,Albert,Bourne,1000,1865
+7,Edgar,Montford,1000,1864
+8,Bob,Ramsay,1000,1863
+9,George,Shutt,1000,1864
+10,Elijah,Smith,1000,1863
+11,Billy,Hendry,1000,1865
+12,Albert,Farmer,1000,1864
+13,Will,Holford,1000,1865
+14,Bob,McSkimming,1001,1864
+15,Alf,Edge,1000,1865
+16,Bob,Milarvie,1000,1864
+17,Billy,Tunnicliffe,1000,1865
+18,Jimmy,Sloane,1000,1864
+19,Frank,Staton,1000,1865
+20,George,Lawton,1000,1864
+21,Jimmy,Sayer,1000,1865
+22,George,Slater,1000,1865
+23,Harry,Montford,1000,1865
+24,Tom,Wainwright,1000,1865
+25,Charlie,Baker,1000,1865
+26,Bob,Barr,1000,1864
+27,Alfred,Dempsey,1000,1865
+28,Tom,Forrester,1000,1865
+29,Freddie,Gee,1000,1865
+30,Billy,Hutchinson,1000,1865
+31,Thomas,Moore,1000,1865
+32,Bill,Smalley,1000,1865

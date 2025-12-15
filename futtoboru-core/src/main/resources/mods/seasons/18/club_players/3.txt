@@ -1,0 +1,45 @@
+# Wolverhampton Wanderers FC - Players File for 1888-89 League
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_Wolverhampton_Wanderers_F.C._season
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Harry_Wood_%28footballer%2C_born_1868%29
+#   - https://en.wikipedia.org/wiki/John_Brodie_%28footballer%2C_born_1862%29
+#   - https://en.wikipedia.org/wiki/Tommy_Knight_%28footballer%29
+#   - https://en.wikipedia.org/wiki/Dickie_Baugh
+#   - https://en.wikipedia.org/wiki/Harry_Allen_%28footballer%2C_born_1866%29
+#   - https://en.wikipedia.org/wiki/Charlie_Mason_%28footballer%2C_born_1863%29
+#   - https://en.wikipedia.org/wiki/David_Wykes
+#   - https://en.wikipedia.org/wiki/Jack_Baynton
+#   - https://wolvescompletehistory.co.uk/
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Harry,Wood,1000,1868-06-26
+2,John,Brodie,1000,1862-08-30
+3,Tommy,Knight,1000,1865
+4,Dickie,Baugh,1000,1864-02-14
+5,Harry,Allen,1000,1866-01-19
+6,Charlie,Mason,1000,1863-04-13
+7,David,Wykes,1000,1867-09-15
+8,Jack,Baynton,1000,1859-03-20
+9,Albert,Fletcher,1000,1867-06-04
+10,Arthur,Lowder,1000,1863-02-11
+11,Alec,Cannon,1001,1866
+12,William,Rose,1000,1865
+13,Walter,White,1000,1866
+14,Tommy,Hunter,1000,1863
+15,Joe,Cooper,1000,1865
+16,John,Benton,1000,1866
+17,Nick,Anderson,1000,1867
+18,R,Dudley,1000,1865
+19,T,Tomkyes,1000,1866
+19,T,Tomkyes,1000,1866
