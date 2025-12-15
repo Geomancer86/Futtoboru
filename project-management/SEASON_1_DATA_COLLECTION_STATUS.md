@@ -9,9 +9,9 @@
 ## 📊 Current Status
 
 ### Overall Progress
-- **Complete:** 3/12 clubs (25.0%)
-- **Remaining:** 9/12 clubs (75.0%)
-- **Total Players Collected:** 55 players (18 + 18 + 19)
+- **Complete:** 4/12 clubs (33.3%)
+- **Remaining:** 8/12 clubs (66.7%)
+- **Total Players Collected:** 78 players (18 + 18 + 19 + 23)
 
 ---
 
