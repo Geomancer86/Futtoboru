@@ -86,21 +86,43 @@ public class LeagueFixtureGenerator {
          * - A stadium with capacity > 0
          * - To be in SaveGame (for match references)
          */
+        System.out.println("========================================");
+        System.out.println("VALIDATING CLUBS FOR FIXTURE GENERATION");
+        System.out.println("========================================");
+        
         List<Club> validClubs = new ArrayList<>();
         for (Club club : clubs) {
-            if (isClubReady(club)) {
+            System.out.println("Checking club: " + (club != null ? club.getName() : "NULL") + " (ID: " + (club != null ? club.getId() : "NULL") + ")");
+            boolean isReady = isClubReady(club);
+            System.out.println("  -> Club is ready: " + isReady);
+            
+            if (isReady) {
                 validClubs.add(club);
+                System.out.println("  -> ADDED to valid clubs list");
             } else {
+                System.out.println("  -> SKIPPED (missing required data)");
                 Gdx.app.error("LeagueFixtureGenerator", "Skipping club " + club.getName() + " (ID: " + club.getId() + ") - missing required data");
             }
         }
         
+        System.out.println("========================================");
+        System.out.println("CLUB VALIDATION RESULTS:");
+        System.out.println("Total clubs in league: " + numClubs);
+        System.out.println("Valid clubs: " + validClubs.size());
+        System.out.println("Invalid clubs: " + (numClubs - validClubs.size()));
+        System.out.println("========================================");
+        
         if (validClubs.size() < 2) {
+            System.out.println("========================================");
+            System.out.println("ERROR: Cannot generate fixtures!");
+            System.out.println("Only " + validClubs.size() + " clubs have complete data (need at least 2)");
+            System.out.println("========================================");
             Gdx.app.error("LeagueFixtureGenerator", "Cannot generate fixtures: only " + validClubs.size() + " clubs have complete data (need at least 2)");
             return new ArrayList<>();
         }
         
         if (validClubs.size() < numClubs) {
+            System.out.println("WARNING: Only " + validClubs.size() + " out of " + numClubs + " clubs have complete data. Generating fixtures for valid clubs only.");
             Gdx.app.log("LeagueFixtureGenerator", "WARNING: Only " + validClubs.size() + " out of " + numClubs + " clubs have complete data. Generating fixtures for valid clubs only.");
         }
         
@@ -197,10 +219,13 @@ public class LeagueFixtureGenerator {
      * @return List of matches
      */
     private List<Match> generateRoundRobinFixtures(List<Club> clubs, boolean isHomeRound) {
+        System.out.println("generateRoundRobinFixtures() called with " + clubs.size() + " clubs, isHomeRound: " + isHomeRound);
+        
         List<Match> matches = new ArrayList<>();
         int numClubs = clubs.size();
         
         if (numClubs < 2) {
+            System.out.println("ERROR: Not enough clubs (" + numClubs + ") to generate fixtures");
             return matches;
         }
         
@@ -213,8 +238,14 @@ public class LeagueFixtureGenerator {
         int numRounds = numClubs - 1;
         int matchesPerRound = numClubs / 2;
         
+        System.out.println("Round-robin parameters: " + numRounds + " rounds, " + matchesPerRound + " matches per round");
+        System.out.println("Expected total matches: " + (numRounds * matchesPerRound));
+        
+        int matchesCreated = 0;
+        
         // Generate rounds using round-robin algorithm
         for (int round = 0; round < numRounds; round++) {
+            System.out.println("Generating round " + (round + 1) + " of " + numRounds);
             // Pair clubs: first vs last, second vs second-last, etc.
             for (int i = 0; i < matchesPerRound; i++) {
                 int club1Index = i;
@@ -228,8 +259,13 @@ public class LeagueFixtureGenerator {
                 Club club1 = workingClubs.get(club1Index);
                 Club club2 = workingClubs.get(club2Index);
                 
-                // Skip if either club is null
-                if (club1 == null || club2 == null || club1.getId() == null || club2.getId() == null) {
+                if (club1 == null || club2 == null) {
+                    System.out.println("ERROR: Null club at index " + club1Index + " or " + club2Index);
+                    continue;
+                }
+                
+                if (club1.getId() == null || club2.getId() == null) {
+                    System.out.println("ERROR: Club has null ID - club1: " + (club1 != null ? club1.getName() : "NULL") + ", club2: " + (club2 != null ? club2.getName() : "NULL"));
                     continue;
                 }
                 
@@ -251,6 +287,11 @@ public class LeagueFixtureGenerator {
                 }
                 
                 matches.add(match);
+                matchesCreated++;
+                
+                if (matchesCreated % 10 == 0) {
+                    System.out.println("  Created " + matchesCreated + " matches so far...");
+                }
             }
             
             // Rotate clubs for next round (round-robin rotation)
@@ -350,40 +391,66 @@ public class LeagueFixtureGenerator {
      */
     private boolean isClubReady(Club club) {
         if (club == null) {
+            System.out.println("    ERROR: Club is null");
             Gdx.app.error("LeagueFixtureGenerator", "Club is null");
             return false;
         }
         
+        System.out.println("    Checking players...");
         // Check if club has players
-        if (club.getPlayers() == null || club.getPlayers().isEmpty()) {
+        if (club.getPlayers() == null) {
+            System.out.println("    ERROR: club.getPlayers() is NULL");
+            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has null players list");
+            return false;
+        }
+        
+        if (club.getPlayers().isEmpty()) {
+            System.out.println("    ERROR: club.getPlayers() is EMPTY");
             Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has no players");
             return false;
         }
         
-        if (club.getPlayers().size() < 11) {
-            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has only " + club.getPlayers().size() + " players (need at least 11)");
+        int playerCount = club.getPlayers().size();
+        System.out.println("    Players: " + playerCount);
+        
+        if (playerCount < 11) {
+            System.out.println("    ERROR: Only " + playerCount + " players (need at least 11)");
+            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has only " + playerCount + " players (need at least 11)");
             return false;
         }
         
+        System.out.println("    Checking stadium...");
         // Check if club has stadium
         if (club.getStadium() == null) {
+            System.out.println("    ERROR: club.getStadium() is NULL");
             Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has no stadium");
             return false;
         }
         
-        if (club.getStadium().getCapacity() == null || club.getStadium().getCapacity() <= 0) {
-            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has invalid stadium capacity: " + club.getStadium().getCapacity());
+        Integer capacity = club.getStadium().getCapacity();
+        System.out.println("    Stadium capacity: " + capacity);
+        
+        if (capacity == null || capacity <= 0) {
+            System.out.println("    ERROR: Invalid stadium capacity: " + capacity);
+            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has invalid stadium capacity: " + capacity);
             return false;
         }
         
+        System.out.println("    Checking if club is in SaveGame...");
         // Check if club is in SaveGame (for match references)
         Club saveGameClub = currentGame.getClubById(club.getId());
         if (saveGameClub == null) {
+            System.out.println("    ERROR: Club not found in SaveGame (ID: " + club.getId() + ")");
+            System.out.println("    Total clubs in SaveGame: " + (currentGame.getAllClubs() != null ? currentGame.getAllClubs().size() : 0));
             Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") is not in SaveGame");
             return false;
         }
         
-        Gdx.app.debug("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") is ready - " + club.getPlayers().size() + " players, stadium capacity: " + club.getStadium().getCapacity());
+        System.out.println("    SUCCESS: Club is ready!");
+        System.out.println("      - Players: " + playerCount);
+        System.out.println("      - Stadium capacity: " + capacity);
+        System.out.println("      - In SaveGame: YES");
+        Gdx.app.debug("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") is ready - " + playerCount + " players, stadium capacity: " + capacity);
         return true;
     }
     
