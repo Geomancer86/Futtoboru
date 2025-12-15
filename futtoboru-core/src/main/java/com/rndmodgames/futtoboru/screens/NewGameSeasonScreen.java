@@ -65,11 +65,6 @@ public class NewGameSeasonScreen implements Screen {
         VisTable mainContainer = new VisTable();
         mainContainer.pad(50).setFillParent(true);
     
-        // HARDCODED MAIN MENU BUTTON AT TOP - GUARANTEED VISIBLE
-        mainContainer.row();
-        final MainMenuButton hardcodedBackButton = new MainMenuButton(game);
-        mainContainer.add(hardcodedBackButton).top().right().pad(10);
-        
         // 
         final VisTable table = new VisTable(true);
         
@@ -269,11 +264,6 @@ public class NewGameSeasonScreen implements Screen {
         
         // Add table to main container
         mainContainer.add(table);
-        
-        // MAIN MENU BUTTON - ADDED AFTER TABLE TO ENSURE IT'S VISIBLE
-        mainContainer.row();
-        final MainMenuButton visibleBackButton = new MainMenuButton(game);
-        mainContainer.add(visibleBackButton).right().padTop(20).padBottom(10);
         
         // Add Settings Screen Main Container to Stage
         stage.addActor(mainContainer);
