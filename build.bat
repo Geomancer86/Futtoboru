@@ -25,19 +25,39 @@ if defined JAVA_HOME (
 )
 
 REM Check common Zulu 21 locations
-set ZULU_PATHS[0]=C:\Program Files\Zulu\zulu-21
-set ZULU_PATHS[1]=C:\Program Files\Microsoft\jdk-21.0.0
-set ZULU_PATHS[2]=C:\Program Files\Eclipse Adoptium\jdk-21.0.0
-set ZULU_PATHS[3]=C:\Program Files\Java\jdk-21
-set ZULU_PATHS[4]=C:\Program Files (x86)\Zulu\zulu-21
+set "ZULU_PATH=C:\Program Files\Zulu\zulu-21"
+if exist "%ZULU_PATH%\bin\java.exe" (
+    set "JAVA_HOME=%ZULU_PATH%"
+    echo Found Java at: %ZULU_PATH%
+    goto :check_java_version
+)
 
-for /L %%i in (0,1,4) do (
-    call set "ZULU_PATH=%%ZULU_PATHS[%%i]%%"
-    if exist "!ZULU_PATH!\bin\java.exe" (
-        set "JAVA_HOME=!ZULU_PATH!"
-        echo Found Java at: !ZULU_PATH!
-        goto :check_java_version
-    )
+set "ZULU_PATH=C:\Program Files\Microsoft\jdk-21.0.0"
+if exist "%ZULU_PATH%\bin\java.exe" (
+    set "JAVA_HOME=%ZULU_PATH%"
+    echo Found Java at: %ZULU_PATH%
+    goto :check_java_version
+)
+
+set "ZULU_PATH=C:\Program Files\Eclipse Adoptium\jdk-21.0.0"
+if exist "%ZULU_PATH%\bin\java.exe" (
+    set "JAVA_HOME=%ZULU_PATH%"
+    echo Found Java at: %ZULU_PATH%
+    goto :check_java_version
+)
+
+set "ZULU_PATH=C:\Program Files\Java\jdk-21"
+if exist "%ZULU_PATH%\bin\java.exe" (
+    set "JAVA_HOME=%ZULU_PATH%"
+    echo Found Java at: %ZULU_PATH%
+    goto :check_java_version
+)
+
+set "ZULU_PATH=C:\Program Files (x86)\Zulu\zulu-21"
+if exist "%ZULU_PATH%\bin\java.exe" (
+    set "JAVA_HOME=%ZULU_PATH%"
+    echo Found Java at: %ZULU_PATH%
+    goto :check_java_version
 )
 
 REM Check if java is in PATH
