@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
@@ -48,6 +46,8 @@ public class LeagueFixtureGenerator {
      * @return List of generated matches
      */
     public List<Match> generateLeagueFixtures(League league, LocalDateTime seasonStartDate, LocalDateTime seasonEndDate) {
+        Gdx.app.log("LeagueFixtureGenerator", "Starting fixture generation for league: " + (league != null ? league.getName() : "NULL"));
+        
         if (league == null || league.getLeagueClubs() == null || league.getLeagueClubs().isEmpty()) {
             Gdx.app.error("LeagueFixtureGenerator", "Cannot generate fixtures: league is null or has no clubs");
             return new ArrayList<>();
@@ -56,10 +56,41 @@ public class LeagueFixtureGenerator {
         List<Club> clubs = new ArrayList<>(league.getLeagueClubs());
         int numClubs = clubs.size();
         
+        Gdx.app.log("LeagueFixtureGenerator", "League has " + numClubs + " clubs");
+        
         if (numClubs < 2) {
             Gdx.app.error("LeagueFixtureGenerator", "Cannot generate fixtures: league has less than 2 clubs");
             return new ArrayList<>();
         }
+        
+        /**
+         * Validate club data completeness before generating fixtures
+         * Each club needs:
+         * - At least 11 players (minimum squad size)
+         * - A stadium with capacity > 0
+         * - To be in SaveGame (for match references)
+         */
+        List<Club> validClubs = new ArrayList<>();
+        for (Club club : clubs) {
+            if (isClubReady(club)) {
+                validClubs.add(club);
+            } else {
+                Gdx.app.error("LeagueFixtureGenerator", "Skipping club " + club.getName() + " (ID: " + club.getId() + ") - missing required data");
+            }
+        }
+        
+        if (validClubs.size() < 2) {
+            Gdx.app.error("LeagueFixtureGenerator", "Cannot generate fixtures: only " + validClubs.size() + " clubs have complete data (need at least 2)");
+            return new ArrayList<>();
+        }
+        
+        if (validClubs.size() < numClubs) {
+            Gdx.app.log("LeagueFixtureGenerator", "WARNING: Only " + validClubs.size() + " out of " + numClubs + " clubs have complete data. Generating fixtures for valid clubs only.");
+        }
+        
+        // Use only valid clubs for fixture generation
+        clubs = validClubs;
+        numClubs = clubs.size();
         
         Gdx.app.log("LeagueFixtureGenerator", "Generating fixtures for league: " + league.getName() + " with " + numClubs + " clubs");
         
@@ -269,6 +300,51 @@ public class LeagueFixtureGenerator {
                 break;
             }
         }
+    }
+    
+    /**
+     * Check if a club has all required data for fixture generation
+     * 
+     * @param club The club to validate
+     * @return true if club is ready, false otherwise
+     */
+    private boolean isClubReady(Club club) {
+        if (club == null) {
+            Gdx.app.error("LeagueFixtureGenerator", "Club is null");
+            return false;
+        }
+        
+        // Check if club has players
+        if (club.getPlayers() == null || club.getPlayers().isEmpty()) {
+            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has no players");
+            return false;
+        }
+        
+        if (club.getPlayers().size() < 11) {
+            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has only " + club.getPlayers().size() + " players (need at least 11)");
+            return false;
+        }
+        
+        // Check if club has stadium
+        if (club.getStadium() == null) {
+            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has no stadium");
+            return false;
+        }
+        
+        if (club.getStadium().getCapacity() == null || club.getStadium().getCapacity() <= 0) {
+            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") has invalid stadium capacity: " + club.getStadium().getCapacity());
+            return false;
+        }
+        
+        // Check if club is in SaveGame (for match references)
+        Club saveGameClub = currentGame.getClubById(club.getId());
+        if (saveGameClub == null) {
+            Gdx.app.error("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") is not in SaveGame");
+            return false;
+        }
+        
+        Gdx.app.debug("LeagueFixtureGenerator", "Club " + club.getName() + " (ID: " + club.getId() + ") is ready - " + club.getPlayers().size() + " players, stadium capacity: " + club.getStadium().getCapacity());
+        return true;
     }
     
     /**

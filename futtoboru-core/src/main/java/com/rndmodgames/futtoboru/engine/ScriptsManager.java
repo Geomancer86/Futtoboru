@@ -108,9 +108,6 @@ public class ScriptsManager {
     public void createLeague(BasicScript script) {
         
         //
-        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
-        
-        //
         System.out.println("EXECUTING LEAGUE CREATION SCRIPT!");
         
         //
@@ -123,6 +120,9 @@ public class ScriptsManager {
          * Iterate Teams and add them to the League
          * 
          * NOTE: LibGDX Array to avoid serialization/deserialization issues (script is created with the same class).
+         * 
+         * CRITICAL FIX: Ensure league clubs are in SaveGame, not just DatabaseLoader.
+         * This fixes the issue where fixture generator can't find clubs.
          */
         Array<Long> test = (Array<Long>) script.getScriptValues().get(ScriptsLoader.LEAGUE_FOUNDING_TEAMS);
         
@@ -130,18 +130,69 @@ public class ScriptsManager {
         
         for (Long clubId : test) {
             
-            Club club = DatabaseLoader.getClubById(clubId);
+            // Try to get club from SaveGame first (preferred)
+            Club club = currentGame.getClubById(clubId);
             
-            // Add Club to League
+            if (club == null) {
+                // Fallback to DatabaseLoader
+                club = DatabaseLoader.getClubById(clubId);
+                
+                if (club != null) {
+                    // Add to SaveGame so fixture generator can find it
+                    System.out.println("Adding club " + club.getName() + " (ID: " + clubId + ") to SaveGame from DatabaseLoader");
+                    if (currentGame.getAllClubs() == null) {
+                        currentGame.setAllClubs(new ArrayList<>());
+                    }
+                    currentGame.getAllClubs().add(club);
+                } else {
+                    System.out.println("ERROR: Club ID " + clubId + " not found in DatabaseLoader or SaveGame!");
+                    continue;
+                }
+            }
+            
+            // Add Club to League (now guaranteed to be in SaveGame)
             league.getLeagueClubs().add(club);
+            System.out.println("Added club " + club.getName() + " (ID: " + clubId + ") to league " + league.getName());
         }
         
         // Save the created League on the current game
         currentGame.getMainAuthority().getLeagues().add(league);
         
         System.out.println("Added League to SaveGame: Total Leagues: " + currentGame.getMainAuthority().getLeagues().size());
+        System.out.println("League " + league.getName() + " has " + league.getLeagueClubs().size() + " clubs");
 
         // Mark as executed to avoid running more than once
         script.setIsExecuted(true);
+        
+        /**
+         * Generate fixtures immediately when league is created
+         * This ensures fixtures are ready right away, not waiting for daily check
+         */
+        try {
+            com.badlogic.gdx.Gdx.app.log("ScriptsManager", "Generating fixtures for newly created league: " + league.getName());
+            
+            // Get season dates (use game start date or current date)
+            java.time.LocalDateTime seasonStart = currentGame.getGameStartDate();
+            if (seasonStart == null) {
+                seasonStart = currentGame.getGameDate();
+            }
+            // Season typically runs September to May (9 months)
+            java.time.LocalDateTime seasonEnd = seasonStart.plusMonths(9);
+            
+            // Generate fixtures
+            com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator fixtureGenerator = 
+                new com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator(gameInstance);
+            
+            java.util.List<com.rndmodgames.futtoboru.data.Match> fixtures = 
+                fixtureGenerator.generateLeagueFixtures(league, seasonStart, seasonEnd);
+            
+            System.out.println("Generated " + fixtures.size() + " fixtures for league " + league.getName());
+            com.badlogic.gdx.Gdx.app.log("ScriptsManager", "Successfully generated " + fixtures.size() + " fixtures for league " + league.getName());
+            
+        } catch (Exception e) {
+            System.out.println("ERROR generating fixtures for league " + league.getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "Failed to generate fixtures for league " + league.getName(), e);
+        }
     }
 }
