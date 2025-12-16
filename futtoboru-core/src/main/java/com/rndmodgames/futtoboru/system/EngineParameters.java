@@ -8,7 +8,8 @@ package com.rndmodgames.futtoboru.system;
 public class EngineParameters {
 
     // TODO: separate friendly matches types and official matches types
-    public static String [] matchTypes = new String [] {"Friendly Match"};
+    // Match type constants: 1 = FRIENDLY_MATCH, 2 = LEAGUE_MATCH
+    public static String [] matchTypes = new String [] {"Friendly Match", "League Match"};
     
     // TODO: implement neutral venues
     public static String [] matchVenueTypes = new String [] {"Home", "Away"};
