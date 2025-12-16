@@ -347,29 +347,67 @@ public class InboxScreenTable extends VisTable {
                 
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    System.out.println("InboxScreenTable: Action button clicked for message: " + message.getTitle());
+                    System.out.println("Action Screen: " + message.getActionScreen());
+                    System.out.println("Action Data: " + message.getActionData());
+                    
                     // Navigate to action screen
                     if (message.getActionScreen() != null) {
-                        // Get league ID from actionData
-                        if (message.getActionData() instanceof Long) {
-                            Long leagueId = (Long) message.getActionData();
-                            com.rndmodgames.futtoboru.data.League league = null;
+                        // Handle LEAGUE_DRAW messages specifically
+                        if (message.getMessageType() != null && message.getMessageType().equals("LEAGUE_DRAW")) {
+                            System.out.println("InboxScreenTable: Handling LEAGUE_DRAW message action");
                             
-                            // Find league in SaveGame
-                            if (currentGame != null && currentGame.getMainAuthority() != null && 
-                                currentGame.getMainAuthority().getLeagues() != null) {
-                                for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
-                                    if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
-                                        league = l;
-                                        break;
+                            // Get league ID from actionData
+                            if (message.getActionData() instanceof Long) {
+                                Long leagueId = (Long) message.getActionData();
+                                System.out.println("InboxScreenTable: League ID from actionData: " + leagueId);
+                                
+                                com.rndmodgames.futtoboru.data.League league = null;
+                                
+                                // Find league in SaveGame
+                                if (currentGame != null && currentGame.getMainAuthority() != null && 
+                                    currentGame.getMainAuthority().getLeagues() != null) {
+                                    System.out.println("InboxScreenTable: Searching through " + currentGame.getMainAuthority().getLeagues().size() + " leagues");
+                                    
+                                    for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
+                                        if (l != null && l.getId() != null) {
+                                            System.out.println("InboxScreenTable: Checking league ID: " + l.getId() + " (looking for: " + leagueId + ")");
+                                            if (l.getId().equals(leagueId)) {
+                                                league = l;
+                                                System.out.println("InboxScreenTable: Found league: " + league.getName());
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
+                                
+                                if (league != null && menuManager != null) {
+                                    System.out.println("InboxScreenTable: Navigating to draw screen for league: " + league.getName());
+                                    menuManager.setSelectedLeague(league);
+                                    menuManager.setActiveMainScreen(message.getActionScreen());
+                                } else {
+                                    System.out.println("InboxScreenTable: ERROR - League not found or menuManager is null");
+                                    if (league == null) {
+                                        System.out.println("InboxScreenTable: League is null");
+                                    }
+                                    if (menuManager == null) {
+                                        System.out.println("InboxScreenTable: menuManager is null");
+                                    }
+                                }
+                            } else {
+                                // Generic action for other messages
+                                System.out.println("InboxScreenTable: Generic action screen navigation");
+                                menuManager.setActiveMainScreen(message.getActionScreen());
                             }
-                            
-                            if (league != null && menuManager != null) {
-                                menuManager.setSelectedLeague(league);
+                        } else {
+                            // Generic action for other message types
+                            System.out.println("InboxScreenTable: Generic action screen navigation");
+                            if (menuManager != null) {
                                 menuManager.setActiveMainScreen(message.getActionScreen());
                             }
                         }
+                    } else {
+                        System.out.println("InboxScreenTable: ERROR - message.getActionScreen() is null");
                     }
                 }
             });

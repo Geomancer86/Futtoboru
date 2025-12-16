@@ -262,23 +262,128 @@ public class LeagueDrawScreenTable extends VisTable {
      */
     private void markDrawMessageAsComplete() {
         if (currentGame == null || currentGame.getAllMessages() == null) {
+            System.out.println("LeagueDrawScreenTable: ERROR - currentGame or getAllMessages is null");
             return;
         }
         
+        System.out.println("LeagueDrawScreenTable: Searching for draw message to mark as complete...");
+        System.out.println("Total messages: " + currentGame.getAllMessages().size());
+        
         // Find the draw message and mark it as read and non-mandatory
+        boolean found = false;
         for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
-            if (message != null && 
-                message.getMessageType() != null && 
-                (message.getMessageType().equals("LEAGUE_DRAW") || 
-                 message.getMessageType().equals("FIXTURE_DRAW")) &&
-                message.getIsMandatory() != null && message.getIsMandatory()) {
+            if (message != null) {
+                String messageType = message.getMessageType();
+                boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
                 
-                message.setIsRead(true);
-                message.setIsMandatory(false);  // No longer blocks time advancement
-                System.out.println("LeagueDrawScreenTable: Marked draw message as complete");
-                break;
+                System.out.println("Checking message: Type=" + messageType + ", Mandatory=" + isMandatory + 
+                                 ", Read=" + message.getIsRead() + ", Title=" + message.getTitle());
+                
+                if (messageType != null && 
+                    (messageType.equals("LEAGUE_DRAW") || 
+                     messageType.equals("FIXTURE_DRAW")) &&
+                    isMandatory) {
+                    
+                    message.setIsRead(true);
+                    message.setIsMandatory(false);  // No longer blocks time advancement
+                    found = true;
+                    
+                    System.out.println("========================================");
+                    System.out.println("LeagueDrawScreenTable: Marked draw message as complete!");
+                    System.out.println("Message ID: " + message.getId());
+                    System.out.println("Message Title: " + message.getTitle());
+                    System.out.println("IsRead: " + message.getIsRead());
+                    System.out.println("IsMandatory: " + message.getIsMandatory());
+                    System.out.println("========================================");
+                    
+                    // Create post-draw message with league info
+                    createPostDrawMessage(selectedLeague);
+                    
+                    // Update UI button state by triggering getNextGameAction check
+                    if (game != null && game.getGameEngine() != null) {
+                        // Force refresh of button state
+                        game.getGameEngine().getNextGameAction();
+                    }
+                    
+                    // Update top menu button (will be refreshed on next screen update)
+                    // The button state is checked via getNextGameAction() which we called above
+                    
+                    break;
+                }
             }
         }
+        
+        if (!found) {
+            System.out.println("LeagueDrawScreenTable: WARNING - No mandatory draw message found to mark as complete!");
+        }
+    }
+    
+    /**
+     * Create a post-draw message with league information and match count
+     */
+    private void createPostDrawMessage(League league) {
+        if (league == null || game == null || game.getGameEngine() == null) {
+            return;
+        }
+        
+        com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
+            game.getGameEngine().getMessageManager();
+        
+        if (messageManager == null) {
+            return;
+        }
+        
+        // Count total fixtures for this league
+        int totalFixtures = 0;
+        if (league.getLeagueClubs() != null) {
+            for (com.rndmodgames.futtoboru.data.Club club : league.getLeagueClubs()) {
+                if (club != null && club.getScheduledMatches() != null) {
+                    for (com.rndmodgames.futtoboru.data.Match match : club.getScheduledMatches()) {
+                        if (match != null && match.getMatchType() == com.rndmodgames.futtoboru.data.Match.LEAGUE_MATCH) {
+                            totalFixtures++;
+                        }
+                    }
+                }
+            }
+            // Each match appears twice (once for home, once for away club), so divide by 2
+            totalFixtures = totalFixtures / 2;
+        }
+        
+        com.rndmodgames.futtoboru.data.Message postDrawMessage = new com.rndmodgames.futtoboru.data.Message();
+        postDrawMessage.setCategory(com.rndmodgames.futtoboru.data.MessageCategory.LEAGUE);
+        postDrawMessage.setMessageType("LEAGUE_FIXTURES_RELEASED");
+        postDrawMessage.setPriority(com.rndmodgames.futtoboru.data.MessagePriority.NORMAL);
+        postDrawMessage.setTitle("League Fixtures Released - " + league.getName());
+        postDrawMessage.setIsMandatory(false);
+        
+        StringBuilder content = new StringBuilder();
+        content.append("The fixture draw for the ");
+        content.append(league.getName());
+        content.append(" has been completed.\n\n");
+        content.append("A total of ");
+        content.append(totalFixtures);
+        content.append(" matches have been scheduled for the upcoming season.\n\n");
+        content.append("The season will feature ");
+        if (league.getLeagueClubs() != null) {
+            content.append(league.getLeagueClubs().size());
+        } else {
+            content.append("multiple");
+        }
+        content.append(" teams competing for the league title.\n\n");
+        content.append("Check your schedule to see all upcoming matches.");
+        
+        postDrawMessage.setPlainTextMessage(content.toString());
+        postDrawMessage.setRemitent(null);
+        postDrawMessage.setIsRead(false);
+        postDrawMessage.setIsDeleted(false);
+        
+        // Set message ID (MessageManager will assign one if null)
+        // We'll let deliverMessage handle ID assignment
+        
+        // Deliver immediately
+        messageManager.deliverMessage(postDrawMessage);
+        
+        System.out.println("LeagueDrawScreenTable: Created post-draw message with " + totalFixtures + " fixtures");
     }
 }
 
