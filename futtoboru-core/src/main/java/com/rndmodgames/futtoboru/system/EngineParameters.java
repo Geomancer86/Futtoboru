@@ -20,6 +20,11 @@ public class EngineParameters {
     // Return match type label
     public static String getMatchType(int matchType) {
         
+        // Validate matchType is within bounds
+        if (matchType < 1 || matchType > matchTypes.length) {
+            return "Unknown Match Type (" + matchType + ")";
+        }
+        
         return matchTypes[matchType - 1];
     }
 }
