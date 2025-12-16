@@ -20,8 +20,29 @@
 #
 # NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
 #
+# Additional Sources:
+#   - https://git.wrexhamafcarchive.co.uk/matchdetails.php?id=14989
+#   - https://wolvescompletehistory.co.uk/walsall-town-swifts-h-188889-fac2/
+#
+# NOTE: This file contains the lineup from the FA Cup first round match against Swifts (3-1 loss).
+#       The squad may be incomplete as historical records are limited.
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
 # COLUMNS
 # id, name, lastname, country, birthdate 
-1,Thomas,McCarthy,1002,1868
-2,Robert,Davies,1002,1869
-3,James,Trainer,1002,1863-01-07
+1,Sam,Gillam,1002,1865
+2,A.O.,Davies,1002,1865
+3,C.,Vaughan,1002,1865
+4,Fred,Evans,1002,1865
+5,Thomas,Carty,1002,1865
+6,Arthur,Lea,1002,1865
+7,G.J.,Birch,1002,1865
+8,H.J.,Williams,1002,1865
+9,Bill,Turner,1002,1865
+10,Robert,Davies,1002,1869
+11,Richard,Jones,1002,1865
