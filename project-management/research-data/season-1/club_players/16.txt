@@ -1,0 +1,27 @@
+# Wrexham AFC - Players File for 1888-89 FA Cup
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Thomas_McCarthy_%28footballer%29
+#   - https://en.wikipedia.org/wiki/Robert_Davies_%28footballer%2C_born_1869%29
+#   - https://en.wikipedia.org/wiki/James_Trainer
+#   - https://www.wrexhamafcarchive.co.uk/
+#   - https://www.rsssf.org/tablese/engcup1889.html
+#
+# NOTE: Historical records for this season are limited. This file contains players known to have played
+#       for Wrexham during the 1888-89 season. The squad may be incomplete.
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Thomas,McCarthy,1002,1868
+2,Robert,Davies,1002,1869
+3,James,Trainer,1002,1863-01-07
