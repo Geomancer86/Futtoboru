@@ -80,6 +80,41 @@ public class InboxScreenTable extends VisTable {
     }
     
     /**
+     * Select a message by message type (e.g., "LEAGUE_DRAW")
+     * This is used when navigating from the main button to show a specific message
+     * 
+     * @param messageType The message type to select (e.g., "LEAGUE_DRAW")
+     */
+    public void selectMessageByType(String messageType) {
+        if (messageType == null || currentGame == null || currentGame.getAllMessages() == null) {
+            System.out.println("InboxScreenTable: Cannot select message - messageType or currentGame is null");
+            return;
+        }
+        
+        System.out.println("InboxScreenTable: Selecting message by type: " + messageType);
+        
+        // Find the first unread message of this type
+        for (Message message : currentGame.getAllMessages()) {
+            if (message != null && 
+                message.getMessageType() != null && 
+                message.getMessageType().equals(messageType) &&
+                (message.getIsRead() == null || !message.getIsRead()) &&
+                (message.getIsDeleted() == null || !message.getIsDeleted()) &&
+                isMessageRelevantToPlayer(message)) {
+                
+                selectedMessage = message;
+                System.out.println("InboxScreenTable: Selected message: " + message.getTitle() + " (ID: " + message.getId() + ")");
+                
+                // Refresh display to show selected message
+                updateDynamicComponents();
+                return;
+            }
+        }
+        
+        System.out.println("InboxScreenTable: No unread message found with type: " + messageType);
+    }
+    
+    /**
      * Update inbox display with current messages
      */
     public void updateDynamicComponents() {
@@ -289,6 +324,112 @@ public class InboxScreenTable extends VisTable {
     }
     
     /**
+     * Helper method to set selected league from message actionData if navigating to draw screen
+     * Tries multiple methods: actionData (Long ID), title extraction, content extraction
+     */
+    private void setSelectedLeagueFromMessageIfNeeded(Message message) {
+        if (message == null || menuManager == null) {
+            return;
+        }
+        
+        // Check if navigating to draw screen
+        if (message.getActionScreen() != null && 
+            message.getActionScreen() == com.rndmodgames.futtoboru.menu.MainMenuManager.LEAGUE_DRAW_SCREEN) {
+            
+            com.rndmodgames.futtoboru.data.League league = null;
+            
+            // Method 1: Try to get league from actionData (preferred method)
+            if (message.getActionData() instanceof Long) {
+                Long leagueId = (Long) message.getActionData();
+                System.out.println("InboxScreenTable: Attempting to find league by ID from actionData: " + leagueId);
+                
+                if (currentGame != null && currentGame.getMainAuthority() != null && 
+                    currentGame.getMainAuthority().getLeagues() != null) {
+                    for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
+                        if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
+                            league = l;
+                            System.out.println("InboxScreenTable: Found league by ID: " + league.getName());
+                            break;
+                        }
+                    }
+                }
+                
+                if (league == null) {
+                    System.out.println("InboxScreenTable: WARNING - Could not find league with ID: " + leagueId);
+                }
+            } else {
+                System.out.println("InboxScreenTable: actionData is not a Long, trying to extract league name from title/content");
+            }
+            
+            // Method 2: Extract league name from message title (fallback)
+            // Title format: "League Fixture Draw - {League Name}"
+            if (league == null && message.getTitle() != null) {
+                String title = message.getTitle();
+                if (title.contains(" - ")) {
+                    String leagueName = title.substring(title.lastIndexOf(" - ") + 3).trim();
+                    System.out.println("InboxScreenTable: Attempting to find league by name from title: " + leagueName);
+                    
+                    if (currentGame != null && currentGame.getMainAuthority() != null && 
+                        currentGame.getMainAuthority().getLeagues() != null) {
+                        for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
+                            if (l != null && l.getName() != null && l.getName().equals(leagueName)) {
+                                league = l;
+                                System.out.println("InboxScreenTable: Found league by name from title: " + league.getName() + " (ID: " + league.getId() + ")");
+                                break;
+                            }
+                        }
+                        
+                        // If exact match failed, try partial match
+                        if (league == null) {
+                            System.out.println("InboxScreenTable: Exact name match failed, trying partial match");
+                            for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
+                                if (l != null && l.getName() != null && l.getName().contains(leagueName)) {
+                                    league = l;
+                                    System.out.println("InboxScreenTable: Found league by partial name match: " + league.getName() + " (ID: " + league.getId() + ")");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Method 3: Try to extract from message content as last resort
+            if (league == null && message.getPlainTextMessage() != null) {
+                String content = message.getPlainTextMessage();
+                // Content format: "The fixture draw for the {League Name} is ready..."
+                if (content.contains("fixture draw for the ")) {
+                    int startIdx = content.indexOf("fixture draw for the ") + "fixture draw for the ".length();
+                    int endIdx = content.indexOf(" is", startIdx);
+                    if (endIdx > startIdx) {
+                        String leagueName = content.substring(startIdx, endIdx).trim();
+                        System.out.println("InboxScreenTable: Attempting to find league by name from content: " + leagueName);
+                        
+                        if (currentGame != null && currentGame.getMainAuthority() != null && 
+                            currentGame.getMainAuthority().getLeagues() != null) {
+                            for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
+                                if (l != null && l.getName() != null && l.getName().equals(leagueName)) {
+                                    league = l;
+                                    System.out.println("InboxScreenTable: Found league by name from content: " + league.getName() + " (ID: " + league.getId() + ")");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Set the league if found
+            if (league != null) {
+                menuManager.setSelectedLeague(league);
+            } else {
+                System.out.println("InboxScreenTable: ERROR - Could not recover league from message (title: " + 
+                                 (message.getTitle() != null ? message.getTitle() : "null") + ")");
+            }
+        }
+    }
+    
+    /**
      * Display message detail in right panel
      */
     private void displayMessageDetail(Message message) {
@@ -357,52 +498,20 @@ public class InboxScreenTable extends VisTable {
                         if (message.getMessageType() != null && message.getMessageType().equals("LEAGUE_DRAW")) {
                             System.out.println("InboxScreenTable: Handling LEAGUE_DRAW message action");
                             
-                            // Get league ID from actionData
-                            if (message.getActionData() instanceof Long) {
-                                Long leagueId = (Long) message.getActionData();
-                                System.out.println("InboxScreenTable: League ID from actionData: " + leagueId);
-                                
-                                com.rndmodgames.futtoboru.data.League league = null;
-                                
-                                // Find league in SaveGame
-                                if (currentGame != null && currentGame.getMainAuthority() != null && 
-                                    currentGame.getMainAuthority().getLeagues() != null) {
-                                    System.out.println("InboxScreenTable: Searching through " + currentGame.getMainAuthority().getLeagues().size() + " leagues");
-                                    
-                                    for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
-                                        if (l != null && l.getId() != null) {
-                                            System.out.println("InboxScreenTable: Checking league ID: " + l.getId() + " (looking for: " + leagueId + ")");
-                                            if (l.getId().equals(leagueId)) {
-                                                league = l;
-                                                System.out.println("InboxScreenTable: Found league: " + league.getName());
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                if (league != null && menuManager != null) {
-                                    System.out.println("InboxScreenTable: Navigating to draw screen for league: " + league.getName());
-                                    menuManager.setSelectedLeague(league);
-                                    menuManager.setActiveMainScreen(message.getActionScreen());
-                                } else {
-                                    System.out.println("InboxScreenTable: ERROR - League not found or menuManager is null");
-                                    if (league == null) {
-                                        System.out.println("InboxScreenTable: League is null");
-                                    }
-                                    if (menuManager == null) {
-                                        System.out.println("InboxScreenTable: menuManager is null");
-                                    }
-                                }
-                            } else {
-                                // Generic action for other messages
-                                System.out.println("InboxScreenTable: Generic action screen navigation");
+                            // Use the helper method to set selected league (handles actionData, title, and content extraction)
+                            setSelectedLeagueFromMessageIfNeeded(message);
+                            
+                            // Navigate to draw screen
+                            if (menuManager != null) {
                                 menuManager.setActiveMainScreen(message.getActionScreen());
+                            } else {
+                                System.out.println("InboxScreenTable: ERROR - menuManager is null");
                             }
                         } else {
                             // Generic action for other message types
                             System.out.println("InboxScreenTable: Generic action screen navigation");
                             if (menuManager != null) {
+                                setSelectedLeagueFromMessageIfNeeded(message);
                                 menuManager.setActiveMainScreen(message.getActionScreen());
                             }
                         }

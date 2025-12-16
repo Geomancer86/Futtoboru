@@ -15,6 +15,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -40,6 +41,8 @@ public class LeagueDetailScreenTable extends VisTable {
     private VisScrollPane contentScrollPane;
     private VisTable contentTable;
     
+    private LeagueStandingsManager standingsManager;
+    
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
     
     public LeagueDetailScreenTable(Game parent) {
@@ -47,6 +50,9 @@ public class LeagueDetailScreenTable extends VisTable {
         
         this.game = ((Futtoboru) parent);
         this.currentGame = game.getCurrentGame();
+        
+        // Initialize standings manager
+        this.standingsManager = new LeagueStandingsManager();
         
         // Create scrollable content table
         contentTable = new VisTable(true);
@@ -66,7 +72,20 @@ public class LeagueDetailScreenTable extends VisTable {
         updateDynamicComponents();
     }
     
+    /**
+     * Update the selected league reference without triggering a full update
+     * This is useful when we just need to sync the reference but will call updateDynamicComponents separately
+     */
+    public void syncSelectedLeague(League league) {
+        this.selectedLeague = league;
+    }
+    
     public void updateDynamicComponents() {
+        // Refresh currentGame reference to avoid stale references
+        if (game != null) {
+            this.currentGame = game.getCurrentGame();
+        }
+        
         contentTable.clear();
         
         if (selectedLeague == null) {
@@ -109,58 +128,79 @@ public class LeagueDetailScreenTable extends VisTable {
             contentTable.add().height(10).row();
         }
         
-        // Standings Section (if matches have been played)
-        if (hasPlayedMatches(selectedLeague)) {
-            contentTable.add(new VisLabel("League Standings")).pad(5).row();
-            contentTable.addSeparator().pad(2).row();
-            
-            // Header
-            VisTable standingsHeader = new VisTable(true);
-            standingsHeader.add(new VisLabel("Pos")).width(50);
-            standingsHeader.add(new VisLabel("Club")).width(200);
-            standingsHeader.add(new VisLabel("P")).width(40);
-            standingsHeader.add(new VisLabel("W")).width(40);
-            standingsHeader.add(new VisLabel("D")).width(40);
-            standingsHeader.add(new VisLabel("L")).width(40);
-            standingsHeader.add(new VisLabel("GF")).width(40);
-            standingsHeader.add(new VisLabel("GA")).width(40);
-            standingsHeader.add(new VisLabel("GD")).width(50);
-            standingsHeader.add(new VisLabel("Pts")).width(50);
-            contentTable.add(standingsHeader).pad(2).row();
-            contentTable.addSeparator().pad(2).row();
-            
-            // Sort clubs by points, then goal difference, then goals scored
-            List<Club> sortedClubs = new java.util.ArrayList<>(selectedLeague.getLeagueClubs());
-            sortedClubs.sort(Comparator
-                .comparing((Club c) -> c.getPoints() != null ? c.getPoints() : 0).reversed()
-                .thenComparing((Club c) -> c.getGoalDifference() != null ? c.getGoalDifference() : 0).reversed()
-                .thenComparing((Club c) -> c.getGoalsScored() != null ? c.getGoalsScored() : 0).reversed()
-            );
-            
-            int position = 1;
-            for (Club club : sortedClubs) {
-                if (club == null) continue;
-                
-                VisTable row = new VisTable(true);
-                row.add(new VisLabel(String.valueOf(position++))).width(50);
-                row.add(new VisLabel(club.getName() != null ? club.getName() : "Unnamed")).width(200);
-                row.add(new VisLabel(String.valueOf(club.getMatchesPlayed() != null ? club.getMatchesPlayed() : 0))).width(40);
-                row.add(new VisLabel(String.valueOf(club.getMatchesWon() != null ? club.getMatchesWon() : 0))).width(40);
-                row.add(new VisLabel(String.valueOf(club.getMatchesDrawn() != null ? club.getMatchesDrawn() : 0))).width(40);
-                row.add(new VisLabel(String.valueOf(club.getMatchesLost() != null ? club.getMatchesLost() : 0))).width(40);
-                row.add(new VisLabel(String.valueOf(club.getGoalsScored() != null ? club.getGoalsScored() : 0))).width(40);
-                row.add(new VisLabel(String.valueOf(club.getGoalsConceded() != null ? club.getGoalsConceded() : 0))).width(40);
-                row.add(new VisLabel(String.valueOf(club.getGoalDifference() != null ? club.getGoalDifference() : 0))).width(50);
-                row.add(new VisLabel(String.valueOf(club.getPoints() != null ? club.getPoints() : 0))).width(50);
-                
-                contentTable.add(row).pad(2).row();
+        // Competition Rules Section
+        com.rndmodgames.futtoboru.data.CompetitionRules rules = selectedLeague.getRulesOrDefault();
+        contentTable.add(new VisLabel("Competition Rules")).pad(5).row();
+        contentTable.addSeparator().pad(2).row();
+        
+        // Points system
+        String pointsSystem = rules.getPointsForWin() + " points for win, " + 
+                              rules.getPointsForDraw() + " point" + (rules.getPointsForDraw() != 1 ? "s" : "") + 
+                              " for draw, " + rules.getPointsForLoss() + " for loss";
+        contentTable.add(new VisLabel("Points System: " + pointsSystem)).left().pad(2).row();
+        
+        // Tie-breaking criteria
+        StringBuilder tieBreakers = new StringBuilder("Tie-breakers: ");
+        java.util.List<com.rndmodgames.futtoboru.data.CompetitionRules.TieBreaker> tieBreakingOrder = rules.getTieBreakingOrder();
+        for (int i = 0; i < tieBreakingOrder.size(); i++) {
+            if (i > 0) {
+                tieBreakers.append(" → ");
             }
-            
-            contentTable.add().height(10).row();
-        } else {
-            contentTable.add(new VisLabel("No matches played yet")).pad(5).row();
-            contentTable.add().height(10).row();
+            tieBreakers.append(formatTieBreaker(tieBreakingOrder.get(i)));
         }
+        contentTable.add(new VisLabel(tieBreakers.toString())).left().pad(2).row();
+        
+        // Match format
+        String matchFormat = rules.getMatchFormat() == com.rndmodgames.futtoboru.data.CompetitionRules.MatchFormat.DOUBLE_ROUND_ROBIN 
+            ? "Double round-robin (home and away)" 
+            : "Single round-robin";
+        contentTable.add(new VisLabel("Format: " + matchFormat)).left().pad(2).row();
+        
+        contentTable.add().height(10).row();
+        
+        // Standings Section (always show, even if no matches played yet)
+        contentTable.add(new VisLabel("League Standings")).pad(5).row();
+        contentTable.addSeparator().pad(2).row();
+        
+        // Header
+        VisTable standingsHeader = new VisTable(true);
+        standingsHeader.add(new VisLabel("Pos")).width(50);
+        standingsHeader.add(new VisLabel("Club")).width(200);
+        standingsHeader.add(new VisLabel("P")).width(40);
+        standingsHeader.add(new VisLabel("W")).width(40);
+        standingsHeader.add(new VisLabel("D")).width(40);
+        standingsHeader.add(new VisLabel("L")).width(40);
+        standingsHeader.add(new VisLabel("GF")).width(40);
+        standingsHeader.add(new VisLabel("GA")).width(40);
+        standingsHeader.add(new VisLabel("GD")).width(50);
+        standingsHeader.add(new VisLabel("Pts")).width(50);
+        contentTable.add(standingsHeader).pad(2).row();
+        contentTable.addSeparator().pad(2).row();
+        
+        // Use LeagueStandingsManager to calculate standings based on competition rules
+        // This will sort by rules even when all stats are 0 (alphabetical fallback)
+        List<Club> sortedClubs = standingsManager.calculateStandings(selectedLeague);
+        
+        int position = 1;
+        for (Club club : sortedClubs) {
+            if (club == null) continue;
+            
+            VisTable row = new VisTable(true);
+            row.add(new VisLabel(String.valueOf(position++))).width(50);
+            row.add(new VisLabel(club.getName() != null ? club.getName() : "Unnamed")).width(200);
+            row.add(new VisLabel(String.valueOf(club.getMatchesPlayed() != null ? club.getMatchesPlayed() : 0))).width(40);
+            row.add(new VisLabel(String.valueOf(club.getMatchesWon() != null ? club.getMatchesWon() : 0))).width(40);
+            row.add(new VisLabel(String.valueOf(club.getMatchesDrawn() != null ? club.getMatchesDrawn() : 0))).width(40);
+            row.add(new VisLabel(String.valueOf(club.getMatchesLost() != null ? club.getMatchesLost() : 0))).width(40);
+            row.add(new VisLabel(String.valueOf(club.getGoalsScored() != null ? club.getGoalsScored() : 0))).width(40);
+            row.add(new VisLabel(String.valueOf(club.getGoalsConceded() != null ? club.getGoalsConceded() : 0))).width(40);
+            row.add(new VisLabel(String.valueOf(club.getGoalDifference() != null ? club.getGoalDifference() : 0))).width(50);
+            row.add(new VisLabel(String.valueOf(club.getPoints() != null ? club.getPoints() : 0))).width(50);
+            
+            contentTable.add(row).pad(2).row();
+        }
+        
+        contentTable.add().height(10).row();
         
         // Upcoming Fixtures Section
         List<Match> upcomingMatches = getUpcomingMatches(selectedLeague);
@@ -209,23 +249,6 @@ public class LeagueDetailScreenTable extends VisTable {
     }
     
     /**
-     * Check if league has any played matches
-     */
-    private boolean hasPlayedMatches(League league) {
-        if (league == null || league.getLeagueClubs() == null) {
-            return false;
-        }
-        
-        for (Club club : league.getLeagueClubs()) {
-            if (club != null && club.getMatchesPlayed() != null && club.getMatchesPlayed() > 0) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
      * Get upcoming matches for the league
      */
     private List<Match> getUpcomingMatches(League league) {
@@ -269,6 +292,30 @@ public class LeagueDetailScreenTable extends VisTable {
         upcoming.sort(Comparator.comparing(Match::getMatchDateTime, Comparator.nullsLast(Comparator.naturalOrder())));
         
         return upcoming;
+    }
+    
+    /**
+     * Format tie-breaker enum to readable string
+     */
+    private String formatTieBreaker(com.rndmodgames.futtoboru.data.CompetitionRules.TieBreaker breaker) {
+        switch (breaker) {
+            case POINTS:
+                return "Points";
+            case GOAL_DIFFERENCE:
+                return "Goal Difference";
+            case GOAL_AVERAGE:
+                return "Goal Average";
+            case GOALS_SCORED:
+                return "Goals Scored";
+            case GOALS_CONCEDED:
+                return "Goals Conceded";
+            case HEAD_TO_HEAD:
+                return "Head-to-Head";
+            case ALPHABETICAL:
+                return "Alphabetical";
+            default:
+                return breaker.toString();
+        }
     }
 }
 

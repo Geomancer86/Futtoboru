@@ -220,6 +220,16 @@ public class ScriptsManager {
             return;
         }
         
+        // Assign default competition rules to the league
+        // For historical leagues (1888), use historical rules (2-1-0, goal average)
+        // For modern leagues, use modern rules (3-1-0, goal difference)
+        // TODO: Determine rules based on league creation date or script parameters
+        com.rndmodgames.futtoboru.data.CompetitionRules rules = 
+            com.rndmodgames.futtoboru.data.CompetitionRules.createDefaultRules();
+        league.setRules(rules);
+        System.out.println("Assigned competition rules to league (points: " + rules.getPointsForWin() + 
+                          "-" + rules.getPointsForDraw() + "-" + rules.getPointsForLoss() + ")");
+        
         // Save the created League on the current game
         currentGame.getMainAuthority().getLeagues().add(league);
         

@@ -102,6 +102,9 @@ public class MainGameScreen implements Screen {
          */
         mainGameMenu.setMainMenuManager(menuManager);
         
+        // Set the reference to allow MainMenuManager to refresh button state
+        menuManager.setTopMenuTable(mainGameMenu);
+        
         //
         gameWindowTable.row();
         gameWindowTable.add(menuManager.getButtonsMenu()).top();

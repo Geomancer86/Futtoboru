@@ -302,11 +302,24 @@ public class LeagueDrawScreenTable extends VisTable {
                     // Update UI button state by triggering getNextGameAction check
                     if (game != null && game.getGameEngine() != null) {
                         // Force refresh of button state
-                        game.getGameEngine().getNextGameAction();
+                        int nextAction = game.getGameEngine().getNextGameAction();
+                        System.out.println("LeagueDrawScreenTable: Next game action after marking complete: " + nextAction);
                     }
                     
-                    // Update top menu button (will be refreshed on next screen update)
-                    // The button state is checked via getNextGameAction() which we called above
+                    // Update top menu button immediately
+                    if (menuManager != null) {
+                        // Get the top menu and refresh button
+                        com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable topMenu = 
+                            menuManager.getTopMenu();
+                        if (topMenu != null) {
+                            System.out.println("LeagueDrawScreenTable: Refreshing top menu button state");
+                            topMenu.setMainContainerButton();
+                        } else {
+                            System.out.println("LeagueDrawScreenTable: WARNING - topMenu is null, button state may not refresh");
+                        }
+                    } else {
+                        System.out.println("LeagueDrawScreenTable: WARNING - menuManager is null, button state may not refresh");
+                    }
                     
                     break;
                 }

@@ -1,8 +1,13 @@
 package com.rndmodgames.futtoboru.engine;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -296,6 +301,13 @@ public class FuttoboruGameEngine {
         System.out.println("Total messages in inbox: " + allMessagesCount);
         
         /**
+         * STEP 3.5: Simulate all matches scheduled for the current date
+         * This must happen BEFORE advancing the date, so matches scheduled for "today" are simulated on "today"
+         */
+        System.out.println("STEP 3.5: Simulating matches for current date: " + current);
+        simulateMatchesForDate(current);
+        
+        /**
          * Increment By Required Unit
          * 
          * TODO: make it AM/PM or advance in smaller amount of time depending on time of season/etc as in FM
@@ -514,6 +526,111 @@ public class FuttoboruGameEngine {
         
         if (removed > 0) {
             Gdx.app.log("FuttoboruGameEngine", "Cleaned up " + removed + " old attribute snapshots");
+        }
+    }
+    
+    /**
+     * Simulate all matches scheduled for a specific date
+     * 
+     * v1.0: Automatically simulates all matches scheduled for the given date
+     * 
+     * @param date The date to simulate matches for
+     */
+    private void simulateMatchesForDate(LocalDateTime date) {
+        if (date == null || gameInstance == null || gameInstance.getCurrentGame() == null) {
+            Gdx.app.error("FuttoboruGameEngine", "Cannot simulate matches: date or game instance is null");
+            return;
+        }
+        
+        SaveGame game = gameInstance.getCurrentGame();
+        MatchSimulator simulator = new MatchSimulator(gameInstance);
+        Set<Match> simulatedToday = new HashSet<>(); // Prevent duplicate simulation
+        
+        LocalDate targetDate = date.toLocalDate();
+        int matchesFound = 0;
+        int matchesSimulated = 0;
+        
+        System.out.println("FuttoboruGameEngine: Simulating matches for date: " + targetDate);
+        
+        // First pass: Collect all matches to simulate (avoid ConcurrentModificationException)
+        List<Match> matchesToSimulate = new ArrayList<>();
+        
+        // Iterate through all clubs to find matches scheduled for this date
+        for (Club club : game.getAllClubs()) {
+            if (club == null || club.getScheduledMatches() == null) {
+                continue;
+            }
+            
+            // Find matches scheduled for this date
+            for (Match match : club.getScheduledMatches()) {
+                // Skip if already simulated or already played
+                if (simulatedToday.contains(match) || (match.getIsPlayed() != null && match.getIsPlayed())) {
+                    continue;
+                }
+                
+                // Check if match is scheduled for target date
+                if (match.getMatchDateTime() != null) {
+                    LocalDate matchDate = match.getMatchDateTime().toLocalDate();
+                    
+                    if (matchDate.equals(targetDate)) {
+                        // Add to list if not already there (prevent duplicates)
+                        if (!matchesToSimulate.contains(match)) {
+                            matchesToSimulate.add(match);
+                            matchesFound++;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Second pass: Simulate matches and update lists
+        for (Match match : matchesToSimulate) {
+            // Simulate the match
+            boolean success = simulator.simulateMatch(match);
+            
+            if (success) {
+                simulatedToday.add(match);
+                matchesSimulated++;
+                
+                System.out.println("FuttoboruGameEngine: Simulated match " + match.getId() + " on " + targetDate);
+                
+                // Update match lists for both clubs (now safe to modify)
+                Club homeClub = game.getClubById(match.getHomeClubId());
+                Club awayClub = game.getClubById(match.getAwayClubId());
+                
+                if (homeClub != null) {
+                    homeClub.getScheduledMatches().remove(match);
+                    if (!homeClub.getPlayedMatches().contains(match)) {
+                        homeClub.getPlayedMatches().add(match);
+                    }
+                }
+                
+                if (awayClub != null) {
+                    awayClub.getScheduledMatches().remove(match);
+                    if (!awayClub.getPlayedMatches().contains(match)) {
+                        awayClub.getPlayedMatches().add(match);
+                    }
+                }
+                
+                // Create match result message
+                if (messageManager != null && homeClub != null && awayClub != null) {
+                    com.rndmodgames.futtoboru.data.Message matchResultMessage = 
+                        messageManager.createMatchResultMessage(match, homeClub, awayClub);
+                    if (matchResultMessage != null) {
+                        messageManager.deliverMessage(matchResultMessage);
+                        System.out.println("FuttoboruGameEngine: Created match result message for " + 
+                                         homeClub.getName() + " vs " + awayClub.getName());
+                    }
+                }
+            } else {
+                Gdx.app.error("FuttoboruGameEngine", "Failed to simulate match " + match.getId());
+            }
+        }
+        
+        System.out.println("FuttoboruGameEngine: Found " + matchesFound + " matches, simulated " + matchesSimulated + " matches for date " + targetDate);
+        
+        if (matchesSimulated > 0) {
+            Gdx.app.log("FuttoboruGameEngine", "Simulated " + matchesSimulated + " matches for " + targetDate);
         }
     }
 }

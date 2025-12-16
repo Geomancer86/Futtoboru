@@ -3,6 +3,8 @@ package com.rndmodgames.futtoboru.engine.simulation;
 import java.util.Random;
 
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.CompetitionRules;
+import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -126,33 +128,45 @@ public class MatchSimulator {
         awayClub.setGoalsConceded(awayClub.getGoalsConceded() + homeScore);
         
         // Determine result and update wins/draws/losses
-        // NOTE: Points are only awarded for league matches, not friendlies or cups
+        // Points are only awarded for league matches, not friendlies or cups
         boolean isLeagueMatch = match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH;
+        
+        // Get competition rules if this is a league match
+        CompetitionRules rules = null;
+        if (isLeagueMatch) {
+            League league = findLeagueForMatch(match);
+            if (league != null) {
+                rules = league.getRulesOrDefault();
+            } else {
+                // Fallback to default rules if league not found
+                rules = CompetitionRules.createDefaultRules();
+            }
+        }
         
         if (homeScore > awayScore) {
             // Home win
             homeClub.setMatchesWon(homeClub.getMatchesWon() + 1);
-            if (isLeagueMatch) {
-                homeClub.setPoints(homeClub.getPoints() + 3);
+            if (isLeagueMatch && rules != null) {
+                homeClub.setPoints(homeClub.getPoints() + rules.getPointsForWin());
+                awayClub.setPoints(awayClub.getPoints() + rules.getPointsForLoss());
             }
             awayClub.setMatchesLost(awayClub.getMatchesLost() + 1);
         } else if (awayScore > homeScore) {
             // Away win
             awayClub.setMatchesWon(awayClub.getMatchesWon() + 1);
-            if (isLeagueMatch) {
-                awayClub.setPoints(awayClub.getPoints() + 3);
+            if (isLeagueMatch && rules != null) {
+                awayClub.setPoints(awayClub.getPoints() + rules.getPointsForWin());
+                homeClub.setPoints(homeClub.getPoints() + rules.getPointsForLoss());
             }
             homeClub.setMatchesLost(homeClub.getMatchesLost() + 1);
         } else {
             // Draw
             homeClub.setMatchesDrawn(homeClub.getMatchesDrawn() + 1);
-            if (isLeagueMatch) {
-                homeClub.setPoints(homeClub.getPoints() + 1);
+            if (isLeagueMatch && rules != null) {
+                homeClub.setPoints(homeClub.getPoints() + rules.getPointsForDraw());
+                awayClub.setPoints(awayClub.getPoints() + rules.getPointsForDraw());
             }
             awayClub.setMatchesDrawn(awayClub.getMatchesDrawn() + 1);
-            if (isLeagueMatch) {
-                awayClub.setPoints(awayClub.getPoints() + 1);
-            }
         }
     }
     
@@ -292,6 +306,57 @@ public class MatchSimulator {
         
         // Cap at maximum
         return Math.min(MAX_GOALS, baseGoals);
+    }
+    
+    /**
+     * Find the league for a given match
+     * Searches through all leagues to find one that contains both clubs
+     * 
+     * @param match The match to find the league for
+     * @return The league containing both clubs, or null if not found
+     */
+    private League findLeagueForMatch(Match match) {
+        if (match == null || currentGame == null) {
+            return null;
+        }
+        
+        // Get both clubs
+        Club homeClub = currentGame.getClubById(match.getHomeClubId());
+        Club awayClub = currentGame.getClubById(match.getAwayClubId());
+        
+        if (homeClub == null || awayClub == null) {
+            return null;
+        }
+        
+        // Search through all leagues to find one containing both clubs
+        if (currentGame.getMainAuthority() != null && currentGame.getMainAuthority().getLeagues() != null) {
+            for (League league : currentGame.getMainAuthority().getLeagues()) {
+                if (league == null || league.getLeagueClubs() == null) {
+                    continue;
+                }
+                
+                boolean hasHomeClub = false;
+                boolean hasAwayClub = false;
+                
+                for (Club club : league.getLeagueClubs()) {
+                    if (club != null && club.getId() != null) {
+                        if (club.getId().equals(homeClub.getId())) {
+                            hasHomeClub = true;
+                        }
+                        if (club.getId().equals(awayClub.getId())) {
+                            hasAwayClub = true;
+                        }
+                    }
+                }
+                
+                // If both clubs are in this league, this is the league for the match
+                if (hasHomeClub && hasAwayClub) {
+                    return league;
+                }
+            }
+        }
+        
+        return null;
     }
 }
 
