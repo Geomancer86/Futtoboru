@@ -1,0 +1,31 @@
+# Old Carthusians FC - Players File for 1888-89 FA Cup
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup
+#
+# Additional Sources:
+#   - https://wolvescompletehistory.co.uk/old-carthusians-h-188889-fac1/
+#   - https://en.wikipedia.org/wiki/Old_Carthusians_F.C.
+#
+# NOTE: This file contains the lineup from the FA Cup first round match against Wolverhampton Wanderers.
+#       The squad may be incomplete as historical records are limited.
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,L.R.,Wilkinson,1000,1865
+2,A.M.,Walters,1000,1865
+3,P.M.,Walters,1000,1865
+4,Blenkiron,Unknown,1000,1865
+5,L.,Wreford,1000,1865
+6,Brown,Unknown,1000,1865
+7,F.J.,Barmley,1000,1865
+8,L.W.,Perry,1000,1865
+9,W.H.,Alnger,1000,1865
+10,F.S.,Currey,1000,1865
