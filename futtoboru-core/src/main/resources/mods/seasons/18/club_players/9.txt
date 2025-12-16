@@ -1,0 +1,55 @@
+# Burnley FC - Players File for 1888-89 League
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Jack_Abrahams
+#   - https://en.wikipedia.org/wiki/Dan_Friel
+#   - https://en.wikipedia.org/wiki/Pat_Gallocher
+#   - https://en.wikipedia.org/wiki/John_Yates
+#   - https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season
+#   - https://en.wikipedia.org/wiki/Ross_McMahon
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Jack,Abrahams,1000,1865
+2,Alec,Brady,1000,1865
+3,Dan,Friel,1001,1860
+4,Pat,Gallocher,1001,1865-04-25
+5,Ross,McMahon,1000,1865
+6,John,Yates,1000,1861-01-03
+7,William,Tait,1000,1864
+8,Thomas,Midgley,1000,1860
+9,James,McFettridge,1000,1865
+10,John,Haworth,1000,1864
+11,Walter,Cox,1000,1865
+12,Archibald,Kaye,1000,1865
+13,Sandy,Lang,1000,1865
+14,William,Bury,1000,1865
+15,John,Walker,1000,1865
+16,James,Duerden,1000,1865
+17,Zacharious,Carr,1000,1865
+18,Jack,Keenan,1000,1865
+19,Bill,McFettridge,1000,1865
+20,Joseph,Nash,1000,1865
+21,Daniel,Spiers,1000,1865
+22,Thomas,White,1000,1865
+23,Robert,Haresnape,1000,1865
+24,Jimmy,Hill,1000,1865
+25,John,Oswald,1000,1865
+26,Alexander,McLardie,1000,1865
+27,Claude,Lambie,1000,1865
+28,Tom,Nicol,1000,1865
+29,Billy,Bowes,1000,1865
+30,John,Brodie,1000,1865
+31,Thomas,Crossley,1000,1865
+
+

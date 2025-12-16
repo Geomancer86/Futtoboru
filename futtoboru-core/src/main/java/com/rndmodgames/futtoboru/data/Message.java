@@ -26,6 +26,16 @@ public class Message implements Serializable {
     // 
     private Boolean isRead;
     private Boolean isDeleted;
+    
+    // Enhanced fields (v2.0)
+    private MessageCategory category;
+    private String messageType;  // Specific type within category (e.g., "LEAGUE_CREATION", "FIXTURE_RELEASE")
+    private MessagePriority priority;
+    private LocalDateTime scheduledDate;  // For scheduled messages (when to deliver)
+    private Integer actionScreen;  // Screen ID to link to (e.g., MainMenuManager.LEAGUE_STANDINGS_SCREEN)
+    private Serializable actionData;  // Data to pass to action screen (e.g., league ID)
+    private LocalDateTime expirationDate;  // When message expires (optional)
+    private Boolean isMandatory;  // If true, blocks time advancement until viewed/actioned (e.g., draw screen)
 
     public Long getId() {
         return id;
@@ -81,5 +91,85 @@ public class Message implements Serializable {
 
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    // Enhanced getters and setters (v2.0)
+    
+    public MessageCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(MessageCategory category) {
+        this.category = category;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    public MessagePriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(MessagePriority priority) {
+        this.priority = priority;
+    }
+
+    public LocalDateTime getScheduledDate() {
+        return scheduledDate;
+    }
+
+    public void setScheduledDate(LocalDateTime scheduledDate) {
+        this.scheduledDate = scheduledDate;
+    }
+
+    public Integer getActionScreen() {
+        return actionScreen;
+    }
+
+    public void setActionScreen(Integer actionScreen) {
+        this.actionScreen = actionScreen;
+    }
+
+    public Serializable getActionData() {
+        return actionData;
+    }
+
+    public void setActionData(Serializable actionData) {
+        this.actionData = actionData;
+    }
+
+    public LocalDateTime getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDateTime expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+    
+    /**
+     * Check if message is scheduled (not yet delivered)
+     */
+    public boolean isScheduled() {
+        return scheduledDate != null && (messageTime == null || scheduledDate.isAfter(messageTime));
+    }
+    
+    /**
+     * Check if message has expired
+     */
+    public boolean isExpired(LocalDateTime currentDate) {
+        return expirationDate != null && currentDate.isAfter(expirationDate);
+    }
+    
+    public Boolean getIsMandatory() {
+        return isMandatory;
+    }
+    
+    public void setIsMandatory(Boolean isMandatory) {
+        this.isMandatory = isMandatory;
     }
 }

@@ -1,7 +1,14 @@
 package com.rndmodgames.futtoboru.tables.competitions;
 
+import java.util.List;
+
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
@@ -40,6 +47,7 @@ public class CompetitionsScreenTable extends VisTable {
     // keep track for easy access
     Futtoboru game;
     SaveGame currentGame;
+    com.rndmodgames.futtoboru.menu.MainMenuManager menuManager;
     
     public CompetitionsScreenTable(Game parent) {
     
@@ -51,66 +59,103 @@ public class CompetitionsScreenTable extends VisTable {
         this.currentGame = game.getCurrentGame();
     }
     
+    public void setMenuManager(com.rndmodgames.futtoboru.menu.MainMenuManager menuManager) {
+        this.menuManager = menuManager;
+    }
+    
     //
     public void updateDynamicComponents() {
 
         //
         this.clear();
         
-        /**
-         * In this screen we will list the Current Club Competitions
-         * 
-         * Clicking on a Competition Name Label will send the user to the Competition Details Screen for that competition
-         * 
-         * TODO:
-         *  - competitions x clubs relationship
-         *  
-         *  - CompetitionEdition
-         *      - Name
-         *      - Description
-         *      - Competition ID
-         *      - Edition
-         *      - Start Date
-         *      - End Date
-         *      - Participant Clubs
-         *      - Rules
-         *      
-         *      // then you have the scheduled matches, match results, etc. (related objects)
-         *      
-         *      
-         *  - get club affiliations: country/top level (we need to simulate the football association because that's different from the authority)
-         *  - get club competitions: country/top level
-         *  
-         */
+        // Debug logging
+        System.out.println("CompetitionsScreenTable.updateDynamicComponents() called");
         
-        this.row().colspan(2);
-        this.add("CLUB COMPETITIONS SCREEN");
+        // Title
+        this.row().colspan(3);
+        VisLabel titleLabel = new VisLabel("COMPETITIONS");
+        titleLabel.setFontScale(1.2f);
+        this.add(titleLabel).pad(10).row();
         
-        /**
-         * The Club might be associated or not, a club needs association to participate of most games / competitions
-         */
+        this.addSeparator().colspan(3).pad(5).row();
+        
+        // Check if mainAuthority exists
+        if (currentGame == null) {
+            this.row().colspan(3);
+            this.add(new VisLabel("ERROR: SaveGame is null")).pad(10).row();
+            return;
+        }
+        
+        if (currentGame.getMainAuthority() == null) {
+            this.row().colspan(3);
+            this.add(new VisLabel("No Football Association found")).pad(10).row();
+            return;
+        }
+        
+        // Get leagues
+        List<League> leagues = currentGame.getMainAuthority().getLeagues();
+        
+        if (leagues == null || leagues.isEmpty()) {
+            this.row().colspan(3);
+            this.add(new VisLabel("No leagues found. League creation script may not have executed yet.")).pad(10).row();
+            this.row().colspan(3);
+            this.add(new VisLabel("Check console logs for league creation messages.")).pad(5).row();
+            return;
+        }
+        
+        System.out.println("Found " + leagues.size() + " leagues to display");
+        
+        // Header row
+        this.row().pad(5);
+        this.add(new VisLabel("League Name")).width(300);
+        this.add(new VisLabel("Clubs")).width(100);
+        this.add(new VisLabel("Country")).width(150);
         this.row();
-        this.add("club_association");
-        this.add("PLACEHOLDER - WIP");
+        this.addSeparator().colspan(3).pad(2).row();
         
-//        currentGame.getCurrentClub()
+        // Display each league
+        for (League league : leagues) {
+            if (league == null) {
+                continue;
+            }
+            
+            // League name (clickable)
+            VisTextButton leagueButton = new VisTextButton(league.getName() != null ? league.getName() : "Unnamed League");
+            final League leagueForClick = league; // Final reference for inner class
+            leagueButton.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    return true;
+                }
+                
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    // Navigate to league detail screen
+                    if (menuManager != null) {
+                        menuManager.setSelectedLeague(leagueForClick);
+                        menuManager.setActiveMainScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.LEAGUE_DETAIL_SCREEN);
+                    }
+                }
+            });
+            
+            this.row().pad(2);
+            this.add(leagueButton).width(300);
+            
+            // Number of clubs
+            int clubCount = (league.getLeagueClubs() != null) ? league.getLeagueClubs().size() : 0;
+            this.add(new VisLabel(String.valueOf(clubCount))).width(100);
+            
+            // Country
+            String countryName = (league.getCountry() != null && league.getCountry().getCommonName() != null) 
+                ? league.getCountry().getCommonName() 
+                : "Unknown";
+            this.add(new VisLabel(countryName)).width(150);
+        }
         
-        /**
-         * The club can participate in many cup style competitions, as long as scheduling permits
-         */
+        // Add spacing at bottom
         this.row();
-        this.add("club_cups");
-        this.add("PLACEHOLDER - WIP");
-        
-        /**
-         * The club can participate in many leagues but more than one doesn't make sense and usually it's just one
-         * 
-         * NOTE: historically in 1888 there were two leagues but just one complete (and is still played today) the other wasn't finished,
-         *          but some teams played both leagues that year.
-         */
-        this.row();
-        this.add("club_league");
-        this.add("PLACEHOLDER - WIP");
+        this.add().height(20).colspan(3).row();
         
         // 
 //        this.row().colspan(2);

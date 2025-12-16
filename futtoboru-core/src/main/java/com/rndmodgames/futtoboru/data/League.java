@@ -21,6 +21,12 @@ public class League implements Serializable {
     
     private List<Club> leagueClubs;
     
+    /**
+     * Competition Rules (v1.0)
+     * Defines points system, tie-breaking criteria, and match format
+     */
+    private CompetitionRules rules;
+    
     private transient Country country;
     private transient League parent;
     
@@ -83,6 +89,34 @@ public class League implements Serializable {
 
     public void setParent(League parent) {
         this.parent = parent;
+    }
+    
+    /**
+     * Get competition rules for this league
+     * @return CompetitionRules, or null if not set
+     */
+    public CompetitionRules getRules() {
+        return rules;
+    }
+    
+    /**
+     * Set competition rules for this league
+     * @param rules CompetitionRules to set
+     */
+    public void setRules(CompetitionRules rules) {
+        this.rules = rules;
+    }
+    
+    /**
+     * Get competition rules with default fallback
+     * If rules are not set, returns default modern rules (3-1-0, goal difference)
+     * @return CompetitionRules (never null)
+     */
+    public CompetitionRules getRulesOrDefault() {
+        if (rules == null) {
+            return CompetitionRules.createDefaultRules();
+        }
+        return rules;
     }
     
     @Override

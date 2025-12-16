@@ -134,9 +134,58 @@ public class FixturesTable extends VisTable {
         //
         matchListTable.row();
         
-        System.out.println("CURRENT CLUB PROPOSED FRIENDLY MATCHES: " + currentClub.getProposedMatches().size());
-        
         Club currentClub = currentGame.getCurrentClub();
+        
+        // Debug logging
+        if (currentClub != null) {
+            System.out.println("FixturesTable: Current club: " + currentClub.getName());
+            System.out.println("FixturesTable: Proposed matches: " + (currentClub.getProposedMatches() != null ? currentClub.getProposedMatches().size() : 0));
+            System.out.println("FixturesTable: Scheduled matches: " + (currentClub.getScheduledMatches() != null ? currentClub.getScheduledMatches().size() : 0));
+        } else {
+            System.out.println("FixturesTable: Current club is null (unemployed player)");
+        }
+        
+        // Get all league matches if player is in a league
+        java.util.List<Match> allLeagueMatches = new java.util.ArrayList<>();
+        if (currentClub != null && currentGame.getMainAuthority() != null && currentGame.getMainAuthority().getLeagues() != null) {
+            for (com.rndmodgames.futtoboru.data.League league : currentGame.getMainAuthority().getLeagues()) {
+                if (league != null && league.getLeagueClubs() != null) {
+                    // Check if current club is in this league
+                    boolean isInLeague = false;
+                    for (Club club : league.getLeagueClubs()) {
+                        if (club != null && club.getId() != null && club.getId().equals(currentClub.getId())) {
+                            isInLeague = true;
+                            break;
+                        }
+                    }
+                    
+                    if (isInLeague) {
+                        // Get all matches from all clubs in this league
+                        for (Club club : league.getLeagueClubs()) {
+                            if (club != null && club.getScheduledMatches() != null) {
+                                for (Match match : club.getScheduledMatches()) {
+                                    if (match != null && match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH) {
+                                        // Check if not already in list
+                                        boolean alreadyAdded = false;
+                                        for (Match existing : allLeagueMatches) {
+                                            if (existing.getId() != null && existing.getId().equals(match.getId())) {
+                                                alreadyAdded = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!alreadyAdded) {
+                                            allLeagueMatches.add(match);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        System.out.println("FixturesTable: Found " + allLeagueMatches.size() + " league matches");
         
         // Iterate Season Dates
         // Keep count of days for Week Rendering
@@ -146,31 +195,38 @@ public class FixturesTable extends VisTable {
             isCurrentDay = renderDate.isEqual(currentDate);
             
             /**
-             * TODO WIP: Proposed or Scheduled Match for this Day
-             * 
-             * Quick and dirty: iterate all the current team matches and compare TODO: get match by date method
+             * Find matches for this day
              */
             Match match = null;
             
-            // ITERATE PROPOSED
-            // TODO LABEL THEM AS PROPOSED
-            for (Match proposed : currentClub.getProposedMatches()) {
-                
-                if (proposed.getMatchDateTime().isEqual(renderDate)) {
-                    
-                    // 
-                    match = proposed;
+            // First, check league matches
+            for (Match leagueMatch : allLeagueMatches) {
+                if (leagueMatch != null && leagueMatch.getMatchDateTime() != null && 
+                    leagueMatch.getMatchDateTime().toLocalDate().equals(renderDate.toLocalDate())) {
+                    match = leagueMatch;
+                    break; // Found a match for this day
                 }
             }
             
-            // ITERATE SCHEDULED
-            // TODO: LABEL THEM AS SCHEDULED
-            for (Match scheduled : currentClub.getScheduledMatches()) {
-                
-                if (scheduled.getMatchDateTime().isEqual(renderDate)) {
-                    
-                    // 
-                    match = scheduled;
+            // If no league match, check current club's proposed matches
+            if (match == null && currentClub != null && currentClub.getProposedMatches() != null) {
+                for (Match proposed : currentClub.getProposedMatches()) {
+                    if (proposed != null && proposed.getMatchDateTime() != null &&
+                        proposed.getMatchDateTime().toLocalDate().equals(renderDate.toLocalDate())) {
+                        match = proposed;
+                        break;
+                    }
+                }
+            }
+            
+            // If still no match, check current club's scheduled matches
+            if (match == null && currentClub != null && currentClub.getScheduledMatches() != null) {
+                for (Match scheduled : currentClub.getScheduledMatches()) {
+                    if (scheduled != null && scheduled.getMatchDateTime() != null &&
+                        scheduled.getMatchDateTime().toLocalDate().equals(renderDate.toLocalDate())) {
+                        match = scheduled;
+                        break;
+                    }
                 }
             }
             

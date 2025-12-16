@@ -69,9 +69,16 @@ public class PlayersLoader {
                         /**
                          * File Format - COLUMNS
                          * 
-                         * id, name, lastname, birthdate, country, 
+                         * id, name, lastname, country, birthdate
                          */
                         String[] splitted = line.split(",");
+                        
+                        // Validate we have at least 4 columns (id, name, lastname, country)
+                        if (splitted.length < 4) {
+                            System.out.println("ERROR: Invalid line format (expected at least 4 columns, got " + splitted.length + "): " + line);
+                            line = reader.readLine();
+                            continue;
+                        }
                         
                         /**
                          * Create new Person to hold the personal data for this Player (name, nationality, age, etc).
@@ -79,15 +86,18 @@ public class PlayersLoader {
                         Person person = new Person();
                         
                         // Name and Lastname
-                        person.setId(Long.valueOf(splitted[0]));
-                        person.setName(splitted[1]);
-                        person.setLastname(splitted[2]);
+                        person.setId(Long.valueOf(splitted[0].trim()));
+                        person.setName(splitted[1].trim());
+                        person.setLastname(splitted[2].trim());
                         
-                        // Country of birth
-                        person.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[3])));
+                        // Country of birth (column 3 in actual file format)
+                        person.setCountry(DatabaseLoader.getCountryById(Long.valueOf(splitted[3].trim())));
                         
                         /**
-                         * Birthdate
+                         * Birthdate (column 4 in actual file format, optional)
+                         * 
+                         * NOTE: File format is: id, name, lastname, country, birthdate
+                         * Some lines may be missing the birthdate column
                          * 
                          * NOTES: 
                          *  - all dates ingame are LocalDateTime
@@ -97,31 +107,112 @@ public class PlayersLoader {
                          */
                         try {
                             
-                            person.setBirthDate(LocalDate.parse(splitted[4], PlayersLoader.birthDateFormatter).atStartOfDay());
+                            // Check if birthdate column exists
+                            if (splitted.length < 5 || splitted[4].trim().isEmpty()) {
+                                // No birthdate provided, randomize year (use 1865 as default historical year)
+                                int year = 1865;
+                                int month = DatabaseLoader.RNG.nextInt(12) + 1;
+                                int day;
+                                
+                                switch(month) {
+                                case 1,3,5,7,8,10,12:
+                                    day = DatabaseLoader.RNG.nextInt(31) + 1;
+                                    break;
+                                case 2:
+                                    day = DatabaseLoader.RNG.nextInt(28) + 1;
+                                    break;
+                                default:
+                                    day = DatabaseLoader.RNG.nextInt(30) + 1;
+                                    break;
+                                }
+                                
+                                person.setBirthDate(LocalDate.of(year, month, day).atStartOfDay());
+                                System.out.println("WARNING: No birthdate provided for " + person.getName() + " " + person.getLastname() + 
+                                                 ", using randomized date: " + year + "-" + month + "-" + day);
+                            } else {
+                                person.setBirthDate(LocalDate.parse(splitted[4].trim(), PlayersLoader.birthDateFormatter).atStartOfDay());
+                            }
                         
                         } catch (DateTimeParseException de) {
                             
                             /**
-                             * unknown date, but year is OK, randomize day and month
+                             * Date parsing failed - could be:
+                             * 1. Just a year: "1867"
+                             * 2. Year and month: "1867-07"
+                             * 3. Invalid format
+                             * 
+                             * Extract the year and randomize missing parts
                              */
-                            int day;
-                            int month = DatabaseLoader.RNG.nextInt(12) + 1;
-                            
-                            switch(month) {
-                            case 1,3,5,7,10,12:
-                                day = DatabaseLoader.RNG.nextInt(31) + 1;
-                                break;
-                            case 2:
-                                day = DatabaseLoader.RNG.nextInt(28) + 1;
-                                break;
+                            // Check if birthdate column exists before accessing it
+                            if (splitted.length < 5 || splitted[4].trim().isEmpty()) {
+                                // No birthdate provided, randomize
+                                int year = 1865;
+                                int month = DatabaseLoader.RNG.nextInt(12) + 1;
+                                int day;
                                 
-                            default:
-                                day = DatabaseLoader.RNG.nextInt(30) + 1;
-                                break;
+                                switch(month) {
+                                case 1,3,5,7,8,10,12:
+                                    day = DatabaseLoader.RNG.nextInt(31) + 1;
+                                    break;
+                                case 2:
+                                    day = DatabaseLoader.RNG.nextInt(28) + 1;
+                                    break;
+                                default:
+                                    day = DatabaseLoader.RNG.nextInt(30) + 1;
+                                    break;
+                                }
+                                
+                                person.setBirthDate(LocalDate.of(year, month, day).atStartOfDay());
+                                System.out.println("WARNING: No birthdate provided for " + person.getName() + " " + person.getLastname() + 
+                                                 ", using randomized date: " + year + "-" + month + "-" + day);
+                            } else {
+                                String dateStr = splitted[4].trim();
+                                int year;
+                                int month;
+                                int day;
+                                
+                                // Try to extract year from the date string
+                                if (dateStr.contains("-")) {
+                                    // Has dashes, try to parse year-month or year-month-day
+                                    String[] dateParts = dateStr.split("-");
+                                    if (dateParts.length >= 1) {
+                                        year = Integer.valueOf(dateParts[0]);
+                                    } else {
+                                        year = 1865; // Default fallback year
+                                    }
+                                    
+                                    if (dateParts.length >= 2) {
+                                        // Month is provided
+                                        month = Integer.valueOf(dateParts[1]);
+                                    } else {
+                                        // Randomize month
+                                        month = DatabaseLoader.RNG.nextInt(12) + 1;
+                                    }
+                                } else {
+                                    // Just a year
+                                    year = Integer.valueOf(dateStr);
+                                    month = DatabaseLoader.RNG.nextInt(12) + 1;
+                                }
+                                
+                                // Randomize day based on month
+                                switch(month) {
+                                case 1,3,5,7,8,10,12:
+                                    day = DatabaseLoader.RNG.nextInt(31) + 1;
+                                    break;
+                                case 2:
+                                    day = DatabaseLoader.RNG.nextInt(28) + 1;
+                                    break;
+                                default:
+                                    day = DatabaseLoader.RNG.nextInt(30) + 1;
+                                    break;
+                                }
+                                
+                                // Set random birthday
+                                person.setBirthDate(LocalDate.of(year, month, day).atStartOfDay());
+                                
+                                System.out.println("WARNING: Could not parse birthdate '" + dateStr + "' for " + person.getName() + " " + person.getLastname() + 
+                                                 ", using randomized date: " + year + "-" + month + "-" + day);
                             }
-                            
-                            // Set random birthday for this year
-                            person.setBirthDate(LocalDate.of(Integer.valueOf(splitted[4]), month, day).atStartOfDay());
                         }
                         
                         /**

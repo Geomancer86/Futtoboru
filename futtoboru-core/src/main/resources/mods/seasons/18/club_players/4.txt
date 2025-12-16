@@ -1,0 +1,53 @@
+# Blackburn Rovers FC - Players File for 1888-89 League
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_Blackburn_Rovers_F.C._season
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Jack_Southworth
+#   - https://en.wikipedia.org/wiki/Harry_Fecitt
+#   - https://en.wikipedia.org/wiki/Nat_Walton
+#   - https://en.wikipedia.org/wiki/William_Townley
+#   - https://en.wikipedia.org/wiki/Fergus_Suter
+#   - https://en.wikipedia.org/wiki/Jimmy_Forrest_%28footballer%29
+#   - https://en.wikipedia.org/wiki/Herbie_Arthur
+#   - https://en.wikipedia.org/wiki/Willie_Almond
+#   - https://en.wikipedia.org/wiki/Jimmy_Douglas_%28Scottish_footballer%29
+#   - https://en.wikipedia.org/wiki/John_Forbes_%28footballer%29
+#   - https://en.wikipedia.org/wiki/James_Southworth
+#   - https://en.wikipedia.org/wiki/Robert_Haresnape
+#   - https://en.wikipedia.org/wiki/James_Beresford_%28footballer%2C_born_1860%29
+#   - https://en.wikipedia.org/wiki/Joe_Beverley
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Willie,Almond,1000,1868-04-05
+2,Herby,Arthur,1000,1863-02-14
+3,John,Barton,1000,1866-10-05
+4,James,Beresford,1000,1860
+5,Joe,Beverley,1000,1856-11-12
+6,James,Brown,1000,1865
+7,Jimmy,Douglas,1001,1859-09-03
+8,James,Duerden,1000,1866
+9,Harry,Fecitt,1000,1864-12-18
+10,John,Forbes,1001,1862-01-13
+11,Jimmy,Forrest,1000,1864-06-24
+12,Robert,Haresnape,1000,1866-07-14
+13,William,Holden,1000,1860
+14,Billy,McOwen,1000,1871-04-01
+15,W,Mitchell,1000,1866
+16,Robert,Porter,1000,1867
+17,Jack,Southworth,1000,1866-12-11
+18,James,Southworth,1000,1864-11-15
+19,James,Stothert,1000,1870-04-07
+20,Fergus,Suter,1001,1857-11-21
+21,William,Townley,1000,1866-02-14
+22,Nat,Walton,1000,1867-05-28
+23,Bernard,Whittaker,1000,1865-10-18

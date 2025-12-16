@@ -219,7 +219,29 @@ public class NewGameSetupScreen implements Screen {
         mainContainer.add(activeCountriesTable);
         
         mainContainer.row();
-        mainContainer.add(nextButton).right();
+        
+        // Button container for Next and Back buttons
+        VisTable buttonContainer = new VisTable();
+        
+        // Back to Season Selection Button
+        final VisTextButton backButton = new VisTextButton(LanguageModLoader.getValue("back"));
+        backButton.addCaptureListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                // Go back to New Game Season Screen
+                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SCREEN);
+            }
+        });
+        
+        buttonContainer.add(backButton).padRight(10);
+        buttonContainer.add(nextButton);
+        
+        mainContainer.add(buttonContainer).right();
 
         // 
         mainContainer.add(table);

@@ -11,7 +11,7 @@ echo.
 echo ========================================
 echo.
 
-java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.3.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar
 
 echo.
 echo ========================================

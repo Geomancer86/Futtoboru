@@ -51,8 +51,10 @@ public class Match implements Serializable {
     // Basic attendance stats to avoid overselling a Match
     private Integer attendance = 0;
     
-    //
+    // Match Type Constants
     public static final int FRIENDLY_MATCH = 1;
+    public static final int LEAGUE_MATCH = 2;
+    public static final int CUP_MATCH = 3;
 
     // 
     public Long getId() {

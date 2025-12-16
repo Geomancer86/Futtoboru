@@ -118,6 +118,10 @@ Thumbs.db
 target/
 **/target/
 
+## Build artifacts (generated at build time)
+**/build.properties
+build.properties
+
 ## IDE
 .vscode/
 .idea/

@@ -3,6 +3,7 @@ package com.rndmodgames.desktop;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.BuildInfo;
 
 /**
  * RndModGames Desktop Launcher v1
@@ -58,10 +59,13 @@ public class DesktopLauncher {
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         
+        // Initialize build info
+        BuildInfo.initialize();
+        
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         
-        // TODO: add release - build version - etc from MAVEN
-        configuration.setTitle("Futtoboru v0.3.0-SNAPSHOT");
+        // Set window title with build information
+        configuration.setTitle(BuildInfo.getBuildInfoString());
         configuration.useVsync(true);
         
         // Limits FPS to the refresh rate of the currently active monitor.

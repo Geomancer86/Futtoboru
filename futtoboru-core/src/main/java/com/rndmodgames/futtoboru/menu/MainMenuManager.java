@@ -60,7 +60,8 @@ public class MainMenuManager {
     public static final int PERSON_DETAILS_SCREEN   =  300;
     public static final int AUTHORITY_SCREEN        =  400;
     
-    private static final int LEAGUE_SCREEN           =  500;    
+    private static final int LEAGUE_SCREEN           =  500;
+    public static final int LEAGUE_DETAIL_SCREEN      =  501;    
     private static final int WORLD_SCREEN            =  600;
     
     //
@@ -85,6 +86,9 @@ public class MainMenuManager {
     
     // Player Detail Screen (v1.0)
     public static final int PLAYER_DETAIL_SCREEN = 10007;
+    
+    // Draw Screen (v1.0)
+    public static final int LEAGUE_DRAW_SCREEN = 10008;
         
     //
     public static int PREVIOUS_SCREEN = -1; //
@@ -124,6 +128,11 @@ public class MainMenuManager {
     private ClubInfoScreenTable clubInfoScreenTable = null;
     private FinancesScreenTable financesScreenTable = null;
     private CompetitionsScreenTable competitionsScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.competitions.LeagueDetailScreenTable leagueDetailScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.draw.LeagueDrawScreenTable leagueDrawScreenTable = null;
+    
+    // Selected league for detail view
+    private com.rndmodgames.futtoboru.data.League selectedLeague = null;
     
     // Job System Screens (v1.0)
     private com.rndmodgames.futtoboru.tables.jobs.ClubBrowserScreenTable clubBrowserScreenTable = null;
@@ -143,6 +152,9 @@ public class MainMenuManager {
     // Selected player for detail view (v1.0)
     private com.rndmodgames.futtoboru.data.Player selectedPlayer = null;
     
+    // Reference to top menu table for button state updates (v1.0)
+    private com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable topMenuTable = null;
+    
     /**
      * 
      */
@@ -160,6 +172,7 @@ public class MainMenuManager {
         personDetailsScreenTable = new PersonDetailsScreenTable(game);
         authorityScreenTable = new AuthorityScreenTable(game);
         inboxScreenTable = new InboxScreenTable(game);
+        inboxScreenTable.setMenuManager(this);
         squadScreenTable = new SquadScreenTable(game);
         scheduleScreenTable = new ScheduleScreenTable(game);
         matchPreviewScreenTable = new MatchPreviewScreenTable(game);
@@ -168,6 +181,13 @@ public class MainMenuManager {
         clubInfoScreenTable = new ClubInfoScreenTable(game);
         financesScreenTable = new FinancesScreenTable(game);
         competitionsScreenTable = new CompetitionsScreenTable(game);
+        competitionsScreenTable.setMenuManager(this);
+        leagueDetailScreenTable = new com.rndmodgames.futtoboru.tables.competitions.LeagueDetailScreenTable(game);
+        leagueDetailScreenTable.setMenuManager(this);
+        
+        // Draw Screen (v1.0)
+        leagueDrawScreenTable = new com.rndmodgames.futtoboru.tables.draw.LeagueDrawScreenTable(game);
+        leagueDrawScreenTable.setMenuManager(this);
         
         // Job System Screens (v1.0)
         clubBrowserScreenTable = new com.rndmodgames.futtoboru.tables.jobs.ClubBrowserScreenTable(game);
@@ -187,6 +207,7 @@ public class MainMenuManager {
         jobOfferScreenTable.setMenuManager(this);
         negotiationScreenTable.setMenuManager(this);
         myApplicationsScreenTable.setMenuManager(this);
+        matchHistoryScreenTable.setMainMenuManager(this);
         
         
         // custom buttons with logic to switch screen/tables
@@ -347,7 +368,146 @@ public class MainMenuManager {
             
         // 
         case INBOX_SCREEN:
-            parentTable.add(inboxScreenTable);
+            // Update inbox to show latest messages
+            inboxScreenTable.updateDynamicComponents();
+            parentTable.add(inboxScreenTable).grow();
+            break;
+            
+        case LEAGUE_DRAW_SCREEN:
+            
+            // Ensure selected league is set before showing draw screen
+            if (selectedLeague == null) {
+                System.out.println("MainMenuManager: WARNING - selectedLeague is null, attempting to recover from draw message");
+                Gdx.app.log("MainMenuManager", "Cannot show draw screen: selectedLeague is null, attempting recovery");
+                
+                // Try to recover league from mandatory draw message
+                com.rndmodgames.futtoboru.data.League recoveredLeague = null;
+                if (currentGame != null && currentGame.getAllMessages() != null) {
+                    // Find the mandatory LEAGUE_DRAW message
+                    for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
+                        if (message != null) {
+                            boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
+                            String messageType = message.getMessageType();
+                            
+                            if (isMandatory && 
+                                messageType != null && 
+                                (messageType.equals("LEAGUE_DRAW") || 
+                                 messageType.equals("FIXTURE_DRAW"))) {
+                                
+                                System.out.println("MainMenuManager: Found mandatory draw message: " + message.getTitle());
+                                
+                                // Method 1: Get league ID from actionData (preferred method)
+                                if (message.getActionData() instanceof Long) {
+                                    Long leagueId = (Long) message.getActionData();
+                                    System.out.println("MainMenuManager: Recovering league ID from actionData: " + leagueId);
+                                    
+                                    // Find league in SaveGame
+                                    if (currentGame.getMainAuthority() != null && 
+                                        currentGame.getMainAuthority().getLeagues() != null) {
+                                        for (com.rndmodgames.futtoboru.data.League l : 
+                                             currentGame.getMainAuthority().getLeagues()) {
+                                            if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
+                                                recoveredLeague = l;
+                                                System.out.println("MainMenuManager: Recovered league by ID: " + recoveredLeague.getName());
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    // Method 2: Extract league name from message title (fallback)
+                                    // Title format: "League Fixture Draw - {League Name}"
+                                    String title = message.getTitle();
+                                    if (title != null && title.contains(" - ")) {
+                                        String leagueName = title.substring(title.lastIndexOf(" - ") + 3).trim();
+                                        System.out.println("MainMenuManager: Attempting to recover league by name from title: " + leagueName);
+                                        
+                                        // Find league by name
+                                        if (currentGame.getMainAuthority() != null && 
+                                            currentGame.getMainAuthority().getLeagues() != null) {
+                                            for (com.rndmodgames.futtoboru.data.League l : 
+                                                 currentGame.getMainAuthority().getLeagues()) {
+                                                if (l != null && l.getName() != null && l.getName().equals(leagueName)) {
+                                                    recoveredLeague = l;
+                                                    System.out.println("MainMenuManager: Recovered league by name: " + recoveredLeague.getName() + " (ID: " + recoveredLeague.getId() + ")");
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        
+                                        // If exact match failed, try partial match
+                                        if (recoveredLeague == null) {
+                                            System.out.println("MainMenuManager: Exact name match failed, trying partial match");
+                                            for (com.rndmodgames.futtoboru.data.League l : 
+                                                 currentGame.getMainAuthority().getLeagues()) {
+                                                if (l != null && l.getName() != null && l.getName().contains(leagueName)) {
+                                                    recoveredLeague = l;
+                                                    System.out.println("MainMenuManager: Recovered league by partial name match: " + recoveredLeague.getName() + " (ID: " + recoveredLeague.getId() + ")");
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Method 3: Try to extract from message content as last resort
+                                    if (recoveredLeague == null && message.getPlainTextMessage() != null) {
+                                        String content = message.getPlainTextMessage();
+                                        // Content format: "The fixture draw for the {League Name} is ready..."
+                                        if (content.contains("fixture draw for the ")) {
+                                            int startIdx = content.indexOf("fixture draw for the ") + "fixture draw for the ".length();
+                                            int endIdx = content.indexOf(" is", startIdx);
+                                            if (endIdx > startIdx) {
+                                                String leagueName = content.substring(startIdx, endIdx).trim();
+                                                System.out.println("MainMenuManager: Attempting to recover league by name from content: " + leagueName);
+                                                
+                                                if (currentGame.getMainAuthority() != null && 
+                                                    currentGame.getMainAuthority().getLeagues() != null) {
+                                                    for (com.rndmodgames.futtoboru.data.League l : 
+                                                         currentGame.getMainAuthority().getLeagues()) {
+                                                        if (l != null && l.getName() != null && l.getName().equals(leagueName)) {
+                                                            recoveredLeague = l;
+                                                            System.out.println("MainMenuManager: Recovered league by name from content: " + recoveredLeague.getName() + " (ID: " + recoveredLeague.getId() + ")");
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // If we found a league, stop searching
+                                if (recoveredLeague != null) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (recoveredLeague != null) {
+                    // Successfully recovered league, set it and continue
+                    this.selectedLeague = recoveredLeague;
+                    System.out.println("MainMenuManager: Successfully recovered league, showing draw screen");
+                } else {
+                    // Failed to recover league, fallback to inbox
+                    System.out.println("MainMenuManager: ERROR - Could not recover league from message, falling back to inbox");
+                    Gdx.app.error("MainMenuManager", "Cannot show draw screen: selectedLeague is null and recovery failed");
+                    setActiveMainScreen(INBOX_SCREEN);
+                    return;
+                }
+            }
+            
+            System.out.println("MainMenuManager: Showing draw screen for league: " + selectedLeague.getName() + " (ID: " + selectedLeague.getId() + ")");
+            
+            // Set selected league in draw screen
+            leagueDrawScreenTable.setSelectedLeague(selectedLeague);
+            
+            // Update dynamic components
+            leagueDrawScreenTable.updateDynamicComponents();
+            
+            // Add to parent table
+            parentTable.add(leagueDrawScreenTable).grow().fill();
+            
             break;
            
         // 
@@ -461,6 +621,26 @@ public class MainMenuManager {
             
             // Set as main content
             parentTable.add(competitionsScreenTable).grow();
+            
+            break;
+            
+        case LEAGUE_DETAIL_SCREEN:
+            
+            // Ensure selected league is set before showing league detail screen
+            if (selectedLeague == null) {
+                System.out.println("MainMenuManager: WARNING - selectedLeague is null for league detail screen");
+                Gdx.app.log("MainMenuManager", "No league selected for detail view, redirecting to competitions");
+                setActiveMainScreen(COMPETITIONS_SCREEN);
+                return;
+            }
+            
+            System.out.println("MainMenuManager: Showing league detail screen for league: " + selectedLeague.getName() + " (ID: " + selectedLeague.getId() + ")");
+            
+            // Set selected league in league detail screen (this calls updateDynamicComponents internally)
+            leagueDetailScreenTable.setSelectedLeague(selectedLeague);
+            
+            // Set as main content
+            parentTable.add(leagueDetailScreenTable).grow().fill();
             
             break;
             
@@ -622,6 +802,44 @@ public class MainMenuManager {
                 playerDetailScreenTable.updateDynamicComponents(selectedPlayer);
             }
             break;
+            
+        case INBOX_SCREEN:
+            inboxScreenTable.updateDynamicComponents();
+            break;
+            
+        case COMPETITIONS_SCREEN:
+            competitionsScreenTable.updateDynamicComponents();
+            break;
+            
+        case LEAGUE_DETAIL_SCREEN:
+            
+            // Update dynamic components with selected league
+            // Note: Only update if league is selected - don't re-add screen to parentTable
+            // The screen is already added in setActiveMainScreen, just update its content
+            if (selectedLeague != null) {
+                // Ensure the screen's selectedLeague is in sync with MainMenuManager's selectedLeague
+                // Sync the reference first, then update (to avoid triggering update twice)
+                leagueDetailScreenTable.syncSelectedLeague(selectedLeague);
+                leagueDetailScreenTable.updateDynamicComponents();
+            } else {
+                // If selectedLeague is null, redirect to competitions screen
+                System.out.println("MainMenuManager: selectedLeague is null during updateDynamicComponents, redirecting to competitions");
+                setActiveMainScreen(COMPETITIONS_SCREEN);
+            }
+            
+            break;
+            
+        case LEAGUE_DRAW_SCREEN:
+            
+            // Update dynamic components with selected league
+            if (selectedLeague != null) {
+                leagueDrawScreenTable.setSelectedLeague(selectedLeague);
+            }
+            
+            // Set as main content
+            parentTable.add(leagueDrawScreenTable).grow();
+            
+            break;
 
         default:
             //ignore
@@ -674,6 +892,20 @@ public class MainMenuManager {
     }
     
     /**
+     * Set selected league for detail view (v1.0)
+     */
+    public void setSelectedLeague(com.rndmodgames.futtoboru.data.League league) {
+        this.selectedLeague = league;
+    }
+    
+    /**
+     * Get selected league for detail view (v1.0)
+     */
+    public com.rndmodgames.futtoboru.data.League getSelectedLeague() {
+        return selectedLeague;
+    }
+    
+    /**
      * Set selected player for detail view (v1.0)
      */
     public void setSelectedPlayer(com.rndmodgames.futtoboru.data.Player player) {
@@ -685,5 +917,29 @@ public class MainMenuManager {
      */
     public com.rndmodgames.futtoboru.data.Player getSelectedPlayer() {
         return selectedPlayer;
+    }
+    
+    /**
+     * Get inbox screen table (v1.0)
+     * Used by MainGameMenuTable to select specific messages
+     */
+    public InboxScreenTable getInboxScreenTable() {
+        return inboxScreenTable;
+    }
+    
+    /**
+     * Get top menu table (v1.0)
+     * Used to refresh button state after draw completion
+     */
+    public com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable getTopMenu() {
+        return topMenuTable;
+    }
+    
+    /**
+     * Set top menu table reference (v1.0)
+     * Called from MainGameScreen after creating MainGameMenuTable
+     */
+    public void setTopMenuTable(com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable topMenuTable) {
+        this.topMenuTable = topMenuTable;
     }
 }

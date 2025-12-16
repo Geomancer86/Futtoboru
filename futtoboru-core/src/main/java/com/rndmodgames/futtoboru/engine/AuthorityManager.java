@@ -1,7 +1,12 @@
 package com.rndmodgames.futtoboru.engine;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Authority;
+import com.rndmodgames.futtoboru.data.League;
+import com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
@@ -35,6 +40,7 @@ public class AuthorityManager {
     Futtoboru game;
     SaveGame currentGame;
     Authority mainAuthority;
+    LeagueFixtureGenerator fixtureGenerator;
     
     //
     public AuthorityManager(Futtoboru parent) {
@@ -42,6 +48,7 @@ public class AuthorityManager {
         //
         this.game = parent;
         this.currentGame = game.getCurrentGame();
+        this.fixtureGenerator = new LeagueFixtureGenerator(parent);
     }
     
     /**
@@ -75,6 +82,12 @@ public class AuthorityManager {
         //
         Gdx.app.debug("AuthorityManager", "checkCompetitionsSchedule()");
         
+        if (currentGame == null || currentGame.getMainAuthority() == null) {
+            return;
+        }
+        
+        mainAuthority = currentGame.getMainAuthority();
+        
         /**
          * Iterate all over the game current/existing competitions (hierarchical)
          *  - if the season doesnt exist, create one
@@ -82,5 +95,111 @@ public class AuthorityManager {
          *      - check if matches are scheduled
          *      - draw matches
          */
+        
+        // Check leagues and generate fixtures if needed
+        checkAndScheduleLeagueFixtures();
+        
+        // TODO: Check cups and generate draws if needed
+        // checkAndScheduleCupDraws();
+    }
+    
+    /**
+     * Check all leagues and generate fixtures if they don't have any scheduled
+     */
+    private void checkAndScheduleLeagueFixtures() {
+        try {
+            Gdx.app.log("AuthorityManager", "checkAndScheduleLeagueFixtures() called");
+            
+            if (mainAuthority == null) {
+                Gdx.app.debug("AuthorityManager", "mainAuthority is null - no leagues to check");
+                return;
+            }
+            
+            if (mainAuthority.getLeagues() == null) {
+                Gdx.app.debug("AuthorityManager", "mainAuthority.getLeagues() is null - no leagues to check");
+                return;
+            }
+            
+            List<League> leagues = mainAuthority.getLeagues();
+            
+            Gdx.app.log("AuthorityManager", "Found " + leagues.size() + " leagues in main authority");
+            
+            if (leagues.isEmpty()) {
+                Gdx.app.debug("AuthorityManager", "No leagues found in main authority");
+                return;
+            }
+            
+            // Get season start date (use game start date or season start date)
+            LocalDateTime seasonStart = getSeasonStartDate();
+            LocalDateTime seasonEnd = getSeasonEndDate(seasonStart);
+            
+            Gdx.app.log("AuthorityManager", "Season dates: " + seasonStart + " to " + seasonEnd);
+            
+            for (League league : leagues) {
+                if (league == null) {
+                    Gdx.app.error("AuthorityManager", "Found null league in list");
+                    continue;
+                }
+                
+                Gdx.app.log("AuthorityManager", "Checking league: " + league.getName());
+                
+                if (league.getLeagueClubs() == null) {
+                    Gdx.app.error("AuthorityManager", "League " + league.getName() + " has null leagueClubs list");
+                    continue;
+                }
+                
+                if (league.getLeagueClubs().isEmpty()) {
+                    Gdx.app.error("AuthorityManager", "League " + league.getName() + " has no clubs");
+                    continue;
+                }
+                
+                Gdx.app.log("AuthorityManager", "League " + league.getName() + " has " + league.getLeagueClubs().size() + " clubs");
+                
+                // Check if fixtures are already scheduled
+                boolean hasFixtures = fixtureGenerator.hasFixturesScheduled(league);
+                Gdx.app.log("AuthorityManager", "League " + league.getName() + " has fixtures scheduled: " + hasFixtures);
+                
+                if (!hasFixtures) {
+                    Gdx.app.log("AuthorityManager", "Generating fixtures for league: " + league.getName());
+                    
+                    // Generate fixtures
+                    List<com.rndmodgames.futtoboru.data.Match> fixtures = 
+                        fixtureGenerator.generateLeagueFixtures(league, seasonStart, seasonEnd);
+                    
+                    Gdx.app.log("AuthorityManager", "Generated " + fixtures.size() + " fixtures for " + league.getName());
+                } else {
+                    Gdx.app.debug("AuthorityManager", "League " + league.getName() + " already has fixtures scheduled");
+                }
+            }
+        } catch (Exception e) {
+            Gdx.app.error("AuthorityManager", "Error in checkAndScheduleLeagueFixtures()", e);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Get season start date
+     * Uses game start date or season start date if available
+     */
+    private LocalDateTime getSeasonStartDate() {
+        // Try to get from current season if available
+        // For now, use game start date or current game date
+        if (currentGame.getGameStartDate() != null) {
+            return currentGame.getGameStartDate();
+        }
+        if (currentGame.getGameDate() != null) {
+            return currentGame.getGameDate();
+        }
+        // Default: September 1st of current year (typical season start)
+        LocalDateTime now = LocalDateTime.now();
+        return LocalDateTime.of(now.getYear(), 9, 1, 15, 0); // September 1st, 3 PM
+    }
+    
+    /**
+     * Get season end date (typically 9 months after start, around May/June)
+     */
+    private LocalDateTime getSeasonEndDate(LocalDateTime seasonStart) {
+        // Typical season: September to May (9 months)
+        return seasonStart.plusMonths(9);
     }
 }

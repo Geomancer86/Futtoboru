@@ -688,7 +688,45 @@ public class NewGameOverviewScreen implements Screen {
                         // Don't throw - snapshots can be created later
                     }
                     
-                    Gdx.app.log("NewGameOverviewScreen", "Step 12: Changing to GAME_SCREEN...");
+                    // Create Welcome message (v2.0)
+                    try {
+                        Gdx.app.log("NewGameOverviewScreen", "Step 13: Creating welcome message...");
+                        Futtoboru futtoboru = (Futtoboru) game;
+                        if (futtoboru.getGameEngine() != null && futtoboru.getGameEngine().getMessageManager() != null) {
+                            com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
+                                futtoboru.getGameEngine().getMessageManager();
+                            
+                            com.rndmodgames.futtoboru.data.Message welcomeMessage = 
+                                messageManager.createWelcomeMessage(
+                                    currentGame.getOwner(),
+                                    primaryProfession,
+                                    startingCountry,
+                                    startingClub,
+                                    currentGame.getGameStartDate()
+                                );
+                            
+                            if (welcomeMessage != null) {
+                                // Deliver immediately
+                                messageManager.deliverMessage(welcomeMessage);
+                                Gdx.app.log("NewGameOverviewScreen", "Step 13: OK - Welcome message created and delivered");
+                                System.out.println("NewGameOverviewScreen: Created and delivered welcome message ID " + welcomeMessage.getId());
+                                
+                                // Verify message was added
+                                int messageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
+                                System.out.println("NewGameOverviewScreen: Total messages after welcome: " + messageCount);
+                            } else {
+                                Gdx.app.error("NewGameOverviewScreen", "Step 13: WARNING - Welcome message is null");
+                            }
+                        } else {
+                            Gdx.app.error("NewGameOverviewScreen", "Step 13: ERROR - MessageManager not available");
+                        }
+                    } catch (Exception e) {
+                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 13 (createWelcomeMessage):", e);
+                        e.printStackTrace();
+                        // Don't throw - welcome message is nice to have but not critical
+                    }
+                    
+                    Gdx.app.log("NewGameOverviewScreen", "Step 14: Changing to GAME_SCREEN...");
                     ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
                     Gdx.app.log("NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
                     

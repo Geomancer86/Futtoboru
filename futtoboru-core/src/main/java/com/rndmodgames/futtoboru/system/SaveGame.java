@@ -110,6 +110,14 @@ public class SaveGame implements Serializable {
     private List<Message> allMessages = new ArrayList<>();
     
     /**
+     * Scheduled Messages (v2.0)
+     * 
+     * Messages that are scheduled for future delivery.
+     * These are moved to allMessages when their scheduledDate is reached.
+     */
+    private List<Message> scheduledMessages = new ArrayList<>();
+    
+    /**
      * Scripts Support
      */
     private List<BasicScript> gameScripts = new ArrayList<>();
@@ -345,6 +353,23 @@ public class SaveGame implements Serializable {
 
     public void setAllMessages(List<Message> allMessages) {
         this.allMessages = allMessages;
+    }
+    
+    /**
+     * Get scheduled messages (not yet delivered)
+     */
+    public List<Message> getScheduledMessages() {
+        if (scheduledMessages == null) {
+            scheduledMessages = new ArrayList<>();
+        }
+        return scheduledMessages;
+    }
+    
+    /**
+     * Set scheduled messages
+     */
+    public void setScheduledMessages(List<Message> scheduledMessages) {
+        this.scheduledMessages = scheduledMessages;
     }
     
     /**
