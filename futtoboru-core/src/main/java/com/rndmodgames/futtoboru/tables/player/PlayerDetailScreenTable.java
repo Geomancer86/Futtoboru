@@ -136,6 +136,12 @@ public class PlayerDetailScreenTable extends VisTable {
         contentTable.addSeparator().colspan(2).pad(10);
         contentTable.row();
         
+        // Contract Details Section (v1.0)
+        buildContractSection();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.row();
+        
         // Modifiers & Bonuses Section (v2.0 - 3d6 system)
         buildModifiersSection();
         contentTable.row();
@@ -225,8 +231,119 @@ public class PlayerDetailScreenTable extends VisTable {
             regionName = currentPlayer.getPerson().getState().getName();
         }
         infoTable.add(new VisLabel(regionName)).left();
+        infoTable.row();
+        
+        // Contract Information (v1.0)
+        infoTable.add(new VisLabel("Contract:")).left().width(150);
+        String contractInfo = "No Contract";
+        if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getCurrentGame() != null) {
+            com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
+                currentPlayer.getPerson().getCurrentClubId());
+            if (playerClub != null) {
+                com.rndmodgames.futtoboru.data.PlayerContract contract = playerClub.getContractForPlayer(
+                    currentPlayer.getId() != null ? currentPlayer.getId() : currentPlayer.getPerson().getId());
+                if (contract != null) {
+                    contractInfo = com.rndmodgames.futtoboru.data.ContractType.getName(contract.getContractType()) + 
+                        " - £" + contract.getWeeklyWage().setScale(2, java.math.RoundingMode.HALF_UP) + "/week";
+                }
+            }
+        }
+        infoTable.add(new VisLabel(contractInfo)).left();
         
         contentTable.add(infoTable).left().pad(10);
+    }
+    
+    /**
+     * Build contract details section (v1.0)
+     * Shows contract type, wages, bonuses, and expiry
+     */
+    private void buildContractSection() {
+        VisTable contractTable = new VisTable(true);
+        
+        contractTable.row();
+        contractTable.add(new VisLabel("Contract Details")).colspan(2).left().padBottom(5);
+        contractTable.row();
+        
+        // Get contract
+        com.rndmodgames.futtoboru.data.PlayerContract contract = null;
+        if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getCurrentGame() != null) {
+            com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
+                currentPlayer.getPerson().getCurrentClubId());
+            if (playerClub != null) {
+                contract = playerClub.getContractForPlayer(
+                    currentPlayer.getId() != null ? currentPlayer.getId() : currentPlayer.getPerson().getId());
+            }
+        }
+        
+        if (contract != null) {
+            // Contract Type
+            contractTable.row();
+            contractTable.add(new VisLabel("Type:")).left().width(150);
+            contractTable.add(new VisLabel(com.rndmodgames.futtoboru.data.ContractType.getName(contract.getContractType()))).left();
+            contractTable.row();
+            
+            // Weekly Wage
+            contractTable.add(new VisLabel("Weekly Wage:")).left().width(150);
+            contractTable.add(new VisLabel("£" + contract.getWeeklyWage().setScale(2, java.math.RoundingMode.HALF_UP))).left();
+            contractTable.row();
+            
+            // Contract Dates
+            if (contract.getStartDate() != null) {
+                contractTable.add(new VisLabel("Start Date:")).left().width(150);
+                contractTable.add(new VisLabel(dateFormatter.format(contract.getStartDate()))).left();
+                contractTable.row();
+            }
+            
+            if (contract.getEndDate() != null) {
+                contractTable.add(new VisLabel("End Date:")).left().width(150);
+                contractTable.add(new VisLabel(dateFormatter.format(contract.getEndDate()))).left();
+                contractTable.row();
+                
+                // Days remaining
+                long daysRemaining = java.time.temporal.ChronoUnit.DAYS.between(
+                    futtoboru.getCurrentGame().getGameDate(), contract.getEndDate());
+                contractTable.add(new VisLabel("Days Remaining:")).left().width(150);
+                VisLabel daysLabel = new VisLabel(String.valueOf(daysRemaining));
+                if (daysRemaining < 90) {
+                    daysLabel.setColor(1.0f, 0.5f, 0.0f, 1.0f); // Orange for expiring soon
+                }
+                if (daysRemaining < 30) {
+                    daysLabel.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red for expiring very soon
+                }
+                contractTable.add(daysLabel).left();
+                contractTable.row();
+            }
+            
+            // Bonuses (only show if non-zero)
+            if (contract.getSigningBonus() != null && contract.getSigningBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                contractTable.add(new VisLabel("Signing Bonus:")).left().width(150);
+                contractTable.add(new VisLabel("£" + contract.getSigningBonus().setScale(2, java.math.RoundingMode.HALF_UP))).left();
+                contractTable.row();
+            }
+            
+            if (contract.getGoalBonus() != null && contract.getGoalBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                contractTable.add(new VisLabel("Goal Bonus:")).left().width(150);
+                contractTable.add(new VisLabel("£" + contract.getGoalBonus().setScale(2, java.math.RoundingMode.HALF_UP) + " per goal")).left();
+                contractTable.row();
+            }
+            
+            if (contract.getAppearanceFee() != null && contract.getAppearanceFee().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                contractTable.add(new VisLabel("Appearance Fee:")).left().width(150);
+                contractTable.add(new VisLabel("£" + contract.getAppearanceFee().setScale(2, java.math.RoundingMode.HALF_UP) + " per match")).left();
+                contractTable.row();
+            }
+            
+            if (contract.getLeagueWinBonus() != null && contract.getLeagueWinBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                contractTable.add(new VisLabel("League Win Bonus:")).left().width(150);
+                contractTable.add(new VisLabel("£" + contract.getLeagueWinBonus().setScale(2, java.math.RoundingMode.HALF_UP))).left();
+                contractTable.row();
+            }
+        } else {
+            contractTable.row();
+            contractTable.add(new VisLabel("No contract found")).colspan(2).left();
+        }
+        
+        contentTable.add(contractTable).left().pad(10);
     }
     
     /**
