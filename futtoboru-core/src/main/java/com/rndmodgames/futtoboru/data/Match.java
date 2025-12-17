@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -50,6 +51,9 @@ public class Match implements Serializable {
     
     // Basic attendance stats to avoid overselling a Match
     private Integer attendance = 0;
+    
+    // Match revenue (ticket sales for home club) (v1.0)
+    private BigDecimal matchRevenue;
     
     // Match Type Constants
     public static final int FRIENDLY_MATCH = 1;
@@ -159,5 +163,18 @@ public class Match implements Serializable {
 
     public void setAttendance(Integer attendance) {
         this.attendance = attendance;
+    }
+    
+    /**
+     * Match Revenue Getters and Setters (v1.0)
+     * 
+     * Revenue from ticket sales (for home club)
+     */
+    public BigDecimal getMatchRevenue() {
+        return matchRevenue != null ? matchRevenue : BigDecimal.ZERO;
+    }
+
+    public void setMatchRevenue(BigDecimal matchRevenue) {
+        this.matchRevenue = matchRevenue;
     }
 }

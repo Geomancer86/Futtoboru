@@ -80,6 +80,30 @@ public class Club implements Serializable {
     private BigDecimal clubBalance;
     
     /**
+     * Financial History Tracking (v1.0)
+     * 
+     * Tracks financial snapshots over time for charting and analysis
+     */
+    private List<FinancialSnapshot> financialHistory = new ArrayList<>();
+    
+    /**
+     * Match Income Tracking (v1.0)
+     * 
+     * Tracks income from individual matches
+     */
+    private List<MatchIncome> matchIncomes = new ArrayList<>();
+    
+    /**
+     * Current Period Financial Tracking (v1.0)
+     * 
+     * Tracks income and expenditure for current season/month
+     */
+    private BigDecimal seasonIncome = BigDecimal.ZERO;
+    private BigDecimal seasonExpenditure = BigDecimal.ZERO;
+    private BigDecimal monthIncome = BigDecimal.ZERO;
+    private BigDecimal monthExpenditure = BigDecimal.ZERO;
+    
+    /**
      * Club Staff Tracking (v1.0)
      * 
      * Maps profession ID to person ID holding that position.
@@ -395,6 +419,89 @@ public class Club implements Serializable {
      */
     public Integer getGoalDifference() {
         return getGoalsScored() - getGoalsConceded();
+    }
+    
+    /**
+     * Financial History Getters and Setters (v1.0)
+     */
+    public List<FinancialSnapshot> getFinancialHistory() {
+        if (financialHistory == null) {
+            financialHistory = new ArrayList<>();
+        }
+        return financialHistory;
+    }
+
+    public void setFinancialHistory(List<FinancialSnapshot> financialHistory) {
+        this.financialHistory = financialHistory;
+    }
+    
+    /**
+     * Add a financial snapshot to history
+     */
+    public void addFinancialSnapshot(FinancialSnapshot snapshot) {
+        if (financialHistory == null) {
+            financialHistory = new ArrayList<>();
+        }
+        financialHistory.add(snapshot);
+    }
+    
+    /**
+     * Match Income Getters and Setters (v1.0)
+     */
+    public List<MatchIncome> getMatchIncomes() {
+        if (matchIncomes == null) {
+            matchIncomes = new ArrayList<>();
+        }
+        return matchIncomes;
+    }
+
+    public void setMatchIncomes(List<MatchIncome> matchIncomes) {
+        this.matchIncomes = matchIncomes;
+    }
+    
+    /**
+     * Add match income
+     */
+    public void addMatchIncome(MatchIncome income) {
+        if (matchIncomes == null) {
+            matchIncomes = new ArrayList<>();
+        }
+        matchIncomes.add(income);
+    }
+    
+    /**
+     * Current Period Financial Tracking Getters and Setters (v1.0)
+     */
+    public BigDecimal getSeasonIncome() {
+        return seasonIncome != null ? seasonIncome : BigDecimal.ZERO;
+    }
+
+    public void setSeasonIncome(BigDecimal seasonIncome) {
+        this.seasonIncome = seasonIncome != null ? seasonIncome : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getSeasonExpenditure() {
+        return seasonExpenditure != null ? seasonExpenditure : BigDecimal.ZERO;
+    }
+
+    public void setSeasonExpenditure(BigDecimal seasonExpenditure) {
+        this.seasonExpenditure = seasonExpenditure != null ? seasonExpenditure : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getMonthIncome() {
+        return monthIncome != null ? monthIncome : BigDecimal.ZERO;
+    }
+
+    public void setMonthIncome(BigDecimal monthIncome) {
+        this.monthIncome = monthIncome != null ? monthIncome : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getMonthExpenditure() {
+        return monthExpenditure != null ? monthExpenditure : BigDecimal.ZERO;
+    }
+
+    public void setMonthExpenditure(BigDecimal monthExpenditure) {
+        this.monthExpenditure = monthExpenditure != null ? monthExpenditure : BigDecimal.ZERO;
     }
 
     @Override

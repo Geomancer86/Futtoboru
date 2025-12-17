@@ -667,6 +667,14 @@ public class MessageManager {
             content.append("\n");
         }
         
+        // Match revenue (v1.0)
+        if (match.getMatchRevenue() != null && match.getMatchRevenue().compareTo(java.math.BigDecimal.ZERO) > 0) {
+            content.append("Match Revenue: $");
+            java.text.DecimalFormat df = new java.text.DecimalFormat("#,###.00");
+            content.append(df.format(match.getMatchRevenue()));
+            content.append("\n");
+        }
+        
         // Match type
         String matchType = "Friendly";
         if (match.getMatchType() != null) {

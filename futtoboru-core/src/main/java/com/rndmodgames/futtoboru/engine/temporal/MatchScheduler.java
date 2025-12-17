@@ -2,11 +2,13 @@ package com.rndmodgames.futtoboru.engine.temporal;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.MatchIncome;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 
@@ -184,8 +186,19 @@ public class MatchScheduler {
                 System.out.println("SOLD TICKETS: " + randomTickets);
                 System.out.println("MATCH DAY CASH IS: $" + df.format(dayCash));
                 
-                // ADD TO CLUB
+                // Record match revenue on Match object (v1.0)
+                BigDecimal currentRevenue = scheduled.getMatchRevenue();
+                scheduled.setMatchRevenue(currentRevenue.add(dayCash));
+                
+                // Record match income for financial tracking (v1.0)
+                recordMatchIncome(scheduled, club, randomTickets, dayCash);
+                
+                // ADD TO CLUB BALANCE
                 club.setClubBalance(club.getClubBalance().add(dayCash));
+                
+                // Update period income tracking (v1.0)
+                club.setSeasonIncome(club.getSeasonIncome().add(dayCash));
+                club.setMonthIncome(club.getMonthIncome().add(dayCash));
                 
             } else {
                 
@@ -246,5 +259,31 @@ public class MatchScheduler {
         
         // we clear the list and everything that is not accepted will be gone
         club.getProposedMatches().clear();
+    }
+    
+    /**
+     * Record match income for financial tracking (v1.0)
+     * 
+     * Creates a MatchIncome object and adds it to the club's match income list
+     */
+    private void recordMatchIncome(Match match, Club homeClub, int ticketsSold, BigDecimal revenue) {
+        if (match == null || homeClub == null || revenue == null) {
+            return;
+        }
+        
+        // Create match income record
+        MatchIncome income = new MatchIncome();
+        income.setMatchId(match.getId());
+        income.setClubId(homeClub.getId());
+        income.setTicketRevenue(revenue);
+        income.setAttendance(ticketsSold);
+        income.setMatchDate(match.getMatchDateTime() != null ? match.getMatchDateTime() : LocalDateTime.now());
+        income.setMatchType(match.getMatchType());
+        
+        // Add to club's match income list
+        homeClub.addMatchIncome(income);
+        
+        System.out.println("MatchScheduler: Recorded match income - Match ID: " + match.getId() + 
+                          ", Revenue: $" + df.format(revenue) + ", Tickets: " + ticketsSold);
     }
 }
