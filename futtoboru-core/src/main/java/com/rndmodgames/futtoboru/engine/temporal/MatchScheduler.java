@@ -180,19 +180,36 @@ public class MatchScheduler {
             if (maxTickets > 0) {
                 
                 /**
-                 * TODO: balance match day sales
+                 * Calculate base ticket sales per day
+                 * Friendly matches have drastically reduced attendance (15% of league matches)
+                 * Based on historical research: 1888-89 friendlies had 500-700 vs much higher league attendance
                  */
-                int maxPerDay = club.getStadium().getCapacity() / 7; // sell out on 7 days
+                int baseMaxPerDay = club.getStadium().getCapacity() / 7; // sell out on 7 days
+                
+                // Apply match type modifier
+                double attendanceMultiplier = 1.0;
+                int baseMinPerDay = 20;
+                
+                if (scheduled.getMatchType() != null && scheduled.getMatchType() == Match.FRIENDLY_MATCH) {
+                    // Friendly matches: 15% of league match attendance (historical accuracy)
+                    attendanceMultiplier = 0.15;
+                    baseMinPerDay = 5; // Lower minimum for friendlies
+                }
+                // League and Cup matches use full multiplier (1.0)
+                
+                int maxPerDay = (int)(baseMaxPerDay * attendanceMultiplier);
                 
                 // Cap it at max capacity just in case
                 if (maxPerDay > maxTickets) {
-                    //
                     maxPerDay = maxTickets;
                 }
                 
-                int minPerDay = 20;
+                int minPerDay = Math.max((int)(baseMinPerDay * attendanceMultiplier), 1); // At least 1 ticket
                 
                 //
+                System.out.println("MATCH TYPE: " + (scheduled.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
+                                                   scheduled.getMatchType() == Match.LEAGUE_MATCH ? "LEAGUE" : "CUP"));
+                System.out.println("ATTENDANCE MULTIPLIER: " + attendanceMultiplier);
                 System.out.println("TICKETS TO SELL TODAY: min: " + minPerDay + ", max: " + maxPerDay);
                 
                 int randomTickets;

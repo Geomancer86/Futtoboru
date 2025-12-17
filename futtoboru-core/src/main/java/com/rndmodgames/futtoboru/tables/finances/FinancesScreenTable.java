@@ -13,7 +13,6 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.MatchIncome;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Finances Screen Table v1
@@ -106,28 +105,42 @@ public class FinancesScreenTable extends VisTable {
         this.add(incomeLabel).colspan(2).pad(10).row();
         this.addSeparator().colspan(2).pad(5).row();
         
-        // Match Day Income
-        BigDecimal matchDayIncome = calculateMatchDayIncome(club);
+        // Match Day Income Table
         this.row();
-        this.add(new VisLabel("Match Day Income:"));
-        this.add(new VisLabel("$" + df.format(matchDayIncome))).left().row();
+        VisLabel matchIncomeLabel = new VisLabel("Match Day Income Breakdown");
+        matchIncomeLabel.setFontScale(1.05f);
+        this.add(matchIncomeLabel).colspan(4).pad(5).row();
         
-        // Breakdown by match type
-        BigDecimal leagueIncome = calculateIncomeByType(club, Match.LEAGUE_MATCH);
-        BigDecimal cupIncome = calculateIncomeByType(club, Match.CUP_MATCH);
-        BigDecimal friendlyIncome = calculateIncomeByType(club, Match.FRIENDLY_MATCH);
+        // Table Header
+        VisTable headerTable = new VisTable(true);
+        headerTable.add(new VisLabel("Match Type")).width(150);
+        headerTable.add(new VisLabel("Revenue")).width(120);
+        headerTable.add(new VisLabel("Avg Attendance")).width(120);
+        headerTable.add(new VisLabel("Matches")).width(80);
+        this.add(headerTable).colspan(4).pad(2).row();
+        this.addSeparator().colspan(4).pad(2).row();
         
-        this.row().padTop(2);
-        this.add(new VisLabel("  - League Matches:"));
-        this.add(new VisLabel("$" + df.format(leagueIncome))).left().row();
+        // Calculate and display League Matches
+        MatchIncomeStats leagueStats = calculateMatchIncomeStats(club, Match.LEAGUE_MATCH);
+        displayMatchIncomeRow("League Matches", leagueStats);
         
-        this.row().padTop(2);
-        this.add(new VisLabel("  - Cup Matches:"));
-        this.add(new VisLabel("$" + df.format(cupIncome))).left().row();
+        // Calculate and display Cup Matches
+        MatchIncomeStats cupStats = calculateMatchIncomeStats(club, Match.CUP_MATCH);
+        displayMatchIncomeRow("Cup Matches", cupStats);
         
-        this.row().padTop(2);
-        this.add(new VisLabel("  - Friendly Matches:"));
-        this.add(new VisLabel("$" + df.format(friendlyIncome))).left().row();
+        // Calculate and display Friendly Matches
+        MatchIncomeStats friendlyStats = calculateMatchIncomeStats(club, Match.FRIENDLY_MATCH);
+        displayMatchIncomeRow("Friendly Matches", friendlyStats);
+        
+        // Total Match Day Income
+        BigDecimal matchDayIncome = calculateMatchDayIncome(club);
+        this.addSeparator().colspan(4).pad(2).row();
+        VisTable totalTable = new VisTable(true);
+        totalTable.add(new VisLabel("Total Match Day Income:")).width(150);
+        totalTable.add(new VisLabel("$" + df.format(matchDayIncome))).width(120);
+        totalTable.add(new VisLabel("")).width(120); // Empty for avg attendance
+        totalTable.add(new VisLabel("")).width(80); // Empty for match count
+        this.add(totalTable).colspan(4).pad(2).row();
         
         // Total Income
         BigDecimal totalIncome = club.getSeasonIncome();
@@ -187,11 +200,32 @@ public class FinancesScreenTable extends VisTable {
      * Calculate income by match type for current season
      */
     private BigDecimal calculateIncomeByType(Club club, Integer matchType) {
-        BigDecimal total = BigDecimal.ZERO;
+        MatchIncomeStats stats = calculateMatchIncomeStats(club, matchType);
+        return stats.totalRevenue;
+    }
+    
+    /**
+     * Match Income Statistics helper class
+     */
+    private static class MatchIncomeStats {
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+        int totalAttendance = 0;
+        int matchCount = 0;
+        
+        double getAverageAttendance() {
+            return matchCount > 0 ? (double)totalAttendance / matchCount : 0.0;
+        }
+    }
+    
+    /**
+     * Calculate match income statistics by match type for current season
+     */
+    private MatchIncomeStats calculateMatchIncomeStats(Club club, Integer matchType) {
+        MatchIncomeStats stats = new MatchIncomeStats();
         List<MatchIncome> matchIncomes = club.getMatchIncomes();
         
         if (matchIncomes == null) {
-            return total;
+            return stats;
         }
         
         LocalDateTime seasonStart = getCurrentSeasonStart();
@@ -201,11 +235,37 @@ public class FinancesScreenTable extends VisTable {
                 income.getMatchType().equals(matchType) &&
                 income.getMatchDate() != null && 
                 !income.getMatchDate().isBefore(seasonStart)) {
-                total = total.add(income.getTicketRevenue());
+                stats.totalRevenue = stats.totalRevenue.add(income.getTicketRevenue());
+                if (income.getAttendance() != null) {
+                    stats.totalAttendance += income.getAttendance();
+                }
+                stats.matchCount++;
             }
         }
         
-        return total;
+        return stats;
+    }
+    
+    /**
+     * Display a row in the match income table
+     */
+    private void displayMatchIncomeRow(String matchTypeLabel, MatchIncomeStats stats) {
+        VisTable rowTable = new VisTable(true);
+        rowTable.add(new VisLabel(matchTypeLabel)).width(150);
+        rowTable.add(new VisLabel("$" + df.format(stats.totalRevenue))).width(120);
+        
+        // Average attendance
+        if (stats.matchCount > 0) {
+            int avgAttendance = (int)Math.round(stats.getAverageAttendance());
+            rowTable.add(new VisLabel(String.valueOf(avgAttendance))).width(120);
+        } else {
+            rowTable.add(new VisLabel("-")).width(120);
+        }
+        
+        // Match count
+        rowTable.add(new VisLabel(String.valueOf(stats.matchCount))).width(80);
+        
+        this.add(rowTable).colspan(4).pad(2).row();
     }
     
     /**
