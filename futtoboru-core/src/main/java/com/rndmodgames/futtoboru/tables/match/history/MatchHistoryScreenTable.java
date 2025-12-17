@@ -57,6 +57,14 @@ public class MatchHistoryScreenTable extends VisTable {
     // 
     public void updateDynamicComponents() {
         
+        // Refresh current club reference from game state
+        if (game != null && game.getCurrentGame() != null) {
+            Club refreshedClub = game.getCurrentGame().getCurrentClub();
+            if (refreshedClub != null && (currentClub == null || !refreshedClub.getId().equals(currentClub.getId()))) {
+                currentClub = refreshedClub;
+            }
+        }
+        
         if (currentClub == null) {
             this.clear();
             this.add("No club selected.");

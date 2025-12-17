@@ -840,6 +840,17 @@ public class MainMenuManager {
             parentTable.add(leagueDrawScreenTable).grow();
             
             break;
+            
+        case MATCH_HISTORY_SCREEN:
+            
+            // Update match history screen with current club
+            Club currentClub = currentGame != null ? currentGame.getCurrentClub() : null;
+            if (currentClub != null) {
+                matchHistoryScreenTable.setCurrentClub(currentClub);
+            }
+            matchHistoryScreenTable.updateDynamicComponents();
+            
+            break;
 
         default:
             //ignore
