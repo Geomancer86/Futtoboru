@@ -19,7 +19,16 @@ public class Player implements Serializable {
     private Person person;
     
     /**
-     * Player Physical Attributes
+     * Player Profession (Day Job) v1.0
+     * 
+     * For amateur/semi-professional players, their day job provides attribute bonuses.
+     * Professional players typically don't have a day job (full-time football).
+     */
+    private PlayerProfession playerProfession;
+    
+    /**
+     * Base Physical Attributes (before profession bonuses)
+     * These are the player's natural attributes
      */
     private Float acceleration;
     private Float dexterity;
@@ -347,5 +356,16 @@ public class Player implements Serializable {
 
     public void setAreaPositioning(Float areaPositioning) {
         this.areaPositioning = areaPositioning;
+    }
+    
+    /**
+     * Player Profession Getters and Setters (v1.0)
+     */
+    public PlayerProfession getPlayerProfession() {
+        return playerProfession;
+    }
+
+    public void setPlayerProfession(PlayerProfession playerProfession) {
+        this.playerProfession = playerProfession;
     }
 }

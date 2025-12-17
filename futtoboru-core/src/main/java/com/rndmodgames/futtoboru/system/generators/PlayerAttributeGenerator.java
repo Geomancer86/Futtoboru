@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerProfession;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 
 /**
@@ -52,7 +53,152 @@ public class PlayerAttributeGenerator {
         // Generate Goalkeeper Attributes (for all players, but only relevant for GKs)
         generateGoalkeeperAttributes(player, baseLevel, reputationBonus);
         
+        // Apply profession bonuses (for amateur/semi-pro players)
+        applyProfessionBonuses(player);
+        
         Gdx.app.debug("PlayerAttributeGenerator", "Generated attributes for: " + person.getName() + " (Age: " + age + ", Base: " + baseLevel + ")");
+    }
+    
+    /**
+     * Apply profession bonuses to player attributes (v1.0)
+     * 
+     * Profession bonuses allow attributes to exceed normal maximum (20) up to 22.
+     * Only applies to amateur/semi-professional players (professional players don't have day jobs).
+     */
+    private void applyProfessionBonuses(Player player) {
+        if (player == null || player.getPlayerProfession() == null) {
+            return; // No profession, no bonuses
+        }
+        
+        PlayerProfession profession = player.getPlayerProfession();
+        
+        // Apply physical attribute bonuses
+        if (profession.getStrengthBonus() != null && profession.getStrengthBonus() != 0) {
+            applyAttributeBonus(player, "strength", profession.getStrengthBonus());
+        }
+        if (profession.getEnduranceBonus() != null && profession.getEnduranceBonus() != 0) {
+            applyAttributeBonus(player, "endurance", profession.getEnduranceBonus());
+        }
+        if (profession.getStaminaBonus() != null && profession.getStaminaBonus() != 0) {
+            applyAttributeBonus(player, "stamina", profession.getStaminaBonus());
+        }
+        if (profession.getSpeedBonus() != null && profession.getSpeedBonus() != 0) {
+            applyAttributeBonus(player, "speed", profession.getSpeedBonus());
+        }
+        if (profession.getAccelerationBonus() != null && profession.getAccelerationBonus() != 0) {
+            applyAttributeBonus(player, "acceleration", profession.getAccelerationBonus());
+        }
+        if (profession.getJumpingBonus() != null && profession.getJumpingBonus() != 0) {
+            applyAttributeBonus(player, "jumping", profession.getJumpingBonus());
+        }
+        if (profession.getDexterityBonus() != null && profession.getDexterityBonus() != 0) {
+            applyAttributeBonus(player, "dexterity", profession.getDexterityBonus());
+        }
+        
+        // Apply mental attribute bonuses
+        if (profession.getConcentrationBonus() != null && profession.getConcentrationBonus() != 0) {
+            applyAttributeBonus(player, "concentration", profession.getConcentrationBonus());
+        }
+        if (profession.getCourageBonus() != null && profession.getCourageBonus() != 0) {
+            applyAttributeBonus(player, "courage", profession.getCourageBonus());
+        }
+        if (profession.getDeterminationBonus() != null && profession.getDeterminationBonus() != 0) {
+            applyAttributeBonus(player, "determination", profession.getDeterminationBonus());
+        }
+        if (profession.getLeadershipBonus() != null && profession.getLeadershipBonus() != 0) {
+            applyAttributeBonus(player, "leadership", profession.getLeadershipBonus());
+        }
+        if (profession.getPerceptionBonus() != null && profession.getPerceptionBonus() != 0) {
+            applyAttributeBonus(player, "perception", profession.getPerceptionBonus());
+        }
+        if (profession.getPositioningBonus() != null && profession.getPositioningBonus() != 0) {
+            applyAttributeBonus(player, "positioning", profession.getPositioningBonus());
+        }
+        if (profession.getTeamworkBonus() != null && profession.getTeamworkBonus() != 0) {
+            applyAttributeBonus(player, "teamwork", profession.getTeamworkBonus());
+        }
+    }
+    
+    /**
+     * Apply a profession bonus to a specific attribute
+     * 
+     * Converts from 0-100 scale to 1-22 scale, applies bonus, then converts back.
+     * Maximum is 22 (exceptional player level).
+     */
+    private void applyAttributeBonus(Player player, String attributeName, Integer bonus) {
+        if (bonus == null || bonus == 0) {
+            return;
+        }
+        
+        // Get current attribute value (0-100 scale)
+        Float currentValue = getAttributeValue(player, attributeName);
+        if (currentValue == null) {
+            return;
+        }
+        
+        // Convert to 1-22 scale (0-100 -> 1-22)
+        // Formula: (value / 100) * 21 + 1 = 1-22 range
+        float normalizedValue = (currentValue / 100.0f) * 21.0f + 1.0f;
+        
+        // Apply bonus
+        float newValue = normalizedValue + bonus;
+        
+        // Cap at 22 (exceptional maximum)
+        newValue = Math.min(22.0f, Math.max(1.0f, newValue));
+        
+        // Convert back to 0-100 scale (1-22 -> 0-100)
+        // Formula: ((value - 1) / 21) * 100 = 0-100 range
+        float scaledValue = ((newValue - 1.0f) / 21.0f) * 100.0f;
+        
+        // Set the attribute
+        setAttributeValue(player, attributeName, scaledValue);
+    }
+    
+    /**
+     * Get attribute value by name (helper method)
+     */
+    private Float getAttributeValue(Player player, String attributeName) {
+        switch (attributeName.toLowerCase()) {
+            case "strength": return player.getStrength();
+            case "endurance": return player.getEndurance();
+            case "stamina": return player.getStamina();
+            case "speed": return player.getSpeed();
+            case "acceleration": return player.getAcceleration();
+            case "jumping": return player.getJumping();
+            case "dexterity": return player.getDexterity();
+            case "concentration": return player.getConcentration();
+            case "courage": return player.getCourage();
+            case "determination": return player.getDetermination();
+            case "leadership": return player.getLeadership();
+            case "perception": return player.getPerception();
+            case "positioning": return player.getPositioning();
+            case "teamwork": return player.getTeamwork();
+            default: return null;
+        }
+    }
+    
+    /**
+     * Set attribute value by name (helper method)
+     */
+    private void setAttributeValue(Player player, String attributeName, float value) {
+        value = clampAttribute(value); // Ensure 0-100 range
+        
+        switch (attributeName.toLowerCase()) {
+            case "strength": player.setStrength(value); break;
+            case "endurance": player.setEndurance(value); break;
+            case "stamina": player.setStamina(value); break;
+            case "speed": player.setSpeed(value); break;
+            case "acceleration": player.setAcceleration(value); break;
+            case "jumping": player.setJumping(value); break;
+            case "dexterity": player.setDexterity(value); break;
+            case "concentration": player.setConcentration(value); break;
+            case "courage": player.setCourage(value); break;
+            case "determination": player.setDetermination(value); break;
+            case "leadership": player.setLeadership(value); break;
+            case "perception": player.setPerception(value); break;
+            case "positioning": player.setPositioning(value); break;
+            case "teamwork": player.setTeamwork(value); break;
+        }
     }
     
     /**
