@@ -222,6 +222,8 @@ public class PlayersLoader {
                          */
                         Player player = new Player();
                         
+                        // Set player ID to match person ID (players and persons share IDs)
+                        player.setId(person.getId());
                         player.setPerson(person);
                         
                         // Generate attributes for loaded player (v1.0)

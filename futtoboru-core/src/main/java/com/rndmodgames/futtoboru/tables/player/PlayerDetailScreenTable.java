@@ -270,8 +270,12 @@ public class PlayerDetailScreenTable extends VisTable {
             com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
                 currentPlayer.getPerson().getCurrentClubId());
             if (playerClub != null) {
-                contract = playerClub.getContractForPlayer(
-                    currentPlayer.getId() != null ? currentPlayer.getId() : currentPlayer.getPerson().getId());
+                // Try player ID first, then person ID as fallback
+                Long lookupId = currentPlayer.getId() != null ? currentPlayer.getId() : 
+                    (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getId() : null);
+                if (lookupId != null) {
+                    contract = playerClub.getContractForPlayer(lookupId);
+                }
             }
         }
         
