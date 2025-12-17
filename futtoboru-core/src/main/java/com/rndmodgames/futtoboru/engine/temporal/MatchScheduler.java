@@ -105,12 +105,17 @@ public class MatchScheduler {
     /**
      * Check Club Scheduled Matches
      * 
-     *  -
+     *  - Sell tickets for upcoming matches
+     *  - Only sell tickets for matches that haven't been played
+     *  - Only sell tickets within a reasonable time window before the match (7 days)
      */
     public void checkClubSheduledMatches(Club club) {
         
         //
         System.out.println("CLUB SCHEDULED MATCHES: " + club.getScheduledMatches().size());
+        
+        // Get current game date
+        java.time.LocalDateTime currentDate = game.getCurrentGame().getGameDate();
         
         /**
          * Iterate all scheduled matches
@@ -127,6 +132,36 @@ public class MatchScheduler {
          *  TODO: differentiate between match and league matches so the ticket values are different
          */
         for (Match scheduled : club.getScheduledMatches()) {
+            
+            // BUG FIX: Skip matches that have already been played
+            if (scheduled.getIsPlayed() != null && scheduled.getIsPlayed()) {
+                System.out.println("MatchScheduler: Skipping already played match");
+                continue;
+            }
+            
+            // BUG FIX: Only sell tickets for matches scheduled in the future
+            if (scheduled.getMatchDateTime() == null) {
+                System.out.println("MatchScheduler: Skipping match with no date");
+                continue;
+            }
+            
+            // BUG FIX: Only sell tickets starting 7 days before the match
+            // This prevents selling tickets for matches scheduled months in advance
+            java.time.temporal.ChronoUnit daysUnit = java.time.temporal.ChronoUnit.DAYS;
+            long daysUntilMatch = daysUnit.between(currentDate, scheduled.getMatchDateTime());
+            
+            if (daysUntilMatch > 7) {
+                // Match is more than 7 days away, don't sell tickets yet
+                System.out.println("MatchScheduler: Match is " + daysUntilMatch + " days away, not selling tickets yet");
+                continue;
+            }
+            
+            if (daysUntilMatch < 0) {
+                // Match date has passed but hasn't been marked as played yet
+                // This shouldn't happen, but skip it to be safe
+                System.out.println("MatchScheduler: Match date has passed but not marked as played, skipping");
+                continue;
+            }
             
             /**
              * RANDOM TICKETS:
