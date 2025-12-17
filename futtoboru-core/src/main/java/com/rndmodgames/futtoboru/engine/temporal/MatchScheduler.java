@@ -32,16 +32,42 @@ public class MatchScheduler {
     private Futtoboru game;
     
     /**
-     * TODO: historically match ticket prices for friendlies, league and national/international cup matches
-     * TODO: currencies
+     * Historical Ticket Prices (1888-89)
      * 
-     * 1888:
-     *  - 1 pound is divided in 20 shillings
-     *  - 1 shilling is divided into 12 pence
+     * 1888 Currency:
+     *  - 1 pound = 20 shillings = 240 pence
+     *  - 1 penny = 1/240 pounds = £0.00416666666
+     *  - 2 pence = 2/240 pounds = £0.00833333333
+     *  - 3 pence = 3/240 pounds = £0.0125
      *  
-     *  - FRIENDLY: 1 penny = 1/240 pounds
+     * Historical Research:
+     *  - Friendly matches: 1 penny (modest, accessible to working-class)
+     *  - League matches: 2-3 pence (higher interest, competitive)
+     *  - Cup matches: 2-3 pence (similar to league)
      */
-    private static BigDecimal FRIENDLY_TICKET_PRICE = new BigDecimal("0.00416666666"); // A penny
+    private static BigDecimal FRIENDLY_TICKET_PRICE = new BigDecimal("0.00416666666"); // 1 penny
+    private static BigDecimal LEAGUE_TICKET_PRICE = new BigDecimal("0.00833333333"); // 2 pence
+    private static BigDecimal CUP_TICKET_PRICE = new BigDecimal("0.01041666666"); // 2.5 pence (average of 2-3)
+    
+    /**
+     * Get ticket price based on match type (v1.0)
+     */
+    private static BigDecimal getTicketPrice(Integer matchType) {
+        if (matchType == null) {
+            return FRIENDLY_TICKET_PRICE; // Default
+        }
+        
+        switch (matchType) {
+            case Match.FRIENDLY_MATCH:
+                return FRIENDLY_TICKET_PRICE; // 1 penny
+            case Match.LEAGUE_MATCH:
+                return LEAGUE_TICKET_PRICE; // 2 pence
+            case Match.CUP_MATCH:
+                return CUP_TICKET_PRICE; // 2.5 pence
+            default:
+                return FRIENDLY_TICKET_PRICE; // Default to friendly price
+        }
+    }
     
     //
     DecimalFormat df = new DecimalFormat("#,###.00");
@@ -233,7 +259,9 @@ public class MatchScheduler {
                  */
                 scheduled.setAttendance(scheduled.getAttendance() + randomTickets);
                 
-                BigDecimal dayCash = new BigDecimal(randomTickets).multiply(FRIENDLY_TICKET_PRICE);
+                // Get ticket price based on match type (v1.0)
+                BigDecimal ticketPrice = getTicketPrice(scheduled.getMatchType());
+                BigDecimal dayCash = new BigDecimal(randomTickets).multiply(ticketPrice);
                 
                 System.out.println("SOLD TICKETS: " + randomTickets);
                 System.out.println("MATCH DAY CASH IS: $" + df.format(dayCash));

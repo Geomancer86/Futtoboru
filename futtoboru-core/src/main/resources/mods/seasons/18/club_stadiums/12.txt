@@ -5,6 +5,6 @@
 # Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season
 #          https://en.wikipedia.org/wiki/Victoria_Ground
 #
-# COLUMNS
-# id, name, year, capacity, 
-12,Victoria Ground,1878,5000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+12,Victoria Ground,1878,5000,4000,"The Victoria Ground served as Stoke's home from 1878 until 1997, marking 119 years of football history. At the time of its demolition, it was the oldest operational ground in the Football League. First league match was September 8, 1888, a 2-0 defeat against West Bromwich Albion.",https://en.wikipedia.org/wiki/Victoria_Ground,2000,false,200

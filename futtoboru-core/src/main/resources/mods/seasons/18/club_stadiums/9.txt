@@ -5,6 +5,6 @@
 # Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season
 #          https://en.wikipedia.org/wiki/Turf_Moor
 #
-# COLUMNS
-# id, name, year, capacity, 
-9,Turf Moor,1883,12000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+9,Turf Moor,1883,12000,4500,"Turf Moor has been associated with sports since at least 1843 when Burnley Cricket Club relocated there. In 1883, the cricket club invited Burnley FC to move from Calder Vale. In 1885, constructed an 800-seat wooden grandstand and uncovered standing for 5,000. First league match was October 6, 1888, Burnley defeating Bolton Wanderers 4-1.",https://en.wikipedia.org/wiki/Turf_Moor,2000,false,200

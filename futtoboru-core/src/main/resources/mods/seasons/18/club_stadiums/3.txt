@@ -5,8 +5,8 @@
 # Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Wolverhampton_Wanderers_F.C._season
 #          https://en.wikipedia.org/wiki/Dudley_Road
 #
-# NOTE: we dont need owners id because we know what club is by the file name (club id . txt)
+# NOTE: Wolves moved to Molineux in 1889, but for 1888-89 season they played at Dudley Road
 #
-# COLUMNS
-# id, name, year, capacity, 
-3,Dudley Road,1881,10000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+3,Dudley Road,1881,10000,4000,"Wolves played at Dudley Road from 1881 to 1889. First Football League match was September 8, 1888, a 1-1 draw against Aston Villa. Record attendance was 10,000 for FA Cup match against The Wednesday in March 1889. Wolves moved to Molineux in 1889.",https://en.wikipedia.org/wiki/Dudley_Road,2000,false,200

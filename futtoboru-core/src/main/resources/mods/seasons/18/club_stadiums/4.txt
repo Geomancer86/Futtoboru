@@ -5,9 +5,9 @@
 # Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Blackburn_Rovers_F.C._season
 #          https://en.wikipedia.org/wiki/Ewood_Park
 #
-# Rovers moved back in during 1890, signing a ten-year lease at an initial annual rent of £60 (historical cost of leasing a field)
-# In 1893, Blackburn Rovers bought the freehold of the ground for £2500 (historical land cost of a field)
+# Rovers moved back in during 1890, signing a ten-year lease at an initial annual rent of £60
+# In 1893, Blackburn Rovers bought the freehold of the ground for £2500
 #
-# COLUMNS
-# id, name, year, capacity, 
-4,Ewood Park,1882,12000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+4,Ewood Park,1882,12000,7500,"Ewood Park (originally Ewood Bridge) opened in April 1882 as a multi-purpose sports venue. Blackburn Rovers played several matches there in 1882 before moving in permanently in 1890. Featured horse boxes, dressing tents, refreshment saloon, lavatories, and a grandstand. Club purchased the freehold in 1893 for £2,500.",https://en.wikipedia.org/wiki/Ewood_Park,3000,false,250
