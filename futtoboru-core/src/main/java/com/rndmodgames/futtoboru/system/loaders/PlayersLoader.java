@@ -232,6 +232,13 @@ public class PlayersLoader {
                             new com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator();
                         attrGen.generatePlayerAttributes(player, person, estimatedDate);
                         
+                        // Assign profession (for amateur/semi-pro players)
+                        // TODO: Load contract type from script, for now assume mix of amateur/semi-pro
+                        // Professional players won't get professions (full-time football)
+                        Integer contractType = null; // Will be set when contracts are loaded
+                        com.rndmodgames.futtoboru.system.generators.PlayerProfessionAssigner.assignProfession(
+                            player, club, contractType);
+                        
                         // Add to Players at Club list
                         club.getPlayers().add(player);
                     }
