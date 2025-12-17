@@ -438,7 +438,386 @@ public class AuthorityManager {
      * Check if cup rounds need to be advanced (v1.0 - Cup Round Progression)
      */
     private void checkCupRoundProgression() {
-        // TODO: Implement cup round progression
-        // This will check if a round is complete and advance to next round
+        try {
+            if (currentGame == null) {
+                return;
+            }
+            
+            List<Competition> cups = currentGame.getAllCups();
+            if (cups == null || cups.isEmpty()) {
+                return;
+            }
+            
+            LocalDateTime currentDate = currentGame.getGameDate();
+            
+            for (Competition cup : cups) {
+                if (cup == null || !Competition.COMPETITION_CUP.equals(cup.getCompetitionType())) {
+                    continue;
+                }
+                
+                CompetitionEdition edition = getCurrentCupEdition(cup, currentDate);
+                if (edition == null) {
+                    continue; // No active edition
+                }
+                
+                // Check if current round is complete
+                if (isCupRoundComplete(edition)) {
+                    // Get winners from current round
+                    List<Club> winners = getRoundWinners(edition);
+                    
+                    if (winners.isEmpty()) {
+                        Gdx.app.error("AuthorityManager", "Round complete but no winners found for: " + cup.getName());
+                        continue;
+                    }
+                    
+                    if (winners.size() == 1) {
+                        // Cup complete!
+                        completeCup(cup, edition, winners.get(0));
+                    } else {
+                        // Advance to next round
+                        advanceCupRound(cup, edition, winners);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Gdx.app.error("AuthorityManager", "Error in checkCupRoundProgression()", e);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Check if a cup round is complete (all matches played)
+     */
+    private boolean isCupRoundComplete(CompetitionEdition edition) {
+        // Get all matches for this edition
+        List<Match> editionMatches = getMatchesForEdition(edition);
+        
+        if (editionMatches.isEmpty()) {
+            return false; // No matches yet
+        }
+        
+        // Get current round number
+        Integer currentRound = getCurrentRound(editionMatches);
+        if (currentRound == null) {
+            return false; // No round started yet
+        }
+        
+        // Get all matches for current round
+        List<Match> roundMatches = new ArrayList<>();
+        for (Match match : editionMatches) {
+            if (match.getRound() != null && match.getRound().equals(currentRound)) {
+                roundMatches.add(match);
+            }
+        }
+        
+        if (roundMatches.isEmpty()) {
+            return false; // No matches for this round
+        }
+        
+        // Check if all round matches are played
+        for (Match match : roundMatches) {
+            if (match.getIsPlayed() == null || !match.getIsPlayed()) {
+                return false; // Round not complete
+            }
+        }
+        
+        return true; // All matches played
+    }
+    
+    /**
+     * Get all matches for a competition edition
+     */
+    private List<Match> getMatchesForEdition(CompetitionEdition edition) {
+        List<Match> matches = new ArrayList<>();
+        
+        if (edition == null || edition.getId() == null) {
+            return matches;
+        }
+        
+        // Search through all clubs' scheduled and played matches
+        for (Club club : currentGame.getAllClubs()) {
+            if (club == null) {
+                continue;
+            }
+            
+            // Check scheduled matches
+            if (club.getScheduledMatches() != null) {
+                for (Match match : club.getScheduledMatches()) {
+                    if (match != null && match.getCompetitionEditionId() != null &&
+                        match.getCompetitionEditionId().equals(edition.getId())) {
+                        if (!matches.contains(match)) {
+                            matches.add(match);
+                        }
+                    }
+                }
+            }
+            
+            // Check played matches
+            if (club.getPlayedMatches() != null) {
+                for (Match match : club.getPlayedMatches()) {
+                    if (match != null && match.getCompetitionEditionId() != null &&
+                        match.getCompetitionEditionId().equals(edition.getId())) {
+                        if (!matches.contains(match)) {
+                            matches.add(match);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return matches;
+    }
+    
+    /**
+     * Get current round number from matches
+     */
+    private Integer getCurrentRound(List<Match> editionMatches) {
+        Integer maxRound = null;
+        
+        for (Match match : editionMatches) {
+            if (match.getRound() != null) {
+                if (maxRound == null || match.getRound() > maxRound) {
+                    maxRound = match.getRound();
+                }
+            }
+        }
+        
+        return maxRound;
+    }
+    
+    /**
+     * Get winners from current round
+     */
+    private List<Club> getRoundWinners(CompetitionEdition edition) {
+        List<Club> winners = new ArrayList<>();
+        
+        // Get current round
+        List<Match> editionMatches = getMatchesForEdition(edition);
+        Integer currentRound = getCurrentRound(editionMatches);
+        if (currentRound == null) {
+            return winners;
+        }
+        
+        // Get all matches for current round
+        for (Match match : editionMatches) {
+            if (match.getRound() != null && match.getRound().equals(currentRound) &&
+                match.getIsPlayed() != null && match.getIsPlayed()) {
+                
+                // Determine winner
+                Club winner = getMatchWinner(match);
+                if (winner != null) {
+                    winners.add(winner);
+                }
+            }
+        }
+        
+        return winners;
+    }
+    
+    /**
+     * Get winner of a match (or null if draw)
+     */
+    private Club getMatchWinner(Match match) {
+        if (match.getHomeGoals() == null || match.getAwayGoals() == null) {
+            return null;
+        }
+        
+        if (match.getHomeGoals() > match.getAwayGoals()) {
+            return currentGame.getClubById(match.getHomeClubId());
+        } else if (match.getAwayGoals() > match.getHomeGoals()) {
+            return currentGame.getClubById(match.getAwayClubId());
+        }
+        
+        // Draw - need replay (handled separately)
+        return null;
+    }
+    
+    /**
+     * Advance cup to next round
+     */
+    private void advanceCupRound(Competition cup, CompetitionEdition edition, List<Club> winners) {
+        if (winners.isEmpty()) {
+            Gdx.app.error("AuthorityManager", "Cannot advance round: no winners");
+            return;
+        }
+        
+        // Get next round number
+        List<Match> editionMatches = getMatchesForEdition(edition);
+        Integer currentRound = getCurrentRound(editionMatches);
+        Integer nextRound = (currentRound != null) ? currentRound + 1 : 1;
+        
+        // Get winner IDs
+        List<Long> winnerIds = new ArrayList<>();
+        for (Club winner : winners) {
+            if (winner != null && winner.getId() != null) {
+                winnerIds.add(winner.getId());
+            }
+        }
+        
+        if (winnerIds.isEmpty()) {
+            Gdx.app.error("AuthorityManager", "Cannot advance round: no valid winner IDs");
+            return;
+        }
+        
+        // Generate next round draw
+        List<Match> nextRoundMatches = competitionScheduler.competitionDraw(cup, winnerIds);
+        
+        if (nextRoundMatches == null || nextRoundMatches.isEmpty()) {
+            Gdx.app.error("AuthorityManager", "Next round draw generated no matches");
+            return;
+        }
+        
+        // Schedule next round matches (2 weeks from now)
+        LocalDateTime currentDate = currentGame.getGameDate();
+        LocalDateTime nextRoundDate = currentDate.plusWeeks(2);
+        
+        MessageManager messageManager = game.getMessageManager();
+        String roundName = getRoundName(nextRound, winnerIds.size());
+        
+        for (Match match : nextRoundMatches) {
+            match.setMatchType(Match.CUP_MATCH);
+            match.setCompetitionId(cup.getId());
+            match.setCompetitionEditionId(edition.getId());
+            match.setRound(nextRound);
+            match.setMatchDateTime(nextRoundDate);
+            match.setIsProposed(false);
+            match.setIsAccepted(true);
+            match.setIsPlayed(false);
+            
+            // Add to clubs' scheduled matches
+            Club homeClub = currentGame.getClubById(match.getHomeClubId());
+            Club awayClub = currentGame.getClubById(match.getAwayClubId());
+            
+            if (homeClub != null) {
+                if (homeClub.getScheduledMatches() == null) {
+                    homeClub.setScheduledMatches(new ArrayList<>());
+                }
+                homeClub.getScheduledMatches().add(match);
+            }
+            if (awayClub != null) {
+                if (awayClub.getScheduledMatches() == null) {
+                    awayClub.setScheduledMatches(new ArrayList<>());
+                }
+                awayClub.getScheduledMatches().add(match);
+            }
+            
+            // Create cup draw message
+            if (homeClub != null && awayClub != null) {
+                Message drawMessage = messageManager.createCupDrawResultMessage(
+                    cup, homeClub, awayClub, nextRoundDate, roundName
+                );
+                if (drawMessage != null) {
+                    currentGame.addMessage(drawMessage);
+                }
+            }
+        }
+        
+        Gdx.app.log("AuthorityManager", "Advanced cup to " + roundName + ": " + 
+            nextRoundMatches.size() + " matches for " + cup.getName());
+    }
+    
+    /**
+     * Get round name (e.g., "First Round", "Second Round", "Quarter-Final", etc.)
+     */
+    private String getRoundName(Integer roundNumber, int participants) {
+        if (roundNumber == null) {
+            return "Round " + roundNumber;
+        }
+        
+        // Calculate round name based on number of participants
+        if (participants == 2) {
+            return "Final";
+        } else if (participants == 4) {
+            return "Semi-Final";
+        } else if (participants == 8) {
+            return "Quarter-Final";
+        } else {
+            // Use ordinal for other rounds
+            String[] ordinals = {"", "First", "Second", "Third", "Fourth", "Fifth", "Sixth"};
+            if (roundNumber > 0 && roundNumber < ordinals.length) {
+                return ordinals[roundNumber] + " Round";
+            }
+            return "Round " + roundNumber;
+        }
+    }
+    
+    /**
+     * Complete cup and declare winner
+     */
+    private void completeCup(Competition cup, CompetitionEdition edition, Club winner) {
+        if (winner == null) {
+            Gdx.app.error("AuthorityManager", "Cannot complete cup: winner is null");
+            return;
+        }
+        
+        // Store winner
+        edition.setChampionsId(winner.getId());
+        
+        // Find runner-up (loser of final)
+        List<Match> finalMatches = getMatchesForEdition(edition);
+        Integer finalRound = getCurrentRound(finalMatches);
+        if (finalRound != null) {
+            for (Match match : finalMatches) {
+                if (match.getRound() != null && match.getRound().equals(finalRound) &&
+                    match.getIsPlayed() != null && match.getIsPlayed()) {
+                    Club runnerUp = getMatchLoser(match, winner);
+                    if (runnerUp != null) {
+                        edition.setRunnersUpId(runnerUp.getId());
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Create cup completion message
+        MessageManager messageManager = game.getMessageManager();
+        Message completionMessage = createCupCompletionMessage(cup, winner);
+        if (completionMessage != null) {
+            currentGame.addMessage(completionMessage);
+        }
+        
+        Gdx.app.log("AuthorityManager", "Cup complete: " + cup.getName() + " won by " + winner.getName());
+    }
+    
+    /**
+     * Get loser of a match (opposite of winner)
+     */
+    private Club getMatchLoser(Match match, Club winner) {
+        if (match == null || winner == null) {
+            return null;
+        }
+        
+        Club homeClub = currentGame.getClubById(match.getHomeClubId());
+        Club awayClub = currentGame.getClubById(match.getAwayClubId());
+        
+        if (homeClub != null && homeClub.getId().equals(winner.getId())) {
+            return awayClub;
+        } else if (awayClub != null && awayClub.getId().equals(winner.getId())) {
+            return homeClub;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Create cup completion message
+     */
+    private Message createCupCompletionMessage(Competition cup, Club winner) {
+        Message message = new Message();
+        message.setCategory(com.rndmodgames.futtoboru.data.Message.MessageCategory.CUP);
+        message.setMessageType("CUP_COMPLETE");
+        message.setPriority(com.rndmodgames.futtoboru.data.Message.MessagePriority.HIGH);
+        message.setTitle(cup.getName() + " Complete");
+        
+        StringBuilder content = new StringBuilder();
+        content.append("The ").append(cup.getName()).append(" has concluded.\n\n");
+        content.append("Winners: ").append(winner.getName()).append("\n\n");
+        content.append("Congratulations to ").append(winner.getName()).append(" on winning the ").append(cup.getName()).append("!");
+        
+        message.setPlainTextMessage(content.toString());
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        return message;
     }
 }
