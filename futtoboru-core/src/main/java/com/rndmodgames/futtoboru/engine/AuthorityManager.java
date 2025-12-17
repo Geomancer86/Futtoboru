@@ -811,7 +811,7 @@ public class AuthorityManager {
         Message message = new Message();
         message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_COMPLETE");
-        message.setPriority(MessagePriority.HIGH);
+        message.setPriority(MessagePriority.URGENT);
         message.setTitle(cup.getName() + " Complete");
         
         StringBuilder content = new StringBuilder();
@@ -972,9 +972,9 @@ public class AuthorityManager {
      */
     private Message createCupReplayMessage(Competition cup, Club homeClub, Club awayClub, LocalDateTime replayDate) {
         Message message = new Message();
-        message.setCategory(Message.MessageCategory.CUP);
+        message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_REPLAY");
-        message.setPriority(Message.MessagePriority.NORMAL);
+        message.setPriority(MessagePriority.NORMAL);
         message.setTitle(cup.getName() + " Replay");
         
         StringBuilder content = new StringBuilder();
