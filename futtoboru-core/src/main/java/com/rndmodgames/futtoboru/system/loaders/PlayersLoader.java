@@ -239,6 +239,17 @@ public class PlayersLoader {
                         // Future seasons will load from scripts with researched historical data
                         java.time.LocalDateTime seasonStartDate = season.getStartDate() != null ? 
                             season.getStartDate() : estimatedDate;
+                        
+                        // Debug: Log season start date
+                        if (seasonStartDate == null) {
+                            Gdx.app.error("PlayersLoader", "Season start date is NULL! Using fallback: " + estimatedDate);
+                            seasonStartDate = estimatedDate;
+                        }
+                        
+                        Gdx.app.debug("PlayersLoader", "Generating contract for player " + person.getName() + 
+                            " " + person.getLastname() + " (ID: " + player.getId() + 
+                            ") at club " + club.getName() + " with start date: " + seasonStartDate);
+                        
                         com.rndmodgames.futtoboru.data.PlayerContract contract = 
                             com.rndmodgames.futtoboru.system.generators.PlayerContractGenerator.generateRandomContract(
                                 player, club, seasonStartDate);
