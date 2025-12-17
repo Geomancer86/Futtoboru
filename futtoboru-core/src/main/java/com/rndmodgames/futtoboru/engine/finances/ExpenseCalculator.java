@@ -5,8 +5,6 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-import java.time.temporal.ChronoUnit;
-
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ClubExpenses;
 import com.rndmodgames.futtoboru.data.PlayerContract;
