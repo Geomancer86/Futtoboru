@@ -269,14 +269,35 @@ public class PlayerDetailScreenTable extends VisTable {
         if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getCurrentGame() != null) {
             com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
                 currentPlayer.getPerson().getCurrentClubId());
+            
+            Gdx.app.debug("PlayerDetailScreenTable", "Looking for contract - Player ID: " + 
+                currentPlayer.getId() + ", Person ID: " + 
+                (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getId() : "null") + 
+                ", Club: " + (playerClub != null ? playerClub.getName() : "null"));
+            
             if (playerClub != null) {
                 // Try player ID first, then person ID as fallback
                 Long lookupId = currentPlayer.getId() != null ? currentPlayer.getId() : 
                     (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getId() : null);
                 if (lookupId != null) {
                     contract = playerClub.getContractForPlayer(lookupId);
+                    if (contract == null) {
+                        Gdx.app.debug("PlayerDetailScreenTable", "Contract lookup returned null for player ID: " + lookupId);
+                    } else {
+                        Gdx.app.debug("PlayerDetailScreenTable", "Found contract ID: " + contract.getId() + 
+                            " for player ID: " + lookupId);
+                    }
+                } else {
+                    Gdx.app.error("PlayerDetailScreenTable", "Cannot lookup contract: both player ID and person ID are null");
                 }
+            } else {
+                Gdx.app.error("PlayerDetailScreenTable", "Player club not found for club ID: " + 
+                    currentPlayer.getPerson().getCurrentClubId());
             }
+        } else {
+            Gdx.app.error("PlayerDetailScreenTable", "Cannot lookup contract: currentClubId=" + 
+                (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getCurrentClubId() : "null") + 
+                ", currentGame=" + (futtoboru.getCurrentGame() != null ? "not null" : "null"));
         }
         
         if (contract != null) {

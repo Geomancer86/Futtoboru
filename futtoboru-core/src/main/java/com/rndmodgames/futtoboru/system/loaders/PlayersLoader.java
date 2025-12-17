@@ -245,6 +245,12 @@ public class PlayersLoader {
                         
                         if (contract != null) {
                             club.addPlayerContract(contract);
+                            Gdx.app.debug("PlayersLoader", "Added contract to club " + club.getName() + 
+                                " for player ID: " + contract.getPlayerId() + 
+                                ", Total contracts at club: " + club.getPlayerContracts().size());
+                        } else {
+                            Gdx.app.error("PlayersLoader", "Contract generation returned NULL for player: " + 
+                                (person.getName() + " " + person.getLastname()) + " at club: " + club.getName());
                         }
                         
                         // Assign profession (for amateur/semi-pro players)

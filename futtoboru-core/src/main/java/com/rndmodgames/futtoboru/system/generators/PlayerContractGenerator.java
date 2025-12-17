@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
+import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ContractType;
 import com.rndmodgames.futtoboru.data.Player;
@@ -36,8 +37,14 @@ public class PlayerContractGenerator {
      */
     public static PlayerContract generateRandomContract(Player player, Club club, LocalDateTime contractStartDate) {
         if (player == null || club == null || contractStartDate == null) {
+            Gdx.app.error("PlayerContractGenerator", "Cannot generate contract: player=" + (player != null) + 
+                ", club=" + (club != null) + ", date=" + (contractStartDate != null));
             return null;
         }
+        
+        Gdx.app.debug("PlayerContractGenerator", "Generating contract for player ID: " + 
+            (player.getId() != null ? player.getId() : (player.getPerson() != null ? player.getPerson().getId() : "NULL")) + 
+            ", club: " + (club.getName() != null ? club.getName() : "NULL"));
         
         PlayerContract contract = new PlayerContract();
         
@@ -45,15 +52,27 @@ public class PlayerContractGenerator {
         contract.setId(-(System.currentTimeMillis() % 1000000) - DatabaseLoader.RNG.nextInt(10000));
         
         // Set player and club IDs
+        Long playerIdToUse = null;
         if (player.getId() != null) {
-            contract.setPlayerId(player.getId());
+            playerIdToUse = player.getId();
         } else if (player.getPerson() != null && player.getPerson().getId() != null) {
             // Use person ID if player ID not set
-            contract.setPlayerId(player.getPerson().getId());
+            playerIdToUse = player.getPerson().getId();
         }
+        
+        if (playerIdToUse == null) {
+            Gdx.app.error("PlayerContractGenerator", "Cannot generate contract: Player has no ID (player ID: " + 
+                player.getId() + ", person ID: " + (player.getPerson() != null ? player.getPerson().getId() : "null") + ")");
+            return null;
+        }
+        
+        contract.setPlayerId(playerIdToUse);
         
         if (club.getId() != null) {
             contract.setClubId(club.getId());
+        } else {
+            Gdx.app.error("PlayerContractGenerator", "Cannot generate contract: Club has no ID");
+            return null;
         }
         
         // Determine contract type based on player skill and club size
@@ -78,6 +97,11 @@ public class PlayerContractGenerator {
         
         // Set contract status
         contract.setIsActive(true);
+        
+        Gdx.app.debug("PlayerContractGenerator", "Contract generated: ID=" + contract.getId() + 
+            ", PlayerID=" + contract.getPlayerId() + ", ClubID=" + contract.getClubId() + 
+            ", Type=" + ContractType.getName(contract.getContractType()) + 
+            ", Wage=£" + contract.getWeeklyWage());
         
         return contract;
     }
