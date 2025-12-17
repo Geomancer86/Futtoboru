@@ -413,17 +413,6 @@ public class MatchScheduler {
         income.setMatchDate(match.getMatchDateTime() != null ? match.getMatchDateTime() : LocalDateTime.now());
         income.setMatchType(match.getMatchType());
         
-        // Debug: Log match type when creating new MatchIncome
-        if (match.getMatchType() != null) {
-            String matchTypeName = match.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
-                                  match.getMatchType() == Match.LEAGUE_MATCH ? "LEAGUE" : 
-                                  match.getMatchType() == Match.CUP_MATCH ? "CUP" : "UNKNOWN";
-            System.out.println("MatchScheduler: Creating new MatchIncome - Match ID: " + match.getId() + 
-                             ", Match Type: " + matchTypeName + " (value: " + match.getMatchType() + ")");
-        } else {
-            System.out.println("MatchScheduler: WARNING - Creating MatchIncome with NULL match type for match ID: " + match.getId());
-        }
-        
         // Add to club's match income list
         homeClub.addMatchIncome(income);
         
