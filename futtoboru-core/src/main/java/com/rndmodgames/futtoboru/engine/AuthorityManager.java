@@ -114,6 +114,9 @@ public class AuthorityManager {
         
         // Check cup round progression
         checkCupRoundProgression();
+        
+        // Check for cup replays (tied matches)
+        checkCupReplays();
     }
     
     /**
@@ -819,5 +822,182 @@ public class AuthorityManager {
         message.setIsDeleted(false);
         
         return message;
+    }
+    
+    /**
+     * Check for cup matches that ended in draws and schedule replays (v1.0 - Cup Replay Handling)
+     */
+    private void checkCupReplays() {
+        try {
+            if (currentGame == null) {
+                return;
+            }
+            
+            List<Competition> cups = currentGame.getAllCups();
+            if (cups == null || cups.isEmpty()) {
+                return;
+            }
+            
+            LocalDateTime currentDate = currentGame.getGameDate();
+            
+            for (Competition cup : cups) {
+                if (cup == null || !Competition.COMPETITION_CUP.equals(cup.getCompetitionType())) {
+                    continue;
+                }
+                
+                CompetitionEdition edition = getCurrentCupEdition(cup, currentDate);
+                if (edition == null) {
+                    continue;
+                }
+                
+                // Check all matches for this edition
+                List<Match> editionMatches = getMatchesForEdition(edition);
+                
+                for (Match match : editionMatches) {
+                    // Check if match is played and ended in a draw
+                    if (match.getIsPlayed() != null && match.getIsPlayed() &&
+                        match.getHomeGoals() != null && match.getAwayGoals() != null &&
+                        match.getHomeGoals().equals(match.getAwayGoals())) {
+                        
+                        // Check if replay already scheduled
+                        if (!isReplayScheduled(match, edition)) {
+                            scheduleCupReplay(match, cup, edition);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Gdx.app.error("AuthorityManager", "Error in checkCupReplays()", e);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Check if a replay is already scheduled for a tied match
+     */
+    private boolean isReplayScheduled(Match originalMatch, CompetitionEdition edition) {
+        if (originalMatch == null || edition == null) {
+            return false;
+        }
+        
+        // Check if a replay match exists (same clubs, same round, later date)
+        List<Match> editionMatches = getMatchesForEdition(edition);
+        LocalDateTime originalDate = originalMatch.getMatchDateTime();
+        
+        for (Match match : editionMatches) {
+            if (match == null || match.equals(originalMatch)) {
+                continue; // Skip the original match
+            }
+            
+            // Check if this is a replay (same clubs, same round, later date)
+            if (match.getHomeClubId() != null && match.getAwayClubId() != null &&
+                originalMatch.getHomeClubId() != null && originalMatch.getAwayClubId() != null &&
+                match.getRound() != null && originalMatch.getRound() != null &&
+                match.getRound().equals(originalMatch.getRound())) {
+                
+                // Check if clubs match (could be swapped home/away)
+                boolean clubsMatch = 
+                    (match.getHomeClubId().equals(originalMatch.getHomeClubId()) && 
+                     match.getAwayClubId().equals(originalMatch.getAwayClubId())) ||
+                    (match.getHomeClubId().equals(originalMatch.getAwayClubId()) && 
+                     match.getAwayClubId().equals(originalMatch.getHomeClubId()));
+                
+                if (clubsMatch && match.getMatchDateTime() != null && originalDate != null &&
+                    match.getMatchDateTime().isAfter(originalDate)) {
+                    return true; // Replay already scheduled
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Schedule a cup replay for a tied match (7 days later)
+     */
+    private void scheduleCupReplay(Match originalMatch, Competition cup, CompetitionEdition edition) {
+        if (originalMatch == null || cup == null || edition == null) {
+            return;
+        }
+        
+        // Create replay match (swap home/away)
+        Match replay = new Match();
+        replay.setHomeClubId(originalMatch.getAwayClubId()); // Swap home/away
+        replay.setAwayClubId(originalMatch.getHomeClubId());
+        replay.setMatchType(Match.CUP_MATCH);
+        replay.setCompetitionId(cup.getId());
+        replay.setCompetitionEditionId(edition.getId());
+        replay.setRound(originalMatch.getRound());
+        replay.setMatchDateTime(originalMatch.getMatchDateTime().plusDays(7)); // 7 days later
+        replay.setIsProposed(false);
+        replay.setIsAccepted(true);
+        replay.setIsPlayed(false);
+        
+        // Add to clubs' scheduled matches
+        Club homeClub = currentGame.getClubById(replay.getHomeClubId());
+        Club awayClub = currentGame.getClubById(replay.getAwayClubId());
+        
+        if (homeClub != null) {
+            if (homeClub.getScheduledMatches() == null) {
+                homeClub.setScheduledMatches(new ArrayList<>());
+            }
+            homeClub.getScheduledMatches().add(replay);
+        }
+        if (awayClub != null) {
+            if (awayClub.getScheduledMatches() == null) {
+                awayClub.setScheduledMatches(new ArrayList<>());
+            }
+            awayClub.getScheduledMatches().add(replay);
+        }
+        
+        // Create replay message
+        MessageManager messageManager = game.getMessageManager();
+        if (homeClub != null && awayClub != null) {
+            Message replayMessage = createCupReplayMessage(cup, homeClub, awayClub, replay.getMatchDateTime());
+            if (replayMessage != null) {
+                currentGame.addMessage(replayMessage);
+            }
+        }
+        
+        Gdx.app.log("AuthorityManager", "Scheduled cup replay: " + 
+            (homeClub != null ? homeClub.getName() : "Unknown") + " v " + 
+            (awayClub != null ? awayClub.getName() : "Unknown") + 
+            " on " + replay.getMatchDateTime());
+    }
+    
+    /**
+     * Create cup replay message
+     */
+    private Message createCupReplayMessage(Competition cup, Club homeClub, Club awayClub, LocalDateTime replayDate) {
+        Message message = new Message();
+        message.setCategory(com.rndmodgames.futtoboru.data.Message.MessageCategory.CUP);
+        message.setMessageType("CUP_REPLAY");
+        message.setPriority(com.rndmodgames.futtoboru.data.Message.MessagePriority.NORMAL);
+        message.setTitle(cup.getName() + " Replay");
+        
+        StringBuilder content = new StringBuilder();
+        content.append("The ").append(cup.getName()).append(" match between ");
+        content.append(homeClub.getName()).append(" and ").append(awayClub.getName());
+        content.append(" ended in a draw.\n\n");
+        content.append("A replay has been scheduled for ");
+        content.append(formatDate(replayDate));
+        content.append(".\n\n");
+        content.append("The replay will be played at ").append(homeClub.getName()).append("'s ground.");
+        
+        message.setPlainTextMessage(content.toString());
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        return message;
+    }
+    
+    /**
+     * Format date for messages (helper method)
+     */
+    private String formatDate(LocalDateTime date) {
+        if (date == null) {
+            return "TBA";
+        }
+        return date.getDayOfMonth() + " " + date.getMonth().toString() + " " + date.getYear();
     }
 }
