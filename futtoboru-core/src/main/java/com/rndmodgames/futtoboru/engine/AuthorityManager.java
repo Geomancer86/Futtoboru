@@ -4,8 +4,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import java.util.ArrayList;
+
 import com.rndmodgames.futtoboru.data.Authority;
+import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Competition;
+import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.League;
+import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Message;
+import com.rndmodgames.futtoboru.engine.messages.MessageManager;
+import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -41,6 +50,7 @@ public class AuthorityManager {
     SaveGame currentGame;
     Authority mainAuthority;
     LeagueFixtureGenerator fixtureGenerator;
+    CompetitionScheduler competitionScheduler;
     
     //
     public AuthorityManager(Futtoboru parent) {
@@ -99,8 +109,11 @@ public class AuthorityManager {
         // Check leagues and generate fixtures if needed
         checkAndScheduleLeagueFixtures();
         
-        // TODO: Check cups and generate draws if needed
-        // checkAndScheduleCupDraws();
+        // Check cups and generate draws if needed
+        checkAndScheduleCupDraws();
+        
+        // Check cup round progression
+        checkCupRoundProgression();
     }
     
     /**
@@ -201,5 +214,231 @@ public class AuthorityManager {
     private LocalDateTime getSeasonEndDate(LocalDateTime seasonStart) {
         // Typical season: September to May (9 months)
         return seasonStart.plusMonths(9);
+    }
+    
+    /**
+     * Check all cups and generate draws if needed (v1.0 - Cup Draw Integration)
+     */
+    private void checkAndScheduleCupDraws() {
+        try {
+            Gdx.app.log("AuthorityManager", "checkAndScheduleCupDraws() called");
+            
+            if (currentGame == null) {
+                Gdx.app.debug("AuthorityManager", "currentGame is null - no cups to check");
+                return;
+            }
+            
+            List<Competition> cups = currentGame.getAllCups();
+            if (cups == null || cups.isEmpty()) {
+                Gdx.app.debug("AuthorityManager", "No cups found in current game");
+                return;
+            }
+            
+            Gdx.app.log("AuthorityManager", "Found " + cups.size() + " cups to check");
+            LocalDateTime currentDate = currentGame.getGameDate();
+            
+            for (Competition cup : cups) {
+                if (cup == null) {
+                    Gdx.app.error("AuthorityManager", "Found null cup in list");
+                    continue;
+                }
+                
+                // Only process CUP type competitions
+                if (!Competition.COMPETITION_CUP.equals(cup.getCompetitionType())) {
+                    continue;
+                }
+                
+                Gdx.app.log("AuthorityManager", "Checking cup: " + cup.getName());
+                
+                // Get or create current edition
+                CompetitionEdition edition = getCurrentCupEdition(cup, currentDate);
+                if (edition == null) {
+                    edition = createNewCupEdition(cup, currentDate);
+                    if (edition == null) {
+                        Gdx.app.error("AuthorityManager", "Failed to create cup edition for: " + cup.getName());
+                        continue;
+                    }
+                }
+                
+                // Check if cup needs initial draw
+                if (needsCupDraw(edition)) {
+                    Gdx.app.log("AuthorityManager", "Generating cup draw for: " + cup.getName());
+                    generateCupDraw(cup, edition);
+                } else {
+                    Gdx.app.debug("AuthorityManager", "Cup " + cup.getName() + " already has matches scheduled");
+                }
+            }
+        } catch (Exception e) {
+            Gdx.app.error("AuthorityManager", "Error in checkAndScheduleCupDraws()", e);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Get current cup edition that covers the current date
+     */
+    private CompetitionEdition getCurrentCupEdition(Competition cup, LocalDateTime currentDate) {
+        if (cup.getEditions() == null || cup.getEditions().isEmpty()) {
+            return null;
+        }
+        
+        // Find edition that covers current date
+        for (CompetitionEdition edition : cup.getEditions()) {
+            if (edition.getStartDate() != null && edition.getEndDate() != null) {
+                if (!currentDate.isBefore(edition.getStartDate()) && 
+                    !currentDate.isAfter(edition.getEndDate())) {
+                    return edition;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Create a new cup edition for the current season
+     */
+    private CompetitionEdition createNewCupEdition(Competition cup, LocalDateTime currentDate) {
+        CompetitionEdition edition = new CompetitionEdition();
+        edition.setId(System.currentTimeMillis()); // TODO: Better ID generation
+        edition.setName(cup.getName() + " " + currentDate.getYear());
+        edition.setStartDate(currentDate);
+        edition.setEndDate(currentDate.plusMonths(6)); // Cup typically runs 6 months
+        
+        // Get participant clubs (all clubs from leagues)
+        List<Long> participantIds = getCupParticipantClubs();
+        edition.setParticipantClubsIds(participantIds);
+        edition.setParticipantClubs(participantIds.size());
+        
+        if (cup.getEditions() == null) {
+            cup.setEditions(new ArrayList<>());
+        }
+        cup.getEditions().add(edition);
+        
+        Gdx.app.log("AuthorityManager", "Created new cup edition: " + edition.getName() + 
+            " with " + participantIds.size() + " participants");
+        
+        return edition;
+    }
+    
+    /**
+     * Get list of club IDs that should participate in cups
+     * For now, uses all clubs from all leagues
+     */
+    private List<Long> getCupParticipantClubs() {
+        List<Long> clubIds = new ArrayList<>();
+        
+        if (mainAuthority != null && mainAuthority.getLeagues() != null) {
+            for (League league : mainAuthority.getLeagues()) {
+                if (league.getLeagueClubs() != null) {
+                    for (Club club : league.getLeagueClubs()) {
+                        if (club != null && club.getId() != null) {
+                            clubIds.add(club.getId());
+                        }
+                    }
+                }
+            }
+        }
+        
+        return clubIds;
+    }
+    
+    /**
+     * Check if cup needs an initial draw (no matches scheduled yet)
+     */
+    private boolean needsCupDraw(CompetitionEdition edition) {
+        if (edition.getParticipantClubsIds() == null || edition.getParticipantClubsIds().isEmpty()) {
+            return false;
+        }
+        
+        // Check if any matches exist for this edition
+        for (Club club : currentGame.getAllClubs()) {
+            if (club == null || club.getScheduledMatches() == null) {
+                continue;
+            }
+            for (Match match : club.getScheduledMatches()) {
+                if (match != null && match.getCompetitionEditionId() != null &&
+                    match.getCompetitionEditionId().equals(edition.getId())) {
+                    return false; // Matches already scheduled
+                }
+            }
+        }
+        
+        return true; // No matches found, need draw
+    }
+    
+    /**
+     * Generate cup draw and schedule matches
+     */
+    private void generateCupDraw(Competition cup, CompetitionEdition edition) {
+        if (edition.getParticipantClubsIds() == null || edition.getParticipantClubsIds().isEmpty()) {
+            Gdx.app.error("AuthorityManager", "Cannot generate cup draw: no participants");
+            return;
+        }
+        
+        // Generate draw using CompetitionScheduler
+        List<Match> drawMatches = competitionScheduler.competitionDraw(cup, edition.getParticipantClubsIds());
+        
+        if (drawMatches == null || drawMatches.isEmpty()) {
+            Gdx.app.error("AuthorityManager", "Cup draw generated no matches");
+            return;
+        }
+        
+        // Schedule matches with dates (first round in 2 weeks)
+        LocalDateTime currentDate = currentGame.getGameDate();
+        LocalDateTime matchDate = currentDate.plusWeeks(2);
+        
+        int roundNumber = 1; // First round
+        MessageManager messageManager = game.getMessageManager();
+        
+        for (Match match : drawMatches) {
+            // Set match properties
+            match.setMatchType(Match.CUP_MATCH);
+            match.setCompetitionId(cup.getId());
+            match.setCompetitionEditionId(edition.getId());
+            match.setRound(roundNumber);
+            match.setMatchDateTime(matchDate);
+            match.setIsProposed(false);
+            match.setIsAccepted(true);
+            match.setIsPlayed(false);
+            
+            // Add to clubs' scheduled matches
+            Club homeClub = currentGame.getClubById(match.getHomeClubId());
+            Club awayClub = currentGame.getClubById(match.getAwayClubId());
+            
+            if (homeClub != null) {
+                if (homeClub.getScheduledMatches() == null) {
+                    homeClub.setScheduledMatches(new ArrayList<>());
+                }
+                homeClub.getScheduledMatches().add(match);
+            }
+            if (awayClub != null) {
+                if (awayClub.getScheduledMatches() == null) {
+                    awayClub.setScheduledMatches(new ArrayList<>());
+                }
+                awayClub.getScheduledMatches().add(match);
+            }
+            
+            // Create cup draw message for participating clubs
+            if (homeClub != null && awayClub != null) {
+                Message drawMessage = messageManager.createCupDrawResultMessage(
+                    cup, homeClub, awayClub, matchDate, "First Round"
+                );
+                if (drawMessage != null) {
+                    currentGame.addMessage(drawMessage);
+                }
+            }
+        }
+        
+        Gdx.app.log("AuthorityManager", "Generated cup draw: " + drawMatches.size() + 
+            " matches for " + cup.getName() + " (Round " + roundNumber + ")");
+    }
+    
+    /**
+     * Check if cup rounds need to be advanced (v1.0 - Cup Round Progression)
+     */
+    private void checkCupRoundProgression() {
+        // TODO: Implement cup round progression
+        // This will check if a round is complete and advance to next round
     }
 }
