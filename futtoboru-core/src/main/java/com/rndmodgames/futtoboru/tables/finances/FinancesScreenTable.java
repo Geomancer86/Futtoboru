@@ -3,7 +3,9 @@ package com.rndmodgames.futtoboru.tables.finances;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -219,6 +221,8 @@ public class FinancesScreenTable extends VisTable {
     
     /**
      * Calculate match income statistics by match type for current season
+     * 
+     * Only counts matches that have been played (to avoid counting matches still selling tickets)
      */
     private MatchIncomeStats calculateMatchIncomeStats(Club club, Integer matchType) {
         MatchIncomeStats stats = new MatchIncomeStats();
@@ -230,20 +234,67 @@ public class FinancesScreenTable extends VisTable {
         
         LocalDateTime seasonStart = getCurrentSeasonStart();
         
+        // Track which matches we've already counted (by match ID)
+        java.util.Set<Long> countedMatchIds = new java.util.HashSet<>();
+        
         for (MatchIncome income : matchIncomes) {
             if (income.getMatchType() != null && 
                 income.getMatchType().equals(matchType) &&
                 income.getMatchDate() != null && 
                 !income.getMatchDate().isBefore(seasonStart)) {
-                stats.totalRevenue = stats.totalRevenue.add(income.getTicketRevenue());
-                if (income.getAttendance() != null) {
-                    stats.totalAttendance += income.getAttendance();
+                
+                // Only count each match once (by match ID)
+                if (income.getMatchId() != null && !countedMatchIds.contains(income.getMatchId())) {
+                    // Check if match has been played
+                    Match match = findMatchById(income.getMatchId());
+                    if (match != null && match.getIsPlayed() != null && match.getIsPlayed()) {
+                        // Match has been played, include it in statistics
+                        stats.totalRevenue = stats.totalRevenue.add(income.getTicketRevenue());
+                        if (income.getAttendance() != null) {
+                            stats.totalAttendance += income.getAttendance();
+                        }
+                        stats.matchCount++;
+                        countedMatchIds.add(income.getMatchId());
+                    }
                 }
-                stats.matchCount++;
             }
         }
         
         return stats;
+    }
+    
+    /**
+     * Find a match by ID from the current game
+     */
+    private Match findMatchById(Long matchId) {
+        if (matchId == null || currentGame == null) {
+            return null;
+        }
+        
+        Club club = currentGame.getCurrentClub();
+        if (club == null) {
+            return null;
+        }
+        
+        // Search in played matches first
+        if (club.getPlayedMatches() != null) {
+            for (Match match : club.getPlayedMatches()) {
+                if (match != null && match.getId() != null && match.getId().equals(matchId)) {
+                    return match;
+                }
+            }
+        }
+        
+        // Also check scheduled matches (in case match was just played)
+        if (club.getScheduledMatches() != null) {
+            for (Match match : club.getScheduledMatches()) {
+                if (match != null && match.getId() != null && match.getId().equals(matchId)) {
+                    return match;
+                }
+            }
+        }
+        
+        return null;
     }
     
     /**

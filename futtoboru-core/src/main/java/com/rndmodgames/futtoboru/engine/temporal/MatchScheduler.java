@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 
+import java.util.List;
+
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.MatchIncome;
@@ -344,26 +346,67 @@ public class MatchScheduler {
     /**
      * Record match income for financial tracking (v1.0)
      * 
-     * Creates a MatchIncome object and adds it to the club's match income list
+     * Creates or updates a MatchIncome object for the match.
+     * Since tickets are sold over multiple days, we need to aggregate the data
+     * into a single MatchIncome record per match.
      */
     private void recordMatchIncome(Match match, Club homeClub, int ticketsSold, BigDecimal revenue) {
-        if (match == null || homeClub == null || revenue == null) {
+        if (match == null || homeClub == null || revenue == null || match.getId() == null) {
             return;
         }
         
-        // Create match income record
+        // Find existing MatchIncome for this match, or create new one
+        MatchIncome income = findOrCreateMatchIncome(match, homeClub);
+        
+        // Accumulate ticket sales and revenue (tickets sold over multiple days)
+        income.setTicketRevenue(income.getTicketRevenue().add(revenue));
+        
+        // Accumulate attendance (tickets sold today added to total)
+        int currentAttendance = income.getAttendance() != null ? income.getAttendance() : 0;
+        income.setAttendance(currentAttendance + ticketsSold);
+        
+        // Set match date and type (should be same for all days)
+        if (match.getMatchDateTime() != null) {
+            income.setMatchDate(match.getMatchDateTime());
+        }
+        if (match.getMatchType() != null) {
+            income.setMatchType(match.getMatchType());
+        }
+        
+        System.out.println("MatchScheduler: Updated match income - Match ID: " + match.getId() + 
+                          ", Total Revenue: $" + df.format(income.getTicketRevenue()) + 
+                          ", Total Attendance: " + income.getAttendance() + 
+                          ", Today's Tickets: " + ticketsSold);
+    }
+    
+    /**
+     * Find existing MatchIncome for a match, or create a new one if it doesn't exist
+     */
+    private MatchIncome findOrCreateMatchIncome(Match match, Club homeClub) {
+        List<MatchIncome> matchIncomes = homeClub.getMatchIncomes();
+        
+        // Search for existing MatchIncome with this match ID
+        if (matchIncomes != null) {
+            for (MatchIncome existing : matchIncomes) {
+                if (existing.getMatchId() != null && existing.getMatchId().equals(match.getId())) {
+                    // Found existing record, return it to update
+                    return existing;
+                }
+            }
+        }
+        
+        // No existing record found, create new one
         MatchIncome income = new MatchIncome();
         income.setMatchId(match.getId());
         income.setClubId(homeClub.getId());
-        income.setTicketRevenue(revenue);
-        income.setAttendance(ticketsSold);
+        income.setTicketRevenue(BigDecimal.ZERO);
+        income.setAttendance(0);
         income.setMatchDate(match.getMatchDateTime() != null ? match.getMatchDateTime() : LocalDateTime.now());
         income.setMatchType(match.getMatchType());
         
         // Add to club's match income list
         homeClub.addMatchIncome(income);
         
-        System.out.println("MatchScheduler: Recorded match income - Match ID: " + match.getId() + 
-                          ", Revenue: $" + df.format(revenue) + ", Tickets: " + ticketsSold);
+        return income;
     }
 }
