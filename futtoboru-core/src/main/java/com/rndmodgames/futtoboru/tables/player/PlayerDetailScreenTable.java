@@ -13,10 +13,15 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.data.NationalityModifier;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerProfession;
+import com.rndmodgames.futtoboru.data.RegionModifier;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
+import com.rndmodgames.futtoboru.system.loaders.NationalityModifiersLoader;
+import com.rndmodgames.futtoboru.system.loaders.RegionModifiersLoader;
 
 /**
  * Player Detail Screen Table v1
@@ -133,6 +138,12 @@ public class PlayerDetailScreenTable extends VisTable {
         contentTable.addSeparator().colspan(2).pad(10);
         contentTable.row();
         
+        // Modifiers & Bonuses Section (v2.0 - 3d6 system)
+        buildModifiersSection();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.row();
+        
         // Physical Attributes Section
         buildPhysicalAttributesSection();
         contentTable.row();
@@ -197,8 +208,166 @@ public class PlayerDetailScreenTable extends VisTable {
             }
         }
         infoTable.add(new VisLabel(clubName)).left();
+        infoTable.row();
+        
+        // Player Profession (day job for amateur/semi-pro)
+        infoTable.add(new VisLabel("Profession:")).left().width(150);
+        String professionName = "N/A (Professional Player)";
+        if (currentPlayer.getPlayerProfession() != null) {
+            professionName = currentPlayer.getPlayerProfession().getName();
+        }
+        infoTable.add(new VisLabel(professionName)).left();
+        infoTable.row();
+        
+        // Region/State (for region modifiers)
+        infoTable.add(new VisLabel("Region:")).left().width(150);
+        String regionName = "N/A";
+        if (currentPlayer.getPerson().getState() != null && 
+            currentPlayer.getPerson().getState().getName() != null) {
+            regionName = currentPlayer.getPerson().getState().getName();
+        }
+        infoTable.add(new VisLabel(regionName)).left();
         
         contentTable.add(infoTable).left().pad(10);
+    }
+    
+    /**
+     * Build modifiers and bonuses section (v2.0 - 3d6 system)
+     * Shows nationality modifiers, region modifiers, and profession bonuses
+     */
+    private void buildModifiersSection() {
+        VisTable modifiersTable = new VisTable(true);
+        
+        modifiersTable.row();
+        modifiersTable.add(new VisLabel("Attribute Modifiers & Bonuses")).colspan(2).left().padBottom(5);
+        modifiersTable.row();
+        
+        // Get nationality modifier
+        NationalityModifier natMod = null;
+        if (currentPlayer.getPerson().getCountry() != null && 
+            currentPlayer.getPerson().getCountry().getId() != null) {
+            natMod = NationalityModifiersLoader.getModifier(
+                currentPlayer.getPerson().getCountry().getId());
+        }
+        
+        // Get region modifier
+        RegionModifier regMod = null;
+        if (currentPlayer.getPerson().getState() != null && 
+            currentPlayer.getPerson().getState().getName() != null &&
+            currentPlayer.getPerson().getCountry() != null && 
+            currentPlayer.getPerson().getCountry().getId() != null) {
+            regMod = RegionModifiersLoader.getModifier(
+                currentPlayer.getPerson().getState().getName(),
+                currentPlayer.getPerson().getCountry().getId());
+        }
+        
+        // Nationality Modifiers
+        if (natMod != null) {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Nationality Modifiers (" + natMod.getCountryName() + "):")).colspan(2).left().padTop(5);
+            modifiersTable.row();
+            
+            addModifierRow(modifiersTable, "Strength", natMod.getStrengthModifier());
+            addModifierRow(modifiersTable, "Endurance", natMod.getEnduranceModifier());
+            addModifierRow(modifiersTable, "Stamina", natMod.getStaminaModifier());
+            addModifierRow(modifiersTable, "Speed", natMod.getSpeedModifier());
+            addModifierRow(modifiersTable, "Acceleration", natMod.getAccelerationModifier());
+            addModifierRow(modifiersTable, "Jumping", natMod.getJumpingModifier());
+            addModifierRow(modifiersTable, "Dexterity", natMod.getDexterityModifier());
+            addModifierRow(modifiersTable, "Concentration", natMod.getConcentrationModifier());
+            addModifierRow(modifiersTable, "Courage", natMod.getCourageModifier());
+            addModifierRow(modifiersTable, "Determination", natMod.getDeterminationModifier());
+            addModifierRow(modifiersTable, "Leadership", natMod.getLeadershipModifier());
+            addModifierRow(modifiersTable, "Perception", natMod.getPerceptionModifier());
+            addModifierRow(modifiersTable, "Positioning", natMod.getPositioningModifier());
+            addModifierRow(modifiersTable, "Teamwork", natMod.getTeamworkModifier());
+        } else {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Nationality Modifiers: None")).colspan(2).left().padTop(5);
+        }
+        
+        modifiersTable.row();
+        modifiersTable.addSeparator().colspan(2).pad(5);
+        
+        // Region Modifiers
+        if (regMod != null) {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Region Modifiers (" + regMod.getRegionName() + "):")).colspan(2).left().padTop(5);
+            modifiersTable.row();
+            
+            addModifierRow(modifiersTable, "Strength", regMod.getStrengthModifier());
+            addModifierRow(modifiersTable, "Endurance", regMod.getEnduranceModifier());
+            addModifierRow(modifiersTable, "Stamina", regMod.getStaminaModifier());
+            addModifierRow(modifiersTable, "Speed", regMod.getSpeedModifier());
+            addModifierRow(modifiersTable, "Acceleration", regMod.getAccelerationModifier());
+            addModifierRow(modifiersTable, "Jumping", regMod.getJumpingModifier());
+            addModifierRow(modifiersTable, "Dexterity", regMod.getDexterityModifier());
+            addModifierRow(modifiersTable, "Concentration", regMod.getConcentrationModifier());
+            addModifierRow(modifiersTable, "Courage", regMod.getCourageModifier());
+            addModifierRow(modifiersTable, "Determination", regMod.getDeterminationModifier());
+            addModifierRow(modifiersTable, "Leadership", regMod.getLeadershipModifier());
+            addModifierRow(modifiersTable, "Perception", regMod.getPerceptionModifier());
+            addModifierRow(modifiersTable, "Positioning", regMod.getPositioningModifier());
+            addModifierRow(modifiersTable, "Teamwork", regMod.getTeamworkModifier());
+        } else {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Region Modifiers: None")).colspan(2).left().padTop(5);
+        }
+        
+        modifiersTable.row();
+        modifiersTable.addSeparator().colspan(2).pad(5);
+        
+        // Profession Bonuses (only for amateur/semi-pro)
+        if (currentPlayer.getPlayerProfession() != null) {
+            PlayerProfession profession = currentPlayer.getPlayerProfession();
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Profession Bonuses (" + profession.getName() + "):")).colspan(2).left().padTop(5);
+            modifiersTable.row();
+            
+            addModifierRow(modifiersTable, "Strength", profession.getStrengthBonus());
+            addModifierRow(modifiersTable, "Endurance", profession.getEnduranceBonus());
+            addModifierRow(modifiersTable, "Stamina", profession.getStaminaBonus());
+            addModifierRow(modifiersTable, "Speed", profession.getSpeedBonus());
+            addModifierRow(modifiersTable, "Acceleration", profession.getAccelerationBonus());
+            addModifierRow(modifiersTable, "Jumping", profession.getJumpingBonus());
+            addModifierRow(modifiersTable, "Dexterity", profession.getDexterityBonus());
+            addModifierRow(modifiersTable, "Concentration", profession.getConcentrationBonus());
+            addModifierRow(modifiersTable, "Courage", profession.getCourageBonus());
+            addModifierRow(modifiersTable, "Determination", profession.getDeterminationBonus());
+            addModifierRow(modifiersTable, "Leadership", profession.getLeadershipBonus());
+            addModifierRow(modifiersTable, "Perception", profession.getPerceptionBonus());
+            addModifierRow(modifiersTable, "Positioning", profession.getPositioningBonus());
+            addModifierRow(modifiersTable, "Teamwork", profession.getTeamworkBonus());
+        } else {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Profession Bonuses: None (Professional Player)")).colspan(2).left().padTop(5);
+        }
+        
+        contentTable.add(modifiersTable).left().pad(10);
+    }
+    
+    /**
+     * Add a modifier row (only shows if modifier is non-zero)
+     */
+    private void addModifierRow(VisTable table, String attributeName, Integer modifier) {
+        if (modifier == null || modifier == 0) {
+            return; // Skip zero modifiers
+        }
+        
+        table.row();
+        table.add(new VisLabel(attributeName + ":")).left().width(150);
+        
+        String modifierText = modifier > 0 ? "+" + modifier : String.valueOf(modifier);
+        VisLabel modifierLabel = new VisLabel(modifierText);
+        
+        // Color coding: green for positive, red for negative
+        if (modifier > 0) {
+            modifierLabel.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green
+        } else {
+            modifierLabel.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red
+        }
+        
+        table.add(modifierLabel).left();
     }
     
     /**
@@ -298,9 +467,32 @@ public class PlayerDetailScreenTable extends VisTable {
         // Attribute name
         table.add(new VisLabel(attributeName + ":")).left().width(150);
         
-        // Current value
-        String valueText = currentValue != null ? attributeFormat.format(currentValue) : "N/A";
+        // Current value (v2.0 - 3d6 system: display as integer)
+        String valueText;
+        if (currentValue != null) {
+            // Display as integer for 3d6 system (3-23 range)
+            int intValue = Math.round(currentValue);
+            valueText = String.valueOf(intValue);
+        } else {
+            valueText = "N/A";
+        }
         VisLabel valueLabel = new VisLabel(valueText);
+        
+        // Color coding for exceptional attributes (20+)
+        if (currentValue != null && currentValue >= 20) {
+            valueLabel.setColor(1.0f, 0.84f, 0.0f, 1.0f); // Gold for exceptional (20+)
+        } else if (currentValue != null && currentValue >= 18) {
+            valueLabel.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green for excellent (18-19)
+        } else if (currentValue != null && currentValue >= 15) {
+            valueLabel.setColor(0.5f, 1.0f, 0.5f, 1.0f); // Light green for good (15-17)
+        } else if (currentValue != null && currentValue >= 12) {
+            valueLabel.setColor(1.0f, 1.0f, 1.0f, 1.0f); // White for average (12-14)
+        } else if (currentValue != null && currentValue >= 9) {
+            valueLabel.setColor(1.0f, 0.8f, 0.5f, 1.0f); // Orange for below average (9-11)
+        } else if (currentValue != null) {
+            valueLabel.setColor(1.0f, 0.5f, 0.5f, 1.0f); // Red for poor (3-8)
+        }
+        
         table.add(valueLabel).left().width(80);
         
         // Change indicator (30-day tracking)
