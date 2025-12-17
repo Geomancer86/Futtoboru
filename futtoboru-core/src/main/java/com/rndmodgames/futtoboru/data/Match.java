@@ -33,7 +33,10 @@ public class Match implements Serializable {
     private LocalDateTime proposeDateTime;
     private LocalDateTime matchDateTime;
     
-    // TODO: League and Season x League
+    // Competition tracking (v1.0 - Season Completion & Cup Draws)
+    private Long competitionId;        // Competition this match belongs to (League or Cup)
+    private Long competitionEditionId; // Edition this match belongs to (Season or Staging)
+    private Integer round;             // Round number (for cups, null for leagues)
     
     //
     private Integer matchType;
@@ -159,5 +162,30 @@ public class Match implements Serializable {
 
     public void setAttendance(Integer attendance) {
         this.attendance = attendance;
+    }
+    
+    // Competition tracking getters and setters
+    public Long getCompetitionId() {
+        return competitionId;
+    }
+
+    public void setCompetitionId(Long competitionId) {
+        this.competitionId = competitionId;
+    }
+
+    public Long getCompetitionEditionId() {
+        return competitionEditionId;
+    }
+
+    public void setCompetitionEditionId(Long competitionEditionId) {
+        this.competitionEditionId = competitionEditionId;
+    }
+
+    public Integer getRound() {
+        return round;
+    }
+
+    public void setRound(Integer round) {
+        this.round = round;
     }
 }
