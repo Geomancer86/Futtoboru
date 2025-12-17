@@ -160,15 +160,16 @@ public class LeagueFixtureGenerator {
         
         List<Match> allMatches = new ArrayList<>();
         
-        // Generate home fixtures (first half of season)
-        List<Match> homeFixtures = generateRoundRobinFixtures(clubs, true);
+        // Generate first half fixtures with proper home/away rotation
+        List<Match> firstHalfFixtures = generateRoundRobinFixtures(clubs);
         
-        // Generate away fixtures (second half of season) - reverse home/away
-        List<Match> awayFixtures = generateRoundRobinFixtures(clubs, false);
+        // Generate second half fixtures by reversing home/away for each match
+        // This ensures each club plays every other club once at home and once away
+        List<Match> secondHalfFixtures = generateReturnFixtures(firstHalfFixtures);
         
         // Combine and schedule matches
-        allMatches.addAll(homeFixtures);
-        allMatches.addAll(awayFixtures);
+        allMatches.addAll(firstHalfFixtures);
+        allMatches.addAll(secondHalfFixtures);
         
         // Schedule matches across season dates (pass actual number of clubs for correct matchday calculation)
         scheduleMatchesAcrossSeason(allMatches, numClubs, seasonStartDate, seasonEndDate);
@@ -248,15 +249,15 @@ public class LeagueFixtureGenerator {
     /**
      * Generate round-robin fixtures for a list of clubs
      * 
-     * Round-robin algorithm: Each club plays every other club once per round.
+     * Round-robin algorithm: Each club plays every other club once.
      * For N clubs, we need N-1 rounds. In each round, we pair clubs.
+     * Home/away alternates each round to ensure balanced distribution.
      * 
      * @param clubs List of clubs
-     * @param isHomeRound If true, first club in pair is home; if false, second club is home
-     * @return List of matches
+     * @return List of matches (first half of season)
      */
-    private List<Match> generateRoundRobinFixtures(List<Club> clubs, boolean isHomeRound) {
-        System.out.println("generateRoundRobinFixtures() called with " + clubs.size() + " clubs, isHomeRound: " + isHomeRound);
+    private List<Match> generateRoundRobinFixtures(List<Club> clubs) {
+        System.out.println("generateRoundRobinFixtures() called with " + clubs.size() + " clubs");
         
         List<Match> matches = new ArrayList<>();
         int numClubs = clubs.size();
@@ -283,6 +284,12 @@ public class LeagueFixtureGenerator {
         // Generate rounds using round-robin algorithm
         for (int round = 0; round < numRounds; round++) {
             System.out.println("Generating round " + (round + 1) + " of " + numRounds);
+            
+            // Determine home/away pattern for this round
+            // Alternate pattern: even rounds have first club home, odd rounds have second club home
+            // This ensures balanced distribution
+            boolean firstClubIsHome = (round % 2 == 0);
+            
             // Pair clubs: first vs last, second vs second-last, etc.
             for (int i = 0; i < matchesPerRound; i++) {
                 int club1Index = i;
@@ -313,12 +320,12 @@ public class LeagueFixtureGenerator {
                 match.setIsAccepted(true); // League matches are automatically accepted
                 match.setIsPlayed(false);
                 
-                // Set home/away based on isHomeRound flag
-                if (isHomeRound) {
+                // Set home/away with balanced rotation
+                // Alternate which club in the pair is home each round
+                if (firstClubIsHome) {
                     match.setHomeClubId(club1.getId());
                     match.setAwayClubId(club2.getId());
                 } else {
-                    // Reverse for return fixtures
                     match.setHomeClubId(club2.getId());
                     match.setAwayClubId(club1.getId());
                 }
@@ -341,7 +348,45 @@ public class LeagueFixtureGenerator {
             }
         }
         
+        System.out.println("Generated " + matchesCreated + " matches in first half");
         return matches;
+    }
+    
+    /**
+     * Generate return fixtures by reversing home/away for each match
+     * 
+     * This ensures each club plays every other club once at home and once away.
+     * 
+     * @param firstHalfFixtures List of matches from first half
+     * @return List of return fixtures with reversed home/away
+     */
+    private List<Match> generateReturnFixtures(List<Match> firstHalfFixtures) {
+        System.out.println("generateReturnFixtures() called with " + firstHalfFixtures.size() + " matches");
+        
+        List<Match> returnFixtures = new ArrayList<>();
+        
+        for (Match originalMatch : firstHalfFixtures) {
+            if (originalMatch == null) {
+                continue;
+            }
+            
+            // Create return fixture by swapping home and away
+            Match returnMatch = new Match();
+            returnMatch.setId(nextMatchId++);
+            returnMatch.setMatchType(Match.LEAGUE_MATCH);
+            returnMatch.setIsProposed(false);
+            returnMatch.setIsAccepted(true);
+            returnMatch.setIsPlayed(false);
+            
+            // Reverse home/away
+            returnMatch.setHomeClubId(originalMatch.getAwayClubId());
+            returnMatch.setAwayClubId(originalMatch.getHomeClubId());
+            
+            returnFixtures.add(returnMatch);
+        }
+        
+        System.out.println("Generated " + returnFixtures.size() + " return fixtures");
+        return returnFixtures;
     }
     
     /**

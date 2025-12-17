@@ -202,6 +202,44 @@ public class ArrangeFriendlyTable extends VisTable {
                 // Create New Match
                 Match match = new Match();
                 
+                // Assign unique match ID (use negative range to avoid conflicts with database-loaded matches)
+                // Find the lowest (most negative) existing match ID, or use -1 as starting point
+                Long minMatchId = -1L;
+                if (currentGame.getAllClubs() != null) {
+                    for (Club club : currentGame.getAllClubs()) {
+                        if (club != null) {
+                            // Check proposed matches
+                            if (club.getProposedMatches() != null) {
+                                for (Match m : club.getProposedMatches()) {
+                                    if (m != null && m.getId() != null && m.getId() < 0 && m.getId() < minMatchId) {
+                                        minMatchId = m.getId();
+                                    }
+                                }
+                            }
+                            // Check scheduled matches
+                            if (club.getScheduledMatches() != null) {
+                                for (Match m : club.getScheduledMatches()) {
+                                    if (m != null && m.getId() != null && m.getId() < 0 && m.getId() < minMatchId) {
+                                        minMatchId = m.getId();
+                                    }
+                                }
+                            }
+                            // Check played matches
+                            if (club.getPlayedMatches() != null) {
+                                for (Match m : club.getPlayedMatches()) {
+                                    if (m != null && m.getId() != null && m.getId() < 0 && m.getId() < minMatchId) {
+                                        minMatchId = m.getId();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // Assign ID (decrement from minMatchId, so -1, -2, -3, etc.)
+                Long newMatchId = minMatchId - 1;
+                match.setId(newMatchId);
+                System.out.println("ArrangeFriendlyTable: Assigned match ID: " + newMatchId);
+                
                 // TODO: implement true dynamic match type depending on selection (friendly cup/etc)
                 match.setMatchType(Match.FRIENDLY_MATCH);
                 

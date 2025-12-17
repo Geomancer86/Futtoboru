@@ -222,6 +222,8 @@ public class PlayersLoader {
                          */
                         Player player = new Player();
                         
+                        // Set player ID to match person ID (players and persons share IDs)
+                        player.setId(person.getId());
                         player.setPerson(person);
                         
                         // Generate attributes for loaded player (v1.0)
@@ -231,6 +233,49 @@ public class PlayersLoader {
                         com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator attrGen = 
                             new com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator();
                         attrGen.generatePlayerAttributes(player, person, estimatedDate);
+                        
+                        // Generate contract for player (v1.0)
+                        // For Season 1, contracts are randomly generated
+                        // Future seasons will load from scripts with researched historical data
+                        java.time.LocalDateTime seasonStartDate = season.getStartDate() != null ? 
+                            season.getStartDate() : estimatedDate;
+                        
+                        // Debug: Log season start date
+                        if (seasonStartDate == null) {
+                            Gdx.app.error("PlayersLoader", "Season start date is NULL! Using fallback: " + estimatedDate);
+                            seasonStartDate = estimatedDate;
+                        }
+                        
+                        Gdx.app.debug("PlayersLoader", "Generating contract for player " + person.getName() + 
+                            " " + person.getLastname() + " (ID: " + player.getId() + 
+                            ") at club " + club.getName() + " with start date: " + seasonStartDate);
+                        
+                        com.rndmodgames.futtoboru.data.PlayerContract contract = 
+                            com.rndmodgames.futtoboru.system.generators.PlayerContractGenerator.generateRandomContract(
+                                player, club, seasonStartDate);
+                        
+                        if (contract != null) {
+                            club.addPlayerContract(contract);
+                            Gdx.app.debug("PlayersLoader", "Added contract to club " + club.getName() + 
+                                " for player ID: " + contract.getPlayerId() + 
+                                ", Total contracts at club: " + club.getPlayerContracts().size());
+                        } else {
+                            Gdx.app.error("PlayersLoader", "Contract generation returned NULL for player: " + 
+                                (person.getName() + " " + person.getLastname()) + " at club: " + club.getName());
+                        }
+                        
+                        // Assign profession (for amateur/semi-pro players)
+                        // Professional players won't get professions (full-time football)
+                        Integer contractType = contract != null ? contract.getContractType() : null;
+                        com.rndmodgames.futtoboru.system.generators.PlayerProfessionAssigner.assignProfession(
+                            player, club, contractType);
+                        
+                        // Set player's current club ID (for contract lookup)
+                        if (person.getCurrentClubId() == null) {
+                            person.setCurrentClubId(club.getId());
+                            Gdx.app.debug("PlayersLoader", "Set currentClubId=" + club.getId() + 
+                                " for player " + person.getName() + " " + person.getLastname());
+                        }
                         
                         // Add to Players at Club list
                         club.getPlayers().add(player);

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+
 /**
  * Club v1
  * 
@@ -78,6 +80,44 @@ public class Club implements Serializable {
      * Club Finances
      */
     private BigDecimal clubBalance;
+    
+    /**
+     * Financial History Tracking (v1.0)
+     * 
+     * Tracks financial snapshots over time for charting and analysis
+     */
+    private List<FinancialSnapshot> financialHistory = new ArrayList<>();
+    
+    /**
+     * Match Income Tracking (v1.0)
+     * 
+     * Tracks income from individual matches
+     */
+    private List<MatchIncome> matchIncomes = new ArrayList<>();
+    
+    /**
+     * Club Expenses Tracking (v1.0)
+     * 
+     * Tracks detailed expense breakdown over time
+     */
+    private List<ClubExpenses> expensesHistory = new ArrayList<>();
+    
+    /**
+     * Player Contracts (v1.0)
+     * 
+     * Tracks all player contracts at the club
+     */
+    private List<PlayerContract> playerContracts = new ArrayList<>();
+    
+    /**
+     * Current Period Financial Tracking (v1.0)
+     * 
+     * Tracks income and expenditure for current season/month
+     */
+    private BigDecimal seasonIncome = BigDecimal.ZERO;
+    private BigDecimal seasonExpenditure = BigDecimal.ZERO;
+    private BigDecimal monthIncome = BigDecimal.ZERO;
+    private BigDecimal monthExpenditure = BigDecimal.ZERO;
     
     /**
      * Club Staff Tracking (v1.0)
@@ -395,6 +435,173 @@ public class Club implements Serializable {
      */
     public Integer getGoalDifference() {
         return getGoalsScored() - getGoalsConceded();
+    }
+    
+    /**
+     * Financial History Getters and Setters (v1.0)
+     */
+    public List<FinancialSnapshot> getFinancialHistory() {
+        if (financialHistory == null) {
+            financialHistory = new ArrayList<>();
+        }
+        return financialHistory;
+    }
+
+    public void setFinancialHistory(List<FinancialSnapshot> financialHistory) {
+        this.financialHistory = financialHistory;
+    }
+    
+    /**
+     * Add a financial snapshot to history
+     */
+    public void addFinancialSnapshot(FinancialSnapshot snapshot) {
+        if (financialHistory == null) {
+            financialHistory = new ArrayList<>();
+        }
+        financialHistory.add(snapshot);
+    }
+    
+    /**
+     * Match Income Getters and Setters (v1.0)
+     */
+    public List<MatchIncome> getMatchIncomes() {
+        if (matchIncomes == null) {
+            matchIncomes = new ArrayList<>();
+        }
+        return matchIncomes;
+    }
+
+    public void setMatchIncomes(List<MatchIncome> matchIncomes) {
+        this.matchIncomes = matchIncomes;
+    }
+    
+    /**
+     * Add match income
+     */
+    public void addMatchIncome(MatchIncome income) {
+        if (matchIncomes == null) {
+            matchIncomes = new ArrayList<>();
+        }
+        matchIncomes.add(income);
+    }
+    
+    /**
+     * Club Expenses Getters and Setters (v1.0)
+     */
+    public List<ClubExpenses> getExpensesHistory() {
+        if (expensesHistory == null) {
+            expensesHistory = new ArrayList<>();
+        }
+        return expensesHistory;
+    }
+
+    public void setExpensesHistory(List<ClubExpenses> expensesHistory) {
+        this.expensesHistory = expensesHistory;
+    }
+    
+    /**
+     * Add expense record
+     */
+    public void addExpense(ClubExpenses expense) {
+        if (expensesHistory == null) {
+            expensesHistory = new ArrayList<>();
+        }
+        expensesHistory.add(expense);
+    }
+    
+    /**
+     * Player Contracts Getters and Setters (v1.0)
+     */
+    public List<PlayerContract> getPlayerContracts() {
+        if (playerContracts == null) {
+            playerContracts = new ArrayList<>();
+        }
+        return playerContracts;
+    }
+
+    public void setPlayerContracts(List<PlayerContract> playerContracts) {
+        this.playerContracts = playerContracts;
+    }
+    
+    public void addPlayerContract(PlayerContract contract) {
+        if (contract == null) {
+            com.badlogic.gdx.Gdx.app.error("Club", "Cannot add null contract to club: " + getName());
+            return;
+        }
+        getPlayerContracts().add(contract);
+        com.badlogic.gdx.Gdx.app.debug("Club", "Added contract ID " + contract.getId() + 
+            " for player ID " + contract.getPlayerId() + " to club " + getName() + 
+            " (total contracts: " + getPlayerContracts().size() + ")");
+    }
+    
+    /**
+     * Get contract for a specific player
+     */
+    public PlayerContract getContractForPlayer(Long playerId) {
+        if (playerId == null) {
+            com.badlogic.gdx.Gdx.app.debug("Club", "getContractForPlayer called with null playerId for club: " + getName());
+            return null;
+        }
+        if (playerContracts == null || playerContracts.isEmpty()) {
+            com.badlogic.gdx.Gdx.app.debug("Club", "No contracts found for club: " + getName() + " (playerContracts is " + 
+                (playerContracts == null ? "null" : "empty") + ")");
+            return null;
+        }
+        
+        com.badlogic.gdx.Gdx.app.debug("Club", "Looking for contract for player ID " + playerId + 
+            " in club " + getName() + " (total contracts: " + playerContracts.size() + ")");
+        
+        for (PlayerContract contract : playerContracts) {
+            if (contract.getPlayerId() != null && contract.getPlayerId().equals(playerId)) {
+                com.badlogic.gdx.Gdx.app.debug("Club", "Found contract ID " + contract.getId() + 
+                    " for player ID " + playerId);
+                return contract;
+            }
+        }
+        
+        com.badlogic.gdx.Gdx.app.debug("Club", "No contract found for player ID " + playerId + 
+            " in club " + getName() + ". Contract player IDs: " + 
+            playerContracts.stream()
+                .map(c -> c.getPlayerId() != null ? c.getPlayerId().toString() : "null")
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("none"));
+        
+        return null;
+    }
+    
+    /**
+     * Current Period Financial Tracking Getters and Setters (v1.0)
+     */
+    public BigDecimal getSeasonIncome() {
+        return seasonIncome != null ? seasonIncome : BigDecimal.ZERO;
+    }
+
+    public void setSeasonIncome(BigDecimal seasonIncome) {
+        this.seasonIncome = seasonIncome != null ? seasonIncome : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getSeasonExpenditure() {
+        return seasonExpenditure != null ? seasonExpenditure : BigDecimal.ZERO;
+    }
+
+    public void setSeasonExpenditure(BigDecimal seasonExpenditure) {
+        this.seasonExpenditure = seasonExpenditure != null ? seasonExpenditure : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getMonthIncome() {
+        return monthIncome != null ? monthIncome : BigDecimal.ZERO;
+    }
+
+    public void setMonthIncome(BigDecimal monthIncome) {
+        this.monthIncome = monthIncome != null ? monthIncome : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getMonthExpenditure() {
+        return monthExpenditure != null ? monthExpenditure : BigDecimal.ZERO;
+    }
+
+    public void setMonthExpenditure(BigDecimal monthExpenditure) {
+        this.monthExpenditure = monthExpenditure != null ? monthExpenditure : BigDecimal.ZERO;
     }
 
     @Override

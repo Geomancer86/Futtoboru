@@ -4,6 +4,6 @@
 #
 # Source: https://en.wikipedia.org/wiki/Deepdale
 #
-# COLUMNS
-# id, name, year, capacity, 
-1,Deepdale,1875,10000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+1,Deepdale,1875,10000,5000,"Deepdale is the oldest continuously used professional football stadium in the world. Originally Deepdale Farm, leased in 1875. First football match played October 5, 1878. Preston North End achieved the 'Double' (league and FA Cup) in the inaugural 1888-89 season.",https://en.wikipedia.org/wiki/Deepdale,2000,true,0

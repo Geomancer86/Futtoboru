@@ -6,6 +6,6 @@
 #          https://en.wikipedia.org/wiki/Anfield
 #          https://www.evertonfc.com/club/history/our-former-homes
 #
-# COLUMNS
-# id, name, year, capacity, 
-8,Anfield,1884,20000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+8,Anfield,1884,20000,6000,"Everton moved to Anfield in 1884, ground owned by John Orrell. In 1885, John Houlding purchased Anfield for approximately £6,000. Rent increased from £100 (1888) to £240 (1891), causing tensions. Everton left Anfield in 1892 to move to Goodison Park. Houlding then founded Liverpool FC to occupy the vacant Anfield.",https://en.wikipedia.org/wiki/Anfield,2500,false,100

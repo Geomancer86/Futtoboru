@@ -1,6 +1,5 @@
 package com.rndmodgames.futtoboru.tables.player;
 
-import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
@@ -13,10 +12,15 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.data.NationalityModifier;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerProfession;
+import com.rndmodgames.futtoboru.data.RegionModifier;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
+import com.rndmodgames.futtoboru.system.loaders.NationalityModifiersLoader;
+import com.rndmodgames.futtoboru.system.loaders.RegionModifiersLoader;
 
 /**
  * Player Detail Screen Table v1
@@ -39,7 +43,6 @@ public class PlayerDetailScreenTable extends VisTable {
     
     // Formatting
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-    private DecimalFormat attributeFormat = new DecimalFormat("#0.0");
     
     // UI Components
     private VisTextButton backButton;
@@ -133,6 +136,18 @@ public class PlayerDetailScreenTable extends VisTable {
         contentTable.addSeparator().colspan(2).pad(10);
         contentTable.row();
         
+        // Contract Details Section (v1.0)
+        buildContractSection();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.row();
+        
+        // Modifiers & Bonuses Section (v2.0 - 3d6 system)
+        buildModifiersSection();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.row();
+        
         // Physical Attributes Section
         buildPhysicalAttributesSection();
         contentTable.row();
@@ -197,8 +212,320 @@ public class PlayerDetailScreenTable extends VisTable {
             }
         }
         infoTable.add(new VisLabel(clubName)).left();
+        infoTable.row();
+        
+        // Player Profession (day job for amateur/semi-pro)
+        infoTable.add(new VisLabel("Profession:")).left().width(150);
+        String professionName = "N/A (Professional Player)";
+        if (currentPlayer.getPlayerProfession() != null) {
+            professionName = currentPlayer.getPlayerProfession().getName();
+        }
+        infoTable.add(new VisLabel(professionName)).left();
+        infoTable.row();
+        
+        // Region/State (for region modifiers)
+        infoTable.add(new VisLabel("Region:")).left().width(150);
+        String regionName = "N/A";
+        if (currentPlayer.getPerson().getState() != null && 
+            currentPlayer.getPerson().getState().getName() != null) {
+            regionName = currentPlayer.getPerson().getState().getName();
+        }
+        infoTable.add(new VisLabel(regionName)).left();
+        infoTable.row();
+        
+        // Contract Information (v1.0)
+        infoTable.add(new VisLabel("Contract:")).left().width(150);
+        String contractInfo = "No Contract";
+        if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getCurrentGame() != null) {
+            com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
+                currentPlayer.getPerson().getCurrentClubId());
+            if (playerClub != null) {
+                com.rndmodgames.futtoboru.data.PlayerContract contract = playerClub.getContractForPlayer(
+                    currentPlayer.getId() != null ? currentPlayer.getId() : currentPlayer.getPerson().getId());
+                if (contract != null) {
+                    contractInfo = com.rndmodgames.futtoboru.data.ContractType.getName(contract.getContractType()) + 
+                        " - £" + contract.getWeeklyWage().setScale(2, java.math.RoundingMode.HALF_UP) + "/week";
+                }
+            }
+        }
+        infoTable.add(new VisLabel(contractInfo)).left();
         
         contentTable.add(infoTable).left().pad(10);
+    }
+    
+    /**
+     * Build contract details section (v1.0)
+     * Shows contract type, wages, bonuses, and expiry
+     */
+    private void buildContractSection() {
+        VisTable contractTable = new VisTable(true);
+        
+        contractTable.row();
+        contractTable.add(new VisLabel("Contract Details")).colspan(2).left().padBottom(5);
+        contractTable.row();
+        
+        // Get contract
+        com.rndmodgames.futtoboru.data.PlayerContract contract = null;
+        if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getCurrentGame() != null) {
+            com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
+                currentPlayer.getPerson().getCurrentClubId());
+            
+            Gdx.app.debug("PlayerDetailScreenTable", "Looking for contract - Player ID: " + 
+                currentPlayer.getId() + ", Person ID: " + 
+                (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getId() : "null") + 
+                ", Club: " + (playerClub != null ? playerClub.getName() : "null"));
+            
+            if (playerClub != null) {
+                // Try player ID first, then person ID as fallback
+                Long lookupId = currentPlayer.getId() != null ? currentPlayer.getId() : 
+                    (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getId() : null);
+                if (lookupId != null) {
+                    contract = playerClub.getContractForPlayer(lookupId);
+                    if (contract == null) {
+                        Gdx.app.debug("PlayerDetailScreenTable", "Contract lookup returned null for player ID: " + lookupId);
+                    } else {
+                        Gdx.app.debug("PlayerDetailScreenTable", "Found contract ID: " + contract.getId() + 
+                            " for player ID: " + lookupId);
+                    }
+                } else {
+                    Gdx.app.error("PlayerDetailScreenTable", "Cannot lookup contract: both player ID and person ID are null");
+                }
+            } else {
+                Gdx.app.error("PlayerDetailScreenTable", "Player club not found for club ID: " + 
+                    currentPlayer.getPerson().getCurrentClubId());
+            }
+        } else {
+            Gdx.app.error("PlayerDetailScreenTable", "Cannot lookup contract: currentClubId=" + 
+                (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getCurrentClubId() : "null") + 
+                ", currentGame=" + (futtoboru.getCurrentGame() != null ? "not null" : "null"));
+        }
+        
+        if (contract != null) {
+            // Contract Type
+            contractTable.row();
+            contractTable.add(new VisLabel("Type:")).left().width(150);
+            contractTable.add(new VisLabel(com.rndmodgames.futtoboru.data.ContractType.getName(contract.getContractType()))).left();
+            contractTable.row();
+            
+            // Weekly Wage
+            contractTable.add(new VisLabel("Weekly Wage:")).left().width(150);
+            contractTable.add(new VisLabel("£" + contract.getWeeklyWage().setScale(2, java.math.RoundingMode.HALF_UP))).left();
+            contractTable.row();
+            
+            // Contract Dates
+            if (contract.getStartDate() != null) {
+                contractTable.add(new VisLabel("Start Date:")).left().width(150);
+                contractTable.add(new VisLabel(dateFormatter.format(contract.getStartDate()))).left();
+                contractTable.row();
+            }
+            
+            if (contract.getEndDate() != null) {
+                contractTable.add(new VisLabel("End Date:")).left().width(150);
+                contractTable.add(new VisLabel(dateFormatter.format(contract.getEndDate()))).left();
+                contractTable.row();
+                
+                // Days remaining
+                long daysRemaining = java.time.temporal.ChronoUnit.DAYS.between(
+                    futtoboru.getCurrentGame().getGameDate(), contract.getEndDate());
+                contractTable.add(new VisLabel("Days Remaining:")).left().width(150);
+                VisLabel daysLabel = new VisLabel(String.valueOf(daysRemaining));
+                if (daysRemaining < 90) {
+                    daysLabel.setColor(1.0f, 0.5f, 0.0f, 1.0f); // Orange for expiring soon
+                }
+                if (daysRemaining < 30) {
+                    daysLabel.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red for expiring very soon
+                }
+                contractTable.add(daysLabel).left();
+                contractTable.row();
+            }
+            
+            // Bonuses (only show if non-zero)
+            if (contract.getSigningBonus() != null && contract.getSigningBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                contractTable.add(new VisLabel("Signing Bonus:")).left().width(150);
+                contractTable.add(new VisLabel("£" + contract.getSigningBonus().setScale(2, java.math.RoundingMode.HALF_UP))).left();
+                contractTable.row();
+            }
+            
+            if (contract.getGoalBonus() != null && contract.getGoalBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                contractTable.add(new VisLabel("Goal Bonus:")).left().width(150);
+                contractTable.add(new VisLabel("£" + contract.getGoalBonus().setScale(2, java.math.RoundingMode.HALF_UP) + " per goal")).left();
+                contractTable.row();
+            }
+            
+            if (contract.getAppearanceFee() != null && contract.getAppearanceFee().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                contractTable.add(new VisLabel("Appearance Fee:")).left().width(150);
+                contractTable.add(new VisLabel("£" + contract.getAppearanceFee().setScale(2, java.math.RoundingMode.HALF_UP) + " per match")).left();
+                contractTable.row();
+            }
+            
+            if (contract.getLeagueWinBonus() != null && contract.getLeagueWinBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                contractTable.add(new VisLabel("League Win Bonus:")).left().width(150);
+                contractTable.add(new VisLabel("£" + contract.getLeagueWinBonus().setScale(2, java.math.RoundingMode.HALF_UP))).left();
+                contractTable.row();
+            }
+        } else {
+            contractTable.row();
+            contractTable.add(new VisLabel("No contract found")).colspan(2).left();
+        }
+        
+        contentTable.add(contractTable).left().pad(10);
+    }
+    
+    /**
+     * Build modifiers and bonuses section (v2.0 - 3d6 system)
+     * Shows nationality modifiers, region modifiers, and profession bonuses
+     */
+    private void buildModifiersSection() {
+        VisTable modifiersTable = new VisTable(true);
+        
+        modifiersTable.row();
+        modifiersTable.add(new VisLabel("Attribute Modifiers & Bonuses")).colspan(2).left().padBottom(5);
+        modifiersTable.row();
+        
+        // Get nationality modifier
+        NationalityModifier natMod = null;
+        if (currentPlayer.getPerson().getCountry() != null && 
+            currentPlayer.getPerson().getCountry().getId() != null) {
+            Long countryId = currentPlayer.getPerson().getCountry().getId();
+            natMod = NationalityModifiersLoader.getModifier(countryId);
+            
+            // Debug logging
+            if (natMod == null) {
+                Gdx.app.debug("PlayerDetailScreenTable", "No nationality modifier found for country ID: " + 
+                    countryId + " (" + currentPlayer.getPerson().getCountry().getCommonName() + ")");
+            }
+        } else {
+            Gdx.app.debug("PlayerDetailScreenTable", "Player has no country set");
+        }
+        
+        // Get region modifier
+        RegionModifier regMod = null;
+        if (currentPlayer.getPerson().getState() != null && 
+            currentPlayer.getPerson().getState().getName() != null &&
+            currentPlayer.getPerson().getCountry() != null && 
+            currentPlayer.getPerson().getCountry().getId() != null) {
+            String stateName = currentPlayer.getPerson().getState().getName();
+            Long countryId = currentPlayer.getPerson().getCountry().getId();
+            regMod = RegionModifiersLoader.getModifier(stateName, countryId);
+            
+            // Debug logging
+            if (regMod == null) {
+                Gdx.app.debug("PlayerDetailScreenTable", "No region modifier found for state: " + 
+                    stateName + ", country ID: " + countryId);
+            }
+        } else {
+            if (currentPlayer.getPerson().getState() == null) {
+                Gdx.app.debug("PlayerDetailScreenTable", "Player has no state/region set");
+            }
+        }
+        
+        // Nationality Modifiers
+        if (natMod != null) {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Nationality Modifiers (" + natMod.getCountryName() + "):")).colspan(2).left().padTop(5);
+            modifiersTable.row();
+            
+            addModifierRow(modifiersTable, "Strength", natMod.getStrengthModifier());
+            addModifierRow(modifiersTable, "Endurance", natMod.getEnduranceModifier());
+            addModifierRow(modifiersTable, "Stamina", natMod.getStaminaModifier());
+            addModifierRow(modifiersTable, "Speed", natMod.getSpeedModifier());
+            addModifierRow(modifiersTable, "Acceleration", natMod.getAccelerationModifier());
+            addModifierRow(modifiersTable, "Jumping", natMod.getJumpingModifier());
+            addModifierRow(modifiersTable, "Dexterity", natMod.getDexterityModifier());
+            addModifierRow(modifiersTable, "Concentration", natMod.getConcentrationModifier());
+            addModifierRow(modifiersTable, "Courage", natMod.getCourageModifier());
+            addModifierRow(modifiersTable, "Determination", natMod.getDeterminationModifier());
+            addModifierRow(modifiersTable, "Leadership", natMod.getLeadershipModifier());
+            addModifierRow(modifiersTable, "Perception", natMod.getPerceptionModifier());
+            addModifierRow(modifiersTable, "Positioning", natMod.getPositioningModifier());
+            addModifierRow(modifiersTable, "Teamwork", natMod.getTeamworkModifier());
+        } else {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Nationality Modifiers: None")).colspan(2).left().padTop(5);
+        }
+        
+        modifiersTable.row();
+        modifiersTable.addSeparator().colspan(2).pad(5);
+        
+        // Region Modifiers
+        if (regMod != null) {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Region Modifiers (" + regMod.getRegionName() + "):")).colspan(2).left().padTop(5);
+            modifiersTable.row();
+            
+            addModifierRow(modifiersTable, "Strength", regMod.getStrengthModifier());
+            addModifierRow(modifiersTable, "Endurance", regMod.getEnduranceModifier());
+            addModifierRow(modifiersTable, "Stamina", regMod.getStaminaModifier());
+            addModifierRow(modifiersTable, "Speed", regMod.getSpeedModifier());
+            addModifierRow(modifiersTable, "Acceleration", regMod.getAccelerationModifier());
+            addModifierRow(modifiersTable, "Jumping", regMod.getJumpingModifier());
+            addModifierRow(modifiersTable, "Dexterity", regMod.getDexterityModifier());
+            addModifierRow(modifiersTable, "Concentration", regMod.getConcentrationModifier());
+            addModifierRow(modifiersTable, "Courage", regMod.getCourageModifier());
+            addModifierRow(modifiersTable, "Determination", regMod.getDeterminationModifier());
+            addModifierRow(modifiersTable, "Leadership", regMod.getLeadershipModifier());
+            addModifierRow(modifiersTable, "Perception", regMod.getPerceptionModifier());
+            addModifierRow(modifiersTable, "Positioning", regMod.getPositioningModifier());
+            addModifierRow(modifiersTable, "Teamwork", regMod.getTeamworkModifier());
+        } else {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Region Modifiers: None")).colspan(2).left().padTop(5);
+        }
+        
+        modifiersTable.row();
+        modifiersTable.addSeparator().colspan(2).pad(5);
+        
+        // Profession Bonuses (only for amateur/semi-pro)
+        if (currentPlayer.getPlayerProfession() != null) {
+            PlayerProfession profession = currentPlayer.getPlayerProfession();
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Profession Bonuses (" + profession.getName() + "):")).colspan(2).left().padTop(5);
+            modifiersTable.row();
+            
+            addModifierRow(modifiersTable, "Strength", profession.getStrengthBonus());
+            addModifierRow(modifiersTable, "Endurance", profession.getEnduranceBonus());
+            addModifierRow(modifiersTable, "Stamina", profession.getStaminaBonus());
+            addModifierRow(modifiersTable, "Speed", profession.getSpeedBonus());
+            addModifierRow(modifiersTable, "Acceleration", profession.getAccelerationBonus());
+            addModifierRow(modifiersTable, "Jumping", profession.getJumpingBonus());
+            addModifierRow(modifiersTable, "Dexterity", profession.getDexterityBonus());
+            addModifierRow(modifiersTable, "Concentration", profession.getConcentrationBonus());
+            addModifierRow(modifiersTable, "Courage", profession.getCourageBonus());
+            addModifierRow(modifiersTable, "Determination", profession.getDeterminationBonus());
+            addModifierRow(modifiersTable, "Leadership", profession.getLeadershipBonus());
+            addModifierRow(modifiersTable, "Perception", profession.getPerceptionBonus());
+            addModifierRow(modifiersTable, "Positioning", profession.getPositioningBonus());
+            addModifierRow(modifiersTable, "Teamwork", profession.getTeamworkBonus());
+        } else {
+            modifiersTable.row();
+            modifiersTable.add(new VisLabel("Profession Bonuses: None (Professional Player)")).colspan(2).left().padTop(5);
+        }
+        
+        contentTable.add(modifiersTable).left().pad(10);
+    }
+    
+    /**
+     * Add a modifier row (only shows if modifier is non-zero)
+     */
+    private void addModifierRow(VisTable table, String attributeName, Integer modifier) {
+        if (modifier == null || modifier == 0) {
+            return; // Skip zero modifiers
+        }
+        
+        table.row();
+        table.add(new VisLabel(attributeName + ":")).left().width(150);
+        
+        String modifierText = modifier > 0 ? "+" + modifier : String.valueOf(modifier);
+        VisLabel modifierLabel = new VisLabel(modifierText);
+        
+        // Color coding: green for positive, red for negative
+        if (modifier > 0) {
+            modifierLabel.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green
+        } else {
+            modifierLabel.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red
+        }
+        
+        table.add(modifierLabel).left();
     }
     
     /**
@@ -298,9 +625,32 @@ public class PlayerDetailScreenTable extends VisTable {
         // Attribute name
         table.add(new VisLabel(attributeName + ":")).left().width(150);
         
-        // Current value
-        String valueText = currentValue != null ? attributeFormat.format(currentValue) : "N/A";
+        // Current value (v2.0 - 3d6 system: display as integer)
+        String valueText;
+        if (currentValue != null) {
+            // Display as integer for 3d6 system (3-23 range)
+            int intValue = Math.round(currentValue);
+            valueText = String.valueOf(intValue);
+        } else {
+            valueText = "N/A";
+        }
         VisLabel valueLabel = new VisLabel(valueText);
+        
+        // Color coding for exceptional attributes (20+)
+        if (currentValue != null && currentValue >= 20) {
+            valueLabel.setColor(1.0f, 0.84f, 0.0f, 1.0f); // Gold for exceptional (20+)
+        } else if (currentValue != null && currentValue >= 18) {
+            valueLabel.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green for excellent (18-19)
+        } else if (currentValue != null && currentValue >= 15) {
+            valueLabel.setColor(0.5f, 1.0f, 0.5f, 1.0f); // Light green for good (15-17)
+        } else if (currentValue != null && currentValue >= 12) {
+            valueLabel.setColor(1.0f, 1.0f, 1.0f, 1.0f); // White for average (12-14)
+        } else if (currentValue != null && currentValue >= 9) {
+            valueLabel.setColor(1.0f, 0.8f, 0.5f, 1.0f); // Orange for below average (9-11)
+        } else if (currentValue != null) {
+            valueLabel.setColor(1.0f, 0.5f, 0.5f, 1.0f); // Red for poor (3-8)
+        }
+        
         table.add(valueLabel).left().width(80);
         
         // Change indicator (30-day tracking)

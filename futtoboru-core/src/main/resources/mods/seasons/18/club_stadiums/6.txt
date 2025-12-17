@@ -1,10 +1,10 @@
 # West Bromwich Albion - 1888-89 Club Stadium File
 #
-# Stadium is Pikes Lane
+# Stadium is Stoney Lane
 #
-# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season
-#          https://en.wikipedia.org/wiki/Pike%27s_Lane
+# Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season
+#          https://en.wikipedia.org/wiki/Stoney_Lane
 #
-# COLUMNS
-# id, name, year, capacity, 
-6,Pikes Lane,1880,20000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+6,Stoney Lane,1885,20000,5000,"Stoney Lane served as West Bromwich Albion's home from 1885 to 1900. Secured a seven-year lease for £28 per annum from local undertaker Mr. H. Webb. Featured a wooden grandstand known as 'Noah's Ark' accommodating 600 spectators. First league match was September 29, 1888, Albion defeating Burnley 4-3.",https://en.wikipedia.org/wiki/Stoney_Lane,2000,false,28

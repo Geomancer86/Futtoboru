@@ -5,6 +5,6 @@
 # Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season
 #          https://en.wikipedia.org/wiki/Wellington_Road_(Perry_Barr)
 #
-# COLUMNS
-# id, name, year, capacity, 
-2,Wellington Road,1876,26849
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+2,Wellington Road,1876,26849,6000,"Wellington Road was Aston Villa's home from 1876 to 1897. Initially lacked spectator facilities, with players changing in a nearby blacksmith's shed. Hosted record crowd of 26,849 for FA Cup match against Preston North End in January 1888. First league match was September 15, 1888, Villa defeating Stoke 5-1.",https://en.wikipedia.org/wiki/Wellington_Road_(Perry_Barr),2500,false,200

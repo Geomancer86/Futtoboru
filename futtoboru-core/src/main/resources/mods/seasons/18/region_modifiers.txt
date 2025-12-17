@@ -1,0 +1,24 @@
+# Region Modifiers for 1888-89 Season (England)
+# Format: id,regionName,countryId,strengthMod,enduranceMod,staminaMod,speedMod,accelerationMod,jumpingMod,dexterityMod,concentrationMod,courageMod,determinationMod,leadershipMod,perceptionMod,positioningMod,teamworkMod,applicableCities,historicalNotes
+# Modifiers range: -1 to +2 (typically 0 to +2, smaller than nationality modifiers)
+# Applicable Cities: Comma-separated city names or club names
+
+# ========================================
+# ENGLISH REGIONS (1888-89)
+# ========================================
+
+# Lancashire - Textile mills, industrial workers
+# Blackburn, Preston, Bolton, Accrington, Burnley
+1,LANCASHIRE,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,"Blackburn,Preston,Bolton,Accrington,Burnley","Textile mill region. Industrial workers provide strength, endurance, and teamwork from factory coordination."
+
+# Birmingham - Metalworking, foundries
+# Aston Villa, West Bromwich Albion
+2,BIRMINGHAM,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,"Birmingham,West Bromwich","Metalworking and foundry region. Industrial toughness provides strength and courage."
+
+# Derby/Nottingham - Lace industry, fine work
+# Derby County, Notts County
+3,DERBY_NOTTINGHAM,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,"Derby,Nottingham","Lace industry region. Fine handwork provides dexterity and concentration."
+
+# Stoke - Pottery, mining
+# Stoke
+4,STOKE,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,"Stoke","Pottery and mining region. Physical work provides strength and endurance."

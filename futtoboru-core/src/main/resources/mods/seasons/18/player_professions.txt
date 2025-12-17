@@ -1,0 +1,128 @@
+# Player Professions for 1888-89 Season
+# Format: id,name,category,strengthBonus,enduranceBonus,staminaBonus,speedBonus,accelerationBonus,jumpingBonus,dexterityBonus,concentrationBonus,courageBonus,determinationBonus,leadershipBonus,perceptionBonus,positioningBonus,teamworkBonus,historicalNotes
+# Attribute bonuses range: -3 to +3 (typically 0 to +3)
+# Categories: TEXTILE, RAILWAY, MINING, CONSTRUCTION, FACTORY, TRANSPORT, EDUCATION, SKILLED_TRADE, AGRICULTURE, SERVICE, OTHER
+
+# ========================================
+# TEXTILE INDUSTRY (10 professions)
+# ========================================
+1,Spinner,TEXTILE,0,2,0,0,0,0,1,1,0,0,0,0,0,0,"Textile mill worker operating spinning machines. Long hours, repetitive work requiring stamina and fine motor skills."
+2,Weaver,TEXTILE,0,2,0,0,0,0,1,1,0,0,0,0,0,0,"Textile mill worker operating looms. Requires endurance, dexterity, and concentration."
+3,Sizer,TEXTILE,0,1,0,0,0,0,1,0,0,0,0,0,0,0,"Textile mill worker sizing cotton. Moderate physical work with fine motor skills."
+4,Piecer,TEXTILE,0,1,0,0,0,0,1,1,0,0,0,0,0,0,"Textile mill worker piecing broken threads. Requires dexterity and concentration."
+5,Dyer,TEXTILE,0,1,0,0,0,0,1,1,0,0,0,0,0,0,"Textile mill worker dyeing fabrics. Requires dexterity and attention to detail."
+6,Scavenger,TEXTILE,0,1,0,0,0,0,1,0,0,0,0,0,0,0,"Textile mill worker cleaning machinery. Often young workers, physically demanding."
+7,Loom Operator,TEXTILE,0,2,0,0,0,0,1,1,0,0,0,0,0,0,"Textile mill worker operating power looms. Requires endurance and dexterity."
+8,Cotton Carder,TEXTILE,1,1,0,0,0,0,0,0,0,0,0,0,0,0,"Textile mill worker carding cotton. Requires strength and endurance."
+9,Textile Inspector,TEXTILE,0,0,0,0,0,0,0,1,0,0,0,1,0,0,"Textile mill quality inspector. Requires perception and concentration."
+10,Mill Foreman,TEXTILE,0,0,0,0,0,0,0,0,0,0,1,0,0,1,"Textile mill supervisor. Requires leadership and teamwork."
+
+# ========================================
+# RAILWAY INDUSTRY (8 professions)
+# ========================================
+11,Railway Worker,RAILWAY,1,2,0,0,0,0,0,0,0,0,0,0,0,1,"General railway worker. Physically demanding work requiring strength, endurance, and teamwork."
+12,Signalman,RAILWAY,0,1,0,0,0,0,0,2,0,0,0,1,0,0,"Railway signal operator. Requires high perception and concentration for safety."
+13,Railway Guard,RAILWAY,0,1,0,0,0,0,0,0,0,0,1,0,0,1,"Railway guard responsible for train safety. Requires leadership and teamwork."
+14,Porter,RAILWAY,1,1,0,0,0,0,0,0,0,0,0,0,0,0,"Railway station porter. Lifting and carrying luggage, requires strength and endurance."
+15,Railway Engineer,RAILWAY,0,0,0,0,0,0,1,1,0,0,0,1,0,0,"Railway engineer maintaining trains. Requires dexterity, concentration, and perception."
+16,Track Layer,RAILWAY,2,2,0,0,0,0,0,0,0,0,0,0,0,0,"Railway track construction worker. Extremely physically demanding, requires strength and endurance."
+17,Station Master,RAILWAY,0,0,0,0,0,0,0,0,0,0,2,1,0,0,"Railway station manager. Requires strong leadership and perception."
+18,Railway Clerk,RAILWAY,0,0,0,0,0,0,0,1,0,0,0,1,0,0,"Railway administrative clerk. Requires concentration and perception."
+
+# ========================================
+# MINING/QUARRYING (6 professions)
+# ========================================
+19,Coal Miner,MINING,3,2,0,0,0,0,0,0,1,1,0,0,0,0,"Coal miner. Extremely physically demanding and dangerous work. Requires exceptional strength, endurance, courage, and determination."
+20,Quarryman,MINING,3,2,0,0,0,0,0,0,1,0,0,0,0,0,"Stone quarry worker. Extremely physically demanding work extracting stone. Requires exceptional strength and endurance."
+21,Iron Miner,MINING,3,2,0,0,0,0,0,0,1,0,0,0,0,0,"Iron ore miner. Extremely physically demanding and dangerous work. Requires exceptional strength, endurance, and courage."
+22,Mine Foreman,MINING,1,0,0,0,0,0,0,0,1,1,1,0,0,0,"Mine supervisor. Requires strength, courage, and leadership."
+23,Mine Engineer,MINING,0,0,0,0,0,0,1,1,0,0,0,1,0,0,"Mining engineer. Requires dexterity, concentration, and perception."
+24,Mine Clerk,MINING,0,0,0,0,0,0,0,1,0,0,0,1,0,0,"Mining administrative clerk. Requires concentration and perception."
+
+# ========================================
+# CONSTRUCTION (8 professions)
+# ========================================
+25,Stonemason,CONSTRUCTION,2,0,0,0,0,0,1,1,0,0,0,0,1,0,"Skilled craftsman working with stone. Requires strength, dexterity, concentration, and spatial awareness (positioning)."
+26,Bricklayer,CONSTRUCTION,2,0,0,0,0,0,1,0,0,0,0,0,1,0,"Construction worker laying bricks. Requires strength, dexterity, and spatial awareness."
+27,Carpenter,CONSTRUCTION,1,0,0,0,0,0,2,1,0,0,0,0,0,0,"Skilled woodworker. Requires dexterity and concentration for precision work."
+28,Builder,CONSTRUCTION,2,1,0,0,0,0,0,0,0,0,0,0,0,1,"General construction worker. Requires strength, endurance, and teamwork."
+29,Plumber,CONSTRUCTION,0,0,0,0,0,0,1,1,0,0,0,0,0,0,"Plumbing tradesman. Requires dexterity and concentration."
+30,Painter,CONSTRUCTION,0,0,0,0,0,0,1,1,0,0,0,0,0,0,"Painting tradesman. Requires dexterity and concentration."
+31,Construction Foreman,CONSTRUCTION,0,0,0,0,0,0,0,0,0,0,1,0,0,1,"Construction site supervisor. Requires leadership and teamwork."
+32,Architect,CONSTRUCTION,0,0,0,0,0,0,0,1,0,0,0,2,2,0,"Building architect. Requires exceptional perception, concentration, and spatial awareness."
+
+# ========================================
+# FACTORY/FOUNDRY (8 professions)
+# ========================================
+33,Factory Worker,FACTORY,2,2,0,0,0,0,0,0,0,0,0,0,0,1,"General factory worker. Physically demanding work requiring strength, endurance, and teamwork."
+34,Foundry Worker,FACTORY,2,2,0,0,0,0,0,0,0,1,0,0,0,1,"Foundry worker handling molten metal. Extremely physically demanding and dangerous. Requires strength, endurance, courage, and teamwork."
+35,Steelworker,FACTORY,2,2,0,0,0,0,0,0,0,1,0,0,0,1,"Steel mill worker. Extremely physically demanding and dangerous. Requires strength, endurance, courage, and teamwork."
+36,Metalworker,FACTORY,1,1,0,0,0,0,1,0,0,0,0,0,0,0,"Metalworking tradesman. Requires strength, endurance, and dexterity."
+37,Machine Operator,FACTORY,0,0,0,0,0,0,1,1,0,0,0,0,0,0,"Factory machine operator. Requires dexterity and concentration."
+38,Factory Foreman,FACTORY,0,0,0,0,0,0,0,0,0,0,1,0,0,1,"Factory supervisor. Requires leadership and teamwork."
+39,Quality Inspector,FACTORY,0,0,0,0,0,0,0,1,0,0,0,1,0,0,"Factory quality control inspector. Requires perception and concentration."
+40,Engineer,FACTORY,0,0,0,0,0,0,1,1,0,0,0,1,0,0,"Factory engineer. Requires dexterity, concentration, and perception."
+
+# ========================================
+# TRANSPORT (6 professions)
+# ========================================
+41,Tramcar Conductor,TRANSPORT,0,1,0,0,0,0,0,0,0,0,1,1,0,1,"Tramcar conductor managing passengers. Requires endurance, perception, leadership, and teamwork."
+42,Coach Driver,TRANSPORT,0,1,0,0,0,0,0,1,0,0,0,1,0,0,"Horse-drawn coach driver. Requires endurance, concentration, and perception."
+43,Cart Driver,TRANSPORT,1,1,0,0,0,0,0,0,0,0,0,0,0,0,"Cart driver transporting goods. Requires strength and endurance."
+44,Cab Driver,TRANSPORT,0,1,0,0,0,0,0,0,0,0,0,1,0,0,"Horse-drawn cab driver. Requires endurance and perception."
+45,Delivery Man,TRANSPORT,1,1,1,0,0,0,0,0,0,0,0,0,0,0,"Delivery worker. Requires strength, endurance, and stamina for walking/carrying."
+46,Transport Manager,TRANSPORT,0,0,0,0,0,0,0,0,0,0,1,0,0,1,"Transport business manager. Requires leadership and teamwork."
+
+# ========================================
+# EDUCATION (4 professions)
+# ========================================
+47,Schoolmaster,EDUCATION,0,0,0,0,0,0,1,0,0,0,2,2,0,1,"School teacher and administrator. Requires exceptional perception, leadership, concentration, and teamwork."
+48,Teacher,EDUCATION,0,0,0,0,0,0,1,0,0,0,1,1,0,1,"School teacher. Requires perception, leadership, concentration, and teamwork."
+49,Headmaster,EDUCATION,0,0,0,0,0,0,0,0,0,0,2,1,0,0,"School headmaster. Requires exceptional leadership and perception."
+50,Tutor,EDUCATION,0,0,0,0,0,0,1,0,0,0,0,1,0,0,"Private tutor. Requires perception and concentration."
+
+# ========================================
+# SKILLED TRADES (10 professions)
+# ========================================
+51,Blacksmith,SKILLED_TRADE,2,1,0,0,0,0,1,1,0,0,0,0,0,0,"Blacksmith forging metal. Requires strength, endurance, dexterity, and concentration."
+52,Tailor,SKILLED_TRADE,0,0,0,0,0,0,2,1,0,0,0,1,0,0,"Tailor making clothes. Requires exceptional dexterity, concentration, and perception."
+53,Shoemaker,SKILLED_TRADE,0,0,0,0,0,0,2,1,0,0,0,0,0,0,"Shoemaker crafting footwear. Requires dexterity and concentration."
+54,Baker,SKILLED_TRADE,1,1,0,0,0,0,1,0,0,0,0,0,0,0,"Baker making bread. Requires strength, endurance, and dexterity for kneading."
+55,Butcher,SKILLED_TRADE,1,0,0,0,0,0,1,0,0,0,0,0,0,0,"Butcher cutting meat. Requires strength and dexterity."
+56,Cobbler,SKILLED_TRADE,0,0,0,0,0,0,1,1,0,0,0,0,0,0,"Shoe repairer. Requires dexterity and concentration."
+57,Watchmaker,SKILLED_TRADE,0,0,0,0,0,0,2,2,0,0,0,1,0,0,"Watchmaker crafting timepieces. Requires exceptional dexterity, concentration, and perception."
+58,Jeweler,SKILLED_TRADE,0,0,0,0,0,0,2,1,0,0,0,1,0,0,"Jeweler crafting jewelry. Requires exceptional dexterity, concentration, and perception."
+59,Barber,SKILLED_TRADE,0,0,0,0,0,0,1,0,0,0,0,0,0,1,"Barber cutting hair. Requires dexterity and teamwork (customer service)."
+60,Tinsmith,SKILLED_TRADE,0,0,0,0,0,0,1,0,0,0,0,0,0,0,"Tinsmith working with tin. Requires dexterity and strength."
+
+# ========================================
+# AGRICULTURE (6 professions)
+# ========================================
+61,Farmer,AGRICULTURE,2,2,1,0,0,0,0,0,0,0,1,0,0,0,"Farmer working the land. Extremely physically demanding. Requires strength, endurance, stamina, and determination."
+62,Farm Laborer,AGRICULTURE,2,2,1,0,0,0,0,0,0,0,0,0,0,0,"Farm worker. Extremely physically demanding. Requires strength, endurance, and stamina."
+63,Shepherd,AGRICULTURE,0,1,0,0,0,0,0,0,0,0,1,1,0,0,"Shepherd tending sheep. Requires endurance, perception, and determination."
+64,Dairy Worker,AGRICULTURE,1,1,0,0,0,0,0,0,0,0,0,0,0,0,"Dairy farm worker. Requires strength and endurance."
+65,Agricultural Worker,AGRICULTURE,1,1,1,0,0,0,0,0,0,0,0,0,0,0,"General agricultural worker. Requires strength, endurance, and stamina."
+66,Farm Manager,AGRICULTURE,0,0,0,0,0,0,0,0,0,0,1,0,0,0,"Farm supervisor. Requires leadership and determination."
+
+# ========================================
+# SERVICE (8 professions)
+# ========================================
+67,Publican,SERVICE,0,0,0,0,0,0,0,0,0,0,1,1,0,1,"Pub owner/manager. Requires leadership, perception, and teamwork (customer service)."
+68,Shopkeeper,SERVICE,0,0,0,0,0,0,0,0,0,0,1,1,0,1,"Shop owner/manager. Requires leadership, perception, and teamwork (customer service)."
+69,Clerk,SERVICE,0,0,0,0,0,0,1,1,0,0,0,1,0,0,"Office clerk. Requires concentration, perception, and dexterity (writing)."
+70,Bookkeeper,SERVICE,0,0,0,0,0,0,1,0,0,0,0,1,0,0,"Bookkeeper maintaining accounts. Requires concentration and perception."
+71,Accountant,SERVICE,0,0,0,0,0,0,2,0,0,0,0,1,0,0,"Accountant managing finances. Requires exceptional concentration and perception."
+72,Bank Clerk,SERVICE,0,0,0,0,0,0,1,0,0,0,0,1,0,0,"Bank employee. Requires concentration and perception."
+73,Postman,SERVICE,0,1,1,0,0,0,0,0,0,0,0,0,0,0,"Postal worker delivering mail. Requires endurance and stamina for walking."
+74,Messenger,SERVICE,0,1,1,1,0,0,0,0,0,0,0,0,0,0,"Messenger delivering messages. Requires speed, endurance, and stamina."
+
+# ========================================
+# OTHER (6 professions)
+# ========================================
+75,Policeman,OTHER,1,0,0,0,0,0,0,0,2,0,1,1,0,0,"Police officer. Requires strength, exceptional courage, leadership, and perception."
+76,Fireman,OTHER,2,1,0,0,0,0,0,0,2,0,0,0,0,1,"Firefighter. Requires exceptional strength, courage, endurance, and teamwork."
+77,Soldier,OTHER,1,1,0,0,0,0,0,0,1,1,0,0,0,1,"Military soldier. Requires strength, endurance, courage, determination, and teamwork."
+78,Sailor,OTHER,1,1,0,0,0,0,0,0,1,0,0,0,0,1,"Sailor working on ships. Requires strength, endurance, courage, and teamwork."
+79,Dock Worker,OTHER,2,1,0,0,0,0,0,0,0,0,0,0,0,1,"Dock worker loading/unloading ships. Requires strength, endurance, and teamwork."
+80,Warehouse Worker,OTHER,1,1,0,0,0,0,0,0,0,0,0,0,0,0,"Warehouse worker. Requires strength and endurance."

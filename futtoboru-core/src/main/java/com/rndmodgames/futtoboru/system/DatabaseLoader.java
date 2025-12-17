@@ -125,8 +125,17 @@ public class DatabaseLoader {
             // Initialize Authorities
             AuthoritiesLoader.loadAuthorities();
 
-            // Initialize Available Professions
+            // Initialize Available Professions (Staff professions)
             initializeProfessions();
+            
+            // Initialize Player Professions (Day jobs for amateur/semi-pro players)
+            com.rndmodgames.futtoboru.system.loaders.PlayerProfessionsLoader.loadProfessions();
+            
+            // Initialize Nationality Modifiers (Country-based attribute modifiers)
+            com.rndmodgames.futtoboru.system.loaders.NationalityModifiersLoader.loadModifiers();
+            
+            // Initialize Region Modifiers (Regional attribute modifiers)
+            com.rndmodgames.futtoboru.system.loaders.RegionModifiersLoader.loadModifiers();
             
             // Initialize Seasons
             initializeSeasons();

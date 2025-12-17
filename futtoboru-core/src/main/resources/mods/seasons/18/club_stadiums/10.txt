@@ -5,6 +5,6 @@
 # Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season
 #          https://en.wikipedia.org/wiki/County_Cricket_Ground,_Derby
 #
-# COLUMNS
-# id, name, year, capacity, 
-10,Racecourse Ground,1863,12000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+10,Racecourse Ground,1863,12000,4000,"Derby County, established in 1884, initially played at the County Cricket Ground. Due to fixture clashes with cricket, they occasionally used Ley's Baseball Ground for home games. Made Baseball Ground their permanent home in 1895, remaining there for 102 years. The pitch was notorious for poor condition due to drainage issues.",https://en.wikipedia.org/wiki/County_Cricket_Ground,_Derby,2000,false,200

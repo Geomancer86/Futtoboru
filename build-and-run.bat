@@ -64,6 +64,6 @@ echo Step 2: Starting game in debug mode...
 echo ========================================
 echo.
 
-REM Run the game
-call run-game-debug.bat
+REM Run the game (no pause, runs immediately)
+start "" run-game-debug.bat
 

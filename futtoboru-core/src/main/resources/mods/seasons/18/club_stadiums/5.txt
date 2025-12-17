@@ -1,10 +1,10 @@
-# Boltom Wanderers - 1888-89 Club Stadium File
+# Bolton Wanderers - 1888-89 Club Stadium File
 #
-# Stadium is Pikes Lane
+# Stadium is Pike's Lane
 #
 # Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season
 #          https://en.wikipedia.org/wiki/Pike%27s_Lane
 #
-# COLUMNS
-# id, name, year, capacity, 
-5,Pikes Lane,1880,20000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+5,Pike's Lane,1880,20000,4000,"Pike's Lane was Bolton Wanderers' home from 1880 until 1895. Featured embankments on both sides, later a grandstand and wooden terracing. On September 8, 1888, hosted one of the inaugural Football League matches, with Kenny Davenport scoring the first-ever Football League goal. Often criticized for poor pitch conditions.",https://en.wikipedia.org/wiki/Pike%27s_Lane,2000,false,200

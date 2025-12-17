@@ -5,6 +5,6 @@
 # Sources: https://en.wikipedia.org/wiki/1888%E2%80%9389_Notts_County_F.C._season
 #          https://en.wikipedia.org/wiki/Trent_Bridge
 #
-# COLUMNS
-# id, name, year, capacity, 
-11,Trent Bridge,1838,15000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+11,Trent Bridge,1883,15000,5000,"Notts County, established in 1862 (world's oldest professional football club), began playing at Trent Bridge in 1883, a venue primarily known for cricket. First home Football League match was October 6, 1888, drawing 3-3 against Blackburn Rovers. Shared use with cricket club presented challenges. Won FA Cup in 1894.",https://en.wikipedia.org/wiki/Trent_Bridge,2500,false,300

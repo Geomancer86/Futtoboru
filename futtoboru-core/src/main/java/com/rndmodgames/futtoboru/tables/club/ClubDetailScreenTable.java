@@ -117,17 +117,98 @@ public class ClubDetailScreenTable extends VisTable {
             this.row();
         }
         
-        // Stadium
+        // Stadium Information
         if (club.getStadium() != null) {
             this.addSeparator();
             this.row();
+            VisLabel stadiumHeader = new VisLabel("STADIUM INFORMATION");
+            stadiumHeader.setFontScale(1.1f);
+            this.add(stadiumHeader).colspan(2).left().padTop(10);
+            this.row();
+            
+            // Stadium Name
             this.add(new VisLabel("Stadium:")).left();
             this.add(new VisLabel(club.getStadium().getName())).left().expandX();
             this.row();
             
+            // Capacity
             if (club.getStadium().getCapacity() != null) {
                 this.add(new VisLabel("Capacity:")).left();
                 this.add(new VisLabel(club.getStadium().getCapacity().toString())).left().expandX();
+                this.row();
+            }
+            
+            // Built Year
+            if (club.getStadium().getBuiltYear() != null) {
+                this.add(new VisLabel("Built Year:")).left();
+                this.add(new VisLabel(club.getStadium().getBuiltYear().toString())).left().expandX();
+                this.row();
+            }
+            
+            // Value
+            if (club.getStadium().getValue() != null && club.getStadium().getValue().compareTo(BigDecimal.ZERO) > 0) {
+                this.add(new VisLabel("Estimated Value:")).left();
+                this.add(new VisLabel(currencyFormat.format(club.getStadium().getValue()))).left().expandX();
+                this.row();
+            }
+            
+            // Ownership Status
+            this.add(new VisLabel("Ownership:")).left();
+            String ownershipStatus = club.getStadium().isOwned() ? "Owned" : "Rented";
+            this.add(new VisLabel(ownershipStatus)).left().expandX();
+            this.row();
+            
+            // Land Value (if owned)
+            if (club.getStadium().isOwned() && club.getStadium().getLandValue() != null && 
+                club.getStadium().getLandValue().compareTo(BigDecimal.ZERO) > 0) {
+                this.add(new VisLabel("Land Value:")).left();
+                this.add(new VisLabel(currencyFormat.format(club.getStadium().getLandValue()))).left().expandX();
+                this.row();
+            }
+            
+            // Annual Rent (if rented)
+            if (!club.getStadium().isOwned() && club.getStadium().getAnnualRent() != null && 
+                club.getStadium().getAnnualRent().compareTo(BigDecimal.ZERO) > 0) {
+                this.add(new VisLabel("Annual Rent:")).left();
+                this.add(new VisLabel(currencyFormat.format(club.getStadium().getAnnualRent()) + "/year")).left().expandX();
+                this.row();
+            }
+            
+            // Total Asset Value (if owned)
+            if (club.getStadium().isOwned()) {
+                BigDecimal totalAssetValue = club.getStadium().getTotalAssetValue();
+                if (totalAssetValue.compareTo(BigDecimal.ZERO) > 0) {
+                    this.add(new VisLabel("Total Asset Value:")).left();
+                    VisLabel assetValueLabel = new VisLabel(currencyFormat.format(totalAssetValue));
+                    assetValueLabel.setColor(0.2f, 1.0f, 0.2f, 1.0f); // Green for asset value
+                    this.add(assetValueLabel).left().expandX();
+                    this.row();
+                }
+            }
+            
+            // Historical Description
+            if (club.getStadium().getDescription() != null && !club.getStadium().getDescription().trim().isEmpty()) {
+                this.addSeparator().colspan(2).padTop(5).padBottom(5);
+                this.row();
+                VisLabel descHeader = new VisLabel("Historical Summary:");
+                descHeader.setFontScale(1.05f);
+                this.add(descHeader).colspan(2).left();
+                this.row();
+                // Description text (may be long, so wrap it)
+                VisLabel descriptionLabel = new VisLabel(club.getStadium().getDescription());
+                descriptionLabel.setWrap(true);
+                this.add(descriptionLabel).colspan(2).left().width(600).padTop(5);
+                this.row();
+            }
+            
+            // URL Source (Wikipedia link)
+            if (club.getStadium().getUrlSource() != null && !club.getStadium().getUrlSource().trim().isEmpty()) {
+                this.addSeparator().colspan(2).padTop(5).padBottom(5);
+                this.row();
+                this.add(new VisLabel("Source:")).left();
+                VisLabel urlLabel = new VisLabel(club.getStadium().getUrlSource());
+                urlLabel.setColor(0.3f, 0.5f, 1.0f, 1.0f); // Blue for link
+                this.add(urlLabel).left().expandX();
                 this.row();
             }
         }

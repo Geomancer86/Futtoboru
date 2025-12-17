@@ -5,6 +5,6 @@
 # Sources: https://en.wikipedia.org/wiki/Accrington_F.C.
 #          https://en.wikipedia.org/wiki/Thorneyholme_Road
 #
-# COLUMNS
-# id, name, year, capacity, 
-7,Thorneyholme Road,1878,10000
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+7,Thorneyholme Road,1878,10000,3000,"Thorneyholme Road was shared by Accrington Cricket Club (since 1877) and Accrington Football Club (founded 1878, known as 'Owd Reds'). The football pitch was at the western end, featuring a covered stand and uncovered seating. First league match was October 6, 1888, a 4-4 draw against Wolverhampton Wanderers.",https://en.wikipedia.org/wiki/Thorneyholme_Road,1500,false,150
