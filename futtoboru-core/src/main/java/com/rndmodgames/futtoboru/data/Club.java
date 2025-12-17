@@ -101,6 +101,13 @@ public class Club implements Serializable {
     private List<ClubExpenses> expensesHistory = new ArrayList<>();
     
     /**
+     * Player Contracts (v1.0)
+     * 
+     * Tracks all player contracts at the club
+     */
+    private List<PlayerContract> playerContracts = new ArrayList<>();
+    
+    /**
      * Current Period Financial Tracking (v1.0)
      * 
      * Tracks income and expenditure for current season/month
@@ -498,6 +505,42 @@ public class Club implements Serializable {
             expensesHistory = new ArrayList<>();
         }
         expensesHistory.add(expense);
+    }
+    
+    /**
+     * Player Contracts Getters and Setters (v1.0)
+     */
+    public List<PlayerContract> getPlayerContracts() {
+        if (playerContracts == null) {
+            playerContracts = new ArrayList<>();
+        }
+        return playerContracts;
+    }
+
+    public void setPlayerContracts(List<PlayerContract> playerContracts) {
+        this.playerContracts = playerContracts;
+    }
+    
+    public void addPlayerContract(PlayerContract contract) {
+        if (contract == null) {
+            return;
+        }
+        getPlayerContracts().add(contract);
+    }
+    
+    /**
+     * Get contract for a specific player
+     */
+    public PlayerContract getContractForPlayer(Long playerId) {
+        if (playerId == null || playerContracts == null) {
+            return null;
+        }
+        for (PlayerContract contract : playerContracts) {
+            if (contract.getPlayerId() != null && contract.getPlayerId().equals(playerId)) {
+                return contract;
+            }
+        }
+        return null;
     }
     
     /**

@@ -232,10 +232,22 @@ public class PlayersLoader {
                             new com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator();
                         attrGen.generatePlayerAttributes(player, person, estimatedDate);
                         
+                        // Generate contract for player (v1.0)
+                        // For Season 1, contracts are randomly generated
+                        // Future seasons will load from scripts with researched historical data
+                        java.time.LocalDateTime seasonStartDate = season.getStartDate() != null ? 
+                            season.getStartDate() : estimatedDate;
+                        com.rndmodgames.futtoboru.data.PlayerContract contract = 
+                            com.rndmodgames.futtoboru.system.generators.PlayerContractGenerator.generateRandomContract(
+                                player, club, seasonStartDate);
+                        
+                        if (contract != null) {
+                            club.addPlayerContract(contract);
+                        }
+                        
                         // Assign profession (for amateur/semi-pro players)
-                        // TODO: Load contract type from script, for now assume mix of amateur/semi-pro
                         // Professional players won't get professions (full-time football)
-                        Integer contractType = null; // Will be set when contracts are loaded
+                        Integer contractType = contract != null ? contract.getContractType() : null;
                         com.rndmodgames.futtoboru.system.generators.PlayerProfessionAssigner.assignProfession(
                             player, club, contractType);
                         
