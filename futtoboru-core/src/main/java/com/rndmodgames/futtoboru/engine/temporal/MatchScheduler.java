@@ -385,9 +385,16 @@ public class MatchScheduler {
         }
         if (match.getMatchType() != null) {
             income.setMatchType(match.getMatchType());
+            String matchTypeName = match.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
+                                  match.getMatchType() == Match.LEAGUE_MATCH ? "LEAGUE" : 
+                                  match.getMatchType() == Match.CUP_MATCH ? "CUP" : "UNKNOWN";
+            System.out.println("MatchScheduler: Setting match type to: " + matchTypeName + " (value: " + match.getMatchType() + ")");
+        } else {
+            System.out.println("MatchScheduler: WARNING - Match type is NULL for match ID: " + match.getId());
         }
         
         System.out.println("MatchScheduler: Updated match income - Match ID: " + match.getId() + 
+                          ", Match Type: " + income.getMatchType() +
                           ", Total Revenue: $" + df.format(income.getTicketRevenue()) + 
                           ", Total Attendance: " + income.getAttendance() + 
                           ", Today's Tickets: " + ticketsSold);
@@ -417,6 +424,17 @@ public class MatchScheduler {
         income.setAttendance(0);
         income.setMatchDate(match.getMatchDateTime() != null ? match.getMatchDateTime() : LocalDateTime.now());
         income.setMatchType(match.getMatchType());
+        
+        // Debug: Log match type when creating new MatchIncome
+        if (match.getMatchType() != null) {
+            String matchTypeName = match.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
+                                  match.getMatchType() == Match.LEAGUE_MATCH ? "LEAGUE" : 
+                                  match.getMatchType() == Match.CUP_MATCH ? "CUP" : "UNKNOWN";
+            System.out.println("MatchScheduler: Creating new MatchIncome - Match ID: " + match.getId() + 
+                             ", Match Type: " + matchTypeName + " (value: " + match.getMatchType() + ")");
+        } else {
+            System.out.println("MatchScheduler: WARNING - Creating MatchIncome with NULL match type for match ID: " + match.getId());
+        }
         
         // Add to club's match income list
         homeClub.addMatchIncome(income);
