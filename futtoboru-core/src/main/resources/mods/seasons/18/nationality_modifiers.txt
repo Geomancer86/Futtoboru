@@ -9,16 +9,20 @@
 
 # England - Dominant in 1887-88, strong in 1888-89
 # Industrial workers provide physical strength, competitive spirit, organized play
-1,England,2,1,0,0,0,0,1,0,0,2,0,1,0,1,"Inventor of modern football, dominant in 1887-88. Industrial workers provide physical strength and determination. Strong competitive spirit.",9
+# Country ID: 1000 (from countries.txt)
+1000,England,2,1,0,0,0,0,1,0,0,2,0,1,0,1,"Inventor of modern football, dominant in 1887-88. Industrial workers provide physical strength and determination. Strong competitive spirit.",9
 
 # Scotland - Won 1888-89 championship, strong footballing tradition
 # Skillful play, tactical awareness, organized passing game
-2,Scotland,0,0,0,1,0,0,0,0,0,0,0,2,0,1,"Strong footballing tradition, skillful play, tactical awareness. Won 1888-89 championship. Known for passing game.",9
+# Country ID: 1001 (from countries.txt)
+1001,Scotland,0,0,0,1,0,0,0,0,0,0,0,2,0,1,"Strong footballing tradition, skillful play, tactical awareness. Won 1888-89 championship. Known for passing game.",9
 
 # Wales - Some good results but inconsistent
 # Fighting spirit, determination, mining/industrial background
-3,Wales,1,0,0,0,0,0,0,0,2,1,0,0,0,0,"Fighting spirit and determination. Some good results (11-0 vs Ireland 1887-88) but inconsistent. Mining/industrial background.",6
+# Country ID: 1002 (from countries.txt)
+1002,Wales,1,0,0,0,0,0,0,0,2,1,0,0,0,0,"Fighting spirit and determination. Some good results (11-0 vs Ireland 1887-88) but inconsistent. Mining/industrial background.",6
 
 # Ireland - Struggled defensively, less developed football culture
 # Fighting spirit, but less developed overall
-4,Ireland,0,0,0,0,0,0,0,0,1,1,0,0,0,0,"Less developed football culture. Struggled defensively in 1888-89 (conceded 26 goals in 1887-88). Fighting spirit but needs development.",4
+# Country ID: 83 (from countries.txt)
+83,Ireland,0,0,0,0,0,0,0,0,1,1,0,0,0,0,"Less developed football culture. Struggled defensively in 1888-89 (conceded 26 goals in 1887-88). Fighting spirit but needs development.",4

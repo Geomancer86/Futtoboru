@@ -1,6 +1,5 @@
 package com.rndmodgames.futtoboru.tables.player;
 
-import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
@@ -44,7 +43,6 @@ public class PlayerDetailScreenTable extends VisTable {
     
     // Formatting
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-    private DecimalFormat attributeFormat = new DecimalFormat("#0.0");
     
     // UI Components
     private VisTextButton backButton;
@@ -246,8 +244,16 @@ public class PlayerDetailScreenTable extends VisTable {
         NationalityModifier natMod = null;
         if (currentPlayer.getPerson().getCountry() != null && 
             currentPlayer.getPerson().getCountry().getId() != null) {
-            natMod = NationalityModifiersLoader.getModifier(
-                currentPlayer.getPerson().getCountry().getId());
+            Long countryId = currentPlayer.getPerson().getCountry().getId();
+            natMod = NationalityModifiersLoader.getModifier(countryId);
+            
+            // Debug logging
+            if (natMod == null) {
+                Gdx.app.debug("PlayerDetailScreenTable", "No nationality modifier found for country ID: " + 
+                    countryId + " (" + currentPlayer.getPerson().getCountry().getCommonName() + ")");
+            }
+        } else {
+            Gdx.app.debug("PlayerDetailScreenTable", "Player has no country set");
         }
         
         // Get region modifier
@@ -256,9 +262,19 @@ public class PlayerDetailScreenTable extends VisTable {
             currentPlayer.getPerson().getState().getName() != null &&
             currentPlayer.getPerson().getCountry() != null && 
             currentPlayer.getPerson().getCountry().getId() != null) {
-            regMod = RegionModifiersLoader.getModifier(
-                currentPlayer.getPerson().getState().getName(),
-                currentPlayer.getPerson().getCountry().getId());
+            String stateName = currentPlayer.getPerson().getState().getName();
+            Long countryId = currentPlayer.getPerson().getCountry().getId();
+            regMod = RegionModifiersLoader.getModifier(stateName, countryId);
+            
+            // Debug logging
+            if (regMod == null) {
+                Gdx.app.debug("PlayerDetailScreenTable", "No region modifier found for state: " + 
+                    stateName + ", country ID: " + countryId);
+            }
+        } else {
+            if (currentPlayer.getPerson().getState() == null) {
+                Gdx.app.debug("PlayerDetailScreenTable", "Player has no state/region set");
+            }
         }
         
         // Nationality Modifiers
