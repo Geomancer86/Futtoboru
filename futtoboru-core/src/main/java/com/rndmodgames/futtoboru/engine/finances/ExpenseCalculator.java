@@ -309,7 +309,6 @@ public class ExpenseCalculator {
         }
         
         BigDecimal totalWages = BigDecimal.ZERO;
-        int activeContracts = 0;
         
         for (PlayerContract contract : club.getPlayerContracts()) {
             if (contract == null) {
@@ -339,7 +338,6 @@ public class ExpenseCalculator {
             BigDecimal weeklyWage = contract.getWeeklyWage();
             if (weeklyWage != null && weeklyWage.compareTo(BigDecimal.ZERO) > 0) {
                 totalWages = totalWages.add(weeklyWage);
-                activeContracts++;
             }
         }
         
