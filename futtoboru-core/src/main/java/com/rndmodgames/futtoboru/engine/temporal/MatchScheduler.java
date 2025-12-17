@@ -197,12 +197,19 @@ public class MatchScheduler {
              *  - number of max random tickets should be less or equal to the number of available tickets for sale
              *  - we need all the stadiums to compare or this wont work
              */
-            int maxTickets = club.getStadium().getCapacity() - scheduled.getAttendance();
+            // Handle null attendance (should default to 0)
+            Integer currentAttendance = scheduled.getAttendance();
+            if (currentAttendance == null) {
+                currentAttendance = 0;
+                scheduled.setAttendance(0);
+            }
+            
+            int maxTickets = club.getStadium().getCapacity() - currentAttendance;
             
             System.out.println("MATCH            : " + DatabaseLoader.getClubById(scheduled.getHomeClubId()).getName() + " vs " + DatabaseLoader.getClubById(scheduled.getAwayClubId()).getName());
             System.out.println("STADIUM NAME     : " + club.getStadium().getName());
             System.out.println("STADIUM CAPACITY : " + club.getStadium().getCapacity());
-            System.out.println("TICKETS SOLD     : " + scheduled.getAttendance());
+            System.out.println("TICKETS SOLD     : " + currentAttendance);
             System.out.println("TICKETS AVAILABLE: " + maxTickets);
             
             if (maxTickets > 0) {
@@ -227,12 +234,22 @@ public class MatchScheduler {
                 
                 int maxPerDay = (int)(baseMaxPerDay * attendanceMultiplier);
                 
+                // Ensure maxPerDay is at least 1 for friendlies (even if capacity is small)
+                if (maxPerDay < 1) {
+                    maxPerDay = 1;
+                }
+                
                 // Cap it at max capacity just in case
                 if (maxPerDay > maxTickets) {
                     maxPerDay = maxTickets;
                 }
                 
                 int minPerDay = Math.max((int)(baseMinPerDay * attendanceMultiplier), 1); // At least 1 ticket
+                
+                // Ensure minPerDay doesn't exceed maxPerDay
+                if (minPerDay > maxPerDay) {
+                    minPerDay = maxPerDay;
+                }
                 
                 //
                 System.out.println("MATCH TYPE: " + (scheduled.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
@@ -242,14 +259,11 @@ public class MatchScheduler {
                 
                 int randomTickets;
                 
-                // TODO: fix matches not selling out
+                // Sell tickets: if range is valid, use random; otherwise sell what's available
                 if (minPerDay < maxPerDay) {
-                    
-                    randomTickets = DatabaseLoader.RNG.nextInt(minPerDay, maxPerDay);
-                    
+                    randomTickets = DatabaseLoader.RNG.nextInt(minPerDay, maxPerDay + 1); // +1 because nextInt is exclusive
                 } else {
-
-                    // sell out
+                    // min equals max, sell that amount
                     randomTickets = maxPerDay;
                 }
                 
