@@ -1,11 +1,14 @@
 package com.rndmodgames.futtoboru.menu.topmenu;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Timer;
+import com.kotcrab.vis.ui.widget.BusyBar;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -49,6 +52,29 @@ public class MainGameMenuTable extends VisTable {
     VisTextButton matchPreviewButton = new VisTextButton(LanguageModLoader.getValue("match_preview"));
     VisTextButton matchResultButton = new VisTextButton(LanguageModLoader.getValue("match_result"));
     VisTextButton drawButton = new VisTextButton("INBOX -> DRAW");  // Mandatory draw button
+    BusyBar processingBusyBar = new BusyBar();  // Progress indicator during game processing
+    
+    /**
+     * Processing state flag to prevent double-clicks
+     */
+    private volatile boolean isProcessing = false;
+    
+    /**
+     * Timestamp of last processing start to enforce cooldown period
+     */
+    private volatile long lastProcessingStartTime = 0;
+    
+    /**
+     * Minimum cooldown period in milliseconds between processing cycles
+     * Prevents rapid triple-clicks from slipping through
+     */
+    private static final long PROCESSING_COOLDOWN_MS = 100;
+    
+    /**
+     * Reference to the continue button's InputListener
+     * We remove this listener during processing to prevent queued events from firing
+     */
+    private InputListener continueButtonListener = null;
     
     CurrentDateAndTimeWidget dateTimeWidget = null;
     
@@ -122,31 +148,93 @@ public class MainGameMenuTable extends VisTable {
 
         /**
          * Continue Game Button
+         * 
+         * CRITICAL: We store the listener reference so we can remove it during processing
+         * This prevents queued events from firing even if they were already in the event queue
          */
-        continueGameButton.addCaptureListener(new InputListener() {
+        continueButtonListener = new InputListener() {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
+                // ABSOLUTE FIRST CHECK: If button is disabled, DO NOTHING - return false immediately
+                // This MUST be the first check, before ANY other code executes
+                if (continueGameButton.isDisabled()) {
+                    return false;
+                }
+                
+                // CRITICAL: Use synchronized block to atomically check and set processing flag
+                synchronized (MainGameMenuTable.this) {
+                    // Double-check disabled state (defense in depth)
+                    if (continueGameButton.isDisabled()) {
+                        return false;
+                    }
+                    
+                    // Check if already processing (defense in depth)
+                    if (isProcessing) {
+                        continueGameButton.setDisabled(true);
+                        return false; // Block if already processing
+                    }
+                    
+                    // LibGDX Best Practice: Debounce - check minimum time since last click
+                    long currentTime = System.currentTimeMillis();
+                    long timeSinceLastProcessing = currentTime - lastProcessingStartTime;
+                    
+                    // Block if cooldown hasn't elapsed
+                    if (timeSinceLastProcessing < PROCESSING_COOLDOWN_MS) {
+                        continueGameButton.setDisabled(true);
+                        return false; // Block during cooldown
+                    }
+                    
+                    // ATOMIC: Set processing flag IMMEDIATELY
+                    isProcessing = true;
+                    lastProcessingStartTime = currentTime;
+                    
+                    // CRITICAL: Remove listener IMMEDIATELY to prevent queued events
+                    continueGameButton.removeCaptureListener(continueButtonListener);
+                    
+                    // Disable button
+                    continueGameButton.setDisabled(true);
+                    
+                    return true;
+                } // End synchronized - flag is now set, no other thread can set it
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-                //
-                continueGame();
+                // NOTE: We do NOT check isDisabled() here because touchDown intentionally disables
+                // the button to prevent additional clicks, but we still need touchUp to proceed
+                // for this specific click to call continueGame()
                 
-                //
-                setMainContainerButton();
-                
-                // if current screen is Match Result, get back to PREVIOUS SCREEN or OTHER / HOME SCREEN
-                if (MainMenuManager.CURRENT_SCREEN == MainMenuManager.MATCH_RESULT_SCREEN) {
-                    
-                    // Return to previous screen
-                    mainMenuManager.setActiveMainScreen(MainMenuManager.BEFORE_MATCH_SCREEN);
+                // Verify button is still pressed (user didn't drag away)
+                if (!continueGameButton.isPressed()) {
+                    // User dragged away - restore state
+                    synchronized (MainGameMenuTable.this) {
+                        isProcessing = false;
+                        if (!continueGameButton.getCaptureListeners().contains(continueButtonListener, true)) {
+                            continueGameButton.addCaptureListener(continueButtonListener);
+                        }
+                        continueGameButton.setDisabled(false);
+                    }
+                    return;
                 }
+                
+                // Verify processing flag is still set (should be true from touchDown)
+                if (!isProcessing) {
+                    // Something went wrong - restore state
+                    if (!continueGameButton.getCaptureListeners().contains(continueButtonListener, true)) {
+                        continueGameButton.addCaptureListener(continueButtonListener);
+                    }
+                    continueGameButton.setDisabled(false);
+                    return;
+                }
+
+                // All checks passed - proceed with game continuation
+                continueGame();
             }
-        });
+        };
+        
+        // Add the listener to the button
+        continueGameButton.addCaptureListener(continueButtonListener);
         
         /**
          * Match Preview Button
@@ -195,9 +283,19 @@ public class MainGameMenuTable extends VisTable {
         // Settings SelectBox & Continue Game Button
         VisTable rightMenu = new VisTable(true);
         
+        // Container for button and progress bar (stacked vertically)
+        VisTable buttonAndProgressContainer = new VisTable(true);
+        buttonAndProgressContainer.add(mainButtonContainer);
+        buttonAndProgressContainer.row();
+        
+        // Add BusyBar directly below button (hidden by default)
+        processingBusyBar.setVisible(false);
+        processingBusyBar.setWidth(150);
+        buttonAndProgressContainer.add(processingBusyBar).width(150).height(4).padTop(2);
+        
         rightMenu.add(gameSettingsSelectBox).right();
         rightMenu.add(dateTimeWidget).width(100).right();
-        rightMenu.add(mainButtonContainer).right();
+        rightMenu.add(buttonAndProgressContainer).right();
         
         //
         add(rightMenu).expandX().right();
@@ -221,6 +319,12 @@ public class MainGameMenuTable extends VisTable {
         case FuttoboruGameEngine.CONTINUE_GAME_ACTION:
             
             // Set continue game button
+            // Preserve disabled state if processing
+            if (isProcessing) {
+                continueGameButton.setDisabled(true);
+            } else {
+                continueGameButton.setDisabled(false);
+            }
             mainButtonContainer.add(continueGameButton);
             
             break;
@@ -392,15 +496,122 @@ public class MainGameMenuTable extends VisTable {
     }
     
     /**
+     * Continue game - advances time by one day
+     * Prevents double-clicks and shows progress indicator during processing
      * 
+     * Note: The processing flag is already set in touchDown() to prevent race conditions.
+     * This method just ensures it's still set (defense in depth).
+     * 
+     * TODO: BUG - Double-click bug still exists: Rapid double-clicks can still process two days in a row.
+     * The listener removal approach and disabled state checks are not fully preventing queued events from firing.
+     * Need to investigate LibGDX event queue handling and find a more robust solution.
      */
     private void continueGame() {
         
-        // Continue the game on the Game Engine
-        ((Futtoboru)(game)).getGameEngine().continueGame();
-                
-        // Update the dynamic date widget
-        dateTimeWidget.updateDynamicComponents();
+        // Defense in depth: Verify flag is still set (should always be true at this point)
+        // If somehow it's not set, we can't proceed safely
+        if (!isProcessing) {
+            System.err.println("MainGameMenuTable: WARNING - continueGame() called but isProcessing is false!");
+            Gdx.app.error("MainGameMenuTable", "WARNING - continueGame() called but isProcessing is false!");
+            continueGameButton.setDisabled(false);
+            return;
+        }
+        
+        // Disable button immediately and show progress bar
+        continueGameButton.setDisabled(true);
+        
+        // Show BusyBar (animates automatically when visible)
+        processingBusyBar.setVisible(true);
+        
+        System.out.println("MainGameMenuTable: Button disabled, BusyBar visible, scheduling processing");
+        Gdx.app.log("MainGameMenuTable", "Button disabled, BusyBar visible, scheduling processing");
+        
+        // Schedule the actual processing to happen after a short delay
+        // This gives the UI one frame to render the disabled button and busy bar
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println("MainGameMenuTable: Starting game engine continueGame()");
+                    Gdx.app.log("MainGameMenuTable", "Starting game engine continueGame()");
+                    
+                    // Continue the game on the Game Engine (this blocks the thread)
+                    ((Futtoboru)(game)).getGameEngine().continueGame();
+                    
+                    System.out.println("MainGameMenuTable: Game engine continueGame() completed");
+                    Gdx.app.log("MainGameMenuTable", "Game engine continueGame() completed");
+                    
+                    // After processing completes, update UI
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("MainGameMenuTable: Updating UI after processing");
+                            Gdx.app.log("MainGameMenuTable", "Updating UI after processing");
+                            
+                            // Update the dynamic date widget
+                            dateTimeWidget.updateDynamicComponents();
+                            
+                            // Clear processing flag immediately (cooldown check in touchDown will handle rapid clicks)
+                            synchronized (MainGameMenuTable.this) {
+                                isProcessing = false;
+                                System.out.println("MainGameMenuTable: Processing flag cleared");
+                                Gdx.app.log("MainGameMenuTable", "Processing flag cleared");
+                            }
+                            
+                            // Hide progress indicator
+                            processingBusyBar.setVisible(false);
+                            
+                            // CRITICAL: Re-add the listener BEFORE re-enabling the button
+                            // This ensures the listener is ready to handle new clicks
+                            continueGameButton.addCaptureListener(continueButtonListener);
+                            
+                            // Update button state first (this may re-add the button to the container)
+                            setMainContainerButton();
+                            
+                            // Then explicitly re-enable the button (after setMainContainerButton may have reset it)
+                            continueGameButton.setDisabled(false);
+                            
+                            System.out.println("MainGameMenuTable: Listener re-added, button re-enabled, BusyBar hidden");
+                            Gdx.app.log("MainGameMenuTable", "Listener re-added, button re-enabled, BusyBar hidden");
+                            
+                            // Handle screen transitions
+                            if (MainMenuManager.CURRENT_SCREEN == MainMenuManager.MATCH_RESULT_SCREEN) {
+                                mainMenuManager.setActiveMainScreen(MainMenuManager.BEFORE_MATCH_SCREEN);
+                            }
+                        }
+                    });
+                    
+                } catch (Exception e) {
+                    // Always re-enable button and hide progress indicator, even if there's an error
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Clear processing flag immediately
+                            synchronized (MainGameMenuTable.this) {
+                                isProcessing = false;
+                                System.out.println("MainGameMenuTable: Processing flag cleared after error");
+                                Gdx.app.log("MainGameMenuTable", "Processing flag cleared after error");
+                            }
+                            
+                            // Hide progress indicator
+                            processingBusyBar.setVisible(false);
+                            
+                            // CRITICAL: Re-add the listener in case of error (it was removed during processing)
+                            continueGameButton.addCaptureListener(continueButtonListener);
+                            
+                            // Update button state
+                            setMainContainerButton();
+                            
+                            // Explicitly re-enable the button
+                            continueGameButton.setDisabled(false);
+                            
+                            System.err.println("MainGameMenuTable: Error during continueGame(): " + e.getMessage());
+                            Gdx.app.error("MainGameMenuTable", "Error during continueGame()", e);
+                        }
+                    });
+                }
+            }
+        }, 0.05f); // Very short delay to allow one render frame to show disabled state
     }
 
     public MainMenuManager getMainMenuManager() {

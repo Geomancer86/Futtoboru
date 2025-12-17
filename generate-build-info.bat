@@ -1,5 +1,6 @@
 @echo off
 REM Generate build.properties file with build information
+REM Build number increments on EVERY build, not just commits
 
 setlocal enabledelayedexpansion
 
@@ -9,9 +10,37 @@ REM Get git commit hash (short)
 for /f "delims=" %%i in ('git rev-parse --short HEAD 2^>nul') do set GIT_COMMIT=%%i
 if "%GIT_COMMIT%"=="" set GIT_COMMIT=unknown
 
-REM Get git commit count (build number)
-for /f "delims=" %%i in ('git rev-list --count HEAD 2^>nul') do set BUILD_NUMBER=%%i
-if "%BUILD_NUMBER%"=="" set BUILD_NUMBER=0
+REM Read current build number from file (if it exists) and increment it
+set BUILD_NUMBER=0
+set CURRENT_BUILD=0
+
+REM Check if build.properties exists and read the current build number
+if exist "futtoboru-core\src\main\resources\build.properties" (
+    REM Extract build number from existing file using findstr
+    for /f "tokens=2 delims==" %%a in ('findstr /R /C:"^build.number=" "futtoboru-core\src\main\resources\build.properties"') do (
+        set CURRENT_BUILD=%%a
+        REM Remove any trailing spaces
+        set CURRENT_BUILD=!CURRENT_BUILD: =!
+    )
+    
+    REM Check if we successfully read a number
+    if "!CURRENT_BUILD!"=="" (
+        set CURRENT_BUILD=0
+    )
+    
+    REM Increment build number (handles both 0 and existing numbers)
+    if !CURRENT_BUILD! LSS 1 (
+        set BUILD_NUMBER=1
+        echo No valid build number found, starting at: !BUILD_NUMBER!
+    ) else (
+        set /a BUILD_NUMBER=!CURRENT_BUILD! + 1
+        echo Found existing build number: !CURRENT_BUILD!, incrementing to: !BUILD_NUMBER!
+    )
+) else (
+    REM No build.properties file exists, start at 1
+    set BUILD_NUMBER=1
+    echo No existing build.properties file, starting build number at: !BUILD_NUMBER!
+)
 
 REM Get current timestamp
 for /f "tokens=2 delims==" %%a in ('wmic os get localdatetime /value') do set "dt=%%a"

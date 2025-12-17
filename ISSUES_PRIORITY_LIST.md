@@ -1,6 +1,38 @@
-# Futtoboru - Job System Issues & Priority List
+# Futtoboru - Known Issues & Priority List
 
 ## Critical Issues (Must Fix First)
+
+### 0. **Continue Button Double-Click Bug** 🔴 CRITICAL
+**Problem:** Rapid double-clicks on the Continue button can still process two days in a row, even with disabled state checks and listener removal.
+
+**Root Cause:**
+- LibGDX event queue may still process queued events even after listener removal
+- Disabled state checks may not prevent all queued events
+- Synchronized blocks and flag checks are not fully preventing race conditions
+
+**Current Status:**
+- Attempted fixes include: listener removal, disabled state checks, synchronized blocks, processing flags
+- Bug persists - needs further investigation
+
+**Impact:**
+- Users can accidentally advance game by multiple days
+- Critical for gameplay integrity
+
+**Location:**
+- `MainGameMenuTable.java` - `continueGame()` method and InputListener implementation
+- TODO comment added to code
+
+**Fix Required:**
+- Investigate LibGDX event queue handling
+- Consider alternative approaches (button swapping, event filtering at Stage level)
+- May require deep understanding of LibGDX's event system internals
+
+**Files:**
+- `MainGameMenuTable.java`
+
+**Estimated Time:** Unknown (requires research)
+
+---
 
 ### 1. **Button Click Listeners Not Working** 🔴 CRITICAL
 **Problem:** Apply buttons in JobBoardScreenTable and ClubDetailScreenTable don't respond to clicks. No logs appear when clicking.
