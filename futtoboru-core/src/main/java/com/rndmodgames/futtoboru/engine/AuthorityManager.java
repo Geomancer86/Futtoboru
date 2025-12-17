@@ -13,6 +13,8 @@ import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Message;
+import com.rndmodgames.futtoboru.data.MessageCategory;
+import com.rndmodgames.futtoboru.data.MessagePriority;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator;
@@ -392,7 +394,7 @@ public class AuthorityManager {
         LocalDateTime matchDate = currentDate.plusWeeks(2);
         
         int roundNumber = 1; // First round
-        MessageManager messageManager = game.getMessageManager();
+        MessageManager messageManager = game.getGameEngine().getMessageManager();
         
         for (Match match : drawMatches) {
             // Set match properties
@@ -428,7 +430,7 @@ public class AuthorityManager {
                     cup, homeClub, awayClub, matchDate, "First Round"
                 );
                 if (drawMessage != null) {
-                    currentGame.addMessage(drawMessage);
+                    messageManager.deliverMessage(drawMessage);
                 }
             }
         }
@@ -674,7 +676,7 @@ public class AuthorityManager {
         LocalDateTime currentDate = currentGame.getGameDate();
         LocalDateTime nextRoundDate = currentDate.plusWeeks(2);
         
-        MessageManager messageManager = game.getMessageManager();
+        MessageManager messageManager = game.getGameEngine().getMessageManager();
         String roundName = getRoundName(nextRound, winnerIds.size());
         
         for (Match match : nextRoundMatches) {
@@ -710,7 +712,7 @@ public class AuthorityManager {
                     cup, homeClub, awayClub, nextRoundDate, roundName
                 );
                 if (drawMessage != null) {
-                    currentGame.addMessage(drawMessage);
+                    messageManager.deliverMessage(drawMessage);
                 }
             }
         }
@@ -773,10 +775,10 @@ public class AuthorityManager {
         }
         
         // Create cup completion message
-        MessageManager messageManager = game.getMessageManager();
+        MessageManager messageManager = game.getGameEngine().getMessageManager();
         Message completionMessage = createCupCompletionMessage(cup, winner);
         if (completionMessage != null) {
-            currentGame.addMessage(completionMessage);
+            messageManager.deliverMessage(completionMessage);
         }
         
         Gdx.app.log("AuthorityManager", "Cup complete: " + cup.getName() + " won by " + winner.getName());
@@ -807,9 +809,9 @@ public class AuthorityManager {
      */
     private Message createCupCompletionMessage(Competition cup, Club winner) {
         Message message = new Message();
-        message.setCategory(com.rndmodgames.futtoboru.data.Message.MessageCategory.CUP);
+        message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_COMPLETE");
-        message.setPriority(com.rndmodgames.futtoboru.data.Message.MessagePriority.HIGH);
+        message.setPriority(MessagePriority.HIGH);
         message.setTitle(cup.getName() + " Complete");
         
         StringBuilder content = new StringBuilder();
@@ -951,11 +953,11 @@ public class AuthorityManager {
         }
         
         // Create replay message
-        MessageManager messageManager = game.getMessageManager();
+        MessageManager messageManager = game.getGameEngine().getMessageManager();
         if (homeClub != null && awayClub != null) {
             Message replayMessage = createCupReplayMessage(cup, homeClub, awayClub, replay.getMatchDateTime());
             if (replayMessage != null) {
-                currentGame.addMessage(replayMessage);
+                messageManager.deliverMessage(replayMessage);
             }
         }
         
@@ -970,9 +972,9 @@ public class AuthorityManager {
      */
     private Message createCupReplayMessage(Competition cup, Club homeClub, Club awayClub, LocalDateTime replayDate) {
         Message message = new Message();
-        message.setCategory(com.rndmodgames.futtoboru.data.Message.MessageCategory.CUP);
+        message.setCategory(Message.MessageCategory.CUP);
         message.setMessageType("CUP_REPLAY");
-        message.setPriority(com.rndmodgames.futtoboru.data.Message.MessagePriority.NORMAL);
+        message.setPriority(Message.MessagePriority.NORMAL);
         message.setTitle(cup.getName() + " Replay");
         
         StringBuilder content = new StringBuilder();
