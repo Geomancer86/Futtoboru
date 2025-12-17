@@ -385,19 +385,7 @@ public class MatchScheduler {
         }
         if (match.getMatchType() != null) {
             income.setMatchType(match.getMatchType());
-            String matchTypeName = match.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
-                                  match.getMatchType() == Match.LEAGUE_MATCH ? "LEAGUE" : 
-                                  match.getMatchType() == Match.CUP_MATCH ? "CUP" : "UNKNOWN";
-            System.out.println("MatchScheduler: Setting match type to: " + matchTypeName + " (value: " + match.getMatchType() + ")");
-        } else {
-            System.out.println("MatchScheduler: WARNING - Match type is NULL for match ID: " + match.getId());
         }
-        
-        System.out.println("MatchScheduler: Updated match income - Match ID: " + match.getId() + 
-                          ", Match Type: " + income.getMatchType() +
-                          ", Total Revenue: $" + df.format(income.getTicketRevenue()) + 
-                          ", Total Attendance: " + income.getAttendance() + 
-                          ", Today's Tickets: " + ticketsSold);
     }
     
     /**

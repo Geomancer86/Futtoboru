@@ -235,24 +235,10 @@ public class FinancesScreenTable extends VisTable {
         LocalDateTime seasonStart = getCurrentSeasonStart();
         LocalDateTime currentDate = currentGame.getGameDate();
         
-        // Debug: Print match type we're looking for
-        String matchTypeName = matchType == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
-                              matchType == Match.LEAGUE_MATCH ? "LEAGUE" : 
-                              matchType == Match.CUP_MATCH ? "CUP" : "UNKNOWN";
-        System.out.println("FinancesScreenTable: Calculating stats for match type: " + matchTypeName + " (value: " + matchType + ")");
-        System.out.println("FinancesScreenTable: Total MatchIncome records: " + matchIncomes.size());
-        
         // Track which matches we've already counted (by match ID) to avoid duplicates
         java.util.Set<Long> countedMatchIds = new java.util.HashSet<Long>();
         
         for (MatchIncome income : matchIncomes) {
-            // Debug: Print each MatchIncome record
-            System.out.println("FinancesScreenTable: MatchIncome - ID: " + income.getMatchId() + 
-                             ", Type: " + income.getMatchType() + 
-                             ", Date: " + income.getMatchDate() + 
-                             ", Revenue: " + income.getTicketRevenue() + 
-                             ", Attendance: " + income.getAttendance());
-            
             // Check match type match (use == for Integer comparison to handle null)
             boolean typeMatches = false;
             if (income.getMatchType() != null && matchType != null) {
@@ -278,15 +264,11 @@ public class FinancesScreenTable extends VisTable {
                         if (income.getMatchDate().isAfter(currentDate)) {
                             // Match is in the future, don't count it yet
                             shouldCount = false;
-                            System.out.println("FinancesScreenTable: Skipping future match: " + income.getMatchId());
                         }
                     }
                     
                     if (shouldCount) {
                         // Include in statistics
-                        System.out.println("FinancesScreenTable: Counting match: " + income.getMatchId() + 
-                                         ", Revenue: " + income.getTicketRevenue() + 
-                                         ", Attendance: " + income.getAttendance());
                         stats.totalRevenue = stats.totalRevenue.add(income.getTicketRevenue());
                         if (income.getAttendance() != null) {
                             stats.totalAttendance += income.getAttendance();
@@ -294,25 +276,9 @@ public class FinancesScreenTable extends VisTable {
                         stats.matchCount++;
                         countedMatchIds.add(income.getMatchId());
                     }
-                } else {
-                    System.out.println("FinancesScreenTable: Skipping duplicate match ID: " + income.getMatchId());
-                }
-            } else {
-                if (!typeMatches) {
-                    System.out.println("FinancesScreenTable: Type mismatch - Income type: " + income.getMatchType() + 
-                                     ", Looking for: " + matchType);
-                }
-                if (income.getMatchDate() == null) {
-                    System.out.println("FinancesScreenTable: Skipping - no match date");
-                } else if (income.getMatchDate().isBefore(seasonStart)) {
-                    System.out.println("FinancesScreenTable: Skipping - match date before season start");
                 }
             }
         }
-        
-        System.out.println("FinancesScreenTable: Final stats - Count: " + stats.matchCount + 
-                         ", Revenue: " + stats.totalRevenue + 
-                         ", Attendance: " + stats.totalAttendance);
         
         return stats;
     }
