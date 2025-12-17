@@ -11,12 +11,17 @@ import java.util.Set;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import java.math.BigDecimal;
+
 import com.rndmodgames.futtoboru.data.AttributeTrackingConstants;
 import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.ClubExpenses;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
+import com.rndmodgames.futtoboru.data.ClubExpenses;
+import com.rndmodgames.futtoboru.engine.finances.ExpenseCalculator;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
@@ -45,6 +50,9 @@ public class FuttoboruGameEngine {
     private Futtoboru gameInstance;
     private AuthorityManager authorityManager;
     private ScriptsManager scriptsManager;
+    
+    // Expense Calculator (v1.0)
+    private ExpenseCalculator expenseCalculator;
     
     //
     private MainMenuManager mainMenuManager;
@@ -79,6 +87,7 @@ public class FuttoboruGameEngine {
         this.competitionScheduler = new CompetitionScheduler(gameInstance);
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
+        this.expenseCalculator = new ExpenseCalculator();
     }
     
     public MessageManager getMessageManager() {
@@ -353,6 +362,12 @@ public class FuttoboruGameEngine {
         createWeeklyAttributeSnapshots();
         
         /**
+         * Calculate and Deduct Weekly Expenses (v1.0)
+         * Calculates expenses every 7 days and deducts from club balance
+         */
+        calculateAndDeductWeeklyExpenses();
+        
+        /**
          * Current Club
          * 
          * NOTE: player might not have a CURRENT_CLUB
@@ -470,6 +485,92 @@ public class FuttoboruGameEngine {
         if (snapshotsCreated > 0) {
             Gdx.app.log("FuttoboruGameEngine", "Created " + snapshotsCreated + " weekly attribute snapshots");
         }
+    }
+    
+    /**
+     * Calculate and deduct weekly expenses for all clubs (v1.0)
+     * Expenses are calculated every 7 days and deducted from club balance
+     */
+    private void calculateAndDeductWeeklyExpenses() {
+        if (gameInstance == null || gameInstance.getCurrentGame() == null || expenseCalculator == null) {
+            return;
+        }
+        
+        LocalDateTime currentDate = gameInstance.getCurrentGame().getGameDate();
+        
+        // Check if we need to calculate expenses (every 7 days)
+        // Get the last expense date
+        LocalDateTime lastExpenseDate = getLastExpenseDate();
+        
+        if (lastExpenseDate != null) {
+            long daysSinceLastExpense = java.time.temporal.ChronoUnit.DAYS.between(lastExpenseDate, currentDate);
+            if (daysSinceLastExpense < 7) {
+                // Not time for weekly expenses yet
+                return;
+            }
+        }
+        
+        // Calculate and deduct expenses for all clubs
+        int expensesCalculated = 0;
+        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+            if (club == null) {
+                continue;
+            }
+            
+            // Calculate weekly expenses
+            ClubExpenses expenses = expenseCalculator.calculateWeeklyExpenses(club, currentDate);
+            if (expenses == null) {
+                continue;
+            }
+            
+            // Add to expense history
+            club.addExpense(expenses);
+            
+            // Deduct from club balance
+            BigDecimal totalExpenses = expenses.getTotalExpenses();
+            if (totalExpenses.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal currentBalance = club.getClubBalance() != null ? club.getClubBalance() : BigDecimal.ZERO;
+                club.setClubBalance(currentBalance.subtract(totalExpenses));
+                
+                // Update period expenditure tracking
+                club.setSeasonExpenditure(club.getSeasonExpenditure().add(totalExpenses));
+                club.setMonthExpenditure(club.getMonthExpenditure().add(totalExpenses));
+                
+                Gdx.app.log("FuttoboruGameEngine", "Deducted weekly expenses: $" + totalExpenses + 
+                           " from " + club.getName() + " (New balance: $" + club.getClubBalance() + ")");
+                expensesCalculated++;
+            }
+        }
+        
+        if (expensesCalculated > 0) {
+            Gdx.app.log("FuttoboruGameEngine", "Calculated and deducted weekly expenses for " + expensesCalculated + " clubs");
+        }
+    }
+    
+    /**
+     * Get the date of the most recent expense calculation
+     */
+    private LocalDateTime getLastExpenseDate() {
+        if (gameInstance == null || gameInstance.getCurrentGame() == null) {
+            return null;
+        }
+        
+        LocalDateTime lastDate = null;
+        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+            if (club == null || club.getExpensesHistory() == null) {
+                continue;
+            }
+            
+            for (ClubExpenses expense : club.getExpensesHistory()) {
+                if (expense != null && expense.getPeriodStart() != null) {
+                    if (lastDate == null || expense.getPeriodStart().isAfter(lastDate)) {
+                        lastDate = expense.getPeriodStart();
+                    }
+                }
+            }
+        }
+        
+        return lastDate;
     }
     
     /**

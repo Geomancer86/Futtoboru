@@ -94,6 +94,13 @@ public class Club implements Serializable {
     private List<MatchIncome> matchIncomes = new ArrayList<>();
     
     /**
+     * Club Expenses Tracking (v1.0)
+     * 
+     * Tracks detailed expense breakdown over time
+     */
+    private List<ClubExpenses> expensesHistory = new ArrayList<>();
+    
+    /**
      * Current Period Financial Tracking (v1.0)
      * 
      * Tracks income and expenditure for current season/month
@@ -467,6 +474,30 @@ public class Club implements Serializable {
             matchIncomes = new ArrayList<>();
         }
         matchIncomes.add(income);
+    }
+    
+    /**
+     * Club Expenses Getters and Setters (v1.0)
+     */
+    public List<ClubExpenses> getExpensesHistory() {
+        if (expensesHistory == null) {
+            expensesHistory = new ArrayList<>();
+        }
+        return expensesHistory;
+    }
+
+    public void setExpensesHistory(List<ClubExpenses> expensesHistory) {
+        this.expensesHistory = expensesHistory;
+    }
+    
+    /**
+     * Add expense record
+     */
+    public void addExpense(ClubExpenses expense) {
+        if (expensesHistory == null) {
+            expensesHistory = new ArrayList<>();
+        }
+        expensesHistory.add(expense);
     }
     
     /**
