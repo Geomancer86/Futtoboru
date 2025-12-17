@@ -5,8 +5,11 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import java.time.temporal.ChronoUnit;
+
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ClubExpenses;
+import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.data.Stadium;
 
 /**
@@ -96,8 +99,8 @@ public class ExpenseCalculator {
         expenses.setStadiumRent(calculateStadiumRent(stadium));
         expenses.setOtherExpenses(calculateOtherExpenses(monthlyRandom));
         
-        // Player wages (future: from PlayerContract system)
-        expenses.setPlayerWages(BigDecimal.ZERO); // TODO: Implement with PlayerContract
+        // Player wages (v1.0: from PlayerContract system)
+        expenses.setPlayerWages(calculatePlayerWages(club, gameDate));
         
         // Travel expenses (calculated per match, not weekly)
         expenses.setTravelExpenses(BigDecimal.ZERO); // Calculated separately per away match
@@ -289,5 +292,57 @@ public class ExpenseCalculator {
         total = total.add(entertainment);
         
         return total.setScale(2, RoundingMode.HALF_UP);
+    }
+    
+    /**
+     * Calculate total player wages for the week (v1.0)
+     * 
+     * Sums weekly wages from all active, non-expired contracts.
+     * 
+     * @param club The club
+     * @param gameDate Current game date (to check contract expiry)
+     * @return Total weekly player wages
+     */
+    private BigDecimal calculatePlayerWages(Club club, LocalDateTime gameDate) {
+        if (club == null || club.getPlayerContracts() == null || club.getPlayerContracts().isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        
+        BigDecimal totalWages = BigDecimal.ZERO;
+        int activeContracts = 0;
+        
+        for (PlayerContract contract : club.getPlayerContracts()) {
+            if (contract == null) {
+                continue;
+            }
+            
+            // Check if contract is active
+            if (contract.getIsActive() == null || !contract.getIsActive()) {
+                continue; // Skip inactive contracts
+            }
+            
+            // Check if contract has expired
+            if (contract.getEndDate() != null) {
+                if (gameDate.isAfter(contract.getEndDate())) {
+                    continue; // Contract expired, skip
+                }
+            }
+            
+            // Check if contract has started
+            if (contract.getStartDate() != null) {
+                if (gameDate.isBefore(contract.getStartDate())) {
+                    continue; // Contract hasn't started yet, skip
+                }
+            }
+            
+            // Add weekly wage to total
+            BigDecimal weeklyWage = contract.getWeeklyWage();
+            if (weeklyWage != null && weeklyWage.compareTo(BigDecimal.ZERO) > 0) {
+                totalWages = totalWages.add(weeklyWage);
+                activeContracts++;
+            }
+        }
+        
+        return totalWages.setScale(2, RoundingMode.HALF_UP);
     }
 }
