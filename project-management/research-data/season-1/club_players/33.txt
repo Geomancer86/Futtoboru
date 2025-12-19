@@ -1,0 +1,27 @@
+# Small Heath FC (Birmingham City) - Players File for 1888-89 FA Cup
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/1889%E2%80%9390_Small_Heath_F.C._season
+#   - https://en.wikipedia.org/wiki/Thomas_Davenport_%28footballer%29
+#   - https://www.rsssf.org/tablese/engcup1889.html
+#
+# NOTE: Historical records for this season are limited. This file contains players known to have been
+#       part of Small Heath during the 1888-89 season. The squad may be incomplete.
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Chris,Charsley,1000,1865
+2,Fred,Speller,1000,1865
+3,Walter,Gittins,1000,1865
+4,Thomas,Davenport,1000,1865
+5,Will,Devey,1000,1865
