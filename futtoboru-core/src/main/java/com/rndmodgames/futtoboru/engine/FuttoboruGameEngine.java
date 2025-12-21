@@ -681,8 +681,10 @@ public class FuttoboruGameEngine {
         System.out.println("FuttoboruGameEngine: Simulating matches for date: " + targetDate);
         
         // First pass: Collect all matches to simulate (avoid ConcurrentModificationException)
+        // Also reschedule matches with passed dates that haven't been played
         List<Match> matchesToSimulate = new ArrayList<>();
-        Set<Long> matchIdsAdded = new HashSet<>(); // Use ID-based deduplication
+        java.util.Set<Long> matchIdsAdded = new java.util.HashSet<>(); // Use ID-based deduplication
+        java.util.List<Match> matchesToReschedule = new java.util.ArrayList<>(); // Matches with passed dates
         
         // Iterate through all clubs to find matches scheduled for this date
         for (Club club : game.getAllClubs()) {
@@ -718,11 +720,27 @@ public class FuttoboruGameEngine {
                     continue; // Match not ready to play yet
                 }
                 
-                // Check if match is scheduled for target date
+                // Check if match is scheduled for target date OR has passed (critical for replays)
                 if (match.getMatchDateTime() != null) {
                     LocalDate matchDate = match.getMatchDateTime().toLocalDate();
                     
+                    // CRITICAL: Simulate matches scheduled for today OR matches that have passed
+                    // This ensures replays and rescheduled matches are always picked up
+                    boolean shouldSimulate = false;
                     if (matchDate.equals(targetDate)) {
+                        // Match scheduled for today
+                        shouldSimulate = true;
+                    } else if (matchDate.isBefore(targetDate)) {
+                        // Match date has passed - simulate it now (prevents matches from being lost)
+                        // This is critical for replays and matches that were rescheduled
+                        System.out.println("FuttoboruGameEngine: *** MATCH DATE PASSED *** " + 
+                            (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
+                            " scheduled for " + matchDate + " but today is " + targetDate + 
+                            " - will simulate now");
+                        shouldSimulate = true;
+                    }
+                    
+                    if (shouldSimulate) {
                         // Add to list if not already there (prevent duplicates by ID)
                         if (!matchIdsAdded.contains(match.getId())) {
                             matchesToSimulate.add(match);
@@ -735,7 +753,21 @@ public class FuttoboruGameEngine {
                                     (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                                     " (Round " + match.getRound() + ", ID: " + match.getId() + 
                                     ", Home: " + match.getHomeClubId() + ", Away: " + match.getAwayClubId() + 
-                                    ") on " + targetDate);
+                                    ") scheduled for " + matchDate + ", simulating on " + targetDate);
+                            }
+                        }
+                    } else if (matchDate.isBefore(targetDate)) {
+                        // Match date has passed but teams not determined - reschedule for tomorrow
+                        // This handles cases where replays or future round matches weren't ready
+                        if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH &&
+                            (match.getHomeClubId() == null || match.getAwayClubId() == null)) {
+                            if (!matchIdsAdded.contains(match.getId())) {
+                                matchesToReschedule.add(match);
+                                matchIdsAdded.add(match.getId());
+                                System.out.println("FuttoboruGameEngine: *** RESCHEDULING CUP MATCH *** " + 
+                                    (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
+                                    " from " + matchDate + " to " + targetDate.plusDays(1) + 
+                                    " (teams not determined)");
                             }
                         }
                     }
@@ -787,8 +819,23 @@ public class FuttoboruGameEngine {
             }
         }
         
+        // Reschedule matches with passed dates that aren't ready (teams not determined)
+        for (Match match : matchesToReschedule) {
+            if (match != null && match.getMatchDateTime() != null) {
+                // Reschedule for tomorrow (or next available date)
+                java.time.LocalDateTime newDate = targetDate.plusDays(1).atStartOfDay();
+                match.setMatchDateTime(newDate);
+                System.out.println("FuttoboruGameEngine: Rescheduled match " + 
+                    (match.getBracketPath() != null ? match.getBracketPath() : "ID: " + match.getId()) + 
+                    " to " + newDate);
+            }
+        }
+        
         System.out.println("FuttoboruGameEngine: *** MATCH SIMULATION SUMMARY FOR " + targetDate + " ***");
         System.out.println("FuttoboruGameEngine: Found " + matchesFound + " matches, simulated " + matchesSimulated + " matches");
+        if (!matchesToReschedule.isEmpty()) {
+            System.out.println("FuttoboruGameEngine: Rescheduled " + matchesToReschedule.size() + " matches with passed dates");
+        }
         
         // Log breakdown by match type
         int cupMatchesFound = 0;

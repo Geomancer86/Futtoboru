@@ -232,16 +232,36 @@ public class CupDetailScreenTable extends VisTable {
         List<Match> matches = new java.util.ArrayList<>();
         if (currentEdition == null) return matches;
         
+        // Use Set to track added match IDs (more reliable than contains())
+        java.util.Set<Long> matchIdsAdded = new java.util.HashSet<>();
+        
+        // CRITICAL: Search BOTH scheduled AND played matches
+        // Matches are moved from scheduledMatches to playedMatches after simulation
         for (Club club : currentGame.getAllClubs()) {
-            if (club == null || club.getScheduledMatches() == null) continue;
+            if (club == null) continue;
             
-            for (Match match : club.getScheduledMatches()) {
-                if (match != null && 
-                    match.getCompetitionEditionId() != null && 
-                    match.getCompetitionEditionId().equals(currentEdition.getId())) {
-                    
-                    if (!matches.contains(match)) {
+            // Search scheduled matches
+            if (club.getScheduledMatches() != null) {
+                for (Match match : club.getScheduledMatches()) {
+                    if (match != null && 
+                        match.getCompetitionEditionId() != null && 
+                        match.getCompetitionEditionId().equals(currentEdition.getId()) &&
+                        match.getId() != null && !matchIdsAdded.contains(match.getId())) {
                         matches.add(match);
+                        matchIdsAdded.add(match.getId());
+                    }
+                }
+            }
+            
+            // Search played matches (where completed matches are stored)
+            if (club.getPlayedMatches() != null) {
+                for (Match match : club.getPlayedMatches()) {
+                    if (match != null && 
+                        match.getCompetitionEditionId() != null && 
+                        match.getCompetitionEditionId().equals(currentEdition.getId()) &&
+                        match.getId() != null && !matchIdsAdded.contains(match.getId())) {
+                        matches.add(match);
+                        matchIdsAdded.add(match.getId());
                     }
                 }
             }

@@ -273,35 +273,61 @@ public class CupPlayoffsTable extends VisTable {
         System.out.println("CupPlayoffsTable.getEditionMatches: Looking for matches with edition ID: " + currentEdition.getId());
         System.out.println("CupPlayoffsTable.getEditionMatches: Checking " + currentGame.getAllClubs().size() + " clubs");
         
+        // Use Set to track added match IDs (more reliable than contains())
+        java.util.Set<Long> matchIdsAdded = new java.util.HashSet<>();
+        
         int totalMatchesChecked = 0;
         int matchesWithEditionId = 0;
         int matchesMatchingEdition = 0;
+        int fromScheduled = 0;
+        int fromPlayed = 0;
         
+        // CRITICAL: Search BOTH scheduled AND played matches
+        // Matches are moved from scheduledMatches to playedMatches after simulation
         for (Club club : currentGame.getAllClubs()) {
-            if (club == null || club.getScheduledMatches() == null) continue;
+            if (club == null) continue;
             
-            for (Match match : club.getScheduledMatches()) {
-                totalMatchesChecked++;
-                
-                if (match != null && match.getCompetitionEditionId() != null) {
-                    matchesWithEditionId++;
+            // Search scheduled matches
+            if (club.getScheduledMatches() != null) {
+                for (Match match : club.getScheduledMatches()) {
+                    totalMatchesChecked++;
                     
-                    if (match.getCompetitionEditionId().equals(currentEdition.getId())) {
-                        matchesMatchingEdition++;
-                        // Check if match already added (by ID to avoid duplicates)
-                        boolean alreadyAdded = false;
-                        for (Match existing : matches) {
-                            if (existing.getId() != null && match.getId() != null && 
-                                existing.getId().equals(match.getId())) {
-                                alreadyAdded = true;
-                                break;
-                            }
-                        }
-                        if (!alreadyAdded) {
+                    if (match != null && match.getCompetitionEditionId() != null) {
+                        matchesWithEditionId++;
+                        
+                        if (match.getCompetitionEditionId().equals(currentEdition.getId()) &&
+                            match.getId() != null && !matchIdsAdded.contains(match.getId())) {
+                            matchesMatchingEdition++;
                             matches.add(match);
-                            System.out.println("CupPlayoffsTable: Found match ID: " + match.getId() + 
+                            matchIdsAdded.add(match.getId());
+                            fromScheduled++;
+                            System.out.println("CupPlayoffsTable: Found match in scheduled - ID: " + match.getId() + 
                                 " - Round: " + match.getRound() + 
-                                ", Home: " + match.getHomeClubId() + ", Away: " + match.getAwayClubId());
+                                ", Home: " + match.getHomeClubId() + ", Away: " + match.getAwayClubId() +
+                                ", Played: " + (match.getIsPlayed() != null && match.getIsPlayed()));
+                        }
+                    }
+                }
+            }
+            
+            // Search played matches (where completed matches are stored)
+            if (club.getPlayedMatches() != null) {
+                for (Match match : club.getPlayedMatches()) {
+                    totalMatchesChecked++;
+                    
+                    if (match != null && match.getCompetitionEditionId() != null) {
+                        matchesWithEditionId++;
+                        
+                        if (match.getCompetitionEditionId().equals(currentEdition.getId()) &&
+                            match.getId() != null && !matchIdsAdded.contains(match.getId())) {
+                            matchesMatchingEdition++;
+                            matches.add(match);
+                            matchIdsAdded.add(match.getId());
+                            fromPlayed++;
+                            System.out.println("CupPlayoffsTable: Found match in played - ID: " + match.getId() + 
+                                " - Round: " + match.getRound() + 
+                                ", Home: " + match.getHomeClubId() + ", Away: " + match.getAwayClubId() +
+                                ", Played: " + (match.getIsPlayed() != null && match.getIsPlayed()));
                         }
                     }
                 }
@@ -309,7 +335,8 @@ public class CupPlayoffsTable extends VisTable {
         }
         
         System.out.println("CupPlayoffsTable.getEditionMatches: Total matches checked: " + totalMatchesChecked + 
-            ", with edition ID: " + matchesWithEditionId + ", matching this edition: " + matchesMatchingEdition);
+            ", with edition ID: " + matchesWithEditionId + ", matching this edition: " + matchesMatchingEdition +
+            " (from scheduled: " + fromScheduled + ", from played: " + fromPlayed + ")");
         
         return matches;
     }

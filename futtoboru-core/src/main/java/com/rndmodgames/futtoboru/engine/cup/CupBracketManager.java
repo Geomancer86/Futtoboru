@@ -39,44 +39,96 @@ public class CupBracketManager {
             return null;
         }
         
+        // Check if this is a replay (has parent match)
+        boolean isReplay = completedMatch.getParentMatch1Id() != null && 
+                          completedMatch.getBracketPath() != null && 
+                          completedMatch.getBracketPath().endsWith("R");
+        
         // Determine winner
         Club winner = determineWinner(completedMatch);
         if (winner == null) {
-            Gdx.app.error("CupBracketManager", "Cannot determine winner for match: " + completedMatch.getId());
-            return null;
+            // Draw - schedule replay (unless this is already a replay, then we need extra time/penalties - for now, pick random winner)
+            if (isReplay) {
+                // Replay also ended in draw - for now, pick random winner (future: implement extra time/penalties)
+                Gdx.app.log("CupBracketManager", "Replay also ended in draw - picking random winner (extra time/penalties not yet implemented)");
+                boolean homeWins = new java.util.Random().nextBoolean();
+                winner = homeWins ? currentGame.getClubById(completedMatch.getHomeClubId()) : 
+                                 currentGame.getClubById(completedMatch.getAwayClubId());
+                System.out.println("CupBracketManager: Replay draw resolved - winner: " + winner.getName());
+            } else {
+                // Original match ended in draw - schedule replay
+                Match replayMatch = scheduleReplay(completedMatch);
+                if (replayMatch == null) {
+                    Gdx.app.error("CupBracketManager", "Failed to schedule replay for match: " + completedMatch.getId());
+                }
+                return null; // No winner yet, replay will determine it
+            }
         }
         
         System.out.println("CupBracketManager: Match " + completedMatch.getBracketPath() + 
             " (ID: " + completedMatch.getId() + ") completed. Winner: " + winner.getName() + " (ID: " + winner.getId() + ")");
         
-        // Find next round match that depends on this match
-        Match nextRoundMatch = findMatchWithParent(completedMatch.getId(), completedMatch.getCompetitionEditionId());
+        // If this is a replay, find the original match to determine which next round match to advance to
+        Long parentMatchId = completedMatch.getId();
+        if (isReplay && completedMatch.getParentMatch1Id() != null) {
+            // This is a replay - use the original match's ID to find next round match
+            parentMatchId = completedMatch.getParentMatch1Id();
+            System.out.println("CupBracketManager: Replay completed, using original match ID: " + parentMatchId);
+        }
+        
+        // Find next round match that depends on this match (or original match if replay)
+        Match nextRoundMatch = findMatchWithParent(parentMatchId, completedMatch.getCompetitionEditionId());
         
         if (nextRoundMatch == null) {
-            // This is the final - cup is complete
-            System.out.println("CupBracketManager: Final match completed! Cup champion: " + winner.getName());
-            Gdx.app.log("CupBracketManager", "Final match completed! Cup champion: " + winner.getName());
-            return null;
+            // Check if this is actually the final (Round 5) or if there's a bracket error
+            if (completedMatch.getRound() != null && completedMatch.getRound() >= 5) {
+                // This is the final - cup is complete
+                System.out.println("CupBracketManager: Final match completed! Cup champion: " + winner.getName());
+                Gdx.app.log("CupBracketManager", "Final match completed! Cup champion: " + winner.getName());
+                return null;
+            } else {
+                // Bracket error - match should have a next round match
+                System.out.println("CupBracketManager: *** CRITICAL ERROR *** Match " + completedMatch.getBracketPath() + 
+                    " (Round " + completedMatch.getRound() + ", ID: " + completedMatch.getId() + 
+                    ") completed but NO NEXT ROUND MATCH FOUND!");
+                System.out.println("CupBracketManager: Edition ID: " + completedMatch.getCompetitionEditionId());
+                System.out.println("CupBracketManager: Searching for parent match ID: " + parentMatchId);
+                
+                // Debug: List all matches for this edition to see what's available
+                List<Match> allEditionMatches = getAllMatchesForEdition(completedMatch.getCompetitionEditionId());
+                System.out.println("CupBracketManager: Total matches found for edition: " + allEditionMatches.size());
+                for (Match m : allEditionMatches) {
+                    if (m.getRound() != null && m.getRound() == completedMatch.getRound() + 1) {
+                        System.out.println("  - Next round match: " + m.getBracketPath() + 
+                            " (ID: " + m.getId() + ", Parent1: " + m.getParentMatch1Id() + 
+                            ", Parent2: " + m.getParentMatch2Id() + ")");
+                    }
+                }
+                
+                Gdx.app.error("CupBracketManager", "CRITICAL: Match " + completedMatch.getBracketPath() + 
+                    " has no next round match - bracket may be incomplete!");
+                return null;
+            }
         }
         
         System.out.println("CupBracketManager: Found next round match: " + nextRoundMatch.getBracketPath() + 
             " (ID: " + nextRoundMatch.getId() + ", Round: " + nextRoundMatch.getRound() + 
             ", Date: " + nextRoundMatch.getMatchDateTime() + ")");
         
-        // Determine which parent slot this match fills
-        if (nextRoundMatch.getParentMatch1Id() != null && nextRoundMatch.getParentMatch1Id().equals(completedMatch.getId())) {
+        // Determine which parent slot this match fills (use parentMatchId which is original match ID for replays)
+        if (nextRoundMatch.getParentMatch1Id() != null && nextRoundMatch.getParentMatch1Id().equals(parentMatchId)) {
             // This match's winner goes to home position
             nextRoundMatch.setHomeClubId(winner.getId());
             Gdx.app.log("CupBracketManager", "Winner " + winner.getName() + " advanced to " + 
                 nextRoundMatch.getBracketPath() + " (Home)");
-        } else if (nextRoundMatch.getParentMatch2Id() != null && nextRoundMatch.getParentMatch2Id().equals(completedMatch.getId())) {
+        } else if (nextRoundMatch.getParentMatch2Id() != null && nextRoundMatch.getParentMatch2Id().equals(parentMatchId)) {
             // This match's winner goes to away position
             nextRoundMatch.setAwayClubId(winner.getId());
             Gdx.app.log("CupBracketManager", "Winner " + winner.getName() + " advanced to " + 
                 nextRoundMatch.getBracketPath() + " (Away)");
         } else {
-            Gdx.app.error("CupBracketManager", "Match " + completedMatch.getId() + 
-                " is not a parent of match " + nextRoundMatch.getId());
+            Gdx.app.error("CupBracketManager", "Match " + parentMatchId + 
+                " (original: " + completedMatch.getId() + ") is not a parent of match " + nextRoundMatch.getId());
             return null;
         }
         
@@ -172,6 +224,7 @@ public class CupBracketManager {
     
     /**
      * Determine winner of a completed match
+     * Returns null if match is a draw (replay needed)
      */
     private Club determineWinner(Match match) {
         if (match.getHomeGoals() == null || match.getAwayGoals() == null) {
@@ -183,11 +236,154 @@ public class CupBracketManager {
         } else if (match.getAwayGoals() > match.getHomeGoals()) {
             return currentGame.getClubById(match.getAwayClubId());
         } else {
-            // Draw - for now, we'll need to handle replays later
-            // For now, return null (draws need special handling)
-            Gdx.app.log("CupBracketManager", "WARNING: Match ended in draw - replay needed (not yet implemented)");
+            // Draw - schedule replay
+            return null; // Will be handled by scheduleReplay()
+        }
+    }
+    
+    /**
+     * Schedule a replay for a drawn cup match
+     * Replay is scheduled 7 days later at the away team's venue (venue swap)
+     * CRITICAL: Always schedules replay in the future (current date + 7 days minimum)
+     */
+    private Match scheduleReplay(Match originalMatch) {
+        if (originalMatch == null || originalMatch.getHomeClubId() == null || originalMatch.getAwayClubId() == null) {
+            Gdx.app.error("CupBracketManager", "Cannot schedule replay: invalid match");
             return null;
         }
+        
+        // Check if replay already exists (to prevent duplicate replays)
+        Match existingReplay = findExistingReplay(originalMatch);
+        if (existingReplay != null) {
+            System.out.println("CupBracketManager: Replay already exists for " + originalMatch.getBracketPath() + 
+                " - ID: " + existingReplay.getId() + ", Date: " + existingReplay.getMatchDateTime());
+            return existingReplay;
+        }
+        
+        // Create replay match - swap home/away (replay at away team's venue)
+        Match replayMatch = new Match();
+        replayMatch.setId(System.currentTimeMillis() + originalMatch.getId() + 1000000); // Unique ID
+        
+        // Swap home/away for replay
+        replayMatch.setHomeClubId(originalMatch.getAwayClubId());
+        replayMatch.setAwayClubId(originalMatch.getHomeClubId());
+        
+        // Set competition info
+        replayMatch.setCompetitionId(originalMatch.getCompetitionId());
+        replayMatch.setCompetitionEditionId(originalMatch.getCompetitionEditionId());
+        replayMatch.setMatchType(Match.CUP_MATCH);
+        replayMatch.setRound(originalMatch.getRound());
+        replayMatch.setBracketPosition(originalMatch.getBracketPosition());
+        
+        // Handle multiple replays (replay of replay) - append "R" for each replay
+        String originalPath = originalMatch.getBracketPath();
+        if (originalPath == null) {
+            originalPath = "R" + originalMatch.getRound() + "M" + originalMatch.getBracketPosition();
+        }
+        replayMatch.setBracketPath(originalPath + "R"); // Add "R" for Replay
+        
+        // Link to original match (for tracking)
+        replayMatch.setParentMatch1Id(originalMatch.getId());
+        replayMatch.setParentMatch2Id(null);
+        
+        // CRITICAL: Always schedule replay in the future (current date + 7 days minimum)
+        // This ensures the match will be picked up by simulation even if original date was in the past
+        java.time.LocalDateTime currentDate = currentGame.getGameDate();
+        java.time.LocalDateTime replayDate = currentDate.plusDays(7);
+        
+        // If original match date was in the future, schedule replay 7 days after that
+        if (originalMatch.getMatchDateTime() != null && originalMatch.getMatchDateTime().isAfter(currentDate)) {
+            replayDate = originalMatch.getMatchDateTime().plusDays(7);
+        }
+        
+        replayMatch.setMatchDateTime(replayDate);
+        replayMatch.setIsProposed(false);
+        replayMatch.setIsAccepted(true);
+        replayMatch.setIsPlayed(false);
+        
+        // Add replay to both clubs' scheduled matches
+        Club homeClub = currentGame.getClubById(replayMatch.getHomeClubId());
+        Club awayClub = currentGame.getClubById(replayMatch.getAwayClubId());
+        
+        if (homeClub != null) {
+            if (homeClub.getScheduledMatches() == null) {
+                homeClub.setScheduledMatches(new java.util.ArrayList<>());
+            }
+            // Check if already added (by ID)
+            boolean alreadyAdded = false;
+            for (Match m : homeClub.getScheduledMatches()) {
+                if (m != null && m.getId() != null && m.getId().equals(replayMatch.getId())) {
+                    alreadyAdded = true;
+                    break;
+                }
+            }
+            if (!alreadyAdded) {
+                homeClub.getScheduledMatches().add(replayMatch);
+            }
+        }
+        
+        if (awayClub != null) {
+            if (awayClub.getScheduledMatches() == null) {
+                awayClub.setScheduledMatches(new java.util.ArrayList<>());
+            }
+            // Check if already added (by ID)
+            boolean alreadyAdded = false;
+            for (Match m : awayClub.getScheduledMatches()) {
+                if (m != null && m.getId() != null && m.getId().equals(replayMatch.getId())) {
+                    alreadyAdded = true;
+                    break;
+                }
+            }
+            if (!alreadyAdded) {
+                awayClub.getScheduledMatches().add(replayMatch);
+            }
+        }
+        
+        System.out.println("CupBracketManager: *** REPLAY SCHEDULED *** " + replayMatch.getBracketPath() + 
+            " on " + replayMatch.getMatchDateTime() + " (Original: " + originalMatch.getBracketPath() + 
+            ", Current Date: " + currentDate + ")");
+        Gdx.app.log("CupBracketManager", "Replay scheduled: " + replayMatch.getBracketPath() + 
+            " on " + replayMatch.getMatchDateTime());
+        
+        return replayMatch;
+    }
+    
+    /**
+     * Find existing replay for a match (to prevent duplicate replays)
+     */
+    private Match findExistingReplay(Match originalMatch) {
+        if (originalMatch == null || originalMatch.getId() == null) {
+            return null;
+        }
+        
+        // Search all clubs for a replay match linked to this original match
+        for (Club club : currentGame.getAllClubs()) {
+            if (club == null) continue;
+            
+            // Check scheduled matches
+            if (club.getScheduledMatches() != null) {
+                for (Match match : club.getScheduledMatches()) {
+                    if (match != null && match.getParentMatch1Id() != null && 
+                        match.getParentMatch1Id().equals(originalMatch.getId()) &&
+                        match.getBracketPath() != null && match.getBracketPath().endsWith("R")) {
+                        return match;
+                    }
+                }
+            }
+            
+            // Check played matches (replay might have been played but not advanced)
+            if (club.getPlayedMatches() != null) {
+                for (Match match : club.getPlayedMatches()) {
+                    if (match != null && match.getParentMatch1Id() != null && 
+                        match.getParentMatch1Id().equals(originalMatch.getId()) &&
+                        match.getBracketPath() != null && match.getBracketPath().endsWith("R")) {
+                        return match;
+                    }
+                }
+            }
+        }
+        
+        return null;
     }
     
     /**
