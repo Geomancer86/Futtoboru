@@ -62,7 +62,8 @@ public class PlayersLoader {
                 // Use # symbol to comment a line
                 while (line != null) {
 
-                    if (!line.startsWith("#")) {
+                    // Skip empty lines and comment lines
+                    if (!line.trim().isEmpty() && !line.startsWith("#")) {
 
                         System.out.println(line);
                         

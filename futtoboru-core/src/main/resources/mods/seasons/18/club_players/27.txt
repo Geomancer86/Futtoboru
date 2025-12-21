@@ -1,0 +1,18 @@
+# Old Carthusians - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Old_Carthusians_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+2701,Gilbert,Smith,1000,1872-11-25
+2702,Charles,Wreford-Brown,1000,1866-10-09
+2703,William,Cobbold,1000,1863-02-04
+2704,James,Prinsep,1000,1861-07-27
+2705,Arthur,Amos,1000,1863
+2706,Edward,Hagarty Parry,1000,1855-04-15
+2707,Maurice,Stanbrough,1000,1870
+2708,William,Page,1000,1862
+2709,Leonard,Wilkinson,1000,1868-10-27
+2710,Evelyn,Lintott,1000,1883
+2711,George,Gillingham,1000,1865-09-12
+

@@ -1,0 +1,18 @@
+# Old Westminsters - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Old_Westminsters_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1301,Arthur,Dunn,1000,1860-08-12
+1302,William,Moon,1000,1868-06-07
+1303,Norman,Pares,1000,1854-01-16
+1304,Percy,Walters,1000,1863-09-30
+1305,Arthur,Walters,1000,1864-01-26
+1306,Rupert,Sandilands,1000,1868-08-14
+1307,William,Ingram,1000,1867-06-12
+1308,Charles,Squire,1000,1863
+1309,Frederick,Ingram,1000,1866
+1310,Francis,Birley,1000,1850-03-14
+1311,Joseph,Moore,1000,1865
+

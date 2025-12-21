@@ -1,0 +1,18 @@
+# Nottingham Forest - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Nottingham_Forest_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1701,Billy,Gunn,1000,1858-12-04
+1702,Tinsley,Lindley,1000,1865-10-27
+1703,Harry,Linacre,1000,1869-06-20
+1704,John,McPherson,1001,1867-06-19
+1705,Albert,Smith,1000,1869-04-28
+1706,Bob,Hancock,1000,1866
+1707,Sam,Widdowson,1000,1851-04-16
+1708,Frank,Burton,1000,1865-03-18
+1709,Billy,Fletcher,1000,1866
+1710,Enoch,Tranter,1000,1861
+1711,Arthur,Leighton,1000,1863-03-26
+

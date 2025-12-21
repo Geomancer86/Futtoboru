@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.QuitGameButton;
@@ -17,6 +18,7 @@ import com.rndmodgames.components.SettingsButton;
 import com.rndmodgames.components.SocialNetworkLinksComponent;
 import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.match.engine.MatchEngineVersion;
 import com.rndmodgames.localization.LanguageModLoader;
 
 public class MenuScreen implements Screen {
@@ -105,6 +107,28 @@ public class MenuScreen implements Screen {
 		 * Settings Button
 		 */
 		final VisTextButton settingsButton = new SettingsButton(game);
+		
+		/**
+		 * Match Engine Debug Button
+		 * Development/Testing screen for match engine
+		 */
+		final VisTextButton matchEngineDebugButton = new VisTextButton("Match Engine Debug");
+		
+		matchEngineDebugButton.addCaptureListener(new InputListener() {
+			
+		    @Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				
+			    if (matchEngineDebugButton.isPressed()) {
+					((Futtoboru)game).changeScreen(Futtoboru.MATCH_ENGINE_DEBUG_SCREEN);
+				}
+			}
+		});
 
 		/**
 		 * Exit Button
@@ -125,6 +149,10 @@ public class MenuScreen implements Screen {
 		
 		//
 		table.row();
+		table.add(matchEngineDebugButton).fill();
+		
+		//
+		table.row();
 		table.add(exitButton).fill();
 		
 		/**
@@ -136,8 +164,22 @@ public class MenuScreen implements Screen {
 		
         mainTable.add(table).grow();
         
+        // Bottom row: Match Engine Build Info on left, Social links (Patreon) on right
         mainTable.row();
-        mainTable.add(new SocialNetworkLinksComponent()).right().pad(10);
+        VisTable bottomRow = new VisTable();
+        bottomRow.setFillParent(false);
+        
+        // Match Engine Build Info (bottom left) - aligned to bottom of cell
+        VisLabel buildInfoLabel = new VisLabel(MatchEngineVersion.getBuildInfoString());
+        buildInfoLabel.setColor(0.7f, 0.7f, 0.7f, 1f); // Gray color for less prominence
+        bottomRow.add(buildInfoLabel).left().bottom().padLeft(10).padBottom(10);
+        
+        bottomRow.add().expandX(); // Spacer to push social links to the right
+        
+        // Social links (Patreon, etc.) - bottom right
+        bottomRow.add(new SocialNetworkLinksComponent()).right().top().pad(10);
+        
+        mainTable.add(bottomRow).growX().fillX().padBottom(10);
         
         //
         stage.addActor(mainTable);

@@ -1,0 +1,18 @@
+# Witton Albion - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Witton_Albion_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1901,John,Weir,1001,1865
+1902,Frank,Glover,1000,1866
+1903,George,Baker,1000,1867
+1904,Harry,Boardman,1000,1868
+1905,William,Cook,1000,1865
+1906,James,Davies,1000,1866
+1907,Arthur,Edge,1000,1867
+1908,Fred,Farrington,1000,1868
+1909,George,Hardern,1000,1865
+1910,John,Hulse,1000,1866
+1911,William,Littleton,1000,1867
+

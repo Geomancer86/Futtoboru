@@ -1,0 +1,18 @@
+# Halliwell - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Halliwell_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+2501,John,Smith,1000,1865
+2502,Bob,Smith,1000,1866
+2503,Tom,Smith,1000,1867
+2504,Jimmy,Smith,1000,1868
+2505,Jack,Smith,1000,1865
+2506,Fred,Smith,1000,1866
+2507,George,Smith,1000,1867
+2508,William,Smith,1000,1868
+2509,Charles,Smith,1000,1865
+2510,James,Smith,1000,1866
+2511,Harry,Smith,1000,1867
+

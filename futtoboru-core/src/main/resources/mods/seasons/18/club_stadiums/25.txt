@@ -1,0 +1,10 @@
+# Halliwell - 1888-89 Club Stadium File
+#
+# Stadium is Halliwell Road Ground
+#
+# Source: https://en.wikipedia.org/wiki/Halliwell_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+25,Halliwell Road Ground,1877,3000,1200,"The home ground of Halliwell FC in Bolton, rivals to Bolton Wanderers.",https://en.wikipedia.org/wiki/Halliwell_F.C.,600,false,60
+

@@ -109,21 +109,25 @@ public class MatchScheduler {
         // Check we have at least one match
         if (!club.getScheduledMatches().isEmpty()) {
             
-            // First scheduled match on list will be the next
-            Match nextMatch = club.getScheduledMatches().get(0);
+            // Find the next match that is ready to play (both teams determined and date matches)
+            LocalDateTime today = game.getCurrentGame().getGameDate();
             
-            System.out.println("NEXT MATCH DATE: " + nextMatch.getMatchDateTime());
-            
-            if (nextMatch.getMatchDateTime().isEqual(game.getCurrentGame().getGameDate())) {
+            for (Match match : club.getScheduledMatches()) {
+                // Skip matches that aren't ready (teams not determined)
+                if (match.getHomeClubId() == null || match.getAwayClubId() == null) {
+                    continue; // Future round match, teams not yet determined
+                }
                 
-                System.out.println("MATCH DAY!");
+                // Skip matches already played
+                if (match.getIsPlayed() != null && match.getIsPlayed()) {
+                    continue;
+                }
                 
-                Club homeClub = DatabaseLoader.getClubById(nextMatch.getHomeClubId());
-                Club awayClub = DatabaseLoader.getClubById(nextMatch.getAwayClubId());
-
-                System.out.println(homeClub.getName() + " vs " + awayClub.getName());
-                
-                return true;
+                // Check if match date is today
+                if (match.getMatchDateTime() != null && match.getMatchDateTime().toLocalDate().equals(today.toLocalDate())) {
+                    System.out.println("MATCH DAY! " + match.getBracketPath() + " on " + today);
+                    return true;
+                }
             }
         }
         

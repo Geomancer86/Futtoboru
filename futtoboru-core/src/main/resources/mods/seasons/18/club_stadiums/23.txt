@@ -1,0 +1,10 @@
+# Grimsby Town - 1888-89 Club Stadium File
+#
+# Stadium is Abbey Park
+#
+# Source: https://en.wikipedia.org/wiki/Abbey_Park_(Grimsby)
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+23,Abbey Park,1880,10000,4000,"Abbey Park was the home of Grimsby Town from 1889 to 1899. It was one of the better equipped non-league grounds of the era.",https://en.wikipedia.org/wiki/Abbey_Park_(Grimsby),1500,true,0
+

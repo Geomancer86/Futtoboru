@@ -122,3 +122,5 @@ public class CompetitionRules implements Serializable {
         this.matchFormat = matchFormat != null ? matchFormat : MatchFormat.DOUBLE_ROUND_ROBIN;
     }
 }
+
+

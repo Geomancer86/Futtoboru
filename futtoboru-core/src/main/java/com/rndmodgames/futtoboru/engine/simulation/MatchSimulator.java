@@ -2,6 +2,7 @@ package com.rndmodgames.futtoboru.engine.simulation;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.CompetitionRules;
 import com.rndmodgames.futtoboru.data.League;
@@ -30,12 +31,10 @@ public class MatchSimulator {
     private static final double RANDOMNESS_MAX = 1.3;
     private static final int MAX_GOALS = 5; // Cap goals at 5 for v1.0
     
-    private Futtoboru gameInstance;
     private SaveGame currentGame;
     private Random random;
     
     public MatchSimulator(Futtoboru gameInstance) {
-        this.gameInstance = gameInstance;
         this.currentGame = gameInstance.getCurrentGame();
         this.random = new Random();
     }
@@ -83,6 +82,9 @@ public class MatchSimulator {
         match.setAwayGoals(awayScore);
         match.setIsPlayed(true);
         
+        // Generate scorers (v1.0 - Awards System)
+        generateScorers(match, homeClub, awayClub, homeScore, awayScore);
+        
         // Calculate attendance (simple: based on stadium capacity if available)
         if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
             // 60-90% attendance for v1.0
@@ -100,7 +102,87 @@ public class MatchSimulator {
         // Update club statistics
         updateClubStatistics(match, homeClub, awayClub, homeScore, awayScore);
         
+        // Advance winner to next round if this is a cup match (v1.0 - Complete Bracket System)
+        if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH && 
+            match.getCompetitionEditionId() != null) {
+            System.out.println("MatchSimulator: Processing cup match completion - " + 
+                (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
+                " (Round " + match.getRound() + ", ID: " + match.getId() + ")");
+            
+            com.rndmodgames.futtoboru.engine.cup.CupBracketManager bracketManager = 
+                new com.rndmodgames.futtoboru.engine.cup.CupBracketManager(currentGame);
+            Match nextRoundMatch = bracketManager.advanceWinner(match);
+            
+            if (nextRoundMatch == null) {
+                if (match.getRound() != null && match.getRound() >= 5) {
+                    // This was the final - cup is complete
+                    System.out.println("MatchSimulator: *** CUP FINAL COMPLETED *** Champion determined!");
+                } else {
+                    System.out.println("MatchSimulator: *** WARNING *** Cup match " + match.getBracketPath() + 
+                        " (Round " + match.getRound() + ") completed but NO NEXT ROUND MATCH FOUND!");
+                    System.out.println("MatchSimulator: This should not happen - bracket should have all rounds generated upfront!");
+                }
+            } else {
+                System.out.println("MatchSimulator: *** WINNER ADVANCED *** to " + 
+                    (nextRoundMatch.getBracketPath() != null ? nextRoundMatch.getBracketPath() : "null") + 
+                    " (Round " + nextRoundMatch.getRound() + ", ID: " + nextRoundMatch.getId() + 
+                    "). Match ready: " + (nextRoundMatch.getHomeClubId() != null && nextRoundMatch.getAwayClubId() != null) + 
+                    ", Home: " + nextRoundMatch.getHomeClubId() + ", Away: " + nextRoundMatch.getAwayClubId() + 
+                    ", Date: " + nextRoundMatch.getMatchDateTime());
+                
+                // If this was Round 1 and Round 2 match is now ready, log it prominently
+                if (match.getRound() != null && match.getRound() == 1 && 
+                    nextRoundMatch.getRound() != null && nextRoundMatch.getRound() == 2 &&
+                    nextRoundMatch.getHomeClubId() != null && nextRoundMatch.getAwayClubId() != null) {
+                    System.out.println("MatchSimulator: *** ROUND 2 MATCH NOW READY *** " + nextRoundMatch.getBracketPath() + 
+                        " will be played on " + nextRoundMatch.getMatchDateTime());
+                }
+            }
+        }
+        
         return true;
+    }
+    
+    /**
+     * Generate goal scorers for a match
+     */
+    private void generateScorers(Match match, Club homeClub, Club awayClub, int homeScore, int awayScore) {
+        // Clear existing scorers
+        match.getHomeScorerIds().clear();
+        match.getAwayScorerIds().clear();
+        
+        // Generate home scorers
+        if (homeScore > 0 && homeClub.getPlayers() != null && !homeClub.getPlayers().isEmpty()) {
+            for (int i = 0; i < homeScore; i++) {
+                Player scorer = pickRandomScorer(homeClub.getPlayers());
+                if (scorer != null && scorer.getPerson() != null) {
+                    match.getHomeScorerIds().add(scorer.getPerson().getId());
+                }
+            }
+        }
+        
+        // Generate away scorers
+        if (awayScore > 0 && awayClub.getPlayers() != null && !awayClub.getPlayers().isEmpty()) {
+            for (int i = 0; i < awayScore; i++) {
+                Player scorer = pickRandomScorer(awayClub.getPlayers());
+                if (scorer != null && scorer.getPerson() != null) {
+                    match.getAwayScorerIds().add(scorer.getPerson().getId());
+                }
+            }
+        }
+    }
+    
+    /**
+     * Pick a random player to score a goal
+     * Future: Weight by position and attributes
+     */
+    private Player pickRandomScorer(java.util.List<Player> players) {
+        if (players == null || players.isEmpty()) return null;
+        
+        // Simple weight system: 
+        // Forwards (if we had positions) would have higher weight
+        // For now, just pick any random player
+        return players.get(random.nextInt(players.size()));
     }
     
     /**

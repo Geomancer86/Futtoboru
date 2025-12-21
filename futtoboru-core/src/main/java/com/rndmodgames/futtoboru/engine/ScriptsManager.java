@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.utils.Array;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -72,12 +73,13 @@ public class ScriptsManager {
                     
                     switch (script.getScriptType()) {
                     case BasicScript.LEAGUE_CREATION_SCRIPT:
-                        
                         // Create A League
                         createLeague(script);
-                        
                         break;
-                    
+                    case BasicScript.CUP_CREATION_SCRIPT:
+                        // Create A Cup
+                        createCup(script);
+                        break;
                     default:
                         System.out.println("SCRIPT TYPE NOT IMPLEMENTED, IGNORING!");
                         break;
@@ -173,16 +175,17 @@ public class ScriptsManager {
             return;
         }
         
-        System.out.println("Found " + clubIds.size + " club IDs in script");
+        System.out.println("Found " + clubIds.size + " club IDs in script: " + clubIds.toString());
         
-        league.setLeagueClubs(new ArrayList<>());
-        
-        // Ensure allClubs list exists
-        if (currentGame.getAllClubs() == null) {
-            currentGame.setAllClubs(new ArrayList<>());
-            System.out.println("Initialized allClubs list");
+        // Use a Set to detect duplicates in the script itself
+        java.util.Set<Long> uniqueIdsInScript = new java.util.HashSet<>();
+        for (Long id : clubIds) {
+            if (!uniqueIdsInScript.add(id)) {
+                System.out.println("CRITICAL WARNING: Duplicate club ID " + id + " found in script!");
+            }
         }
         
+        league.setLeagueClubs(new ArrayList<>());
         int clubsAdded = 0;
         for (Long clubId : clubIds) {
             if (clubId == null) {
@@ -199,21 +202,40 @@ public class ScriptsManager {
                 
                 if (club != null) {
                     // Add to SaveGame so fixture generator can find it
-                    System.out.println("Adding club " + club.getName() + " (ID: " + clubId + ") to SaveGame from DatabaseLoader");
+                    System.out.println("ScriptsManager: Adding club " + club.getName() + " (ID: " + clubId + ") to SaveGame from DatabaseLoader");
                     currentGame.getAllClubs().add(club);
                 } else {
-                    System.out.println("ERROR: Club ID " + clubId + " not found in DatabaseLoader or SaveGame!");
-                    continue;
+                    String errorMsg = "CRITICAL ERROR: Club ID " + clubId + " not found in DatabaseLoader or SaveGame! The league MUST have all historical clubs.";
+                    System.out.println(errorMsg);
+                    com.badlogic.gdx.Gdx.app.error("ScriptsManager", errorMsg);
+                    throw new RuntimeException(errorMsg);
                 }
             }
             
-            // Add Club to League (now guaranteed to be in SaveGame)
-            league.getLeagueClubs().add(club);
-            clubsAdded++;
-            System.out.println("Added club " + club.getName() + " (ID: " + clubId + ") to league " + league.getName());
+            // Final sanity check: club MUST have players
+            if (club.getPlayers() == null || club.getPlayers().isEmpty()) {
+                String errorMsg = "CRITICAL ERROR: Club " + club.getName() + " (ID: " + clubId + ") has NO PLAYERS loaded. Cannot generate league matches.";
+                System.out.println(errorMsg);
+                com.badlogic.gdx.Gdx.app.error("ScriptsManager", errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+            
+            // Add Club to League (now guaranteed to be in SaveGame and have players)
+            if (!league.getLeagueClubs().contains(club)) {
+                league.getLeagueClubs().add(club);
+                clubsAdded++;
+                System.out.println("ScriptsManager: Successfully added club " + club.getName() + " (ID: " + clubId + ") to league " + league.getName());
+            } else {
+                System.out.println("WARNING: Club " + club.getName() + " (ID: " + clubId + ") was already in the league list. Skipping duplicate.");
+            }
         }
         
-        System.out.println("Total clubs added to league: " + clubsAdded + " / " + clubIds.size);
+        System.out.println("Total unique clubs added to league: " + clubsAdded + " (Expected: " + clubIds.size + ")");
+        
+        if (clubsAdded != clubIds.size) {
+            String errorMsg = "CRITICAL ERROR: Expected " + clubIds.size + " unique clubs in league, but only " + clubsAdded + " were added.";
+            System.out.println(errorMsg);
+        }
         
         if (league.getLeagueClubs().isEmpty()) {
             System.out.println("ERROR: No clubs were added to league! Cannot create empty league.");
@@ -223,15 +245,82 @@ public class ScriptsManager {
         // Assign default competition rules to the league
         // For historical leagues (1888), use historical rules (2-1-0, goal average)
         // For modern leagues, use modern rules (3-1-0, goal difference)
-        // TODO: Determine rules based on league creation date or script parameters
-        com.rndmodgames.futtoboru.data.CompetitionRules rules = 
-            com.rndmodgames.futtoboru.data.CompetitionRules.createDefaultRules();
+        com.rndmodgames.futtoboru.data.CompetitionRules rules;
+        java.time.LocalDateTime startDate = currentGame.getGameStartDate();
+        if (startDate != null && startDate.getYear() == 1888) {
+            rules = com.rndmodgames.futtoboru.data.CompetitionRules.createHistoricalRules();
+            System.out.println("Assigned HISTORICAL competition rules to league (1888-89)");
+        } else {
+            rules = com.rndmodgames.futtoboru.data.CompetitionRules.createDefaultRules();
+            System.out.println("Assigned DEFAULT competition rules to league");
+        }
         league.setRules(rules);
         System.out.println("Assigned competition rules to league (points: " + rules.getPointsForWin() + 
                           "-" + rules.getPointsForDraw() + "-" + rules.getPointsForLoss() + ")");
         
         // Save the created League on the current game
         currentGame.getMainAuthority().getLeagues().add(league);
+        
+        // Ensure the league is also in the global allLeagues list for UI visibility
+        if (currentGame.getAllLeagues() == null) {
+            currentGame.setAllLeagues(new java.util.ArrayList<>());
+        }
+        
+        // We need to find or create a Competition object for this League
+        Competition leagueCompetition = null;
+        for (Competition comp : currentGame.getAllLeagues()) {
+            if (comp.getName() != null && comp.getName().equals(leagueName)) {
+                leagueCompetition = comp;
+                break;
+            }
+        }
+        
+        if (leagueCompetition == null) {
+            leagueCompetition = new Competition();
+            leagueCompetition.setId(System.currentTimeMillis()); // TODO: Better ID
+            leagueCompetition.setName(leagueName);
+            leagueCompetition.setCompetitionType(Competition.COMPETITION_LEAGUE);
+            currentGame.getAllLeagues().add(leagueCompetition);
+        }
+        
+        // CRITICAL: Ensure all league clubs are in SaveGame.allClubs
+        // This prevents the "20 matches" bug caused by invalid/missing clubs
+        if (currentGame.getAllClubs() == null) {
+            currentGame.setAllClubs(new ArrayList<>());
+        }
+        for (Club club : league.getLeagueClubs()) {
+            if (currentGame.getClubById(club.getId()) == null) {
+                System.out.println("ScriptsManager: Adding missing league club " + club.getName() + " (ID: " + club.getId() + ") to SaveGame");
+                currentGame.getAllClubs().add(club);
+            }
+        }
+        
+        // Create the first edition for this league
+        com.rndmodgames.futtoboru.data.CompetitionEdition edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
+        edition.setId(System.currentTimeMillis()); // TODO: Better ID generation
+        String seasonName = (startDate != null) ? startDate.getYear() + "-" + ((startDate.getYear() + 1) % 100) : "Season 1";
+        edition.setName(leagueName + " " + seasonName);
+        edition.setStartDate(startDate);
+        edition.setEndDate(edition.getStartDate() != null ? edition.getStartDate().plusMonths(9) : null);
+        
+        if (clubIds != null) {
+            for (Long clubId : clubIds) {
+                edition.getParticipantClubsIds().add(clubId);
+            }
+            edition.setParticipantClubs(clubIds.size);
+        }
+        
+        league.getEditions().add(edition);
+        
+        // Also add edition to the competition object
+        if (leagueCompetition != null) {
+            if (leagueCompetition.getEditions() == null) {
+                leagueCompetition.setEditions(new java.util.ArrayList<>());
+            }
+            leagueCompetition.getEditions().add(edition);
+        }
+        
+        System.out.println("Created first edition for league: " + edition.getName());
         
         System.out.println("========================================");
         System.out.println("LEAGUE CREATION SUCCESSFUL!");
@@ -265,7 +354,8 @@ public class ScriptsManager {
             System.out.println("Season start date: " + seasonStart);
             
             // Season typically runs September to May (9 months)
-            java.time.LocalDateTime seasonEnd = seasonStart.plusMonths(9);
+            // Extending to 10 months to ensure all 22 matches fit before awards in June
+            java.time.LocalDateTime seasonEnd = seasonStart.plusMonths(10);
             System.out.println("Season end date: " + seasonEnd);
             
             // Generate fixtures
@@ -463,5 +553,117 @@ public class ScriptsManager {
             e.printStackTrace();
             com.badlogic.gdx.Gdx.app.error("ScriptsManager", "Error creating messages", e);
         }
+    }
+
+    /**
+     * Create A Cup based on a script
+     */
+    @SuppressWarnings("unchecked")
+    public void createCup(BasicScript script) {
+        System.out.println("========================================");
+        System.out.println("EXECUTING CUP CREATION SCRIPT!");
+        System.out.println("========================================");
+        
+        if (currentGame == null) {
+            System.out.println("ERROR: currentGame is null! Cannot create cup.");
+            return;
+        }
+        
+        // Get cup name
+        String cupName = (String) script.getScriptValues().get(ScriptsLoader.CUP_NAME);
+        if (cupName == null) {
+            System.out.println("ERROR: Cup name is null in script!");
+            return;
+        }
+        
+        // Find or create Competition object
+        com.rndmodgames.futtoboru.data.Competition cup = null;
+        if (currentGame.getAllCups() == null) {
+            currentGame.setAllCups(new java.util.ArrayList<>());
+        }
+        
+        for (com.rndmodgames.futtoboru.data.Competition existingCup : currentGame.getAllCups()) {
+            if (existingCup.getName() != null && existingCup.getName().equals(cupName)) {
+                cup = existingCup;
+                break;
+            }
+        }
+        
+        if (cup == null) {
+            cup = new com.rndmodgames.futtoboru.data.Competition();
+            cup.setId(System.currentTimeMillis());
+            cup.setName(cupName);
+            cup.setCompetitionType(com.rndmodgames.futtoboru.data.Competition.COMPETITION_CUP);
+            currentGame.getAllCups().add(cup);
+            System.out.println("Created new competition object for: " + cupName);
+        }
+        
+        // Get participants
+        Array<Long> participantIds = (Array<Long>) script.getScriptValues().get(ScriptsLoader.CUP_PARTICIPANTS);
+        if (participantIds == null || participantIds.size == 0) {
+            System.out.println("ERROR: No participants found for cup script!");
+            return;
+        }
+        
+        // Create Edition
+        com.rndmodgames.futtoboru.data.CompetitionEdition edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
+        edition.setId(System.currentTimeMillis() + 1);
+        java.time.LocalDateTime gameDate = currentGame.getGameDate();
+        String seasonName = gameDate.getYear() + "-" + ((gameDate.getYear() + 1) % 100);
+        edition.setName(cupName + " " + seasonName);
+        edition.setStartDate(gameDate);
+        edition.setEndDate(gameDate.plusMonths(9));
+        
+        if (currentGame.getAllClubs() == null) {
+            currentGame.setAllClubs(new java.util.ArrayList<>());
+        }
+        
+        for (int i = 0; i < participantIds.size; i++) {
+            Long id = participantIds.get(i);
+            edition.getParticipantClubsIds().add(id);
+            // Ensure club is in SaveGame
+            if (currentGame.getClubById(id) == null) {
+                Club club = DatabaseLoader.getClubById(id);
+                if (club != null) {
+                    System.out.println("ScriptsManager: Adding missing cup club " + club.getName() + " (ID: " + id + ") to SaveGame");
+                    currentGame.getAllClubs().add(club);
+                }
+            }
+        }
+        edition.setParticipantClubs(participantIds.size);
+        cup.getEditions().add(edition);
+        
+        System.out.println("Created cup edition: " + edition.getName() + " with " + participantIds.size + " teams");
+        
+        // Deliver Message (Informing User)
+        if (gameInstance != null && gameInstance.getGameEngine() != null) {
+            com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
+                gameInstance.getGameEngine().getMessageManager();
+            
+            if (messageManager != null) {
+                // Creation Announcement
+                com.rndmodgames.futtoboru.data.Message creationMsg = new com.rndmodgames.futtoboru.data.Message();
+                creationMsg.setCategory(com.rndmodgames.futtoboru.data.MessageCategory.CUP);
+                creationMsg.setPriority(com.rndmodgames.futtoboru.data.MessagePriority.URGENT);
+                creationMsg.setTitle(cupName + " Created");
+                creationMsg.setPlainTextMessage("The " + edition.getName() + " has been established. All participant clubs have been registered, and the first round draw is ready to be conducted.");
+                creationMsg.setScheduledDate(gameDate);
+                creationMsg.setIsMandatory(false);
+                messageManager.deliverMessage(creationMsg);
+                
+                // Mandatory Draw Message (blocks time advancement)
+                int roundNumber = 1;
+                com.rndmodgames.futtoboru.data.Message drawMessage = messageManager.createCupDrawMessage(cup, edition, roundNumber, "First Round");
+                if (drawMessage != null) {
+                    drawMessage.setScheduledDate(gameDate); 
+                    messageManager.deliverMessage(drawMessage);
+                    System.out.println("Scheduled cup draw message for " + cupName);
+                }
+            }
+        }
+        
+        script.setIsExecuted(true);
+        System.out.println("CUP CREATION SUCCESSFUL!");
+        System.out.println("========================================");
     }
 }

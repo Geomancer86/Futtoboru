@@ -78,12 +78,56 @@ public class MatchPreviewScreenTable extends VisTable {
         
         this.clear();
         
-        // Current Match Preview will always be the first on the Scheduled Match List
-        Match match = game.getCurrentGame().getCurrentClub().getScheduledMatches().get(0);
+        // Find the next playable match (both teams determined, not played, date is today or past)
+        Match match = null;
+        Club currentClub = game.getCurrentGame().getCurrentClub();
+        java.time.LocalDateTime today = game.getCurrentGame().getGameDate();
         
-        //
-        Club homeClub = DatabaseLoader.getClubById(match.getHomeClubId());
-        Club awayClub = DatabaseLoader.getClubById(match.getAwayClubId());
+        if (currentClub.getScheduledMatches() != null) {
+            for (Match m : currentClub.getScheduledMatches()) {
+                if (m == null) continue;
+                
+                // Skip matches where teams are not yet determined (future round cup matches)
+                if (m.getHomeClubId() == null || m.getAwayClubId() == null) {
+                    continue;
+                }
+                
+                // Skip matches already played
+                if (m.getIsPlayed() != null && m.getIsPlayed()) {
+                    continue;
+                }
+                
+                // Check if match date is today or in the past
+                if (m.getMatchDateTime() != null && 
+                    (m.getMatchDateTime().toLocalDate().isBefore(today.toLocalDate()) ||
+                     m.getMatchDateTime().toLocalDate().isEqual(today.toLocalDate()))) {
+                    match = m;
+                    break; // Use first playable match found
+                }
+            }
+        }
+        
+        if (match == null) {
+            this.row();
+            this.add("No upcoming match available");
+            return;
+        }
+        
+        // Get clubs with null checks
+        Club homeClub = match.getHomeClubId() != null ? 
+            DatabaseLoader.getClubById(match.getHomeClubId()) : null;
+        Club awayClub = match.getAwayClubId() != null ? 
+            DatabaseLoader.getClubById(match.getAwayClubId()) : null;
+        
+        if (homeClub == null || awayClub == null) {
+            this.row();
+            this.add("Match teams not yet determined");
+            if (match.getBracketPath() != null) {
+                this.row();
+                this.add("Match: " + match.getBracketPath());
+            }
+            return;
+        }
 
         //
         this.row();

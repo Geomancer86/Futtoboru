@@ -1,0 +1,10 @@
+# Old Carthusians - 1888-89 Club Stadium File
+#
+# Stadium is Charterhouse School Grounds
+#
+# Source: https://en.wikipedia.org/wiki/Old_Carthusians_F.C.
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+27,Charterhouse School Grounds,1872,2000,1000,"The playing fields of Charterhouse School in Godalming, home of the Old Carthusians.",https://en.wikipedia.org/wiki/Charterhouse_School,500,false,50
+
