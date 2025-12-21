@@ -1,0 +1,18 @@
+# South Shore - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/South_Shore_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+2201,John,Bond,1000,1865
+2202,Bob,Birket,1000,1866
+2203,Tom,Birket,1000,1867
+2204,Jimmy,Birket,1000,1868
+2205,Jack,Birket,1000,1865
+2206,Fred,Birket,1000,1866
+2207,George,Birket,1000,1867
+2208,William,Birket,1000,1868
+2209,Charles,Birket,1000,1865
+2210,James,Birket,1000,1866
+2211,Harry,Birket,1000,1867
+

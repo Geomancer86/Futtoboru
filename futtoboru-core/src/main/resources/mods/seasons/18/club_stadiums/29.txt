@@ -1,0 +1,10 @@
+# Notts Rangers - 1888-89 Club Stadium File
+#
+# Stadium is Castle Ground
+#
+# Source: https://en.wikipedia.org/wiki/Notts_Rangers_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+29,Castle Ground,1868,3000,1200,"The home ground of Notts Rangers, located near Nottingham Castle.",https://en.wikipedia.org/wiki/Notts_Rangers_F.C.,600,false,60
+

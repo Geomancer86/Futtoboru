@@ -89,6 +89,10 @@ public class LeagueFixtureGenerator {
         System.out.println("========================================");
         System.out.println("VALIDATING CLUBS FOR FIXTURE GENERATION");
         System.out.println("========================================");
+        System.out.println("Clubs received for validation: " + clubs.size());
+        for (Club c : clubs) {
+            System.out.println("  - " + (c != null ? c.getName() : "NULL") + " (ID: " + (c != null ? c.getId() : "NULL") + ")");
+        }
         
         List<Club> validClubs = new ArrayList<>();
         for (Club club : clubs) {
@@ -99,12 +103,16 @@ public class LeagueFixtureGenerator {
             try {
                 boolean isReady = isClubReady(club);
                 if (isReady) {
-                    validClubs.add(club);
-                    System.out.println("  -> ADDED to valid clubs list");
+                    if (!validClubs.contains(club)) {
+                        validClubs.add(club);
+                        System.out.println("  -> ADDED to valid clubs list");
+                    } else {
+                        System.out.println("  -> WARNING: Duplicate club " + club.getName() + " found in league list. Skipping.");
+                    }
                 }
             } catch (RuntimeException e) {
                 // Re-throw to crash the game - don't silently skip clubs
-                System.err.println("GAME CRASHING: Club validation failed!");
+                System.err.println("GAME CRASHING: Club validation failed for " + (club != null ? club.getName() : "UNKNOWN") + "!");
                 System.err.println("This prevents silent failures and ensures all clubs are properly configured.");
                 throw e;
             }
@@ -113,8 +121,14 @@ public class LeagueFixtureGenerator {
         System.out.println("========================================");
         System.out.println("CLUB VALIDATION RESULTS:");
         System.out.println("Total clubs in league: " + numClubs);
-        System.out.println("Valid clubs: " + validClubs.size());
-        System.out.println("Invalid clubs: " + (numClubs - validClubs.size()));
+        System.out.println("Valid unique clubs: " + validClubs.size());
+        System.out.println("Invalid/Duplicate clubs: " + (numClubs - validClubs.size()));
+        
+        // List final clubs
+        System.out.println("FINAL CLUBS FOR GENERATION (" + validClubs.size() + "):");
+        for (Club c : validClubs) {
+            System.out.println("  - " + c.getName() + " (ID: " + c.getId() + ")");
+        }
         
         // List which clubs are invalid
         if (validClubs.size() < numClubs) {
@@ -154,6 +168,10 @@ public class LeagueFixtureGenerator {
         numClubs = clubs.size();
         
         System.out.println("FINAL: Generating fixtures for " + numClubs + " clubs");
+        System.out.println("CLUBS LIST:");
+        for (Club c : clubs) {
+            System.out.println("  - " + c.getName() + " (ID: " + c.getId() + ")");
+        }
         System.out.println("Matches per matchday: " + (numClubs / 2));
         
         Gdx.app.log("LeagueFixtureGenerator", "Generating fixtures for league: " + league.getName() + " with " + numClubs + " clubs");
@@ -170,6 +188,12 @@ public class LeagueFixtureGenerator {
         // Combine and schedule matches
         allMatches.addAll(firstHalfFixtures);
         allMatches.addAll(secondHalfFixtures);
+        
+        System.out.println("TOTAL MATCHES GENERATED: " + allMatches.size());
+        if (!allMatches.isEmpty()) {
+            System.out.println("First Match: " + allMatches.get(0).getId());
+            System.out.println("Last Match: " + allMatches.get(allMatches.size() - 1).getId());
+        }
         
         // Schedule matches across season dates (pass actual number of clubs for correct matchday calculation)
         scheduleMatchesAcrossSeason(allMatches, numClubs, seasonStartDate, seasonEndDate);

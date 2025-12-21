@@ -1,0 +1,10 @@
+# Linfield - 1888-89 Club Stadium File
+#
+# Stadium is Ulsterville Avenue
+#
+# Source: https://en.wikipedia.org/wiki/Linfield_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+18,Ulsterville Avenue,1886,2000,1000,"Linfield's second home ground, used from 1886 to 1889 before moving to Balmoral.",https://en.wikipedia.org/wiki/Linfield_F.C.#Grounds,500,false,50
+

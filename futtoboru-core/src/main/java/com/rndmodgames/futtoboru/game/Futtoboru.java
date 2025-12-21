@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.engine.jobs.ClubStaffManager;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
+import com.rndmodgames.futtoboru.screens.MatchEngineDebugScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
 import com.rndmodgames.futtoboru.screens.NewGameOverviewScreen;
 import com.rndmodgames.futtoboru.screens.NewGameSeasonScreen;
@@ -53,12 +54,14 @@ public class Futtoboru extends Game {
     // Main Menu
     public static final int MENU_SCREEN                 = 2;
     public static final int SETTINGS_SCREEN             = 3;
+    public static final int MATCH_ENGINE_DEBUG_SCREEN    = 4;
+    public static final int MATCH_ENGINE_SCREEN          = 5;
     
     // New Game Setup
-    public static final int NEW_GAME_SCREEN             = 4;
-    public static final int NEW_MANAGER_SCREEN          = 5;
-    public static final int NEW_GAME_SETUP_SCREEN       = 6;
-    public static final int NEW_GAME_OVERVIEW_SCREEN    = 7;
+    public static final int NEW_GAME_SCREEN             = 10;
+    public static final int NEW_MANAGER_SCREEN          = 11;
+    public static final int NEW_GAME_SETUP_SCREEN       = 12;
+    public static final int NEW_GAME_OVERVIEW_SCREEN    = 13;
     
     // Simulation
     public static final int GAME_SCREEN                 = 100;
@@ -92,6 +95,11 @@ public class Futtoboru extends Game {
     private AuthorityManager authorityManager = null;
     private ScriptsManager scriptsManager = null;
     private PersonGenerator personGenerator = null;
+    
+    /**
+     * Match Engine Configuration (temporary storage for screen transition)
+     */
+    private com.rndmodgames.futtoboru.match.engine.MatchConfiguration matchConfiguration = null;
     
     /**
      * Job System Managers (v1.0)
@@ -240,6 +248,17 @@ public class Futtoboru extends Game {
             this.setScreen(new SettingsScreen(this));
             break;
             
+        case MATCH_ENGINE_DEBUG_SCREEN:
+            this.setScreen(new MatchEngineDebugScreen(this));
+            break;
+            
+        case MATCH_ENGINE_SCREEN:
+            com.rndmodgames.futtoboru.match.engine.MatchEngineScreen matchScreen = 
+                new com.rndmodgames.futtoboru.match.engine.MatchEngineScreen(this, matchConfiguration);
+            this.setScreen(matchScreen);
+            matchConfiguration = null; // Clear after use
+            break;
+            
         default:
             // TODO: handle unknown screen
             break;
@@ -356,6 +375,20 @@ public class Futtoboru extends Game {
 
     public FuttoboruGameEngine getGameEngine() {
         return gameEngine;
+    }
+    
+    /**
+     * Set match configuration for match engine screen
+     */
+    public void setMatchConfiguration(com.rndmodgames.futtoboru.match.engine.MatchConfiguration config) {
+        this.matchConfiguration = config;
+    }
+    
+    /**
+     * Get match configuration (clears after retrieval)
+     */
+    public com.rndmodgames.futtoboru.match.engine.MatchConfiguration getMatchConfiguration() {
+        return matchConfiguration;
     }
 
     public void setGameEngine(FuttoboruGameEngine gameEngine) {

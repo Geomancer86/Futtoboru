@@ -215,8 +215,35 @@ public class FuttoboruGameEngine {
             return;
         }
         
-        // Get the next match (first in chronological order)
-        Match nextMatch = currentClub.getScheduledMatches().get(0);
+        // Find the next playable match (both teams determined, not played, date is today or past)
+        Match nextMatch = null;
+        LocalDateTime currentDate = gameInstance.getCurrentGame().getGameDate();
+        
+        for (Match match : currentClub.getScheduledMatches()) {
+            // Skip if teams not determined
+            if (match.getHomeClubId() == null || match.getAwayClubId() == null) {
+                continue;
+            }
+            
+            // Skip if already played
+            if (match.getIsPlayed() != null && match.getIsPlayed()) {
+                continue;
+            }
+            
+            // Skip if match date is in the future
+            if (match.getMatchDateTime() != null && match.getMatchDateTime().isAfter(currentDate)) {
+                continue;
+            }
+            
+            // This match is playable
+            nextMatch = match;
+            break;
+        }
+        
+        if (nextMatch == null) {
+            Gdx.app.log("FuttoboruGameEngine", "No playable matches found for club: " + currentClub.getName());
+            return;
+        }
         
         // Create match simulator
         MatchSimulator simulator = new MatchSimulator(gameInstance);
@@ -655,6 +682,7 @@ public class FuttoboruGameEngine {
         
         // First pass: Collect all matches to simulate (avoid ConcurrentModificationException)
         List<Match> matchesToSimulate = new ArrayList<>();
+        Set<Long> matchIdsAdded = new HashSet<>(); // Use ID-based deduplication
         
         // Iterate through all clubs to find matches scheduled for this date
         for (Club club : game.getAllClubs()) {
@@ -664,9 +692,30 @@ public class FuttoboruGameEngine {
             
             // Find matches scheduled for this date
             for (Match match : club.getScheduledMatches()) {
+                if (match == null || match.getId() == null) {
+                    continue;
+                }
+                
+                // Skip if already added (use ID to avoid duplicates)
+                if (matchIdsAdded.contains(match.getId())) {
+                    continue;
+                }
+                
                 // Skip if already simulated or already played
                 if (simulatedToday.contains(match) || (match.getIsPlayed() != null && match.getIsPlayed())) {
                     continue;
+                }
+                
+                // CRITICAL: Skip matches where teams are not yet determined (future round matches)
+                if (match.getHomeClubId() == null || match.getAwayClubId() == null) {
+                    // Log for debugging cup matches
+                    if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH) {
+                        System.out.println("FuttoboruGameEngine: SKIPPING cup match " + 
+                            (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
+                            " (Round " + match.getRound() + ", ID: " + match.getId() + 
+                            ") - teams not determined. Home=" + match.getHomeClubId() + ", Away=" + match.getAwayClubId());
+                    }
+                    continue; // Match not ready to play yet
                 }
                 
                 // Check if match is scheduled for target date
@@ -674,10 +723,20 @@ public class FuttoboruGameEngine {
                     LocalDate matchDate = match.getMatchDateTime().toLocalDate();
                     
                     if (matchDate.equals(targetDate)) {
-                        // Add to list if not already there (prevent duplicates)
-                        if (!matchesToSimulate.contains(match)) {
+                        // Add to list if not already there (prevent duplicates by ID)
+                        if (!matchIdsAdded.contains(match.getId())) {
                             matchesToSimulate.add(match);
+                            matchIdsAdded.add(match.getId());
                             matchesFound++;
+                            
+                            // Log cup matches for debugging
+                            if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH) {
+                                System.out.println("FuttoboruGameEngine: *** FOUND CUP MATCH TO SIMULATE *** " + 
+                                    (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
+                                    " (Round " + match.getRound() + ", ID: " + match.getId() + 
+                                    ", Home: " + match.getHomeClubId() + ", Away: " + match.getAwayClubId() + 
+                                    ") on " + targetDate);
+                            }
                         }
                     }
                 }
@@ -728,7 +787,21 @@ public class FuttoboruGameEngine {
             }
         }
         
-        System.out.println("FuttoboruGameEngine: Found " + matchesFound + " matches, simulated " + matchesSimulated + " matches for date " + targetDate);
+        System.out.println("FuttoboruGameEngine: *** MATCH SIMULATION SUMMARY FOR " + targetDate + " ***");
+        System.out.println("FuttoboruGameEngine: Found " + matchesFound + " matches, simulated " + matchesSimulated + " matches");
+        
+        // Log breakdown by match type
+        int cupMatchesFound = 0;
+        int cupMatchesSimulated = 0;
+        for (Match m : matchesToSimulate) {
+            if (m.getMatchType() != null && m.getMatchType() == Match.CUP_MATCH) {
+                cupMatchesFound++;
+                if (simulatedToday.contains(m)) {
+                    cupMatchesSimulated++;
+                }
+            }
+        }
+        System.out.println("FuttoboruGameEngine: Cup matches - Found: " + cupMatchesFound + ", Simulated: " + cupMatchesSimulated);
         
         if (matchesSimulated > 0) {
             Gdx.app.log("FuttoboruGameEngine", "Simulated " + matchesSimulated + " matches for " + targetDate);

@@ -1,0 +1,18 @@
+# Bootle - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Bootle_F.C._(1879)
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+2001,Andrew,Watson,1001,1856-05-24
+2002,Tom,Veitch,1001,1866
+2003,Billy,Hughes,1000,1865
+2004,John,Campbell,1001,1869-02-19
+2005,Bob,Howarth,1000,1865-06-20
+2006,Billy,Jackson,1000,1866
+2007,John,Woods,1000,1867
+2008,Fred,Geary,1000,1868-01-23
+2009,Frank,Sissons,1000,1865
+2010,Joe,Lofthouse,1000,1865-04-14
+2011,Walter,Gillam,1000,1866
+

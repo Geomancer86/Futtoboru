@@ -29,6 +29,11 @@ public class ScriptsLoader {
     public static final String LEAGUE_FOUNDING_TEAMS    = "LEAGUE_FOUNDING_TEAMS";
     public static final String LEAGUE_RULES             = "LEAGUE_RULES";
     
+    // Cup Support
+    public static final String CUP_NAME                 = "CUP_NAME";
+    public static final String CUP_COUNTRY              = "CUP_COUNTRY";
+    public static final String CUP_PARTICIPANTS         = "CUP_PARTICIPANTS";
+    
     /**
      * Load the Scripts bundled with a Season
      */
@@ -38,11 +43,7 @@ public class ScriptsLoader {
         for (Season season : seasons) {
             
             /**
-             * Hardcoded LEAGUE_CREATION_SCRIPT
-             * 
-             * TODO WIP
-             * 
-             *  - 1) this should be loaded from the file system, with files flexible enough to be easy to be edited by game designers
+             * 1) LEAGUE_CREATION_SCRIPT
              */
             BasicScript theLeagueCreationScript = new BasicScript();
             
@@ -54,7 +55,7 @@ public class ScriptsLoader {
             theLeagueCreationScript.setScriptType(BasicScript.LEAGUE_CREATION_SCRIPT);
             
             /**
-             * Script execution date (note this might differ from any dates inside the data)
+             * Script execution date
              */
             theLeagueCreationScript.setExecutionTime(LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // 17 April 1888
             
@@ -62,62 +63,49 @@ public class ScriptsLoader {
              * Add Required Script Values
              */
             theLeagueCreationScript.getScriptValues().put(LEAGUE_NAME, "English Football League");
-            theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // Created and named in Manchester during a meeting on 17 April 1888
+            theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); 
             theLeagueCreationScript.getScriptValues().put(LEAGUE_COUNTRY, 1000L); // By ID
             
             /**
              * League Clubs by ID
-             * 
-             * NOTE: LibGDX Array to avoid serialization/deserialization issues (script is created with the same class).
              */
             Array<Long> leagueClubIds = new Array<>();
-            leagueClubIds.add(1L);
-            leagueClubIds.add(2L);
-            leagueClubIds.add(3L);
-            leagueClubIds.add(4L);
-            leagueClubIds.add(5L);
-            leagueClubIds.add(6L);
-            leagueClubIds.add(7L);
-            leagueClubIds.add(8L);
-            leagueClubIds.add(9L);
-            leagueClubIds.add(10L);
-            leagueClubIds.add(11L);
-            leagueClubIds.add(12L);
+            for (long i = 1; i <= 12; i++) {
+                leagueClubIds.add(i);
+            }
             
-            theLeagueCreationScript.getScriptValues().put(LEAGUE_FOUNDING_TEAMS, leagueClubIds); // List of IDs
-            theLeagueCreationScript.getScriptValues().put(LEAGUE_RULES, null); // List of League Rule Objects TBD
+            theLeagueCreationScript.getScriptValues().put(LEAGUE_FOUNDING_TEAMS, leagueClubIds); 
+            theLeagueCreationScript.getScriptValues().put(LEAGUE_RULES, null); 
             
             /**
-             * Script Dates:
-             * 
-             *  - The script executes on a predetermined date, this might or might not show a message (parametrizable).
-             *  - The script result will execute on another date, this might or might not show a message (parametrizable).
-             *  
-             *  ---
-             *  ACTUAL WORKFLOW
-             *  
-             *      on game start, we need a hardcoded script telling the player the league will be created on a meeting on [17 April 1888]
-             *      the season creating script will run on [17 April 1888] and will add the league, teams and rules
-             *          - optional original match ups (script accepted by player)
-             *          - random match ups            (by the league scripted rules)
-             *  
-             *      an inbox message will tell the player about the first season of the league (needs Season Leagues Support)
-             *  
-             *  ---
-             *  
-             *  For example:
-             *      - 17 April 1888. Manchester
-             *          - The Football League is Created
-             *          
-             *      - 8 September 1888
-             *          - Season Begins
+             * 2) CUP_CREATION_SCRIPT (FA Cup)
+             * Executed on May 1st, 1888
              */
+            BasicScript theCupCreationScript = new BasicScript();
+            theCupCreationScript.setName("The FA Cup 1888-89 Creation");
+            theCupCreationScript.setDescription("This will create the 1888-89 FA Cup edition and add all participants");
+            theCupCreationScript.setScriptType(BasicScript.CUP_CREATION_SCRIPT);
+            theCupCreationScript.setExecutionTime(LocalDateTime.of(1888, Month.MAY, 1, 10, 0, 0));
+            
+            theCupCreationScript.getScriptValues().put(CUP_NAME, "FA Cup");
+            theCupCreationScript.getScriptValues().put(CUP_COUNTRY, 1000L);
+            
+            Array<Long> cupClubsIds = new Array<>();
+            // 1888-89 FA Cup First Round had exactly 32 teams (16 matches)
+            // Historical participants: 12 League teams + 20 non-league teams = 32 teams
+            // Using IDs 1-32 (excluding IDs 33-35 which were not in the first round)
+            // Note: Some teams may have been eliminated in qualifying rounds
+            for (long i = 1; i <= 32; i++) {
+                cupClubsIds.add(i);
+            }
+            theCupCreationScript.getScriptValues().put(CUP_PARTICIPANTS, cupClubsIds);
             
             // Season Scripts List
             season.setSeasonScripts(new ArrayList<>());
             
-            // Add the League Creation Script to the League
+            // Add the Scripts to the Season
             season.getSeasonScripts().add(theLeagueCreationScript);
+            season.getSeasonScripts().add(theCupCreationScript);
         }
     }
 }

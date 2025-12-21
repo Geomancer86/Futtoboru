@@ -1,0 +1,18 @@
+# Long Eaton Rangers - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+3201,William,Chatterton,1000,1861-12-27
+3202,John,Pearson,1000,1868-01-25
+3203,Arthur,Whittaker,1000,1866
+3204,Charles,Sagar,1000,1867
+3205,Joe,Lofthouse,1000,1865-04-14
+3206,Jack,Hill,1000,1866
+3207,Fred,Belfield,1000,1867
+3208,Tom,Belfield,1000,1868
+3209,Harry,Belfield,1000,1865
+3210,William,Belfield,1000,1866
+3211,George,Belfield,1000,1867
+

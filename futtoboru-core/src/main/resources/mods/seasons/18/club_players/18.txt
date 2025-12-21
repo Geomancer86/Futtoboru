@@ -1,0 +1,18 @@
+# Linfield - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Linfield_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1801,Sam,Johnston,83,1866
+1802,John,Peden,83,1863
+1803,William,Dalton,83,1864
+1804,Robert,Milne,1001,1870-10-31
+1805,Jack,Peden,83,1863-07-12
+1806,George,Gillespie,1001,1859
+1807,Tom,Strachan,1001,1866
+1808,Harry,McVicker,83,1865
+1809,William,McVicker,83,1867
+1810,Arthur,Watson,1000,1868
+1811,Jimmy,Hannah,1001,1868-10-26
+

@@ -40,7 +40,8 @@ public class StadiumsLoader {
                 // Use # symbol to comment a line
                 while (line != null) {
 
-                    if (!line.startsWith("#")) {
+                    // Skip empty lines and comment lines
+                    if (!line.trim().isEmpty() && !line.startsWith("#")) {
 
                         System.out.println(line);
                         
@@ -54,7 +55,8 @@ public class StadiumsLoader {
                         String[] splitted = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                         
                         if (splitted.length < 4) {
-                            System.out.println("ERROR: Stadium file has insufficient columns. Expected at least 4, got: " + splitted.length);
+                            System.out.println("ERROR: Stadium file has insufficient columns. Expected at least 4, got: " + splitted.length + " for line: " + line);
+                            // Continue to next line (will be read at end of loop)
                             continue;
                         }
                         

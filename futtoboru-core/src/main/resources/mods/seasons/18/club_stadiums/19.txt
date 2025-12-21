@@ -1,0 +1,10 @@
+# Witton Albion - 1888-89 Club Stadium File
+#
+# Stadium is Archway Ground
+#
+# Source: https://en.wikipedia.org/wiki/Witton_Albion_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+19,Archway Ground,1887,1000,500,"The original home of Witton Albion in Northwich.",https://en.wikipedia.org/wiki/Witton_Albion_F.C.#Grounds,200,false,20
+

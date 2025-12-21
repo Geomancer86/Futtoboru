@@ -1,0 +1,18 @@
+# Sunderland Albion - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+2401,John,Weir,1001,1865
+2402,Jimmy,Hannah,1001,1868-10-26
+2403,Fred,Mabane,1000,1866
+2404,Billy,Richardson,1000,1867
+2405,Tom,Pratt,1000,1868
+2406,Johnny,Moore,1000,1865
+2407,Harry,Garside,1000,1866
+2408,George,Gillespie,1001,1859
+2409,Peter,Coupar,1001,1866
+2410,David,Grey,1001,1867
+2411,Arthur,Watson,1000,1868
+

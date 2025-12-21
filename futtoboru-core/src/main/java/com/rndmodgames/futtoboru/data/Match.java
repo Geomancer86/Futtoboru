@@ -39,6 +39,12 @@ public class Match implements Serializable {
     private Long competitionEditionId; // Edition this match belongs to (Season or Staging)
     private Integer round;             // Round number (for cups, null for leagues)
     
+    // Bracket tracking (v1.0 - Complete Cup Bracket System)
+    private Long parentMatch1Id;       // First parent match (winner advances to this match)
+    private Long parentMatch2Id;       // Second parent match (winner advances to this match)
+    private Integer bracketPosition;   // Position in round (1, 2, 3, ...)
+    private String bracketPath;       // Unique path like "R1M1" (Round 1 Match 1)
+    
     //
     private Integer matchType;
     private Integer matchRules;
@@ -51,6 +57,10 @@ public class Match implements Serializable {
     // Keep it basic, for now there is no penalty kicks/score/tiebreaker
     private Integer homeGoals = 0;
     private Integer awayGoals = 0;
+    
+    // Scorers tracking (v1.0 - Awards System)
+    private java.util.List<Long> homeScorerIds = new java.util.ArrayList<>();
+    private java.util.List<Long> awayScorerIds = new java.util.ArrayList<>();
     
     // Basic attendance stats to avoid overselling a Match
     private Integer attendance = 0;
@@ -160,6 +170,22 @@ public class Match implements Serializable {
         this.awayGoals = awayGoals;
     }
 
+    public java.util.List<Long> getHomeScorerIds() {
+        return homeScorerIds;
+    }
+
+    public void setHomeScorerIds(java.util.List<Long> homeScorerIds) {
+        this.homeScorerIds = homeScorerIds;
+    }
+
+    public java.util.List<Long> getAwayScorerIds() {
+        return awayScorerIds;
+    }
+
+    public void setAwayScorerIds(java.util.List<Long> awayScorerIds) {
+        this.awayScorerIds = awayScorerIds;
+    }
+
     public Integer getAttendance() {
         return attendance;
     }
@@ -204,5 +230,38 @@ public class Match implements Serializable {
 
     public void setMatchRevenue(BigDecimal matchRevenue) {
         this.matchRevenue = matchRevenue;
+    }
+    
+    // Bracket tracking getters and setters (v1.0 - Complete Cup Bracket System)
+    public Long getParentMatch1Id() {
+        return parentMatch1Id;
+    }
+    
+    public void setParentMatch1Id(Long parentMatch1Id) {
+        this.parentMatch1Id = parentMatch1Id;
+    }
+    
+    public Long getParentMatch2Id() {
+        return parentMatch2Id;
+    }
+    
+    public void setParentMatch2Id(Long parentMatch2Id) {
+        this.parentMatch2Id = parentMatch2Id;
+    }
+    
+    public Integer getBracketPosition() {
+        return bracketPosition;
+    }
+    
+    public void setBracketPosition(Integer bracketPosition) {
+        this.bracketPosition = bracketPosition;
+    }
+    
+    public String getBracketPath() {
+        return bracketPath;
+    }
+    
+    public void setBracketPath(String bracketPath) {
+        this.bracketPath = bracketPath;
     }
 }

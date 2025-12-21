@@ -106,6 +106,12 @@ public class CompetitionsScreenTable extends VisTable {
         
         System.out.println("Found " + leagues.size() + " leagues to display");
         
+        // --- LEAGUES SECTION ---
+        this.row().colspan(3);
+        VisLabel leaguesTitle = new VisLabel("LEAGUES");
+        leaguesTitle.setColor(0.7f, 0.7f, 1f, 1f);
+        this.add(leaguesTitle).padTop(10).padBottom(5).row();
+        
         // Header row
         this.row().pad(5);
         this.add(new VisLabel("League Name")).width(300);
@@ -151,6 +157,60 @@ public class CompetitionsScreenTable extends VisTable {
                 ? league.getCountry().getCommonName() 
                 : "Unknown";
             this.add(new VisLabel(countryName)).width(150);
+        }
+        
+        // --- CUPS SECTION ---
+        List<com.rndmodgames.futtoboru.data.Competition> cups = currentGame.getAllCups();
+        if (cups != null && !cups.isEmpty()) {
+            this.row().colspan(3);
+            VisLabel cupsTitle = new VisLabel("CUPS");
+            cupsTitle.setColor(0.7f, 0.7f, 1f, 1f);
+            this.add(cupsTitle).padTop(20).padBottom(5).row();
+            
+            // Header row
+            this.row().pad(5);
+            this.add(new VisLabel("Cup Name")).width(300);
+            this.add(new VisLabel("Teams")).width(100);
+            this.add(new VisLabel("Country")).width(150);
+            this.row();
+            this.addSeparator().colspan(3).pad(2).row();
+            
+            for (com.rndmodgames.futtoboru.data.Competition cup : cups) {
+                if (cup == null) continue;
+                
+                VisTextButton cupButton = new VisTextButton(cup.getName() != null ? cup.getName() : "Unnamed Cup");
+                final com.rndmodgames.futtoboru.data.Competition cupForClick = cup;
+                cupButton.addListener(new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        return true;
+                    }
+                    
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                        if (menuManager != null) {
+                            menuManager.setSelectedCup(cupForClick);
+                            menuManager.setActiveMainScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.CUP_DETAIL_SCREEN);
+                        }
+                    }
+                });
+                
+                this.row().pad(2);
+                this.add(cupButton).width(300);
+                
+                // Get participant count from latest edition
+                int participantCount = 0;
+                if (cup.getEditions() != null && !cup.getEditions().isEmpty()) {
+                    com.rndmodgames.futtoboru.data.CompetitionEdition latestEdition = cup.getEditions().get(cup.getEditions().size() - 1);
+                    if (latestEdition.getParticipantClubs() != null) {
+                        participantCount = latestEdition.getParticipantClubs();
+                    }
+                }
+                this.add(new VisLabel(String.valueOf(participantCount))).width(100);
+                
+                // Country (assume first club's country or default)
+                this.add(new VisLabel("England")).width(150);
+            }
         }
         
         // Add spacing at bottom

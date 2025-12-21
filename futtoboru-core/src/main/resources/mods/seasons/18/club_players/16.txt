@@ -1,0 +1,18 @@
+# Wrexham - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Wrexham_A.F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1601,George,Owen,1002,1865
+1602,Bob,Roberts,1002,1859
+1603,Seth,Powell,1002,1862
+1604,John,Price,1002,1854
+1605,Jack,Powell,1002,1860-03-25
+1606,Albert,Lloyd,1002,1867
+1607,Dick,Williams,1002,1866
+1608,Edward,Evans,1002,1860
+1609,William,Turner,1002,1866
+1610,Bob,Davies,1002,1863
+1611,George,Fearon,1002,1866
+

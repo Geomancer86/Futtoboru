@@ -75,10 +75,46 @@ public class LeagueDrawScreenTable extends VisTable {
     
     public void setSelectedLeague(League league) {
         this.selectedLeague = league;
-        currentRevealedIndex = 0;
-        allRevealed = false;
         collectFixtures();
+        
+        // Check if draw has already been completed (message no longer mandatory)
+        // If so, show all fixtures immediately to prevent redrawing
+        if (isDrawAlreadyCompleted()) {
+            allRevealed = true;
+            currentRevealedIndex = allFixtures != null ? allFixtures.size() : 0;
+        } else {
+            currentRevealedIndex = 0;
+            allRevealed = false;
+        }
+        
         updateDynamicComponents();
+    }
+    
+    /**
+     * Check if the league draw message has already been completed
+     * (i.e., marked as read and no longer mandatory)
+     */
+    private boolean isDrawAlreadyCompleted() {
+        if (currentGame == null || currentGame.getAllMessages() == null) {
+            return false;
+        }
+        
+        for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
+            if (message != null) {
+                String messageType = message.getMessageType();
+                boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
+                boolean isRead = message.getIsRead() != null && message.getIsRead();
+                
+                if (messageType != null && 
+                    (messageType.equals("LEAGUE_DRAW") || messageType.equals("FIXTURE_DRAW")) &&
+                    !isMandatory && isRead) {
+                    // Draw has been completed
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
     
     /**

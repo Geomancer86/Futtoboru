@@ -1,0 +1,18 @@
+# Sheffield Wednesday - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+3001,Teddy,Brayshaw,1000,1864-03-12
+3002,Billy,Betts,1000,1864-03-26
+3003,Tom,Cawley,1000,1866
+3004,George,Waller,1000,1864
+3005,Andrew,Amos,1000,1863-03-05
+3006,James,Lang,1001,1851-03-12
+3007,William,Ingram,1000,1867
+3008,George,Chaloner,1000,1866
+3009,John,Hudson,1000,1860
+3010,Tom,Brandon,1001,1867
+3011,Michael,Whitham,1000,1867-11-06
+

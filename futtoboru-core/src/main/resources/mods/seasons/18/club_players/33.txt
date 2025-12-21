@@ -1,0 +1,18 @@
+# Small Heath - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Birmingham_City_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+3301,Caesar,Jenkyns,1002,1866-08-24
+3302,Fred,Wheldon,1000,1869-11-01
+3303,Charlie,Hare,1000,1866-11-23
+3304,Billy,Ollis,1000,1865
+3305,Chris,Charsley,1000,1864
+3306,Jack,Hallissey,1000,1866
+3307,George,Short,1000,1866
+3308,Tom,Green,1000,1866
+3309,Eddy,Stanley,1000,1866
+3310,Harry,Morris,1000,1866
+3311,Will,Devey,1000,1866
+

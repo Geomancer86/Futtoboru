@@ -178,4 +178,15 @@ public class Stadium implements Serializable {
         }
         return total;
     }
+    
+    /**
+     * toString() for VisSelectBox display
+     */
+    @Override
+    public String toString() {
+        if (name != null) {
+            return name;
+        }
+        return "Unknown Stadium";
+    }
 }
