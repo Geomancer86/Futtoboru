@@ -334,6 +334,15 @@ public class FuttoboruGameEngine {
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Scheduled messages after delivery: " + scheduledCountAfter);
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Total messages in inbox: " + allMessagesCount);
         
+        // CRITICAL FIX: Check for mandatory unread draw messages AFTER delivering scheduled messages
+        // This is a safeguard - the UI should prevent continueGame() from being called,
+        // but if it is called, we block here to prevent matches from being simulated
+        // Must check AFTER deliverScheduledMessages() in case a mandatory message was just delivered
+        if (hasMandatoryUnreadDrawMessages()) {
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "BLOCKING continueGame() - mandatory unread draw message exists");
+            return; // Do not advance game until draw message is read
+        }
+        
         /**
          * STEP 3.5: Simulate all matches scheduled for the current date
          * This must happen BEFORE advancing the date, so matches scheduled for "today" are simulated on "today"
@@ -656,9 +665,42 @@ public class FuttoboruGameEngine {
     }
     
     /**
+     * Check if there are mandatory unread draw messages that should block match simulation
+     * 
+     * @return true if there are mandatory unread draw messages, false otherwise
+     */
+    private boolean hasMandatoryUnreadDrawMessages() {
+        SaveGame currentGame = gameInstance.getCurrentGame();
+        if (currentGame == null || currentGame.getAllMessages() == null) {
+            return false;
+        }
+        
+        for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
+            if (message != null) {
+                boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
+                boolean isUnread = message.getIsRead() == null || !message.getIsRead();
+                boolean isNotDeleted = message.getIsDeleted() == null || !message.getIsDeleted();
+                String messageType = message.getMessageType();
+                
+                if (isMandatory && isUnread && isNotDeleted) {
+                    if (messageType != null && 
+                        (messageType.equals("LEAGUE_DRAW") || 
+                         messageType.equals("CUP_DRAW") ||
+                         messageType.equals("FIXTURE_DRAW"))) {
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
      * Simulate all matches scheduled for a specific date
      * 
      * v1.0: Automatically simulates all matches scheduled for the given date
+     * CRITICAL: Does NOT simulate LEAGUE matches if there are mandatory unread draw messages
      * 
      * @param date The date to simulate matches for
      */
@@ -666,6 +708,13 @@ public class FuttoboruGameEngine {
         if (date == null || gameInstance == null || gameInstance.getCurrentGame() == null) {
             DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Cannot simulate matches: date or game instance is null");
             return;
+        }
+        
+        // CRITICAL FIX: Check for mandatory unread draw messages
+        boolean hasMandatoryDrawMessage = hasMandatoryUnreadDrawMessages();
+        if (hasMandatoryDrawMessage) {
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: BLOCKING match simulation - mandatory unread draw message exists");
+            return; // Do not simulate matches until draw message is read
         }
         
         SaveGame game = gameInstance.getCurrentGame();
