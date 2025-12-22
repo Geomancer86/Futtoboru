@@ -144,22 +144,27 @@ public class FuttoboruGameEngine {
             }
             
             // Also check scheduled messages for mandatory draws
+            // We return DRAW_ACTION for ANY mandatory draw message in scheduledMessages,
+            // regardless of when it's scheduled, to match the blocking logic in continueGame()
             if (currentGame.getScheduledMessages() != null) {
                 DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Checking scheduled messages. Total scheduled: " + currentGame.getScheduledMessages().size());
                 for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
-                    if (message != null && 
-                        message.getIsMandatory() != null && message.getIsMandatory() &&
-                        message.getMessageType() != null && 
-                        (message.getMessageType().equals("LEAGUE_DRAW") || 
-                         message.getMessageType().equals("CUP_DRAW") ||
-                         message.getMessageType().equals("FIXTURE_DRAW"))) {
+                    if (message != null) {
+                        boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
+                        String messageType = message.getMessageType();
                         
-                        // Check if scheduled date is today or past
-                        if (message.getScheduledDate() != null && 
-                            !message.getScheduledDate().isAfter(currentGame.getGameDate())) {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Found scheduled mandatory draw message that should be delivered: " + message.getTitle());
-                            // Message should be delivered, but if it hasn't been, we should still block
-                            // This is a safety check
+                        // Return DRAW_ACTION if it's a mandatory draw message, regardless of scheduled date
+                        // This ensures the UI shows the correct button when continueGame() would block
+                        if (isMandatory) {
+                            if (messageType != null && 
+                                (messageType.equals("LEAGUE_DRAW") || 
+                                 messageType.equals("CUP_DRAW") ||
+                                 messageType.equals("FIXTURE_DRAW"))) {
+                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Found scheduled mandatory draw message: " + message.getTitle() + 
+                                             " (scheduled: " + message.getScheduledDate() + ", current: " + currentGame.getGameDate() + 
+                                             ") - returning DRAW_ACTION");
+                                return DRAW_ACTION;
+                            }
                         }
                     }
                 }
