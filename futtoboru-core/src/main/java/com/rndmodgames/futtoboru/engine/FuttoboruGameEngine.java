@@ -790,6 +790,16 @@ public class FuttoboruGameEngine {
                     }
                     
                     if (shouldSimulate) {
+                        // CRITICAL: Skip LEAGUE matches if there's a mandatory unread LEAGUE_DRAW message
+                        // Draws must ALWAYS be performed from the draw screen, never automatically
+                        if (match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH) {
+                            if (hasMandatoryUnreadDrawMessages()) {
+                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: SKIPPING league match " + match.getId() + 
+                                    " - mandatory unread draw message exists. Draw must be completed from draw screen first.");
+                                continue; // Skip this league match - draw must be completed first
+                            }
+                        }
+                        
                         // Add to list if not already there (prevent duplicates by ID)
                         if (!matchIdsAdded.contains(match.getId())) {
                             matchesToSimulate.add(match);
