@@ -258,6 +258,10 @@ public class ScriptsManager {
         System.out.println("Assigned competition rules to league (points: " + rules.getPointsForWin() + 
                           "-" + rules.getPointsForDraw() + "-" + rules.getPointsForLoss() + ")");
         
+        // Set league ID before adding to game (needed for draw message actionData)
+        // Use index in leagues list as ID, or timestamp if needed
+        league.setId((long) currentGame.getMainAuthority().getLeagues().size());
+        
         // Save the created League on the current game
         currentGame.getMainAuthority().getLeagues().add(league);
         
@@ -505,12 +509,19 @@ public class ScriptsManager {
                         
                         if (drawMessage != null) {
                             System.out.println("Draw message created successfully!");
-                            java.time.LocalDateTime drawDate = currentGame.getGameDate().plusDays(1);
+                            // CRITICAL: Schedule draw message for CURRENT date, not tomorrow
+                            // Fixtures are ready NOW, so the draw message should be available immediately
+                            // This ensures the message appears in inbox and the button shows correctly
+                            java.time.LocalDateTime drawDate = currentGame.getGameDate();
                             System.out.println("Setting scheduled date to: " + drawDate);
                             drawMessage.setScheduledDate(drawDate);
                             
                             System.out.println("Scheduling message...");
                             messageManager.scheduleMessage(drawMessage);
+                            
+                            // CRITICAL: Deliver the draw message immediately since fixtures are ready
+                            // This ensures the message appears in the inbox right away
+                            messageManager.deliverMessage(drawMessage);
                             
                             // Verify message was scheduled
                             int scheduledCount = (currentGame.getScheduledMessages() != null) ? currentGame.getScheduledMessages().size() : 0;

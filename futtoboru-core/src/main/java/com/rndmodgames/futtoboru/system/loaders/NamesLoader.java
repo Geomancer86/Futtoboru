@@ -9,6 +9,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * Names Loader v1
@@ -90,7 +91,7 @@ public class NamesLoader {
         // Stats
         if (namesMap.get(country.getCommonName()) != null) {
             // 
-            System.out.println("Finished parsing " + country.getCommonName() + " " + file + ": " + namesMap.get(country.getCommonName()).size());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Finished parsing " + country.getCommonName() + " " + file + ": " + namesMap.get(country.getCommonName()).size());
         }
     }
 }

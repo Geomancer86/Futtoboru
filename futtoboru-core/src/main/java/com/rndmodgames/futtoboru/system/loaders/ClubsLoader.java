@@ -10,6 +10,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
 import com.rndmodgames.futtoboru.system.generators.PlayerGenerator;
 
@@ -86,13 +87,13 @@ public class ClubsLoader {
                          *  - TODO/TBD: Pick the number and quality of Players to be generated, the stronger club should have more rotation of better players
                          */
                         
-                        System.out.println("Setting Players At Club! - USE_REAL_PLAYERS: " + USE_REAL_PLAYERS);
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Setting Players At Club! - USE_REAL_PLAYERS: " + USE_REAL_PLAYERS);
                         
                         
                         if (USE_REAL_PLAYERS) {
                             
                             // 
-                            System.out.println("Loading existing Player data from Season Folder.");
+                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Loading existing Player data from Season Folder.");
                             
                             //
                             PlayersLoader.loadSeasonClubPlayers(season, club);
@@ -100,7 +101,7 @@ public class ClubsLoader {
                         } else {
                             
                             //
-                            System.out.println("Randomly generating Club Players.");
+                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Randomly generating Club Players.");
                             
                             // Quick and dirty
                             int generate = 20;
@@ -127,7 +128,7 @@ public class ClubsLoader {
 
                                 } else {
 
-                                    System.out.println("Generated Person Was Duplicated, Ignore!");
+                                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Generated Person Was Duplicated, Ignore!");
                                 }
                             }
                         }
@@ -152,7 +153,7 @@ public class ClubsLoader {
             
         } else {
             
-            System.out.println("mods/seasons/" + season.getId() + "/clubs.txt doesnt exist");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "mods/seasons/" + season.getId() + "/clubs.txt doesnt exist");
         }
         
         /**
@@ -164,7 +165,7 @@ public class ClubsLoader {
             DatabaseLoader.getInstance().getClubsByCountry(club.getCountry()).add(club);
         }
         
-        System.out.println("FINISHED LOADING " + season.getClubs().size() + " SEASON CLUBS");
-        System.out.println("FINISHED LOADING / GENERATING " + DatabaseLoader.getPersons().size() + " CLUB PLAYERS");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + season.getClubs().size() + " SEASON CLUBS");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING / GENERATING " + DatabaseLoader.getPersons().size() + " CLUB PLAYERS");
     }
 }

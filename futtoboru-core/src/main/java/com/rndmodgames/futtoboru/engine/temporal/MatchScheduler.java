@@ -13,6 +13,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.MatchIncome;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * Match Scheduler v1
@@ -91,7 +92,7 @@ public class MatchScheduler {
             return false;
         }
         
-        System.out.println("CHECKING IF TODAY IS A MATCH DAY!");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "CHECKING IF TODAY IS A MATCH DAY!");
         
         // Null check: club might not have scheduled matches initialized
         if (club.getScheduledMatches() == null) {
@@ -125,7 +126,7 @@ public class MatchScheduler {
                 
                 // Check if match date is today
                 if (match.getMatchDateTime() != null && match.getMatchDateTime().toLocalDate().equals(today.toLocalDate())) {
-                    System.out.println("MATCH DAY! " + match.getBracketPath() + " on " + today);
+                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH DAY! " + match.getBracketPath() + " on " + today);
                     return true;
                 }
             }
@@ -144,7 +145,7 @@ public class MatchScheduler {
     public void checkClubSheduledMatches(Club club) {
         
         //
-        System.out.println("CLUB SCHEDULED MATCHES: " + club.getScheduledMatches().size());
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "CLUB SCHEDULED MATCHES: " + club.getScheduledMatches().size());
         
         // Get current game date
         java.time.LocalDateTime currentDate = game.getCurrentGame().getGameDate();
@@ -167,13 +168,13 @@ public class MatchScheduler {
             
             // BUG FIX: Skip matches that have already been played
             if (scheduled.getIsPlayed() != null && scheduled.getIsPlayed()) {
-                System.out.println("MatchScheduler: Skipping already played match");
+                DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Skipping already played match");
                 continue;
             }
             
             // BUG FIX: Only sell tickets for matches scheduled in the future
             if (scheduled.getMatchDateTime() == null) {
-                System.out.println("MatchScheduler: Skipping match with no date");
+                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Skipping match with no date");
                 continue;
             }
             
@@ -184,14 +185,14 @@ public class MatchScheduler {
             
             if (daysUntilMatch > 7) {
                 // Match is more than 7 days away, don't sell tickets yet
-                System.out.println("MatchScheduler: Match is " + daysUntilMatch + " days away, not selling tickets yet");
+                DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Match is " + daysUntilMatch + " days away, not selling tickets yet");
                 continue;
             }
             
             if (daysUntilMatch < 0) {
                 // Match date has passed but hasn't been marked as played yet
                 // This shouldn't happen, but skip it to be safe
-                System.out.println("MatchScheduler: Match date has passed but not marked as played, skipping");
+                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Match date has passed but not marked as played, skipping");
                 continue;
             }
             
@@ -210,11 +211,22 @@ public class MatchScheduler {
             
             int maxTickets = club.getStadium().getCapacity() - currentAttendance;
             
-            System.out.println("MATCH            : " + DatabaseLoader.getClubById(scheduled.getHomeClubId()).getName() + " vs " + DatabaseLoader.getClubById(scheduled.getAwayClubId()).getName());
-            System.out.println("STADIUM NAME     : " + club.getStadium().getName());
-            System.out.println("STADIUM CAPACITY : " + club.getStadium().getCapacity());
-            System.out.println("TICKETS SOLD     : " + currentAttendance);
-            System.out.println("TICKETS AVAILABLE: " + maxTickets);
+            // CRITICAL FIX: Add null checks to prevent NullPointerException
+            Club homeClub = DatabaseLoader.getClubById(scheduled.getHomeClubId());
+            Club awayClub = DatabaseLoader.getClubById(scheduled.getAwayClubId());
+            
+            if (homeClub == null || awayClub == null) {
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler", 
+                    "CRITICAL: Cannot find club(s) for match. HomeClubId: " + scheduled.getHomeClubId() + 
+                    ", AwayClubId: " + scheduled.getAwayClubId() + ", Match ID: " + scheduled.getId());
+                continue; // Skip this match to prevent crash
+            }
+            
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH            : " + homeClub.getName() + " vs " + awayClub.getName());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "STADIUM NAME     : " + club.getStadium().getName());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "STADIUM CAPACITY : " + club.getStadium().getCapacity());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "TICKETS SOLD     : " + currentAttendance);
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "TICKETS AVAILABLE: " + maxTickets);
             
             if (maxTickets > 0) {
                 
@@ -256,10 +268,10 @@ public class MatchScheduler {
                 }
                 
                 //
-                System.out.println("MATCH TYPE: " + (scheduled.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH TYPE: " + (scheduled.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
                                                    scheduled.getMatchType() == Match.LEAGUE_MATCH ? "LEAGUE" : "CUP"));
-                System.out.println("ATTENDANCE MULTIPLIER: " + attendanceMultiplier);
-                System.out.println("TICKETS TO SELL TODAY: min: " + minPerDay + ", max: " + maxPerDay);
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "ATTENDANCE MULTIPLIER: " + attendanceMultiplier);
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "TICKETS TO SELL TODAY: min: " + minPerDay + ", max: " + maxPerDay);
                 
                 int randomTickets;
                 
@@ -283,8 +295,8 @@ public class MatchScheduler {
                 BigDecimal ticketPrice = getTicketPrice(scheduled.getMatchType());
                 BigDecimal dayCash = new BigDecimal(randomTickets).multiply(ticketPrice);
                 
-                System.out.println("SOLD TICKETS: " + randomTickets);
-                System.out.println("MATCH DAY CASH IS: $" + df.format(dayCash));
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "SOLD TICKETS: " + randomTickets);
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH DAY CASH IS: $" + df.format(dayCash));
                 
                 // Record match revenue on Match object (v1.0)
                 BigDecimal currentRevenue = scheduled.getMatchRevenue();
@@ -303,7 +315,7 @@ public class MatchScheduler {
             } else {
                 
                 //
-                System.out.println("NOT SELLING TICKETS FOR MATCH, SOLD OUT!");
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "NOT SELLING TICKETS FOR MATCH, SOLD OUT!");
             }
         }
     }
@@ -320,7 +332,7 @@ public class MatchScheduler {
     public void checkClubProposedMatches(Club club) {
         
         //
-        System.out.println("CLUB PROPOSED MATCHES: " + club.getProposedMatches());
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "CLUB PROPOSED MATCHES: " + club.getProposedMatches());
         
         //
         for (Match match : club.getProposedMatches()) {
@@ -328,7 +340,7 @@ public class MatchScheduler {
             boolean freeSchedule = true;
             
             // 
-            System.out.println("CHECKING FRIENDY PROPOSAL AGAINST " + club.getScheduledMatches().size() + " SCHEDULED MATCHES");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "CHECKING FRIENDY PROPOSAL AGAINST " + club.getScheduledMatches().size() + " SCHEDULED MATCHES");
             
             // TODO compare scheduled dates and proposed date
             // TODO set freeschedule as needed
@@ -340,7 +352,7 @@ public class MatchScheduler {
             if (freeSchedule) {
                 
                 //
-                System.out.println("Schedule is free, accepting friendly request!");
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "Schedule is free, accepting friendly request!");
                 
                 match.setIsAccepted(true);
                 
@@ -349,7 +361,7 @@ public class MatchScheduler {
                 
             } else {
                 
-                System.out.println("Friendly request cannot be accepted, scheduling conflicts!");
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "Friendly request cannot be accepted, scheduling conflicts!");
             }
             
             //LocalDateTime beforeDate = match.getProposeDateTime().minusDays(3).at;

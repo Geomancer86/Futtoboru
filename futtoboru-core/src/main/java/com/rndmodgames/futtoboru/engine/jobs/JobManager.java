@@ -21,6 +21,7 @@ import com.rndmodgames.futtoboru.data.jobs.JobOffer;
 import com.rndmodgames.futtoboru.data.jobs.OfferStatus;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
@@ -103,28 +104,28 @@ public class JobManager {
     public JobOpening createJobOpening(Club club, Profession profession) {
         try {
             if (club == null || profession == null) {
-                Gdx.app.error("JobManager", "Cannot create job opening: club or profession is null");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot create job opening: club or profession is null");
                 return null;
             }
             
             if (club.getId() == null) {
-                Gdx.app.error("JobManager", "Cannot create job opening: club.getId() is null for club: " + club.getName());
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot create job opening: club.getId() is null for club: " + club.getName());
                 return null;
             }
             
             if (profession.getId() == null) {
-                Gdx.app.error("JobManager", "Cannot create job opening: profession.getId() is null for profession: " + profession.getName());
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot create job opening: profession.getId() is null for profession: " + profession.getName());
                 return null;
             }
             
             if (clubStaffManager == null) {
-                Gdx.app.error("JobManager", "Cannot create job opening: clubStaffManager is null");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot create job opening: clubStaffManager is null");
                 return null;
             }
             
             // Check if position is actually vacant
             if (!clubStaffManager.isPositionVacant(club, profession)) {
-                Gdx.app.log("JobManager", "Position not vacant: " + profession.getName() + 
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Position not vacant: " + profession.getName() + 
                            " at " + club.getName());
                 return null;
             }
@@ -133,7 +134,7 @@ public class JobManager {
             for (JobOpening existing : getAvailableJobs(club)) {
                 if (existing != null && existing.getProfessionId() != null && 
                     existing.getProfessionId().equals(profession.getId())) {
-                    Gdx.app.log("JobManager", "Job opening already exists: " + profession.getName() + 
+                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Job opening already exists: " + profession.getName() + 
                                " at " + club.getName());
                     return existing;
                 }
@@ -142,7 +143,7 @@ public class JobManager {
             // Create new job opening with game date
             LocalDateTime gameDate = currentGame.getGameDate();
             if (gameDate == null) {
-                Gdx.app.error("JobManager", "Cannot create job opening: gameDate is null");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot create job opening: gameDate is null");
                 return null;
             }
             JobOpening opening = new JobOpening(club, profession, gameDate);
@@ -156,18 +157,18 @@ public class JobManager {
             
             // Add to SaveGame
             if (currentGame.getActiveJobOpenings() == null) {
-                Gdx.app.error("JobManager", "Cannot add job opening: getActiveJobOpenings() is null");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot add job opening: getActiveJobOpenings() is null");
                 return null;
             }
             
             currentGame.getActiveJobOpenings().add(opening);
             
-            Gdx.app.log("JobManager", "Created job opening: " + profession.getName() + 
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Created job opening: " + profession.getName() + 
                        " at " + club.getName());
             
             return opening;
         } catch (Exception e) {
-            Gdx.app.error("JobManager", "ERROR in createJobOpening() for " + 
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR in createJobOpening() for " + 
                          (profession != null ? profession.getName() : "null profession") + 
                          " at " + (club != null ? club.getName() : "null club"), e);
             e.printStackTrace();
@@ -236,34 +237,34 @@ public class JobManager {
     public void initializeJobOpenings() {
         try {
             if (currentGame == null) {
-                Gdx.app.error("JobManager", "Cannot initialize job openings: currentGame is null");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot initialize job openings: currentGame is null");
                 return;
             }
             
             if (currentGame.getAllClubs() == null) {
-                Gdx.app.error("JobManager", "Cannot initialize job openings: getAllClubs() is null");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot initialize job openings: getAllClubs() is null");
                 return;
             }
             
             if (clubStaffManager == null) {
-                Gdx.app.error("JobManager", "Cannot initialize job openings: clubStaffManager is null");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot initialize job openings: clubStaffManager is null");
                 return;
             }
             
             if (currentGame.getActiveJobOpenings() == null) {
-                Gdx.app.error("JobManager", "Cannot initialize job openings: getActiveJobOpenings() is null");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cannot initialize job openings: getActiveJobOpenings() is null");
                 return;
             }
             
-            Gdx.app.log("JobManager", "Initializing job openings for all clubs...");
-            Gdx.app.log("JobManager", "Total clubs: " + currentGame.getAllClubs().size());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Initializing job openings for all clubs...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Total clubs: " + currentGame.getAllClubs().size());
             
             int openingsCreated = 0;
             
             // Create openings for vacant positions in all clubs
             for (Club club : currentGame.getAllClubs()) {
                 if (club == null) {
-                    Gdx.app.log("JobManager", "Skipping null club");
+                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Skipping null club");
                     continue;
                 }
                 
@@ -271,13 +272,13 @@ public class JobManager {
                     List<Profession> vacant = clubStaffManager.getVacantPositions(club);
                     
                     if (vacant == null) {
-                        Gdx.app.log("JobManager", "getVacantPositions returned null for club: " + club.getName());
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "getVacantPositions returned null for club: " + club.getName());
                         continue;
                     }
                     
                     for (Profession profession : vacant) {
                         if (profession == null) {
-                            Gdx.app.log("JobManager", "Skipping null profession");
+                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Skipping null profession");
                             continue;
                         }
                         
@@ -292,7 +293,7 @@ public class JobManager {
                                 }
                             }
                         } catch (Exception e) {
-                            Gdx.app.error("JobManager", "Error checking existing jobs for club: " + club.getName(), e);
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Error checking existing jobs for club: " + club.getName(), e);
                             continue;
                         }
                         
@@ -303,20 +304,20 @@ public class JobManager {
                                     openingsCreated++;
                                 }
                             } catch (Exception e) {
-                                Gdx.app.error("JobManager", "Error creating job opening for " + profession.getName() + 
+                                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Error creating job opening for " + profession.getName() + 
                                            " at " + club.getName(), e);
                             }
                         }
                     }
                 } catch (Exception e) {
-                    Gdx.app.error("JobManager", "Error processing club: " + club.getName(), e);
+                    DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Error processing club: " + club.getName(), e);
                     continue;
                 }
             }
             
-            Gdx.app.log("JobManager", "Initialized " + openingsCreated + " job openings");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Initialized " + openingsCreated + " job openings");
         } catch (Exception e) {
-            Gdx.app.error("JobManager", "CRITICAL ERROR in initializeJobOpenings()", e);
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "CRITICAL ERROR in initializeJobOpenings()", e);
             e.printStackTrace();
         }
     }
@@ -333,15 +334,14 @@ public class JobManager {
         
         LocalDateTime gameDate = currentGame.getGameDate();
         
-        Gdx.app.log("JobManager", "=== updateJobOpenings START ===");
-        System.out.println("[JobManager] Daily update: " + gameDate);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "=== updateJobOpenings START ===");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Daily update: " + gameDate);
         
         // Expire old openings
         for (JobOpening opening : new ArrayList<>(currentGame.getActiveJobOpenings())) {
             if (opening.isExpired(gameDate)) {
                 opening.setStatus(JobStatus.EXPIRED);
-                Gdx.app.log("JobManager", "Expired job opening: " + opening.getId());
-                System.out.println("[JobManager] Expired job opening: " + opening.getId());
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Expired job opening: " + opening.getId());
             }
         }
         
@@ -356,20 +356,17 @@ public class JobManager {
                 // Process applications that are still pending
                 if (application.getStatus() == ApplicationStatus.PENDING) {
                     try {
-                        Gdx.app.log("JobManager", "Processing pending application: " + application.getId());
-                        System.out.println("[JobManager] Processing pending application: " + application.getId());
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Processing pending application: " + application.getId());
                         processApplication(application);
                         processedCount++;
                     } catch (Exception e) {
-                        Gdx.app.error("JobManager", "ERROR processing application " + application.getId() + " in daily update!", e);
-                        System.err.println("[JobManager] ERROR processing application " + application.getId() + ":");
+                        DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR processing application " + application.getId() + " in daily update!", e);
                         e.printStackTrace();
                     }
                 }
             }
             if (processedCount > 0) {
-                Gdx.app.log("JobManager", "Processed " + processedCount + " pending applications");
-                System.out.println("[JobManager] Processed " + processedCount + " pending applications");
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Processed " + processedCount + " pending applications");
             }
         }
         
@@ -397,7 +394,7 @@ public class JobManager {
             }
         }
         
-        Gdx.app.log("JobManager", "=== updateJobOpenings COMPLETE ===");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "=== updateJobOpenings COMPLETE ===");
     }
 
     // ========== Applications ==========
@@ -411,53 +408,51 @@ public class JobManager {
      */
     public JobApplication applyForJob(Person applicant, JobOpening jobOpening) {
         try {
-            Gdx.app.log("JobManager", "=== applyForJob START ===");
-            Gdx.app.log("JobManager", "Applicant: " + (applicant != null ? applicant.getName() : "NULL"));
-            Gdx.app.log("JobManager", "JobOpening: " + (jobOpening != null ? jobOpening.getId() : "NULL"));
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "=== applyForJob START ===");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Applicant: " + (applicant != null ? applicant.getName() : "NULL"));
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "JobOpening: " + (jobOpening != null ? jobOpening.getId() : "NULL"));
             
             if (applicant == null || jobOpening == null) {
-                Gdx.app.error("JobManager", "applyForJob: applicant or jobOpening is null!");
-                System.err.println("[JobManager] ERROR: applyForJob called with null parameters!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "applyForJob: applicant or jobOpening is null!");
                 return null;
             }
             
             if (currentGame == null) {
-                Gdx.app.error("JobManager", "applyForJob: currentGame is null!");
-                System.err.println("[JobManager] ERROR: currentGame is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "applyForJob: currentGame is null!");
                 return null;
             }
             
-            Gdx.app.log("JobManager", "Step 1: Getting game date...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 1: Getting game date...");
             LocalDateTime gameDate = currentGame.getGameDate();
             if (gameDate == null) {
-                Gdx.app.error("JobManager", "applyForJob: gameDate is null!");
-                System.err.println("[JobManager] ERROR: gameDate is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "applyForJob: gameDate is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: gameDate is null!");
                 return null;
             }
             
-            Gdx.app.log("JobManager", "Step 2: Validating application limits...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 2: Validating application limits...");
             // Validate application (use game date, not real-world time)
             if (!applicant.canApplyForJob(gameDate)) {
-                Gdx.app.log("JobManager", "Application limit reached for " + applicant.getName() + 
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Application limit reached for " + applicant.getName() + 
                            " (applications this week: " + applicant.getApplicationsThisWeek() + "/3)");
-                System.err.println("[JobManager] ERROR: Application limit reached! " + 
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: Application limit reached! " + 
                                  applicant.getApplicationsThisWeek() + "/3 applications this week.");
                 return null;
             }
             
-            Gdx.app.log("JobManager", "Step 3: Checking if job opening accepts applications...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 3: Checking if job opening accepts applications...");
             if (gameDate == null) {
-                Gdx.app.error("JobManager", "applyForJob: gameDate is null!");
-                System.err.println("[JobManager] ERROR: gameDate is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "applyForJob: gameDate is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: gameDate is null!");
                 return null;
             }
             
             if (!jobOpening.isAcceptingApplications(gameDate)) {
-                Gdx.app.log("JobManager", "Job opening not accepting applications: " + jobOpening.getId());
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Job opening not accepting applications: " + jobOpening.getId());
                 return null;
             }
             
-            Gdx.app.log("JobManager", "Step 3: Checking for existing applications...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 3: Checking for existing applications...");
             // Check if already applied
             List<JobApplication> playerApplications = getPlayerApplications(applicant);
             if (playerApplications != null) {
@@ -465,51 +460,49 @@ public class JobManager {
                     if (existing != null && existing.getJobOpeningId() != null && 
                         existing.getJobOpeningId().equals(jobOpening.getId()) && 
                         existing.isActive()) {
-                        Gdx.app.log("JobManager", "Already applied for job: " + jobOpening.getId());
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Already applied for job: " + jobOpening.getId());
                         return existing;
                     }
                 }
             }
             
-            Gdx.app.log("JobManager", "Step 5: Validating applicant and jobOpening IDs...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 5: Validating applicant and jobOpening IDs...");
             // Validate applicant and jobOpening have IDs before creating application
             if (applicant.getId() == null) {
-                Gdx.app.error("JobManager", "CRITICAL: Applicant ID is null! Cannot create application.");
-                System.err.println("[JobManager] CRITICAL ERROR: Applicant ID is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "CRITICAL: Applicant ID is null! Cannot create application.");
                 return null;
             }
             if (jobOpening.getId() == null) {
-                Gdx.app.error("JobManager", "CRITICAL: JobOpening ID is null! Cannot create application.");
-                System.err.println("[JobManager] CRITICAL ERROR: JobOpening ID is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "CRITICAL: JobOpening ID is null! Cannot create application.");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "CRITICAL ERROR: JobOpening ID is null!");
                 return null;
             }
             
-            Gdx.app.log("JobManager", "Step 6: Creating new application...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 6: Creating new application...");
             // Create application
             JobApplication application;
             try {
                 application = new JobApplication(applicant, jobOpening);
             } catch (IllegalArgumentException e) {
-                Gdx.app.error("JobManager", "Failed to create JobApplication: " + e.getMessage(), e);
-                System.err.println("[JobManager] ERROR: Failed to create JobApplication: " + e.getMessage());
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Failed to create JobApplication: " + e.getMessage(), e);
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: Failed to create JobApplication: " + e.getMessage());
                 e.printStackTrace();
                 return null;
             }
             
             if (application == null) {
-                Gdx.app.error("JobManager", "Failed to create JobApplication object!");
-                System.err.println("[JobManager] ERROR: Failed to create JobApplication!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Failed to create JobApplication object!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: Failed to create JobApplication!");
                 return null;
             }
             
             // Double-check applicantId was set correctly
             if (application.getApplicantId() == null) {
-                Gdx.app.error("JobManager", "CRITICAL: Application created but applicantId is null! Setting manually...");
-                System.err.println("[JobManager] CRITICAL ERROR: Application applicantId is null! Attempting to fix...");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "CRITICAL: Application created but applicantId is null! Setting manually...");
                 application.setApplicantId(applicant.getId());
                 if (application.getApplicantId() == null) {
-                    Gdx.app.error("JobManager", "CRITICAL: Could not set applicantId! Aborting application creation.");
-                    System.err.println("[JobManager] CRITICAL ERROR: Could not set applicantId!");
+                    DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "CRITICAL: Could not set applicantId! Aborting application creation.");
+                    DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "CRITICAL ERROR: Could not set applicantId!");
                     return null;
                 }
             }
@@ -517,72 +510,63 @@ public class JobManager {
             application.setId(nextId++);
             application.setApplicationDate(gameDate);
             
-            Gdx.app.log("JobManager", "Step 7: Calculating match percentage...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 7: Calculating match percentage...");
             // Calculate match percentage (v1.0: simple - based on reputation)
             Integer matchPercentage = calculateMatchPercentage(applicant, jobOpening);
             application.setMatchPercentage(matchPercentage);
-            Gdx.app.log("JobManager", "Match percentage: " + matchPercentage + "%");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Match percentage: " + matchPercentage + "%");
             
-            Gdx.app.log("JobManager", "Step 8: Adding application to SaveGame...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 8: Adding application to SaveGame...");
             // Add to SaveGame
             if (currentGame.getAllApplications() == null) {
-                Gdx.app.error("JobManager", "getAllApplications() returned null! Initializing...");
-                System.err.println("[JobManager] ERROR: getAllApplications() is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "getAllApplications() returned null! Initializing...");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: getAllApplications() is null!");
                 // This should not happen, but let's be safe
                 return null;
             }
             currentGame.getAllApplications().add(application);
             
-            Gdx.app.log("JobManager", "Step 9: Adding application ID to job opening...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 9: Adding application ID to job opening...");
             // Add to job opening
             if (jobOpening.getApplicationIds() == null) {
-                Gdx.app.error("JobManager", "jobOpening.getApplicationIds() returned null!");
-                System.err.println("[JobManager] ERROR: jobOpening.getApplicationIds() is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "jobOpening.getApplicationIds() returned null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: jobOpening.getApplicationIds() is null!");
                 return null;
             }
             jobOpening.getApplicationIds().add(application.getId());
             
-            Gdx.app.log("JobManager", "Step 10: Updating applicant records...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 10: Updating applicant records...");
             // Update applicant
             if (applicant.getActiveApplicationIds() == null) {
-                Gdx.app.error("JobManager", "applicant.getActiveApplicationIds() returned null!");
-                System.err.println("[JobManager] ERROR: applicant.getActiveApplicationIds() is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "applicant.getActiveApplicationIds() returned null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: applicant.getActiveApplicationIds() is null!");
                 return null;
             }
             applicant.getActiveApplicationIds().add(application.getId());
             applicant.incrementApplicationCount(gameDate); // Use game date, not real-world time
             
-            Gdx.app.log("JobManager", "Application created successfully: " + applicant.getName() + 
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Application created successfully: " + applicant.getName() + 
                        " for job " + jobOpening.getId());
-            System.out.println("[JobManager] Application created: " + applicant.getName() + 
-                             " for job " + jobOpening.getId());
             
-            Gdx.app.log("JobManager", "Step 11: Processing application...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 11: Processing application...");
             // Process application (v1.0: instant processing)
             if (JobConstants.APPLICATION_PROCESSING_DELAY_DAYS == 0) {
                 try {
                     processApplication(application);
-                    Gdx.app.log("JobManager", "Application processed successfully.");
+                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Application processed successfully.");
                 } catch (Exception e) {
-                    Gdx.app.error("JobManager", "ERROR processing application!", e);
-                    System.err.println("[JobManager] ERROR processing application:");
+                    DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR processing application!", e);
+                    DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR processing application:");
                     e.printStackTrace();
                     // Don't return null - application was created, just processing failed
                 }
             }
             
-            Gdx.app.log("JobManager", "=== applyForJob SUCCESS ===");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "=== applyForJob SUCCESS ===");
             return application;
             
         } catch (Exception e) {
-            Gdx.app.error("JobManager", "CRITICAL ERROR in applyForJob!", e);
-            System.err.println("========================================");
-            System.err.println("[JobManager] CRITICAL ERROR in applyForJob!");
-            System.err.println("Exception: " + e.getClass().getName());
-            System.err.println("Message: " + e.getMessage());
-            System.err.println("========================================");
-            e.printStackTrace();
-            System.err.println("========================================");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "CRITICAL ERROR in applyForJob! Exception: " + e.getClass().getName() + ", Message: " + e.getMessage(), e);
             return null;
         }
     }
@@ -621,7 +605,7 @@ public class JobManager {
      */
     public List<JobApplication> getPlayerApplications(Person player) {
         if (player == null || player.getId() == null || currentGame == null || currentGame.getAllApplications() == null) {
-            Gdx.app.log("JobManager", "getPlayerApplications: Invalid parameters, returning empty list");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "getPlayerApplications: Invalid parameters, returning empty list");
             return new ArrayList<>();
         }
         
@@ -638,82 +622,73 @@ public class JobManager {
      */
     private void processApplication(JobApplication application) {
         try {
-            Gdx.app.log("JobManager", "=== processApplication START ===");
-            Gdx.app.log("JobManager", "Application ID: " + (application != null ? application.getId() : "NULL"));
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "=== processApplication START ===");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Application ID: " + (application != null ? application.getId() : "NULL"));
             
             if (application == null) {
-                Gdx.app.error("JobManager", "processApplication: application is null!");
-                System.err.println("[JobManager] ERROR: processApplication called with null application!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "processApplication: application is null!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: processApplication called with null application!");
                 return;
             }
             
             if (application.getStatus() != ApplicationStatus.PENDING) {
-                Gdx.app.log("JobManager", "Application status is not PENDING: " + application.getStatus());
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Application status is not PENDING: " + application.getStatus());
                 return;
             }
             
-            Gdx.app.log("JobManager", "Step 1: Getting job opening...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 1: Getting job opening...");
             JobOpening jobOpening = getJobOpeningById(application.getJobOpeningId());
             if (jobOpening == null) {
-                Gdx.app.error("JobManager", "processApplication: jobOpening not found for ID: " + application.getJobOpeningId());
-                System.err.println("[JobManager] ERROR: jobOpening not found!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "processApplication: jobOpening not found for ID: " + application.getJobOpeningId());
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: jobOpening not found!");
                 return;
             }
-            Gdx.app.log("JobManager", "Job opening found: " + jobOpening.getId());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Job opening found: " + jobOpening.getId());
             
-            Gdx.app.log("JobManager", "Step 2: Getting applicant...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 2: Getting applicant...");
             Person applicant = getPersonById(application.getApplicantId());
             if (applicant == null) {
-                Gdx.app.error("JobManager", "processApplication: applicant not found for ID: " + application.getApplicantId());
-                System.err.println("[JobManager] ERROR: applicant not found!");
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "processApplication: applicant not found for ID: " + application.getApplicantId());
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: applicant not found!");
                 return;
             }
-            Gdx.app.log("JobManager", "Applicant found: " + applicant.getName());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Applicant found: " + applicant.getName());
             
-            Gdx.app.log("JobManager", "Step 3: Checking match percentage...");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 3: Checking match percentage...");
             Integer matchPercentage = application.getMatchPercentage();
-            Gdx.app.log("JobManager", "Match percentage: " + (matchPercentage != null ? matchPercentage + "%" : "NULL"));
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Match percentage: " + (matchPercentage != null ? matchPercentage + "%" : "NULL"));
             
             // v1.0: Simple logic - make offer if match percentage >= 70%
             if (matchPercentage != null && matchPercentage >= 70) {
-                Gdx.app.log("JobManager", "Match percentage is sufficient, making offer...");
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Match percentage is sufficient, making offer...");
                 // Make offer
                 try {
                     JobOffer offer = makeOffer(jobOpening, applicant);
                     if (offer != null) {
                         application.setStatus(ApplicationStatus.OFFER_RECEIVED);
-                        Gdx.app.log("JobManager", "Offer made successfully for application: " + application.getId());
-                        System.out.println("[JobManager] Offer made for application: " + application.getId());
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Offer made successfully for application: " + application.getId());
                     } else {
-                        Gdx.app.error("JobManager", "makeOffer returned null for application: " + application.getId());
-                        System.err.println("[JobManager] ERROR: makeOffer returned null!");
+                        DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "makeOffer returned null for application: " + application.getId());
+                        DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR: makeOffer returned null!");
                         application.setStatus(ApplicationStatus.REJECTED);
                     }
                 } catch (Exception e) {
-                    Gdx.app.error("JobManager", "ERROR in makeOffer!", e);
-                    System.err.println("[JobManager] ERROR in makeOffer:");
+                    DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "ERROR in makeOffer!", e);
                     e.printStackTrace();
                     application.setStatus(ApplicationStatus.REJECTED);
                 }
             } else {
                 // Reject application
-                Gdx.app.log("JobManager", "Match percentage too low, rejecting application...");
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Match percentage too low, rejecting application...");
                 application.setStatus(ApplicationStatus.REJECTED);
-                Gdx.app.log("JobManager", "Application rejected: " + application.getId() + " (match: " + matchPercentage + "%)");
-                System.out.println("[JobManager] Application rejected: " + application.getId());
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Application rejected: " + application.getId() + " (match: " + matchPercentage + "%)");
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Application rejected: " + application.getId());
             }
             
-            Gdx.app.log("JobManager", "=== processApplication SUCCESS ===");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "=== processApplication SUCCESS ===");
             
         } catch (Exception e) {
-            Gdx.app.error("JobManager", "CRITICAL ERROR in processApplication!", e);
-            System.err.println("========================================");
-            System.err.println("[JobManager] CRITICAL ERROR in processApplication!");
-            System.err.println("Exception: " + e.getClass().getName());
-            System.err.println("Message: " + e.getMessage());
-            System.err.println("========================================");
-            e.printStackTrace();
-            System.err.println("========================================");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "CRITICAL ERROR in processApplication! Exception: " + e.getClass().getName() + ", Message: " + e.getMessage(), e);
         }
     }
 
@@ -736,7 +711,7 @@ public class JobManager {
                 applicant.getActiveApplicationIds().remove(application.getId());
             }
             
-            Gdx.app.log("JobManager", "Application withdrawn: " + application.getId());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Application withdrawn: " + application.getId());
         }
     }
 
@@ -769,7 +744,7 @@ public class JobManager {
         // Send notification to inbox
         sendOfferNotification(candidate, offer);
         
-        Gdx.app.log("JobManager", "Offer made: " + offer.getId() + 
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Offer made: " + offer.getId() + 
                    " to " + candidate.getName());
         
         return offer;
@@ -783,7 +758,7 @@ public class JobManager {
      */
     public List<JobOffer> getPlayerOffers(Person player) {
         if (player == null || player.getId() == null || currentGame == null || currentGame.getPendingOffers() == null) {
-            Gdx.app.log("JobManager", "getPlayerOffers: Invalid parameters, returning empty list");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "getPlayerOffers: Invalid parameters, returning empty list");
             return new ArrayList<>();
         }
         
@@ -808,56 +783,56 @@ public class JobManager {
      */
     public boolean acceptOffer(JobOffer offer) {
         if (offer == null || offer.getStatus() != OfferStatus.PENDING) {
-            Gdx.app.error("JobManager", "acceptOffer: Invalid offer or status not PENDING");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "acceptOffer: Invalid offer or status not PENDING");
             return false;
         }
         
         JobOpening jobOpening = getJobOpeningById(offer.getJobOpeningId());
         if (jobOpening == null) {
-            Gdx.app.error("JobManager", "acceptOffer: Job opening not found");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "acceptOffer: Job opening not found");
             return false;
         }
         
         Person recipient = getPersonById(offer.getRecipientId());
         if (recipient == null) {
-            Gdx.app.error("JobManager", "acceptOffer: Recipient not found");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "acceptOffer: Recipient not found");
             return false;
         }
         
         Club club = currentGame.getClubById(jobOpening.getClubId());
         if (club == null) {
-            Gdx.app.error("JobManager", "acceptOffer: Club not found");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "acceptOffer: Club not found");
             return false;
         }
         
         Profession profession = DatabaseLoader.getProfessionById(jobOpening.getProfessionId());
         if (profession == null) {
-            Gdx.app.error("JobManager", "acceptOffer: Profession not found");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "acceptOffer: Profession not found");
             return false;
         }
         
-        Gdx.app.log("JobManager", "=== acceptOffer START ===");
-        Gdx.app.log("JobManager", "Recipient: " + recipient.getName());
-        Gdx.app.log("JobManager", "Club: " + club.getName());
-        Gdx.app.log("JobManager", "Profession: " + profession.getName());
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "=== acceptOffer START ===");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Recipient: " + recipient.getName());
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Club: " + club.getName());
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Profession: " + profession.getName());
         
         // CRITICAL FIX: Check if person already has a job
         if (recipient.getCurrentClubId() != null) {
             Club currentClub = currentGame.getClubById(recipient.getCurrentClubId());
             if (currentClub != null) {
-                Gdx.app.log("JobManager", "Person already employed at: " + currentClub.getName());
-                System.out.println("[JobManager] WARNING: Person already employed at " + currentClub.getName() + 
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Person already employed at: " + currentClub.getName());
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "WARNING: Person already employed at " + currentClub.getName() + 
                                  ". Removing from previous club...");
                 
                 // Remove from previous club (set staff to null for that profession)
                 clubStaffManager.setClubStaff(currentClub, profession, null);
                 recipient.setCurrentClubId(null);
-                Gdx.app.log("JobManager", "Removed from previous club");
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Removed from previous club");
             }
         }
         
         // CRITICAL FIX: Cancel ALL other pending offers
-        Gdx.app.log("JobManager", "Cancelling all other pending offers...");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cancelling all other pending offers...");
         int cancelledOffers = 0;
         for (JobOffer otherOffer : new ArrayList<>(currentGame.getPendingOffers())) {
             if (otherOffer != null && 
@@ -869,13 +844,13 @@ public class JobManager {
                 otherOffer.setStatus(OfferStatus.REJECTED);
                 recipient.getPendingOfferIds().remove(otherOffer.getId());
                 cancelledOffers++;
-                Gdx.app.log("JobManager", "Cancelled offer: " + otherOffer.getId());
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cancelled offer: " + otherOffer.getId());
             }
         }
-        System.out.println("[JobManager] Cancelled " + cancelledOffers + " other pending offers");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Cancelled " + cancelledOffers + " other pending offers");
         
         // CRITICAL FIX: Reject ALL other pending applications
-        Gdx.app.log("JobManager", "Rejecting all other pending applications...");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Rejecting all other pending applications...");
         int rejectedApps = 0;
         for (JobApplication app : currentGame.getAllApplications()) {
             if (app != null &&
@@ -887,10 +862,10 @@ public class JobManager {
                 app.setStatus(ApplicationStatus.REJECTED);
                 recipient.getActiveApplicationIds().remove(app.getId());
                 rejectedApps++;
-                Gdx.app.log("JobManager", "Rejected application: " + app.getId());
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Rejected application: " + app.getId());
             }
         }
-        System.out.println("[JobManager] Rejected " + rejectedApps + " other pending applications");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Rejected " + rejectedApps + " other pending applications");
         
         // Hire the person at the new club
         clubStaffManager.hireStaff(club, profession, recipient);
@@ -917,9 +892,8 @@ public class JobManager {
         // Remove from pending offers
         recipient.getPendingOfferIds().remove(offer.getId());
         
-        Gdx.app.log("JobManager", "=== acceptOffer SUCCESS ===");
-        Gdx.app.log("JobManager", "Offer accepted: " + offer.getId() + " by " + recipient.getName());
-        System.out.println("[JobManager] Offer accepted: " + offer.getId() + 
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "=== acceptOffer SUCCESS ===");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Offer accepted: " + offer.getId() + " by " + recipient.getName() + 
                          " | Cancelled " + cancelledOffers + " offers | Rejected " + rejectedApps + " applications");
         
         return true;
@@ -942,7 +916,7 @@ public class JobManager {
             recipient.getPendingOfferIds().remove(offer.getId());
         }
         
-        Gdx.app.log("JobManager", "Offer rejected: " + offer.getId());
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Offer rejected: " + offer.getId());
     }
 
     // ========== Negotiation ==========
@@ -967,7 +941,7 @@ public class JobManager {
         
         // Check negotiation round limit
         if (originalOffer.getNegotiationRound() >= JobConstants.MAX_NEGOTIATION_ROUNDS) {
-            Gdx.app.log("JobManager", "Max negotiation rounds reached for offer: " + originalOffer.getId());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Max negotiation rounds reached for offer: " + originalOffer.getId());
             return null;
         }
         
@@ -992,7 +966,7 @@ public class JobManager {
         // Add to SaveGame
         currentGame.getPendingOffers().add(counterOffer);
         
-        Gdx.app.log("JobManager", "Counter-offer submitted: " + counterOffer.getId() + 
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Counter-offer submitted: " + counterOffer.getId() + 
                    " (round " + counterOffer.getNegotiationRound() + ")");
         
         // Process counter-offer (AI response)
@@ -1047,14 +1021,14 @@ public class JobManager {
             // Remove counter-offer (terms merged into original)
             currentGame.getPendingOffers().remove(counterOffer);
             
-            Gdx.app.log("JobManager", "Counter-offer accepted: " + counterOffer.getId());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Counter-offer accepted: " + counterOffer.getId());
         } else {
             // Reject counter-offer
             counterOffer.setStatus(OfferStatus.REJECTED);
             originalOffer.setStatus(OfferStatus.PENDING);
             originalOffer.setCounterOfferId(null);
             
-            Gdx.app.log("JobManager", "Counter-offer rejected: " + counterOffer.getId());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Counter-offer rejected: " + counterOffer.getId());
         }
     }
 
