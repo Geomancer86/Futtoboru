@@ -310,6 +310,14 @@ public class FuttoboruGameEngine {
      */
     public void continueGame() {
         
+        // CRITICAL FIX: Check for mandatory unread draw messages BEFORE any processing
+        // This is a safeguard - the UI should prevent continueGame() from being called when DRAW_ACTION is active,
+        // but if it is called, we block here immediately to prevent any game progression
+        if (hasMandatoryUnreadDrawMessages()) {
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "BLOCKING continueGame() at start - mandatory unread draw message exists");
+            return; // Do not advance game until draw message is read
+        }
+        
         //
         DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "ADVANCING THE SIMULATION");
         
@@ -334,12 +342,10 @@ public class FuttoboruGameEngine {
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Scheduled messages after delivery: " + scheduledCountAfter);
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Total messages in inbox: " + allMessagesCount);
         
-        // CRITICAL FIX: Check for mandatory unread draw messages AFTER delivering scheduled messages
-        // This is a safeguard - the UI should prevent continueGame() from being called,
-        // but if it is called, we block here to prevent matches from being simulated
-        // Must check AFTER deliverScheduledMessages() in case a mandatory message was just delivered
+        // CRITICAL FIX: Check again AFTER delivering scheduled messages in case a mandatory message was just delivered
+        // This ensures that even if a mandatory message is scheduled for today, we block before simulating matches
         if (hasMandatoryUnreadDrawMessages()) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "BLOCKING continueGame() - mandatory unread draw message exists");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "BLOCKING continueGame() after message delivery - mandatory unread draw message exists");
             return; // Do not advance game until draw message is read
         }
         
@@ -710,12 +716,8 @@ public class FuttoboruGameEngine {
             return;
         }
         
-        // CRITICAL FIX: Check for mandatory unread draw messages
-        boolean hasMandatoryDrawMessage = hasMandatoryUnreadDrawMessages();
-        if (hasMandatoryDrawMessage) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: BLOCKING match simulation - mandatory unread draw message exists");
-            return; // Do not simulate matches until draw message is read
-        }
+        // Note: Mandatory message check is already done in continueGame() before calling this method
+        // This redundant check is removed since continueGame() already blocks before calling simulateMatchesForDate()
         
         SaveGame game = gameInstance.getCurrentGame();
         MatchSimulator simulator = new MatchSimulator(gameInstance);
