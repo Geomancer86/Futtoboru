@@ -10,6 +10,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * Competitions Loader v1
@@ -26,7 +27,7 @@ public class CompetitionsLoader {
     public static void load(List<Competition> competitions) {
         
         //
-        Gdx.app.log("CompetitionsLoader", "LOADING COMPETITIONS FROM FILE SYSTEM!");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "CompetitionsLoader", "LOADING COMPETITIONS FROM FILE SYSTEM!");
         
         FileHandle competitionsFile = Gdx.files.internal("mods/competitions.txt");
         
@@ -70,16 +71,16 @@ public class CompetitionsLoader {
             } catch (IOException e) {
                 
                 //
-                Gdx.app.error("CompetitionsLoader", "Error loading competitions.txt", e);
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "CompetitionsLoader", "Error loading competitions.txt", e);
             }
         } else {
             
             //
-            Gdx.app.log("CompetitionsLoader", "mods/seasons/competitions.txt doesnt exist");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "CompetitionsLoader", "mods/seasons/competitions.txt doesnt exist");
         }
         
         //
-        Gdx.app.log("CompetitionsLoader", "Finished loading " + competitions.size() + " Competitions from file.");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "CompetitionsLoader", "Finished loading " + competitions.size() + " Competitions from file.");
     }
     
     /**
@@ -97,7 +98,7 @@ public class CompetitionsLoader {
      */
     public static void loadCompetitionEditions(List<Competition> competitions, List<Season> seasons) {
 
-        Gdx.app.log("CompetitionsLoader", "LOADING COMPETITIONS EDITIONS FOR " + competitions.size() + " COMPETITIONS FROM FILE SYSTEM!");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "CompetitionsLoader", "LOADING COMPETITIONS EDITIONS FOR " + competitions.size() + " COMPETITIONS FROM FILE SYSTEM!");
 
         // Iterate seasons and look for the competitions historic and current editions
         for (Season season : seasons) {
@@ -159,7 +160,7 @@ public class CompetitionsLoader {
                     } catch (IOException e) {
 
                         //
-                        Gdx.app.error("CompetitionsLoader", "Error loading competition_edition.txt", e);
+                        DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "CompetitionsLoader", "Error loading competition_edition.txt", e);
                     }
                     
                     // add to competition edition list

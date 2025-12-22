@@ -9,6 +9,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * StadiumsLoader
@@ -23,7 +24,7 @@ public class StadiumsLoader {
      */
     public static void loadStadium(Season season, Club club) {
         
-        System.out.println("LOADING " + club.getName() + " STADIUM FROM FILE SYSTEM.");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "LOADING " + club.getName() + " STADIUM FROM FILE SYSTEM.");
         
         FileHandle clubStadiumFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/club_stadiums/" + club.getId() + ".txt");
         
@@ -43,7 +44,7 @@ public class StadiumsLoader {
                     // Skip empty lines and comment lines
                     if (!line.trim().isEmpty() && !line.startsWith("#")) {
 
-                        System.out.println(line);
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, line);
                         
                         /**
                          * File Format - COLUMNS (v1.0 Enhanced)
@@ -55,7 +56,7 @@ public class StadiumsLoader {
                         String[] splitted = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                         
                         if (splitted.length < 4) {
-                            System.out.println("ERROR: Stadium file has insufficient columns. Expected at least 4, got: " + splitted.length + " for line: " + line);
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "ERROR: Stadium file has insufficient columns. Expected at least 4, got: " + splitted.length + " for line: " + line);
                             // Continue to next line (will be read at end of loop)
                             continue;
                         }
@@ -73,7 +74,7 @@ public class StadiumsLoader {
                             try {
                                 stadium.setBuiltYear(Integer.valueOf(splitted[2].trim()));
                             } catch (NumberFormatException e) {
-                                System.out.println("WARNING: Could not parse built year: " + splitted[2]);
+                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_DATA_LOADING, "WARNING: Could not parse built year: " + splitted[2]);
                             }
                         }
                         
@@ -87,7 +88,7 @@ public class StadiumsLoader {
                             try {
                                 stadium.setValue(new BigDecimal(splitted[4].trim()));
                             } catch (NumberFormatException e) {
-                                System.out.println("WARNING: Could not parse stadium value: " + splitted[4]);
+                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_DATA_LOADING, "WARNING: Could not parse stadium value: " + splitted[4]);
                             }
                         }
                         
@@ -111,7 +112,7 @@ public class StadiumsLoader {
                             try {
                                 stadium.setLandValue(new BigDecimal(splitted[7].trim()));
                             } catch (NumberFormatException e) {
-                                System.out.println("WARNING: Could not parse land value: " + splitted[7]);
+                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_DATA_LOADING, "WARNING: Could not parse land value: " + splitted[7]);
                             }
                         }
                         
@@ -125,7 +126,7 @@ public class StadiumsLoader {
                             try {
                                 stadium.setAnnualRent(new BigDecimal(splitted[9].trim()));
                             } catch (NumberFormatException e) {
-                                System.out.println("WARNING: Could not parse annual rent: " + splitted[9]);
+                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_DATA_LOADING, "WARNING: Could not parse annual rent: " + splitted[9]);
                             }
                         }
                         
@@ -146,7 +147,7 @@ public class StadiumsLoader {
         } else {
             
             //
-            System.out.println("mods/seasons/" + season.getId() + "/club_stadiums/" + club.getId() + ".txt doesnt exist");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "mods/seasons/" + season.getId() + "/club_stadiums/" + club.getId() + ".txt doesnt exist");
         }
     }
 }

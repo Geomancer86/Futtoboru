@@ -10,6 +10,7 @@ import com.rndmodgames.futtoboru.data.ContractType;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerProfession;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.loaders.PlayerProfessionsLoader;
 
 /**
@@ -51,7 +52,7 @@ public class PlayerProfessionAssigner {
         player.setPlayerProfession(profession);
         
         if (profession != null) {
-            Gdx.app.debug("PlayerProfessionAssigner", 
+            DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerProfessionAssigner", 
                 "Assigned profession " + profession.getName() + " to player " + 
                 (player.getPerson() != null ? player.getPerson().getName() : "Unknown"));
         }
@@ -74,7 +75,7 @@ public class PlayerProfessionAssigner {
         Map<Long, PlayerProfession> allProfessions = PlayerProfessionsLoader.getAllProfessions();
         
         if (allProfessions == null || allProfessions.isEmpty()) {
-            Gdx.app.log("PlayerProfessionAssigner", "No professions loaded, cannot assign profession");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerProfessionAssigner", "No professions loaded, cannot assign profession");
             return null;
         }
         
@@ -122,7 +123,7 @@ public class PlayerProfessionAssigner {
             }
         }
         
-        Gdx.app.log("PlayerProfessionAssigner", 
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerProfessionAssigner", 
             "Assigned professions to " + assigned + " players in " + club.getName());
     }
 }

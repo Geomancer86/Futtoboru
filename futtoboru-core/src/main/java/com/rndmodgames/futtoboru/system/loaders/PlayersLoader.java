@@ -13,6 +13,7 @@ import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * Players Loader v1
@@ -45,7 +46,7 @@ public class PlayersLoader {
      */
     public static void loadSeasonClubPlayers(Season season, Club club) {
      
-        System.out.println("LOADING " + club.getName() + " PLAYERS FROM FILE SYSTEM.");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "LOADING " + club.getName() + " PLAYERS FROM FILE SYSTEM.");
         
         FileHandle clubPlayersFile = Gdx.files.internal("mods/seasons/" + season.getId() + "/club_players/" + club.getId() + ".txt");
         
@@ -65,7 +66,7 @@ public class PlayersLoader {
                     // Skip empty lines and comment lines
                     if (!line.trim().isEmpty() && !line.startsWith("#")) {
 
-                        System.out.println(line);
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, line);
                         
                         /**
                          * File Format - COLUMNS
@@ -76,7 +77,7 @@ public class PlayersLoader {
                         
                         // Validate we have at least 4 columns (id, name, lastname, country)
                         if (splitted.length < 4) {
-                            System.out.println("ERROR: Invalid line format (expected at least 4 columns, got " + splitted.length + "): " + line);
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "ERROR: Invalid line format (expected at least 4 columns, got " + splitted.length + "): " + line);
                             line = reader.readLine();
                             continue;
                         }
@@ -128,7 +129,7 @@ public class PlayersLoader {
                                 }
                                 
                                 person.setBirthDate(LocalDate.of(year, month, day).atStartOfDay());
-                                System.out.println("WARNING: No birthdate provided for " + person.getName() + " " + person.getLastname() + 
+                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_DATA_LOADING, "WARNING: No birthdate provided for " + person.getName() + " " + person.getLastname() + 
                                                  ", using randomized date: " + year + "-" + month + "-" + day);
                             } else {
                                 person.setBirthDate(LocalDate.parse(splitted[4].trim(), PlayersLoader.birthDateFormatter).atStartOfDay());
@@ -164,7 +165,7 @@ public class PlayersLoader {
                                 }
                                 
                                 person.setBirthDate(LocalDate.of(year, month, day).atStartOfDay());
-                                System.out.println("WARNING: No birthdate provided for " + person.getName() + " " + person.getLastname() + 
+                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_DATA_LOADING, "WARNING: No birthdate provided for " + person.getName() + " " + person.getLastname() + 
                                                  ", using randomized date: " + year + "-" + month + "-" + day);
                             } else {
                                 String dateStr = splitted[4].trim();
@@ -211,7 +212,7 @@ public class PlayersLoader {
                                 // Set random birthday
                                 person.setBirthDate(LocalDate.of(year, month, day).atStartOfDay());
                                 
-                                System.out.println("WARNING: Could not parse birthdate '" + dateStr + "' for " + person.getName() + " " + person.getLastname() + 
+                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_DATA_LOADING, "WARNING: Could not parse birthdate '" + dateStr + "' for " + person.getName() + " " + person.getLastname() + 
                                                  ", using randomized date: " + year + "-" + month + "-" + day);
                             }
                         }
@@ -243,11 +244,11 @@ public class PlayersLoader {
                         
                         // Debug: Log season start date
                         if (seasonStartDate == null) {
-                            Gdx.app.error("PlayersLoader", "Season start date is NULL! Using fallback: " + estimatedDate);
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "PlayersLoader", "Season start date is NULL! Using fallback: " + estimatedDate);
                             seasonStartDate = estimatedDate;
                         }
                         
-                        Gdx.app.debug("PlayersLoader", "Generating contract for player " + person.getName() + 
+                        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_LOADING, "PlayersLoader", "Generating contract for player " + person.getName() + 
                             " " + person.getLastname() + " (ID: " + player.getId() + 
                             ") at club " + club.getName() + " with start date: " + seasonStartDate);
                         
@@ -257,11 +258,11 @@ public class PlayersLoader {
                         
                         if (contract != null) {
                             club.addPlayerContract(contract);
-                            Gdx.app.debug("PlayersLoader", "Added contract to club " + club.getName() + 
+                            DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_LOADING, "PlayersLoader", "Added contract to club " + club.getName() + 
                                 " for player ID: " + contract.getPlayerId() + 
                                 ", Total contracts at club: " + club.getPlayerContracts().size());
                         } else {
-                            Gdx.app.error("PlayersLoader", "Contract generation returned NULL for player: " + 
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "PlayersLoader", "Contract generation returned NULL for player: " + 
                                 (person.getName() + " " + person.getLastname()) + " at club: " + club.getName());
                         }
                         
@@ -274,7 +275,7 @@ public class PlayersLoader {
                         // Set player's current club ID (for contract lookup)
                         if (person.getCurrentClubId() == null) {
                             person.setCurrentClubId(club.getId());
-                            Gdx.app.debug("PlayersLoader", "Set currentClubId=" + club.getId() + 
+                            DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_LOADING, "PlayersLoader", "Set currentClubId=" + club.getId() + 
                                 " for player " + person.getName() + " " + person.getLastname());
                         }
                         
@@ -292,7 +293,7 @@ public class PlayersLoader {
             
         } else {
             
-            System.out.println("mods/seasons/" + season.getId() + "/club/" + club.getId() + ".txt doesnt exist");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "mods/seasons/" + season.getId() + "/club/" + club.getId() + ".txt doesnt exist");
         }
     }
     

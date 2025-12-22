@@ -28,6 +28,7 @@ import com.rndmodgames.futtoboru.screens.NewManagerScreen;
 import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -117,15 +118,12 @@ public class Futtoboru extends Game {
     // create
     @Override
     public void create() {
-        // TEST LOGGING - This should appear immediately
-        System.err.println("========================================");
-        System.err.println("FUTTOBORU GAME CREATE() CALLED");
-        System.err.println("========================================");
-        System.err.flush();
-        System.out.println("========================================");
-        System.out.println("FUTTOBORU GAME CREATE() CALLED");
-        System.out.println("========================================");
-        System.out.flush();
+        DebugLogManager logManager = DebugLogManager.getInstance();
+        
+        // Game initialization logging
+        logManager.log(DebugLogManager.CATEGORY_SYSTEM_INIT, "========================================");
+        logManager.log(DebugLogManager.CATEGORY_SYSTEM_INIT, "FUTTOBORU GAME CREATE() CALLED");
+        logManager.log(DebugLogManager.CATEGORY_SYSTEM_INIT, "========================================");
         
         // Create Asset Manager
         manager = new AssetManager();
@@ -228,19 +226,20 @@ public class Futtoboru extends Game {
             break;
             
         case GAME_SCREEN:
-            Gdx.app.log("Futtoboru", "Changing to GAME_SCREEN...");
-            Gdx.app.log("Futtoboru", "Current game: " + (currentGame != null ? "exists" : "NULL"));
-            Gdx.app.log("Futtoboru", "Game engine: " + (gameEngine != null ? "exists" : "NULL"));
+            DebugLogManager logManager = DebugLogManager.getInstance();
+            logManager.log(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "Changing to GAME_SCREEN...");
+            logManager.log(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "Current game: " + (currentGame != null ? "exists" : "NULL"));
+            logManager.log(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "Game engine: " + (gameEngine != null ? "exists" : "NULL"));
             try {
                 this.setScreen(new MainGameScreen(this));
-                Gdx.app.log("Futtoboru", "GAME_SCREEN created successfully");
+                logManager.log(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "GAME_SCREEN created successfully");
             } catch (Exception e) {
-                Gdx.app.error("Futtoboru", "ERROR creating GAME_SCREEN!", e);
-                Gdx.app.error("Futtoboru", "Exception: " + e.getClass().getName());
-                Gdx.app.error("Futtoboru", "Message: " + e.getMessage());
+                logManager.error(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "ERROR creating GAME_SCREEN!", e);
+                logManager.error(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "Exception: " + e.getClass().getName());
+                logManager.error(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "Message: " + e.getMessage());
                 e.printStackTrace();
                 // Don't rethrow - keep the current screen
-                Gdx.app.error("Futtoboru", "Failed to create GAME_SCREEN. Staying on current screen.");
+                logManager.error(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "Failed to create GAME_SCREEN. Staying on current screen.");
             }
             break;
             
@@ -273,7 +272,7 @@ public class Futtoboru extends Game {
      */
     public void changeScreen(int screen, Season startingSeason, List<Country> selectedCountries) {
         
-        System.out.println("Starting Season: " + startingSeason);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_SYSTEM_INIT, "Starting Season: " + startingSeason);
         
         switch (screen) {
         case NEW_GAME_SETUP_SCREEN:
@@ -402,8 +401,9 @@ public class Futtoboru extends Game {
      * This must be called after currentGame is set.
      */
     public void initializeJobSystem() {
+        DebugLogManager logManager = DebugLogManager.getInstance();
         if (currentGame == null) {
-            Gdx.app.error("Futtoboru", "Cannot initialize job system: currentGame is null");
+            logManager.error(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "Cannot initialize job system: currentGame is null");
             return;
         }
         
@@ -417,7 +417,7 @@ public class Futtoboru extends Game {
             jobManager = new JobManager(this, clubStaffManager);
         }
         
-        Gdx.app.log("Futtoboru", "Job system initialized");
+        logManager.log(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru", "Job system initialized");
     }
     
     /**

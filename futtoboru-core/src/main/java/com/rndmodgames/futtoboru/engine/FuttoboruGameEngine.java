@@ -10,17 +10,14 @@ import java.util.List;
 import java.util.Set;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import java.math.BigDecimal;
 
 import com.rndmodgames.futtoboru.data.AttributeTrackingConstants;
-import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ClubExpenses;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
-import com.rndmodgames.futtoboru.data.ClubExpenses;
 import com.rndmodgames.futtoboru.engine.finances.ExpenseCalculator;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
@@ -28,6 +25,7 @@ import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 
@@ -118,7 +116,7 @@ public class FuttoboruGameEngine {
          * (e.g., draw screens that must be viewed)
          */
         if (currentGame != null && currentGame.getAllMessages() != null) {
-            System.out.println("FuttoboruGameEngine: Checking for mandatory messages. Total messages: " + currentGame.getAllMessages().size());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Checking for mandatory messages. Total messages: " + currentGame.getAllMessages().size());
             
             for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
                 if (message != null) {
@@ -128,7 +126,7 @@ public class FuttoboruGameEngine {
                     String messageType = message.getMessageType();
                     
                     if (isMandatory && isUnread && isNotDeleted) {
-                        System.out.println("FuttoboruGameEngine: Found mandatory message - Type: " + messageType + 
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Found mandatory message - Type: " + messageType + 
                                          ", Title: " + message.getTitle() + ", IsMandatory: " + isMandatory + 
                                          ", IsRead: " + message.getIsRead());
                         
@@ -137,8 +135,8 @@ public class FuttoboruGameEngine {
                             (messageType.equals("LEAGUE_DRAW") || 
                              messageType.equals("CUP_DRAW") ||
                              messageType.equals("FIXTURE_DRAW"))) {
-                            Gdx.app.log("FuttoboruGameEngine", "Mandatory draw message found, blocking time advancement");
-                            System.out.println("FuttoboruGameEngine: BLOCKING TIME ADVANCEMENT - Mandatory draw message: " + message.getTitle());
+                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Mandatory draw message found, blocking time advancement");
+                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: BLOCKING TIME ADVANCEMENT - Mandatory draw message: " + message.getTitle());
                             return DRAW_ACTION;
                         }
                     }
@@ -147,7 +145,7 @@ public class FuttoboruGameEngine {
             
             // Also check scheduled messages for mandatory draws
             if (currentGame.getScheduledMessages() != null) {
-                System.out.println("FuttoboruGameEngine: Checking scheduled messages. Total scheduled: " + currentGame.getScheduledMessages().size());
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Checking scheduled messages. Total scheduled: " + currentGame.getScheduledMessages().size());
                 for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
                     if (message != null && 
                         message.getIsMandatory() != null && message.getIsMandatory() &&
@@ -159,7 +157,7 @@ public class FuttoboruGameEngine {
                         // Check if scheduled date is today or past
                         if (message.getScheduledDate() != null && 
                             !message.getScheduledDate().isAfter(currentGame.getGameDate())) {
-                            System.out.println("FuttoboruGameEngine: Found scheduled mandatory draw message that should be delivered: " + message.getTitle());
+                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Found scheduled mandatory draw message that should be delivered: " + message.getTitle());
                             // Message should be delivered, but if it hasn't been, we should still block
                             // This is a safety check
                         }
@@ -193,14 +191,14 @@ public class FuttoboruGameEngine {
      */
     public void getMatchResult() {
         
-        System.out.println("MATCH RESULT - SIMULATING MATCH");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "MATCH RESULT - SIMULATING MATCH");
         
         // Get Current Club
         Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
         
         // Null check: unemployed players don't have a club
         if (currentClub == null || currentClub.getScheduledMatches() == null) {
-            Gdx.app.log("FuttoboruGameEngine", "Cannot process match result: player is unemployed (no club)");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Cannot process match result: player is unemployed (no club)");
             return;
         }
         
@@ -211,7 +209,7 @@ public class FuttoboruGameEngine {
         
         // Check we have at least one match
         if (currentClub.getScheduledMatches().isEmpty()) {
-            Gdx.app.log("FuttoboruGameEngine", "No scheduled matches to simulate");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "No scheduled matches to simulate");
             return;
         }
         
@@ -241,7 +239,7 @@ public class FuttoboruGameEngine {
         }
         
         if (nextMatch == null) {
-            Gdx.app.log("FuttoboruGameEngine", "No playable matches found for club: " + currentClub.getName());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "No playable matches found for club: " + currentClub.getName());
             return;
         }
         
@@ -252,7 +250,7 @@ public class FuttoboruGameEngine {
         boolean simulated = simulator.simulateMatch(nextMatch);
         
         if (!simulated) {
-            Gdx.app.error("FuttoboruGameEngine", "Failed to simulate match");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Failed to simulate match");
             return;
         }
         
@@ -276,7 +274,7 @@ public class FuttoboruGameEngine {
             }
         }
         
-        System.out.println("Match simulated: " + (homeClub != null ? homeClub.getName() : "Unknown") + 
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "Match simulated: " + (homeClub != null ? homeClub.getName() : "Unknown") + 
                           " " + nextMatch.getHomeGoals() + " - " + nextMatch.getAwayGoals() + 
                           " " + (awayClub != null ? awayClub.getName() : "Unknown"));
         
@@ -290,7 +288,7 @@ public class FuttoboruGameEngine {
                 // For now, we'll send to current club if they're involved
                 // TODO: In future, each club should have their own inbox or we filter by club
                 messageManager.deliverMessage(matchResultMessage);
-                Gdx.app.log("FuttoboruGameEngine", "Created match result message for " + 
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Created match result message for " + 
                            homeClub.getName() + " vs " + awayClub.getName());
             }
         }
@@ -313,7 +311,7 @@ public class FuttoboruGameEngine {
     public void continueGame() {
         
         //
-        Gdx.app.debug("FuttoboruGameEngine", "ADVANCING THE SIMULATION");
+        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "ADVANCING THE SIMULATION");
         
         // Get Current Day
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
@@ -322,10 +320,10 @@ public class FuttoboruGameEngine {
          * STEP 4: Deliver scheduled messages BEFORE advancing date
          * This ensures messages scheduled for the current date are delivered
          */
-        System.out.println("STEP 4: Delivering scheduled messages for date: " + current);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "STEP 4: Delivering scheduled messages for date: " + current);
         int scheduledCountBefore = (gameInstance.getCurrentGame().getScheduledMessages() != null) ? 
             gameInstance.getCurrentGame().getScheduledMessages().size() : 0;
-        System.out.println("Scheduled messages before delivery: " + scheduledCountBefore);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Scheduled messages before delivery: " + scheduledCountBefore);
         
         messageManager.deliverScheduledMessages(current);
         
@@ -333,14 +331,14 @@ public class FuttoboruGameEngine {
             gameInstance.getCurrentGame().getScheduledMessages().size() : 0;
         int allMessagesCount = (gameInstance.getCurrentGame().getAllMessages() != null) ? 
             gameInstance.getCurrentGame().getAllMessages().size() : 0;
-        System.out.println("Scheduled messages after delivery: " + scheduledCountAfter);
-        System.out.println("Total messages in inbox: " + allMessagesCount);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Scheduled messages after delivery: " + scheduledCountAfter);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Total messages in inbox: " + allMessagesCount);
         
         /**
          * STEP 3.5: Simulate all matches scheduled for the current date
          * This must happen BEFORE advancing the date, so matches scheduled for "today" are simulated on "today"
          */
-        System.out.println("STEP 3.5: Simulating matches for current date: " + current);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "STEP 3.5: Simulating matches for current date: " + current);
         simulateMatchesForDate(current);
         
         /**
@@ -366,15 +364,15 @@ public class FuttoboruGameEngine {
          * STEP 5: Deliver scheduled messages AFTER advancing date
          * This catches messages scheduled for the new date (same day events)
          */
-        System.out.println("STEP 5: Delivering scheduled messages for new date: " + newDate);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "STEP 5: Delivering scheduled messages for new date: " + newDate);
         messageManager.deliverScheduledMessages(newDate);
         
         int finalScheduledCount = (gameInstance.getCurrentGame().getScheduledMessages() != null) ? 
             gameInstance.getCurrentGame().getScheduledMessages().size() : 0;
         int finalAllMessagesCount = (gameInstance.getCurrentGame().getAllMessages() != null) ? 
             gameInstance.getCurrentGame().getAllMessages().size() : 0;
-        System.out.println("Final scheduled messages: " + finalScheduledCount);
-        System.out.println("Final total messages in inbox: " + finalAllMessagesCount);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Final scheduled messages: " + finalScheduledCount);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Final total messages in inbox: " + finalAllMessagesCount);
         
         /**
          * Update Player Attributes (v1.0 - Testing)
@@ -404,7 +402,7 @@ public class FuttoboruGameEngine {
         for (Club currentClub : gameInstance.getCurrentGame().getAllClubs()) {
 
             //
-            Gdx.app.debug("FuttoboruGameEngine", "PROCESSING CLUB: " + currentClub.getName());
+            DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "PROCESSING CLUB: " + currentClub.getName());
             
             /**
              * Check Proposed Friendlies
@@ -424,12 +422,12 @@ public class FuttoboruGameEngine {
          */
         if (mainMenuManager != null) {
             mainMenuManager.updateDynamicComponents();
-            Gdx.app.log("FuttoboruGameEngine", "UI updated after continueGame()");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "UI updated after continueGame()");
         } else {
-            Gdx.app.log("FuttoboruGameEngine", "WARNING: mainMenuManager is null, UI not updated");
+            DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "WARNING: mainMenuManager is null, UI not updated");
         }
         
-        Gdx.app.log("FuttoboruGameEngine", "continueGame() completed. New date: " + gameInstance.getCurrentGame().getGameDate());
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "continueGame() completed. New date: " + gameInstance.getCurrentGame().getGameDate());
     }
 
     public CompetitionScheduler getCompetitionScheduler() {
@@ -449,7 +447,7 @@ public class FuttoboruGameEngine {
             return;
         }
         
-        Gdx.app.debug("FuttoboruGameEngine", "Updating player attributes daily...");
+        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Updating player attributes daily...");
         
         int playersUpdated = 0;
         LocalDateTime currentDate = gameInstance.getCurrentGame().getGameDate();
@@ -462,7 +460,7 @@ public class FuttoboruGameEngine {
             }
         }
         
-        Gdx.app.debug("FuttoboruGameEngine", "Updated attributes for " + playersUpdated + " players");
+        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Updated attributes for " + playersUpdated + " players");
     }
     
     /**
@@ -510,7 +508,7 @@ public class FuttoboruGameEngine {
         cleanupOldSnapshots(currentDate);
         
         if (snapshotsCreated > 0) {
-            Gdx.app.log("FuttoboruGameEngine", "Created " + snapshotsCreated + " weekly attribute snapshots");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Created " + snapshotsCreated + " weekly attribute snapshots");
         }
     }
     
@@ -563,14 +561,14 @@ public class FuttoboruGameEngine {
                 club.setSeasonExpenditure(club.getSeasonExpenditure().add(totalExpenses));
                 club.setMonthExpenditure(club.getMonthExpenditure().add(totalExpenses));
                 
-                Gdx.app.log("FuttoboruGameEngine", "Deducted weekly expenses: $" + totalExpenses + 
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Deducted weekly expenses: $" + totalExpenses + 
                            " from " + club.getName() + " (New balance: $" + club.getClubBalance() + ")");
                 expensesCalculated++;
             }
         }
         
         if (expensesCalculated > 0) {
-            Gdx.app.log("FuttoboruGameEngine", "Calculated and deducted weekly expenses for " + expensesCalculated + " clubs");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Calculated and deducted weekly expenses for " + expensesCalculated + " clubs");
         }
     }
     
@@ -653,7 +651,7 @@ public class FuttoboruGameEngine {
         }
         
         if (removed > 0) {
-            Gdx.app.log("FuttoboruGameEngine", "Cleaned up " + removed + " old attribute snapshots");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Cleaned up " + removed + " old attribute snapshots");
         }
     }
     
@@ -666,7 +664,7 @@ public class FuttoboruGameEngine {
      */
     private void simulateMatchesForDate(LocalDateTime date) {
         if (date == null || gameInstance == null || gameInstance.getCurrentGame() == null) {
-            Gdx.app.error("FuttoboruGameEngine", "Cannot simulate matches: date or game instance is null");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Cannot simulate matches: date or game instance is null");
             return;
         }
         
@@ -678,7 +676,7 @@ public class FuttoboruGameEngine {
         int matchesFound = 0;
         int matchesSimulated = 0;
         
-        System.out.println("FuttoboruGameEngine: Simulating matches for date: " + targetDate);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Simulating matches for date: " + targetDate);
         
         // First pass: Collect all matches to simulate (avoid ConcurrentModificationException)
         // Also reschedule matches with passed dates that haven't been played
@@ -712,7 +710,7 @@ public class FuttoboruGameEngine {
                 if (match.getHomeClubId() == null || match.getAwayClubId() == null) {
                     // Log for debugging cup matches
                     if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH) {
-                        System.out.println("FuttoboruGameEngine: SKIPPING cup match " + 
+                        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_CUP, "FuttoboruGameEngine: SKIPPING cup match " + 
                             (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                             " (Round " + match.getRound() + ", ID: " + match.getId() + 
                             ") - teams not determined. Home=" + match.getHomeClubId() + ", Away=" + match.getAwayClubId());
@@ -733,7 +731,7 @@ public class FuttoboruGameEngine {
                     } else if (matchDate.isBefore(targetDate)) {
                         // Match date has passed - simulate it now (prevents matches from being lost)
                         // This is critical for replays and matches that were rescheduled
-                        System.out.println("FuttoboruGameEngine: *** MATCH DATE PASSED *** " + 
+                        DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: *** MATCH DATE PASSED *** " + 
                             (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                             " scheduled for " + matchDate + " but today is " + targetDate + 
                             " - will simulate now");
@@ -749,7 +747,7 @@ public class FuttoboruGameEngine {
                             
                             // Log cup matches for debugging
                             if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH) {
-                                System.out.println("FuttoboruGameEngine: *** FOUND CUP MATCH TO SIMULATE *** " + 
+                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_CUP, "FuttoboruGameEngine: *** FOUND CUP MATCH TO SIMULATE *** " + 
                                     (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                                     " (Round " + match.getRound() + ", ID: " + match.getId() + 
                                     ", Home: " + match.getHomeClubId() + ", Away: " + match.getAwayClubId() + 
@@ -764,7 +762,7 @@ public class FuttoboruGameEngine {
                             if (!matchIdsAdded.contains(match.getId())) {
                                 matchesToReschedule.add(match);
                                 matchIdsAdded.add(match.getId());
-                                System.out.println("FuttoboruGameEngine: *** RESCHEDULING CUP MATCH *** " + 
+                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_CUP, "FuttoboruGameEngine: *** RESCHEDULING CUP MATCH *** " + 
                                     (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                                     " from " + matchDate + " to " + targetDate.plusDays(1) + 
                                     " (teams not determined)");
@@ -784,7 +782,7 @@ public class FuttoboruGameEngine {
                 simulatedToday.add(match);
                 matchesSimulated++;
                 
-                System.out.println("FuttoboruGameEngine: Simulated match " + match.getId() + " on " + targetDate);
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Simulated match " + match.getId() + " on " + targetDate);
                 
                 // Update match lists for both clubs (now safe to modify)
                 Club homeClub = game.getClubById(match.getHomeClubId());
@@ -810,12 +808,12 @@ public class FuttoboruGameEngine {
                         messageManager.createMatchResultMessage(match, homeClub, awayClub);
                     if (matchResultMessage != null) {
                         messageManager.deliverMessage(matchResultMessage);
-                        System.out.println("FuttoboruGameEngine: Created match result message for " + 
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine: Created match result message for " + 
                                          homeClub.getName() + " vs " + awayClub.getName());
                     }
                 }
             } else {
-                Gdx.app.error("FuttoboruGameEngine", "Failed to simulate match " + match.getId());
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Failed to simulate match " + match.getId());
             }
         }
         
@@ -825,16 +823,16 @@ public class FuttoboruGameEngine {
                 // Reschedule for tomorrow (or next available date)
                 java.time.LocalDateTime newDate = targetDate.plusDays(1).atStartOfDay();
                 match.setMatchDateTime(newDate);
-                System.out.println("FuttoboruGameEngine: Rescheduled match " + 
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Rescheduled match " + 
                     (match.getBracketPath() != null ? match.getBracketPath() : "ID: " + match.getId()) + 
                     " to " + newDate);
             }
         }
         
-        System.out.println("FuttoboruGameEngine: *** MATCH SIMULATION SUMMARY FOR " + targetDate + " ***");
-        System.out.println("FuttoboruGameEngine: Found " + matchesFound + " matches, simulated " + matchesSimulated + " matches");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: *** MATCH SIMULATION SUMMARY FOR " + targetDate + " ***");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Found " + matchesFound + " matches, simulated " + matchesSimulated + " matches");
         if (!matchesToReschedule.isEmpty()) {
-            System.out.println("FuttoboruGameEngine: Rescheduled " + matchesToReschedule.size() + " matches with passed dates");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Rescheduled " + matchesToReschedule.size() + " matches with passed dates");
         }
         
         // Log breakdown by match type
@@ -848,10 +846,10 @@ public class FuttoboruGameEngine {
                 }
             }
         }
-        System.out.println("FuttoboruGameEngine: Cup matches - Found: " + cupMatchesFound + ", Simulated: " + cupMatchesSimulated);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_CUP, "FuttoboruGameEngine: Cup matches - Found: " + cupMatchesFound + ", Simulated: " + cupMatchesSimulated);
         
         if (matchesSimulated > 0) {
-            Gdx.app.log("FuttoboruGameEngine", "Simulated " + matchesSimulated + " matches for " + targetDate);
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Simulated " + matchesSimulated + " matches for " + targetDate);
         }
     }
 }
