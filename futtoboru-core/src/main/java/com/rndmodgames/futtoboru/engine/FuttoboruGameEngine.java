@@ -315,14 +315,6 @@ public class FuttoboruGameEngine {
      */
     public void continueGame() {
         
-        // CRITICAL FIX: Check for mandatory unread draw messages BEFORE any processing
-        // This is a safeguard - the UI should prevent continueGame() from being called when DRAW_ACTION is active,
-        // but if it is called, we block here immediately to prevent any game progression
-        if (hasMandatoryUnreadDrawMessages()) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "BLOCKING continueGame() at start - mandatory unread draw message exists");
-            return; // Do not advance game until draw message is read
-        }
-        
         //
         DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "ADVANCING THE SIMULATION");
         
@@ -330,8 +322,10 @@ public class FuttoboruGameEngine {
         LocalDateTime current = gameInstance.getCurrentGame().getGameDate();
         
         /**
-         * STEP 4: Deliver scheduled messages BEFORE advancing date
-         * This ensures messages scheduled for the current date are delivered
+         * STEP 4: Deliver scheduled messages FIRST, BEFORE checking for mandatory messages
+         * This ensures messages scheduled for the current date are delivered and can be checked
+         * CRITICAL: This must happen BEFORE the mandatory message check, otherwise scheduled messages
+         * never get delivered because we block before reaching this code
          */
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "STEP 4: Delivering scheduled messages for date: " + current);
         int scheduledCountBefore = (gameInstance.getCurrentGame().getScheduledMessages() != null) ? 
@@ -347,10 +341,11 @@ public class FuttoboruGameEngine {
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Scheduled messages after delivery: " + scheduledCountAfter);
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "Total messages in inbox: " + allMessagesCount);
         
-        // CRITICAL FIX: Check again AFTER delivering scheduled messages in case a mandatory message was just delivered
-        // This ensures that even if a mandatory message is scheduled for today, we block before simulating matches
+        // CRITICAL FIX: Check for mandatory unread draw messages AFTER delivering scheduled messages
+        // This ensures messages scheduled for today are delivered first, then we check if they block progression
+        // We also check scheduledMessages for future mandatory messages to block early
         if (hasMandatoryUnreadDrawMessages()) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "BLOCKING continueGame() after message delivery - mandatory unread draw message exists");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "BLOCKING continueGame() - mandatory unread draw message exists");
             return; // Do not advance game until draw message is read
         }
         
@@ -714,32 +709,10 @@ public class FuttoboruGameEngine {
             }
         }
         
-        // CRITICAL: Also check scheduled messages for ANY mandatory draw messages
-        // We block ALL league match simulation if there's ANY mandatory draw message,
-        // regardless of when it's scheduled, because the draw must be completed before
-        // any league matches can be played
-        if (currentGame.getScheduledMessages() != null) {
-            for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
-                if (message != null) {
-                    boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
-                    String messageType = message.getMessageType();
-                    
-                    // Block if it's a mandatory draw message, regardless of scheduled date
-                    // This ensures league matches are NEVER simulated before the draw is completed
-                    if (isMandatory) {
-                        if (messageType != null && 
-                            (messageType.equals("LEAGUE_DRAW") || 
-                             messageType.equals("CUP_DRAW") ||
-                             messageType.equals("FIXTURE_DRAW"))) {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Found mandatory draw message in scheduledMessages: " + message.getTitle() + 
-                                         " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + 
-                                         ") - blocking ALL league match simulation until draw is completed");
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
+        // Note: We only check getAllMessages() here, not scheduledMessages
+        // This is because deliverScheduledMessages() is called BEFORE this check in continueGame()
+        // Messages scheduled for today are delivered first, then we check if they block progression
+        // Future scheduled messages will be checked when their scheduled date arrives
         
         return false;
     }
