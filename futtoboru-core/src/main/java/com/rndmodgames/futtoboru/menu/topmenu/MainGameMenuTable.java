@@ -338,8 +338,43 @@ public class MainGameMenuTable extends VisTable {
                             com.rndmodgames.futtoboru.system.SaveGame currentGame = 
                                 ((Futtoboru)(game)).getCurrentGame();
                             
-                            if (currentGame != null && currentGame.getAllMessages() != null) {
-                                // Find the mandatory LEAGUE_DRAW message
+                            // CRITICAL: First check scheduledMessages and deliver the message if it exists there
+                            // This handles the case where the message hasn't been delivered yet
+                            com.rndmodgames.futtoboru.data.Message foundMessage = null;
+                            
+                            if (currentGame != null && currentGame.getScheduledMessages() != null) {
+                                java.time.LocalDateTime currentDate = currentGame.getGameDate();
+                                for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
+                                    if (message != null) {
+                                        boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
+                                        String messageType = message.getMessageType();
+                                        
+                                        if (isMandatory && messageType != null && 
+                                            (messageType.equals("LEAGUE_DRAW") || 
+                                             messageType.equals("CUP_DRAW") ||
+                                             messageType.equals("FIXTURE_DRAW"))) {
+                                            // Deliver the message immediately so it's available in getAllMessages()
+                                            if (((Futtoboru)(game)).getGameEngine() != null &&
+                                                ((Futtoboru)(game)).getGameEngine().getMessageManager() != null) {
+                                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found scheduled mandatory draw message, delivering: " + message.getTitle());
+                                                ((Futtoboru)(game)).getGameEngine().getMessageManager().deliverMessage(message);
+                                                // Remove from scheduledMessages after delivery
+                                                currentGame.getScheduledMessages().remove(message);
+                                                foundMessage = message;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Now check getAllMessages() for the message (either already delivered or just delivered above)
+                            // If we found it in scheduledMessages, process foundMessage directly
+                            // Otherwise, search through getAllMessages()
+                            com.rndmodgames.futtoboru.data.Message messageToProcess = foundMessage;
+                            
+                            if (messageToProcess == null && currentGame != null && currentGame.getAllMessages() != null) {
+                                // Find the mandatory LEAGUE_DRAW message in getAllMessages()
                                 for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
                                     if (message != null) {
                                         boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
@@ -351,79 +386,91 @@ public class MainGameMenuTable extends VisTable {
                                             (messageType.equals("LEAGUE_DRAW") || 
                                              messageType.equals("CUP_DRAW") ||
                                              messageType.equals("FIXTURE_DRAW"))) {
-                                            
-                                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found mandatory draw message: " + message.getTitle());
-                                            
-                                            // Get league ID from actionData
-                                            if (message.getActionData() instanceof Long) {
-                                                Long leagueId = (Long) message.getActionData();
-                                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: League ID from actionData: " + leagueId);
-                                                
-                                                // Find league in SaveGame
-                                                com.rndmodgames.futtoboru.data.League league = null;
-                                                if (currentGame.getMainAuthority() != null && 
-                                                    currentGame.getMainAuthority().getLeagues() != null) {
-                                                    for (com.rndmodgames.futtoboru.data.League l : 
-                                                         currentGame.getMainAuthority().getLeagues()) {
-                                                        if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
-                                                            league = l;
-                                                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found league: " + league.getName());
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                                
-                                                if (league != null) {
-                                                    // Set selected league and navigate directly to draw screen
-                                                    mainMenuManager.setSelectedLeague(league);
-                                                    mainMenuManager.setActiveMainScreen(MainMenuManager.LEAGUE_DRAW_SCREEN);
-                                                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Navigating directly to league draw screen");
-                                                } else {
-                                                    DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: ERROR - League not found, falling back to inbox");
-                                                    // Fallback: navigate to inbox and select message
-                                                    mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
-                                                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                                                        @Override
-                                                        public void run() {
-                                                            com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable inboxTable = 
-                                                                mainMenuManager.getInboxScreenTable();
-                                                            if (inboxTable != null) {
-                                                                inboxTable.selectMessageByType(messageType);
-                                                            }
-                                                        }
-                                                    }, 0.1f);
-                                                }
-                                            } else {
-                                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: ERROR - actionData is not a Long, falling back to inbox");
-                                                // Fallback: navigate to inbox and select message
-                                                mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
-                                                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                                                    @Override
-                                                    public void run() {
-                                                        com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable inboxTable = 
-                                                            mainMenuManager.getInboxScreenTable();
-                                                        if (inboxTable != null) {
-                                                            inboxTable.selectMessageByType(messageType);
-                                                        }
-                                                    }
-                                                }, 0.1f);
-                                            }
-                                            
-                                            return; // Found and handled the message
-                                        } else if (isMandatory && isUnread && "CUP_DRAW".equals(messageType)) {
-                                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found mandatory cup draw message");
-                                            mainMenuManager.setActiveMainScreen(MainMenuManager.CUP_DRAW_SCREEN);
-                                            return;
+                                            messageToProcess = message;
+                                            break;
                                         }
                                     }
                                 }
-                                
-                                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: WARNING - No mandatory draw message found, navigating to inbox");
-                                // No mandatory draw message found, just go to inbox
-                                mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
-                            } else {
-                                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: ERROR - currentGame or getAllMessages is null");
                             }
+                            
+                            // Process the message if found
+                            if (messageToProcess != null) {
+                                String messageType = messageToProcess.getMessageType();
+                                
+                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found mandatory draw message: " + messageToProcess.getTitle());
+                                
+                                // Handle CUP_DRAW separately
+                                if ("CUP_DRAW".equals(messageType)) {
+                                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found mandatory cup draw message");
+                                    mainMenuManager.setActiveMainScreen(MainMenuManager.CUP_DRAW_SCREEN);
+                                    return;
+                                }
+                                
+                                // Handle LEAGUE_DRAW and FIXTURE_DRAW
+                                if ("LEAGUE_DRAW".equals(messageType) || "FIXTURE_DRAW".equals(messageType)) {
+                                    // Get league ID from actionData
+                                    if (messageToProcess.getActionData() instanceof Long) {
+                                        Long leagueId = (Long) messageToProcess.getActionData();
+                                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: League ID from actionData: " + leagueId);
+                                        
+                                        // Find league in SaveGame
+                                        com.rndmodgames.futtoboru.data.League league = null;
+                                        if (currentGame != null && currentGame.getMainAuthority() != null && 
+                                            currentGame.getMainAuthority().getLeagues() != null) {
+                                            for (com.rndmodgames.futtoboru.data.League l : 
+                                                 currentGame.getMainAuthority().getLeagues()) {
+                                                if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
+                                                    league = l;
+                                                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found league: " + league.getName());
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        
+                                        if (league != null) {
+                                            // Set selected league and navigate directly to draw screen
+                                            mainMenuManager.setSelectedLeague(league);
+                                            mainMenuManager.setActiveMainScreen(MainMenuManager.LEAGUE_DRAW_SCREEN);
+                                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Navigating directly to league draw screen");
+                                            return;
+                                        } else {
+                                            DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: ERROR - League not found, falling back to inbox");
+                                            // Fallback: navigate to inbox and select message
+                                            mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                                            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                                                @Override
+                                                public void run() {
+                                                    com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable inboxTable = 
+                                                        mainMenuManager.getInboxScreenTable();
+                                                    if (inboxTable != null) {
+                                                        inboxTable.selectMessageByType(messageType);
+                                                    }
+                                                }
+                                            }, 0.1f);
+                                            return;
+                                        }
+                                    } else {
+                                        DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: ERROR - actionData is not a Long, falling back to inbox");
+                                        // Fallback: navigate to inbox and select message
+                                        mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                                        com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                                            @Override
+                                            public void run() {
+                                                com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable inboxTable = 
+                                                    mainMenuManager.getInboxScreenTable();
+                                                if (inboxTable != null) {
+                                                    inboxTable.selectMessageByType(messageType);
+                                                }
+                                            }
+                                        }, 0.1f);
+                                        return;
+                                    }
+                                }
+                            }
+                            
+                            // No mandatory draw message found
+                            DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: WARNING - No mandatory draw message found, navigating to inbox");
+                            mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
                         } else {
                             DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: ERROR - mainMenuManager is null");
                         }
