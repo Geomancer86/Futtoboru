@@ -334,68 +334,16 @@ public class MainGameMenuTable extends VisTable {
                         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: INBOX -> DRAW button clicked");
                         
                         if (mainMenuManager != null) {
-                            // Find the mandatory draw message and navigate directly to draw screen
+                            // Find the mandatory draw message and navigate to draw screen
+                            // Check both getAllMessages() (already delivered) and scheduledMessages (not yet delivered)
                             com.rndmodgames.futtoboru.system.SaveGame currentGame = 
                                 ((Futtoboru)(game)).getCurrentGame();
                             
-                            // CRITICAL: First check scheduledMessages and deliver the message if it exists there
-                            // This handles the case where the message hasn't been delivered yet
-                            com.rndmodgames.futtoboru.data.Message foundMessage = null;
+                            com.rndmodgames.futtoboru.data.Message messageToProcess = null;
+                            java.time.LocalDateTime currentDate = currentGame != null ? currentGame.getGameDate() : null;
                             
-                            if (currentGame != null && currentGame.getScheduledMessages() != null) {
-                                java.time.LocalDateTime currentDate = currentGame.getGameDate();
-                                for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
-                                    if (message != null) {
-                                        boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
-                                        String messageType = message.getMessageType();
-                                        
-                                        if (isMandatory && messageType != null && 
-                                            (messageType.equals("LEAGUE_DRAW") || 
-                                             messageType.equals("CUP_DRAW") ||
-                                             messageType.equals("FIXTURE_DRAW"))) {
-                                            // Deliver the message immediately so it's available in getAllMessages()
-                                            // NOTE: deliverMessage() will remove it from scheduledMessages automatically
-                                            if (((Futtoboru)(game)).getGameEngine() != null &&
-                                                ((Futtoboru)(game)).getGameEngine().getMessageManager() != null) {
-                                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found scheduled mandatory draw message, delivering: " + message.getTitle() + 
-                                                    " (ID: " + message.getId() + ", actionData: " + message.getActionData() + ")");
-                                                
-                                                // Store actionData before delivery in case deliverMessage() modifies the message
-                                                Object actionData = message.getActionData();
-                                                
-                                                ((Futtoboru)(game)).getGameEngine().getMessageManager().deliverMessage(message);
-                                                
-                                                // Verify message was delivered by checking if it's now in getAllMessages()
-                                                boolean delivered = false;
-                                                if (currentGame.getAllMessages() != null && message.getId() != null) {
-                                                    for (com.rndmodgames.futtoboru.data.Message m : currentGame.getAllMessages()) {
-                                                        if (m != null && m.getId() != null && m.getId().equals(message.getId())) {
-                                                            delivered = true;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                                
-                                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Message delivery result - delivered: " + delivered + 
-                                                    ", actionData: " + actionData);
-                                                
-                                                // Keep the message reference - we'll process it directly below
-                                                // The message object is the same whether it's in scheduledMessages or getAllMessages()
-                                                foundMessage = message;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            // Now check getAllMessages() for the message (either already delivered or just delivered above)
-                            // If we found it in scheduledMessages, process foundMessage directly
-                            // Otherwise, search through getAllMessages()
-                            com.rndmodgames.futtoboru.data.Message messageToProcess = foundMessage;
-                            
-                            if (messageToProcess == null && currentGame != null && currentGame.getAllMessages() != null) {
-                                // Find the mandatory LEAGUE_DRAW message in getAllMessages()
+                            // First check getAllMessages() for already delivered messages
+                            if (currentGame != null && currentGame.getAllMessages() != null) {
                                 for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
                                     if (message != null) {
                                         boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
@@ -408,7 +356,38 @@ public class MainGameMenuTable extends VisTable {
                                              messageType.equals("CUP_DRAW") ||
                                              messageType.equals("FIXTURE_DRAW"))) {
                                             messageToProcess = message;
+                                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found mandatory draw message in getAllMessages: " + message.getTitle());
                                             break;
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // If not found in getAllMessages(), check scheduledMessages for ANY mandatory draw messages
+                            // When user clicks INBOX->DRAW button, we deliver the message regardless of scheduled date
+                            // This allows the user to perform the draw even if the message was scheduled for a future date
+                            if (messageToProcess == null && currentGame != null && currentGame.getScheduledMessages() != null) {
+                                for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
+                                    if (message != null) {
+                                        boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
+                                        String messageType = message.getMessageType();
+                                        
+                                        // Deliver ANY mandatory draw message when button is clicked, regardless of scheduled date
+                                        // This ensures the user can access the draw screen when the button is shown
+                                        if (isMandatory && 
+                                            messageType != null && 
+                                            (messageType.equals("LEAGUE_DRAW") || 
+                                             messageType.equals("CUP_DRAW") ||
+                                             messageType.equals("FIXTURE_DRAW"))) {
+                                            // Message is scheduled but not yet delivered - deliver it now so user can access draw screen
+                                            if (((Futtoboru)(game)).getGameEngine() != null &&
+                                                ((Futtoboru)(game)).getGameEngine().getMessageManager() != null) {
+                                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found scheduled mandatory draw message, delivering: " + message.getTitle() + 
+                                                    " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + ")");
+                                                ((Futtoboru)(game)).getGameEngine().getMessageManager().deliverMessage(message);
+                                                messageToProcess = message;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
