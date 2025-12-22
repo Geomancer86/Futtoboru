@@ -357,8 +357,28 @@ public class MainGameMenuTable extends VisTable {
                                             // NOTE: deliverMessage() will remove it from scheduledMessages automatically
                                             if (((Futtoboru)(game)).getGameEngine() != null &&
                                                 ((Futtoboru)(game)).getGameEngine().getMessageManager() != null) {
-                                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found scheduled mandatory draw message, delivering: " + message.getTitle());
+                                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found scheduled mandatory draw message, delivering: " + message.getTitle() + 
+                                                    " (ID: " + message.getId() + ", actionData: " + message.getActionData() + ")");
+                                                
+                                                // Store actionData before delivery in case deliverMessage() modifies the message
+                                                Object actionData = message.getActionData();
+                                                
                                                 ((Futtoboru)(game)).getGameEngine().getMessageManager().deliverMessage(message);
+                                                
+                                                // Verify message was delivered by checking if it's now in getAllMessages()
+                                                boolean delivered = false;
+                                                if (currentGame.getAllMessages() != null && message.getId() != null) {
+                                                    for (com.rndmodgames.futtoboru.data.Message m : currentGame.getAllMessages()) {
+                                                        if (m != null && m.getId() != null && m.getId().equals(message.getId())) {
+                                                            delivered = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                
+                                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Message delivery result - delivered: " + delivered + 
+                                                    ", actionData: " + actionData);
+                                                
                                                 // Keep the message reference - we'll process it directly below
                                                 // The message object is the same whether it's in scheduledMessages or getAllMessages()
                                                 foundMessage = message;
