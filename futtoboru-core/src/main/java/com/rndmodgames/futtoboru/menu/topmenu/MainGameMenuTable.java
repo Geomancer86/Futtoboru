@@ -354,12 +354,13 @@ public class MainGameMenuTable extends VisTable {
                                              messageType.equals("CUP_DRAW") ||
                                              messageType.equals("FIXTURE_DRAW"))) {
                                             // Deliver the message immediately so it's available in getAllMessages()
+                                            // NOTE: deliverMessage() will remove it from scheduledMessages automatically
                                             if (((Futtoboru)(game)).getGameEngine() != null &&
                                                 ((Futtoboru)(game)).getGameEngine().getMessageManager() != null) {
                                                 DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found scheduled mandatory draw message, delivering: " + message.getTitle());
                                                 ((Futtoboru)(game)).getGameEngine().getMessageManager().deliverMessage(message);
-                                                // Remove from scheduledMessages after delivery
-                                                currentGame.getScheduledMessages().remove(message);
+                                                // Keep the message reference - we'll process it directly below
+                                                // The message object is the same whether it's in scheduledMessages or getAllMessages()
                                                 foundMessage = message;
                                                 break;
                                             }
