@@ -709,25 +709,26 @@ public class FuttoboruGameEngine {
             }
         }
         
-        // CRITICAL: Also check scheduled messages that should be delivered today or earlier
-        // This catches the case where the message is scheduled but not yet delivered
-        if (currentGame.getScheduledMessages() != null && currentDate != null) {
+        // CRITICAL: Also check scheduled messages for ANY mandatory draw messages
+        // We block ALL league match simulation if there's ANY mandatory draw message,
+        // regardless of when it's scheduled, because the draw must be completed before
+        // any league matches can be played
+        if (currentGame.getScheduledMessages() != null) {
             for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
                 if (message != null) {
                     boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
                     String messageType = message.getMessageType();
                     
-                    // Check if message is scheduled for today or earlier (should be delivered)
-                    boolean shouldBeDelivered = message.getScheduledDate() != null && 
-                                                !message.getScheduledDate().isAfter(currentDate);
-                    
-                    if (isMandatory && shouldBeDelivered) {
+                    // Block if it's a mandatory draw message, regardless of scheduled date
+                    // This ensures league matches are NEVER simulated before the draw is completed
+                    if (isMandatory) {
                         if (messageType != null && 
                             (messageType.equals("LEAGUE_DRAW") || 
                              messageType.equals("CUP_DRAW") ||
                              messageType.equals("FIXTURE_DRAW"))) {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Found mandatory draw message in scheduledMessages that should be delivered: " + message.getTitle() + 
-                                         " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + ")");
+                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Found mandatory draw message in scheduledMessages: " + message.getTitle() + 
+                                         " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + 
+                                         ") - blocking ALL league match simulation until draw is completed");
                             return true;
                         }
                     }
