@@ -130,3 +130,6 @@ build.properties
 ## OS
 .DS_Store
 Thumbs.db
+
+## Manual research temp downloads (large 7z/ISO probes — not archived)
+docs/research/manuals/_tmp/

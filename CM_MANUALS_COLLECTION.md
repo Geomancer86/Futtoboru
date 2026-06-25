@@ -16,7 +16,7 @@ We now hold **offline copies** of official documentation for:
 |-----|-------|------------|--------------|
 | Pre-CM1 | Football Manager (1982) | HTML | Full playing instructions |
 | Gen 1 | **CM1** (1992) | HTML + **menu extract** | **20 pages** — deepest v1 source |
-| Gen 1 | CM93/94 | *Missing PDF* | Link only |
+| Gen 1 | CM93/94 | `CM93_Manual_LemonAmiga_Extract.md` + copy codes PDF | Full text (no PDF scan) |
 | Gen 2 | **CM2** (1995) | PDF (**French**) + EN guide | ~18 MB PDF |
 | Gen 2 | **CM97/98** (1997) | PDF (EN) | ~6 MB |
 | Gen 3 | **CM3** (1999) | PDF (EN) | **43 pages** |
@@ -81,15 +81,26 @@ See full menu tree in extract file → map to [SYSTEMS_AND_FEATURES_REGISTRY.md]
 
 ---
 
-## CM93/94 — gap
+## CM93/94 — acquired (text)
 
 | Item | Status |
 |------|--------|
-| PDF manual | ❌ Not acquired |
-| Lemon Amiga | Doc page exists; no stable direct PDF in crawl |
-| Known additions vs CM1 | Reserve squads, injury time, international transfers (MobyGames) |
+| Full manual text | ✅ `CM93_Manual_LemonAmiga_Extract.md` (~2,100 lines) from Lemon Amiga |
+| Copy protection table | ✅ `Championship_Manager_93_Copy_Protection_Codes.pdf` |
+| Original PDF scan | ❌ Not on Archive.org; GamesDatabase 404; Lemon Amiga blocks direct download |
 
-**Action:** Manual hunt via OpenRetro upload or physical scan; copy-protection score table on [StrategyWiki](https://strategywiki.org/wiki/Championship_Manager_93/Gameplay).
+### Manual-confirmed vs CM1 (sample)
+
+| Feature | Manual reference |
+|---------|------------------|
+| **Reserve squad `[RSRV]`** | Teams and Tactics §1 |
+| **Arrange/cancel friendlies** | Main menu (v) |
+| **European seeding view** | Fixture Info |
+| **Scouts** | Transfers section |
+| **Disciplinary points / bans** | Player Discipline (5 pts booking, 20 = 2-match ban) |
+| **Copy protection** | Manual score lookup (PDF table) |
+
+**Action:** Optional menu-tree extract (Round 5b); hunt Amiga PDF scan via physical/OpenRetro upload.
 
 ---
 
@@ -169,7 +180,7 @@ See [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) + [CM4_COMMUNITY_DEVE
 |-------|-----|------|---------|-----|
 | FM 1982 | ❌ | ✅ | ✅ | PDF scan |
 | CM1 | ❌ | ✅ | ✅ + extract | — |
-| CM93/94 | ❌ | ⚠️ | ❌ | **Priority hunt** |
+| CM93/94 | ❌ | ✅ text | ✅ extract + codes | Original PDF scan |
 | CM2 | ✅ FR | — | ✅ | EN PDF |
 | CM97/98 | ✅ EN | — | ✅ | — |
 | CM3 | ✅ EN | — | ✅ | — |
@@ -184,8 +195,9 @@ See [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) + [CM4_COMMUNITY_DEVE
 | 4 Manual acquisition | ✅ | This doc + `docs/research/manuals/` |
 | 5 Deep analysis by release | ✅ | [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) |
 | 5b Registry mapping | 🔲 | CM1 + CM3 → feature registry |
-| 5b CM93 manual | 🔲 | Acquire PDF |
-| 6 CM2 FR OCR / CM4 manual hunt | 🔲 | Optional |
+| 5b CM93 menu extract | 🔲 | Structured extract like CM1 |
+| 6 Archive.org hunt | ✅ | CM93 text, FM WCE PDF, CM9798 Mr Abandonware; CM2 EN / CM4 full still missing |
+| 6b CM2 FR OCR / CM4 manual hunt | 🔲 | Optional |
 
 ---
 

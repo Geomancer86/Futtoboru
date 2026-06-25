@@ -1,0 +1,21 @@
+/***********************************/
+https://mrabandonware.wordpress.com/
+Twitter: @MrAbandonware
+/***********************************/
+
+This is a Windows Installer for: Championship Manager Season 97-98
+
+HOW TO INSTALL & RUN:
+
+Unzip this file and run 'Championship Manager Season 97-98 (DOSBox) Installer.exe'
+
+To adjust the speed of the game when DOSBox is running you can increase / decrease the CPU cycles by pressing Ctrl+F12 / Ctrl+F11
+
+The game is setup to use mouse
+
+Developer: Sports Interactive
+Publisher: Eidos Interactive
+Year: 1997
+
+DOSBox - https://www.dosbox.com/
+Installer Created Using InstallForge - https://installforge.net/

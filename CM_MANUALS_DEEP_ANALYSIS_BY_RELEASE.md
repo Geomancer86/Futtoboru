@@ -16,7 +16,7 @@
 |---------|----------------|----------------|-------------|
 | **FM 1982** (precursor) | ✅ HTML | **Deep** | §1 below |
 | **CM1** (1992) | ✅ HTML + extract | **Deep** | §2 + [CM1_Manual_Menu_Extract.md](docs/research/manuals/cm1/CM1_Manual_Menu_Extract.md) |
-| **CM93/94** | ❌ | **None** (secondary only) | §3 |
+| **CM93/94** | ✅ | **Medium** (full text extract) | §3 |
 | **CM2** (1995) | ✅ FR PDF + EN guide | **Medium** | §4 |
 | **CM97/98** (1997) | ✅ PDF (image scan) | **Shallow** | §5 |
 | **CM3** (1999) | ✅ PDF + OCR TOC | **Medium–deep** | §6 + [CM3_Manual_TOC_Extract.md](docs/research/manuals/cm3/CM3_Manual_TOC_Extract.md) |
@@ -24,7 +24,7 @@
 
 **Legend:** Deep = full manual read · Medium = partial manual + supplements · Shallow = TOC/ReadMe or secondary · None = no manual
 
-**Still needed:** OCR CM2 FR PDF + CM97/98 PDF; acquire CM93/94 manual; CM4 full printed manual.
+**Still needed:** OCR CM2 FR PDF + CM97/98 PDF; CM4 full printed manual; CM93/94 original PDF scan (text extract done).
 
 ---
 
@@ -141,20 +141,28 @@ No real names (English); no reserves; no training schedules; no editor; no Scotl
 
 ## §3 — CM93/94 (1993–1994)
 
-**Manual:** ❌ Not in repo  
-**Analysis depth:** **None (manual)** — use [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md)
+**Manual:** `CM93_Manual_LemonAmiga_Extract.md` + `Championship_Manager_93_Copy_Protection_Codes.pdf`  
+**Analysis depth:** **Medium** — full typed manual text; no original PDF scan
 
-### Basic features (secondary — MobyGames / StrategyWiki)
+### Main menu (manual — Lemon Amiga)
+
+Continue Season · View Tables · Fixture Info · Club Details · **Arrange Friendly** · Match Reports · Find Player · Board/Resign · Manager Jobs · National Squads · Save/Quit
+
+### Basic features (manual-verified)
 
 | vs CM1 | Addition |
 |--------|----------|
-| **Real player names** | 93/94 season data |
-| **Reserve squads** | |
-| **Injury time** | Match engine |
-| **International transfers** | Buy from abroad (limited league sim) |
-| **Copy protection** | Manual score lookup |
+| **1993 real player names** | New Game → `1993 Players` |
+| **Generated players option** | New Game → `Generate Players` |
+| **Quick Start** | Pre-built save (Man Utd default) |
+| **Reserve squad selection** | `[RSRV]` on squad screen |
+| **Tactics editor `[TCT]`** | Position icons DEF/MID/ATT + L/R |
+| **European seeding** | Fixture Info |
+| **Scouts** | Transfers guidance section |
+| **Disciplinary system** | 5 pts booking · 10 sending off · 20 pts = 2-match ban |
+| **Copy protection** | Manual score table (PDF acquired) |
 
-**Gap:** Acquire PDF for manual-verified menu tree.
+**Gap:** Original PDF scan; optional structured menu extract like CM1.
 
 ---
 
@@ -300,7 +308,7 @@ Install; system requirements; patches; www.championshipmanager.co.uk; enhancemen
 |----------|------|--------|
 | P0 | OCR `Championship_Manager_97_98_Manual_DOS_EN.pdf` | CM9798 section → all **M** |
 | P1 | OCR `Championship_Manager_2_Manual_FR.pdf` (or find EN PDF) | CM2 menu tree |
-| P1 | Acquire CM93/94 manual PDF | §3 manual-deep |
+| P1 | CM93/94 PDF scan (text extract done) | §3 optional menu extract |
 | P2 | CM3 page-by-page OCR body (not just TOC) | Registry mapping |
 | P2 | Hunt CM4 printed manual scan | Tactics/indicators from primary source |
 | P3 | Map all **M** rows → [SYSTEMS_AND_FEATURES_REGISTRY.md](SYSTEMS_AND_FEATURES_REGISTRY.md) | Implementation traceability |
