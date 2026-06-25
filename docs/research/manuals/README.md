@@ -1,7 +1,7 @@
 # CM Legacy — Local Manuals Archive
 
 **Purpose:** Offline research copies of official manuals, READMEs, and HTML scans for CM1–CM4 and pre-CM1 precursors.  
-**Index:** [CM_MANUALS_ARCHIVE_INDEX.md](../../../CM_MANUALS_ARCHIVE_INDEX.md) · **Analysis:** [CM_MANUALS_COLLECTION.md](../../../CM_MANUALS_COLLECTION.md)  
+**Analysis:** [CM_MANUALS_COLLECTION.md](../../../CM_MANUALS_COLLECTION.md) · **Deep by release:** [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](../../../CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)  
 **Last updated:** 2025-06-25
 
 ---

@@ -129,6 +129,7 @@ Detail: [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.m
 | CM1 + pre-CM1 Round 3 | ✅ | [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md) + [CM1_REFERENCE.md](CM1_REFERENCE.md) Round 3 |
 | CM Manual acquisition Round 4 | ✅ | Local archive + [CM_MANUALS_COLLECTION.md](CM_MANUALS_COLLECTION.md) + CM1 menu extract |
 | CM Manual → registry Round 5 | 🔲 | CM1 extract + CM3 PDF TOC → feature registry |
+| CM Manual deep analysis Round 5 | ✅ | [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) |
 | CM03/04 supplement | 🔲 | Optional |
 
 ---

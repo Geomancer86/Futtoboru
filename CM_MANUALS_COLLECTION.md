@@ -182,7 +182,8 @@ See [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) + [CM4_COMMUNITY_DEVE
 | Round | Status | Deliverable |
 |-------|--------|-------------|
 | 4 Manual acquisition | ✅ | This doc + `docs/research/manuals/` |
-| 5 Registry mapping | 🔲 | CM1 extract → registry; CM3 PDF TOC → registry |
+| 5 Deep analysis by release | ✅ | [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) |
+| 5b Registry mapping | 🔲 | CM1 + CM3 → feature registry |
 | 5b CM93 manual | 🔲 | Acquire PDF |
 | 6 CM2 FR OCR / CM4 manual hunt | 🔲 | Optional |
 

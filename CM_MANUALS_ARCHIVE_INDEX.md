@@ -1,7 +1,7 @@
 # Championship Manager — Manuals & Archive Index
 
 **Purpose:** Curated reference list of **official manuals**, READMEs, and preservation archives for CM1–CM4 research.  
-**Local copies:** [docs/research/manuals/README.md](docs/research/manuals/README.md) · **Analysis:** [CM_MANUALS_COLLECTION.md](CM_MANUALS_COLLECTION.md)
+**Local copies:** [docs/research/manuals/README.md](docs/research/manuals/README.md) · **Analysis:** [CM_MANUALS_COLLECTION.md](CM_MANUALS_COLLECTION.md) · **Deep by release:** [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)
 
 **Last updated:** 2025-06-25
 
