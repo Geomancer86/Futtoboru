@@ -2,7 +2,7 @@
 
 **Document type:** Competitive gap / roadmap reference  
 **Branch audited:** `feature/competitions-finances-seasons` (v0.4.0-SNAPSHOT)  
-**Baseline:** Legacy CM feature set through **CM4** (see [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md))  
+**Baseline:** Legacy CM feature set through **CM4** (see [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md)) · **v1 target:** [CM1_REFERENCE.md](CM1_REFERENCE.md) · **Genre origins:** [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md)  
 **Date:** 2025-06-25  
 **Overall legacy parity (CM4-equivalent systems):** **~12%** · **Core season-loop parity (CM1-level):** **~35%**
 
@@ -365,4 +365,5 @@ Futtoboru legacy target (CM4 depth) [██░░░░░░░░░░░░�
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Link CM1 v1 benchmark + PRE_CM1 genre history |
 | 2025-06-25 | Initial gap analysis vs feature branch |

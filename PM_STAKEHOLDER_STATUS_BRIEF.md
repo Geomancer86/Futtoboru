@@ -20,7 +20,7 @@
 | **Biggest asset** | Mod/data pipeline + 1888 researched content |
 | **Recommended focus** | P0 season loop (3 departments) before any CM4-depth features |
 
-**Competitive research completed (Jun 2025):** Full CM1–CM4 legacy wiki + FM2005+ bible Round 1 + gap analysis. Use for scope debates, not as v1 scope expansion.
+**Competitive research completed (Jun 2025):** Full CM1–CM4 legacy wiki + FM2005+ bible Round 1 + gap analysis + **Round 3 pre-CM1 genre history & CM1 v1 benchmark**. Use for scope debates, not as v1 scope expansion.
 
 ---
 
@@ -51,8 +51,9 @@
 
 | Document | Content |
 |----------|---------|
+| [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md) | **Round 3** — Soccerama, Toms FM, Collyer, 1992 rivals |
 | [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md) | CM1–CM03/04 timeline |
-| [CM1_REFERENCE.md](CM1_REFERENCE.md) | CM1 deep dive + manual + community |
+| [CM1_REFERENCE.md](CM1_REFERENCE.md) | **Round 3** CM1 v1 benchmark + press + manual |
 | [CM2_REFERENCE.md](CM2_REFERENCE.md) | CM2 + European expansions |
 | [CM3_REFERENCE.md](CM3_REFERENCE.md) | CM3 + 01/02 community golden age |
 | [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) | CM4 all game systems |
@@ -125,7 +126,8 @@ Detail: [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.m
 | FM Bible Round 1 | ✅ | FM2005–2010 + CM prelude |
 | CM Legacy Round 2 | ✅ | CM1–CM4 massive refs + manuals index + gap |
 | FM Bible Round 2 | 🔲 | FM2011–2015, FM2021–2023 |
-| CM Manual extraction Round 3 | 🔲 | CM3 PDF section map → feature registry |
+| CM1 + pre-CM1 Round 3 | ✅ | [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md) + [CM1_REFERENCE.md](CM1_REFERENCE.md) Round 3 |
+| CM Manual extraction Round 4 | 🔲 | CM1 manual menu tree → registry; then CM3 PDF |
 | CM03/04 supplement | 🔲 | Optional |
 
 ---

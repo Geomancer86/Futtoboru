@@ -41,12 +41,13 @@ Use this index to navigate project documentation. **Start here** after cloning.
 
 Industry benchmark wiki for Futtoboru design targets.
 
-### CM legacy (Round 2 — Jun 2025)
+### CM legacy (Round 2–3 — Jun 2025)
 
 | Document | Purpose |
 |----------|---------|
+| [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md) | **Round 3** — Soccerama, Toms FM 1982, Collyer BBC tracker, 1992 market |
 | [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md) | CM1–CM03/04 timeline & feature debut table |
-| [CM1_REFERENCE.md](CM1_REFERENCE.md) | CM1 — game, manual, community, developers |
+| [CM1_REFERENCE.md](CM1_REFERENCE.md) | **Round 3** — CM1 v1 benchmark: press, competitors, manual, Futtoboru map |
 | [CM2_REFERENCE.md](CM2_REFERENCE.md) | CM2 + European Leagues expansions |
 | [CM3_REFERENCE.md](CM3_REFERENCE.md) | CM3 + 99/00–01/02, community golden age |
 | [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) | CM4 all game systems |

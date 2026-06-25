@@ -4,6 +4,7 @@
 **Scope:** All SI-developed **Championship Manager** releases from debut through **CM Season 03/04** (final SI CM before FM2005)  
 **Parent:** [FM_COMPETITIVE_BIBLE.md](FM_COMPETITIVE_BIBLE.md)  
 **CM4 deep dive:** [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) + [CM4_COMMUNITY_DEVELOPERS_AND_SUPPORT.md](CM4_COMMUNITY_DEVELOPERS_AND_SUPPORT.md)  
+**Pre-CM1 genre:** [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md) (Soccerama → Toms FM → Collyer → 1992 market)  
 **Per-era deep dives:** [CM1_REFERENCE.md](CM1_REFERENCE.md) · [CM2_REFERENCE.md](CM2_REFERENCE.md) · [CM3_REFERENCE.md](CM3_REFERENCE.md)  
 **Manuals index:** [CM_MANUALS_ARCHIVE_INDEX.md](CM_MANUALS_ARCHIVE_INDEX.md)  
 **Gap analysis vs Futtoboru:** [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md)  
@@ -333,5 +334,6 @@ Not every CM4 bullet applies to **1888 England**:
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 3 — link to PRE_CM1_GENRE_HISTORY; CM1 Round 3 v1 benchmark |
 | 2025-06-25 | Round 2 — links to CM1–CM3 refs, CM4 community supplement, manuals index, PM brief |
 | 2025-06-25 | Initial legacy reference CM1–CM03/04 |
