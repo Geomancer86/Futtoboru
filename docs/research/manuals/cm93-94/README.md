@@ -5,6 +5,7 @@
 | File | Format | Notes |
 |------|--------|-------|
 | `CM93_Manual_LemonAmiga_Extract.md` | Text extract | Full instruction manual from [Lemon Amiga #315](https://www.lemonamiga.com/doc/championship-manager-93/315) |
+| `CM93_Manual_Menu_Extract.md` | Menu tree | Structured extract for registry mapping (Round 8) |
 | `Championship_Manager_93_Copy_Protection_Codes.pdf` | PDF | Manual page → score lookup table (StrategyWiki mirror) |
 
 ### Still missing

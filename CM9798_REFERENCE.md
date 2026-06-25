@@ -13,7 +13,7 @@
 |-------|--------|
 | **Developer** | Sports Interactive |
 | **Publisher** | Eidos Interactive |
-| **Release** | **Oct 1997** |
+| **Release** | **31 Oct 1997** (Wikipedia; MobyGames) |
 | **Platforms** | PC (DOS/Windows) |
 | **Engine** | **Final CM2-engine release** — same lineage as CM2 (1995) and CM96/97 data packs |
 | **Successor** | **CM3** (Mar 1999) — full engine rewrite |
@@ -22,7 +22,7 @@
 
 - **#1 selling PC game in UK 1997** (multiple retrospectives; CVGS, Wikipedia) ✅ secondary  
 - Absorbed CM2 player base at **editor + multi-league** milestone  
-- Deliberate **no copy protection** — contrast with CM2 LaserLok pain  
+- Deliberate **no copy protection** — SI encouraged install sharing for CM3 hype (Wikipedia)  
 - Bridge title before CM3’s 15-nation rewrite
 
 ---
@@ -31,10 +31,10 @@
 
 | Asset | Status | Notes |
 |-------|--------|-------|
-| EN manual PDF | ✅ In repo | ~6 MB **image scan** — shallow analysis until OCR |
+| EN manual PDF | ✅ In repo | **36 pp** image scan — [CM9798_Manual_Metadata.md](docs/research/manuals/cm97-98/CM9798_Manual_Metadata.md) |
 | Install notes | ✅ | `CM9798_Install_Instructions_MrAbandonware.txt` |
-| Mr Abandonware 7z source | ✅ Provenance | [Archive.org](https://archive.org/details/championship-manager-season-97-98-mr-abandonware) — identical PDF hash |
-| OCR / page extract | 🔲 Round 8 | Editor chapter, multi-league setup, set-piece takers |
+| Mr Abandonware 7z | ✅ Provenance | [Archive.org](https://archive.org/details/championship-manager-season-97-98-mr-abandonware) — identical PDF hash |
+| OCR / page extract | 🔲 Round 9 | No text layer in PDF |
 
 ### Manual topics (known from secondary + partial reads)
 
@@ -66,7 +66,7 @@ CM9798 is **not** an expansion — it is a **standalone seasonal SKU** on the CM
 
 | Topic | CM97/98 |
 |-------|---------|
-| **Copy protection** | **None** — SI/Eidos marketing point |
+| **Copy protection** | **None** — SI encouraged sharing; exposure before CM3 (Wikipedia) |
 | **Downloadable patches** | **No documented official patch sequence** (unlike CM4 EPs) |
 | **Data updates** | Community editors; **cm9798.co.uk** update culture |
 | **DOSBox** | Standard preservation; Mr Abandonware packaged installer |
@@ -97,9 +97,10 @@ CM9798 is **not** an expansion — it is a **standalone seasonal SKU** on the CM
 
 | Source | Score | Notes |
 |--------|-------|-------|
-| **MobyGames aggregate** | **76%** (6 critic ratings) | Individual outlets not yet transcribed in repo |
-| **PC Zone** | ⚠️ No scored 1997 review found | Staff cited CM9798 as personal favourite in 1998 issues |
-| **Premier Manager 98** | PC Format Sports GOTY 1998 | Rival product — used in CM9798-era advertising context |
+| **MobyGames aggregate** | **76%** (6 critic ratings) | Individual outlets not yet transcribed |
+| **GamesNostalgia aggregate** | 91/100 | ⚠️ modern user site — not period press |
+| **PC Zone scored review** | — | Not found for 1997 launch; staff favourites in 1998 issues |
+| **Premier Manager 98** | PC Format Sports GOTY 1998 | Rival — contemporary advertising context |
 
 **Round 8:** Transcribe all 6 MobyGames critic entries; search PC Gamer UK, PC Format 1997.
 

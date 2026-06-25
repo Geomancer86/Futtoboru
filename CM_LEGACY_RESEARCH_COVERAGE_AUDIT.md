@@ -1,7 +1,7 @@
 # CM Legacy — Research Coverage Audit
 
 **Purpose:** Honest answer to “do we have everything?” for CM1–CM4 and pre-CM1 precursors.  
-**Date:** 2025-06-25 · **Round:** 7 (coverage audit + gap plan)  
+**Date:** 2025-06-25 · **Round:** 8 (menu extract, reviews, spin-offs)  
 **Related:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)
 
 ---
@@ -31,9 +31,9 @@ Depth: ★★★★★ Deep · ★★★★☆ Medium–Deep · ★★★☆☆ 
 | **FM 1982** | ★★★★★ | N/A | ★★★☆☆ | ★★★★☆ | ★★★★☆ | [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md) |
 | **FM WCE 1990** | ★★★☆☆ PDF | — | — | ★☆☆☆☆ | ★☆☆☆☆ | Precursor README only |
 | **CM1 (1992)** | ★★★★★ | ★★★★☆ (none) | ★★★☆☆ | ★★★★☆ | ★★★★☆ | [CM1_REFERENCE.md](CM1_REFERENCE.md) |
-| **CM93/94** | ★★★☆☆ text | ★★☆☆☆ | ★★★☆☆ | ★★★★☆ | ★★★☆☆ | [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) **NEW** |
-| **CM Italia / Norge / Guy Roux** | ★☆☆☆☆ | ★☆☆☆☆ | ★★☆☆☆ listed | ★☆☆☆☆ | ★☆☆☆☆ | In CM93 + CM2 refs |
-| **CM2 (1995)** | ★★★☆☆ FR only | ★★★☆☆ | ★★★★★ | ★★☆☆☆ | ★★★☆☆ | [CM2_REFERENCE.md](CM2_REFERENCE.md) |
+| **CM93/94** | ★★★★☆ text + extract | ★★★☆☆ | ★★★★☆ | ★★★★☆ | ★★★☆☆ | [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) |
+| **CM Italia / Norge / Guy Roux** | ★☆☆☆☆ | ★☆☆☆☆ | ★★★☆☆ | ★☆☆☆☆ | ★★☆☆☆ | [CM_ITALIA_SPINOFFS_REFERENCE.md](CM_ITALIA_SPINOFFS_REFERENCE.md) |
+| **CM2 (1995)** | ★★★☆☆ FR only | ★★★☆☆ | ★★★★★ | ★★★☆☆ | ★★★☆☆ | [CM2_REFERENCE.md](CM2_REFERENCE.md) |
 | **CM96/97 data** | ★☆☆☆☆ | ★★☆☆☆ | ★★★☆☆ | ★☆☆☆☆ | ★★☆☆☆ | CM2_REFERENCE §5 |
 | **CM97/98** | ★★☆☆☆ scan | ★★☆☆☆ | ★★★☆☆ | ★★☆☆☆ | ★★★☆☆ | [CM9798_REFERENCE.md](CM9798_REFERENCE.md) **NEW** |
 | **CM3** | ★★★★☆ | ★★★☆☆ | ★★★★★ | ★★★☆☆ | ★★★★★ | [CM3_REFERENCE.md](CM3_REFERENCE.md) |
@@ -92,7 +92,19 @@ See [docs/research/manuals/README.md](docs/research/manuals/README.md).
 
 ---
 
-## Round 8+ backlog (no stone unturned)
+## Round 8 deliverables (this commit)
+
+| Doc | Purpose |
+|-----|---------|
+| [CM93_Manual_Menu_Extract.md](docs/research/manuals/cm93-94/CM93_Manual_Menu_Extract.md) | Structured CM93 menu tree (like CM1) |
+| [CM9798_Manual_Metadata.md](docs/research/manuals/cm97-98/CM9798_Manual_Metadata.md) | 36-page scan metadata; OCR backlog |
+| [CM_ITALIA_SPINOFFS_REFERENCE.md](CM_ITALIA_SPINOFFS_REFERENCE.md) | Italia / Norge / Guy Roux |
+| CM2 + CM9798 review tables | Updated in era reviews + CM2/CM9798 refs |
+| CM '94 mail-in update | Patches chronology + CM93_94_REFERENCE |
+
+---
+
+## Round 9+ backlog
 
 | Priority | Task | Primary sources |
 |----------|------|-----------------|

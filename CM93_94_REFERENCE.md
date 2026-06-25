@@ -36,10 +36,10 @@
 
 | Asset | Status | Location |
 |-------|--------|----------|
-| Full instruction manual (text) | ✅ | `docs/research/manuals/cm93-94/CM93_Manual_LemonAmiga_Extract.md` |
+| Full instruction manual (text) | ✅ | Extract + **[menu extract](docs/research/manuals/cm93-94/CM93_Manual_Menu_Extract.md)** |
 | Copy-protection score table | ✅ | `Championship_Manager_93_Copy_Protection_Codes.pdf` |
 | Original PDF scan | ❌ | Lemon Amiga HTML (403 to curl); no Archive.org PDF |
-| Structured menu extract | 🔲 Round 8 | Planned like CM1 |
+| Structured menu extract | ✅ Round 8 | [CM93_Manual_Menu_Extract.md](docs/research/manuals/cm93-94/CM93_Manual_Menu_Extract.md) |
 
 ### Main menu (manual-verified)
 
@@ -79,11 +79,24 @@ CM93 era used **new disks / SKUs**, not downloadable patches.
 | **CM Norge** | 1993 | Spin-off | Norway |
 | **Guy Roux Manager** | 1993 | Licensed variant | French league; Ubisoft/Intelek; CM1 engine lineage |
 
-**Patch model:** No official FTP/internet patches. Updates = **buy new disk** or End-of-Season edition.
+**Patch model:** No official FTP/internet patches. Updates = **buy new disk**, mail-in service, or End-of-Season edition.
 
----
+### CM '94 / End-of-Season — deep notes (Round 8) ⚠️ mix primary + secondary
 
-## 4. Official patches
+| Channel | Detail |
+|---------|--------|
+| **Mail-in update** | Send CM '93 disks + **£7.99** to **Intelek** for refreshed disks (community/RetroAffaire) |
+| **Retail standalone** | Full **Championship Manager '94** package |
+| **Disk count (Amiga)** | **3 floppies** vs original 2 — more data |
+| **End-of-Season variant** | Includes **January transfers** + final 93/94 season stats (secondary) |
+| **PC "Enhancement Pack" wording** | SI used enhancement language for stability/data fixes on PC re-releases (secondary) |
+| **Bugfixes** | Season-end freeze and stability issues addressed (secondary) |
+| **Easter egg** | Fictional **Mark Collis** + **Ferah Orosco** at Cambridge Utd — hidden superstars (secondary) |
+| **Platform note** | CM '94 Amiga = **last Amiga CM expansion** before PC-centric CM2 |
+
+Archive.org: `Championship_Manager_94_End_of_Season_Edition_v4.04_1993_Domark_cr_LSD_h_Access`
+
+Spin-off detail: [CM_ITALIA_SPINOFFS_REFERENCE.md](CM_ITALIA_SPINOFFS_REFERENCE.md)
 
 | Patch type | CM93/94 |
 |------------|---------|

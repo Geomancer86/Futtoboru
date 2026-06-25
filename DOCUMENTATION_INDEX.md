@@ -48,6 +48,7 @@ Industry benchmark wiki for Futtoboru design targets.
 | [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md) | **Round 7** — honest manual/patch/review coverage matrix + backlog |
 | [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) | **Round 7** — CM93/94 manual, expansions, era reviews |
 | [CM9798_REFERENCE.md](CM9798_REFERENCE.md) | **Round 7** — CM97/98 engine finale, editor, reception |
+| [CM_ITALIA_SPINOFFS_REFERENCE.md](CM_ITALIA_SPINOFFS_REFERENCE.md) | **Round 8** — CM Italia / Norge / Guy Roux spin-offs |
 | [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md) | Patch + data-disk + EP timeline all titles |
 | [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md) | Contemporary scores + user sentiment index |
 | [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md) | **Round 3** — Soccerama, Toms FM 1982, Collyer BBC tracker, 1992 market |

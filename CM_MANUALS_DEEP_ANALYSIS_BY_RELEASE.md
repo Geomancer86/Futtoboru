@@ -16,7 +16,7 @@
 |---------|----------------|----------------|-------------|
 | **FM 1982** (precursor) | ✅ HTML | **Deep** | §1 below |
 | **CM1** (1992) | ✅ HTML + extract | **Deep** | §2 + [CM1_Manual_Menu_Extract.md](docs/research/manuals/cm1/CM1_Manual_Menu_Extract.md) |
-| **CM93/94** | ✅ | **Medium** (full text extract) | §3 |
+| **CM93/94** | ✅ | **Medium–Deep** (text + menu extract) | §3 |
 | **CM2** (1995) | ✅ FR PDF + EN guide | **Medium** | §4 |
 | **CM97/98** (1997) | ✅ PDF (image scan) | **Shallow** | §5 |
 | **CM3** (1999) | ✅ PDF + OCR TOC | **Medium–deep** | §6 + [CM3_Manual_TOC_Extract.md](docs/research/manuals/cm3/CM3_Manual_TOC_Extract.md) |
@@ -141,8 +141,8 @@ No real names (English); no reserves; no training schedules; no editor; no Scotl
 
 ## §3 — CM93/94 (1993–1994)
 
-**Manual:** `CM93_Manual_LemonAmiga_Extract.md` + `Championship_Manager_93_Copy_Protection_Codes.pdf`  
-**Analysis depth:** **Medium** — full typed manual text; no original PDF scan
+**Manual:** `CM93_Manual_LemonAmiga_Extract.md` + `CM93_Manual_Menu_Extract.md` + copy codes PDF  
+**Analysis depth:** **Medium–Deep** — structured menu extract; no original PDF scan
 
 ### Main menu (manual — Lemon Amiga)
 

@@ -19,6 +19,7 @@ These files are **third-party copyrighted material** (Domark, Eidos, Sports Inte
 | `precursors/football-manager-1982-spectrum/Football_Manager_1982_Spectrum_Manual.html` | Football Manager (1982) | HTML scan | ~9 KB | EN | [GamesDatabase](https://www.gamesdatabase.org/Media/SYSTEM/Sinclair_ZX_Spectrum/Manual/formated/Football_Manager_-_1982_-_Addictive_Games.htm) |
 | `precursors/football-manager-world-cup-edition/Football_Manager_World_Cup_Edition_Manual_ArchiveOrg.pdf` | Football Manager World Cup Edition (1990) | PDF | ~3.2 MB | EN | [Archive.org gamemanuals](https://archive.org/details/football-manager-world-cup-edition) |
 | `cm93-94/CM93_Manual_LemonAmiga_Extract.md` | CM93/94 (1993) | Manual text extract | ~44 KB | EN | [Lemon Amiga](https://www.lemonamiga.com/doc/championship-manager-93/315) |
+| `cm93-94/CM93_Manual_Menu_Extract.md` | CM93/94 | Structured menu tree | — | EN | Derived from Lemon extract (Round 8) |
 | `cm93-94/Championship_Manager_93_Copy_Protection_Codes.pdf` | CM93/94 | Copy-protection table | ~32 KB | EN | StrategyWiki / create-cdn mirror |
 | `cm1/Championship_Manager_1992_Amiga_Manual.html` | CM1 (1992) | HTML scan (20 pp) | ~21 KB | EN | [GamesDatabase Amiga](https://www.gamesdatabase.org/Media/SYSTEM/Commodore_Amiga/Manual/formated/Championship_Manager_-_1992_-_Domark_Software.htm) |
 | `cm1/CM1_Manual_Menu_Extract.md` | CM1 | Extracted menu tree | — | EN | Derived from HTML above |
@@ -28,6 +29,7 @@ These files are **third-party copyrighted material** (Domark, Eidos, Sports Inte
 | `cm4/Championship_Manager_4_ReadMe_Win_EN.pdf` | CM4 (2003) | ReadMe PDF | ~150 KB | EN | [Old Games Download](https://oldgamesdownload.com/wp-content/uploads/Championship_Manager_4_ReadMe_Win_EN.pdf) |
 | `cm97-98/Championship_Manager_97_98_Manual_DOS_EN.pdf` | CM97/98 (1997) | PDF | ~6 MB | EN | [Old Games Download](https://oldgamesdownload.com/wp-content/uploads/Championship_Manager_97_98_Manual_DOS_EN.pdf) + [Mr Abandonware 7z](https://archive.org/details/championship-manager-season-97-98-mr-abandonware) (identical file) |
 | `cm97-98/CM9798_Install_Instructions_MrAbandonware.txt` | CM97/98 | Install notes | ~666 B | EN | Extracted from Mr Abandonware 7z |
+| `cm97-98/CM9798_Manual_Metadata.md` | CM97/98 | Manual metadata | — | EN | 36 pp scan; OCR pending (Round 8) |
 
 ### Not yet in repo (link-only)
 
@@ -55,4 +57,5 @@ These files are **third-party copyrighted material** (Domark, Eidos, Sports Inte
 | Date | Change |
 |------|--------|
 | 2025-06-25 | Initial local archive — CM1 HTML, FM1982 HTML, CM2 FR PDF, CM3/CM9798/CM4 PDFs |
+| 2025-06-25 | Round 8 — CM93 menu extract; CM9798 manual metadata; CM2/CM9798 review scores |
 | 2025-06-25 | Round 6 — CM93 Lemon extract + copy codes; FM World Cup PDF; CM9798 Mr Abandonware provenance |

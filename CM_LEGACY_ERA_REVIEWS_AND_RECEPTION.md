@@ -73,9 +73,15 @@ See [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) §5 for full table.
 
 | Source | Score | Status |
 |--------|-------|--------|
-| Magazine reviews | — | 🔲 **Not in repo** |
-| Amiga port | Qualitative | Feature-cut criticism in CM2_REFERENCE |
-| Community | Franchise established | Channel 4 / Italian league demand narrative |
+| **PC Attack** #7 Nov 1995 | **83%** | ✅ UVList |
+| **PC Gamer** #24 Nov 1995 | **49%** | ✅ Wikipedia |
+| **Génération 4** #90 (FR) | **4/6** | ✅ UVList |
+| **MobyGames aggregate** | **62%** (10 critics) | ✅ |
+| **CU Amiga** Dec 1997 (port) | **70%** | ✅ AMR |
+| **Amiga Format** #108 (AGA port) | **12%** | ✅ AMR |
+| **PC Zone** Nov 1998 | **90%** | ⚠️ Wikipedia — verify retrospective |
+
+**Themes:** PC = addictive depth; PC Gamer = presentation fatigue; Amiga port = gutted vs PC (international cut).
 
 **Round 8:** MobyGames + Amiga Magazine Rack + PC press hunt.
 

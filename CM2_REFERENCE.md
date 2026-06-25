@@ -160,6 +160,27 @@ Italian league rules: **3 foreign players on pitch** ⚠️ community memory.
 - Channel 4 Serie A boom drove demand for **Italian league expansions** (community narrative).  
 - Amiga port criticized for feature cuts vs PC.
 
+### Review scores (Round 8)
+
+**PC / DOS (primary engine)**
+
+| Publication | Date | Score | Notes |
+|-------------|------|-------|-------|
+| **PC Attack** #7 | Nov 1995 | **83%** | [UVList](https://www.uvlist.net/game-220101-Championship+Manager+2) |
+| **PC Gamer** #24 | Nov 1995 | **49%** | Wikipedia — urged series to retire |
+| **Génération 4** #90 | Jul 1996 (FR) | **4/6** | UVList |
+| **PC Zone** | Nov 1998 | **90%** | Wikipedia cite — likely retrospective CM2 piece ⚠️ verify issue |
+
+**Amiga port (Sterling Games — not PC parity)**
+
+| Publication | Issue | Score | Notes |
+|-------------|-------|-------|-------|
+| **CU Amiga Magazine** | Dec 1997 | **70%** | [AMR](http://amr.abime.net/review_10299) pp. 40–41 |
+| **Amiga Format** | #108 Mar 1998 | **12%** | AGA port; severe criticism |
+| Previews only | AF #74, One Maverick #83, CU Jun 1996 | — | AMR |
+
+**MobyGames critic average:** **62%** (10 ratings). See [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md).
+
 ---
 
 ## 9. Developers & team

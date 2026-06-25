@@ -47,6 +47,7 @@ Internet downloadable patches were **rare until CM4**; CM4’s broken launch **c
 |------|---------|------|--------|-------|
 | 1993 | CM '93 | Base | — | Sep 1993 |
 | 1993–94 | End of Season **Data Disk** | Data | Disk | ~£13 retail |
+| 1994 | **Mail-in to Intelek** | Data | **£7.99** + CM '93 disks | Disk refresh |
 | 1994 | CM **Collection** | Bundle | Disk | 93/94 + update |
 | 1994 | CM **'94 End of Season Edition** | Data refresh | SKU | Archive.org v4.04 |
 | 1994 | World Cup Year '94 | Compilation | — | Multi-game pack |
