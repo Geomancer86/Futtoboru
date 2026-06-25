@@ -1,0 +1,365 @@
+Championship Manager 2 - Hints and Tips
+
+Submitted by: kumayl hassan
+E-mail: goldiman2002@yahoo.com
+
+Championship Manager 2 is a football (known as soccer
+to some of you) management simulation
+computer game. This game allows you to take on the job
+of managing a football team and gives you
+all the options a real life manager would have - such
+as a buying and selling players in a world wide
+transfer market, choosing tactics, formations and
+styles of play.
+
+Team Formations
+
+An almost infinite amount of formations can be used
+(if you like silly formations that is, but 4-4-2,
+Christmas Tree etc, are all possible). Each player
+being able to be placed in five positions across the
+field ( left, center left, central, center right,
+right) either as sweeper, defender, anchor, midfield,
+support and attack. It is even possible to place your
+goalkeeper up front in one last ditched
+Higuita/Schmeichel style attempt for an all out
+attack.
+
+There are 15 pre set team formations to choose from
+ranging from Ultra Defensive to All Out Attack
+and you can of course customize any of these
+formations.
+
+The team formation can be changed at any point during
+the match (and between matches and you
+will be warned if the opposition team makes a change
+in tactics and you can look at their tactics
+screen and take counter measures).
+
+The placing of players in a formation is easily done
+by using the mouse to drag the players name on
+to a representation of the football pitch and into the
+position you want him to play.
+
+Player Runs
+
+Each player can be given instructions on the type of
+runs he should be making during the match. This
+is done from the same screen as the team formation by
+using the right mouse button to draw an
+arrow from the player to where he should be running.
+So for example if you want wing back type
+players then you can draw an arrow from the full backs
+right down the length of the pitch and this
+will instruct that player to make runs down the side
+of the field to put crosses in etc.
+
+Some of the pre-set formations as mentioned above will
+also include the type of runs the players
+would make in these type of formations.
+
+Playing Styles
+
+There are three types of playing styles you can
+instruct your team to use:
+
+Long Ball This is where the ball is hit long and high
+up front into zones asoppose to any target man.
+Even if the defenders win the ball, advancing
+midfielders and strikers are quick to close down
+possession and try and win back the ball. A lot of the
+lower division teams would employ this style
+of play, sometimes known as a 'percentage game'.
+Passing This is where the team would build up the play
+by short passing movements. Examples of
+this style would be Liverpool, Newcastle, and Notts
+Forest. 
+Direct This is where the ball is played from the back
+to the forward players, without necessarily
+being passed through the midfield. This differs from
+Long Ball, in that passes are aimed at particular
+players (e.g. a targetman), rather than just booted
+into areas. Examples of teams playing this style
+are Blackburn and Everton.
+
+Obscure Features of CM2
+
+This section covers those features which may not be
+covered by the manual or the README.TXT
+file and which may have gone unnoticed by you. So read
+on and you may discover some more useful
+features of the game.
+
+Right Mouse Button
+
+Clicking on Done using the right mouse button when in
+the main menu will advance the calendar on a
+daily basis as opposed to using the left mouse button
+which will generally advance the calendar to
+your next fixture. This will be helpful when you want
+to avoid missing transfer deadlines or when
+wanting to buy new players etc.
+
+Space Bar
+
+Pressing the space bar during a match sequence will
+speed up the match.
+
+Overall-Home-Away Record
+
+On any league table by clicking on the Overall Record
+at the top of the table you will be able to see
+the Home Record - click again you'll see the Away
+Record.
+
+Description of player match stats
+
+In the player stats screen for any match - by hovering
+the mouse over the titles for each column of
+stats you will have a box appear which contains a
+description of what these stats mean.
+
+Team Progress Graph
+
+By clicking the mouse on the position number of any
+team in any league or group table you will see
+that teams progress within the table in the form of a
+graph.
+
+View Match Option
+
+You may view any match by clicking on the v for versus
+on a fixture list. This will turn the v to view.
+Clicking a second time will revert back to v again.
+
+m and escape keys
+
+Pressing the m or escape key will return you to the
+main menu at the next possible opportunity.
+Please note that to get the computer's attention
+repeatedly pressing or holding down the key may be
+necessary.
+
+Match Stats of Played Games
+
+: By clicking on the score (from any type of results
+screen) of any played game within one season
+will allow you to see all the stats for that match.
+
+Manager History
+
+: By clicking on the managers name in the general info
+screen of the Squad screen this will enable
+you to see the entire history of that manager.
+
+Transfer Deadlines
+
+: In the player search screen, when the players names
+are in grey this means the transfer deadline of
+the country in which that player is playing has
+passed. So this means any player in grey writing
+cannot be bought. 
+
+
+
+Description of Player Ratings
+
+This is a description of the categories used in the
+rating of players. These have been divided into five
+sections: 
+
+     Footballing skills
+     Goalkeeping skills 
+     Physical Attributes 
+     Mental Attributes 
+     Hidden Ratings 
+
+Footballing skills
+
+Creativity: Whether he can create goalscoring chances
+for his team-mates with incisive passes,
+headers, flick-ons etc.
+Dribbling: Whether he can take on and beat defenders
+to create dangerous situations from which a
+goalscoring chance might arise. 
+Flair: Whether he has the tendency to do the
+unexpected, for example shoot from 30 yards, or try
+something brilliant. 
+Heading: Whether he is good in the air and wins
+headers either in defense or attack
+Marking: Whether he has the ability to track an
+opponent and mark him out of the game.
+Off the Ball: Whether he makes good runs into space
+which can lead to a shot/header on goal if he
+is given the ball. 
+Passing: Whether he can pass the ball where he wants
+it. 
+Positioning: Whether he has good defensive positional
+sense and rarely gets caught out of position.
+Set Pieces: Whether he can make use of set piece
+situations(corner, free kick) either by making a
+creative pass or a direct shot on goal.
+Shooting: Whether he scores goals.
+Tackling: Whether he is good at making tackles to
+dispossess an opponent.
+Technique: Whether he has good control, first touch,
+and all round technical ability 
+
+Goalkeeping skills
+
+Shot Stopping: This is their ability to save shots.
+Passing: This is their accuracy when kicking or
+throwing the ball out.
+Set Pieces: This is their ability to defend set
+pieces, line up the wall etc.
+Positioning: This is their positioning for shots,
+crosses etc.
+Aerial Ability: This is their ability in the air, for
+example when handling corners and crosses.
+Rushing Out: This is whether he can rush out quickly
+in one-on-one situations. 
+
+Physical Attributes
+
+Aggression: Whether he goes in hard when competing for
+the ball, without necessarily being dirty. 
+Injury Proneness: Whether he is often out of action
+with injuries. The higher the rating the more
+likely the player is to get injured 
+Pace: Whether he has speed and acceleration both in
+and out of possession. 
+Stamina: Whether he can keep going at the end of the
+most grueling matches.
+Strength: Whether he has strength in holding off
+opponents to keep possession or in competing to
+win the ball.
+
+Mental Attributes
+
+Determination: Whether he keeps battling, even when
+the odds are against him. 
+Influence: Whether he can motivate and inspire
+team-mates, as for example a captain would.
+Intelligence: Whether he can read the game and make
+good decisions about when to sit back, push
+up etc.
+
+Hidden Ratings
+
+Big Occasion: Whether he rises to the occasion in big
+games, play- offs, top of the table clashes,
+cup finals, etc. 
+Character: Whether the player reacts badly to on/off
+the field events. On the field this could be
+whether he reacts to provocation, off the field
+whether he reacts to being dropped, fined etc. The
+higher the rating the more likelythe player will react
+badly to on/off the field events. 
+Consistency: Whether he normally performs to his
+ability and rarely has an off day.
+Dirtiness: The amount of bad fouls, bookings and
+sending off a player is likely to commit/get. You
+can tell who has a high rating for this because of the
+amount of fouls, yellow and red cards he has, or
+the number of disciplinary points a player has
+accumulated.
+Ability: This is an overall rating of how good the
+player is now.
+Potential Ability: This is a rating of how good the
+player could become. For a young player his
+ability will tend to rise towards his potential
+ability as he gets older; for a player at his peak his
+ability
+will tend to be equal to his potential ability; for an
+older player his ability will tend to drop below his
+potential ability. The ability rating is therefore a
+variable rating and all the other ratings are relative
+to
+this rating and the potential ability rating.
+
+
+To arrange friendlies, carry out the following:
+
+   1.Go to Squad details screen of the squad you are
+managing. 
+   2.Click on Fixtures and Results icon. 
+   3.Choose Full Season Calendar option. This will
+give a full calendar of each day of the year
+     with all the fixtures and all the dates where no
+fixtures have been arranged. 
+   4.Click on home or away icon depending if you want
+to play a friendly home or away. 
+   5.A full list of squads will appear (all the
+English ones and use More Teams to display foreign
+     teams) - click on the squad you would like to
+arrange a friendly against. 
+   6.A screen will appear showing you the dates
+available for a friendly (if any) with that team and
+     also the dates not available for a friendly. 
+   7.Click on which date you would like to play - i.e.
+click on where it is written Free date for
+     friendly with 'team name' - there may be more
+than one date available. 
+   8.You will be then asked to confirm the arrangement
+of a friendly against the chosen team. After
+     confirmation has been given the friendly has been
+arranged. 
+   9.You can also cancel friendlies by using the
+Cancel icon on the full calendar screen - click on
+     this so it becomes white then click on the name
+of the team you want to cancel the friendly
+     with - you will then be asked to confirm the
+cancellation.
+
+Remember you will not be able to play any team you
+want - because the other team may not be
+available or because they are a much bigger club than
+you - so don't expect to be able to play
+Bayern Munich if you are manager of Rochdale !
+
+
+
+Applying for vacant jobs
+
+You will get a message on screen each time a club has
+a vacant manager position. If you would like
+to be put forward for consideration this is how you do
+it.
+
+   1.Go to Manager Info in the main menu. 
+   2.Go to Job News. 
+   3.You will see a all the clubs which have no
+manager. 
+   4.Click on the name of the club you would like to
+manage 
+   5.The squad screen of this team will appear. In the
+top right hand corner you will see the apply
+     icon. Click on this to put yourself forward for
+the job. 
+   6.You will be then asked for confirmation. 
+   7.you will only receive notification if you are
+offered the job or will realize you that your
+     application has not been successful when you see
+notification of who has got the job.
+
+Remember it will probably only be worth applying for
+jobs when you have built up some sort of
+reputation. You will start to build up a reputation
+when you have had some success with a club for at
+least two seasons.
+
+
+
+Who should you buy?
+
+The following players are great values and perform
+VERY well. (this list is subjective)
+
+     Jimmi Nielsen GK Denmark 
+     Neil Lennon AMC Crewe 
+     Viktor Leonenko FC Dinamo Kiev
+     David Bardsley DR QPR
+     John De Wolf SW/DC Wolves
+     Michael Galloway AML NottsC
+     Richard Rufus
+     Sergi Yuan

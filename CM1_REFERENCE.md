@@ -151,7 +151,7 @@ CM1 launched into a **crowded year** — see [PRE_CM1_GENRE_HISTORY.md §5](PRE_
 | Main menu | Continue, tactics, transfers, tables, cups, resign |
 | Printer | Optional match printout |
 
-**Round 4 planned:** Full menu tree extraction from HTML manual → [SYSTEMS_AND_FEATURES_REGISTRY.md](SYSTEMS_AND_FEATURES_REGISTRY.md)
+**Round 4 planned:** ~~Full menu tree extraction from HTML manual~~ → Done: [CM1_Manual_Menu_Extract.md](docs/research/manuals/cm1/CM1_Manual_Menu_Extract.md)
 
 ---
 

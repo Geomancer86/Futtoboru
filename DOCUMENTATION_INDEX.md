@@ -52,7 +52,8 @@ Industry benchmark wiki for Futtoboru design targets.
 | [CM3_REFERENCE.md](CM3_REFERENCE.md) | CM3 + 99/00–01/02, community golden age |
 | [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) | CM4 all game systems |
 | [CM4_COMMUNITY_DEVELOPERS_AND_SUPPORT.md](CM4_COMMUNITY_DEVELOPERS_AND_SUPPORT.md) | CM4 patches, media, developers, fan sites |
-| [CM_MANUALS_ARCHIVE_INDEX.md](CM_MANUALS_ARCHIVE_INDEX.md) | Official manual PDF sources |
+| [CM_MANUALS_ARCHIVE_INDEX.md](CM_MANUALS_ARCHIVE_INDEX.md) | Manual sources + **local archive** (`docs/research/manuals/`) |
+| [CM_MANUALS_COLLECTION.md](CM_MANUALS_COLLECTION.md) | **Round 4** — manual analysis + CM1 menu extract |
 | [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md) | Legacy target vs codebase (~12% CM4 parity) |
 
 ### FM bible (Round 1)

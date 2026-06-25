@@ -1,55 +1,60 @@
 # Championship Manager — Manuals & Archive Index
 
 **Purpose:** Curated reference list of **official manuals**, READMEs, and preservation archives for CM1–CM4 research.  
-**Note:** Futtoboru repo does **not** redistribute copyrighted PDFs. Use links for internal research only.
+**Local copies:** [docs/research/manuals/README.md](docs/research/manuals/README.md) · **Analysis:** [CM_MANUALS_COLLECTION.md](CM_MANUALS_COLLECTION.md)
 
 **Last updated:** 2025-06-25
 
 ---
 
-## Official / original documentation by title
+## Local archive (in repo)
 
-| Game | Manual type | Format | Archive source | Confidence |
-|------|-------------|--------|----------------|------------|
-| **CM1** (1992) | Printed Amiga/ST/PC manual | HTML scan | [GamesDatabase Amiga manual](https://www.gamesdatabase.org/Media/SYSTEM/Commodore_Amiga/Manual/formated/Championship_Manager_-_1992_-_Domark_Software.htm) | ✅ |
-| **CM93/94** | Amiga manual | PDF/docs | [Lemon Amiga docs](https://www.lemonamiga.com/games/docs.php?id=315) | ✅ |
-| **CM2** | PC manual (DOS) | Printed / partial scans | Community scans via [MobyGames](https://www.mobygames.com/) | ⚠️ |
-| **CM97/98** | PC manual | **PDF ~6 MB** | [My Abandonware CM97/98](https://www.myabandonware.com/game/championship-manager-season-97-98-2db) | ✅ |
-| **CM97/98** | Manual mirror | PDF | [BD Jogos manual id=910](https://en.bdjogos.com.br/manual.php?id=910) | ✅ |
-| **CM3** | User manual | **PDF ~540 KB, 43 pages** | [ManualMachine CM3](https://manualmachine.com/gamespc/championshipmanager3/1119318-user-manual/) | ✅ |
-| **CM4** | Manual + README | PDF / in-box | Listed on [MobyGames CM4 releases](https://www.mobygames.com/game/8910/championship-manager-4/releases/) | ⚠️ |
-| **CM4** | Patch READMEs | Text in EP installers | Enhancement Pack 1–5 executables | ✅ |
+| Game | Local path | Format | Notes |
+|------|------------|--------|-------|
+| **FM 1982** | `docs/research/manuals/precursors/football-manager-1982-spectrum/` | HTML | GamesDatabase Spectrum scan |
+| **CM1** | `docs/research/manuals/cm1/` | HTML + [menu extract](docs/research/manuals/cm1/CM1_Manual_Menu_Extract.md) | 20-page Amiga manual |
+| **CM2** | `docs/research/manuals/cm2/` | PDF (FR) + EN guide | No EN PDF mirror found |
+| **CM3** | `docs/research/manuals/cm3/Championship_Manager_3_Manual_Win_EN.pdf` | PDF 43 pp | Old Games Download + [Archive.org](https://archive.org/details/Championship_Manager_3) |
+| **CM97/98** | `docs/research/manuals/cm97-98/Championship_Manager_97_98_Manual_DOS_EN.pdf` | PDF ~6 MB | Old Games Download |
+| **CM4** | `docs/research/manuals/cm4/Championship_Manager_4_ReadMe_Win_EN.pdf` | ReadMe PDF | Full printed manual not digitized |
+
+**Missing local:** CM93/94 PDF — see [Lemon Amiga](https://www.lemonamiga.com/doc/championship-manager-93/315).
 
 ---
 
-## Manual contents summary (research value for Futtoboru)
+## Official / original documentation by title (online sources)
 
-### CM1 manual (Domark, Amiga)
+| Game | Manual type | Format | Archive source | In repo |
+|------|-------------|--------|----------------|---------|
+| **CM1** (1992) | Amiga/ST/PC manual | HTML scan | [GamesDatabase](https://www.gamesdatabase.org/Media/SYSTEM/Commodore_Amiga/Manual/formated/Championship_Manager_-_1992_-_Domark_Software.htm) | ✅ |
+| **CM93/94** | Amiga manual | PDF/docs | [Lemon Amiga](https://www.lemonamiga.com/doc/championship-manager-93/315) | ❌ |
+| **CM2** | DOS manual | PDF (FR) | [My Abandonware Manual](https://www.myabandonware.com/download/pp14-championship-manager-2) | ✅ FR |
+| **CM97/98** | PC manual | PDF ~6 MB | [Old Games Download](https://oldgamesdownload.com/wp-content/uploads/Championship_Manager_97_98_Manual_DOS_EN.pdf) | ✅ |
+| **CM3** | User manual | PDF 43 pp | [Old Games Download](https://oldgamesdownload.com/wp-content/uploads/Championship_Manager_3_Manual_Win_EN.pdf) | ✅ |
+| **CM4** | ReadMe | PDF | [Old Games Download ReadMe](https://oldgamesdownload.com/wp-content/uploads/Championship_Manager_4_ReadMe_Win_EN.pdf) | ✅ |
+| **CM4** | Printed manual | In-box | MobyGames release entries | ❌ |
+| **FM 1982** | Spectrum manual | HTML | [GamesDatabase](https://www.gamesdatabase.org/Media/SYSTEM/Sinclair_ZX_Spectrum/Manual/formated/Football_Manager_-_1982_-_Addictive_Games.htm) | ✅ |
 
-Documented in HTML scan:
+---
 
-- **Startup:** Program disk DF0; optional season disk DF1; PC typed `EUROPE` at prompt  
-- **Hotseat:** Up to **4 players**; each picks club, personality, name  
-- **Season disk:** Blank formatted disk required to save — data erased if reused  
-- **Main menu:** Continue, tactics, transfers, results, fixtures, cups, resign  
-- **Printer option** for match output  
+## Manual contents summary (research value)
 
-### CM3 manual (43 pages — ManualMachine)
+### CM1 manual — see [CM1_Manual_Menu_Extract.md](docs/research/manuals/cm1/CM1_Manual_Menu_Extract.md)
 
-Table of contents includes:
+Full 20-page menu tree extracted: main menu (12 options), squad screen, tactics, transfers, board, 1–10 ratings.
 
-- Installation (Windows 95/98)  
-- Start New Game / Restore Saved Game  
-- **Network Play**  
-- Hall of Fame  
-- Quick Start Game  
-- Epilepsy / ergonomics warnings (standard Eidos era)  
+### CM3 manual (43 pages)
 
-Full PDF recommended for tactics/training screen enumeration — **Round 3 action:** download to `docs/research/manuals/` (local only, gitignored) if team obtains license clearance.
+Installation · Start/Restore · Network Play · Hall of Fame · tactics · training · squad screens.  
+**Round 5:** PDF section map → [SYSTEMS_AND_FEATURES_REGISTRY.md](SYSTEMS_AND_FEATURES_REGISTRY.md).
 
 ### CM97/98 manual
 
-Covers editor, multi-league setup, set-piece takers — primary source for Gen-2 feature confirmation.
+Editor, multi-league setup (9 leagues, 3 concurrent), set-piece takers — Gen-2 confirmation source.
+
+### CM4 ReadMe
+
+Install, patches, system requirements — not a gameplay manual. Use [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) + community FAQs for tactics depth.
 
 ---
 
@@ -62,20 +67,9 @@ Covers editor, multi-league setup, set-piece takers — primary source for Gen-2
 | EP1 | 4.0.3 | 29 Mar 2003 | Launch day; wages, Swedish stadia, praise/criticise media |
 | EP2 | 4.0.4 | 11 Apr 2003 | Cumulative |
 | EP3 | 4.0.5 | ~May 2003 | Injury fixes; optional data update |
-| EP5 | **4.0.8** | 24 Jul 2003 | **Final** CM4 patch; NO DATA + Updated Data variants |
+| EP5 | **4.0.8** | 24 Jul 2003 | **Final** CM4 patch |
 
-**Mirror list (historical — may be dead):** Documented in [CM4 FAQ (Dobbers)](http://www.dobbers.f9.co.uk/agcm/cm4.htm):
-
-- `ftp://gamefiles.blueyonder.co.uk/blueyondergames/championshipmanager4/patches/408_enhance_nodata.exe`
-- `ftp://gamefiles.blueyonder.co.uk/blueyondergames/championshipmanager4/patches/408_enhance.exe`
-- Mac: `cm_408_updater.sit`
-
-**Community guidance:** EP2 minimum; EP5 recommended; cumulative (no need to install EP1–4 first).
-
-### CM 03/04 patches (post-CM4)
-
-- SI patches through **v4.1.5+** documented on archived SIGames downloads / Soccer Gaming threads  
-- Separate from CM4 EP line after split
+**Mirror list (historical):** [CM4 FAQ (Dobbers)](http://www.dobbers.f9.co.uk/agcm/cm4.htm)
 
 ---
 
@@ -83,32 +77,26 @@ Covers editor, multi-league setup, set-piece takers — primary source for Gen-2
 
 | Site | Era | Content |
 |------|-----|---------|
-| [My Abandonware](https://www.myabandonware.com/) | CM1–CM3 | Games + some manuals |
-| [ManualMachine](https://manualmachine.com/) | CM3 | Full manual PDF |
-| [Lemon Amiga](https://www.lemonamiga.com/) | CM1, CM93 | Amiga docs |
-| [GamesDatabase](https://www.gamesdatabase.org/) | CM1 | Manual HTML |
-| [MobyGames](https://www.mobygames.com/) | All | Box art, credits, patches list |
-| [cm9798.co.uk](https://cm9798.co.uk/) | CM2–CM3 | Podcast, DOSBox guides, disc-free installs |
-| [Champman0102.net](https://champman0102.net/) | CM2–CM01/02 | Forums, CM2 European leagues, DOSBox |
-| [Champman Fans WordPress](https://champmanfans.wordpress.com/) | CM2 | European leagues install guide |
-| [The Dugout](https://www.champman0102.com/) (successor community) | CM01/02–FM | Tactics, downloads, forums |
-| [CM Revolution / cmrev.com](https://www.cmrev.com/) | CM4–FM | Polish/EN patch mirrors |
-| [Soccer Gaming forums](https://soccergaming.com/) | CM4, 03/04 | Data updates, Nygreen editor |
-| [VOGONS](https://www.vogons.org/) | CM2 DOS | LaserLok fix (`cm2fix.com`) |
-| [community.sports-interactive.com](https://community.sports-interactive.com/) | CM4→FM | Successor to SIGames forums |
-| [Wayback: sigames.com](https://web.archive.org/web/*/sigames.com) | CM3–CM4 | Official news, patches |
+| [Old Games Download](https://oldgamesdownload.com/) | CM1–CM4 | Manuals + game files |
+| [My Abandonware](https://www.myabandonware.com/) | CM1–CM3 | Games + CM2 FR manual |
+| [Archive.org gamemanuals](https://archive.org/details/Championship_Manager_3) | CM3 | PDF mirror |
+| [ManualMachine](https://manualmachine.com/gamespc/championshipmanager3/1119318-user-manual/) | CM3 | Online viewer |
+| [Lemon Amiga](https://www.lemonamiga.com/) | CM93 | Amiga docs |
+| [GamesDatabase](https://www.gamesdatabase.org/) | CM1, FM1982 | Manual HTML |
+| [MobyGames](https://www.mobygames.com/) | All | Credits, patches |
+| [cm9798.co.uk](https://cm9798.co.uk/) | CM2–CM3 | DOSBox guides |
+| [Champman0102.net](https://champman0102.net/) | CM2–CM01/02 | Forums |
+| [Wayback: sigames.com](https://web.archive.org/web/*/sigames.com) | CM3–CM4 | Official news |
 
 ---
 
-## Recommended local research workflow
+## Research workflow
 
-1. Download CM3 PDF from ManualMachine → extract UI/feature terminology  
-2. Download CM97/98 PDF from My Abandonware → editor + league setup  
-3. Archive CM4 EP5 changelog from Dobbers FAQ / SI forum Wayback  
-4. Cross-check feature claims against [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md)  
-5. Map gaps via [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md)
-
-**Do not commit copyrighted PDFs to git** without explicit permission. Add `docs/research/manuals/` to `.gitignore` if storing locally.
+1. Read CM1 extract → update registry for v1 scope  
+2. CM3 PDF TOC → post-v1 feature enumeration  
+3. CM97/98 PDF → confirm Gen-2 editor / multi-league  
+4. Cross-check [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md)  
+5. Gaps → [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md)
 
 ---
 
@@ -116,4 +104,5 @@ Covers editor, multi-league setup, set-piece takers — primary source for Gen-2
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 4 — local archive in repo; CM1 menu extract; collection analysis doc |
 | 2025-06-25 | Round 2 — initial archive index |
