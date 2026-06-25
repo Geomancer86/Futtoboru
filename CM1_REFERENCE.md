@@ -203,7 +203,9 @@ CM1 superseded by **CM93/94** rather than patched.
 | **Daily Mirror** | **Graeme Souness** endorsement quote (May 1992 launch) | Wikipedia |
 | Domark | "Make Dreams Become A Reality" |
 
-### Review scores (Amiga)
+### Review scores (Amiga + multi-platform)
+
+**Curated high scores (design research focus):**
 
 | Publication | Score | Notes |
 |-------------|-------|-------|
@@ -211,6 +213,22 @@ CM1 superseded by **CM93/94** rather than patched.
 | **CU Amiga** | **84%** | |
 | **Amiga Reviews** (Level Up) | Positive | vs **The Manager** (US Gold); wrong div sizes; fake names |
 | **Amiga Format** | Listed | See [Amiga Magazine Rack](http://amr.abime.net/review_418) |
+
+**Full MobyGames critic table (shows era polarization):**
+
+| Publication | Platform | Score |
+|-------------|----------|-------|
+| **ST Action** | Atari ST | **93%** |
+| **Amiga Mania** | Amiga | **88%** |
+| **The One Amiga** #46 | Amiga | **89%** |
+| **CU Amiga** | Amiga | **84%** |
+| **Zero** | Amiga | **82%** |
+| **Press Play On Tape** | DOS | **80%** |
+| **Amiga Format** | Amiga | **41%** |
+| **Amiga Power** | Amiga | **38%** |
+| **Amiga Joker** | Amiga | **27%** |
+
+MobyGames critic average: **67%** (8 ratings). See [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md) for themes and Round 8 primary-scan backlog.
 
 **Review themes:**
 

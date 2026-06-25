@@ -1,0 +1,116 @@
+# CM Legacy — Research Coverage Audit
+
+**Purpose:** Honest answer to “do we have everything?” for CM1–CM4 and pre-CM1 precursors.  
+**Date:** 2025-06-25 · **Round:** 7 (coverage audit + gap plan)  
+**Related:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)
+
+---
+
+## Executive answer
+
+**No — we do not yet have complete, primary-source documentation for every early game.** The repo is strong on **CM1**, **CM2 expansions**, **CM3**, and **CM4 patches/community**, but several dimensions are thin or missing for **CM93/94**, **CM97/98**, **spin-offs**, and **contemporary press**.
+
+| Dimension | Early games (FM82 → CM9798) | Later (CM3–CM4) |
+|-----------|----------------------------|-----------------|
+| **Full manuals in repo** | CM1 ✅ · CM93 text ✅ · CM2 FR only ⚠️ · CM9798 scan ⚠️ | CM3 ✅ · CM4 ReadMe only ⚠️ |
+| **Patch story documented** | CM1 N/A · CM93 SKU updates ⚠️ · CM2 SKU + cm2fix ⚠️ · CM9798 “no patches” only | CM4 EP1–5 ✅ · CM3 partial ✅ |
+| **Expansion / data-disk story** | CM2 European Leagues ✅ · CM93 spin-offs listed ⚠️ · CM9798 as final SKU ⚠️ | CM3 seasonal family ✅ · CM4 successor 03/04 ✅ |
+| **Era reviews (scores + themes)** | CM1 partial · **CM93 now documented** · CM2/CM9798 shallow | CM3 PC Zone ✅ · CM4 multi-outlet ✅ |
+| **User feeling of the era** | CM1 modest · CM93 breakthrough narrative ⚠️ · CM9798 cult ⚠️ | CM3 golden age ✅ · CM4 launch crisis ✅ |
+
+**Bottom line:** Manual *content* for CM1 and CM93 is now usable for design research. **Patch/expansion chronology** and **period reception** need a dedicated pass for every SKU — see [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md) and [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md).
+
+---
+
+## Coverage matrix (Game × dimension)
+
+Depth: ★★★★★ Deep · ★★★★☆ Medium–Deep · ★★★☆☆ Medium · ★★☆☆☆ Shallow · ★☆☆☆☆ Missing
+
+| Game | Manual | Patches | Expansions | Era reviews | User reception | Dedicated ref doc |
+|------|:------:|:-------:|:----------:|:-----------:|:--------------:|:-----------------:|
+| **FM 1982** | ★★★★★ | N/A | ★★★☆☆ | ★★★★☆ | ★★★★☆ | [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md) |
+| **FM WCE 1990** | ★★★☆☆ PDF | — | — | ★☆☆☆☆ | ★☆☆☆☆ | Precursor README only |
+| **CM1 (1992)** | ★★★★★ | ★★★★☆ (none) | ★★★☆☆ | ★★★★☆ | ★★★★☆ | [CM1_REFERENCE.md](CM1_REFERENCE.md) |
+| **CM93/94** | ★★★☆☆ text | ★★☆☆☆ | ★★★☆☆ | ★★★★☆ | ★★★☆☆ | [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) **NEW** |
+| **CM Italia / Norge / Guy Roux** | ★☆☆☆☆ | ★☆☆☆☆ | ★★☆☆☆ listed | ★☆☆☆☆ | ★☆☆☆☆ | In CM93 + CM2 refs |
+| **CM2 (1995)** | ★★★☆☆ FR only | ★★★☆☆ | ★★★★★ | ★★☆☆☆ | ★★★☆☆ | [CM2_REFERENCE.md](CM2_REFERENCE.md) |
+| **CM96/97 data** | ★☆☆☆☆ | ★★☆☆☆ | ★★★☆☆ | ★☆☆☆☆ | ★★☆☆☆ | CM2_REFERENCE §5 |
+| **CM97/98** | ★★☆☆☆ scan | ★★☆☆☆ | ★★★☆☆ | ★★☆☆☆ | ★★★☆☆ | [CM9798_REFERENCE.md](CM9798_REFERENCE.md) **NEW** |
+| **CM3** | ★★★★☆ | ★★★☆☆ | ★★★★★ | ★★★☆☆ | ★★★★★ | [CM3_REFERENCE.md](CM3_REFERENCE.md) |
+| **CM4** | ★★☆☆☆ ReadMe | ★★★★★ | ★★★★☆ | ★★★★★ | ★★★★★ | [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) + community doc |
+
+---
+
+## What we have vs what “complete” means
+
+### Manuals (local archive)
+
+See [docs/research/manuals/README.md](docs/research/manuals/README.md).
+
+| Have full or near-full manual body | Partial / scan only | Not in repo |
+|--------------------------------------|---------------------|-------------|
+| FM 1982 HTML · CM1 HTML + extract · CM93 text extract · CM3 PDF + TOC · CM9798 image PDF · CM4 ReadMe | CM2 French PDF (not OCR’d) · FM WCE PDF (not analysed) | CM2 EN PDF · CM4 printed manual · CM93 PDF scan |
+
+### Patch story (every game)
+
+| Game | Documented? | Gap |
+|------|-------------|-----|
+| CM1 | ✅ No patches; superseded by CM93 | — |
+| CM93/94 | ⚠️ Update disks named; no version table | End-of-season edition versioning (v4.04) |
+| CM2 | ⚠️ Bosman in later SKUs; LaserLok + cm2fix | No dated patch list per v1.37 / v1.56 / v1.57 |
+| CM9798 | ⚠️ “No copy protection” only | No official errata list |
+| CM3 | ✅ Culture vs CM4; covermounts | Per-build fix list incomplete |
+| CM4 | ✅ EP1–5 deep | EP4 changelog thin |
+
+**Unified chronology:** [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md)
+
+### Expansion / data-disk story
+
+| Well documented | Listed only | Missing |
+|-----------------|-------------|---------|
+| CM2 European Leagues CD · CM3 seasonal family · CM4 EPs + 03/04 successor | CM Italia/Norge/Guy Roux · CM93 collection/update disks · CM96/97 | Per-SKU install sheets · Italian foreign-player rules primary source |
+
+### Era reviews & user feeling
+
+| Well documented | Partial | Missing |
+|-----------------|---------|---------|
+| CM4 launch press · CM3 PC Zone · CM1 The One/CU · **CM93 Amiga scores (Round 7)** | CM1 polarized low scores (Amiga Power 38%) · CM9798 “#1 UK” claim | CM2 magazine scores · CM9798 critic table · CM93 DOS/ST reviews |
+
+**Unified table:** [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md)
+
+---
+
+## Round 7 deliverables (this commit)
+
+| Doc | Purpose |
+|-----|---------|
+| This audit | Honest matrix + priorities |
+| [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) | Dedicated Gen-1 sequel reference |
+| [CM9798_REFERENCE.md](CM9798_REFERENCE.md) | Dedicated CM2-engine finale reference |
+| [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md) | Patch + expansion timeline all titles |
+| [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md) | Contemporary scores + player sentiment |
+
+---
+
+## Round 8+ backlog (no stone unturned)
+
+| Priority | Task | Primary sources |
+|----------|------|-----------------|
+| **P0** | OCR CM9798 + CM2 FR manuals | Archive.org djvu / pdftotext |
+| **P0** | CM93 structured menu extract (like CM1) | `CM93_Manual_LemonAmiga_Extract.md` |
+| **P1** | CM2 magazine review hunt | Amiga Magazine Rack, PC Zone, PC Gamer |
+| **P1** | CM9798 critic scores (MobyGames 6 ratings) | MobyGames, PC Zone archive |
+| **P1** | CM93 End-of-Season / Collection disk docs | Archive.org `Championship_Manager_94_End_of_Season_Edition_*` |
+| **P2** | CM Italia / Guy Roux / Norge feature diffs | MobyGames, in-box rules |
+| **P2** | CM4 printed manual scan (tactics pp. 55–61) | Redump, OpenRetro, eBay scans |
+| **P2** | FM WCE manual analysis § in PRE_CM1 | Local PDF |
+| **P3** | Read primary review scans (The One #46 CM1, AF #48 CM93) | Archive.org magazine OCR |
+| **P3** | Complete CM4 EP changelogs line-by-line | Dobbers FAQ, SIGames FTP readmes |
+
+---
+
+## Changelog
+
+| Date | Change |
+|------|--------|
+| 2025-06-25 | Round 7 — coverage audit; CM93/CM9798 refs; patches chronology; era reviews index |
