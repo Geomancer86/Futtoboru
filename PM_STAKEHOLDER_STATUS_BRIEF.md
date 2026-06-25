@@ -1,0 +1,240 @@
+# PM & Stakeholder Status Brief
+
+**Document type:** Project status / stakeholder communication  
+**Audience:** PM, PO, Sponsor, department leads, expert sign-off owners  
+**Branch:** `feature/competitions-finances-seasons` (v0.4.0-SNAPSHOT)  
+**Date:** 2025-06-25  
+**Next update:** After v1 P0 implementation sprint or major doc round
+
+---
+
+## 1. One-page executive summary
+
+**Futtoboru** is an open-source historical football management sim (1888–89 onward). The **feature branch** adds match simulation, finances, contracts, inbox, and jobs on top of a 2023 foundation — but **does not yet deliver the product promise**: play a season under correct rules, finish it, and start the next season forever.
+
+| Question | Answer |
+|----------|--------|
+| **Can we ship v1 today?** | **No** — season end, rollover, and historical rules are missing or broken |
+| **How far are we?** | **~35%** of v1 acceptance criteria; **~12%** of legacy CM4 system depth |
+| **Biggest risk** | Season lifecycle unwired despite partial code existing |
+| **Biggest asset** | Mod/data pipeline + 1888 researched content |
+| **Recommended focus** | P0 season loop (3 departments) before any CM4-depth features |
+
+**Competitive research completed (Jun 2025):** Full CM1–CM4 legacy wiki + FM2005+ bible Round 1 + gap analysis. Use for scope debates, not as v1 scope expansion.
+
+---
+
+## 2. Documentation inventory (what stakeholders can read)
+
+**Start here:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)
+
+### Project & governance
+
+| Document | For whom | Purpose |
+|----------|----------|---------|
+| [PROJECT_MASTER_ANALYSIS.md](PROJECT_MASTER_ANALYSIS.md) | PM, PO, Tech lead | Technical audit, branch reality |
+| [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | PO, QA | v1 acceptance criteria NG/PL/SC |
+| [STAKEHOLDERS_AND_DEPARTMENTS.md](STAKEHOLDERS_AND_DEPARTMENTS.md) | PM, PO | 6 departments, sign-off gates G1–G6 |
+| [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md) | All eng | Prioritized RB/C/H backlog |
+| [SYSTEMS_AND_FEATURES_REGISTRY.md](SYSTEMS_AND_FEATURES_REGISTRY.md) | Eng, QA | Screen/system status matrix |
+
+### Department deep dives (v1 core)
+
+| Document | Expert slot | Gate |
+|----------|-------------|------|
+| [DEPARTMENT_SEASONS_AND_RULES_V1.md](DEPARTMENT_SEASONS_AND_RULES_V1.md) | _____________ | G1 |
+| [DEPARTMENT_MATCH_AND_SIMULATION_V1.md](DEPARTMENT_MATCH_AND_SIMULATION_V1.md) | _____________ | G2 |
+| [DEPARTMENT_WORLD_AND_DATA_V1.md](DEPARTMENT_WORLD_AND_DATA_V1.md) | _____________ | G3 |
+| [DEPARTMENT_PLATFORM_AND_UX_V1.md](DEPARTMENT_PLATFORM_AND_UX_V1.md) | _____________ | G4 |
+
+### Competitive / design reference (Jun 2025 research rounds)
+
+| Document | Content |
+|----------|---------|
+| [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md) | CM1–CM03/04 timeline |
+| [CM1_REFERENCE.md](CM1_REFERENCE.md) | CM1 deep dive + manual + community |
+| [CM2_REFERENCE.md](CM2_REFERENCE.md) | CM2 + European expansions |
+| [CM3_REFERENCE.md](CM3_REFERENCE.md) | CM3 + 01/02 community golden age |
+| [CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md) | CM4 all game systems |
+| [CM4_COMMUNITY_DEVELOPERS_AND_SUPPORT.md](CM4_COMMUNITY_DEVELOPERS_AND_SUPPORT.md) | CM4 devs, patches, media, fansites |
+| [CM_MANUALS_ARCHIVE_INDEX.md](CM_MANUALS_ARCHIVE_INDEX.md) | Manual PDF sources (CM3, CM97/98, CM1) |
+| [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md) | **Legacy target vs codebase** |
+| [FM_COMPETITIVE_BIBLE.md](FM_COMPETITIVE_BIBLE.md) | FM2005+ index (Round 1) |
+
+---
+
+## 3. Project status by department
+
+### Core v1 departments
+
+| Department | Status | % to v1 gate | Top blocker |
+|------------|--------|--------------|-------------|
+| **Seasons & Rules** | 🔴 Red | ~15% | No `SeasonManager`; rules wrong; no rollover |
+| **Match & Simulation** | 🟡 Amber | ~45% | Sim works; no tactics input; completion unwired |
+| **World & Data** | 🟡 Amber | ~50% | Season 18 only; rules not in mods; season 19 missing |
+
+### Supporting
+
+| Department | Status | Notes |
+|------------|--------|-------|
+| **Platform & UX** | 🟡 Amber | Save/load gaps; no CI season test; Continue double-click bug |
+| **Economy & Club** | 🟢 Green-ish | Wages/expenses work; no transfer market |
+| **Roster & People** | 🟡 Amber | Attributes + contracts; no training/morale |
+
+### v1 acceptance criteria snapshot
+
+| Section | Pass | Partial | Fail |
+|---------|------|---------|------|
+| New game & season start (NG-*) | 4 | 1 | 2 |
+| In-season play (PL-*) | 3 | 4 | 1 |
+| Season completion (SC-*) | 0 | 0 | **6** |
+| Season rollover (SR-*) | 0 | 0 | **all** |
+
+Full criteria: [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) §4.
+
+---
+
+## 4. Competitive research conclusions (for scope control)
+
+### What "legacy CM4 parity" means for Futtoboru
+
+- **Not** 39 nations or 200k players  
+- **Yes** season loop, rules, league/cup structure, finances, contracts  
+- **Later** training, tactics, scouting, morale, media (CM3–CM4 depth)  
+- **Optional** 2D match engine (CM4) — abstract sim acceptable for v1  
+
+### Gap summary (feature branch vs CM4 systems)
+
+| Category | Futtoboru | CM4 had |
+|----------|-----------|---------|
+| Season completes + rolls | ❌ | ✅ |
+| Historical rules | ❌ | ✅ (modern rules) |
+| League + table | ⚠️ | ✅ |
+| Training / tactics / scouting | ❌ stubs | ✅ |
+| Transfers | ❌ | ✅ |
+| Board / fans / media | ❌ | ✅ |
+| 2D engine | ❌ | ✅ |
+| Mod/editor culture | ⚠️ txt mods | ✅ |
+
+Detail: [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md)
+
+### Research rounds complete / planned
+
+| Round | Status | Deliverable |
+|-------|--------|-------------|
+| FM Bible Round 1 | ✅ | FM2005–2010 + CM prelude |
+| CM Legacy Round 2 | ✅ | CM1–CM4 massive refs + manuals index + gap |
+| FM Bible Round 2 | 🔲 | FM2011–2015, FM2021–2023 |
+| CM Manual extraction Round 3 | 🔲 | CM3 PDF section map → feature registry |
+| CM03/04 supplement | 🔲 | Optional |
+
+---
+
+## 5. Critical path (PM schedule input)
+
+### Phase A — v1 blockers (estimate: 4–8 eng-weeks, TBD by experts)
+
+| # | Work item | Owner dept | Gate |
+|---|-----------|------------|------|
+| A1 | Wire `isLeagueComplete()` + champion | Seasons & Rules | G1 |
+| A2 | Apply 1888 `CompetitionRules` from mod | World & Data | G3 |
+| A3 | Implement `SeasonManager` + rollover | Seasons & Rules | G1 |
+| A4 | Season 19 mod folder + scripts | World & Data | G3 |
+| A5 | Fix friendly `matchesPlayed`, AuthorityManager, load/job init | Match + Platform | G2, G4 |
+| A6 | `SeasonPlaythroughIT` headless test | Platform & UX | G4 |
+
+### Phase B — CM1 parity polish (post-A)
+
+- Player match ratings · pick XI · board expectation · FA Cup decision  
+
+### Phase C — legacy CM3–CM4 depth (post-v1)
+
+- Tactics → training → transfers → scouting → morale/media  
+
+**PO decisions still open:** FA Cup in v1? Nov 1888 points rule? Unemployed start? Re-election?
+
+Document: [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) §8.
+
+---
+
+## 6. Branch & release reality
+
+| Branch | What it is |
+|--------|------------|
+| `main` | Public 0.2.0 (Jul 2023) — manual era only |
+| `develop` | Planning docs; no feature code |
+| **`feature/competitions-finances-seasons`** | **Source of truth** — v0.4.0-SNAPSHOT AI-era work |
+| `analyze-ai-branch` | Local docs branch (this documentation commit) |
+
+**Public GitHub does not show feature branch work** unless merged or pushed.
+
+---
+
+## 7. Stakeholder briefing guide
+
+### For **Sponsor / Business**
+
+- v1 is **not shippable**; core loop incomplete  
+- Investment thesis: historical niche + mod pipeline, not FM clone  
+- Ask: confirm v1 scope (league-only vs FA Cup; employed-only start)
+
+### For **Product Owner**
+
+- Use [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) for in/out  
+- Use [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md) to reject scope creep ("we need CM4 transfers" ≠ v1)  
+- Fill expert names in [STAKEHOLDERS_AND_DEPARTMENTS.md](STAKEHOLDERS_AND_DEPARTMENTS.md) §10
+
+### For **PM**
+
+- Track Phase A on board; gates G1–G4 block release  
+- Jenkins: `maven.test.failure.ignore=true` — fix before calling v1 stable  
+- Documentation hub ready for onboarding new experts
+
+### For **Department experts**
+
+| Expert | Read first | Sign-off |
+|--------|------------|----------|
+| Seasons & Rules | Dept doc + gap §3.2 | G1 |
+| Match & Sim | Dept doc + CM4 match § | G2 |
+| World & Data | Dept doc + CM_MANUALS | G3 |
+| Platform | Dept doc + BUGS registry | G4 |
+
+---
+
+## 8. Risks & issues (top 10)
+
+| ID | Risk | Severity | Mitigation |
+|----|------|----------|------------|
+| R1 | Season never completes in prod | Critical | Phase A1 |
+| R2 | Wrong 1888 rules shipped | Critical | Phase A2 |
+| R3 | No season 2 data | Critical | Phase A4 |
+| R4 | Save/load corrupts career | High | Phase A5 |
+| R5 | Scope creep to CM4 full parity | High | This brief §4 |
+| R6 | Expert slots unfilled | Medium | PO assigns names |
+| R7 | Dual league architecture confusion | Medium | World dept doc |
+| R8 | FA Cup half-built | Medium | PO decision |
+| R9 | CI ignores test failures | Medium | Platform gate |
+| R10 | Public repo stale vs feature branch | Low | Comms / merge plan |
+
+Full list: [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)
+
+---
+
+## 9. Recommended communications
+
+| Audience | Channel | Message |
+|----------|---------|---------|
+| All stakeholders | Share `DOCUMENTATION_INDEX.md` link | "Single doc hub live" |
+| PO + PM | This brief | Status + Phase A |
+| Experts | Dept deep dive + gap matrix | Own gate criteria |
+| Community (future) | After v1 | Feature branch merge announcement |
+
+---
+
+## 10. Document changelog
+
+| Date | Author | Change |
+|------|--------|--------|
+| 2025-06-25 | Research/doc sprint | Initial PM brief after CM Round 2 + gap analysis |
+
+**Distribution:** PM, PO, Sponsor, department leads. Update when Phase A starts or PO resolves open decisions.
