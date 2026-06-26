@@ -3,6 +3,8 @@
 **Purpose:** Track **binary samples** and **format documentation** for later reverse-engineering of OG Championship Manager data structures (CM1–CM4 and CM9798/CM3 family).
 
 **Parent ledger:** [CM_LEGACY_SOURCE_LEDGER.md](../../../CM_LEGACY_SOURCE_LEDGER.md) § Save games & tactics  
+**Cover CDs:** [CM_MAGAZINE_COVER_CD_INDEX.md](CM_MAGAZINE_COVER_CD_INDEX.md)  
+**Local samples:** [samples/MANIFEST.md](samples/MANIFEST.md)  
 **Community context:** [CM4_COMMUNITY_DEVELOPERS_AND_SUPPORT.md](../../../CM4_COMMUNITY_DEVELOPERS_AND_SUPPORT.md)
 
 ---
@@ -15,13 +17,16 @@
 | **CM4 / CM03/04** | Training schedule | `user data/` (`.sch` or similar — verify per install) | Session layout ↔ player growth |
 | **CM4 / CM03/04** | Pregame database | `server_db.dat`, `client_db.dat`, `people_db` | Static world schema; editors document field layout |
 | **CM01/02** | Season save | `*.sav` (uncompressed for editors) | Full runtime state; offset maps on Champman0102 |
+| **CM01/02** | Tactics (magazine CD) | `Tactics/*.exe` on cmmag-01 | **PE installers** (29,184 B) — deploy tactic into game folder |
 | **CM01/02** | Safe-save temp | `temp_save_file` | Two-phase write pattern |
-| **CM3** | Save game | `.sav` + Graeme Kelly editor | Magazine CD editor implies parseable layout |
+| **CM3 family** | Save game | `.sav` + Graeme Kelly editor | Raw attrs in `*.sav`; editor uses temp `*.dat` until Save |
 | **CM93/94** | Save game | “Save to disk” (manual); extension TBD | Early text-engine binary |
 | **CM1** | Season save | Season disk (Amiga/ST/DOS) | Pre-real-names schema |
 | **CM9798** | Save game | Multiple slots (manual) | Editor-era finale |
 
 **Load path (CM4 tactics):** copy `.tac` into tactics folder → Squad screen → Tactics → **Load** dropdown ([CM Tactics Centre FAQ](https://cmtacticscentre.proboards.com/thread/87/load-downloaded-tactic-cm4), 2003).
+
+**Graeme Kelly editor (from FAQ on disc):** games must be **uncompressed**; left column = raw `*.sav` values, right = displayed 1–20; also reads `*.pls` shortlists; `regentracking.dat` per save folder.
 
 ---
 
@@ -29,28 +34,22 @@
 
 | Source ID | File | Status | Notes |
 |-----------|------|--------|-------|
-| SRC-COMM-CASPERLAB-INDEX | [../sources/community/casperlab_cm4save_index_wayback.html](../sources/community/casperlab_cm4save_index_wayback.html) | **ACQUIRED** | CM4 save editor v0.02 page — edits **player attributes**; zip not archived |
-| SRC-COMM-NYGREEN | nygreen Wayback pages | **ACQUIRED** | Pregame editor; references `server_db.dat` |
-| SRC-COMM-JONNYRIVERS | jonnyrivers Wayback | **ACQUIRED** | CM4 editor v0.09b zip link — **zip not in Wayback** |
-| SRC-GFQ-CM4-IG1234 | ig1234 FAQ | **ACQUIRED** | **Text-only** tactics (formations 4-4-2 variants); no `.tac` binaries |
-| SRC-BIN-CMMAG01 | — | **REMOTE** | See archive.org below — not extracted locally yet |
-| SRC-BIN-CM4-TAC | — | **MISSING** | Need `.tac` + training schedule samples |
+| SRC-BIN-CMMAG01 | `_staging/cmmag-01/CMMag01.iso` | **PARTIAL** | Mounted R14; ISO gitignored |
+| SRC-BIN-CMMAG04 | — | **REMOTE** | **P0** — CM4 `.tac` + training per metadata |
+| SRC-TOOL-GK-CM3-EDITOR | `samples/cm3/tools/GraemeKelly_*` | **PARTIAL** | FAQ + CHANGES from cmmag-01 |
+| SRC-BIN-CM0102-TACT-EXE | `samples/cm0102/tactics/*.exe` | **ACQUIRED** | 3 of 15 tactic installers sampled |
+| SRC-BIN-CM4-TAC | — | **MISSING** | Hunt cmmag-04/05 next |
 | SRC-BIN-CM4-SAV | — | **MISSING** | Mid-season CM4 save folder |
-| SRC-BIN-CM1-SAV | — | **MISSING** | Amiga/ST season-disk save |
-| SRC-BIN-CM93-SAV | — | **MISSING** | CM93 save file |
-| SRC-TOOL-CASPERLAB-ZIP | `cm4saveeditor.zip` | **BLOCKED** | Wayback returns HTML wrapper only (~1.7 KB) |
-| SRC-TOOL-GK-CM3-EDITOR | On `cmmag-01` ISO | **REMOTE** | Graeme Kelly CM3 Save Game Editor |
+| SRC-COMM-CASPERLAB-INDEX | casperlab Wayback | **ACQUIRED** | Save editor v0.02 docs |
+| SRC-COMM-NYGREEN / JONNYRIVERS | Wayback | **ACQUIRED** | Pregame editor pages |
+| SRC-GFQ-CM4-IG1234 | ig1234 FAQ | **ACQUIRED** | Text-only tactics |
+| SRC-TOOL-CASPERLAB-ZIP | — | **BLOCKED** | Wayback zip = HTML shell |
 
 ---
 
-## Archive.org — high-value bundles (not yet mounted locally)
+## Archive.org — cover CD bundles
 
-| Item | URL | Contents (from metadata) |
-|------|-----|----------------------------|
-| **cmmag-01** | [archive.org/details/cmmag-01](https://archive.org/details/cmmag-01) | CM2/CM3 demos; **Graeme Kelly CM3 Save Game Editor**; CM01/02 demo + **tactics**; CM01/02 data update 3.9.67; CM4 rolling demo |
-| **cmmag-02 … cmmag-05** | `cmmag-02` … `cmmag-05` | Future CM Magazine cover CDs — extract file lists when hunting |
-
-**Next step:** mount `CMMag01.iso` and inventory `*.tac`, `*.sav`, editor `.exe` + any readme describing offsets.
+See [CM_MAGAZINE_COVER_CD_INDEX.md](CM_MAGAZINE_COVER_CD_INDEX.md) for issues 1–5.
 
 ---
 
@@ -61,32 +60,29 @@
 | Champman0102 offset index | [viewtopic.php?f=35&t=2802](https://champman0102.net/viewtopic.php?f=35&t=2802) | CM01/02 save/staff/player offsets |
 | CM0102 structures | [nic.hopto.org/open/cm010](https://nic.hopto.org/open/cm010) | C headers / memory layout |
 | CM0102Patch source | [github.com/nckstwrt/CM0102Patch](https://github.com/nckstwrt/CM0102Patch) | Save-load code paths |
-| Tool-making thread | [viewtopic.php?t=6259](https://champman0102.net/viewtopic.php?t=6259) | Translating pregame editor Pascal → Java; `server_db.dat` tables |
-| Graeme Kelly editor | [viewtopic.php?f=43&t=1554](https://champman0102.net/viewtopic.php?f=43&t=1554) | CM3 save editor usage; also on cmmag-01 |
+| Tool-making thread | [viewtopic.php?t=6259](https://champman0102.net/viewtopic.php?t=6259) | `server_db.dat` tables |
+| Graeme Kelly editor | [viewtopic.php?f=43&t=1554](https://champman0102.net/viewtopic.php?f=43&t=1554) | Also on cmmag-01 |
 
 ---
 
-## Hunt queue (P1 for RE)
+## Hunt queue
 
 | Priority | Target | Hunt vector |
 |----------|--------|-------------|
-| **P0** | Extract `cmmag-01` ISO → tactics + GK CM3 editor + any `.sav` | Local mount or `7z x CMMag01.iso` |
-| **P1** | CM4 `.tac` files (3–5 presets) | Wayback `champmanworld.com` downloads cid=2; CM Tactics Centre; boards.ie attachments |
-| **P1** | CM4 mid-season save directory | Community uploads; casperlab editor test saves |
-| **P1** | CM01/02 `.sav` (uncompressed) + `server_db.dat` | Champman0102 downloads; cmmag ISO |
-| **P2** | CM93/CM1 Amiga save | ABIME / Lemon / archive.org `msdos_Championship_Manager_1992` bundle |
-| **P2** | CM9798 save slot sample | Editor community; archive.org CM96-97 family items |
-| **P2** | Jonny Rivers + casperlab **binaries** | Alternate mirrors; `cm4patch` collections |
-| **P3** | Training schedule files (CM03/04) | boards.ie “Super Training Schedule” threads |
+| **P0** | Extract **`cmmag-04`** → CM4 `.tac` + training schedules | Mount ISO; grep `*.tac`, `*.sch` |
+| **P1** | CM4 mid-season save directory | Community uploads |
+| **P1** | CM01/02 `.sav` (uncompressed) | Generate from cmmag-01 CM0102 demo + editor |
+| **P2** | CM93/CM1 Amiga save | ABIME / game bundles |
+| **P2** | Copy GK Save Editor `SETUP.EXE` from cmmag-01 | If live RE session needed |
 
 ---
 
 ## Acquisition rules
 
-1. **Do not commit** full magazine ISOs (372 MB+) — record archive.org ID + extracted filenames only.
-2. Store binaries under `samples/<game>/` with a one-line `MANIFEST.md` per folder (game version, patch level, source URL).
-3. Pair every sample with **game version + patch** (e.g. CM4 EP5, CM01/02 v3.9.68).
-4. Prefer **uncompressed** CM01/02 saves when editors are the goal (see Graeme Kelly FAQ).
+1. **Do not commit** full magazine ISOs — `_staging/*.iso` is gitignored.
+2. Store binaries under `samples/<game>/` with [MANIFEST.md](samples/MANIFEST.md).
+3. Pair every sample with **game version + patch**.
+4. Prefer **uncompressed** CM01/02 saves for editor RE.
 
 ---
 
@@ -94,4 +90,5 @@
 
 | Date | Change |
 |------|--------|
-| 2025-06-25 | Round 13 — saves/tactics track opened; casperlab index; cmmag-01 catalogued; format table |
+| 2025-06-25 | Round 14 — cmmag-01 extract; cover CD index; GK FAQ/CHANGES + CM0102 tactic exes |
+| 2025-06-25 | Round 13 — track opened; casperlab index; cmmag-01 catalogued |

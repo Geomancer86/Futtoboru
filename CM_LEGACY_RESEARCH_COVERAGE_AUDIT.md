@@ -1,7 +1,7 @@
 # CM Legacy — Research Coverage Audit
 
 **Purpose:** Honest answer to “do we have everything?” for CM1–CM4 and pre-CM1 precursors.  
-**Date:** 2025-06-25 · **Round:** 13 (saves/tactics RE track; coverage sync)  
+**Date:** 2025-06-25 · **Round:** 14 (cmmag-01 extract; cover CD index)  
 **Related:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)
 
 ---
@@ -17,7 +17,7 @@
 | **Expansion / data-disk story** | CM2 European Leagues ✅ · CM93 spin-offs listed ⚠️ · CM9798 as final SKU ⚠️ | CM3 seasonal family ✅ · CM4 successor 03/04 ✅ |
 | **Era reviews (scores + themes)** | CM1 **The One #46 primary ✅** · **CM93 five UK mags primary text ✅** · **CM2 PC Zone #31 ✅** · CM9798 shallow | CM3 PC Zone ✅ · CM4 multi-outlet ✅ |
 | **User feeling of the era** | CM1 modest · CM93 breakthrough narrative ⚠️ · CM9798 cult ⚠️ | CM3 golden age ✅ · CM4 launch crisis ✅ |
-| **Save/tactics binaries (RE)** | CM1/CM93 saves ❌ · CM9798 saves ❌ | CM4 `.tac`/saves ❌ · CM01/02 `.sav` ❌ · **cmmag-01 ISO catalogued ⚠️** |
+| **Save/tactics binaries (RE)** | CM1/CM93 saves ❌ · CM9798 saves ❌ | CM4 `.tac`/saves ❌ · CM01/02 **tactic exes + editor docs ✅** · **cmmag-04/05 catalogued ⚠️** |
 
 **Bottom line:** Manual *content* for CM1 and CM93 is now usable for design research. **Patch/expansion chronology** and **period reception** need a dedicated pass for every SKU — see [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md) and [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md). **Binary save/tactics samples** for reverse-engineering are tracked in [docs/research/saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md).
 
@@ -105,7 +105,18 @@ See [docs/research/manuals/README.md](docs/research/manuals/README.md).
 
 ---
 
-## Round 13 deliverables (this commit)
+## Round 14 deliverables (this commit)
+
+| Doc / asset | Purpose |
+|-------------|---------|
+| `saves-and-tactics/samples/` | GK Save Editor FAQ+CHANGES; 3× CM0102 tactic PE installers; CM0102 doc |
+| [CM_MAGAZINE_COVER_CD_INDEX.md](docs/research/saves-and-tactics/CM_MAGAZINE_COVER_CD_INDEX.md) | cmmag-01–05 metadata; #4/#5 = CM4 `.tac` source |
+| `_staging/cmmag-01/CMMag01.iso` | Local mount source (gitignored) |
+| Ledger + saves README | SRC-BIN-* updates; CVG140 still missing |
+
+---
+
+## Round 13 deliverables
 
 | Doc / asset | Purpose |
 |-------------|---------|
@@ -165,7 +176,7 @@ See [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) § Round 10+ priori
 
 | Priority | Task | Primary sources |
 |----------|------|-----------------|
-| **P0** | Extract `cmmag-01` ISO → tactics + CM3 save editor | [saves-and-tactics](docs/research/saves-and-tactics/README.md) |
+| **P0** | Extract **`cmmag-04`** → CM4 `.tac` + training | [saves-and-tactics](docs/research/saves-and-tactics/README.md) |
 | **P0** | OCR CM9798 + CM2 FR manuals | Archive.org djvu / pdftotext |
 | **P1** | CM4 `.tac` + mid-season save samples | SRC-BIN-CM4-* |
 | **P1** | CVG #140 Jul 1993 CM93 review (ABIME / alternate scan) | SRC-MAG-CVG140 |
@@ -182,6 +193,7 @@ See [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) § Round 10+ priori
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 14 — cmmag-01 samples; CM Magazine CD index |
 | 2025-06-25 | Round 13 — saves/tactics RE track; coverage audit sync |
 | 2025-06-25 | Round 12 — AP #27 CM93 OCR; nygreen/jonnyrivers Wayback |
 | 2025-06-25 | Round 11 — The One #46 CM1 OCR; AP27/CVG140 hunt notes |

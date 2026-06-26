@@ -132,6 +132,7 @@ Detail: [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.m
 | CM Manual deep analysis Round 5 | ✅ | [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) |
 | CM source hunt Rounds 9–12 | ✅ | [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) — magazine OCR, Wayback, AP27/TONE046 |
 | CM saves/tactics RE Round 13 | ⚠️ | [saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md) — formats catalogued; binaries pending |
+| CM Magazine CD extract Round 14 | ⚠️ | cmmag-01 samples + cover CD index; **cmmag-04 `.tac` next** |
 | CM03/04 supplement | 🔲 | Optional |
 
 ---

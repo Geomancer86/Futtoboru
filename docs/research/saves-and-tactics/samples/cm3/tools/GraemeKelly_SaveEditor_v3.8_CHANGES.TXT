@@ -1,0 +1,324 @@
+v3.8 - October 2002
+---------------
+Severe performance increase when accessing contracts. Cm0102 only.
+Contract editing (CM0102) now shows games missed/player in a row. Good for helping retain work permits, though largely unresearched. Just thrown in randomly into the Club unhappiness tab under contracts
+Removed squad numbers editing since it didn't work
+Fixed problem whereby you couldn't edit playing attributes of player/noplayers
+Added support for "Exhausted" under player conditions - not CM3 9899 though
+Minor changes to Likes/Dislikes current manger function. Not all preferences are set by default. Only if full. If there's a space, its used.
+Also a check added here to make sure if the player/staff already has the like/dislike, then its not added again
+Fixed: scout problem where selecting FreeTransfer after setting contract details would never return any matches
+Fixed: Problem where clearing/calling up players to international squads didn't work.
+Removed: Languages spoken under nations editing - since it has never worked.
+Custom command "Set condtion to 100%" should now remove any Exhausted/LackingMatchPractice flags
+Fixed: Major problem (corrupt, unusable game) with player condition editing. ("notes.cpp" errors)
+Club search combo bow allows text input for easier searching
+Re-added the progressbar shown when saving
+Regenerated player watch/unwatch buttons are moved so they're visible no matter what tab you're on.
+Added: Scout for retiring players (CM0102) - good for when you want to watch for regeneration
+Added: Feature to 'List' all players who are currently being watched for regeneration
+Fixed: Under contracts (CM0102), 2 loan clauses (matches against club, and cup matches) were mixed up.
+Tweaked: Export to CSV function - now exports player attributes in their *real* (1-20) format. Also prompted for filename now.
+Tweaked: Export to TXT functions under scout and regens tabs. Added prompt for filename.
+Added: Now displays game date for Cm0001 games as well. On the title bar.
+Added: installation set options - select which Cm3 Series games you've got installed in order to edit them.
+Scout feature: Fixed "Can Be Foreigner Based Here" option
+Removed 'sabotage club' feature. Will be back, and better in v3.9
+Tweaked INI file handling
+Player attributes are now displayed in the usual 1-20 fashion. May not be 100% accurate, but its close!
+Fixed: 'terminating' contracts now sets status to rolling
+Fixed: Extending rolling contracts now changes them to full time ones
+Added: CM0102 Only: Ability to turn 'Fog of War' on and off.
+Added: Contracts for CM3 (98/99 version)
+Added: Count of matching items in staff search, scout, regen watch and squad listings
+Probably a few minor new things you'll notice - I customised it for my own use and never documented the changes...
+
+UNINSTALL v3.7 FIRST - OTHERWISE YOU'LL GET PROBLEMS!
+
+
+v3.7 - April 2002
+-----------------
+Fixed Major (but rare) Manager Job Bug
+Added Option in Custom Button To Set Whole Squad To 100% Fitness
+Added City Attraction Editing (Under Clubs->Stadiums)
+Added Player Condition Editing(Cm9900, Cm0001 and Cm0102 Only)
+Lacking Match Practice Option(Cm9900, Cm0001 and Cm0102 Only)
+Fixed a very major problem with the regens finder. Definately working now. Not sure if your stored data will still work. If not, delete the appropriate regentracking.dat file from your CM directory and try again.
+Fixed 'Bad Record Number' Error When Changing Player Attributes Via ListBox Function
+Export To CSV now has current and ability and potential ability output.
+
+v3.6.3 - March 2002
+-------------------
+Minor Preferences Fix
+Added Shortcut To Changes.txt in the start menu
+Added Shortcut To FAQ in the start menu
+
+
+v3.6.2 - March 2002
+-------------------
+Fixed National Team Callup Problem
+Fixed Nation Management Problem
+Fixed 'Set All Attributes For Current Squad' Problem
+Few Minor UI changes.
+
+v3.6.1 - March 2002
+--------------------
+Fixed Small Preferences Problem
+
+
+v3.6 - March 2002: FINAL VERSION
+-----------------
+Fixed all problems with v3.5
+Checked Everything; All Should Be In Working Order.
+Can Now Clear National Squads
+Export Regen Findings To Text File
+Fixed Regens Problem. You'l need to delete <save filename>/regentracking.dat from your CM directory first. Or use the new 'clear all regens' button.
+Can now add/remove players from international squad
+Added 'Can Be Foreigner Based ere' in scout function
+Added cancel button in scout function
+Added Export To CSV (Playing Squads)
+
+v3.5 - February 2002
+-----------------
+Added Exporting to text file of scout results
+Changed ProgressBar to 'Real' ProgressBar
+Modified nation editing severely; you can now edit stadiums, training facilities, attendances, reputations etc - just like clubs.
+Can now call up players to national squads
+Fixed (Very)Rare Preferences Viewing Problem
+Fixed a Problem Loading Data For 'Fictional' Games (Use Real Players Option in the CM New Game Menu)
+Fixed rare date problem.
+Added Assistant Manager to 'List Squad' command.
+Setting Values to 20, now leaves InjryProneness at 1
+Full Preference Editing (Right Click Menu)
+Tweaked 'Regen' Finding Severely - should now work fully.
+Added 'Watch Whole Squad' For Regens
+Made It Easier To Remove regen Watches.
+Fixed 'Transfer regens List To Main Lisbox Function
+Added Terminate Contract/Loan Contract (Cm0102 Only)
+Added Terminate All Contracts (Cm0102 Only)
+Removed Completely, all traces of '127 functions' as this can be prone to game crashes.
+Tweaked CM0102 version Detection, to attemp to load contracts automatically.
+
+v3.4.1 - February 2002
+--------------------
+
+Fixed regens problem
+Fixed 'clear all' problem under club unhappiness in contracts tab.
+
+
+v3.4 - February 2002
+--------------------
+Fixed (I think) Run Time Error 13 on some computers 
+Fixed slight problem where changing a contract would remove a player from the transfer list 
+Added (Taken Me Ages) Options For Editing A Players future status (unhappy ones only currently) - eg 'Wants First Team Football'
+Added Options to set/reset players current unhappy status with regards to his club - eg "Believes The Club Needs More Squad Depth"
+Added 'Transfer List Whole Squad'
+Added Ability To Add PLayers To An Open Shortlist
+Added Ability To Remove PLayers From An Open Shortlist
+Few Minor Changes
+Slightly Changed Installer Program
+You can now change a Retiring Player's retiral Date. (Cm0102 Only)
+Sorted Little Problem Updating Contract Expiry Dates
+Changed Squad Status Listbox to 4 Checkboxes; One for each status
+Added 'Player Clipboard' - easy Way To Clone Player ratings
+Added WinXp Styles Support
+Added Registry Detection of CM0102 version for loading of contracts/Retirals (thanks Mark Nash)
+Added Scout Function - scout ages, abilities, reputations, minimun fees, unhappy players, fee transfers and positions.
+Updated FAQ.txt since I'd never changed it to incorporate changes.
+Fixed slight problem editing some nations (South Africa etc, due to missing spoken language data)
+Sorted Some Contracts Inconsistencies
+Added regen Finder (see FAQ.txt for how to work this, please don't email me)
+Re-added Club Preference editing (currently only deleting preferences is supported)
+
+
+v3.3 - January 2002
+--------------------
+Added Contract Editing For CM0102 versions 3.9.60 to v3.9.65
+Fixed Date Of Birth Problem, where player's ages didn't update if they were changed.
+Fixed Preferenes Problem, when changing preferences
+Fixed SquadNo Problem, not saving
+Fixed Player Value Problem, not saving
+NowAdds Current Game Date To Titlebar of Cm0102 games.
+Fixed Small Problem With Loading Editor (Run Time Errors 13 and 5)
+Sorted Problem Retaining Custom Button Checkbox values
+Fixed Menu Command 'Abilities to 200' which didn't work
+Changed - and + buttons to combined 'UpDown' control to the right of appropriate textboxes.
+
+
+v3.2 - December 2001
+--------------------
+Added Import Shortlist Facility
+Created 2 EXEs, one for XP, and one For Win98 (fixes Win98 run time error 5)
+Removed the full install program (most people will have the required files, but if you don't have them, you can get them at
+	http://support.microsoft.com/default.aspx?scid=kb;en-us;Q290887
+
+v3.1 - December 2001
+--------------------
+Removed Competition editing, due to a problem I couldn't fix
+Removed Listing of clubs on right (you can still edit a club, by searching for one of their players)
+Moved the Sabotage Club button to the main club form
+Decreased loading spee due to removal of these.
+Optimised some more code, removing unused database definitions.
+Added Support for Recognising, and changing, players being cup-tied for europe
+Added XP Compatability!
+Small bug fixes.
+Improved INI file support.
+
+This will probably be the last major update, but I'll release a new version if anyone spots any bugs, or
+anyone wants to have a play around with my source code and do more work on it. Get the source code from either
+www.graemekelly.com or www.webgoals.net
+
+v3.0 - November 2001
+--------------------
+Removed City Viewing(No need to load it, since it was not editable)
+Removed 'export to disk' function in main player screen
+Removed Splash Screen completely
+Other minor things removed
+optimised some code(decreased EXE size, and speed of program):-
+			   removed unused/un-needed code
+			   removed unused variables/types
+			   removed controls
+Modified progressbars on loading and saving data
+Full CM3 series compatability!
+Removed Runtime dependencies(decreased installer size)
+Changed intstaller program
+Changed Use Of INI File
+Added Nation Strips Editing
+Added Listing Of Staff/Directors/Chairman in main 'List Squad' Button
+Added support for staff/directors/chairman in custom button commands
+Removed tootlips.
+Other Stuff.
+
+
+v2.9 - August 2001
+------------------
+Modified Readmes
+Removed About Box
+Added Command Line Functionality (Create a shortcut with "-filename.sav" to utilise this.
+More settings saved, so you don't have to check boxes every time you load the editor.
+Modified Splash Screen
+Few Minor Changes To Layout
+Fixed 'Bad Record Number' Error when editing clubs
+Fixed Mismatched Club Colour Previews
+You can now edit playing ratings of player managers/coaches etc.
+Main Form Caption Now Tells you what file is being edited. (Requested by a few people)
+Added More Player Preference Functions - 'Likes/Dislikes His Manager' and 'Likes/Dislikes His Club'
+Fixed Small Club Preferences Error
+All Teams are now listed to the right of the main screen, instead of having to search for them, just select from the list.
+Optimised Loading Speed By removing the load of uneditable data.
+Fixed small date of birth problem where dates were sometimes incremented.
+Removed Need for COMDLG32.OCX in full install.
+Removed toolbars and statusbars.
+Removed the loading of continent data, since it was read only anyway.
+Added CM 99/00 Compatability
+Few Other Minor Changes.
+
+v2.8 - July 2001
+-----------------
+Modified 'Sabotage Club' option - can now set lower limit for random number (use to make teams better etc)
+Added Competition Editing - edit league standards etc
+Added Nation Editing - edit UEFA/FIFA Coefficients, EEC Status etc.
+Categorised Player Functions - 'Improvements' or 'Deteriorations'
+Added new 'good' player function; making players strong and pacey
+Added 3 'bad' player functions; making players injury prone
+			      ; making players 'psycho's
+			      ; setting players morale to 1
+Modified 'Set all to 127' button; it now sets aggression to 1
+Added Custom Button' where you can customise a command button to call each of the menu functions in 1 go! Also, 
+	you can limit this to your first team squad only or just the selected player.
+
+v2.7 - July 2001
+-----------------
+Fixed (AT LAST!) error where it doesn't work for some computers for no apparent reason. (I found a reason, and fixed it!)
+		- o fix this problem, you need to download the FULL INSTALL (available www.graemekelly.com)
+Thoroughly optimised loading speed.
+Fixed minor bug when editing a National Team Manager
+Added Squad Number Editing
+Added Player Value Editing
+Fixed Player date of birth problem that was disabled in v2.6
+Modified Progressbar Slightly
+
+v2.6 - May 2001 - 1st real major update - I had some spare time, so decided to make a few changes
+-----------------
+=======================
+FIXED IN PUBLIC VERSION (As result of beta testing)
+=======================
+Fixed club player preferences bug
+Fixed club rival teams bug
+Added searching to club preferences/rival teams facility
+Added Plus/Minus Buttons To Stadiums
+Disabled scout facility as it didn't work. I'll improve this in the next version.
+Fixed International goals problem
+Added Progressbar to loading game function.
+Temporarily Disabled Day and Month of Birth Editing - till I get it fixed
+Added Checkbox to Sabotage options, to allow you to choose what to sabotage.
+=====================
+FIXED IN BETA VERSION
+=====================
+I spent a few hours testing each function individually, to eliminate all errors. Fixed the following bugs:
+Problem where you cant type a "0"
+Changed function described in (v2.5) to choose between whole team or just current player.
+Added "-" and "+" buttons to the left and right of each numeric textbox, so the user can now do almost everything with the mouse.
+Changed about dialog
+Created Changes.txt
+Created FAQ.txt
+Updated layout of scout screen slightly ; added description of how to work it on the left
+Changed about dialog
+Fixed Club preferences searching problem
+Added Club Sabotage Function
+Removed Scout For Out of Contract Players as it didn't work (I'll try and fix this in later versions.)
+Fixed Player Preferences Updating Problem
+Added Splash Screen
+
+v2.5 - May 2001
+-----------------
+
+Added function to changes all players in a squad's selected attributed to the one value, with the click of a button.
+
+v2.4 - March 2001
+-----------------
+
+Added toolbar, status bar.
+Added command buttons to set current player/staff's attributes to either 1, 20 or 127
+Fixed Save Bug
+
+v2.3 - March 2001 
+-----------------
+
+Added search for club/player when editing preferences.
+Minor bugfixes.
+Allowing you to set as International managers 
+
+v2.2 - March 2001
+-----------------
+
+Couple of minor bug fixes. Added player/staff preferences editing
+
+v2.1 - March 2001
+-----------------
+
+Added Club Editing and scout function, and some minor bugfixes
+Added tooltip text to all(I think) controls
+
+v2.0 - March 2001 
+-----------------
+
+New Improved look 
+New Pictures, logos etc. 
+Buttons which allow you to easily maximise or minimise particular attributes 
+Search by club feature now included 
+
+v1.2 - March 2001
+-----------------
+Initial releases for testing. There were a few bug fixes here.
+These inluded (but not limited to);
+	Fixed Date of birth problem
+	Screen resoultion problem
+	Changed the interface
+	About dialog poroblem (where it wouldn't load)
+
+---------------------------------------------------------------------
+This program is 100% freeware, so you can redistribute it as you like.
+If you are hosting it, I'd be grateful if you could link to
+my website (www.graemekelly.com) where you can always find the latest version.
+---------------------------------------------------------------------

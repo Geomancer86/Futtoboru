@@ -4,7 +4,7 @@
 
 **Parent:** [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md)  
 **Local files:** [docs/research/sources/README.md](docs/research/sources/README.md)  
-**Date opened:** 2025-06-25 · **Round:** 13 (saves/tactics RE artifact hunt)
+**Date opened:** 2025-06-25 · **Round:** 14 (cmmag-01 extract; cover CD index)
 
 ---
 
@@ -100,6 +100,17 @@
 | R13 | CM4 tactics format | **CONSULTED** — `.tac` in `user data/tactics` (CM Tactics Centre FAQ, 2003) |
 | R13 | CM01/02 RE docs | **CONSULTED** — Champman0102 offset index + nckstwrt GitHub (not archived locally) |
 | R13 | Shell note | Round 12 parallel `curl \| Select-Object` hung ~20 min (4 terminals); use `Invoke-WebRequest -TimeoutSec` on Windows |
+
+## Round 14 session log
+
+| When | Action | Result |
+|------|--------|--------|
+| R14 | Download + mount `cmmag-01` ISO | ✅ Local `_staging/` (372 MB, gitignored) |
+| R14 | Extract samples to `saves-and-tactics/samples/` | ✅ GK Save Editor FAQ+CHANGES; 3× CM0102 tactic `.exe`; CM0102 description doc |
+| R14 | Disc inventory | 15× CM0102 tactic PE installers in `Tactics/`; SaveGameEditorv3.8 for CM9899–0102 |
+| R14 | [CM_MAGAZINE_COVER_CD_INDEX.md](docs/research/saves-and-tactics/CM_MAGAZINE_COVER_CD_INDEX.md) | ✅ cmmag-01–05 metadata; **#4/#5 list native CM4 `.tac`/schedules** |
+| R14 | CVG #140 archive identifier search | ❌ MISSING — no `*CVG*140*` item; Jul 1993 issue absent from `cvg-magazine` |
+| R14 | GameFAQs CM3 Wayback CDX | ❌ BLOCKED — web.archive.org connection failed R14 |
 
 ---
 
@@ -292,18 +303,24 @@ Full hunt matrix: [docs/research/saves-and-tactics/README.md](docs/research/save
 
 | Source ID | Artifact | Game | Status | Notes |
 |-----------|----------|------|--------|-------|
-| SRC-BIN-CMMAG01 | Magazine cover CD ISO | CM2–CM4 demos + tools | **REMOTE** | [cmmag-01](https://archive.org/details/cmmag-01) — GK CM3 save editor + CM01/02 tactics on disc |
-| SRC-BIN-CM4-TAC | `.tac` tactics presets | CM4 | **MISSING** | Load via `user data/tactics` |
+| SRC-BIN-CMMAG01 | Magazine cover CD ISO | CM2–CM4 demos + tools | **PARTIAL** | ISO `_staging/`; [samples/MANIFEST](docs/research/saves-and-tactics/samples/MANIFEST.md) |
+| SRC-BIN-CMMAG04 | [cmmag-04](https://archive.org/details/cmmag-04) | CM4 `.tac` + training | **REMOTE** | Metadata confirms; **P0 extract R15** |
+| SRC-BIN-CMMAG05 | [cmmag-05](https://archive.org/details/cmmag-05) | CM4 + CM03/04 tactics | **REMOTE** | Not downloaded R14 |
+| SRC-BIN-CM0102-TACT-EXE | `samples/cm0102/tactics/*.exe` | CM01/02 | **ACQUIRED** | PE installers from cmmag-01 (15 on disc) |
+| SRC-BIN-CM4-TAC | `.tac` tactics presets | CM4 | **MISSING** | Expected on cmmag-04/05 |
 | SRC-BIN-CM4-SAV | Mid-season save folder | CM4 | **MISSING** | Pair with EP/patch version |
 | SRC-BIN-CM0102-SAV | `.sav` uncompressed | CM01/02 | **MISSING** | Editors require uncompressed saves |
 | SRC-BIN-CM93-SAV | Save file | CM93 | **MISSING** | Manual: “save to disk” |
 | SRC-BIN-CM1-SAV | Season disk save | CM1 | **MISSING** | Amiga/ST/DOS variants differ |
 | SRC-COMM-CASPERLAB-INDEX | Save editor docs | CM4 | **ACQUIRED** | `casperlab_cm4save_index_wayback.html` |
 | SRC-TOOL-CASPERLAB-ZIP | Save editor binary | CM4 | **BLOCKED** | Wayback zip not preserved |
+| SRC-TOOL-GK-CM3-EDITOR | `samples/cm3/tools/GraemeKelly_*` | CM9899–0102 | **PARTIAL** | FAQ+CHANGES; SETUP.EXE on disc not copied |
 | SRC-FORMAT-CM0102-OFFSETS | Offset index thread | CM01/02 | **CONSULTED** | champman0102.net f=35 t=2802 |
 | SRC-FORMAT-NCKSTWRT-GH | CM0102Patch / Loader | CM01/02 | **CONSULTED** | GitHub save-load paths |
 
 ---
+
+## Blocked sources & workarounds
 
 | Source | Block reason | Workaround |
 |--------|--------------|------------|
@@ -319,7 +336,8 @@ Full hunt matrix: [docs/research/saves-and-tactics/README.md](docs/research/save
 
 | P | Task | Source IDs |
 |---|------|------------|
-| P0 | Extract `cmmag-01` ISO → tactics + CM3 save editor | SRC-BIN-CMMAG01 |
+| P0 | Extract **`cmmag-04`** ISO → CM4 `.tac` + training schedules | SRC-BIN-CMMAG04 |
+| P0 | Extract **`cmmag-01`** SETUP.EXE (GK editor) if needed for live RE | SRC-TOOL-GK-CM3-EDITOR |
 | P0 | OCR CM9798 + CM2 FR manuals | Manuals backlog |
 | P1 | CM4 `.tac` + mid-season save samples | SRC-BIN-CM4-* |
 | P1 | CVG #140 Jul 1993 CM93 review | SRC-MAG-CVG140 |
@@ -336,6 +354,7 @@ Full hunt matrix: [docs/research/saves-and-tactics/README.md](docs/research/save
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 14 — cmmag-01 mount/extract; CM Magazine CD index; GK editor docs |
 | 2025-06-25 | Round 13 sync | Coverage audit + PM brief; shell hunt note |
 | 2025-06-25 | Round 13 — saves/tactics RE track; casperlab index; cmmag-01 catalogued |
 | 2025-06-25 | Round 12 — AP #27 CM93 OCR; nygreen/jonnyrivers Wayback; CVG140 still missing |

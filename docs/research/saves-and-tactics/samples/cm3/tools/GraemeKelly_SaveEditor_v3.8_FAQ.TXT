@@ -1,0 +1,42 @@
+CM3 Series SaveGame Editor FAQ
+------------------------------
+
+How do I start?
+---------------
+
+Download and save the zip file. Unzip (eg using WinZip) and run setup.exe to install.
+
+How do I open my game?
+---------------------
+
+Before doing anything, please take the time to backup your saved game. I am not responsible for any losses you may incur when using this editor. After doing this CLOSE CM DOWN, then run the editor (there will be a shortcut in the start menu) and from there, its easy. First time, you'll be prompted with an options dialog. Select the CM3 version(s) you have installed (by clicking the checkbox, then browsing for the Cm executable) and click OK. This is to enable the editing of contracts. I need to know the CM version so I can decide what part of code to run. After confirming, click 'Open' to open your game. Browse via the dialog given and from there it will open your game. Note that games must be UNCOMPRESSED for the editor to be able to load their data. See Game Settings within CM.
+
+What next?
+----------
+
+OK, I'll split this up a bit, and describe the main functions of the editor. Its fairly simple to work out yourself, but you never know!
+
+Searching for a player: Couldn't be simpler. Bottom left of the main screen, you'll see text that says "Graeme Kelly". This is the seearchtext. Enter your search here - it has to be 3 characters long, at least. Supports searching for player nicknames as well. Once searched, the list of matching players will appear at the listbox above. Click on the player you want to load his details. Editing is fairly simple - there are various tabs with all sorts of data on them. Make your changes, and click on 'update' at the bottom left. One thing noteworthy is the player/staff attributes. These are listed twice. Left column is the "raw" value as per the *.sav file. Right column is the value you see in CM. Changing the "raw" will update the displayed value, so you have an accurate representation of the data. And finally on this part - editing player preferences. On the 'attributes 2' tab, you'll see the various preference lists. Click one and press the backspace key to remove it. Or click on, then right click to see the menu of actions - edit and delete from here. Note that this is auto-updated (it is entirely independent from the 'update' button mentioned above).
+
+Player/staff contracts: As per the contract tab, you'll see various options for the players contract. Its all very self-explanitory. The only thing is that there is a separate 'update contract' button on the bottom right of this tab. Please remember to click on this after making changes to a player's contract!
+
+Load *.pls feature: Near the bottom left (again) you'll see this button. It its to load saved shortlists from CM. Browse for the file and click to open. It will list the players so you can view/edit them as normal. You can also add/remove players from your shortlist. Though, to be honest it would be safer doing this from within CM. It should work though - I tested it. Also it would be a good idea to make backups of your shortlist files, just in case!
+
+Transferring players: I'm afraid that in my editor, this is simply not possible. Its far too difficult for me to implement satisfactorily, and has too many unknown implications on the game. Fear not, for a workaropund is here - edit the player's contract. From here, you can list him, make him unhappy, insert minimum fees, change other clauses etc. And then just restore your game and buy him 'legitimately'.
+
+Searching for a club: Again, bottom left. You'll see an option box that syas "Clubs". Select this (default is normally set to player searching) and you can choose your club from the dropdown box that will appear where the search text described above would be. This will list all the players and staff found for that club. To edit the club itself (stadium, reputation, strip colours, training facilities, club status) then click on one of the players it lists, and near the bottom of the first tab, you'll see the 'edit club' button.
+
+Editing Nations: Unfortunately, not a very good interface in this editor. You can still edit nations though. Search for a player/nonplayer from that nation and click his name to load his details. On the first tab, you'll see his primary and secondary nations listed. There's an 'edit nation' button next to these. Edit reputation, stadium etc. And remove players from the national team squad.
+
+Editing Referees: Tab on the far right, with separate search text (referee name) and results listbox. Fairly simple. Search for the ref, then click his name to load the data to the screen. Again, there is a separate 'update' button for referees.
+
+Scout feature: On the scout tab, is the listbox for results, and a few self-explanitory command buttons. "Define Player Search Parameters" being the obvious choice. This will bring up a form that allows you to set the criteria for the search. Grouped into a few categories, all you need to is click the appropriate 'use?' box to enable you to set these parameters. Clicking on 'OK' will return you to the main form, and list all matching players. Please note that on low-end machines, this feature may take a while. The more parameters you select, the quicker the search. The less categories however, also the quicker the search.
+
+Regenerated players feature: Search for a player. Eg. Laurent Blanc. Click 'Add regen watch', then exit the editor. Player your first season until Blanc reties, and disappears from the playing staff. Confrim this by doing a find-]player Lauren Blanc within CM. If he's not there, then he will have regenerated. Save and exit CM. Load my editor, and the name of his regen should have appeared on the appropriate list in the regens tab. Simple, yet effective. Note that in the current version, you can't track the regeneration of staff. Also note that there is no way you can find who a player is a regen of without having added the watch before the original player retired.
+
+Saving changes: The 'update' buttons will apply changes to the editor's own temporary *.dat files. On the bottom left you'll see a 'save' button. CLick this to apply all changes you've made to the *.sav file. Simple.
+
+Will this ruin my game?
+-----------------------
+
+Editing data is ALWAYS risky. A few steps are taken so as to ensure that no damage is done. Such as limiting the values of the data you input. Such as only saving data that you've changed. And the fact that while running, the editor is manipulating its own temporary *.dat files rather than your saved game. Only when you 'save' are changes really applied. Should the editor crash, your game will remain unaffected - unless it crashes when saving 
