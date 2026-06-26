@@ -4,7 +4,7 @@
 
 **Parent:** [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md)  
 **Local files:** [docs/research/sources/README.md](docs/research/sources/README.md)  
-**Date opened:** 2025-06-25 · **Round:** 14 (cmmag-01 extract; cover CD index)
+**Date opened:** 2025-06-25 · **Round:** 15 (master backlog; CM Tech FAQ)
 
 ---
 
@@ -112,6 +112,16 @@
 | R14 | CVG #140 archive identifier search | ❌ MISSING — no `*CVG*140*` item; Jul 1993 issue absent from `cvg-magazine` |
 | R14 | GameFAQs CM3 Wayback CDX | ❌ BLOCKED — web.archive.org connection failed R14 |
 
+## Round 15 session log
+
+| When | Action | Result |
+|------|--------|--------|
+| R15 | Created [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md) | ✅ Master missing inventory by category + game + deferred RE |
+| R15 | Extract `CMFaq/CM_Tech_FAQ.pdf` from cmmag-01 | ✅ ACQUIRED — `docs/research/sources/community/CM_Tech_FAQ_magazine_disc.pdf` |
+| R15 | Catalog `cmmag-02` metadata | ✅ GK CM3 editor 3.9 + CM01/02 tactics on disc |
+| R15 | PC Zone #73 CM3 review OCR hunt | ❌ MISSING — not in `pc-zone-magazine` collection by issue # |
+| R15 | GameFAQs CM3 Wayback | ❌ BLOCKED — archive.org connection failed (retry R16) |
+
 ---
 
 ## Do-not-repeat (already researched — skip unless checksum fails)
@@ -187,6 +197,14 @@ Live `gamefaqs.gamespot.com` returns **403** to automated fetch. **Wayback** wor
 | SRC-GFQ-CM0203 | CM 02/03 guides | CM_LEGACY_REFERENCE | **MISSING** | Wayback |
 | SRC-GFQ-CM9798 | CM97/98 guides | — | **MISSING** | Wayback |
 | SRC-GFQ-CM93 | CM93 walkthrough | StrategyWiki used instead | **MISSING** | Low priority |
+
+---
+
+## Community documents (non-GameFAQs)
+
+| Source ID | Title | Status | Local |
+|-----------|-------|--------|-------|
+| SRC-DOC-CMTECH-FAQ | CM Technical FAQ PDF (magazine disc) | **ACQUIRED** | `community/CM_Tech_FAQ_magazine_disc.pdf` (cmmag-01) |
 
 ---
 
@@ -354,6 +372,7 @@ Full hunt matrix: [docs/research/saves-and-tactics/README.md](docs/research/save
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 15 — master backlog; CM Tech FAQ; cmmag-02 catalog |
 | 2025-06-25 | Round 14 — cmmag-01 mount/extract; CM Magazine CD index; GK editor docs |
 | 2025-06-25 | Round 13 sync | Coverage audit + PM brief; shell hunt note |
 | 2025-06-25 | Round 13 — saves/tactics RE track; casperlab index; cmmag-01 catalogued |

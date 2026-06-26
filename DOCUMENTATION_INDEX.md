@@ -1,6 +1,6 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2025-06-25 (Round 14 cmmag-01 extract)
+**Last updated:** 2025-06-25 (Round 15 master backlog)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
@@ -45,7 +45,8 @@ Industry benchmark wiki for Futtoboru design targets.
 
 | Document | Purpose |
 |----------|---------|
-| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | **Round 14** — every source acquired/missing; citation-chain hunt queue |
+| [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md) | **Round 15** — master list of missing manuals, reviews, guides, forums, samples |
+| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | **Round 15** — every source acquired/missing; citation-chain hunt queue |
 | [docs/research/sources/README.md](docs/research/sources/README.md) | Local GameFAQs, magazine OCR, forum captures |
 | [docs/research/saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md) | **Round 14** — save/tactics binaries + format RE hunt queue |
 | [docs/research/saves-and-tactics/CM_MAGAZINE_COVER_CD_INDEX.md](docs/research/saves-and-tactics/CM_MAGAZINE_COVER_CD_INDEX.md) | Future CM Magazine cover CDs (cmmag-01–05) |

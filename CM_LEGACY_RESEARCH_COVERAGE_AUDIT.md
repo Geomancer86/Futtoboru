@@ -1,7 +1,7 @@
 # CM Legacy — Research Coverage Audit
 
 **Purpose:** Honest answer to “do we have everything?” for CM1–CM4 and pre-CM1 precursors.  
-**Date:** 2025-06-25 · **Round:** 14 (cmmag-01 extract; cover CD index)  
+**Date:** 2025-06-25 · **Round:** 15 (master backlog)  
 **Related:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)
 
 ---
@@ -19,7 +19,7 @@
 | **User feeling of the era** | CM1 modest · CM93 breakthrough narrative ⚠️ · CM9798 cult ⚠️ | CM3 golden age ✅ · CM4 launch crisis ✅ |
 | **Save/tactics binaries (RE)** | CM1/CM93 saves ❌ · CM9798 saves ❌ | CM4 `.tac`/saves ❌ · CM01/02 **tactic exes + editor docs ✅** · **cmmag-04/05 catalogued ⚠️** |
 
-**Bottom line:** Manual *content* for CM1 and CM93 is now usable for design research. **Patch/expansion chronology** and **period reception** need a dedicated pass for every SKU — see [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md) and [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md). **Binary save/tactics samples** for reverse-engineering are tracked in [docs/research/saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md).
+**Bottom line:** Manual *content* for CM1 and CM93 is now usable for design research. **What is still missing** is consolidated in [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md). Patch/expansion chronology and period reception need a dedicated pass — see [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md) and [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md).
 
 ---
 
@@ -105,7 +105,17 @@ See [docs/research/manuals/README.md](docs/research/manuals/README.md).
 
 ---
 
-## Round 14 deliverables (this commit)
+## Round 15 deliverables (this commit)
+
+| Doc / asset | Purpose |
+|-------------|---------|
+| [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md) | **Master missing inventory** — manuals, reviews, guides, forums, samples, post-CM4 |
+| `CM_Tech_FAQ_magazine_disc.pdf` | CM technical FAQ from Future CM Magazine disc #1 |
+| cmmag-02 catalogued | GK CM3 editor 3.9 + CM0102 tactics source |
+
+---
+
+## Round 14 deliverables
 
 | Doc / asset | Purpose |
 |-------------|---------|
@@ -193,6 +203,7 @@ See [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) § Round 10+ priori
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 15 — master research backlog; CM Tech FAQ from cmmag-01 |
 | 2025-06-25 | Round 14 — cmmag-01 samples; CM Magazine CD index |
 | 2025-06-25 | Round 13 — saves/tactics RE track; coverage audit sync |
 | 2025-06-25 | Round 12 — AP #27 CM93 OCR; nygreen/jonnyrivers Wayback |

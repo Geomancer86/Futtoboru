@@ -5,8 +5,8 @@ Future Publishing **Official CM Magazine** cover discs on [archive.org](https://
 | Source ID | Item | ISO | Size | Key RE contents |
 |-----------|------|-----|------|-----------------|
 | SRC-BIN-CMMAG01 | [cmmag-01](https://archive.org/details/cmmag-01) | `CMMag01.iso` | 372 MB | **Graeme Kelly Save Editor v3.8**; CM0102 **Tactics/** (15× `.exe` installers); CM0102 data update 3.9.67; CM2/CM3/CM4 demos |
-| SRC-BIN-CMMAG02 | [cmmag-02](https://archive.org/details/cmmag-02) | `CMMag02.iso` | — | Issue 2 (Nov 2002) — **not inventoried R14** |
-| SRC-BIN-CMMAG03 | [cmmag-03](https://archive.org/details/cmmag-03) | `CMMag03.iso` | — | Issue 3 — **not inventoried R14** |
+| SRC-BIN-CMMAG02 | [cmmag-02](https://archive.org/details/cmmag-02) | `CMMag02.iso` | — | **GK CM3 Save Editor 3.9**; CM Sorted update; **CM01/02 tactics**; SI fansite kit |
+| SRC-BIN-CMMAG03 | [cmmag-03](https://archive.org/details/cmmag-03) | `CMMag03.iso` | — | Issue 3 — **not fully catalogued R15** |
 | SRC-BIN-CMMAG04 | [cmmag-04](https://archive.org/details/cmmag-04) | `CMMag04.iso` | 224 MB | CM Italia full; **CM4 EP5**; **CM4 Pregame Editor 0.094b**; CM Scout 3.0; **CM4 tactics + training schedules**; skins |
 | SRC-BIN-CMMAG05 | [cmmag-05](https://archive.org/details/cmmag-05) | `CMMag05.iso` | — | CM1 + Italia full; CM03/04 demo; **CM4 + CM03/04 tactics and training schedules**; CM0102 unofficial update (Alex Sawczuk) |
 

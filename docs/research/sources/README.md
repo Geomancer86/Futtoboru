@@ -42,6 +42,7 @@ sources/
 | `community/nygreen_cm4_pregame_editor_wayback.html` | SRC-COMM-NYGREEN | Round 12 | Wayback 2003-05-22 | CM4 editor feature list v0.04 |
 | `community/jonnyrivers_home_wayback.html` | SRC-COMM-JONNYRIVERS | Round 12 | Wayback 2003-06-04 | CM4 editor v0.09b download page |
 | `community/casperlab_cm4save_index_wayback.html` | SRC-COMM-CASPERLAB-INDEX | Round 13 | Wayback 2003-06-08 | CM4 save editor v0.02 docs |
+| `community/CM_Tech_FAQ_magazine_disc.pdf` | SRC-DOC-CMTECH-FAQ | Round 15 | cmmag-01 disc | CM technical FAQ (magazine cover CD) |
 
 ---
 
