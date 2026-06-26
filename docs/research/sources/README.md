@@ -41,6 +41,7 @@ sources/
 | `community/nygreen_home_wayback.html` | SRC-COMM-NYGREEN | Round 12 | Wayback 2003-05-26 | CM4 Pregame Editor site homepage |
 | `community/nygreen_cm4_pregame_editor_wayback.html` | SRC-COMM-NYGREEN | Round 12 | Wayback 2003-05-22 | CM4 editor feature list v0.04 |
 | `community/jonnyrivers_home_wayback.html` | SRC-COMM-JONNYRIVERS | Round 12 | Wayback 2003-06-04 | CM4 editor v0.09b download page |
+| `community/casperlab_cm4save_index_wayback.html` | SRC-COMM-CASPERLAB-INDEX | Round 13 | Wayback 2003-06-08 | CM4 save editor v0.02 docs |
 
 ---
 
@@ -74,4 +75,4 @@ Use these exact paths — item-level `*_djvu.txt` names vary by upload.
 
 ## Still missing (not in this folder)
 
-See [CM_LEGACY_SOURCE_LEDGER.md](../../CM_LEGACY_SOURCE_LEDGER.md) § Citation chain queue and § Magazine PDF/OCR matrix.
+See [CM_LEGACY_SOURCE_LEDGER.md](../../CM_LEGACY_SOURCE_LEDGER.md) § Citation chain queue, § Magazine PDF/OCR matrix, and [saves-and-tactics/README.md](../saves-and-tactics/README.md).

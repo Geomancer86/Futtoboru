@@ -4,7 +4,7 @@
 
 **Parent:** [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md)  
 **Local files:** [docs/research/sources/README.md](docs/research/sources/README.md)  
-**Date opened:** 2025-06-25 · **Round:** 12 (Amiga Power #27 CM93; nygreen/jonnyrivers Wayback)
+**Date opened:** 2025-06-25 · **Round:** 13 (saves/tactics RE artifact hunt)
 
 ---
 
@@ -86,6 +86,19 @@
 | R12 | Wayback `nygreen.net` homepage + `program.php?id=2` | ✅ ACQUIRED — CM4 Pregame Editor v0.04 feature list (Michael Nygreen) |
 | R12 | Wayback `jonnyrivers.com` homepage | ✅ ACQUIRED — CM4 editor **v0.09b** download link cited (31/5/2003) |
 | R12 | Wayback `belangrijk.net/mc/` re-check | ❌ DEAD — 404 shell (not saved) |
+
+## Round 13 session log
+
+| When | Action | Result |
+|------|--------|--------|
+| R13 | Opened `docs/research/saves-and-tactics/` track | ✅ README — format table + hunt queue |
+| R13 | Wayback casperlab `/cm4save/` index | ✅ ACQUIRED — editor v0.02 docs player-attribute edits |
+| R13 | Wayback casperlab `cm4saveeditor.zip` | ❌ BLOCKED — Wayback serves HTML wrapper (~1.7 KB), not zip |
+| R13 | Archive.org `cmmag-01` … `cmmag-05` | ⚠️ REMOTE — Issue 1 ISO lists **Graeme Kelly CM3 save editor** + CM01/02 **tactics**; not extracted locally |
+| R13 | `.tac` / CM4 save binary search (archive.org) | ❌ MISSING — no indexed `.tac` uploads found |
+| R13 | champmanworld downloads Wayback | ❌ BLOCKED — PHP redirects only; no zip captures in CDX |
+| R13 | CM4 tactics format | **CONSULTED** — `.tac` in `user data/tactics` (CM Tactics Centre FAQ, 2003) |
+| R13 | CM01/02 RE docs | **CONSULTED** — Champman0102 offset index + nckstwrt GitHub (not archived locally) |
 
 ---
 
@@ -196,7 +209,7 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 | `ftp://.../cm_408_updater.sit` | Mac updater | **DEAD** | Same |
 | `www.mitchellsclose.co.uk/LLM/LL-Team-Generator.html` | LLM team generator | **MISSING** | Wayback |
 | `www.belangrijk.net/mc/` | Mind Compression editor | **DEAD** | Wayback 2012 → 404 |
-| `www.casperlab.com/cm4save/cm4saveeditor.zip` | Save editor | **MISSING** | Wayback zip |
+| `www.casperlab.com/cm4save/cm4saveeditor.zip` | Save editor | **BLOCKED** | Index page ✅; zip Wayback = HTML shell only |
 | `www.iebeta.net/files/Q815411_WXP_SP2_x86_ENU.exe` | XP perf hotfix for CM4 | **MISSING** | Microsoft KB Q815411 — archive.org |
 | `www.eidosinteractive.co.uk/support/` | CM4 support | **MISSING** | Wayback Eidos support pages |
 
@@ -272,7 +285,24 @@ Depth: ✅ in repo · ⚠️ partial · ❌ missing
 
 ---
 
-## Blocked sources & workarounds
+## Save games, tactics & RE artifacts
+
+Full hunt matrix: [docs/research/saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md)
+
+| Source ID | Artifact | Game | Status | Notes |
+|-----------|----------|------|--------|-------|
+| SRC-BIN-CMMAG01 | Magazine cover CD ISO | CM2–CM4 demos + tools | **REMOTE** | [cmmag-01](https://archive.org/details/cmmag-01) — GK CM3 save editor + CM01/02 tactics on disc |
+| SRC-BIN-CM4-TAC | `.tac` tactics presets | CM4 | **MISSING** | Load via `user data/tactics` |
+| SRC-BIN-CM4-SAV | Mid-season save folder | CM4 | **MISSING** | Pair with EP/patch version |
+| SRC-BIN-CM0102-SAV | `.sav` uncompressed | CM01/02 | **MISSING** | Editors require uncompressed saves |
+| SRC-BIN-CM93-SAV | Save file | CM93 | **MISSING** | Manual: “save to disk” |
+| SRC-BIN-CM1-SAV | Season disk save | CM1 | **MISSING** | Amiga/ST/DOS variants differ |
+| SRC-COMM-CASPERLAB-INDEX | Save editor docs | CM4 | **ACQUIRED** | `casperlab_cm4save_index_wayback.html` |
+| SRC-TOOL-CASPERLAB-ZIP | Save editor binary | CM4 | **BLOCKED** | Wayback zip not preserved |
+| SRC-FORMAT-CM0102-OFFSETS | Offset index thread | CM01/02 | **CONSULTED** | champman0102.net f=35 t=2802 |
+| SRC-FORMAT-NCKSTWRT-GH | CM0102Patch / Loader | CM01/02 | **CONSULTED** | GitHub save-load paths |
+
+---
 
 | Source | Block reason | Workaround |
 |--------|--------------|------------|
@@ -288,7 +318,9 @@ Depth: ✅ in repo · ⚠️ partial · ❌ missing
 
 | P | Task | Source IDs |
 |---|------|------------|
+| P0 | Extract `cmmag-01` ISO → tactics + CM3 save editor | SRC-BIN-CMMAG01 |
 | P0 | OCR CM9798 + CM2 FR manuals | Manuals backlog |
+| P1 | CM4 `.tac` + mid-season save samples | SRC-BIN-CM4-* |
 | P1 | CVG #140 Jul 1993 CM93 review | SRC-MAG-CVG140 |
 | P1 | PC Gamer #24 CM2 review | SRC-MAG-PCG024 |
 | P1 | GameFAQs CM3 + CM0203 Wayback batch | SRC-GFQ-CM3-* |
@@ -303,6 +335,7 @@ Depth: ✅ in repo · ⚠️ partial · ❌ missing
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 13 — saves/tactics RE track; casperlab index; cmmag-01 catalogued |
 | 2025-06-25 | Round 12 — AP #27 CM93 OCR; nygreen/jonnyrivers Wayback; CVG140 still missing |
 | 2025-06-25 | Round 11 — The One #46 CM1 OCR; AP27/CVG140 hunt notes; Dobbers URL status updates |
 | 2025-06-25 | Round 10 — AC062 + The One #56 OCR; ig1234/shy citation additions; CM1 review chain |

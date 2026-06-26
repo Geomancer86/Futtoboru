@@ -1,6 +1,6 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2025-06-25 (Round 12 source hunt)
+**Last updated:** 2025-06-25 (Round 13 saves/tactics hunt)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
@@ -45,8 +45,9 @@ Industry benchmark wiki for Futtoboru design targets.
 
 | Document | Purpose |
 |----------|---------|
-| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | **Round 12** — every source acquired/missing; citation-chain hunt queue |
+| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | **Round 13** — every source acquired/missing; citation-chain hunt queue |
 | [docs/research/sources/README.md](docs/research/sources/README.md) | Local GameFAQs, magazine OCR, forum captures |
+| [docs/research/saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md) | **Round 13** — save/tactics binaries + format RE hunt queue |
 | [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md) | Honest manual/patch/review coverage matrix + backlog |
 | [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) | **Round 7** — CM93/94 manual, expansions, era reviews |
 | [CM9798_REFERENCE.md](CM9798_REFERENCE.md) | **Round 7** — CM97/98 engine finale, editor, reception |
