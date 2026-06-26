@@ -70,6 +70,7 @@ Use these exact paths — item-level `*_djvu.txt` names vary by upload.
 3. **Wayback for GameFAQs** — live site blocks bots; snapshot date in filename.
 4. **Delete failed fetches** — 404 HTML pages must not stay named as `.txt` (see Round 9 cleanup).
 5. **Cite line numbers** — when extracting, update `magazines/MAGAZINE_REVIEW_EXTRACTS.md` and the ledger.
+6. **Windows HTTP** — use `Invoke-WebRequest -TimeoutSec 60 -UseBasicParsing`; avoid `curl -s … | Select-Object` (can hang with no output).
 
 ---
 

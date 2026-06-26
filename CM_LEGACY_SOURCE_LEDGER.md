@@ -99,6 +99,7 @@
 | R13 | champmanworld downloads Wayback | ❌ BLOCKED — PHP redirects only; no zip captures in CDX |
 | R13 | CM4 tactics format | **CONSULTED** — `.tac` in `user data/tactics` (CM Tactics Centre FAQ, 2003) |
 | R13 | CM01/02 RE docs | **CONSULTED** — Champman0102 offset index + nckstwrt GitHub (not archived locally) |
+| R13 | Shell note | Round 12 parallel `curl \| Select-Object` hung ~20 min (4 terminals); use `Invoke-WebRequest -TimeoutSec` on Windows |
 
 ---
 
@@ -335,6 +336,7 @@ Full hunt matrix: [docs/research/saves-and-tactics/README.md](docs/research/save
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 13 sync | Coverage audit + PM brief; shell hunt note |
 | 2025-06-25 | Round 13 — saves/tactics RE track; casperlab index; cmmag-01 catalogued |
 | 2025-06-25 | Round 12 — AP #27 CM93 OCR; nygreen/jonnyrivers Wayback; CVG140 still missing |
 | 2025-06-25 | Round 11 — The One #46 CM1 OCR; AP27/CVG140 hunt notes; Dobbers URL status updates |

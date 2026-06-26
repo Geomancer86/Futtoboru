@@ -20,7 +20,7 @@
 | **Biggest asset** | Mod/data pipeline + 1888 researched content |
 | **Recommended focus** | P0 season loop (3 departments) before any CM4-depth features |
 
-**Competitive research completed (Jun 2025):** Full CM1–CM4 legacy wiki + FM2005+ bible Round 1 + gap analysis + **Round 3 pre-CM1 genre history & CM1 v1 benchmark**. Use for scope debates, not as v1 scope expansion.
+**Competitive research completed (Jun 2025):** Full CM1–CM4 legacy wiki + FM2005+ bible Round 1 + gap analysis + **Round 3 pre-CM1 genre history & CM1 v1 benchmark** + **Rounds 9–13 source ledger** (magazine OCR, citation-chain hunts, **save/tactics RE track**). Use for scope debates, not as v1 scope expansion.
 
 ---
 
@@ -130,6 +130,8 @@ Detail: [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.m
 | CM Manual acquisition Round 4 | ✅ | Local archive + [CM_MANUALS_COLLECTION.md](CM_MANUALS_COLLECTION.md) + CM1 menu extract |
 | CM Manual → registry Round 5 | 🔲 | CM1 extract + CM3 PDF TOC → feature registry |
 | CM Manual deep analysis Round 5 | ✅ | [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) |
+| CM source hunt Rounds 9–12 | ✅ | [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) — magazine OCR, Wayback, AP27/TONE046 |
+| CM saves/tactics RE Round 13 | ⚠️ | [saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md) — formats catalogued; binaries pending |
 | CM03/04 supplement | 🔲 | Optional |
 
 ---
