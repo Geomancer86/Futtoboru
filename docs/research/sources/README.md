@@ -37,6 +37,10 @@ sources/
 | `magazines/Amiga_Computing_062_Jul_1993_djvu.txt` | SRC-MAG-AC062 | Round 10 | `amiga-computing-magazine-062` | CM93 92% review body |
 | `magazines/The_One_056_May_1993_djvu.txt` | SRC-MAG-TONE056 | Round 10 | `theone-magazine-56` | CM93 80% review body |
 | `magazines/The_One_046_Jul_1992_djvu.txt` | SRC-MAG-TONE046 | Round 11 | `theone-magazine-46` | CM1 89% review (Gary Whitta) |
+| `magazines/Amiga_Power_027_Jul_1993_djvu.txt` | SRC-MAG-AP027 | Round 12 | `amiga-power-pdffromhi-000_202601` | CM93 80% review (Tim Norris) |
+| `community/nygreen_home_wayback.html` | SRC-COMM-NYGREEN | Round 12 | Wayback 2003-05-26 | CM4 Pregame Editor site homepage |
+| `community/nygreen_cm4_pregame_editor_wayback.html` | SRC-COMM-NYGREEN | Round 12 | Wayback 2003-05-22 | CM4 editor feature list v0.04 |
+| `community/jonnyrivers_home_wayback.html` | SRC-COMM-JONNYRIVERS | Round 12 | Wayback 2003-06-04 | CM4 editor v0.09b download page |
 
 ---
 
@@ -51,6 +55,7 @@ Use these exact paths — item-level `*_djvu.txt` names vary by upload.
 | AC #62 | `amiga-computing-magazine-062` | `AmigaComputing_062_Jul_1993_djvu.txt` |
 | The One #56 | `theone-magazine-56` | `TheOne_56_May_1993_djvu.txt` |
 | The One #46 | `theone-magazine-46` | `TheOne_46_Jul_1992_djvu.txt` |
+| Amiga Power #27 | `amiga-power-pdffromhi-000_202601` | `AmigaPowerPdffromhi027_djvu.txt` |
 | PC Zone #31 | `PC_Zone_31_October_1995` | `PC_Zone_31_October_1995_djvu.txt` |
 | PC Zone #32 | `PC_Zone_32_November_1995` | `PC_Zone_32_November_1995_djvu.txt` |
 | PC Zone #35 | (existing identifier in repo) | `PC_Zone_35_1996_02_djvu.txt` |

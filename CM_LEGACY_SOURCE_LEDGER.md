@@ -4,7 +4,7 @@
 
 **Parent:** [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md)  
 **Local files:** [docs/research/sources/README.md](docs/research/sources/README.md)  
-**Date opened:** 2025-06-25 · **Round:** 11 (The One #46 CM1; AP27/CVG140 hunt attempts)
+**Date opened:** 2025-06-25 · **Round:** 12 (Amiga Power #27 CM93; nygreen/jonnyrivers Wayback)
 
 ---
 
@@ -75,6 +75,18 @@
 | R11 | Wayback `cmeuphoria.co.uk` | ❌ DEAD — 2011 snapshot is parked-domain frameset only |
 | R11 | Wayback GameFAQs board 33189 / casperlab zip | ❌ 404 / redirect shell — not archived |
 
+## Round 12 session log
+
+| When | Action | Result |
+|------|--------|--------|
+| R12 | Archive.org `amiga-power-pdffromhi-000_202601` → `AmigaPowerPdffromhi027_djvu.txt` | ✅ ACQUIRED — CM93 review Tim Norris (~12404–12626); **80%** via AMR (score box OCR gap) |
+| R12 | R11 false negative resolved | Full AP #27 is in **`amiga-power-pdffromhi`** collection, not `Amiga_Power_27_*` coverdisk item |
+| R12 | CVG #140 Jul 1993 | ❌ MISSING — `cvg-magazine` has no issue #140 title/identifier (540 issues; #141 Aug 1993 present) |
+| R12 | PC Gamer #24 Nov 1995 UK | ❌ MISSING — no Imagine UK scan on archive.org |
+| R12 | Wayback `nygreen.net` homepage + `program.php?id=2` | ✅ ACQUIRED — CM4 Pregame Editor v0.04 feature list (Michael Nygreen) |
+| R12 | Wayback `jonnyrivers.com` homepage | ✅ ACQUIRED — CM4 editor **v0.09b** download link cited (31/5/2003) |
+| R12 | Wayback `belangrijk.net/mc/` re-check | ❌ DEAD — 404 shell (not saved) |
+
 ---
 
 ## Do-not-repeat (already researched — skip unless checksum fails)
@@ -112,6 +124,9 @@ See full file list: [docs/research/sources/README.md](docs/research/sources/READ
 | SRC-MAG-AC062 | `magazines/Amiga_Computing_062_Jul_1993_djvu.txt` | ~1.0 MB | CM93 |
 | SRC-MAG-TONE056 | `magazines/The_One_056_May_1993_djvu.txt` | ~481 KB | CM93 |
 | SRC-MAG-TONE046 | `magazines/The_One_046_Jul_1992_djvu.txt` | ~472 KB | CM1 |
+| SRC-MAG-AP027 | `magazines/Amiga_Power_027_Jul_1993_djvu.txt` | ~449 KB | CM93 |
+| SRC-COMM-NYGREEN | `community/nygreen_home_wayback.html` + `nygreen_cm4_pregame_editor_wayback.html` | Wayback May 2003 | CM4 |
+| SRC-COMM-JONNYRIVERS | `community/jonnyrivers_home_wayback.html` | Wayback Jun 2003 | CM4 |
 
 ---
 
@@ -126,6 +141,7 @@ See full file list: [docs/research/sources/README.md](docs/research/sources/READ
 | CM2 | PC Zone #31 Oct 1995 | **97%** (review index) | — | SRC-MAG-PCZ031 | Index ~7843–7846; body ~23180–24149 |
 | CM2 | PC Zone digest (#32/#35) | **92% Classic** | — | SRC-MAG-PCZ032 / PCZ035 | ~27537–27543 — **conflicts with 97%**; treat #31 as primary |
 | CM1 | The One #46 Jul 1992 | **89%** | Gary Whitta | SRC-MAG-TONE046 | ~18334–18608; pp.92–93; score col ~27511 |
+| CM93 | Amiga Power #27 Jul 1993 | **80%** ⚠️ | Tim Norris | SRC-MAG-AP027 | ~12404–12626 — score box not in OCR |
 
 **Extract summary:** [docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md](docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md)
 
@@ -169,8 +185,8 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 |----------------------|-----------|--------|------------|
 | `community.sigames.com/.../5571901826` | Official technical FAQ | **DEAD** | Wayback 404; try other SI forum snapshots |
 | `www.cmskins.com` | Official skins | **DEAD?** | Wayback; registration was required |
-| `www.nygreen.net` | Pre-game editor | **MISSING** | Wayback |
-| `www.jonnyrivers.com` | Pre-game editor | **MISSING** | Wayback |
+| `www.nygreen.net` | Pre-game editor | **ACQUIRED** | Wayback May 2003 — homepage + program page |
+| `www.jonnyrivers.com` | Pre-game editor | **ACQUIRED** | Wayback Jun 2003 — v0.09b zip link on homepage |
 | `www.cmeuphoria.co.uk` | Independent data updates | **DEAD** | Wayback 2011 — parked domain frameset only |
 | `www.cm4update.co.uk` | Independent data updates | **MISSING** | Wayback |
 | `www.champmanworld.com/.../cid=2` | EP5 patch mirrors | **MISSING** | Wayback downloads section |
@@ -192,7 +208,7 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 | The One Amiga #46 Jul 1992 (CM1 89%) | CM1_REFERENCE, TONE056 cites | **ACQUIRED** | `SRC-MAG-TONE046` |
 | Amiga Computing #62 Jul 1993 (CM93 92%) | CM93_94_REFERENCE, UVList | **ACQUIRED** | `SRC-MAG-AC062` — score box OCR gap |
 | Computer & Video Games #140 Jul 1993 (85%) | CM93_94_REFERENCE | **MISSING** | Not in archive.org `cvg-magazine` (R11) |
-| Amiga Power #27 Jul 1993 (80%) | CM93_94_REFERENCE | **MISSING** | Full mag not on archive; `Amiga_Power_27_*` = coverdisk |
+| Amiga Power #27 Jul 1993 (CM93 80%) | CM93_94_REFERENCE, AMR | **ACQUIRED** | `SRC-MAG-AP027` via `amiga-power-pdffromhi-000_202601` |
 | PC Gamer #24 Nov 1995 (CM2 49%) | Wikipedia / era reviews | **MISSING** | PC Gamer archive |
 | PC Attack #7 Nov 1995 (CM2 83%) | UVList | **MISSING** | Magazine rack |
 | PC Format 1997 CM9798 review | CM9798_REFERENCE gap | **MISSING** | Archive.org |
@@ -214,7 +230,7 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 
 | Cited source | Cited for | Status | Hunt notes |
 |--------------|-----------|--------|------------|
-| Gary Whitta CM1 review (July, **89%**) | Benchmark vs CM93 sequel | **MISSING** | The One July 1992 issue — find issue # for CM1 |
+| Gary Whitta CM1 review (July, **89%**) | Benchmark vs CM93 sequel | **ACQUIRED** | `SRC-MAG-TONE046` — resolved R11 |
 
 ---
 
@@ -228,7 +244,8 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 | SRC-MAG-TONE056 | The One #56 May 1993 | CM93 | 80% | ✅ | ✅ body; score sidebar OCR gap |
 | SRC-MAG-TONE046 | The One #46 Jul 1992 | CM1 | 89% | ✅ | ✅ body; score column ~27511 |
 | SRC-MAG-TONE-CM1-JUL | (alias → TONE046) | CM1 | 89% | ✅ | Resolved R11 |
-| SRC-MAG-AP027-FULL | Amiga Power #27 Jul 1993 | CM93 | 80% | ❌ | ❌ — archive `Amiga_Power_27_*` is coverdisk only |
+| SRC-MAG-AP027 | Amiga Power #27 Jul 1993 | CM93 | 80% | ✅ | ✅ body; score box OCR gap |
+| SRC-MAG-AP027-FULL | (alias → AP027) | CM93 | 80% | ✅ | R11 coverdisk item was wrong archive ID |
 | SRC-MAG-CVG140 | CVG #140 Jul 1993 | CM93 | 85% | ❌ | ❌ — not in `cvg-magazine` collection |
 | SRC-MAG-PCZ031 | PC Zone #31 Oct 1995 | CM2 | 97% | ✅ | ✅ |
 | SRC-MAG-PCZ032 | PC Zone #32 Nov 1995 | CM2 | 92% digest | ✅ | PARTIAL digest only |
@@ -236,7 +253,7 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 | SRC-MAG-PCF-1997 | PC Format ~1997 | CM9798 | — | ❌ | ❌ |
 | SRC-MAG-AF108 | AF #108 | CM2 Amiga port | 12% | ❌ | ❌ |
 
-Archive.org collections to search: `AmigaFormatMagazine`, `cuamiga-magazine`, `PC_Zone_*`, `amiga-computing-magazine`, `TheOneAmiga` (if exists).
+Archive.org collections to search: `AmigaFormatMagazine`, `cuamiga-magazine`, `PC_Zone_*`, `amiga-computing-magazine`, `theone-magazine-*`, **`amiga-power-pdffromhi-000_202601`**.
 
 ---
 
@@ -247,11 +264,11 @@ Depth: ✅ in repo · ⚠️ partial · ❌ missing
 | Game | Manuals | Magazines (primary) | GameFAQs | Forums/community | Patches primary |
 |------|---------|---------------------|----------|------------------|-----------------|
 | CM1 | ✅ HTML | ⚠️ The One #46 ✅ | ❌ | ❌ | N/A |
-| CM93 | ✅ text | ⚠️ **AF+CU+AC+The One ✅**; AP/CVG ❌ | ❌ | ❌ | ⚠️ Intelek ads in AF + AC OCR |
+| CM93 | ✅ text | ⚠️ **AF+CU+AC+The One+AP ✅**; CVG ❌ | ❌ | ❌ | ⚠️ Intelek ads in AF + AC OCR |
 | CM2 | ⚠️ FR PDF | ⚠️ PCZ ✅; PCG/PC Attack ❌ | ❌ | ❌ | ⚠️ chronology only |
 | CM9798 | ⚠️ scan | ❌ | ❌ | ❌ | ⚠️ |
 | CM3 | ✅ PDF | ❌ | ❌ | ❌ | ⚠️ |
-| CM4 | ⚠️ ReadMe | ✅ era reviews elsewhere | ⚠️ 2 FAQs | ⚠️ Dobbers ✅ | ✅ EP deep |
+| CM4 | ⚠️ ReadMe | ✅ era reviews elsewhere | ⚠️ 2 FAQs | ⚠️ Dobbers ✅ + nygreen/jonnyrivers Wayback | ✅ EP deep |
 
 ---
 
@@ -272,7 +289,6 @@ Depth: ✅ in repo · ⚠️ partial · ❌ missing
 | P | Task | Source IDs |
 |---|------|------------|
 | P0 | OCR CM9798 + CM2 FR manuals | Manuals backlog |
-| P1 | Amiga Power #27 full magazine OCR (not coverdisk item) | SRC-MAG-AP027-FULL |
 | P1 | CVG #140 Jul 1993 CM93 review | SRC-MAG-CVG140 |
 | P1 | PC Gamer #24 CM2 review | SRC-MAG-PCG024 |
 | P1 | GameFAQs CM3 + CM0203 Wayback batch | SRC-GFQ-CM3-* |
@@ -287,6 +303,7 @@ Depth: ✅ in repo · ⚠️ partial · ❌ missing
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 12 — AP #27 CM93 OCR; nygreen/jonnyrivers Wayback; CVG140 still missing |
 | 2025-06-25 | Round 11 — The One #46 CM1 OCR; AP27/CVG140 hunt notes; Dobbers URL status updates |
 | 2025-06-25 | Round 10 — AC062 + The One #56 OCR; ig1234/shy citation additions; CM1 review chain |
 | 2025-06-25 | Round 9 — ledger created; 5 magazine OCRs; 2 GameFAQs; Dobbers FAQ; citation queue seeded |

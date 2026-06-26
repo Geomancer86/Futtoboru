@@ -119,7 +119,8 @@ Mac: cm_408_updater.sit
 |------|----------|
 | **Skins** | Ter (Craig Hunter), Retro Blue, club skins → `CM4/Data/Skins` |
 | **Data updates** | Simon Treanor Update; CM Sorted Update (Soccer Gaming guides) |
-| **Pre-game editor** | **Nygreen editor** — post-EP5 standard |
+| **Pre-game editor** | **Nygreen editor** — post-EP5 standard · Wayback captures in [docs/research/sources/community/](docs/research/sources/community/) (`SRC-COMM-NYGREEN`) |
+| **Pre-game editor (alt.)** | **Jonny Rivers CM4 editor** v0.09b (May 2003) · [jonnyrivers_home_wayback.html](docs/research/sources/community/jonnyrivers_home_wayback.html) |
 | **Tactics sharing** | GameFAQs formation guides; Dugout downloads |
 | **FAQ compilations** | Dobbers CM4 FAQ; AGCM site |
 | **Saved games / challenges** | Relegation battle scenarios (GameFAQs ig1234) |

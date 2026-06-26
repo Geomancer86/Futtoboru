@@ -67,7 +67,7 @@ See [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) §5 for full table.
 
 **Summary:** UK Amiga launch reviews **78–92%** band; UVList **81.4%** average. Seen as **major upgrade** for real names; generation wait criticized.
 
-**Round 9–11 primary text in repo:** Amiga Format #48 (**82%**, Stephen Bradley) · CU Amiga #40 (**84%**, Mark Patterson) · Amiga Computing #62 (**92%**, Jonathan Maddock — body only) · The One #56 (**80%**, Simon Byron — body only) · **The One #46 CM1 (**89%**, Gary Whitta)** — see [magazine extracts](docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md). Still missing: CVG #140, Amiga Power #27 full magazine.
+**Round 9–12 primary text in repo:** Amiga Format #48 (**82%**, Stephen Bradley) · CU Amiga #40 (**84%**, Mark Patterson) · Amiga Computing #62 (**92%**, Jonathan Maddock — body only) · The One #56 (**80%**, Simon Byron — body only) · Amiga Power #27 (**80%**, Tim Norris — body only) · **The One #46 CM1 (**89%**, Gary Whitta)** — see [magazine extracts](docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md). Still missing: **CVG #140** only among UK Amiga CM93 primaries.
 
 ---
 

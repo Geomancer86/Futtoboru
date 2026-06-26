@@ -26,6 +26,23 @@ Quoted from local `djvu.txt` files. Scores verified from OCR; typos preserved wh
 
 ---
 
+## CM93 — Amiga Power #27, July 1993 (80%)
+
+**Source:** `Amiga_Power_027_Jul_1993_djvu.txt` · Archive item `amiga-power-pdffromhi-000_202601` · Reviewer: **Tim Norris** · OCR ~lines 12404–12626
+
+**Score note:** **80%** from [AMR](http://amr.abime.net/) / MobyGames; AP rating box not legible in OCR (same pattern as AC062 / TONE056).
+
+**Themes:**
+- Sequel to CM1; 37 listed new features; ~15 min setup for full game
+- No match highlights, animation, or action — management/tactics/planning only
+- Transfer market, injuries, board feedback, teleprinter-style Saturday results
+- vs Graham Taylor's Soccer Challenge (has action) and Premier Manager (less depth)
+- “Domark get back on top form with an off-the-pitch footy sim”
+
+**Closing:** “Excellent management sim… well worth considering if you haven't got either of them.”
+
+---
+
 ## CM93 — Amiga Format #48, July 1993 (82%)
 
 **Source:** `Amiga_Format_048_1993_07_djvu.txt` · Reviewer: **Stephen Bradley** · OCR ~lines 16310–16387

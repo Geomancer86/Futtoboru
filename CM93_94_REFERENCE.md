@@ -177,8 +177,9 @@ CM93 is the **first real-names English league benchmark** after CM1’s anonymou
 | Item | Source |
 |------|--------|
 | Primary review scan text (AF #48, CU #40, AC #62, The One #56) | ✅ Round 9–10 — [magazine OCR](docs/research/sources/magazines/) + [extracts](docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md) |
-| The One July 1992 CM1 review (Gary Whitta 89%, cited in #56) | 🔲 `SRC-MAG-TONE-CM1-JUL` |
-| CVG #140, Amiga Power #27 | 🔲 See [source ledger](CM_LEGACY_SOURCE_LEDGER.md) |
+| The One July 1992 CM1 review (Gary Whitta 89%, cited in #56) | ✅ `SRC-MAG-TONE046` |
+| CVG #140 | 🔲 See [source ledger](CM_LEGACY_SOURCE_LEDGER.md) — not in `cvg-magazine` collection |
+| Amiga Power #27 | ✅ `SRC-MAG-AP027` via `amiga-power-pdffromhi-000_202601` |
 | End-of-Season Edition changelog | In-game / disk readme |
 | DOS vs Amiga vs ST feature parity | Emulator testing |
 | CM93 menu extract | Derive from Lemon extract |

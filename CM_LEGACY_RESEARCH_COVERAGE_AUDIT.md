@@ -15,7 +15,7 @@
 | **Full manuals in repo** | CM1 ✅ · CM93 text ✅ · CM2 FR only ⚠️ · CM9798 scan ⚠️ | CM3 ✅ · CM4 ReadMe only ⚠️ |
 | **Patch story documented** | CM1 N/A · CM93 SKU updates ⚠️ · CM2 SKU + cm2fix ⚠️ · CM9798 “no patches” only | CM4 EP1–5 ✅ · CM3 partial ✅ |
 | **Expansion / data-disk story** | CM2 European Leagues ✅ · CM93 spin-offs listed ⚠️ · CM9798 as final SKU ⚠️ | CM3 seasonal family ✅ · CM4 successor 03/04 ✅ |
-| **Era reviews (scores + themes)** | CM1 **The One #46 primary ✅** · **CM93 four UK mags primary text ✅** · **CM2 PC Zone #31 ✅** · CM9798 shallow | CM3 PC Zone ✅ · CM4 multi-outlet ✅ |
+| **Era reviews (scores + themes)** | CM1 **The One #46 primary ✅** · **CM93 five UK mags primary text ✅** · **CM2 PC Zone #31 ✅** · CM9798 shallow | CM3 PC Zone ✅ · CM4 multi-outlet ✅ |
 | **User feeling of the era** | CM1 modest · CM93 breakthrough narrative ⚠️ · CM9798 cult ⚠️ | CM3 golden age ✅ · CM4 launch crisis ✅ |
 
 **Bottom line:** Manual *content* for CM1 and CM93 is now usable for design research. **Patch/expansion chronology** and **period reception** need a dedicated pass for every SKU — see [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md) and [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md).
@@ -74,7 +74,7 @@ See [docs/research/manuals/README.md](docs/research/manuals/README.md).
 
 | Well documented | Partial | Missing |
 |-----------------|---------|---------|
-| CM4 launch press · CM3 PC Zone · **CM93 AF+CU+AC+The One OCR (R9–10)** · **CM1 The One #46 OCR (R11)** | CM1 polarized low scores · CM9798 “#1 UK” claim | CM2 PC Gamer/PC Attack · CVG/AP CM93 |
+| CM4 launch press · CM3 PC Zone · **CM93 AF+CU+AC+The One+AP OCR (R9–12)** · **CM1 The One #46 OCR (R11)** | CM1 polarized low scores · CM9798 “#1 UK” claim | CM2 PC Gamer/PC Attack · **CVG #140 CM93** |
 
 **Unified table:** [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md)
 
@@ -104,7 +104,17 @@ See [docs/research/manuals/README.md](docs/research/manuals/README.md).
 
 ---
 
-## Round 11 deliverables (this commit)
+## Round 12 deliverables (this commit)
+
+| Doc / asset | Purpose |
+|-------------|---------|
+| `Amiga_Power_027_Jul_1993_djvu.txt` | CM93 primary review (Tim Norris); fifth UK Amiga outlet |
+| `nygreen_*` + `jonnyrivers_home_wayback.html` | CM4 pre-game editor community captures |
+| Ledger + extracts updated | AP27 found in `amiga-power-pdffromhi` collection; CVG140 still absent |
+
+---
+
+## Round 11 deliverables
 
 | Doc / asset | Purpose |
 |-------------|---------|
@@ -144,7 +154,7 @@ See [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) § Round 10+ priori
 | Priority | Task | Primary sources |
 |----------|------|-----------------|
 | **P0** | OCR CM9798 + CM2 FR manuals | Archive.org djvu / pdftotext |
-| **P1** | Remaining CM93 magazine OCR (CVG #140, AP #27 full mag) | Source ledger SRC-MAG-* |
+| **P1** | CVG #140 Jul 1993 CM93 review (ABIME / alternate scan) | SRC-MAG-CVG140 |
 | **P1** | PC Gamer #24 CM2 review scan | SRC-MAG-PCG024 |
 | **P1** | GameFAQs Wayback batch (CM3, CM0203, CM9798) | SRC-GFQ-* |
 | **P1** | Dobbers citation chain (editors, patches, cmskins) | Wayback |
@@ -158,6 +168,7 @@ See [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) § Round 10+ priori
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 12 — AP #27 CM93 OCR; nygreen/jonnyrivers Wayback |
 | 2025-06-25 | Round 11 — The One #46 CM1 OCR; AP27/CVG140 hunt notes |
 | 2025-06-25 | Round 10 — AC062 + The One #56 OCR; CM1 review citation chain |
 | 2025-06-25 | Round 9 — source ledger; magazine OCR; GameFAQs Wayback |
