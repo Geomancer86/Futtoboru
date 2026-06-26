@@ -209,7 +209,7 @@ CM1 superseded by **CM93/94** rather than patched.
 
 | Publication | Score | Notes |
 |-------------|-------|-------|
-| **The One Amiga** #46 | **89%** | £24.99; depth praised; vs Super League Manager |
+| **The One Amiga** #46 | **89%** | £24.99; depth praised; vs Super League Manager — **primary text in repo** ([extract](docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md)) |
 | **CU Amiga** | **84%** | |
 | **Amiga Reviews** (Level Up) | Positive | vs **The Manager** (US Gold); wrong div sizes; fake names |
 | **Amiga Format** | Listed | See [Amiga Magazine Rack](http://amr.abime.net/review_418) |
@@ -285,7 +285,7 @@ CM1 is the **minimum shippable management sim** Futtoboru v1 should match — no
 | Item | Source | Output |
 |------|--------|--------|
 | Full manual menu tree | GamesDatabase HTML | Registry update |
-| The One #46 pages 92–93 | Archive.org / Abime | Press appendix |
+| The One #46 pages 92–93 | ✅ `The_One_046_Jul_1992_djvu.txt` | Press appendix — Gary Whitta 89% |
 | Guy Roux Manager feature diff | MobyGames / cm0001 | CM1 supplement |
 | European Championship prototype | MobyGames SI | Pre-CM1 doc |
 | DOS vs Amiga feature parity | Emulator testing | Platform matrix |
@@ -308,5 +308,6 @@ CM1 is the **minimum shippable management sim** Futtoboru v1 should match — no
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 11 — The One #46 primary review text in repo; press backlog closed |
 | 2025-06-25 | Round 3 — press table, 1992 competitors, localized versions, EA rejection, training correction, v1 benchmark |
 | 2025-06-25 | Round 2 deep reference created |

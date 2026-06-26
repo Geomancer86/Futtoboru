@@ -4,7 +4,7 @@
 
 **Parent:** [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md)  
 **Local files:** [docs/research/sources/README.md](docs/research/sources/README.md)  
-**Date opened:** 2025-06-25 · **Round:** 10 (AC062 + The One #56 OCR; citation chain from ig1234)
+**Date opened:** 2025-06-25 · **Round:** 11 (The One #46 CM1; AP27/CVG140 hunt attempts)
 
 ---
 
@@ -59,7 +59,21 @@
 | R10 | shy guide cites `shy.host.sk`, `sigames.com` | ❌ MISSING — Wayback |
 | R10 | The One #56 cites Gary Whitta CM1 review (July, 89%) | ❌ MISSING — `SRC-MAG-TONE-CM1-JUL1992` (issue TBD) |
 | R10 | GameFAQs CM3 FAQ list (IDs 562287, 914433) | ❌ 404 on Wayback — slug hunt continues |
+| R10 | GameFAQs CM3 FAQ list (IDs 562287, 914433) | ❌ 404 on Wayback — slug hunt continues |
 | R10 | PC Gamer #24 Nov 1995 UK | ❌ MISSING — no `pc-gamer-magazine-uk` collection hit |
+
+## Round 11 session log
+
+| When | Action | Result |
+|------|--------|--------|
+| R11 | Archive.org `theone-magazine-46` Jul 1992 OCR | ✅ ACQUIRED — CM1 review Gary Whitta (~18334–18608, pp.92–93); **89** in score column ~27511 |
+| R11 | The One #56 citation resolved | `SRC-MAG-TONE-CM1-JUL` → **same as** `SRC-MAG-TONE046` (issue #46, not separate July SKU) |
+| R11 | `Amiga_Power_27_1993_Future_Publishing_GB_Jul_1993` | ❌ **Wrong item** — coverdisk ADF only, no magazine OCR; full AP #27 still **MISSING** |
+| R11 | CVG #140 Jul 1993 (`cvg-magazine` collection) | ❌ MISSING — 540-issue collection has no #140 identifier match |
+| R11 | PC Gamer #24 Nov 1995 UK | ❌ MISSING — no Imagine UK issue scan found |
+| R11 | Wayback `belangrijk.net/mc/` (Mind Compression) | ❌ 404 (2012 snapshot) |
+| R11 | Wayback `cmeuphoria.co.uk` | ❌ DEAD — 2011 snapshot is parked-domain frameset only |
+| R11 | Wayback GameFAQs board 33189 / casperlab zip | ❌ 404 / redirect shell — not archived |
 
 ---
 
@@ -97,6 +111,7 @@ See full file list: [docs/research/sources/README.md](docs/research/sources/READ
 | SRC-MAG-PCZ035 | `magazines/PC_Zone_35_1996_02_djvu.txt` | (prior) | CM2 |
 | SRC-MAG-AC062 | `magazines/Amiga_Computing_062_Jul_1993_djvu.txt` | ~1.0 MB | CM93 |
 | SRC-MAG-TONE056 | `magazines/The_One_056_May_1993_djvu.txt` | ~481 KB | CM93 |
+| SRC-MAG-TONE046 | `magazines/The_One_046_Jul_1992_djvu.txt` | ~472 KB | CM1 |
 
 ---
 
@@ -110,6 +125,7 @@ See full file list: [docs/research/sources/README.md](docs/research/sources/READ
 | CM93 | The One #56 May 1993 | **80%** ⚠️ | Simon Byron | SRC-MAG-TONE056 | ~15050–15230 — score sidebar garbled in OCR |
 | CM2 | PC Zone #31 Oct 1995 | **97%** (review index) | — | SRC-MAG-PCZ031 | Index ~7843–7846; body ~23180–24149 |
 | CM2 | PC Zone digest (#32/#35) | **92% Classic** | — | SRC-MAG-PCZ032 / PCZ035 | ~27537–27543 — **conflicts with 97%**; treat #31 as primary |
+| CM1 | The One #46 Jul 1992 | **89%** | Gary Whitta | SRC-MAG-TONE046 | ~18334–18608; pp.92–93; score col ~27511 |
 
 **Extract summary:** [docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md](docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md)
 
@@ -155,7 +171,7 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 | `www.cmskins.com` | Official skins | **DEAD?** | Wayback; registration was required |
 | `www.nygreen.net` | Pre-game editor | **MISSING** | Wayback |
 | `www.jonnyrivers.com` | Pre-game editor | **MISSING** | Wayback |
-| `www.cmeuphoria.co.uk` | Independent data updates | **MISSING** | Wayback |
+| `www.cmeuphoria.co.uk` | Independent data updates | **DEAD** | Wayback 2011 — parked domain frameset only |
 | `www.cm4update.co.uk` | Independent data updates | **MISSING** | Wayback |
 | `www.champmanworld.com/.../cid=2` | EP5 patch mirrors | **MISSING** | Wayback downloads section |
 | `www.cm-hq.co.uk/408_enhance_nodata.exe` | EP5 patch HTTP | **DEAD** | Mirror on blueyonder FTP below |
@@ -163,7 +179,7 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 | `ftp://.../408_enhance_nodata.exe` | EP5 patch (no data) | **DEAD** | Same |
 | `ftp://.../cm_408_updater.sit` | Mac updater | **DEAD** | Same |
 | `www.mitchellsclose.co.uk/LLM/LL-Team-Generator.html` | LLM team generator | **MISSING** | Wayback |
-| `www.belangrijk.net/mc/` | Mind Compression editor | **MISSING** | Wayback |
+| `www.belangrijk.net/mc/` | Mind Compression editor | **DEAD** | Wayback 2012 → 404 |
 | `www.casperlab.com/cm4save/cm4saveeditor.zip` | Save editor | **MISSING** | Wayback zip |
 | `www.iebeta.net/files/Q815411_WXP_SP2_x86_ENU.exe` | XP perf hotfix for CM4 | **MISSING** | Microsoft KB Q815411 — archive.org |
 | `www.eidosinteractive.co.uk/support/` | CM4 support | **MISSING** | Wayback Eidos support pages |
@@ -172,11 +188,11 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 
 | Cited source | Cited by | Status | Hunt notes |
 |--------------|----------|--------|------------|
-| The One Amiga #56 May 1993 (CM93 80%, Simon Byron p.78) | CM93_94_REFERENCE, AMR | **MISSING** | No archive.org item; try `TheOneAmiga` collections, ABIME scans |
-| The One Amiga #46 (CM1 89%) | CM1_REFERENCE | **MISSING** | Same |
-| Amiga Computing #62 Jul 1993 (CM93 92%) | CM93_94_REFERENCE, UVList | **MISSING** | Archive item lacks OCR text file |
-| Computer & Video Games #140 Jul 1993 (85%) | CM93_94_REFERENCE | **MISSING** | Archive.org CVG run |
-| Amiga Power #27 Jul 1993 (80%) | CM93_94_REFERENCE | **MISSING** | Archive.org AP run |
+| The One Amiga #56 May 1993 (CM93 80%) | CM93_94_REFERENCE, AMR | **ACQUIRED** | `SRC-MAG-TONE056` |
+| The One Amiga #46 Jul 1992 (CM1 89%) | CM1_REFERENCE, TONE056 cites | **ACQUIRED** | `SRC-MAG-TONE046` |
+| Amiga Computing #62 Jul 1993 (CM93 92%) | CM93_94_REFERENCE, UVList | **ACQUIRED** | `SRC-MAG-AC062` — score box OCR gap |
+| Computer & Video Games #140 Jul 1993 (85%) | CM93_94_REFERENCE | **MISSING** | Not in archive.org `cvg-magazine` (R11) |
+| Amiga Power #27 Jul 1993 (80%) | CM93_94_REFERENCE | **MISSING** | Full mag not on archive; `Amiga_Power_27_*` = coverdisk |
 | PC Gamer #24 Nov 1995 (CM2 49%) | Wikipedia / era reviews | **MISSING** | PC Gamer archive |
 | PC Attack #7 Nov 1995 (CM2 83%) | UVList | **MISSING** | Magazine rack |
 | PC Format 1997 CM9798 review | CM9798_REFERENCE gap | **MISSING** | Archive.org |
@@ -210,7 +226,10 @@ When an **ACQUIRED** source cites another, the cited source is listed here until
 | SRC-MAG-CU040 | CU #40 Jun 1993 | CM93 | 84% | ✅ | ✅ |
 | SRC-MAG-AC062 | Amiga Computing #62 Jul 1993 | CM93 | 92% | ✅ | ✅ body; score box OCR gap |
 | SRC-MAG-TONE056 | The One #56 May 1993 | CM93 | 80% | ✅ | ✅ body; score sidebar OCR gap |
-| SRC-MAG-TONE-CM1-JUL | The One ~Jul 1992 CM1 | CM1 | 89% | ❌ | ❌ cited by TONE056 review |
+| SRC-MAG-TONE046 | The One #46 Jul 1992 | CM1 | 89% | ✅ | ✅ body; score column ~27511 |
+| SRC-MAG-TONE-CM1-JUL | (alias → TONE046) | CM1 | 89% | ✅ | Resolved R11 |
+| SRC-MAG-AP027-FULL | Amiga Power #27 Jul 1993 | CM93 | 80% | ❌ | ❌ — archive `Amiga_Power_27_*` is coverdisk only |
+| SRC-MAG-CVG140 | CVG #140 Jul 1993 | CM93 | 85% | ❌ | ❌ — not in `cvg-magazine` collection |
 | SRC-MAG-PCZ031 | PC Zone #31 Oct 1995 | CM2 | 97% | ✅ | ✅ |
 | SRC-MAG-PCZ032 | PC Zone #32 Nov 1995 | CM2 | 92% digest | ✅ | PARTIAL digest only |
 | SRC-MAG-PCG024 | PC Gamer #24 Nov 1995 | CM2 | 49% | ❌ | ❌ |
@@ -227,7 +246,8 @@ Depth: ✅ in repo · ⚠️ partial · ❌ missing
 
 | Game | Manuals | Magazines (primary) | GameFAQs | Forums/community | Patches primary |
 |------|---------|---------------------|----------|------------------|-----------------|
-| CM93 | ✅ text | ⚠️ **AF+CU+AC+The One ✅**; CVG/AP/CVG ❌ | ❌ | ❌ | ⚠️ Intelek ads in AF + AC OCR |
+| CM1 | ✅ HTML | ⚠️ The One #46 ✅ | ❌ | ❌ | N/A |
+| CM93 | ✅ text | ⚠️ **AF+CU+AC+The One ✅**; AP/CVG ❌ | ❌ | ❌ | ⚠️ Intelek ads in AF + AC OCR |
 | CM2 | ⚠️ FR PDF | ⚠️ PCZ ✅; PCG/PC Attack ❌ | ❌ | ❌ | ⚠️ chronology only |
 | CM9798 | ⚠️ scan | ❌ | ❌ | ❌ | ⚠️ |
 | CM3 | ✅ PDF | ❌ | ❌ | ❌ | ⚠️ |
@@ -252,8 +272,8 @@ Depth: ✅ in repo · ⚠️ partial · ❌ missing
 | P | Task | Source IDs |
 |---|------|------------|
 | P0 | OCR CM9798 + CM2 FR manuals | Manuals backlog |
-| P1 | The One July 1992 CM1 review (Gary Whitta 89%) | SRC-MAG-TONE-CM1-JUL |
-| P1 | CM93 score boxes in AC062 + TONE056 PDFs | Verify 92% / 80% in print |
+| P1 | Amiga Power #27 full magazine OCR (not coverdisk item) | SRC-MAG-AP027-FULL |
+| P1 | CVG #140 Jul 1993 CM93 review | SRC-MAG-CVG140 |
 | P1 | PC Gamer #24 CM2 review | SRC-MAG-PCG024 |
 | P1 | GameFAQs CM3 + CM0203 Wayback batch | SRC-GFQ-CM3-* |
 | P2 | Dobbers citation chain Wayback (editors, patches, cmskins) | § Citation chain |
@@ -267,5 +287,6 @@ Depth: ✅ in repo · ⚠️ partial · ❌ missing
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 11 — The One #46 CM1 OCR; AP27/CVG140 hunt notes; Dobbers URL status updates |
 | 2025-06-25 | Round 10 — AC062 + The One #56 OCR; ig1234/shy citation additions; CM1 review chain |
 | 2025-06-25 | Round 9 — ledger created; 5 magazine OCRs; 2 GameFAQs; Dobbers FAQ; citation queue seeded |

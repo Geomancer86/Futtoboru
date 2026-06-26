@@ -6,6 +6,26 @@ Quoted from local `djvu.txt` files. Scores verified from OCR; typos preserved wh
 
 ---
 
+## CM1 — The One #46, July 1992 (89%)
+
+**Source:** `The_One_046_Jul_1992_djvu.txt` · Reviewer: **Gary Whitta** · pp. **92–93** · OCR ~lines 18328–18608
+
+**Score note:** **89%** visible in rating column ~line 27511; sidebar OCR garbled like other The One reviews.
+
+**Cited by:** The One #56 CM93 review (Simon Byron references Whitta’s original **89%**).
+
+**Themes:**
+- Seven years in development; 1500 players; four-player hotseat
+- Transfer market depth (poach, negotiate fees/wages)
+- Cups including fictional Domark trophy; Manager of Month/Year
+- Presentation “threadbare” but statistics maze is the draw
+- “Probably the finest example of a true enthusiast's management sim to date”
+- £24.99 (per CM1_REFERENCE)
+
+**Closing:** Demands attention; “pays handsome dividends to those willing to make the effort.”
+
+---
+
 ## CM93 — Amiga Format #48, July 1993 (82%)
 
 **Source:** `Amiga_Format_048_1993_07_djvu.txt` · Reviewer: **Stephen Bradley** · OCR ~lines 16310–16387

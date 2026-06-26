@@ -1,6 +1,6 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2025-06-25 (Round 10 source hunt)
+**Last updated:** 2025-06-25 (Round 11 source hunt)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
@@ -45,7 +45,7 @@ Industry benchmark wiki for Futtoboru design targets.
 
 | Document | Purpose |
 |----------|---------|
-| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | **Round 9** — every source acquired/missing; citation-chain hunt queue |
+| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | **Round 11** — every source acquired/missing; citation-chain hunt queue |
 | [docs/research/sources/README.md](docs/research/sources/README.md) | Local GameFAQs, magazine OCR, forum captures |
 | [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md) | Honest manual/patch/review coverage matrix + backlog |
 | [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) | **Round 7** — CM93/94 manual, expansions, era reviews |

@@ -36,6 +36,7 @@ sources/
 | `magazines/PC_Zone_35_1996_02_djvu.txt` | SRC-MAG-PCZ035 | Round 9 | prior session | Roundups + CM2 letters |
 | `magazines/Amiga_Computing_062_Jul_1993_djvu.txt` | SRC-MAG-AC062 | Round 10 | `amiga-computing-magazine-062` | CM93 92% review body |
 | `magazines/The_One_056_May_1993_djvu.txt` | SRC-MAG-TONE056 | Round 10 | `theone-magazine-56` | CM93 80% review body |
+| `magazines/The_One_046_Jul_1992_djvu.txt` | SRC-MAG-TONE046 | Round 11 | `theone-magazine-46` | CM1 89% review (Gary Whitta) |
 
 ---
 
@@ -49,6 +50,7 @@ Use these exact paths — item-level `*_djvu.txt` names vary by upload.
 | CU #40 | `cuamiga-magazine-040` | `CUAmiga_040_Jun_1993_djvu.txt` |
 | AC #62 | `amiga-computing-magazine-062` | `AmigaComputing_062_Jul_1993_djvu.txt` |
 | The One #56 | `theone-magazine-56` | `TheOne_56_May_1993_djvu.txt` |
+| The One #46 | `theone-magazine-46` | `TheOne_46_Jul_1992_djvu.txt` |
 | PC Zone #31 | `PC_Zone_31_October_1995` | `PC_Zone_31_October_1995_djvu.txt` |
 | PC Zone #32 | `PC_Zone_32_November_1995` | `PC_Zone_32_November_1995_djvu.txt` |
 | PC Zone #35 | (existing identifier in repo) | `PC_Zone_35_1996_02_djvu.txt` |
