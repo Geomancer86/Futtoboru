@@ -169,7 +169,9 @@ Italian league rules: **3 foreign players on pitch** ⚠️ community memory.
 | **PC Attack** #7 | Nov 1995 | **83%** | [UVList](https://www.uvlist.net/game-220101-Championship+Manager+2) |
 | **PC Gamer** #24 | Nov 1995 | **49%** | Wikipedia — urged series to retire |
 | **Génération 4** #90 | Jul 1996 (FR) | **4/6** | UVList |
-| **PC Zone** | Nov 1998 | **90%** | Wikipedia cite — likely retrospective CM2 piece ⚠️ verify issue |
+| **PC Zone** | #31 Oct 1995 | **97%** | ✅ Primary review OCR in repo — [extracts](docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md) |
+| **PC Zone** | digest #32/#35 | **92% Classic** | ⚠️ Roundup blurb only — score conflict with 97% |
+| **PC Zone** | Nov 1998 | **90%** | 🔲 Wikipedia retrospective — not the 1995 launch review |
 
 **Amiga port (Sterling Games — not PC parity)**
 

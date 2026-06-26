@@ -1,6 +1,6 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2025-06-25 (Round 7 coverage audit)
+**Last updated:** 2025-06-25 (Round 10 source hunt)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
@@ -45,7 +45,9 @@ Industry benchmark wiki for Futtoboru design targets.
 
 | Document | Purpose |
 |----------|---------|
-| [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md) | **Round 7** — honest manual/patch/review coverage matrix + backlog |
+| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | **Round 9** — every source acquired/missing; citation-chain hunt queue |
+| [docs/research/sources/README.md](docs/research/sources/README.md) | Local GameFAQs, magazine OCR, forum captures |
+| [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md) | Honest manual/patch/review coverage matrix + backlog |
 | [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) | **Round 7** — CM93/94 manual, expansions, era reviews |
 | [CM9798_REFERENCE.md](CM9798_REFERENCE.md) | **Round 7** — CM97/98 engine finale, editor, reception |
 | [CM_ITALIA_SPINOFFS_REFERENCE.md](CM_ITALIA_SPINOFFS_REFERENCE.md) | **Round 8** — CM Italia / Norge / Guy Roux spin-offs |

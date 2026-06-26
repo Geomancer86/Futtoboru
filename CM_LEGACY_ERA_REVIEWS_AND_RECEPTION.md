@@ -1,10 +1,10 @@
 # CM Legacy — Era Reviews & User Reception
 
 **Purpose:** Contemporary **magazine scores**, **review themes**, and **player sentiment** for CM1–CM4 and precursors.  
-**Parent:** [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md)  
-**Date:** 2025-06-25
+**Parent:** [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md) · **Sources:** [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md)  
+**Date:** 2025-06-25 (Round 9 — primary OCR extracts)
 
-Legend: ✅ Primary score in repo · ⚠️ Secondary / aggregate only · 🔲 Not yet researched
+Legend: ✅ Primary score **and review text** in repo · ⚠️ Score only / aggregate · 🔲 Not yet researched
 
 ---
 
@@ -67,23 +67,27 @@ See [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) §5 for full table.
 
 **Summary:** UK Amiga launch reviews **78–92%** band; UVList **81.4%** average. Seen as **major upgrade** for real names; generation wait criticized.
 
+**Round 9 primary text in repo:** Amiga Format #48 (**82%**, Stephen Bradley) · CU Amiga #40 (**84%**, Mark Patterson) · Amiga Computing #62 (**92%**, Jonathan Maddock — body only) · The One #56 (**80%**, Simon Byron — body only) — see [magazine extracts](docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md). Still missing: CVG #140, Amiga Power #27, The One July 1992 CM1 review (cited by Byron).
+
 ---
 
 ## CM2 (1995)
 
 | Source | Score | Status |
 |--------|-------|--------|
-| **PC Attack** #7 Nov 1995 | **83%** | ✅ UVList |
-| **PC Gamer** #24 Nov 1995 | **49%** | ✅ Wikipedia |
-| **Génération 4** #90 (FR) | **4/6** | ✅ UVList |
+| **PC Zone** #31 Oct 1995 | **97%** | ✅ **Primary review text** in repo (OCR) |
+| **PC Zone** digest (#32 / #35) | **92% Classic** | ⚠️ Roundup blurb only — conflicts with 97%; see extracts |
+| **PC Attack** #7 Nov 1995 | **83%** | ⚠️ UVList score only |
+| **PC Gamer** #24 Nov 1995 | **49%** | ⚠️ Wikipedia cite — scan **missing** |
+| **Génération 4** #90 (FR) | **4/6** | ⚠️ UVList |
 | **MobyGames aggregate** | **62%** (10 critics) | ✅ |
 | **CU Amiga** Dec 1997 (port) | **70%** | ✅ AMR |
 | **Amiga Format** #108 (AGA port) | **12%** | ✅ AMR |
-| **PC Zone** Nov 1998 | **90%** | ⚠️ Wikipedia — verify retrospective |
+| **PC Zone** Nov 1998 | **90%** | 🔲 Wikipedia retrospective — **distinct from Oct 1995 review** |
 
-**Themes:** PC = addictive depth; PC Gamer = presentation fatigue; Amiga port = gutted vs PC (international cut).
+**Themes (from PC Zone #31 OCR):** “Becomes real life” not a game; Clive Tyldesley commentary; exhaustive player search; office addiction. PC Gamer = presentation fatigue (scan wanted). Amiga port = gutted vs PC.
 
-**Round 8:** MobyGames + Amiga Magazine Rack + PC press hunt.
+**Round 9:** Full PC Zone #31 review archived; digest 92% documented in [source ledger](CM_LEGACY_SOURCE_LEDGER.md).
 
 ---
 

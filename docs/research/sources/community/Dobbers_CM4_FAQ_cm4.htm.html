@@ -1,0 +1,325 @@
+<html>
+<head>
+	<title>CM4 FAQ</title>
+</head>
+
+<body>
+<h1>CM4 FAQ</h1>
+<pre>
+This FAQ applies for CM version 4.0.8 (EP5). Any exceptions will be noted.
+
+Contents
+1. General CM4 Questions
+    a. What is CM4
+    b. What are the minimum specs
+    c. What are the recommended specs?
+    d. How can I make CM run faster?
+        i. What is the difference between Full and not full detail?
+        ii. What difference does database size make?
+    e. Will CM4 worth with AMD processors?
+    f. How do I play CM4 windowed?
+    g. How do I play CM4 at 800x600 resolution?
+    h. Other "hidden" commands.
+        i. What about "ARSE"
+    i. How do I add pictures to appear in the background?
+    k. Can I have someone find me a small club to manage?
+    l. Can clubs make move to a different ground?
+    m. Have you started a new game?
+    n. What is a "first option"?
+    o. Why can't I release any media stories?
+2. Strange Features
+    a. Why is there a Norwegion reserve league?
+    b. Why does the scoreline sometimes change mid-match?
+    c. Why do Northwich have have 200,000+ capacity staduim?
+    d. Why does the German version of the game have no real players?
+    e. How many players can I get in one team?
+    f. Why can I not loan players between premiership teams?
+3. Downloads
+    a. Where can I get the patch?
+    b. Where can I get tactics/training sceduals/skins/pictures
+    c. Where can I get data/savegame editors
+    d. Where can I get independent data updates?
+4. "Enhancement Pack" details
+    a. Will there be another pack release?
+    b. Should I add the patch or play without it?
+    c. Do I need to install any EPs before the latest EP release?
+    d. What are the data patches?
+    e. What will be included in future releases?
+    f. What will CM03/04 include?
+5. Problems running CM4
+    a. What do I do if I have a problem?
+    b. NOCD2 copy protect problems
+    c. Running slow under Windows NT
+    d. The score changed when I went to the tactics screen
+
+1. General CM4 Questions
+
+    a. What is CM4?
+Some sort of football management game or other.
+
+    b. What are the minimum specs?
+    Intel P3 600 Mhz or equivilent
+    Windows 98/ME/XP
+    64Mb RAM
+    800x600 resolution
+This will run one league on the minimum small database.
+
+    c. What are the recommended specs?
+    Something above 1Ghz and preferably an Intel P4 processor.
+    256Mb RAM
+This should be capable of running several leagues on a bigger database. CM4
+is scaleable so the number of leagues, the level of simulation and the
+number of divisions of each is changable.
+
+    d. How can I make CM run faster?
+Taking a league off Full Detail and using the smaller databases will make CM
+go faster. Patches 4.0.3+ patch will run faster than the 4.0.1 version.
+        i. What is the difference between Full and not full detail? *
+Making a league run in not full detail uses a slightly different simmulation
+model that is considerably faster. The only noticable difference will be
+that 2D replays will not be available in the majority of games in those
+leagues. If the league in which you are playing is not set to full detail
+the competitions you are playing in will be in Full detail while the
+competitions you are no longer involved with will be on the lesser detailed
+setting.
+        ii. What difference does database size make? *
+The database for CM4 is approximately twice that of CM01/02. Around 250,000
+people will be included if you run a maximum database. It is recommended
+that only machines that are truely top end specifications run on a maximum
+database.
+
+    e. Will CM4 work with AMD processors?
+CM4 is optimised for the use of Intel processors. It still operates fine
+with AMD chips but an equipilent P4 will run CM faster than an Athlon.
+
+    f. How do I play CM4 windowed?
+You need to have a resolution higher than that in which CM4 is running
+(800x600 or the default 1024x768). Putting "-windowed" at the end of the
+command line will force the game to run in a window.
+
+    g. How do I run CM at a resolution of 800x600?
+You need to stick "-small_screen" at the end of the command line.
+
+    h. Other "hidden" options
+"-fullscreen" at the command line level - Forces the game to run in full
+screen.
+"-safe_match" at the command line level - Reduces the probability that
+scoreline will change when you go to the tactics screen. Does slow the match
+down slightly.
+"BIG_BALL" added to Init.cfg - The ball appears bigger on the match screen
+making it easier to see.
+"INCREMENTAL_SAVE" added to Init.cfg - Autosave will automatically change
+the file name it saves the game to.
+"GROUND" added to Init.cfg - Clubs can purcase/build new grounds or their
+own if they were ground sharing. Clubs that have pre-programmed moves are
+already included in CM without this command.
+These can all be found in the readme file. init.cfg needs to be created
+yourself with a text editor (such as notebook) and added to the
+cm4/data/config directory. The effect that the gameplay options has on
+pre-existing savegames is less than it would be on a new save.
+Team details such as capacity and total cash can be changed by creating a
+plain text file called <anything>.edt in the data file. If it read as
+follows it would give Manchester United £200M, 10000 reputation, and give
+Old Trafford a capacity of 100K:
+    BOOST_TEAM" "Man Utd" 200000000 10000 100000
+It is also possible to switch teams divisions by using the SWITCH_TEAM
+command in the same file. An example of how it works can be seen in the EP5
+boost.edt changing Chelsea's financial situation.
+
+        h.i. What about "ARSE"
+After initial reports that ARSE was't included in CM4 some people have found
+that it is. Place ARSE into the self-made init.cfg file and it will give you
+the features such as real-life players acting unprofessional, getting
+negative reports on the behavour of players from scouts, showing the manager
+stats of the board and other similar things.
+
+    i. How can I add a picture to the background?
+Put them into ***/cm4/data/graphics/backgrounds/default for them to appear
+anytime in background.
+Put them into ***/cm4/data/graphics/backgrounds/clubs/<clubname> for them to
+appear in background on that club's squad screens
+put them into ***/cm4/data/graphics/backgrounds/stadiums/<staduim name> for
+them to appear in background during a game at that staduim.
+Put them into ***/cm4/data/graphics/backgrounds/players/<staduim name> for
+them to appear in background during when a set players details are viewed.
+WARNING: If there are a lot of added picture files (especially for players),
+the game will slow down due to the extra work load).
+
+    k. Can someone find me a small club to manage?
+If you are a LLM (lower league manager) then we recommend
+http://www.mitchellsclose.co.uk/LLM/LL-Team-Generator.html for finding small
+obscure clubs that need to to take them into the top flight.
+
+    l. Can clubs make move to a different ground?
+Pre-programmed moves that are due to take place are in the game. Adding
+"GROUND" to init.cfg will give other clubs the chance to make moves that are
+not programmed. For more details see 1h.
+
+    m. Have you started a new game?
+Well have you? Save games started under prevous patch versions are likely to
+not have the fixes applied by that patch and can pick up other bugs and
+problems.
+
+    n. What is the first option transfer?
+A first option is an offer to a deal whereby if the club decide to sell the
+player, they have to offer him to you, and cannot reject your offer without
+rejecting everyones.
+
+    o. Why can't I do any media releases?
+Media stories can be released on players who have played 5 games in relative
+succession, you can release one a week, and if you pick the
+right story, and you're respected enough by the club/player/fans (ie 3 years
+of good management of them should be enough) then you'll get a positive
+response...
+
+2. Strange Features
+    a. Why is there a Norwegion reserve league?
+In real life there is no reserve league in Norway, only U19s. Some B teams
+do play in lower divisions. In real life the teams play a lot of friendlies
+to get all their players onto the pitch throught the season. Due to public
+demand a reserve league has been added to make things easier.
+
+    b. Why does the scoreline sometimes change mid-match?
+This is down to a bug that SI are unable to find. It's frequency is much
+decreased if CM4 is loaded with "-safe_match" in the command line.
+
+    c. Why do Northwich have have 200,000+ capacity staduim?
+It's a pre-version 4 bug and not because 1/3rd of the population of Cheshire
+watch their matches.
+
+    d. Why does the German version of the game only have fictional players?
+Licence problems in Germany meant that they couldn't use the real player
+data. It is still included with the game though and rumours abound that
+adding German to the Init.cfg file will enable real player mode.
+
+    e. How many players can I get into one team.
+Unlike past versions with a 50 play limit, a limit of 63554 players is in
+place for CM4.
+
+    f. Why can I not loan players between premiership teams?
+After the first season in the game the loan rules in the English Premier
+League change from only loaning keepers between rival teams in the same
+division, to being able to make full loans between the clubs.
+
+3. Downloads
+    a. Where can I get the patch?
+The fifth enhancement patch is available at the following mirrors.
+
+http://www.champmanworld.com/news/modules.php?name=Downloads&d_op=viewdownload&cid=2
+ftp://gamefiles.blueyonder.co.uk/blueyondergames/championshipmanager4/patches/408_enhance_nodata.exe
+ftp://gamefiles.blueyonder.co.uk/blueyondergames/championshipmanager4/patches/408_enhance.exe
+http://www.cm-hq.co.uk/408_enhance_nodata.exe
+or for the Mac
+http://gamefiles.blueyonder.co.uk/blueyondergames/championshipmanager4/patches/cm_408_updater.sit
+
+    b. Where can I get tactics/training scheduals/skins/pictures
+Training sceduals can not be transfered between games.
+Skins can be found at the official skins site, www.cmskins.com. You will be
+required to register before you can download skins and pictures.
+
+    c. Where can I get data/savegame editors?
+SI didn't include a pre-game data editor with CM4.
+Independent save-game editors can be found at:
+Mind Compression - http://www.belangrijk.net/mc/
+http://www.casperlab.com/cm4save/cm4saveeditor.zip
+Independent pre-game editors can be found at
+http://www.nygreen.net
+http://www.jonnyrivers.com/
+
+    d. Where can I get independent data updates?
+Try www.cmeuphoria.co.uk and www.cm4update.co.uk.
+
+
+4. "Enhancement Pack" details
+    a. Will there be another pack release?
+There are no plans to make further patches for CM4 but CM03/04 is planned
+for release in November.
+
+    b. Should I add the patch or play without it?
+YES. The 4.0.4 patch (Enhancement patch 2) is essential as a bare minimum
+and the 4.0.5 is heartily recommended with or without additional player
+data. The injury fix for episode 3 is also recommended making the game much
+more stable. 4.0.8 makes bugs much harder to find.
+
+    c. Do I need to install any episodes before the latest episode release?
+No. All patches are cumulative with the latest version fixing all the
+problems also fixed in prevous releases. A data update was included with
+EP3.
+
+    d. What are the data patches?
+The with-data patches include a minor update to the player datasets. The
+data patches are for Eps3 and 5 and contain the same data.
+
+    e. What will be included in future releases?
+Future releases of CM will include the ability to loan players with an
+option to buy. Tax will also be in a new column in the accounts. Currently
+it goes under Other.
+
+    f. What will CM03/04 include?
+
+Additions:
+Four new leagues over and beyond the original CM4 release (as added in CM4
+enhancement packs)
+Updated player, team and competition data for the 03/04 season
+Pre-game database editor
+View previoulsy saved matches
+
+Improvements
+
+Player to player relationships (i.e. indication of players and their
+relationships to other players)
+Improved media module, the game now gives you more feedback than ever before
+Improved match engine (areas such as offside greatly enhanced as well as the
+inclusion of visual status indicators)
+Goal of the month (and season) awards
+Pitches now show the effects of weather and this can affect your teams
+performances
+Past meetings information screen
+Live Cup draws
+More intuitive training system
+Effects of training now visually indicated on player profile screen
+In-game printing
+B & U21 International Caps
+Improved scout reports (both player and team)
+Improved injury news as well as an updated rehabilitation system
+Create nicknames for players and managers
+New Alternative Skin
+Cup Tree View
+Coaches now give their own player rankings
+
+
+5. Problems running CM4
+    a. What to do if I have a problem.
+First check that you aren't running anything in the background that might
+disrupt CM.
+Second download the latest patch.
+Third check the FAQ.
+Forth, check the newsgroup asking if you can't find the problem on there.
+Finally if you still have no solution then look at the SI support forums and
+try their technical support at www.eidosinteractive.co.uk/support/index.html
+    b. NOCD2 copy protection problems.
+This occures when you have a DVD cd-writer combo drive. If you have two
+drives then use the other one. This problem is fixed in the 4.0.3 patch.
+    c. Running slow under Windows XP
+Windows XP SP1 has a problem that has been fixed in a patch from Mircosoft.
+It speeds the game up a great deal. It can be found at
+http://www.iebeta.net/files/Q815411_WXP_SP2_x86_ENU.exe
+    d. The score changed when I went to the tactics screen
+The reason for this bug wasn't found before the release of the last patch,
+but it can be prevented by adding "-safe_match" to the command line when you
+launch the game. This will cause a fraction of a second pause whenever
+leaving the tactics screen during a match but it will prevent the score line
+from changing.
+
+6. Why is this FAQ so empty?
+
+Possibly because half the things that could be included in it can be found
+at the official CM4 FAQ. They focus mainly on technical problems.
+http://community.sigames.com/1/OpenTopic?a=tpc&s=21019056&f=66919117&m=5571901826
+
+Baggers
+</pre>
+
+<a href="javascript:history.go(-1)">Back</a>
+</body>
+</html>

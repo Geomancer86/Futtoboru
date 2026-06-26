@@ -1,7 +1,7 @@
 # CM Legacy — Research Coverage Audit
 
 **Purpose:** Honest answer to “do we have everything?” for CM1–CM4 and pre-CM1 precursors.  
-**Date:** 2025-06-25 · **Round:** 8 (menu extract, reviews, spin-offs)  
+**Date:** 2025-06-25 · **Round:** 10 (AC062 + The One #56; citation chain updates)  
 **Related:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)
 
 ---
@@ -15,7 +15,7 @@
 | **Full manuals in repo** | CM1 ✅ · CM93 text ✅ · CM2 FR only ⚠️ · CM9798 scan ⚠️ | CM3 ✅ · CM4 ReadMe only ⚠️ |
 | **Patch story documented** | CM1 N/A · CM93 SKU updates ⚠️ · CM2 SKU + cm2fix ⚠️ · CM9798 “no patches” only | CM4 EP1–5 ✅ · CM3 partial ✅ |
 | **Expansion / data-disk story** | CM2 European Leagues ✅ · CM93 spin-offs listed ⚠️ · CM9798 as final SKU ⚠️ | CM3 seasonal family ✅ · CM4 successor 03/04 ✅ |
-| **Era reviews (scores + themes)** | CM1 partial · **CM93 now documented** · CM2/CM9798 shallow | CM3 PC Zone ✅ · CM4 multi-outlet ✅ |
+| **Era reviews (scores + themes)** | CM1 partial · **CM93 four UK mags primary text ✅** · **CM2 PC Zone #31 ✅** · CM9798 shallow | CM3 PC Zone ✅ · CM4 multi-outlet ✅ |
 | **User feeling of the era** | CM1 modest · CM93 breakthrough narrative ⚠️ · CM9798 cult ⚠️ | CM3 golden age ✅ · CM4 launch crisis ✅ |
 
 **Bottom line:** Manual *content* for CM1 and CM93 is now usable for design research. **Patch/expansion chronology** and **period reception** need a dedicated pass for every SKU — see [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md) and [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md).
@@ -74,7 +74,7 @@ See [docs/research/manuals/README.md](docs/research/manuals/README.md).
 
 | Well documented | Partial | Missing |
 |-----------------|---------|---------|
-| CM4 launch press · CM3 PC Zone · CM1 The One/CU · **CM93 Amiga scores (Round 7)** | CM1 polarized low scores (Amiga Power 38%) · CM9798 “#1 UK” claim | CM2 magazine scores · CM9798 critic table · CM93 DOS/ST reviews |
+| CM4 launch press · CM3 PC Zone · **CM93 AF+CU+AC+The One OCR (R9–10)** | CM1 polarized low scores · CM9798 “#1 UK” claim | CM2 PC Gamer/PC Attack · CVG/AP CM93 · The One CM1 review |
 
 **Unified table:** [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md)
 
@@ -104,20 +104,43 @@ See [docs/research/manuals/README.md](docs/research/manuals/README.md).
 
 ---
 
-## Round 9+ backlog
+## Round 10 deliverables (this commit)
+
+| Doc / asset | Purpose |
+|-------------|---------|
+| `Amiga_Computing_062_Jul_1993_djvu.txt` | CM93 primary review (Jonathan Maddock) |
+| `The_One_056_May_1993_djvu.txt` | CM93 primary review (Simon Byron); cites CM1 Gary Whitta review |
+| Ledger + extracts updated | ig1234/shy citation chain; score-box OCR gaps noted |
+
+---
+
+## Round 9 deliverables
+
+| Doc / asset | Purpose |
+|-------------|---------|
+| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | Master source registry + citation-chain missing queue |
+| [docs/research/sources/README.md](docs/research/sources/README.md) | Local source file inventory |
+| [MAGAZINE_REVIEW_EXTRACTS.md](docs/research/sources/magazines/MAGAZINE_REVIEW_EXTRACTS.md) | CM93 AF+CU, CM2 PC Zone primary quotes |
+| Magazine OCR ×5 | AF48, CU040, PCZ031/032/035 |
+| GameFAQs Wayback ×2 | CM4 ig1234 + shy |
+| Dobbers CM4 FAQ | Community source + 15+ cited URLs queued as MISSING |
+
+---
+
+## Round 10+ backlog
+
+See [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) § Round 10+ priorities. Summary:
 
 | Priority | Task | Primary sources |
 |----------|------|-----------------|
 | **P0** | OCR CM9798 + CM2 FR manuals | Archive.org djvu / pdftotext |
-| **P0** | CM93 structured menu extract (like CM1) | `CM93_Manual_LemonAmiga_Extract.md` |
-| **P1** | CM2 magazine review hunt | Amiga Magazine Rack, PC Zone, PC Gamer |
-| **P1** | CM9798 critic scores (MobyGames 6 ratings) | MobyGames, PC Zone archive |
-| **P1** | CM93 End-of-Season / Collection disk docs | Archive.org `Championship_Manager_94_End_of_Season_Edition_*` |
-| **P2** | CM Italia / Guy Roux / Norge feature diffs | MobyGames, in-box rules |
-| **P2** | CM4 printed manual scan (tactics pp. 55–61) | Redump, OpenRetro, eBay scans |
+| **P1** | Remaining CM93 magazine OCR (AC #62, The One #56, CVG, AP) | Source ledger SRC-MAG-* |
+| **P1** | PC Gamer #24 CM2 review scan | SRC-MAG-PCG024 |
+| **P1** | GameFAQs Wayback batch (CM3, CM0203, CM9798) | SRC-GFQ-* |
+| **P1** | Dobbers citation chain (editors, patches, cmskins) | Wayback |
+| **P2** | CM4 printed manual (tactics pp. 55–61) | Redump, GameFAQs |
 | **P2** | FM WCE manual analysis § in PRE_CM1 | Local PDF |
-| **P3** | Read primary review scans (The One #46 CM1, AF #48 CM93) | Archive.org magazine OCR |
-| **P3** | Complete CM4 EP changelogs line-by-line | Dobbers FAQ, SIGames FTP readmes |
+| **P3** | Resolve PC Zone CM2 97% vs 92% | PCZ031 PDF score box |
 
 ---
 
@@ -125,4 +148,5 @@ See [docs/research/manuals/README.md](docs/research/manuals/README.md).
 
 | Date | Change |
 |------|--------|
-| 2025-06-25 | Round 7 — coverage audit; CM93/CM9798 refs; patches chronology; era reviews index |
+| 2025-06-25 | Round 10 — AC062 + The One #56 OCR; CM1 review citation chain |
+| 2025-06-25 | Round 9 — source ledger; magazine OCR; GameFAQs Wayback |
