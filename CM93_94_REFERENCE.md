@@ -3,6 +3,7 @@
 **Release:** *Championship Manager '93* (1993) → *Championship Manager 93/94* / End-of-Season editions (1993–1994)  
 **Parent:** [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md) · [CM1_REFERENCE.md](CM1_REFERENCE.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)  
 **Manual:** [CM93_Manual_LemonAmiga_Extract.md](docs/research/manuals/cm93-94/CM93_Manual_LemonAmiga_Extract.md)  
+**Research status:** **Sufficient for v1** (manual + 5 UK reviews; CVG #140 optional) — [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md)  
 **Date:** 2025-06-25
 
 ---

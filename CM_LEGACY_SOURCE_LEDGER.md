@@ -3,8 +3,9 @@
 **Purpose:** Single registry of **every source consulted, acquired, blocked, or missing** for CM1–CM4 research. Prevents duplicate hunts; tracks **citation chains** (when source A cites B and B is absent, B goes on the missing queue).
 
 **Parent:** [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md)  
+**Pause point:** [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md) — **active hunting stopped Round 15**  
 **Local files:** [docs/research/sources/README.md](docs/research/sources/README.md)  
-**Date opened:** 2025-06-25 · **Round:** 15 (master backlog; CM Tech FAQ)
+**Date opened:** 2025-06-25 · **Final active round:** 15 · **Paused:** Round 16
 
 ---
 
@@ -120,7 +121,16 @@
 | R15 | Extract `CMFaq/CM_Tech_FAQ.pdf` from cmmag-01 | ✅ ACQUIRED — `docs/research/sources/community/CM_Tech_FAQ_magazine_disc.pdf` |
 | R15 | Catalog `cmmag-02` metadata | ✅ GK CM3 editor 3.9 + CM01/02 tactics on disc |
 | R15 | PC Zone #73 CM3 review OCR hunt | ❌ MISSING — not in `pc-zone-magazine` collection by issue # |
-| R15 | GameFAQs CM3 Wayback | ❌ BLOCKED — archive.org connection failed (retry R16) |
+| R15 | GameFAQs CM3 Wayback | ❌ BLOCKED — archive.org connection failed (retry when resumed) |
+
+## Round 16 session log (research pause — no new acquisitions)
+
+| When | Action | Result |
+|------|--------|--------|
+| R16 | Created [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md) | ✅ Official stop point + early games (FM82→CM93) sufficiency audit |
+| R16 | Early games gap review | ✅ **No v1 blockers** — CM1 manual/menu/ref + CM93 manual/reviews sufficient |
+| R16 | Mark backlog + audit PAUSED | ✅ Resume via backlog P0/P1 when implementation needs sources |
+| R16 | Transition pointer | → MVP / [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) next phase |
 
 ---
 
@@ -372,6 +382,7 @@ Full hunt matrix: [docs/research/saves-and-tactics/README.md](docs/research/save
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 16 — research **PAUSED**; early games audit |
 | 2025-06-25 | Round 15 — master backlog; CM Tech FAQ; cmmag-02 catalog |
 | 2025-06-25 | Round 14 — cmmag-01 mount/extract; CM Magazine CD index; GK editor docs |
 | 2025-06-25 | Round 13 sync | Coverage audit + PM brief; shell hunt note |

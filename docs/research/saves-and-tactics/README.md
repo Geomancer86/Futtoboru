@@ -2,6 +2,8 @@
 
 **Purpose:** Track **binary samples** and **format documentation** for later reverse-engineering of OG Championship Manager data structures (CM1–CM4 and CM9798/CM3 family).
 
+**Research status:** **PAUSED** — acquisition and RE deferred until post-v1 or explicit feature need. See [CM_LEGACY_RESEARCH_PAUSE.md](../../../CM_LEGACY_RESEARCH_PAUSE.md).
+
 **Parent ledger:** [CM_LEGACY_SOURCE_LEDGER.md](../../../CM_LEGACY_SOURCE_LEDGER.md) § Save games & tactics  
 **Cover CDs:** [CM_MAGAZINE_COVER_CD_INDEX.md](CM_MAGAZINE_COVER_CD_INDEX.md)  
 **Local samples:** [samples/MANIFEST.md](samples/MANIFEST.md)  
@@ -90,5 +92,6 @@ See [CM_MAGAZINE_COVER_CD_INDEX.md](CM_MAGAZINE_COVER_CD_INDEX.md) for issues 1�
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 16 — hunt queue **paused** at research stop point |
 | 2025-06-25 | Round 14 — cmmag-01 extract; cover CD index; GK FAQ/CHANGES + CM0102 tactic exes |
 | 2025-06-25 | Round 13 — track opened; casperlab index; cmmag-01 catalogued |

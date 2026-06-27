@@ -2,7 +2,8 @@
 
 **Purpose:** Offline research copies of official manuals, READMEs, and HTML scans for CM1–CM4 and pre-CM1 precursors.  
 **Analysis:** [CM_MANUALS_COLLECTION.md](../../../CM_MANUALS_COLLECTION.md) · **Deep by release:** [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](../../../CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)  
-**Last updated:** 2025-06-25 (Round 6 archive.org hunt)
+**Research status:** Early games (FM82, CM1, CM93 text) **sufficient for v1** — [CM_LEGACY_RESEARCH_PAUSE.md](../../../CM_LEGACY_RESEARCH_PAUSE.md)  
+**Last updated:** 2025-06-25 (Round 16 research pause)
 
 ---
 
@@ -56,6 +57,7 @@ These files are **third-party copyrighted material** (Domark, Eidos, Sports Inte
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 16 — early-game manuals marked sufficient for v1 at research pause |
 | 2025-06-25 | Initial local archive — CM1 HTML, FM1982 HTML, CM2 FR PDF, CM3/CM9798/CM4 PDFs |
 | 2025-06-25 | Round 8 — CM93 menu extract; CM9798 manual metadata; CM2/CM9798 review scores |
 | 2025-06-25 | Round 6 — CM93 Lemon extract + copy codes; FM World Cup PDF; CM9798 Mr Abandonware provenance |

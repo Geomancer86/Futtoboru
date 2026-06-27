@@ -1,7 +1,8 @@
 # CM Legacy — Research Coverage Audit
 
 **Purpose:** Honest answer to “do we have everything?” for CM1–CM4 and pre-CM1 precursors.  
-**Date:** 2025-06-25 · **Round:** 15 (master backlog)  
+**Research status:** **PAUSED** at Round 15 — [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md)  
+**Date:** 2025-06-25 · **Pause milestone:** Round 16  
 **Related:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md)
 
 ---
@@ -19,7 +20,7 @@
 | **User feeling of the era** | CM1 modest · CM93 breakthrough narrative ⚠️ · CM9798 cult ⚠️ | CM3 golden age ✅ · CM4 launch crisis ✅ |
 | **Save/tactics binaries (RE)** | CM1/CM93 saves ❌ · CM9798 saves ❌ | CM4 `.tac`/saves ❌ · CM01/02 **tactic exes + editor docs ✅** · **cmmag-04/05 catalogued ⚠️** |
 
-**Bottom line:** Manual *content* for CM1 and CM93 is now usable for design research. **What is still missing** is consolidated in [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md). Patch/expansion chronology and period reception need a dedicated pass — see [CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md](CM_LEGACY_PATCHES_AND_EXPANSIONS_CHRONOLOGY.md) and [CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md](CM_LEGACY_ERA_REVIEWS_AND_RECEPTION.md).
+**Bottom line:** Manual *content* for CM1 and CM93 is now usable for design research. **Active research is paused** — early games (FM82→CM93) are **sufficient for v1**; remaining gaps are in [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md). Next phase: **MVP / v1 implementation** per [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
 
 ---
 
@@ -105,7 +106,19 @@ See [docs/research/manuals/README.md](docs/research/manuals/README.md).
 
 ---
 
-## Round 15 deliverables (this commit)
+## Round 16 deliverables (research pause)
+
+| Doc | Purpose |
+|-----|---------|
+| [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md) | **Official pause point** — why stop, early games audit, MVP transition |
+| Early games sufficiency | FM82→CM93 **complete enough for v1** — no further hunts required now |
+| Backlog + audit updates | PAUSED banners; resume instructions |
+
+**Next project phase:** MVP / v1 feature definition — not another research round.
+
+---
+
+## Round 15 deliverables
 
 | Doc / asset | Purpose |
 |-------------|---------|
@@ -203,6 +216,7 @@ See [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) § Round 10+ priori
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 16 — research **PAUSED**; [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md) |
 | 2025-06-25 | Round 15 — master research backlog; CM Tech FAQ from cmmag-01 |
 | 2025-06-25 | Round 14 — cmmag-01 samples; CM Magazine CD index |
 | 2025-06-25 | Round 13 — saves/tactics RE track; coverage audit sync |

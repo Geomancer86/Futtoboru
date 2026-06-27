@@ -1,6 +1,7 @@
 # CM Legacy — Local Source Archive
 
 **Parent ledger:** [CM_LEGACY_SOURCE_LEDGER.md](../../CM_LEGACY_SOURCE_LEDGER.md)  
+**Research status:** **PAUSED** at Round 15 — [CM_LEGACY_RESEARCH_PAUSE.md](../../CM_LEGACY_RESEARCH_PAUSE.md)  
 **Manuals (separate tree):** [../manuals/README.md](../manuals/README.md)
 
 This directory holds **primary and community sources** acquired for CM research. Check here before downloading anything new.

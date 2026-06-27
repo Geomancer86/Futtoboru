@@ -1,15 +1,30 @@
 # CM Legacy — Research Backlog (What Is Still Missing)
 
-**Purpose:** Single **honest inventory** of documents, sources, and downloads still wanted for CM1–CM4 (+ precursors and CM03/04 successor) **before** any binary reverse-engineering or decompiling work.
+**Research status:** **PAUSED** — see [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md)  
+**Purpose:** Single **honest inventory** of documents, sources, and downloads still wanted for CM1–CM4 (+ precursors and CM03/04 successor) **before** any binary reverse-engineering or decompiling work. **Not blocking v1 MVP.**
 
 **Status hub:** [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md)  
 **Source registry:** [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md)  
 **Save/tactics acquisition only:** [docs/research/saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md)  
-**Last updated:** 2025-06-25 · **Round:** 15
+**Last updated:** 2025-06-25 · **Final active round:** 15 · **Pause milestone:** Round 16 (doc only)
 
 ---
 
-## Executive answer
+## Early games (FM82 → CM93) — v1 sufficiency
+
+**Verdict at pause:** **No further early-game acquisition required for v1.** CM1 manual + menu extract + CM1_REFERENCE + CM93 evolution docs are sufficient. Open early-game rows below are **P2–P3** or binary-only — resume only if PO expands scope or a feature needs primary text.
+
+| Still on backlog | Blocks v1? |
+|------------------|------------|
+| CVG #140, CM93 PDF scan, CM1 low-score reviews | No |
+| CM1/CM93 save files | No (RE deferred) |
+| FM WCE manual deep analysis | No |
+
+Detail: [CM_LEGACY_RESEARCH_PAUSE.md § Early games](CM_LEGACY_RESEARCH_PAUSE.md#early-games-sufficiency-audit-fm82--cm93)
+
+---
+
+## Executive answer (full CM1–CM4 corpus)
 
 **No — research is not complete.** The repo is strong on **CM1/CM3/CM4 reference prose**, **CM93 UK magazine reviews (except one)**, and **CM4 community FAQs**. Gaps cluster in:
 
@@ -155,7 +170,9 @@ These are **documentation/reception** targets, not Futtoboru v1 gameplay scope:
 
 ---
 
-## Round 15+ recommended hunt order
+## Round 15+ recommended hunt order (when research resumes)
+
+**Paused 2025-06-25** — do not execute until MVP/v1 needs a specific source. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
 
 | Round focus | Actions |
 |-------------|---------|
@@ -171,4 +188,5 @@ These are **documentation/reception** targets, not Futtoboru v1 gameplay scope:
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 16 — research **PAUSED** at R15; early games audit |
 | 2025-06-25 | Round 15 — master backlog created; CM Tech FAQ from cmmag-01; cmmag-02 catalogued |

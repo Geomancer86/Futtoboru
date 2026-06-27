@@ -1,8 +1,10 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2025-06-25 (Round 15 master backlog)
+**Last updated:** 2025-06-25 (Round 16 — **research paused**; next: MVP/v1)
 
 Use this index to navigate project documentation. **Start here** after cloning.
+
+> **CM legacy document research is PAUSED** at Round 15. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md). **Next focus:** MVP / v1 features per [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md).
 
 ---
 
@@ -45,8 +47,9 @@ Industry benchmark wiki for Futtoboru design targets.
 
 | Document | Purpose |
 |----------|---------|
-| [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md) | **Round 15** — master list of missing manuals, reviews, guides, forums, samples |
-| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | **Round 15** — every source acquired/missing; citation-chain hunt queue |
+| [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md) | **Round 16** — official research stop; early games audit; MVP transition |
+| [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md) | Master missing list (paused — resume when needed) |
+| [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) | Every source acquired/missing; citation-chain queue |
 | [docs/research/sources/README.md](docs/research/sources/README.md) | Local GameFAQs, magazine OCR, forum captures |
 | [docs/research/saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md) | **Round 14** — save/tactics binaries + format RE hunt queue |
 | [docs/research/saves-and-tactics/CM_MAGAZINE_COVER_CD_INDEX.md](docs/research/saves-and-tactics/CM_MAGAZINE_COVER_CD_INDEX.md) | Future CM Magazine cover CDs (cmmag-01–05) |

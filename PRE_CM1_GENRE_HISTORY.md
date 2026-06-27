@@ -3,6 +3,7 @@
 **Document type:** Competitive / design reference (genre origins)  
 **Scope:** Everything **before** [CM1_REFERENCE.md](CM1_REFERENCE.md) that shaped football management simulation  
 **Parent:** [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md)  
+**Research status:** **Sufficient for v1** — FM1982 manual + this doc; no further precursor hunts — [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md)  
 **Date:** 2025-06-25  
 **Research round:** 3 (CM1 + pre-CM1 priority)
 
@@ -300,4 +301,5 @@ first in SI's FM lineage per Wikipedia legal footnote.
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 16 — marked sufficient for v1 at research pause |
 | 2025-06-25 | Round 3 — initial pre-CM1 genre history |

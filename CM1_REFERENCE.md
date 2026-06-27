@@ -4,6 +4,7 @@
 **Predecessor context:** [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md) (Soccerama → Toms FM → Collyer BBC tracker)  
 **Parent:** [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md) · [CM_MANUALS_ARCHIVE_INDEX.md](CM_MANUALS_ARCHIVE_INDEX.md)  
 **Gap vs Futtoboru:** [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md)  
+**Research status:** **Sufficient for v1** — [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md)  
 **Date:** 2025-06-25  
 **Research round:** 3 (v1 benchmark — **priority over CM3 manual extraction**)
 
@@ -308,6 +309,7 @@ CM1 is the **minimum shippable management sim** Futtoboru v1 should match — no
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | Round 16 — research paused; CM1 sources sufficient for v1 MVP |
 | 2025-06-25 | Round 11 — The One #46 primary review text in repo; press backlog closed |
 | 2025-06-25 | Round 3 — press table, 1992 competitors, localized versions, EA rejection, training correction, v1 benchmark |
 | 2025-06-25 | Round 2 deep reference created |

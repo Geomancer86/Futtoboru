@@ -4,7 +4,7 @@
 **Audience:** PM, PO, Sponsor, department leads, expert sign-off owners  
 **Branch:** `feature/competitions-finances-seasons` (v0.4.0-SNAPSHOT)  
 **Date:** 2025-06-25  
-**Next update:** After v1 P0 implementation sprint or major doc round
+**Next update:** After MVP/v1 feature definition sprint or Phase A implementation start
 
 ---
 
@@ -20,7 +20,7 @@
 | **Biggest asset** | Mod/data pipeline + 1888 researched content |
 | **Recommended focus** | P0 season loop (3 departments) before any CM4-depth features |
 
-**Competitive research completed (Jun 2025):** Full CM1–CM4 legacy wiki + FM2005+ bible Round 1 + gap analysis + **Round 3 pre-CM1 genre history & CM1 v1 benchmark** + **Rounds 9–13 source ledger** (magazine OCR, citation-chain hunts, **save/tactics RE track**). Use for scope debates, not as v1 scope expansion.
+**Competitive research:** **PAUSED** at Round 15 (Jun 2025). CM1–CM4 wiki + FM bible R1 + gap analysis + early-game sources **sufficient for v1 design**. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md). **Next doc sprint:** MVP feature set + refresh [MVP_PRIORITY_ROADMAP.md](MVP_PRIORITY_ROADMAP.md).
 
 ---
 
@@ -132,9 +132,11 @@ Detail: [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.m
 | CM Manual deep analysis Round 5 | ✅ | [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) |
 | CM source hunt Rounds 9–12 | ✅ | [CM_LEGACY_SOURCE_LEDGER.md](CM_LEGACY_SOURCE_LEDGER.md) — magazine OCR, Wayback, AP27/TONE046 |
 | CM saves/tactics RE Round 13 | ⚠️ | [saves-and-tactics/README.md](docs/research/saves-and-tactics/README.md) — formats catalogued; binaries pending |
-| CM Magazine CD extract Round 14 | ⚠️ | cmmag-01 samples + cover CD index; **cmmag-04 `.tac` next** |
+| CM Magazine CD extract Round 14 | ⚠️ | cmmag-01 samples only; **cmmag-04 deferred** at pause |
 | CM research backlog Round 15 | ✅ | [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md) — full missing inventory |
-| CM03/04 supplement | 🔲 | Optional |
+| **CM research pause Round 16** | ✅ | [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md) — **stopped**; early games OK for v1 |
+| **MVP / v1 feature sprint** | 🔲 **NEXT** | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) + gap analysis → MVP cut |
+| CM03/04 supplement | 🔲 | Optional — resume research if needed |
 
 ---
 
@@ -244,5 +246,6 @@ Full list: [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)
 | Date | Author | Change |
 |------|--------|--------|
 | 2025-06-25 | Research/doc sprint | Initial PM brief after CM Round 2 + gap analysis |
+| 2025-06-25 | Round 16 | CM legacy research **paused**; next phase MVP/v1 |
 
 **Distribution:** PM, PO, Sponsor, department leads. Update when Phase A starts or PO resolves open decisions.
