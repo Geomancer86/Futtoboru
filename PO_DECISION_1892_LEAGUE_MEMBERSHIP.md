@@ -42,6 +42,8 @@ So 1892 is two changes at once:
 
 ## 3. The three membership models (options)
 
+> **Same product line as Argentina:** history is the default; **Flexible** mode allows fork resolution via votes and club agency. See [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md §11](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) and [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md).
+
 ### Option A — **Historical script (recommended for authenticity)**
 
 **What happens:** On the real-world date (1892), a timeline script:

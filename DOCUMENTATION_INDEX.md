@@ -21,6 +21,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) | **PO, PM, all leads** | **Layer A · MVP sim/XI/fans · 1892 plan** |
 | [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) | **Match/Sim, UX** | **Extensible formations + XI schema** |
 | [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) | **PO** | **Plain-language 1892 Div 1/Div 2 decision** |
+| [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md) | **PO** | **Argentina hiatus fork — vote & Flexible mode** |
 | [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) | **PO, Research** | **Scotland, Ireland, Wales, NL, Americas circa 1892** |
 | [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) | **PO, all leads** | **Historical accuracy, inbox/news, player knowledge** |
 | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | **PO, World & Data** | **How many start mods / years; Wave 1–2 plan** |

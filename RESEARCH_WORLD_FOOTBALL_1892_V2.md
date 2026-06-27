@@ -134,7 +134,7 @@ These share rules culture, travel distance, and source overlap (RSSSF, Wikipedia
 | **Paraguay** | 1906 | — | V4+ |
 | **USA** | 1921 | Amateur/regional | Out of scope |
 
-**Argentina note:** First league **outside British Isles** — strong **marketing milestone**, weak **1892 calendar** fit. Recommend **1893–94 Primera** as first Americas start mod.
+**Argentina note:** First league **outside British Isles** — strong **marketing milestone**, weak **1892 calendar** fit. Recommend **1893–94 Primera** as first Americas start mod. **Fork design:** clubs may **vote** on hiatus vs continuation in **Flexible** mode — [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md).
 
 ---
 

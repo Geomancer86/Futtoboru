@@ -19,6 +19,8 @@ This is the **runtime world model** behind the north star in [DESIGN_HISTORICAL_
 
 **Player learns via news (locked):** Every structural change (new league, hiatus, restart, country) must surface in **inbox / newspaper** messages. Competitions may enter **HIATUS** or **RESTART** — e.g. Argentina 1891 → gap 1892 → AFA 1893. See [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md).
 
+**Historical leeway (locked):** IRL is the **default** path; **fork events** (script type **1008**) may resolve differently in **Flexible** mode — club votes, board stances. First template: Argentina association vote ([PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md)).
+
 ---
 
 ## 2. Canonical rule: save is truth during play
@@ -191,7 +193,7 @@ At each date (or on demand), query master tables for rows where `active_from <= 
 | **WE-1** | `WorldEvolutionManager` — single API: `incorporateClub`, `incorporatePerson`, `amendRules`, … | All activation |
 | **WE-2** | `first_active_date` / dormant flag on mod schema + loader | Mode A |
 | **WE-3** | New game: **lazy** club load (start date filter) | Scale + correctness |
-| **WE-4** | Script types 1002–1007 + file format in `mods/seasons/{id}/scripts/` | Mode B |
+| **WE-4** | Script types 1002–1007 + **1008 FORK_EVENT** + file format in `mods/seasons/{id}/scripts/` | Mode B |
 | **WE-5** | Rollover reads **current** league membership from save, not frozen copy | Accurate seasons |
 | **WE-6** | Ban `DatabaseLoader` lookups during `continueGame()` (except one-shot script seed) | Save-as-truth |
 | **WE-7** | `SaveGame` schema version + migration for new entities mid-career | Long saves |

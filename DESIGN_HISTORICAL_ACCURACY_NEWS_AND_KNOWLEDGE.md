@@ -18,6 +18,9 @@ Futtoboru is a **historical** football management simulation. These are **core p
 | **H-2** | The **inbox / news layer** is how the player **learns what happened in the world** — especially events outside their club. It is a **core system**, not a debug log. |
 | **H-3** | The player **does not know everything on day one**. Players, teams, managers, and staff are **discovered over time** through news, matches, competition, and scouting — aligned with era-appropriate information flow. |
 | **H-4** | **Argentina-style gaps are valid:** one season → hiatus → new association → restart must be **modeled and reported**, not smoothed away. |
+| **H-5** | **Historical leeway (HoI-style):** real history is the **default**, but selected **fork events** may diverge if game rules and player agency allow — e.g. Argentine clubs **vote** on hiatus vs continuation. |
+| **H-6** | **Player agency is local and gated:** starting in Argentina, or taking a job there, unlocks **internal club UI** (owners, committee) that can affect votes — not global god-mode. |
+| **H-7** | **Both outcomes must be playable and reported** in inbox/news — whether history matches IRL or the player changed it. |
 
 **Distribution and git:** PO controls when/how builds are shared; project docs do not prescribe releases. **No remote git push** from automation.
 
@@ -51,10 +54,11 @@ The **simulation** and the **player’s awareness** are **two layers**:
 
 | Accurate (must) | Procedural (OK to diverge) |
 |-----------------|------------------------------|
-| League **founded / dissolved / hiatus** dates | Your club’s exact league position after year 5 |
-| **New country** league begins | Simulated scorelines in unimportant matches |
-| **Competition restart** under new body | Cup path if you diverge from IRL draw luck |
-| Club **founded** and enters save on date | Re-election vote outcome if PO enables choice |
+| League **founded / dissolved / hiatus** dates — **in Strict mode** | Your club’s exact league position after year 5 |
+| **Default fork outcome** matches IRL when player absent or Strict mode | Simulated scorelines in unimportant matches |
+| **New country** league begins (default path) | Cup path if you diverge from IRL draw luck |
+| **Competition restart** under new body (default path) | **Fork events:** hiatus vs continuation, re-election, Div 2 split — see §11 |
+| Club **founded** and enters save on date | Vote outcomes when **Flexible** mode + player agency |
 | Rule changes on documented dates | — |
 
 ### 3.2 Competition lifecycle (required engine concept)
@@ -230,6 +234,139 @@ Staff data model exists (`ClubStaffManager`) — tie discovery to job/news event
 
 If player’s career is **England-only**, they still **read** Argentine news (WORLD category) — immersion without playable Argentina required.
 
+**Flexible mode:** if the player is **employed at an Argentine club**, they may participate in the **1891 association vote** (continue vs hiatus). Outcome A = table above; Outcome B = **no hiatus in 1892**, alternate news and edition chain — see §11 and [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md).
+
+---
+
+## 11. Historical flexibility & player agency (HoI-style leeway)
+
+### 11.1 Principle
+
+Futtoboru is **historical first**, not a sandbox. Like **Hearts of Iron** campaign rules:
+
+- **Default:** the world follows **real structural history** (hiatuses, restarts, new leagues).  
+- **Leeway:** at authored **fork nodes**, outcomes may **diverge** if the save is in **Flexible** mode and the player (or vote simulation) chooses another path.  
+- **No silent divergence:** alternate paths still emit **inbox / news** and update `CompetitionLifecycle` — same pipeline as IRL.
+
+```
+Timeline script (IRL default)
+        ↓
+   ForkEvent? ──no──→ apply default (Strict always takes this arm)
+        │
+       yes (Flexible + fork enabled)
+        ↓
+   Eligibility check (country, club, role)
+        ↓
+   Player agency UI (optional) + AI club votes
+        ↓
+   Resolved outcome → WorldEvolutionManager → news
+```
+
+**Not in scope:** rewriting all of history freely. Early design targets **named fork events** only (Argentina 1891 vote first; England 1892 re-election / Div 2 parallel).
+
+### 11.2 Historical Mode (new-game setting)
+
+| Mode | Behaviour |
+|------|-----------|
+| **Strict** | All fork events resolve to **IRL default**; player may see flavour text but **cannot change** structural outcome. |
+| **Flexible** | Fork events run **vote / choice resolution**; IRL default remains **likely** when player is absent or opts out. |
+| **Sandbox** *(future)* | Wider player-driven structural changes — not V1.5 scope. |
+
+Stored on `SaveGame` at career start (`historicalMode` enum). **Immutable mid-career** (precedent: HoI ironman / rules at start).
+
+PO default pending: see [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md) §6.
+
+### 11.3 Fork events (engine concept)
+
+Extend timeline scripts with optional fork metadata:
+
+```text
+# Conceptual script row — type 1008 FORK_EVENT
+forkId=ARG_ASSOCIATION_VOTE_1891
+date=1891-12-01
+defaultOutcome=HIATUS_1892_AFA_1893
+eligibleCountries=AR
+playerAgency=EMPLOYED_AT_ELIGIBLE_CLUB
+resolution=CLUB_VOTE
+newsMandate=true
+```
+
+| Field | Meaning |
+|-------|---------|
+| `defaultOutcome` | IRL branch — always applied in **Strict** or if vote fails |
+| `eligibleCountries` | Who can participate in agency UI |
+| `playerAgency` | `NONE` · `OBSERVER` · `EMPLOYED_AT_ELIGIBLE_CLUB` · `CLUB_OWNER` |
+| `resolution` | `AUTO` · `CLUB_VOTE` · `BOARD_CHOICE` · `LEAGUE_BALLOT` |
+
+**WorldEvolutionManager** applies the **winning branch** (competition states, new bodies, editions) — never both branches.
+
+### 11.4 Player agency UI (early design)
+
+| Surface | When | Actions |
+|---------|------|---------|
+| **Inbox (mandatory)** | Fork opens | Read meeting notice; link to club discussion |
+| **Club → Internal / Board** | Player eligible | Discuss with **owners / committee** — stance affects club vote |
+| **Inbox (result)** | Vote closes | Tally, your club’s position, world structural outcome |
+| **WORLD news** | Always | Same result for all careers (wording differs if player involved) |
+
+**Voice:** period-appropriate — letters, committee minutes, not modern push notifications.
+
+**Layer placement:** minimal stub acceptable in **P2** (message + one choice table); full owner dialogue in **Layer B+** when club finances / staff exist.
+
+### 11.5 Argentina — canonical first fork
+
+| Step | Strict | Flexible (player in Argentina, pushes continue) |
+|------|--------|--------------------------------------------------|
+| 1891 season ends | Vote scheduled | Same |
+| Association meeting | Auto → **hiatus** | Club vote — player stance via owners |
+| 1892 | **HIATUS** | **ACTIVE** (alternate edition) OR hiatus if vote lost |
+| 1893 | **AFA RESTARTED** (IRL) | IRL restart **or** continued body **or** delayed reform (PO picks alt depth) |
+
+**Design intent (PO message):** clubs **vote** on whether to accept the hiatus — history says they effectively disbanded; the game **allows** the player to fight for continuation through **internal club politics**, but **does not guarantee** success.
+
+Research: **R-H12** (IRL path) + **R-H12-alt** (1892 continuation fixtures/rules) when PO approves Option 2 in Argentina brief.
+
+### 11.6 Parallel forks (roadmap)
+
+| Fork | Region | Mechanism | Doc |
+|------|--------|-----------|-----|
+| **ARG_ASSOCIATION_VOTE_1891** | Argentina | Club vote | [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md) |
+| **FL_REELECTION_1888_91** | England | League ballot | [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) Option B |
+| **FL_DIV2_SPLIT_1892** | England | Script + optional save-driven | Same brief Options C/D |
+| **SFL_FOUNDING_1890** | Scotland | Authority event | V2 — observer only at first |
+
+Shared implementation: **FLEX-2** `ForkEvent` + **FLEX-3** `ClubVoteResolution`.
+
+### 11.7 News for alternate history
+
+| messageType | When |
+|-------------|------|
+| `WORLD_FORK_NOTICE` | Fork opens — “Clubs summoned…” |
+| `WORLD_FORK_RESULT_HISTORICAL` | IRL branch won |
+| `WORLD_FORK_RESULT_ALTERNATE` | Player/vote diverged |
+| `CLUB_INTERNAL_STANCE` | Your board backs continue / pause (club category) |
+
+Alternate headlines must **not** pretend IRL happened — clear “clubs vote to continue championship” vs hiatus wording.
+
+### 11.8 Engineering — flexibility pipeline
+
+| ID | Task | Depends on |
+|----|------|------------|
+| **FLEX-1** | `HistoricalMode` on `SaveGame` + new-game UI | Save schema |
+| **FLEX-2** | Script type **1008** `FORK_EVENT` + branch outcomes | WE-4 |
+| **FLEX-3** | `ClubVoteResolution` — weights, tally, AI clubs | WE-1 |
+| **FLEX-4** | Club internal UI — owner / committee stance | Platform, Layer B club screen |
+| **FLEX-5** | Argentina **ARG_ASSOCIATION_VOTE_1891** content pack | R-H12, NEWS-2 |
+| **FLEX-6** | IT: Strict → always hiatus; Flexible + forced votes → continuation | Tests |
+| **NEWS-7** | Fork notice + result message types | NEWS-1 |
+
+### 11.9 What we are **not** promising (early design)
+
+- Arbitrary “what if” for every country from day one  
+- Mid-career toggle of Historical Mode  
+- Guaranteed player wins — **agency is influence**, not scripted victory  
+- Full alternate-history research for every fork until PO approves alt packs  
+
 ---
 
 ## 7. Engineering roadmap
@@ -274,6 +411,7 @@ If player’s career is **England-only**, they still **read** Argentine news (WO
 | [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) | Layer A/B/C sequencing |
 | [ANALYSIS_INBOX_SYSTEM_V1.md](ANALYSIS_INBOX_SYSTEM_V1.md) | UI/feature detail (update pending) |
 | [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) | England-only membership choice |
+| [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md) | **Argentina fork — vote on hiatus vs continuation** |
 
 ---
 
@@ -285,6 +423,8 @@ If player’s career is **England-only**, they still **read** Argentine news (WO
 | Inbox / news as primary channel | **Core** |
 | Hiatus + restart leagues | **Required** (Argentina pattern) |
 | Gradual knowledge of players/clubs/staff | **Core direction** |
+| Historical leeway (HoI-style forks) | **Core direction** — §11 |
+| Argentina vote / internal club agency | **First fork template** — PO brief |
 | Public release timing | **PO-only** — not documented as a gate |
 
 ---
@@ -293,6 +433,7 @@ If player’s career is **England-only**, they still **read** Argentine news (WO
 
 | Date | Change |
 |------|--------|
+| 2026-06-27 | §11 — Historical Mode, fork events, Argentina vote agency (HoI-style leeway) |
 | 2026-06-27 | Initial intentions doc — accuracy, news, knowledge layers |
 
 ---
