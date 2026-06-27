@@ -18,9 +18,12 @@ Futtoboru is a **historical** football management simulation. These are **core p
 | **H-2** | The **inbox / news layer** is how the player **learns what happened in the world** — especially events outside their club. It is a **core system**, not a debug log. |
 | **H-3** | The player **does not know everything on day one**. Players, teams, managers, and staff are **discovered over time** through news, matches, competition, and scouting — aligned with era-appropriate information flow. |
 | **H-4** | **Argentina-style gaps are valid:** one season → hiatus → new association → restart must be **modeled and reported**, not smoothed away. |
-| **H-5** | **Historical leeway (HoI-style):** real history is the **default**, but selected **fork events** may diverge if game rules and player agency allow — e.g. Argentine clubs **vote** on hiatus vs continuation. |
+| **H-5** | **Historical leeway (HoI-style):** real history is the **default branch in data**, but selected **fork events** may diverge per **Historical Mode** setting — see §11. |
 | **H-6** | **Player agency is local and gated:** starting in Argentina, or taking a job there, unlocks **internal club UI** (owners, committee) that can affect votes — not global god-mode. |
 | **H-7** | **Both outcomes must be playable and reported** in inbox/news — whether history matches IRL or the player changed it. |
+| **H-8** | **Default new game = Sandbox first** (forks active); **second setting = Historical first** (IRL forks only). PO locked 2026-06-27. |
+| **H-9** | **Agency applies to all leagues** with **distance-weighted** influence; remote participation via **inbox / journalist** prompts, not full local vote power. |
+| **H-10** | **News delivery latency** by **era + distance** — far-world events arrive late; fork agency from abroad has realistically low weight. |
 
 **Distribution and git:** PO controls when/how builds are shared; project docs do not prescribe releases. **No remote git push** from automation.
 
@@ -147,7 +150,7 @@ Add `MessageCategory.WORLD` (or use AUTHORITY + WORLD tag) for international/hia
 
 | Rule | Detail |
 |------|--------|
-| **Scheduled date** | News arrives on `gameDate` matching IRL event (or start-mod timeline) |
+| **Scheduled date** | News arrives on `gameDate` matching IRL event **plus delivery latency** (§4.6) |
 | **Relevance filter** | World news visible to all employed/unemployed managers; club news filtered (existing `InboxScreenTable` logic) |
 | **No silent state changes** | Every `WorldEvolutionManager` action that changes structure → **at least one** news item |
 | **Archive** | Long careers need cap/archive (BLK-4) — world news may be “newspaper archive” subset |
@@ -156,6 +159,34 @@ Add `MessageCategory.WORLD` (or use AUTHORITY + WORLD tag) for international/hia
 ### 4.5 Future: dedicated Newspaper screen
 
 Optional v2 UI: **Inbox tab “Newspaper”** filtering `WORLD` + `AUTHORITY` with period styling. **Same backend** — no duplicate event pipeline.
+
+### 4.6 News latency (era + distance) — PO locked
+
+World news is **not instant globally**. The engine schedules `Message.scheduledDate` = **event date + transit days**.
+
+| Era band | Typical channels | Examples |
+|----------|------------------|----------|
+| **1888–1900** | Railway post, telegraph (limited), **steamship mail** | England ↔ Scotland: **1–3 days** · England ↔ Argentina: **14–28 days** · England ↔ Netherlands: **3–7 days** |
+| **1901–1914** | Telegraph expansion, faster liners | Shave ~30% off transatlantic |
+| **Future bands** | Author in `news_latency.txt` per mod | Radio era TBD |
+
+**Authoring fields** (script / message):
+
+```text
+eventDate=1892-01-15
+originRegion=SOUTH_AMERICA
+targetRegion=BRITISH_ISLES
+deliveryDays=21          # or auto from latency table
+```
+
+| Rule | Detail |
+|------|--------|
+| **Local events** | Same region as player club → **0 extra days** (match existing league messages) |
+| **Foreign WORLD news** | Always use latency table unless `deliveryDays` override |
+| **Fork notices** | Local players see meeting notice on event date; abroad see **summarized report** after latency |
+| **Agency from abroad** | Inbox journalist prompt may arrive **after** local vote window started — weight already low (§11.4) |
+
+**Engineering:** **NEWS-8** — `NewsLatencyResolver` + mod table `mods/news_latency.txt`.
 
 ---
 
@@ -234,7 +265,7 @@ Staff data model exists (`ClubStaffManager`) — tie discovery to job/news event
 
 If player’s career is **England-only**, they still **read** Argentine news (WORLD category) — immersion without playable Argentina required.
 
-**Flexible mode:** if the player is **employed at an Argentine club**, they may participate in the **1891 association vote** (continue vs hiatus). Outcome A = table above; Outcome B = **no hiatus in 1892**, alternate news and edition chain — see §11 and [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md).
+**Sandbox-first mode:** if the player is **employed at an Argentine club** (local tier), they may participate in the **1891 association vote**. Remote managers get **journalist inbox** only. Outcome A = table above; Outcome B = **no hiatus in 1892** — see §11.
 
 ---
 
@@ -242,39 +273,42 @@ If player’s career is **England-only**, they still **read** Argentine news (WO
 
 ### 11.1 Principle
 
-Futtoboru is **historical first**, not a sandbox. Like **Hearts of Iron** campaign rules:
+Futtoboru supports **both** sandbox-style divergence and strict historical play — chosen at **new game**, like Hearts of Iron campaign rules:
 
-- **Default:** the world follows **real structural history** (hiatuses, restarts, new leagues).  
-- **Leeway:** at authored **fork nodes**, outcomes may **diverge** if the save is in **Flexible** mode and the player (or vote simulation) chooses another path.  
-- **No silent divergence:** alternate paths still emit **inbox / news** and update `CompetitionLifecycle` — same pipeline as IRL.
+- **Default (PO locked):** **Sandbox first · historical second** — fork events run; player and AI votes can diverge from IRL.  
+- **Second setting:** **Historical first · not sandbox** — all forks resolve to **IRL default**; flavour only.  
+- **No silent divergence:** any outcome still emits **inbox / news** and updates `CompetitionLifecycle`.
 
 ```
-Timeline script (IRL default)
+Timeline script (IRL default branch in data)
         ↓
-   ForkEvent? ──no──→ apply default (Strict always takes this arm)
+   ForkEvent? ──no──→ apply default
         │
-       yes (Flexible + fork enabled)
+       yes
         ↓
-   Eligibility check (country, club, role)
+   Historical Mode?
+     HISTORICAL_FIRST ──→ IRL default (Strict arm)
+     SANDBOX_FIRST ──→ vote / agency resolution
         ↓
-   Player agency UI (optional) + AI club votes
+   Agency tier (local / regional / remote) + weights
         ↓
-   Resolved outcome → WorldEvolutionManager → news
+   Resolved outcome → WorldEvolutionManager → news (+ latency §4.6)
 ```
 
-**Not in scope:** rewriting all of history freely. Early design targets **named fork events** only (Argentina 1891 vote first; England 1892 re-election / Div 2 parallel).
+**Scope:** named **fork events** only (Argentina 1891 first; England 1892 re-election / Div 2; future leagues). Not free-form rewriting of all history.
 
-### 11.2 Historical Mode (new-game setting)
+### 11.2 Historical Mode (new-game setting) — PO locked 2026-06-27
 
-| Mode | Behaviour |
-|------|-----------|
-| **Strict** | All fork events resolve to **IRL default**; player may see flavour text but **cannot change** structural outcome. |
-| **Flexible** | Fork events run **vote / choice resolution**; IRL default remains **likely** when player is absent or opts out. |
-| **Sandbox** *(future)* | Wider player-driven structural changes — not V1.5 scope. |
+| UI order | Enum | Player-facing label (draft) | Behaviour |
+|----------|------|----------------------------|-----------|
+| **1 — DEFAULT** | `SANDBOX_FIRST` | **Alternate history** · sandbox first, historical fallback | Fork events active; votes and agency can change structure |
+| **2** | `HISTORICAL_FIRST` | **Historical accuracy** · history first, no sandbox forks | All forks → **IRL default**; no structural change from player |
 
-Stored on `SaveGame` at career start (`historicalMode` enum). **Immutable mid-career** (precedent: HoI ironman / rules at start).
+Stored on `SaveGame` at career start (`historicalMode`). **Immutable mid-career.**
 
-PO default pending: see [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md) §6.
+**Americas content:** included on roadmap — Argentina fork ships with **R-H12** Americas pack (**PO locked: yes**).
+
+PO record: [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md) §8 · [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md)
 
 ### 11.3 Fork events (engine concept)
 
@@ -293,30 +327,49 @@ newsMandate=true
 
 | Field | Meaning |
 |-------|---------|
-| `defaultOutcome` | IRL branch — always applied in **Strict** or if vote fails |
+| `defaultOutcome` | IRL branch — always applied in **HISTORICAL_FIRST** or if vote fails / insufficient agency |
 | `eligibleCountries` | Who can participate in agency UI |
-| `playerAgency` | `NONE` · `OBSERVER` · `EMPLOYED_AT_ELIGIBLE_CLUB` · `CLUB_OWNER` |
+| `playerAgency` | `NONE` · `OBSERVER` · `EMPLOYED_IN_REGION` · `EMPLOYED_AT_ELIGIBLE_CLUB` · `CLUB_OWNER` · `JOURNALIST_PROMPT` |
 | `resolution` | `AUTO` · `CLUB_VOTE` · `BOARD_CHOICE` · `LEAGUE_BALLOT` |
+| `agencyTiers` | Local / regional / remote weight table (§11.4) |
 
 **WorldEvolutionManager** applies the **winning branch** (competition states, new bodies, editions) — never both branches.
 
-### 11.4 Player agency UI (early design)
+### 11.4 Player agency UI — all leagues, distance-weighted (PO locked)
+
+Agency is **not Argentina-only**. Every fork uses the same **tier model**:
+
+| Tier | Player situation | UI channel | Influence weight (typical) |
+|------|------------------|------------|----------------------------|
+| **Local** | Employed at a club **in the fork’s league/country** | **Club → Internal / Board** + mandatory inbox | **1.0** — can swing own club’s vote |
+| **Regional** | Employed **same country**, different league | Inbox **committee / FA** letter | **0.3–0.5** |
+| **Remote** | Employed **abroad** (e.g. England, Argentina fork) | Inbox **journalist** question — “Comment for the press?” / expat correspondence | **0.05–0.15** — realistic; rarely flips outcome alone |
+| **Observer** | Unemployed | Inbox read-only + optional journalist reply | **0.02–0.08** |
+
+**Journalist prompts (inbox):** optional or mandatory message with **2–3 stance choices** (support continue / support pause / decline to comment). Contributes a **weighted external pressure** token to vote sim — not a direct club vote.
+
+**Realism rules (PO):**
+
+- Remote weight **scales with era latency** — if news of the meeting arrives late, prompt may expire or apply reduced weight.  
+- **Never** equal power to local board on foreign forks.  
+- England **1892 re-election** uses same tiers (local FL club = full; Scottish manager = journalist tier).
 
 | Surface | When | Actions |
 |---------|------|---------|
-| **Inbox (mandatory)** | Fork opens | Read meeting notice; link to club discussion |
-| **Club → Internal / Board** | Player eligible | Discuss with **owners / committee** — stance affects club vote |
-| **Inbox (result)** | Vote closes | Tally, your club’s position, world structural outcome |
-| **WORLD news** | Always | Same result for all careers (wording differs if player involved) |
+| **Inbox (mandatory)** | Fork opens (local) or arrives after latency (remote) | Notice; link to board or journalist reply |
+| **Club → Internal / Board** | Local tier | Stance: continue / pause / abstain |
+| **Inbox — journalist** | Regional / remote tier | Short quoted stance; weighted token |
+| **Inbox (result)** | Vote closes | Tally; your tier’s contribution noted |
+| **WORLD news** | After latency | Structural outcome for all careers |
 
-**Voice:** period-appropriate — letters, committee minutes, not modern push notifications.
+**Voice:** period-appropriate — letters, committee minutes, **newspaper correspondence**, not modern push notifications.
 
-**Layer placement:** minimal stub acceptable in **P2** (message + one choice table); full owner dialogue in **Layer B+** when club finances / staff exist.
+**Layer placement:** P2 stub (message + choice table); full owner dialogue Layer B+.
 
 ### 11.5 Argentina — canonical first fork
 
-| Step | Strict | Flexible (player in Argentina, pushes continue) |
-|------|--------|--------------------------------------------------|
+| Step | Historical first | Sandbox first (local player pushes continue) |
+|------|------------------|-----------------------------------------------|
 | 1891 season ends | Vote scheduled | Same |
 | Association meeting | Auto → **hiatus** | Club vote — player stance via owners |
 | 1892 | **HIATUS** | **ACTIVE** (alternate edition) OR hiatus if vote lost |
@@ -352,13 +405,15 @@ Alternate headlines must **not** pretend IRL happened — clear “clubs vote to
 
 | ID | Task | Depends on |
 |----|------|------------|
-| **FLEX-1** | `HistoricalMode` on `SaveGame` + new-game UI | Save schema |
+| **FLEX-1** | `HistoricalMode` enum (`SANDBOX_FIRST` default, `HISTORICAL_FIRST`) + new-game UI | Save schema |
 | **FLEX-2** | Script type **1008** `FORK_EVENT` + branch outcomes | WE-4 |
-| **FLEX-3** | `ClubVoteResolution` — weights, tally, AI clubs | WE-1 |
-| **FLEX-4** | Club internal UI — owner / committee stance | Platform, Layer B club screen |
+| **FLEX-3** | `ClubVoteResolution` — tiers, tally, AI clubs, journalist tokens | WE-1 |
+| **FLEX-4** | Club internal UI + **inbox journalist** fork prompts | Platform |
 | **FLEX-5** | Argentina **ARG_ASSOCIATION_VOTE_1891** content pack | R-H12, NEWS-2 |
-| **FLEX-6** | IT: Strict → always hiatus; Flexible + forced votes → continuation | Tests |
+| **FLEX-6** | IT: Historical first → IRL; Sandbox first + local votes → alternate | Tests |
 | **NEWS-7** | Fork notice + result message types | NEWS-1 |
+| **NEWS-8** | `NewsLatencyResolver` + `news_latency.txt` by era/region | NEWS-2 |
+| **AGENCY-1** | Distance/tier weight table shared by all fork ids | FLEX-3 |
 
 ### 11.9 What we are **not** promising (early design)
 
@@ -399,6 +454,7 @@ Alternate headlines must **not** pretend IRL happened — clear “clubs vote to
 | **R-NEWS-1** | Timeline ledger: every structural event → news copy + date |
 | **R-NEWS-2** | Argentina 1891–93 narrative pack (hiatus wording sourced) |
 | **R-NEWS-3** | England 1892 Div 2 announcement texts |
+| **R-NEWS-4** | News latency table — region pairs, era bands, source citations |
 
 ---
 
@@ -423,8 +479,11 @@ Alternate headlines must **not** pretend IRL happened — clear “clubs vote to
 | Inbox / news as primary channel | **Core** |
 | Hiatus + restart leagues | **Required** (Argentina pattern) |
 | Gradual knowledge of players/clubs/staff | **Core direction** |
-| Historical leeway (HoI-style forks) | **Core direction** — §11 |
-| Argentina vote / internal club agency | **First fork template** — PO brief |
+| Historical leeway (HoI-style forks) | **Core** — §11 |
+| Default mode **Sandbox first** | **PO locked** |
+| Americas + Argentina fork in roadmap | **PO locked** |
+| Agency all leagues + journalist remote tier | **PO locked** — §11.4 |
+| News latency by era/distance | **PO locked** — §4.6 |
 | Public release timing | **PO-only** — not documented as a gate |
 
 ---
@@ -433,6 +492,7 @@ Alternate headlines must **not** pretend IRL happened — clear “clubs vote to
 
 | Date | Change |
 |------|--------|
+| 2026-06-27 | PO lock: Sandbox first default, agency all leagues, news latency, journalist tier |
 | 2026-06-27 | §11 — Historical Mode, fork events, Argentina vote agency (HoI-style leeway) |
 | 2026-06-27 | Initial intentions doc — accuracy, news, knowledge layers |
 

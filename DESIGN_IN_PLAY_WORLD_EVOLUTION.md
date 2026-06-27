@@ -19,7 +19,7 @@ This is the **runtime world model** behind the north star in [DESIGN_HISTORICAL_
 
 **Player learns via news (locked):** Every structural change (new league, hiatus, restart, country) must surface in **inbox / newspaper** messages. Competitions may enter **HIATUS** or **RESTART** — e.g. Argentina 1891 → gap 1892 → AFA 1893. See [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md).
 
-**Historical leeway (locked):** IRL is the **default** path; **fork events** (script type **1008**) may resolve differently in **Flexible** mode — club votes, board stances. First template: Argentina association vote ([PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md)).
+**Historical leeway (locked):** **`SANDBOX_FIRST`** default — fork events (script **1008**) may diverge; **`HISTORICAL_FIRST`** forces IRL. Agency tiers + news latency — [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) · [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md).
 
 ---
 

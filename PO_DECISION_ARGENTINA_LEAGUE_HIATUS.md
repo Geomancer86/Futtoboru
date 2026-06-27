@@ -2,7 +2,8 @@
 
 **Document type:** PO decision brief  
 **Date:** 2026-06-27  
-**Context:** [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md §11](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) · [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) · [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md)
+**Status:** **Partially locked** — see §8  
+**Context:** [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md §11](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) · [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md) · [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) · [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md)
 
 ---
 
@@ -17,11 +18,7 @@ The engine must support **both**:
 | **Historical (IRL)** | Hiatus — association dissolved | AFA restart |
 | **Alternate (player-influenced)** | League continues (clubs vote to stay) | May differ — same body, new body, or delayed reform |
 
-You are **not** deciding whether to model hiatus (that is locked). You are deciding:
-
-1. **Default new-game behaviour** — strict history vs flexible forks  
-2. **Who can influence** the Argentina vote (employed manager only? owner role?)  
-3. **How much alternate paths may diverge** before we require a new research pack  
+Hiatus modelling is **locked**. Fork resolution depends on **Historical Mode** (§6).
 
 ---
 
@@ -33,7 +30,7 @@ You are **not** deciding whether to model hiatus (that is locked). You are decid
 | **1892** | **No official league** — prior association failed to sustain |
 | **1893** | **AFA** formed — Primera División restarts |
 
-Sources: [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) · future **R-H12** · **R-NEWS-2** narrative pack.
+Sources: [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) · **R-H12** · **R-NEWS-2** narrative pack.
 
 ---
 
@@ -41,12 +38,10 @@ Sources: [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md
 
 | HoI concept | Futtoboru equivalent |
 |-------------|----------------------|
-| Game rules: historical vs alternate | **Historical Mode** on new game / save (§11.2 of design doc) |
-| National focuses / decisions change history | **Fork events** — club votes, board meetings, association ballots |
-| AI tries to follow history unless blocked | **Default outcome = IRL** when player absent or mode **Strict** |
-| Player choices in a country matter | **Local agency** — if you work (or own) an Argentine club, you can argue internally and affect your club’s vote |
-
-We are **not** cloning HoI’s war system. We borrow only: **history is the default, divergence is opt-in and gated.**
+| Game rules at start | **Historical Mode** — two settings (§6) |
+| Decisions change history | **Fork events** — club votes, board, **journalist inbox** |
+| Historical AI focus | **`HISTORICAL_FIRST`** — IRL branch always |
+| Less rigid history | **`SANDBOX_FIRST`** (default) — votes can diverge |
 
 ---
 
@@ -56,78 +51,51 @@ We are **not** cloning HoI’s war system. We borrow only: **history is the defa
 
 End of **1891** season (or association annual meeting date in research pack):
 
-- Inbox: **“Clubs called to vote on future of Argentine championship”** (mandatory if player eligible)  
-- World news: same event for all careers (England-only players **read** it; Argentine-employed players **participate**)
+- **Local tier:** mandatory inbox + club board  
+- **Remote tier:** journalist inbox (after **news latency**) — low weight  
+- **WORLD news:** structural outcome for all careers (delayed by distance §4.6 design doc)
 
-### 4.2 Player agency (when eligible)
+### 4.2 Player agency (all leagues — PO locked)
 
-| UI channel | Purpose |
-|------------|---------|
-| **Inbox** | Meeting notice, vote result, world outcome |
-| **Club — internal** | “Discuss with owners / committee” — your stance: **continue league**, **accept pause**, **abstain** |
-| **Optional future** | Board request screen (Layer B+ finances) |
+See [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md §11.4](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) for full tier table.
 
-Your stance adjusts **your club’s vote weight** and **AI club votes** (rivalry, finances, owner personality — authored defaults).
+| Tier | Argentina fork example |
+|------|------------------------|
+| **Local** | Manager at Argentine club → board stance |
+| **Remote** | Manager at Preston → inbox journalist quote — **~5–15% weight** |
+
+Same engine applies to **England 1892 re-election** and future forks.
 
 ### 4.3 Resolution outcomes
 
 | Outcome | Engine state | News |
 |---------|--------------|------|
-| **A — Historical** | `CompetitionLifecycle` → **HIATUS** 1892; **RESTARTED** 1893 (AFA) | “Championship not held… association dissolved” |
-| **B — Continuation** | **ACTIVE** 1892 edition under revised rules (same or successor body) | “Clubs vote to continue championship” |
-| **C — Split (future)** | Partial participation; some clubs break away | Defer to V3 content |
+| **A — Historical** | **HIATUS** 1892; **RESTARTED** 1893 (AFA) | “Championship not held… association dissolved” |
+| **B — Continuation** | **ACTIVE** 1892 edition | “Clubs vote to continue championship” |
 
 **PO scope for first ship:** **A** and **B** only.
 
 ---
 
-## 5. Options for PO
+## 5. Historical Mode options — PO locked 2026-06-27
 
-### Option 1 — **Strict historical default** (HoI “history always wins”)
+| UI order | Enum | Label (draft) | Behaviour |
+|----------|------|-----------------|-----------|
+| **1 — DEFAULT** | `SANDBOX_FIRST` | Alternate history · **sandbox first**, historical fallback | Forks active; agency can diverge |
+| **2** | `HISTORICAL_FIRST` | Historical accuracy · **history first**, no sandbox forks | IRL branch only |
 
-- New game default: **Historical Mode = Strict**  
-- Argentina fork exists in data but **always resolves to hiatus** unless player enables Flexible  
-- Player in Argentina gets **flavour messages** only (no vote changes outcome)
-
-| Pros | Cons |
-|------|------|
-| Simplest to ship | “Your choices matter” is weak for Argentina start |
-| Easy to test | Under-sells fork system |
-
-### Option 2 — **Flexible default, IRL-weighted** (recommended for design)
-
-- New game default: **Historical Mode = Flexible**  
-- If player **not** in Argentina: AI club vote uses **historical weights** → usually **Outcome A**  
-- If player **employed at Argentine club**: internal discussion **can flip** one or more club votes → **Outcome B** possible  
-- News always explains **why** (vote tally, dissenting clubs)
-
-| Pros | Cons |
-|------|------|
-| Same engine for England 1892 re-election and Argentina | Needs vote sim + copy for both outcomes |
-| Teaches core fantasy early | Alternate 1892 needs fixture/rules authoring |
-| Respects IRL as default path | QA matrix doubles for Argentina pack |
-
-### Option 3 — **Flexible + owner role**
-
-- Same as Option 2, but **club owner start** (future) gets stronger vote leverage than employed manager  
-- Manager: persuasion via owners  
-- Owner: direct vote + board UI
-
-| Pros | Cons |
-|------|------|
-| Clear role fantasy | Owner role not in Layer A/B MVP |
+Stored on `SaveGame` at creation — **no mid-career change**.
 
 ---
 
-## 6. New-game settings (proposed)
+## 6. New-game settings (locked)
 
-| Setting | Values | Default (pending PO) |
-|---------|--------|----------------------|
-| **Historical Mode** | **Strict** · **Flexible** · *(future: Sandbox)* | **Flexible** (Option 2) |
-| **Fork events** | On / Off | On when Flexible |
-| **Show alternate outcome in codex** | On / Off | On (spoiler-safe: “paths not taken”) |
-
-Stored on `SaveGame` at creation — mid-career change **not** allowed (same as HoI campaign rules).
+| Setting | Values | PO lock |
+|---------|--------|---------|
+| **Historical Mode** | `SANDBOX_FIRST` (default) · `HISTORICAL_FIRST` | **Locked** |
+| **Americas / Argentina fork** | In roadmap with R-H12 | **Yes — included** |
+| **Agency** | All leagues; journalist remote tier | **Locked** |
+| **News latency** | Era + distance table | **Locked** — see design doc §4.6 |
 
 ---
 
@@ -135,29 +103,29 @@ Stored on `SaveGame` at creation — mid-career change **not** allowed (same as 
 
 | Event | Fork? | Doc |
 |-------|-------|-----|
-| **1892 Div 1/Div 2 split** | Optional via [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) Options B/C/D | England membership vote |
+| **1892 Div 1/Div 2 split** | Optional | [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) |
 | **Argentina 1891–93 hiatus** | **First fork template** | This brief |
 
-**Shared engine:** `ForkEvent` + `ClubVoteResolution` + inbox + internal club UI — Argentina proves the pipeline before England re-election gameplay.
+**Shared engine:** `ForkEvent` + `ClubVoteResolution` + agency tiers + `NewsLatencyResolver`.
 
 ---
 
 ## 8. PO decision table
 
-| # | Decision | Your choice |
-|---|----------|-------------|
-| 1 | Default **Historical Mode** for new games | Strict / **Flexible** / defer |
-| 2 | Argentina fork in **first playable Americas pack**? | Yes / No / defer |
-| 3 | Player influence requires **employed in Argentina**? | Yes / also unemployed observer / owner only |
-| 4 | Alternate **1892 continuation** — how much content? | Minimal (12-match loop) / full research / defer |
-| 5 | If vote fails (Outcome A), is player agency **still shown** as “you lost the vote”? | Yes (recommended) / hide |
+| # | Decision | PO choice | Status |
+|---|----------|-----------|--------|
+| 1 | Default **Historical Mode** | **`SANDBOX_FIRST`** (sandbox first, historical second) | **Locked** |
+| 2 | Argentina fork in **Americas pack**? | **Yes — keep Americas on roadmap** | **Locked** |
+| 3 | Player influence | **All leagues** — local board + **inbox journalist** remote; **distance weights** | **Locked** |
+| 4 | Alternate **1892 continuation** content depth | Minimal / full | **Open** |
+| 5 | Show “you lost the vote” in sandbox mode? | Yes (recommended) | **Open** |
 
 ---
 
 ## 9. After PO locks
 
-Update [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) §11.5 defaults → unlock **FLEX-5**, **R-H12-alt**, **NEWS-7** (fork result messages).
+Unlock engineering: **FLEX-1**, **FLEX-5**, **NEWS-7**, **NEWS-8**, **AGENCY-1** — see [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md).
 
 ---
 
-*Parallel to England 1892 membership brief — same “history default, player may diverge” product line.*
+*Parallel to England 1892 membership brief — shared fork and agency engine.*

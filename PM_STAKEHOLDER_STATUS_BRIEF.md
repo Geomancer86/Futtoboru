@@ -34,6 +34,8 @@
 
 **PO direction:** Wave **1.5** + **1892 league expansion** after Layer B; distribution timing is PO-only. **No remote git push** from project automation.
 
+**Historical Mode (PO locked 2026-06-27):** Default **`SANDBOX_FIRST`** (alternate history); second setting **`HISTORICAL_FIRST`**. Agency on all leagues; news latency by era/distance — [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md).
+
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
 **Automated suite:** ✅ **59 PR tests** + nightly **`LongRunSoakIT`** (~5 min) + **`TenSeasonReportIT`** report.

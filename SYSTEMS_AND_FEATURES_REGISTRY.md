@@ -21,7 +21,9 @@
 | FA Cup headless season | ✅🧪 | `LeagueAndCupIT` |
 | Mandatory draw gates | ✅🧪 | `MandatoryGateIT` |
 | Inbox / world news (hiatus, restart) | ❌ | **NEWS-2** — [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) |
-| Historical Mode + fork events (Flexible) | ❌ | **FLEX-1–6** — Argentina vote first |
+| Historical Mode (`SANDBOX_FIRST` default) | ❌ | **FLEX-1** — [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md) |
+| Fork events + agency tiers (all leagues) | ❌ | **FLEX-2–4**, **AGENCY-1** |
+| News latency (era + distance) | ❌ | **NEWS-8** |
 | Player/club knowledge (fog) | ❌ | **KNOW-1** planned |
 | Save JSON roundtrip | ✅🧪 | `SaveLoadIT` |
 | `competition_rules.txt` on start mod | ✅🧪 | `CompetitionRulesLoaderTest` |

@@ -20,10 +20,12 @@
 
 | **H-4** | The **inbox / news** reports world events (league hiatus, restarts, new countries) — core immersion, not optional. |
 | **H-5** | Players, clubs, managers, staff are **discovered over time** — not all known on day one. |
-| **H-6** | **Historical leeway:** IRL is default; **fork events** (Argentina vote first) can diverge in **Flexible** mode — [§11](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md). |
-| **H-7** | **Local player agency** — job/ownership in a country unlocks internal club UI (owners, committee) on forks — not global cheats. |
+| **H-6** | **Historical leeway:** fork events (Argentina first) diverge in **`SANDBOX_FIRST`** default mode — [§11](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md). |
+| **H-7** | **Local player agency** — board UI (local tier); **journalist inbox** (remote tier); weights by distance. |
+| **H-8** | **Default new game = Sandbox first**; second setting = **Historical first** — PO locked 2026-06-27. |
+| **H-9** | **News latency** by era + distance — no instant global WORLD news. |
 
-**Canonical design:** [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) · **Argentina fork PO brief:** [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md)
+**Canonical design:** [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) · **PO lock report:** [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md) · **Argentina brief:** [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md)
 
 **Project constraints (PO):** PO controls distribution; **no remote git push** from automation.
 

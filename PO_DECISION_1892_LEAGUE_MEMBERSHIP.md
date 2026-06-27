@@ -42,7 +42,7 @@ So 1892 is two changes at once:
 
 ## 3. The three membership models (options)
 
-> **Same product line as Argentina:** history is the default; **Flexible** mode allows fork resolution via votes and club agency. See [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md §11](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) and [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md).
+> **Same product line as Argentina:** **`SANDBOX_FIRST`** (default) allows fork resolution via votes and agency tiers; **`HISTORICAL_FIRST`** forces IRL. See [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md §11](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) and [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md).
 
 ### Option A — **Historical script (recommended for authenticity)**
 
