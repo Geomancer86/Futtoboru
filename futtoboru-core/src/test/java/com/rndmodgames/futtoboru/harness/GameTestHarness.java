@@ -1,14 +1,18 @@
 package com.rndmodgames.futtoboru.harness;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
@@ -63,12 +67,25 @@ public final class GameTestHarness {
         LocalDateTime start = LocalDateTime.of(1888, 4, 1, 4, 0, 0);
         save.setGameStartDate(start);
         save.setGameDate(start);
-        save.setMainAuthority(DatabaseLoader.getMainAuthority());
-        save.getGameScripts().addAll(season.getSeasonScripts());
+
+        // DatabaseLoader shares one Authority and Season script instances across saves.
+        // Reset leagues and copy scripts so each harness run is isolated (MandatoryGateIT).
+        Authority authority = DatabaseLoader.getMainAuthority();
+        authority.setLeagues(new ArrayList<>());
+        save.setMainAuthority(authority);
+
+        for (BasicScript script : season.getSeasonScripts()) {
+            save.getGameScripts().add(copyScriptForNewGame(script));
+        }
         save.setSelectedCountries(List.of(england));
 
         List<Club> clubs = dbLoader.getClubsByCountry(england);
         if (clubs != null) {
+            for (Club club : clubs) {
+                if (club != null && club.getScheduledMatches() != null) {
+                    club.getScheduledMatches().clear();
+                }
+            }
             save.getAllClubs().addAll(clubs);
         }
 
@@ -188,5 +205,19 @@ public final class GameTestHarness {
             }
         }
         throw new IllegalArgumentException("Season id " + seasonId + " not found");
+    }
+
+    private static BasicScript copyScriptForNewGame(BasicScript source) {
+        BasicScript copy = new BasicScript();
+        copy.setId(source.getId());
+        copy.setName(source.getName());
+        copy.setDescription(source.getDescription());
+        copy.setScriptType(source.getScriptType());
+        copy.setExecutionTime(source.getExecutionTime());
+        copy.setIsExecuted(false);
+        if (source.getScriptValues() != null) {
+            copy.setScriptValues(new HashMap<>(source.getScriptValues()));
+        }
+        return copy;
     }
 }

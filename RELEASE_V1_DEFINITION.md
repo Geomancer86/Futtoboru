@@ -1,14 +1,16 @@
 # Futtoboru — Release v1.0 Definition
 
 **Document type:** Product scope / acceptance criteria  
-**Analysis date:** 2025-06-25  
-**Status:** **Active** — PO decisions locked 2025-06-25 · see [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
+**Analysis date:** 2025-06-25 · **PO update:** 2026-06-26 (season model — procedural loop)  
+**Status:** **Active** — see [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)
 
 ---
 
 ## 1. Release vision (your stated goal)
 
-> **First release must allow playing the initial season under its historical rules, then following seasons under their configured rules — forever, season after season.**
+> **First release must allow playing the initial season under its historical rules, then following seasons generated procedurally from outcomes — repeating indefinitely without loading new mod folders per year.**
+
+Season **content** (squads, clubs, timeline scripts) comes from the **picked start mod** (e.g. 1888–89). Season **2+** is simulated, not pre-authored. See [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md).
 
 This document translates that into testable acceptance criteria.
 
@@ -76,10 +78,10 @@ with that season's configured rules — repeating indefinitely.
 
 | ID | Criterion | Current state |
 |----|-----------|---------------|
-| SC-1 | Engine detects when all league fixtures are played | ❌ Not wired |
-| SC-2 | Final standings frozen; champion determined | ❌ Not wired |
-| SC-3 | `CompetitionEdition` records champion, end date | ❌ Not wired |
-| SC-4 | Inbox/notification announces season end and champion | ❌ Not wired |
+| SC-1 | Engine detects when all league fixtures are played | ⚠️ Wired in `AuthorityManager`; friendlies may break signal (RB-7) |
+| SC-2 | Final standings frozen; champion determined | ⚠️ Wired; needs E2E proof |
+| SC-3 | `CompetitionEdition` records champion, end date | ⚠️ Partial |
+| SC-4 | Inbox/notification announces season end and champion | ⚠️ Partial |
 | SC-5 | No duplicate fixtures generated after season ends | ❌ Latent bug |
 | SC-6 | 1888 re-election (bottom 4) applied or scripted | ❌ Not implemented |
 | SC-7 | Optional: mid-season rule change (Nov 1888 points) | ❌ Not implemented |
@@ -90,9 +92,9 @@ with that season's configured rules — repeating indefinitely.
 |----|-----------|---------------|
 | TR-1 | Club league stats reset (points, W/D/L, goals, league matches) | ❌ Missing |
 | TR-2 | Season income/expenditure rolled or archived | ❌ Missing |
-| TR-3 | Played matches archived; new fixture list generated | ❌ Missing |
+| TR-3 | Played matches archived; new fixture list generated | ⚠️ `generateNextSeason()` partial |
 | TR-4 | `gameStartDate` / season window advances to next season | ❌ Missing |
-| TR-5 | Next season rules loaded from configuration | ❌ Missing |
+| TR-5 | Next season rules from edition snapshot / in-save scripts (not new mod folder) | ❌ Missing |
 | TR-6 | Same 12 clubs (minus re-election changes) continue | ❌ Missing |
 | TR-7 | Player can continue playing without starting new game | ❌ Missing |
 
@@ -100,9 +102,9 @@ with that season's configured rules — repeating indefinitely.
 
 | ID | Criterion | Current state |
 |----|-----------|---------------|
-| LP-1 | Season 1889–90 playable with its own rules config | ❌ No season 2 data |
-| LP-2 | Season 1890–91+ supported via data (not hardcoded) | ❌ Missing |
-| LP-3 | Script system supports season-end and season-start events | ❌ One script type only |
+| LP-1 | Season 1889–90 playable via **procedural rollover** (same save) | ⚠️ Partial code; no IT |
+| LP-2 | Season 3+ supported **procedurally** (rules snapshot / scripts, not mod per year) | ❌ Missing proof |
+| LP-3 | Script system supports in-season timeline events + rollover hooks | ⚠️ League/cup creation only |
 | LP-4 | Rules can differ per season (points, tie-breakers, format) | ❌ Hardcoded defaults |
 | LP-5 | Save game survives 3+ season transitions | ❌ Untested |
 | LP-6 | No memory/state leak across seasons (IDs, messages, scripts) | ❌ Untested |
@@ -139,7 +141,8 @@ Policy detail: [V1_TESTING_AND_SIMULATION_PLAN.md §7](V1_TESTING_AND_SIMULATION
 | AT-2 | `MandatoryGateIT` — draw block + acknowledge | ✅ Phase 0 |
 | AT-3 | `SeasonPlaythroughIT` — 1888 → 1889 rollover | ❌ Phase 2 |
 | AT-4 | `LeagueAndCupIT` — full season both competitions | ❌ Phase 3 |
-| AT-5 | `MultiSeasonSoakIT` — ≥3 seasons without deadlock | ❌ Phase 4 |
+| AT-5 | `MultiSeasonSoakIT` — ≥3 procedural seasons without deadlock | ❌ Phase 4 |
+| AT-5b | `LongRunSoakIT` — **60 seasons** (north star; nightly profile) | ❌ Phase 4 |
 | AT-6 | CI fails on test failure | ✅ Phase 0 (GHA + Jenkins) |
 
 Full plan: [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md).
@@ -148,32 +151,34 @@ Full plan: [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md
 
 ## 5. Rules configuration model (required design)
 
-For "configured following season rules," v1.0 needs a **data-driven rules source**. Recommended approach:
+For “configured following season rules” without hardcoding 60 future mods:
 
-### Option A — Per-season file (recommended)
+### Primary — Start season mod + edition snapshot
 
 ```
-mods/seasons/18/competition_rules.txt   # 1888-89
-mods/seasons/19/competition_rules.txt   # 1889-90
+mods/seasons/18/competition_rules.txt   # Base rules for career start (1888–89)
 ```
 
-Fields: points for win/draw/loss, tie-breaker order, match format, optional mid-season amendments with effective date.
+Each **`CompetitionEdition`** created at rollover carries a **rules snapshot** (copy of active rules at transition). Amendments apply via scripts or authority logic — not by loading `mods/seasons/19/`.
 
-### Option B — Script-driven amendments
+### FM-style — In-season timeline scripts (same start mod)
 
-Extend `BasicScript` with types:
+Extend `BasicScript` on the **picked start season**:
+
 - `1000` LEAGUE_CREATION (exists)
-- `1001` RULES_AMENDMENT (new)
-- `1002` SEASON_END (new)
-- `1003` NEXT_SEASON_START (new)
+- `1001` CUP_CREATION (exists)
+- `1002` RULES_AMENDMENT — mid-career rule change (e.g. Nov 1888 points)
+- `1003` TIMELINE_EVENT — optional club/rule events dated in running calendar
 
-Scripts reference rule sets or inline values.
+Scripts fire on `executionTime` during the save; they are **not** “load next year’s mod folder.”
 
-### Option C — Per-edition on `CompetitionEdition`
+### Procedural seasons 2+
 
-Each year's edition carries its own `CompetitionRules` snapshot.
+`SeasonManager.transitionToNextSeason()` copies participants, snapshots rules, generates fixtures — **no mod load**.
 
-**Minimum for v1.0:** Option A or C plus script hooks for timed amendments (1888 Nov points change).
+**Canonical reference:** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)
+
+**Minimum for v1.0:** Start-mod rules file + edition snapshot + `SeasonPlaythroughIT` / `MultiSeasonSoakIT` proof.
 
 ---
 

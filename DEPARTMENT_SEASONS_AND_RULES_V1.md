@@ -106,8 +106,9 @@ Phase 1: CompetitionRulesLoader + season 18 rules file
 Phase 1: Wire isLeagueComplete in daily loop; finalize edition + message
 Phase 1: Fix league-only match counting (RB-7)
 Phase 1: Fixture regen guard (RB-6)
-Phase 2: SaveGame season fields + SeasonManager.transitionToNextSeason()
-Phase 2: Season 19 scripts (NEXT_SEASON_START, not LEAGUE_CREATION)
+Phase 2: SaveGame season fields + SeasonManager.transitionToNextSeason() — **procedural**, not mod load  
+Phase 2: Start-mod `competition_rules.txt` + edition rules snapshot  
+Phase 2: ~~Season 19 scripts~~ → in-season timeline script types (1002+)
 Phase 3: Optional Nov 1888 amendment; re-election script
 Phase 3: Integration test with Platform dept
 ```
@@ -119,7 +120,7 @@ Phase 3: Integration test with Platform dept
 | From department | Need |
 |-----------------|------|
 | **Match & Simulation** | Correct sim results, league match type, fixture counts |
-| **World & Data** | `competition_rules.txt`, season 19 folder, loader refactor |
+| **World & Data** | `competition_rules.txt` on **start mod**, script format | **Not** season 19 folder per year |
 | **Platform & UX** | Harness test, save/load with season fields |
 | **Economy & Club** | Reset `seasonIncome`/`seasonExpenditure` on rollover (consult) |
 
@@ -153,6 +154,6 @@ Phase 3: Integration test with Platform dept
 - [ ] Season 1888 completes with 2-1-0 and goal average tie-break
 - [ ] Champion recorded; inbox message delivered
 - [ ] No second fixture list generated after completion
-- [ ] Season 1889 starts with rules from season 19 file
+- [ ] Season 1889 starts via **procedural rollover** with rules snapshot from edition 1
 - [ ] Club league stats reset; played matches archived
 - [ ] Integration test passes (with Platform)

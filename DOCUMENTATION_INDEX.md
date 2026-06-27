@@ -1,11 +1,11 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2025-06-25 (v1 testing plan + PO decisions)
+**Last updated:** 2026-06-26 (post-merge reanalysis + Phase 0 harness fixes)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
-> **CM legacy document research is PAUSED** at Round 15. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).  
-> **Active work:** v1 implementation — [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) · [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md)
+> **CM legacy document research is PAUSED** at Round 16. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).  
+> **Active work:** v1 implementation — [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md) · [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 
 ---
 
@@ -14,6 +14,9 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | Document | Audience | Purpose |
 |----------|----------|---------|
 | [PM_STAKEHOLDER_STATUS_BRIEF.md](PM_STAKEHOLDER_STATUS_BRIEF.md) | **PM, all stakeholders** | **Status brief** — progress, docs hub, critical path |
+| [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md) | **PM, PO, QA** | **Post-merge** — develop + competition-completion-v1 integrated |
+| [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | **PO, all eng** | **Season model** — start mod + procedural loop + FM-style scripts |
+| [PM_60_SEASON_GOAL_STATUS.md](PM_60_SEASON_GOAL_STATUS.md) | **PM, Sponsor** | **60-season north star** — test ladder & % complete |
 | [STAKEHOLDERS_AND_DEPARTMENTS.md](STAKEHOLDERS_AND_DEPARTMENTS.md) | PM, PO | Who owns what; core vs broader; sign-off gates |
 | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | PO | v1 acceptance criteria — **PO decisions locked** |
 | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) | PO, QA, Platform | E2E harness, soak tests, FA Cup + static player policy |
@@ -96,4 +99,11 @@ Older analysis files (`ANALYSIS_*.md`, `ROADMAP_V1.0.md`, `TASKS_V1.0.md`, etc.)
 
 ## Branch note
 
-Most accurate code state: **`feature/competitions-finances-seasons`**. Public `main` is Release 0.2.0 (July 2023).
+Most accurate code state: **`analyze-ai-branch`** (merged `origin/develop` + `origin/feature/competition-completion-v1`). Public `main` is Release 0.2.0 (July 2023).
+
+### Automated testing (merged)
+
+| Document | Purpose |
+|----------|---------|
+| [AUTOMATED_TESTING_SOLUTION.md](AUTOMATED_TESTING_SOLUTION.md) | League/cup **unit** tests (other dev) |
+| [TESTING_COMPETITION_COMPLETION.md](TESTING_COMPETITION_COMPLETION.md) | Manual QA — completion & champions |

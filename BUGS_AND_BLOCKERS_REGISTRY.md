@@ -16,7 +16,7 @@ These prevent the stated goal: **play season under correct rules → complete �
 | ID | Severity | Issue | Location | Notes |
 |----|----------|-------|----------|-------|
 | **RB-1** | 🔴 | **No season completion detection** | `FuttoboruGameEngine.continueGame()` | `LeagueStandingsManager.isLeagueComplete()` never called |
-| **RB-2** | 🔴 | **No season rollover / next season** | — | No `SeasonManager`; no season 2 data |
+| **RB-2** | 🔴 | **No proven multi-season rollover** | — | Partial `generateNextSeason()`; no `SeasonManager`; **no soak IT** |
 | **RB-3** | 🔴 | **Wrong 1888 rules applied** | `ScriptsManager.createLeague()` | Uses `createDefaultRules()` (3-1-0) not historical (2-1-0) |
 | **RB-4** | 🔴 | **No per-season rules configuration** | `ScriptsLoader`, mod files | `LEAGUE_RULES` always null; no rules TXT |
 | **RB-5** | 🔴 | **No season identity in save** | `SaveGame.java` | Cannot track which season is active |

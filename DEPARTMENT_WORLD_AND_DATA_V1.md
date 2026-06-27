@@ -1,14 +1,16 @@
 # Department: World & Data — v1 Deep Dive
 
 **Department expert:** _________________  
-**Status:** Season 18 ~70% content; Season 19 0%; loaders need refactor for multi-season  
-**Blocks release:** Yes — rules files and season 19 content required for v1 proof
+**Status:** Start season mod 18 ~70% content; **procedural seasons 2+ are engine-owned** (not mod folders)  
+**Blocks release:** Yes — start-mod `competition_rules.txt` + loader; procedural loop proven by ITs (not season 19 folder)
+
+**Season model:** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)
 
 ---
 
 ## 1. Mission (v1)
 
-Own **all mod data** and **loaders** so each season has correct clubs, squads, stadiums, **competition rules**, and scripts — and season 19 proves the **forever loop**.
+Own **start-season mod data** and **loaders** so the picked entry point (1888–89) has correct clubs, squads, stadiums, **competition rules**, and **in-season timeline scripts**. **Simulated years 2+** are not separate mod folders — the engine rolls forward from save state.
 
 ---
 

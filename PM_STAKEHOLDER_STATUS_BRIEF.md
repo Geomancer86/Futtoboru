@@ -2,25 +2,31 @@
 
 **Document type:** Project status / stakeholder communication  
 **Audience:** PM, PO, Sponsor, department leads, expert sign-off owners  
-**Branch:** `feature/competitions-finances-seasons` (v0.4.0-SNAPSHOT)  
-**Date:** 2025-06-25  
-**Next update:** After Phase 1 season-loop wiring lands
+**Branch:** `analyze-ai-branch` (merged `origin/develop` + `origin/feature/competition-completion-v1`)  
+**Date:** 2026-06-26  
+**Next update:** After `SeasonPlaythroughIT` lands
 
 ---
 
 ## 1. One-page executive summary
 
-**Futtoboru** is an open-source historical football management sim (1888–89 onward). The **feature branch** adds match simulation, finances, contracts, inbox, and jobs — but **does not yet deliver the product promise**: play **league and FA Cup** under correct rules, finish the season, roll into the next **forever**, without **blocking** on mandatory prompts.
+**Futtoboru** is an open-source historical football management sim (1888–89 onward). The **merged branch** now includes FA Cup scaffolding, league/cup completion wiring, mandatory draw gating, and schedule unit tests — plus our **headless `GameTestHarness`** (Phase 0).
 
 | Question | Answer |
 |----------|--------|
-| **Can we ship v1 today?** | **No** — season rollover, FA Cup execution still missing |
-| **How far are we?** | **~35%** acceptance criteria; **Phase 0 test infra ✅** |
-| **Biggest risk** | Mandatory-gate soft-locks + unwired season completion |
-| **Biggest asset** | Mod/data pipeline + **headless `GameTestHarness`** |
-| **Recommended focus** | Phase 1 season loop + same harness as gate |
+| **Can we ship v1 today?** | **No** — procedural rollover unproven; no multi-season E2E/soak |
+| **How far are we?** | **~55%** v1 criteria; **~12%** of **60-season goal proven by tests** |
+| **Biggest risk** | Rollover incomplete (stat reset, cup sync); no `SeasonPlaythroughIT` |
+| **Biggest asset** | Start-mod + procedural design clarity; **49 automated tests** green |
+| **Recommended focus** | `SeasonManager` + rollover → `SeasonPlaythroughIT` → `MultiSeasonSoakIT` (3) |
 
-**Phase 0:** ✅ [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) — run `mvn clean test` before human QA.
+**Season model (PO):** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) — **no future season mod folders for v1.**
+
+**60-season goal:** [PM_60_SEASON_GOAL_STATUS.md](PM_60_SEASON_GOAL_STATUS.md)
+
+**Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
+
+**Phase 0:** ✅ [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) — **49 core tests** including `MandatoryGateIT` (5).
 
 **v1 plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 
@@ -72,9 +78,9 @@
 
 | Department | Status | % to v1 gate | Top blocker |
 |------------|--------|--------------|-------------|
-| **Seasons & Rules** | 🔴 Red | ~15% | No `SeasonManager`; rules wrong; no rollover |
-| **Match & Simulation** | 🟡 Amber | ~45% | Sim works; no tactics input; completion unwired |
-| **World & Data** | 🟡 Amber | ~50% | Season 18 only; rules not in mods; season 19 missing |
+| **Seasons & Rules** | 🟡 Amber | ~30% | Procedural rollover partial; need `SeasonManager` + IT |
+| **Match & Simulation** | 🟡 Amber | ~55% | Sim + completion wired; cup path landed |
+| **World & Data** | 🟡 Amber | ~55% | Start mod 18 complete; **no per-year mod folders required** |
 
 ### Supporting
 

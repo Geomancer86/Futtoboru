@@ -1,9 +1,9 @@
 # Futtoboru v1 — Testing, Simulation & Product Plan
 
 **Document type:** MVP implementation plan (testing + long-run simulation + scope)  
-**Date:** 2025-06-25  
-**Branch target:** `feature/competitions-finances-seasons`  
-**Status:** **Active plan** — supersedes stale priorities in [MVP_PRIORITY_ROADMAP.md](MVP_PRIORITY_ROADMAP.md) for v1 work  
+**Date:** 2025-06-25 · **Updated:** 2026-06-26  
+**Branch target:** `analyze-ai-branch`  
+**Status:** **Active plan** — season model: [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)  
 **Related:** [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) · [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md) · [DEPARTMENT_PLATFORM_AND_UX_V1.md](DEPARTMENT_PLATFORM_AND_UX_V1.md)
 
 ---
@@ -24,7 +24,7 @@ Testing cannot rely on **unit tests alone**. We need a **headless end-to-end har
 |----------|-----------|-------|
 | **FA Cup** | ✅ **In v1** alongside league | Full knockout progression required for sign-off |
 | **Unemployed start** | ❌ **Defer to v1.1** | v1 starts **employed** at a league club |
-| **Season loop** | ✅ **Forever** | 1888–89 → 1889–90 → … via data-driven seasons |
+| **Season loop** | ✅ **Forever (procedural)** | Start mod once; season 2+ generated in save — **not** one mod folder per year |
 | **Youth regens** | ❌ **Not in v1** | No intake, no regen pipeline |
 | **Retirements** | ❌ **Not in v1** | Players never retire |
 | **Death** | ❌ **Not in v1** | No mortality system |
@@ -33,7 +33,18 @@ Testing cannot rely on **unit tests alone**. We need a **headless end-to-end har
 | **Re-election (bottom 4)** | **Script/message only** | Full AGM simulation defer |
 | **Release tag** | **TBD** | `v1.0.0` when harness green + manual QA checklist |
 
-Document amendments: [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) §2, §10, new cup + lifecycle sections.
+Document amendments: [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) · [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)
+
+### PO update (2026-06-26)
+
+| Decision | Choice |
+|----------|--------|
+| Future season mod folders (`19`, `20`, …) | **Not v1** — procedural rollover instead |
+| Timeline events (deaths, rules, clubs) | **In-season scripts** on picked start mod (FM-style) |
+| 60-season north star | `LongRunSoakIT` — 60 procedural champions; nightly CI profile |
+| PR soak gate | `MultiSeasonSoakIT` — **3 seasons** minimum |
+
+Distance report: [PM_60_SEASON_GOAL_STATUS.md](PM_60_SEASON_GOAL_STATUS.md)
 
 ---
 
@@ -87,7 +98,7 @@ Existing debug notes: [DEBUG_DRAW_MESSAGE_ISSUES.md](DEBUG_DRAW_MESSAGE_ISSUES.m
                     │  Manual QA checklist │  RELEASE_V1 §9
                     └──────────┬──────────┘
               ┌────────────────┴────────────────┐
-              │   Soak / multi-season IT       │  10–30 seasons headless
+              │   Soak / multi-season IT       │  3 seasons (PR) · 60 seasons (nightly)
               └────────────────┬────────────────┘
         ┌──────────────────────┴──────────────────────┐
         │  Integration / E2E (headless gdx)          │  SeasonPlaythroughIT, Cup+LeagueIT
@@ -159,7 +170,7 @@ Refactor existing `BaseTest` / `BaseTestTools` to delegate here.
 | Suite | Targets | Priority |
 |-------|---------|----------|
 | `LeagueStandingsManagerTest` | 2-1-0 points, goal average, completion excludes friendlies | P0 |
-| `CompetitionRulesLoaderTest` | Parse `competition_rules.txt` per season | P0 |
+| `CompetitionRulesLoaderTest` | Parse `competition_rules.txt` on **start mod** | P0 |
 | `MessageManagerTest` | Mandatory flag, delivery, mark read, ID persistence | P0 |
 | `LeagueFixtureGeneratorTest` | 132 league matches, double RR | P1 |
 | `CupFixtureGeneratorTest` | FA Cup 1888–89 round structure | P0 |
@@ -176,9 +187,9 @@ Refactor existing `BaseTest` / `BaseTestTools` to delegate here.
 | **`LeagueSeasonIT`** | 1888–89 league only → champion → edition finalized | SC-1–SC-5 |
 | **`FaCupSeasonIT`** | FA Cup rounds scheduled, played, winner | Cup-1–Cup-6 |
 | **`LeagueAndCupIT`** | Parallel league + cup fixtures; no schedule conflicts | PL-2, Cup-4 |
-| **`SeasonPlaythroughIT`** | 1888 complete → rollover → 1889 starts with new rules file | TR-*, LP-1 |
-| **`MultiSeasonSoakIT`** | **3 seasons** minimum headless; save/load between each | LP-5 |
-| **`LongRunSoakIT`** | **10 in-game years** (or 3,650 days) without deadlock | No BLK-*; memory stable |
+| **`SeasonPlaythroughIT`** | 1888 complete → **procedural** rollover → edition 2 fixtures | TR-*, LP-1 |
+| **`MultiSeasonSoakIT`** | **3 procedural seasons**; save/load between each | LP-5; **PR gate** |
+| **`LongRunSoakIT`** | **60 procedural seasons**; champion list; no deadlock | **North star**; nightly `-Psoak` |
 | **`SaveLoadIT`** | Mid-season + post-rollover roundtrip | PL-7 |
 
 ### 6.3 FA Cup acceptance (new criteria)
@@ -239,7 +250,7 @@ For **infinite seasons without regens**:
 
 ### 7.4 Documentation for modders
 
-Add to season mod README (when season 19 lands): *v1 does not spawn new players; edit `players/*.txt` per season for historical squad changes.*
+Add to start season mod README: *v1 uses static squads; procedural seasons copy participants from previous edition. Timeline events (rules, clubs) use in-season scripts on the start mod — not future mod folders.*
 
 ---
 
@@ -257,34 +268,34 @@ Add to season mod README (when season 19 lands): *v1 does not spawn new players;
 
 ### Phase 1 — Unblock simulation (parallel with RB fixes)
 
-| ID | Work | Registry |
-|----|------|----------|
-| T-4 | Fix C-2 AuthorityManager refresh | C-2 |
-| T-5 | Fix C-5 league ID | C-5 |
-| T-6 | Wire `isLeagueComplete` + friendlies fix | RB-1, RB-7 |
-| T-7 | `acknowledgeMandatoryDraws()` matches UI | BLK-1, BLK-2 |
+| ID | Work | Registry | Post-merge |
+|----|------|----------|------------|
+| T-4 | Fix C-2 AuthorityManager refresh | C-2 | ✅ |
+| T-5 | Fix C-5 league ID | C-5 | Open |
+| T-6 | Wire `isLeagueComplete` + friendlies fix | RB-1, RB-7 | ✅ wired on merged branch |
+| T-7 | `acknowledgeMandatoryDraws()` matches UI | BLK-1, BLK-2 | ✅ incl. `CUP_DRAW`; engine blocks `continueGame()` |
 
 ### Phase 2 — Season loop (release core)
 
-| ID | Work | Registry |
-|----|------|----------|
-| T-8 | `SeasonManager` + save fields | RB-2, RB-5 |
-| T-9 | Historical 2-1-0 rules from mod | RB-3, RB-4 |
-| T-10 | Season 19 mod + rollover scripts | DG-3 |
-| T-11 | `SeasonPlaythroughIT` green | LP-1, LP-5 |
+| ID | Work | Registry | Post-merge |
+|----|------|----------|------------|
+| T-8 | `SeasonManager` + save fields | RB-2, RB-5 | Partial — no dedicated class |
+| T-9 | Historical 2-1-0 rules from mod | RB-3, RB-4 | Open |
+| T-10 | Start-mod rules + edition snapshot at rollover | DG-3 | Open — **not** season 19 mod folder |
+| T-11 | `SeasonPlaythroughIT` green | LP-1, LP-5 | **Next** |
 
 ### Phase 3 — FA Cup in v1
 
-| ID | Work | Registry |
-|----|------|----------|
-| T-12 | Cup scheduling + draws + mandatory messages | DG-6, M-4 |
-| T-13 | `LeagueAndCupIT` + `FaCupSeasonIT` | Cup-* |
+| ID | Work | Registry | Post-merge |
+|----|------|----------|------------|
+| T-12 | Cup scheduling + draws + mandatory messages | DG-6, M-4 | ✅ ~50% — needs E2E IT |
+| T-13 | `LeagueAndCupIT` + `FaCupSeasonIT` | Cup-* | Open |
 
 ### Phase 4 — Soak & ship
 
 | ID | Work |
 |----|------|
-| T-14 | `LongRunSoakIT` (10 years or 3 seasons minimum) |
+| T-14 | `LongRunSoakIT` (**60 procedural seasons** minimum north star; 3 on PR via T-6) |
 | T-15 | Manual QA checklist |
 | T-16 | Tag release |
 
@@ -296,7 +307,7 @@ Add to season mod README (when season 19 lands): *v1 does not spawn new players;
 |------|-------------|
 | **G-TEST-1** | `mvn test` fails build on any failure |
 | **G-TEST-2** | `SeasonPlaythroughIT` + `MandatoryGateIT` required on PR |
-| **G-TEST-3** | `LongRunSoakIT` nightly (may be slower profile) |
+| **G-TEST-3** | `LongRunSoakIT` (60 seasons) nightly `-Psoak`; `MultiSeasonSoakIT` (3) on PR |
 | **G-TEST-4** | JaCoCo: no decrease on `engine.*` without PO waiver |
 
 Parent POM: remove or override `maven.test.failure.ignore` in root `pom.xml` when implementing T-2.

@@ -58,13 +58,13 @@ class MandatoryGateIT {
     }
 
     @Test
-    void rawContinueStillAdvancesWhileGateUnread() {
+    void rawContinueDoesNotAdvanceWhileGateUnread() {
         advanceToMandatoryDrawDelivered();
         assertEquals(FuttoboruGameEngine.DRAW_ACTION, harness.getNextGameAction());
 
         LocalDateTime before = harness.game().getGameDate();
-        harness.continueOneDay();
-        assertTrue(harness.game().getGameDate().isAfter(before));
+        assertThrows(SimulationDeadlockException.class, harness::continueOneDay);
+        assertEquals(before, harness.game().getGameDate());
     }
 
     private void advanceToMandatoryDrawDelivered() {
@@ -75,8 +75,13 @@ class MandatoryGateIT {
             return !save.getMainAuthority().getLeagues().isEmpty();
         }, 25);
 
-        harness.advanceUntil(save -> hasMandatoryDrawMessageInInbox(), 10);
+        harness.advanceUntil(save -> hasMandatoryDrawGateActive(), 30);
         assertEquals(FuttoboruGameEngine.DRAW_ACTION, harness.getNextGameAction());
+    }
+
+    private boolean hasMandatoryDrawGateActive() {
+        return harness.getNextGameAction() == FuttoboruGameEngine.DRAW_ACTION
+                || hasMandatoryDrawMessageInInbox();
     }
 
     private boolean hasMandatoryDrawMessageInInbox() {
@@ -84,10 +89,11 @@ class MandatoryGateIT {
             return false;
         }
         for (Message message : harness.game().getAllMessages()) {
-            if (message == null) {
+            if (message == null || message.getMessageType() == null) {
                 continue;
             }
-            if ("LEAGUE_DRAW".equals(message.getMessageType())
+            String type = message.getMessageType();
+            if (("LEAGUE_DRAW".equals(type) || "CUP_DRAW".equals(type) || "FIXTURE_DRAW".equals(type))
                     && Boolean.TRUE.equals(message.getIsMandatory())
                     && !Boolean.TRUE.equals(message.getIsRead())) {
                 return true;
