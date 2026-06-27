@@ -16,7 +16,9 @@
 | **What still needs fleshing?** | **UI/production polish**, **historical authenticity** (rules display, sim balance), **inbox scaling**, and almost all **CM management depth** (tactics, training, transfers, board). |
 | **Is the CM/FM roadmap good?** | **Research: excellent.** **Execution tracking: was poor** (stale `ROADMAP_V1.0.md`, outdated registry). This report + updated registry **replace** those as the living roadmap. |
 | **Where are we vs CM1?** | **Season loop ~85%** (automated) · **CM1 full feature set ~45%** · **CM4 depth ~12%** (unchanged for management systems). |
-| **Next gate** | **Manual QA** → tag **v1.0.0** → **v1.1** (UX + unemployed + sim tuning). |
+| **Next gate** | **Layer A:** Manual QA → tag **v1.0.0** → **Layer B MVP** (XI, sim v2, fans, ratings) → **Layer C 1892** |
+
+**Master plan:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)
 
 ---
 
@@ -209,6 +211,7 @@ Ordered by [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md §6 P2](CM_LEGACY_FUTTOBORU_GAP_
 
 | Need | Read |
 |------|------|
+| **V1 finish + MVP + 1892 plan** | [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) |
 | 10-season champions + finances | [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md) |
 | v1 acceptance criteria | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) |
 | CM feature checklist | [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md) |
@@ -226,6 +229,7 @@ Ordered by [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md §6 P2](CM_LEGACY_FUTTOBORU_GAP_
 |------|--------|
 | 2026-06-27 | Initial report post 59-test gate + 10-season analysis |
 | 2026-06-27 | Cross-link historical data expansion report |
+| 2026-06-27 | Link V1 MVP + 1892 master plan |
 | 2026-06-27 | Supersedes stale execution sections of `ROADMAP_V1.0.md` |
 
 ---

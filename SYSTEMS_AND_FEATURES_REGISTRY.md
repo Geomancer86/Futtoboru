@@ -26,8 +26,24 @@
 | `GameTestHarness` | ✅🧪 | 59 PR tests |
 | Weekly finances / wages (backend) | ✅🧪 | 10-season PNE income/spend |
 | Production load-game UI | 🐛 | Not in IT scope — C-3, H-9 |
-| Tactics / training / transfers UI | 🔲 | Stubs — v1.1+ |
-| CM1 post-match ratings | ❌ | Not started |
+| Tactics / training / transfers UI | 🔲 | Stubs — **Layer B MVP** (XI, sim, fans) |
+| CM1 post-match ratings | ❌ | **MVP-5** in master plan |
+
+---
+
+## 0.1 Layer B MVP gaps (planned — not in V1.0 tag)
+
+See [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5](PM_V1_MVP_AND_1892_MASTER_PLAN.md).
+
+| ID | Feature | Status |
+|----|---------|--------|
+| MVP-1 | Pick starting XI (11) | ❌ Sim uses full squad |
+| MVP-2 | Basic formation / tactics UI | 🔲 Placeholder unwired |
+| MVP-3 | Match sim v2 (XI, form, opponent) | ❌ RNG + squad avg today |
+| MVP-4 | Fan / attendance (table + opponent) | ⚠️ Random 60–90% capacity |
+| MVP-5 | Post-match ratings 0–10 | ❌ |
+| MVP-6–7 | Match result / preview UI | ⚠️ Stubs |
+| MVP-8 | Sim balance (champion diversity) | ⚠️ Accrington 8/10 |
 
 ---
 

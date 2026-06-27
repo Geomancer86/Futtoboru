@@ -1,12 +1,11 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-06-27 (LibGDX/UI architecture canonical doc)
+**Last updated:** 2026-06-27 (V1 MVP + 1892 master plan)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
-> **CM legacy document research is PAUSED** at Round 16. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).  
-> **Active work:** v1 manual QA · Wave **1.5** world evolution (1892) — [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md)  
-> **How the game is coded:** [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md)
+> **Planning:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) — finish V1.0 · MVP gaps (XI, sim, fans) · 1892 expansion  
+> **CM legacy research is PAUSED** at Round 16. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
 
 ---
 
@@ -19,6 +18,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | **PO, all eng** | **Season model** — start mod + procedural loop + FM-style scripts |
 | [PM_60_SEASON_GOAL_STATUS.md](PM_60_SEASON_GOAL_STATUS.md) | **PM, Sponsor** | **60-season north star** — test ladder & % complete |
 | [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) | **PM, PO, all leads** | **Features proven vs gaps + CM/FM roadmap** |
+| [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) | **PO, PM, all leads** | **Layer A ship · MVP sim/XI/fans · 1892 plan** |
 | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | **PO, World & Data** | **How many start mods / years; Wave 1–2 plan** |
 | [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) | **All engineers, PO** | **LibGDX stack, UI patterns, framework limits** |
 | [FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md](FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md) | **UI implementers** | Colours, fonts, visibility (companion to engine doc) |

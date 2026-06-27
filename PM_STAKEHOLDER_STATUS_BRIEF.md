@@ -18,7 +18,9 @@
 | **How far are we?** | **~85% CM1 loop** automated · **~45% CM1 features** · **~12% CM4 depth** |
 | **Biggest risk** | Doc/code drift on UI bugs (C-1, C-3); inbox growth at long careers |
 | **Biggest asset** | Proven infinite season loop + CM research corpus + 59-test gate |
-| **Recommended focus** | Manual QA → v1.0 tag → v1.1 (XI, ratings, unemployed) per roadmap report |
+| **Recommended focus** | Layer A manual QA → tag → **Layer B MVP** (XI, sim, fans) → **Layer C 1892** |
+
+**Master plan:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)
 
 **Season model (PO):** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) — **no future season mod folders for v1.**
 

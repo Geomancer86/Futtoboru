@@ -2,7 +2,8 @@
 
 **Document type:** Product scope / acceptance criteria  
 **Analysis date:** 2025-06-25 · **PO update:** 2026-06-26 (season model — procedural loop)  
-**Status:** **Active** — see [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)
+**Status:** **Active** — Layer A acceptance criteria below  
+**Master plan (Layer A + MVP + 1892):** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)
 
 ---
 
@@ -17,6 +18,8 @@ This document translates that into testable acceptance criteria.
 ---
 
 ## 2. What v1.0 is NOT
+
+> **Layer B (MVP management depth)** — pick XI, tactics, sim v2, fans, ratings — is **not required for the `v1.0.0` tag** but **is required for “V1 MVP complete”** per [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md).
 
 To prevent scope creep, v1.0 explicitly **does not require**:
 
@@ -58,8 +61,8 @@ with that season's configured rules — repeating indefinitely.
 | NG-3 | League is created on scripted date (17 Apr 1888) | ✅ Works |
 | NG-4 | 12 clubs enter double round-robin (22 games each, 132 total) | ✅ Works |
 | NG-5 | Mandatory fixture draw must be viewed before continuing | ✅ Works |
-| NG-6 | League uses **1888 historical rules** (2-1-0, goal average) | ❌ Uses 3-1-0 modern |
-| NG-7 | Season identity stored in save (`currentSeasonId`, index, or equivalent) | ❌ Missing |
+| NG-6 | League uses **1888 historical rules** (2-1-0, goal average) | ✅🧪 Mod + loader; ⚠️ verify UI |
+| NG-7 | Season identity stored in save (`currentSeasonId`, index, or equivalent) | ✅🧪 `startSeasonId`, `simulatedSeasonIndex` |
 
 ### 4.2 In-season play
 
@@ -90,35 +93,35 @@ with that season's configured rules — repeating indefinitely.
 
 | ID | Criterion | Current state |
 |----|-----------|---------------|
-| TR-1 | Club league stats reset (points, W/D/L, goals, league matches) | ❌ Missing |
-| TR-2 | Season income/expenditure rolled or archived | ❌ Missing |
-| TR-3 | Played matches archived; new fixture list generated | ⚠️ `generateNextSeason()` partial |
-| TR-4 | `gameStartDate` / season window advances to next season | ❌ Missing |
-| TR-5 | Next season rules from edition snapshot / in-save scripts (not new mod folder) | ❌ Missing |
-| TR-6 | Same 12 clubs (minus re-election changes) continue | ❌ Missing |
-| TR-7 | Player can continue playing without starting new game | ❌ Missing |
+| TR-1 | Club league stats reset (points, W/D/L, goals, league matches) | ✅🧪 SeasonManager |
+| TR-2 | Season income/expenditure rolled or archived | ⚠️ Partial |
+| TR-3 | Played matches archived; new fixture list generated | ✅🧪 |
+| TR-4 | `gameStartDate` / season window advances to next season | ⚠️ Procedural dates differ from historical |
+| TR-5 | Next season rules from edition snapshot / in-save scripts (not new mod folder) | ✅🧪 Rules snapshot |
+| TR-6 | Same 12 clubs (minus re-election changes) continue | ✅🧪 Frozen membership (1892 needs Layer C) |
+| TR-7 | Player can continue playing without starting new game | ✅🧪 |
 
 ### 4.5 Perpetual loop (season after season forever)
 
 | ID | Criterion | Current state |
 |----|-----------|---------------|
-| LP-1 | Season 1889–90 playable via **procedural rollover** (same save) | ⚠️ Partial code; no IT |
-| LP-2 | Season 3+ supported **procedurally** (rules snapshot / scripts, not mod per year) | ❌ Missing proof |
+| LP-1 | Season 1889–90 playable via **procedural rollover** (same save) | ✅🧪 |
+| LP-2 | Season 3+ supported **procedurally** (rules snapshot / scripts, not mod per year) | ✅🧪 Multi-season ITs |
 | LP-3 | Script system supports in-season timeline events + rollover hooks | ⚠️ League/cup creation only |
-| LP-4 | Rules can differ per season (points, tie-breakers, format) | ❌ Hardcoded defaults |
-| LP-5 | Save game survives 3+ season transitions | ❌ Untested |
-| LP-6 | No memory/state leak across seasons (IDs, messages, scripts) | ❌ Untested |
+| LP-4 | Rules can differ per season (points, tie-breakers, format) | ✅🧪 Snapshot; amendments defer |
+| LP-5 | Save game survives 3+ season transitions | ✅🧪 |
+| LP-6 | No memory/state leak across seasons (IDs, messages, scripts) | ✅🧪 Short soak; monitor inbox |
 
 ### 4.6 FA Cup (in v1.0)
 
 | ID | Criterion | Current state |
 |----|-----------|---------------|
-| Cup-1 | FA Cup 1888–89 loaded and scheduled | ⚠️ Data exists; execution stub |
-| Cup-2 | Cup draw uses mandatory inbox gate | ❌ |
-| Cup-3 | Knockout rounds eliminate losers | ❌ |
-| Cup-4 | Cup results do not break league completion signal | ❌ |
-| Cup-5 | Cup winner on `CompetitionEdition` | ❌ |
-| Cup-6 | League + cup completable same season | ❌ |
+| Cup-1 | FA Cup 1888–89 loaded and scheduled | ✅🧪 |
+| Cup-2 | Cup draw uses mandatory inbox gate | ✅🧪 |
+| Cup-3 | Knockout rounds eliminate losers | ✅🧪 Headless |
+| Cup-4 | Cup results do not break league completion signal | ✅🧪 RB-7 |
+| Cup-5 | Cup winner on `CompetitionEdition` | ✅🧪 |
+| Cup-6 | League + cup completable same season | ✅🧪 `LeagueAndCupIT` |
 
 ### 4.7 Player lifecycle (v1.0 — static world)
 
@@ -260,6 +263,8 @@ Scripts fire on `executionTime` during the save; they are **not** “load next y
 
 ## 11. Summary
 
-**v1.0 = a closed loop:** start season → play **league and FA Cup** under that season's rules → season ends → next season starts → repeat **forever**, with **automated tests** proving no mandatory-gate deadlock over multi-season runs.
+**v1.0 (Layer A)** = closed loop: start season → play **league and FA Cup** → season ends → next season → repeat **forever**, with **automated tests** proving no mandatory-gate deadlock.
 
-Current codebase is approximately **30–40% of the way** to this definition. The missing 60% is concentrated in **season lifecycle**, **FA Cup execution**, **rules configuration**, **test harness**, and **stabilization** — not in building more UI screens.
+**Automation for Layer A is largely complete** (~90%). Remaining work is **UI stabilization + manual QA** (see [PM_V1_MVP_AND_1892_MASTER_PLAN.md §4](PM_V1_MVP_AND_1892_MASTER_PLAN.md)).
+
+**V1 MVP complete (Layer B)** adds CM1-minimum **pick XI, tactics, credible sim, attendance, ratings** — planned after tag unless PO gates public release on Layer B.
