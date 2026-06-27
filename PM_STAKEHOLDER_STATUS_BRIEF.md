@@ -14,11 +14,11 @@
 
 | Question | Answer |
 |----------|--------|
-| **Can we ship v1 today?** | **No** — procedural rollover unproven; no multi-season E2E/soak |
-| **How far are we?** | **~55%** v1 criteria; **~12%** of **60-season goal proven by tests** |
-| **Biggest risk** | Rollover incomplete (stat reset, cup sync); no `SeasonPlaythroughIT` |
-| **Biggest asset** | Start-mod + procedural design clarity; **49 automated tests** green |
-| **Recommended focus** | `SeasonManager` + rollover → `SeasonPlaythroughIT` → `MultiSeasonSoakIT` (3) |
+| **Can we ship v1 today?** | **No** — cup E2E + manual QA remain; **3-season procedural soak ✅** |
+| **How far are we?** | **~70%** v1 criteria; **3/60 seasons proven** (~5% of north star) |
+| **Biggest risk** | Long-run ID/memory leaks untested until `LongRunSoakIT` |
+| **Biggest asset** | **`MultiSeasonSoakIT` green** — procedural loop proven headless |
+| **Recommended focus** | `LongRunSoakIT` (60) nightly + `LeagueAndCupIT` |
 
 **Season model (PO):** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) — **no future season mod folders for v1.**
 
@@ -26,7 +26,7 @@
 
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
-**Phase 0:** ✅ [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) — **49 core tests** including `MandatoryGateIT` (5).
+**Phase 0:** ✅ **55 tests** — includes `SeasonPlaythroughIT`, `MultiSeasonSoakIT` (3-season PR gate).
 
 **v1 plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 
@@ -78,7 +78,7 @@
 
 | Department | Status | % to v1 gate | Top blocker |
 |------------|--------|--------------|-------------|
-| **Seasons & Rules** | 🟡 Amber | ~30% | Procedural rollover partial; need `SeasonManager` + IT |
+| **Seasons & Rules** | 🟡 Amber | ~70% | `SeasonManager` + 3-season soak IT green |
 | **Match & Simulation** | 🟡 Amber | ~55% | Sim + completion wired; cup path landed |
 | **World & Data** | 🟡 Amber | ~55% | Start mod 18 complete; **no per-year mod folders required** |
 

@@ -56,6 +56,12 @@ public class SaveGame implements Serializable {
     // Game Start Date and Current Game Date (Working)
     private LocalDateTime gameStartDate;
     private LocalDateTime gameDate;
+
+    /** Start-season mod id selected at new game (e.g. 18 = 1888-89). */
+    private Long startSeasonId;
+
+    /** How many procedural competition years have been generated after the first (0 = only first season). */
+    private Integer simulatedSeasonIndex = 0;
     
     /**
      * We need to Save and Track updated data, the data on Database is mostly static
@@ -239,6 +245,22 @@ public class SaveGame implements Serializable {
 
     public void setGameDate(LocalDateTime gameDate) {
         this.gameDate = gameDate;
+    }
+
+    public Long getStartSeasonId() {
+        return startSeasonId;
+    }
+
+    public void setStartSeasonId(Long startSeasonId) {
+        this.startSeasonId = startSeasonId;
+    }
+
+    public Integer getSimulatedSeasonIndex() {
+        return simulatedSeasonIndex != null ? simulatedSeasonIndex : 0;
+    }
+
+    public void setSimulatedSeasonIndex(Integer simulatedSeasonIndex) {
+        this.simulatedSeasonIndex = simulatedSeasonIndex != null ? simulatedSeasonIndex : 0;
     }
 
     public Authority getMainAuthority() {

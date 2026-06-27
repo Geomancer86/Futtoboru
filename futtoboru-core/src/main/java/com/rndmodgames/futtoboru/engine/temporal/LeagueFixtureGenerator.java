@@ -28,13 +28,21 @@ public class LeagueFixtureGenerator {
     
     private static final int DAYS_BETWEEN_MATCHDAYS = 7; // One match per week
     
-    private SaveGame currentGame;
+    private final Futtoboru gameInstance;
     private long nextMatchId;
     
     public LeagueFixtureGenerator(Futtoboru gameInstance) {
-        this.currentGame = gameInstance.getCurrentGame();
+        this.gameInstance = gameInstance;
         // Initialize match ID counter (use negative range to avoid conflicts)
         this.nextMatchId = -1000000L;
+    }
+
+    private SaveGame currentGame() {
+        return gameInstance != null ? gameInstance.getCurrentGame() : null;
+    }
+    
+    public void refreshCurrentGame() {
+        // Kept for callers that cached SaveGame before new-game setup
     }
     
     /**
@@ -204,8 +212,8 @@ public class LeagueFixtureGenerator {
         int matchesSkipped = 0;
         
         for (Match match : allMatches) {
-            Club homeClub = currentGame.getClubById(match.getHomeClubId());
-            Club awayClub = currentGame.getClubById(match.getAwayClubId());
+            Club homeClub = currentGame().getClubById(match.getHomeClubId());
+            Club awayClub = currentGame().getClubById(match.getAwayClubId());
             
             if (homeClub == null) {
                 System.out.println("ERROR: Home club not found for ID: " + match.getHomeClubId());
@@ -576,9 +584,10 @@ public class LeagueFixtureGenerator {
         
         System.out.println("    Checking if club is in SaveGame...");
         // Check if club is in SaveGame (for match references)
-        Club saveGameClub = currentGame.getClubById(club.getId());
+        Club saveGameClub = currentGame().getClubById(club.getId());
         if (saveGameClub == null) {
-            String error = errorPrefix + "\n  REASON: Club not found in SaveGame (ID: " + club.getId() + ")\n  Total clubs in SaveGame: " + (currentGame.getAllClubs() != null ? currentGame.getAllClubs().size() : 0) + "\n  FIX: Ensure club is properly added to SaveGame";
+            SaveGame save = currentGame();
+            String error = errorPrefix + "\n  REASON: Club not found in SaveGame (ID: " + club.getId() + ")\n  Total clubs in SaveGame: " + (save != null && save.getAllClubs() != null ? save.getAllClubs().size() : 0) + "\n  FIX: Ensure club is properly added to SaveGame";
             System.err.println("========================================");
             System.err.println(error);
             System.err.println("========================================");

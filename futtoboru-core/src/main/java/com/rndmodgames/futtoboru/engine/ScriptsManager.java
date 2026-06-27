@@ -242,21 +242,13 @@ public class ScriptsManager {
             return;
         }
         
-        // Assign default competition rules to the league
-        // For historical leagues (1888), use historical rules (2-1-0, goal average)
-        // For modern leagues, use modern rules (3-1-0, goal difference)
+        // Assign competition rules from start-season mod (falls back to historical 1888 defaults)
         com.rndmodgames.futtoboru.data.CompetitionRules rules;
-        java.time.LocalDateTime startDate = currentGame.getGameStartDate();
-        if (startDate != null && startDate.getYear() == 1888) {
-            rules = com.rndmodgames.futtoboru.data.CompetitionRules.createHistoricalRules();
-            System.out.println("Assigned HISTORICAL competition rules to league (1888-89)");
-        } else {
-            rules = com.rndmodgames.futtoboru.data.CompetitionRules.createDefaultRules();
-            System.out.println("Assigned DEFAULT competition rules to league");
-        }
+        Long startSeasonId = currentGame.getStartSeasonId() != null ? currentGame.getStartSeasonId() : 18L;
+        rules = com.rndmodgames.futtoboru.system.loaders.CompetitionRulesLoader.getRulesForSeason(startSeasonId);
         league.setRules(rules);
-        System.out.println("Assigned competition rules to league (points: " + rules.getPointsForWin() + 
-                          "-" + rules.getPointsForDraw() + "-" + rules.getPointsForLoss() + ")");
+        System.out.println("Assigned competition rules from season mod " + startSeasonId + " (points: "
+                          + rules.getPointsForWin() + "-" + rules.getPointsForDraw() + "-" + rules.getPointsForLoss() + ")");
         
         // Set league ID before adding to game (needed for draw message actionData)
         // Use index in leagues list as ID, or timestamp if needed
@@ -300,6 +292,10 @@ public class ScriptsManager {
         }
         
         // Create the first edition for this league
+        java.time.LocalDateTime startDate = currentGame.getGameStartDate();
+        if (startDate == null) {
+            startDate = currentGame.getGameDate();
+        }
         com.rndmodgames.futtoboru.data.CompetitionEdition edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
         edition.setId(System.currentTimeMillis()); // TODO: Better ID generation
         String seasonName = (startDate != null) ? startDate.getYear() + "-" + ((startDate.getYear() + 1) % 100) : "Season 1";

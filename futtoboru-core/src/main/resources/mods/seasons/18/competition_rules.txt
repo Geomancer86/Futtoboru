@@ -1,0 +1,8 @@
+# Football League 1888-89 — historical rules (start season mod)
+# Loaded by CompetitionRulesLoader for season id 18
+
+points_win=2
+points_draw=1
+points_loss=0
+match_format=DOUBLE_ROUND_ROBIN
+tie_breaker=POINTS,GOAL_AVERAGE,GOALS_SCORED,ALPHABETICAL

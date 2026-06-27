@@ -9,11 +9,14 @@ import java.util.function.Predicate;
 import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
+import com.rndmodgames.futtoboru.engine.SeasonManager;
+import com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -30,6 +33,7 @@ public final class GameTestHarness {
     public static final long ENGLAND_COUNTRY_ID = 1000L;
 
     private static final int DEFAULT_MAX_ADVANCE_DAYS = 400;
+    private static final int SEASON_SIMULATION_MAX_DAYS = 700;
 
     private final Futtoboru application;
     private final FuttoboruGameEngine engine;
@@ -95,6 +99,8 @@ public final class GameTestHarness {
         owner.setLastname("Manager");
         owner.setCurrentClubId(clubId);
         save.setOwner(owner);
+        save.setStartSeasonId(seasonId);
+        save.setSimulatedSeasonIndex(0);
 
         application.setCurrentGame(save);
         HeadlessGdxTestSupport.authorityManager().refreshCurrentGame();
@@ -143,6 +149,92 @@ public final class GameTestHarness {
         return advanceUntil(condition, DEFAULT_MAX_ADVANCE_DAYS);
     }
 
+    public void continueOneDayAcknowledgingDraws() {
+        deliverPendingMessages();
+        for (int attempt = 0; attempt < 5; attempt++) {
+            if (getNextGameAction() != FuttoboruGameEngine.DRAW_ACTION) {
+                break;
+            }
+            int acknowledged = acknowledgeMandatoryDraws();
+            deliverPendingMessages();
+            if (acknowledged == 0) {
+                break;
+            }
+        }
+        continueOneDay();
+    }
+
+    public void simulateDays(int days) {
+        for (int i = 0; i < days; i++) {
+            continueOneDayAcknowledgingDraws();
+        }
+    }
+
+    public League primaryLeague() {
+        if (game().getMainAuthority() == null || game().getMainAuthority().getLeagues() == null
+                || game().getMainAuthority().getLeagues().isEmpty()) {
+            return null;
+        }
+        return game().getMainAuthority().getLeagues().get(0);
+    }
+
+    public boolean isPrimaryLeagueComplete() {
+        League league = primaryLeague();
+        if (league == null) {
+            return false;
+        }
+        return new LeagueStandingsManager().isLeagueComplete(league);
+    }
+
+    public int countEditionsWithChampions() {
+        return new SeasonManager(application).countFinalizedLeagueEditions(game());
+    }
+
+    public int getSimulatedSeasonIndex() {
+        return game().getSimulatedSeasonIndex();
+    }
+
+    /**
+     * Advances through league creation, mandatory draws, and until the primary league season completes.
+     */
+    public void simulateUntilPrimaryLeagueComplete() {
+        advanceUntil(save -> primaryLeague() != null, 30);
+        for (int day = 0; day < SEASON_SIMULATION_MAX_DAYS; day++) {
+            if (isPrimaryLeagueComplete()) {
+                return;
+            }
+            continueOneDayAcknowledgingDraws();
+        }
+        throw new SimulationDeadlockException(
+                "simulateUntilPrimaryLeagueComplete: league not complete within "
+                        + SEASON_SIMULATION_MAX_DAYS + " days (date=" + game().getGameDate() + ")");
+    }
+
+    /**
+     * Simulates until {@code targetChampionEditions} league editions have recorded champions.
+     */
+    public void simulateUntilChampionEditions(int targetChampionEditions) {
+        simulateUntilChampionEditions(targetChampionEditions, SEASON_SIMULATION_MAX_DAYS * targetChampionEditions);
+    }
+
+    public void simulateUntilChampionEditions(int targetChampionEditions, int maxDays) {
+        advanceUntil(save -> primaryLeague() != null, 30);
+        simulateDays(5);
+        while (getNextGameAction() == FuttoboruGameEngine.DRAW_ACTION) {
+            acknowledgeMandatoryDraws();
+        }
+        for (int day = 0; day < maxDays; day++) {
+            if (countEditionsWithChampions() >= targetChampionEditions) {
+                return;
+            }
+            continueOneDayAcknowledgingDraws();
+        }
+        throw new SimulationDeadlockException(
+                "simulateUntilChampionEditions: wanted " + targetChampionEditions
+                        + " champion editions but got " + countEditionsWithChampions()
+                        + " within " + maxDays + " days (date=" + game().getGameDate() + ")");
+    }
+
     public LocalDateTime advanceUntil(Predicate<SaveGame> condition, int maxDays) {
         for (int day = 0; day < maxDays; day++) {
             if (condition.test(game())) {
@@ -160,6 +252,7 @@ public final class GameTestHarness {
      */
     public int acknowledgeMandatoryDraws() {
         SaveGame save = game();
+        deliverPendingMessages();
         if (save.getAllMessages() == null) {
             return 0;
         }
@@ -178,6 +271,20 @@ public final class GameTestHarness {
                 message.setIsRead(true);
                 message.setIsMandatory(false);
                 acknowledged++;
+            }
+        }
+        if (save.getScheduledMessages() != null) {
+            for (Message message : save.getScheduledMessages()) {
+                if (message == null || message.getMessageType() == null) {
+                    continue;
+                }
+                String type = message.getMessageType();
+                if (("LEAGUE_DRAW".equals(type) || "CUP_DRAW".equals(type) || "FIXTURE_DRAW".equals(type))
+                        && Boolean.TRUE.equals(message.getIsMandatory())) {
+                    message.setIsRead(true);
+                    message.setIsMandatory(false);
+                    acknowledged++;
+                }
             }
         }
         return acknowledged;

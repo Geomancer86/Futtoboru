@@ -152,6 +152,9 @@ public class DatabaseLoader {
             
             // Load Seasons Scripts
             ScriptsLoader.load(seasons);
+
+            // Warm start-season competition rules cache (season 18 = 1888-89)
+            com.rndmodgames.futtoboru.system.loaders.CompetitionRulesLoader.getRulesForSeason(18L);
         }
 
         //

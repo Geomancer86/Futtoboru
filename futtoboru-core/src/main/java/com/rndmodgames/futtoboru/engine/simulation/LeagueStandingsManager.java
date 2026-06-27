@@ -7,6 +7,7 @@ import java.util.List;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.CompetitionRules;
 import com.rndmodgames.futtoboru.data.League;
+import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.CompetitionRules.TieBreaker;
 
 /**
@@ -157,19 +158,51 @@ public class LeagueStandingsManager {
             expectedMatchesPerClub = numberOfClubs - 1;
         }
         
-        // Check if all clubs have played expected number of matches
+        // Count completed league fixtures (robust against friendlies — RB-7)
         for (Club club : league.getLeagueClubs()) {
             if (club == null) continue;
-            
-            int matchesPlayed = club.getMatchesPlayed() != null ? club.getMatchesPlayed() : 0;
-            if (matchesPlayed < expectedMatchesPerClub) {
+
+            int completed = countCompletedLeagueMatches(club);
+            if (completed < expectedMatchesPerClub) {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
+    /**
+     * Count played league fixtures for a club (scheduled + archived lists).
+     */
+    public int countCompletedLeagueMatches(Club club) {
+        if (club == null) {
+            return 0;
+        }
+        int count = 0;
+        if (club.getScheduledMatches() != null) {
+            for (Match match : club.getScheduledMatches()) {
+                if (isCompletedLeagueMatch(match)) {
+                    count++;
+                }
+            }
+        }
+        if (club.getPlayedMatches() != null) {
+            for (Match match : club.getPlayedMatches()) {
+                if (isCompletedLeagueMatch(match)) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private static boolean isCompletedLeagueMatch(Match match) {
+        return match != null
+                && Boolean.TRUE.equals(match.getIsPlayed())
+                && match.getMatchType() != null
+                && match.getMatchType() == Match.LEAGUE_MATCH;
+    }
+
     /**
      * Get the champion of the league (first place club)
      * 

@@ -56,6 +56,7 @@ public class AuthorityManager {
     Authority mainAuthority;
     LeagueFixtureGenerator fixtureGenerator;
     CompetitionScheduler competitionScheduler;
+    SeasonManager seasonManager;
     
     //
     public AuthorityManager(Futtoboru parent) {
@@ -63,7 +64,12 @@ public class AuthorityManager {
         //
         this.game = parent;
         this.fixtureGenerator = new LeagueFixtureGenerator(parent);
+        this.seasonManager = new SeasonManager(parent);
         refreshCurrentGame();
+    }
+
+    public SeasonManager getSeasonManager() {
+        return seasonManager;
     }
 
     /**
@@ -183,21 +189,11 @@ public class AuthorityManager {
     }
     
     /**
-     * Check if league season is already marked as completed
+     * Check if the active league edition is already finalized (champion recorded).
      */
     private boolean isLeagueAlreadyCompleted(League league) {
-        // Find existing messages for this league's completion
-        if (currentGame.getAllMessages() == null) return false;
-        
-        for (Message m : currentGame.getAllMessages()) {
-            if (m != null && "LEAGUE_COMPLETE".equals(m.getMessageType())) {
-                // If message contains league name, assume it's this one
-                if (m.getTitle() != null && m.getTitle().contains(league.getName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        com.rndmodgames.futtoboru.data.CompetitionEdition edition = getCurrentLeagueEdition(league);
+        return edition != null && edition.getChampionsId() != null;
     }
     
     /**
@@ -251,6 +247,9 @@ public class AuthorityManager {
             edition.setChampionsId(champion.getId());
             if (runnerUp != null) {
                 edition.setRunnersUpId(runnerUp.getId());
+            }
+            if (edition.getEndDate() == null || currentGame.getGameDate() != null) {
+                edition.setEndDate(currentGame.getGameDate());
             }
             Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + " with champions: " + champion.getName());
         }
@@ -1673,15 +1672,25 @@ public class AuthorityManager {
 
     private void generateNextSeason(League league, LocalDateTime currentDate) {
         Gdx.app.log("AuthorityManager", "Generating next season for league: " + league.getName());
+
+        seasonManager.archiveAndClearLeagueFixtures(league);
+        seasonManager.resetLeagueClubStats(league);
         
         CompetitionEdition nextEdition = new CompetitionEdition();
         nextEdition.setId(System.currentTimeMillis());
         int startYear = currentDate.getYear();
+        if (currentDate.getMonthValue() < 7) {
+            startYear = currentDate.getYear();
+        }
         nextEdition.setName(league.getName() + " " + startYear + "-" + ((startYear + 1) % 100));
         
-        // Start around September 1st
-        nextEdition.setStartDate(LocalDateTime.of(startYear, 9, 1, 0, 0));
-        nextEdition.setEndDate(nextEdition.getStartDate().plusMonths(9));
+        // Start around September 1st of the start year (or next month if already past)
+        LocalDateTime seasonStart = LocalDateTime.of(startYear, 9, 1, 0, 0);
+        if (!currentDate.isBefore(seasonStart)) {
+            seasonStart = currentDate.plusMonths(1).withDayOfMonth(1).withHour(15).withMinute(0);
+        }
+        nextEdition.setStartDate(seasonStart);
+        nextEdition.setEndDate(seasonStart.plusMonths(9));
         
         // Copy participants from previous edition if applicable
         if (!league.getEditions().isEmpty()) {
@@ -1692,19 +1701,15 @@ public class AuthorityManager {
         
         league.getEditions().add(nextEdition);
         
+        // Keep rules snapshot from previous league configuration
+        league.setRules(seasonManager.snapshotRules(league));
+        
         // CRITICAL: Generate fixtures for the new season
-        // This ensures the league can be played immediately
         List<com.rndmodgames.futtoboru.data.Match> fixtures = 
             fixtureGenerator.generateLeagueFixtures(league, nextEdition.getStartDate(), nextEdition.getEndDate());
         Gdx.app.log("AuthorityManager", "Generated " + fixtures.size() + " fixtures for new season: " + nextEdition.getName());
         
-        // Reset league stats for all participating clubs
-        for (Long clubId : nextEdition.getParticipantClubsIds()) {
-            Club club = currentGame.getClubById(clubId);
-            if (club != null) {
-                // Clear any season-specific stats if we implement them later
-            }
-        }
+        seasonManager.onProceduralSeasonGenerated(league);
         
         // Inform user via Inbox
         MessageManager messageManager = game.getGameEngine().getMessageManager();

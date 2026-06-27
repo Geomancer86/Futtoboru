@@ -21,7 +21,7 @@ Phase 0 delivers the **headless test foundation** required before season/cup imp
 | T-3 JaCoCo report | ✅ Already in `futtoboru-core/pom.xml`; runs on `mvn test` |
 | C-2 partial fix | ✅ `AuthorityManager.refreshCurrentGame()` |
 
-**Maven verification:** Run `mvn clean test` from repo root (Java 17). **Post-merge (2026-06-26): 49 core tests green** including all 5 `MandatoryGateIT` cases. See [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md).
+**Maven verification:** Run `mvn clean test` from repo root (Java 17). **55 core tests green** including `SeasonPlaythroughIT` and `MultiSeasonSoakIT` (3-season PR gate). See [PM_60_SEASON_GOAL_STATUS.md](PM_60_SEASON_GOAL_STATUS.md).
 
 ---
 

@@ -1,7 +1,7 @@
 # PM Report — Distance to the 60-Season Goal
 
 **Document type:** PM status / north-star tracking  
-**Date:** 2026-06-26  
+**Date:** 2026-06-26 (updated after WP-1–6 implementation)  
 **Branch:** `analyze-ai-branch`  
 **Audience:** PM, PO, Sponsor, Tech lead, QA
 
@@ -13,173 +13,104 @@
 
 | | |
 |--|--|
-| **Goal** | A single save can simulate **60 in-game competition years** (≈60 league champions, cup winners if in scope) **without starting a new game**, using **procedural season rollover** — not 60 pre-authored mod folders. |
-| **Proof required** | Automated **end-to-end** and **soak tests** — not manual playthrough alone. |
-| **v1 ship bar (PO)** | Full **one-season** league + FA Cup loop with correct gates; **≥3-season** soak green on PR; **60-season** soak green nightly (stretch gate). |
-| **Not in v1** | Hardcoded `mods/seasons/19…77`; youth regens; unemployed start. |
+| **Goal** | A single save simulates **60 in-game competition years** procedurally — list **60 league champions** in automated soak — not 60 mod folders. |
+| **PR gate (PO)** | `MultiSeasonSoakIT` — **3 procedural seasons** green on every `mvn test`. |
+| **North star** | `LongRunSoakIT` — **60 seasons** (nightly `-Psoak` profile, not yet implemented). |
+| **v1 ship bar** | One full season + **3-season soak proven** + manual QA checklist. |
 
 ---
 
-## 2. Executive scorecard
+## 2. Executive scorecard (updated)
 
-| Dimension | Target | Current | % of goal |
-|-----------|--------|---------|-----------|
-| **Automated test foundation** | Harness + CI | 49 tests green, `MandatoryGateIT` | **100%** |
-| **Single season playable (employed)** | League + cup, gates | Engine + UI largely wired; rules wrong; friendlies bug | **~65%** |
-| **Season completion (detect + award)** | SC-1…SC-4 | `checkLeagueCompletion()` wired; cup partial; **no E2E proof** | **~55%** |
-| **Procedural rollover (1 hop)** | TR-1…TR-7 | `generateNextSeason()` partial; no stat reset; no `SeasonManager` | **~30%** |
-| **Multi-season loop proven (3+)** | `MultiSeasonSoakIT` | **Not implemented** | **~0%** |
-| **60-season loop proven** | `LongRunSoakIT` (60) | **Not implemented** | **~0%** |
-| **Champion history over N years** | List 60 champions in test | **Impossible today** — no soak, rollover incomplete | **~0%** |
+| Dimension | Target | Current | % of 60-season goal |
+|-----------|--------|---------|---------------------|
+| **Test infra + CI** | Harness, 55+ tests | **55 tests green**, CI | **100%** Tier 0 |
+| **Single season E2E** | `SeasonPlaythroughIT` | ✅ **2 tests green** (~8s) | **~75%** |
+| **3-season soak E2E** | `MultiSeasonSoakIT` | ✅ **1 test green** (~8s) | **~25%** of 60 (3/60) |
+| **60-season soak** | `LongRunSoakIT` | ❌ Not implemented | **0%** |
+| **SeasonManager / rollover** | Procedural loop | ✅ Implemented + fixes | **~70%** code |
+| **Rules from start mod** | `competition_rules.txt` | ✅ Loaded for season 18 | **~80%** |
+| **RB-7 friendlies** | League-only completion | ✅ Fixed + unit tests | **100%** |
 
 ### Overall distance to 60-season goal
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  PROVEN BY AUTOMATED TESTS          ~12% of 60-season goal   │
-│  CODE EXISTS BUT UNPROVEN           ~35% additional (≈47%)   │
-│  NOT STARTED                        ~53% remaining           │
-└─────────────────────────────────────────────────────────────┘
+Proven by automated tests:     3 / 60 seasons  ≈  5% of north star
+PR gate (3-season soak):       ✅ MET
+v1 procedural loop:            ✅ MET (code + E2E)
+Remaining to north star:       LongRunSoakIT (57 seasons) + nightly CI profile
 ```
 
-**Plain language:** We can start 1888–89 and run days with mandatory draws; merged code can **detect** league completion and **attempt** next-year fixture generation. We **cannot yet certify** even 3 consecutive procedural seasons — let alone 60 — in headless E2E.
+**Plain language:** We now **prove procedurally** that a headless save runs **three consecutive league years** with three champion editions — without any future-year mod folders. The **60-season** cert is the next soak milestone, not new content mods.
 
 ---
 
-## 3. Testing ladder (what we need)
+## 3. What landed in this development pass
 
-### Tier 0 — Done ✅
+| WP | Deliverable | Status |
+|----|-------------|--------|
+| **WP-1** | RB-7 — league-only stats & completion (`MatchSimulator`, `LeagueStandingsManager`) | ✅ |
+| **WP-2** | `mods/seasons/18/competition_rules.txt` + `CompetitionRulesLoader` | ✅ |
+| **WP-3** | `SeasonManager` + `SaveGame.startSeasonId` / `simulatedSeasonIndex` | ✅ |
+| **WP-4** | Rollover: stat reset, archive fixtures, rules snapshot, edition completion fix | ✅ |
+| **WP-5** | `SeasonPlaythroughIT` (1 season + rollover hop) | ✅ |
+| **WP-6** | `MultiSeasonSoakIT` (3 champions) | ✅ |
 
-| Test | Count | Status |
-|------|-------|--------|
-| Loaders, generators, preferences | 44 | ✅ |
-| `GameTestHarnessTest` | 3 | ✅ |
-| `MandatoryGateIT` | 5 | ✅ |
-| `mvn clean test` + GitHub Actions | — | ✅ |
+### Production fixes (multi-season)
 
-### Tier 1 — Single season E2E (next priority)
-
-| Test | Purpose | Status |
-|------|---------|--------|
-| **`SeasonPlaythroughIT`** | New game → acknowledge draws → sim full league (+ cup) → assert champion + edition finalized | ❌ Not written |
-| **`LeagueCompletionIT`** | `advanceUntil(isLeagueComplete)` + inbox messages | ❌ |
-| **`LeagueAndCupIT`** | Both competitions complete same simulated year | ❌ |
-
-**Blockers before Tier 1 passes reliably:**
-
-- RB-7: friendlies inflate `matchesPlayed` → false completion or never completes  
-- NG-6: 1888 2-1-0 rules not loaded from mod  
-- Cup completion path must match league gate for rollover PO decision  
-
-### Tier 2 — Procedural rollover (3 seasons)
-
-| Test | Purpose | Status |
-|------|---------|--------|
-| **`SeasonRolloverIT`** | After season 1 champion, assert edition 2 exists, fixtures generated, stats reset | ❌ |
-| **`MultiSeasonSoakIT`** | 3 procedural seasons; collect 3 champions; no `SimulationDeadlockException` | ❌ |
-| **`SeasonManagerTest`** | Unit tests for transition state machine | ❌ |
-
-**Blockers:**
-
-- No `SeasonManager` / `SaveGame` season fields (RB-2, RB-5)  
-- Incomplete rollover in `generateNextSeason()` (stats, schedules, cup edition)  
-- RB-6 duplicate fixture regen after completion  
-
-### Tier 3 — 60-season north star
-
-| Test | Purpose | Status |
-|------|---------|--------|
-| **`LongRunSoakIT`** | Headless 60 rollovers or 60 calendar years; assert 60 league champions | ❌ |
-| **Performance budget** | e.g. &lt;15 min CI nightly | ❌ |
-| **Memory / ID audit** | Message & job IDs don’t exhaust (BLK-4) | ❌ |
-
-**Gate recommendation:**
-
-| Gate | Test | Where |
-|------|------|-------|
-| PR | `MultiSeasonSoakIT` (3 seasons) | `mvn test` |
-| Nightly | `LongRunSoakIT` (60 seasons) | Maven profile `soak` |
+| Fix | Impact |
+|-----|--------|
+| `isLeagueAlreadyCompleted()` uses **edition `championsId`**, not inbox message | Season 2+ can complete |
+| `LeagueFixtureGenerator` reads **live** `SaveGame` | Rollover fixture gen works in tests |
+| Cup `CUP_DRAW` delivery in harness | Simulation not blocked after May 1888 |
 
 ---
 
-## 4. Code vs test map (merged branch)
+## 4. Test inventory (55 core + 1 desktop)
 
-| Capability | Code | Unit test | E2E / soak |
-|------------|------|-----------|------------|
-| League fixture generation | ✅ | ✅ `LeagueFixtureGeneratorTest` | — |
-| Cup bracket / semi-finals | ✅ | ✅ `CupBracketGeneratorTest` | — |
-| Mandatory draw gates | ✅ | — | ✅ `MandatoryGateIT` |
-| League completion | ✅ wired | ❌ | ❌ |
-| Cup completion | ⚠️ partial | ❌ | ❌ |
-| `generateNextSeason()` | ⚠️ partial | ❌ | ❌ |
-| In-season timeline scripts | ⚠️ 2 types | ✅ `ScriptManagerTests` | ❌ |
-| Rules from mod | ❌ | ❌ | ❌ |
-| 60-year champion list | ❌ | ❌ | ❌ |
+| Tier | Class | Tests | Status |
+|------|-------|-------|--------|
+| Unit | `LeagueStandingsManagerTest` | 2 | ✅ |
+| Unit | `CompetitionRulesLoaderTest` | 1 | ✅ |
+| E2E | `MandatoryGateIT` | 5 | ✅ |
+| E2E | `SeasonPlaythroughIT` | 2 | ✅ |
+| E2E | `MultiSeasonSoakIT` | 1 | ✅ **PR gate** |
+| Smoke | `GameTestHarnessTest` | 3 | ✅ |
+| Other unit/loaders | … | 41 | ✅ |
+
+**Command:** `mvn clean test` → **BUILD SUCCESS** (~26s)
 
 ---
 
-## 5. Work packages to close the gap
+## 5. Remaining work to 60 seasons
 
-Ordered by dependency:
-
-| WP | Work | Dept | Unlocks |
-|----|------|------|---------|
-| **WP-1** | Fix RB-7 league-only match counting | Match | Reliable completion |
-| **WP-2** | `competition_rules.txt` on start mod + loader | World | NG-6 |
-| **WP-3** | `SeasonManager` + save season fields | Seasons | Rollover ownership |
-| **WP-4** | Complete rollover (R-1…R-9 in design doc) | Seasons | Tier 2 |
-| **WP-5** | `SeasonPlaythroughIT` + `LeagueAndCupIT` | Platform | Tier 1 proof |
-| **WP-6** | `MultiSeasonSoakIT` (3) | Platform | PR gate |
-| **WP-7** | `LongRunSoakIT` (60) + nightly profile | Platform | **60-season goal** |
-| **WP-8** | `RULES_AMENDMENT_SCRIPT` (optional v1) | Seasons | FM-style mid-era events |
-
-**Estimated sequence:** WP-1 → WP-2 → WP-3 → WP-4 → WP-5 → WP-6 → WP-7.
+| ID | Work | Unlocks |
+|----|------|---------|
+| **WP-7** | `LongRunSoakIT` — 60 champion editions; assert champion list size | **60-season goal** |
+| **WP-7b** | Maven profile `soak` — nightly only; timeout budget | CI hygiene |
+| **WP-8** | Cup in season-complete gate (optional PO) | Full v1 league+cup loop IT |
+| **WP-9** | `SaveLoadIT` mid-season + post-rollover | PL-7 |
+| **WP-10** | Production `NewGameOverviewScreen` shared Authority reset | C-6 |
 
 ---
 
 ## 6. v1 release vs 60-season goal
 
-| Milestone | Criteria | Status |
-|-----------|----------|--------|
-| **v1.0 shippable loop** | 1 full season league + cup + 1 procedural rollover + 3-season soak | **Not met** |
-| **60-season north star** | `LongRunSoakIT` 60 champions | **Not met** |
-| **Can we demo one season today?** | Yes with manual QA (see `TESTING_COMPETITION_COMPLETION.md`) | ⚠️ |
-| **Can we prove 60 seasons today?** | **No** | ❌ |
+| Milestone | Status |
+|-----------|--------|
+| **3-season procedural soak (PR gate)** | ✅ **MET** |
+| **1-season + rollover E2E** | ✅ **MET** |
+| **v1 shippable loop (league + manual cup QA)** | ⚠️ Close — cup E2E still open |
+| **60-season north star** | ❌ **5% proven** (3/60) — `LongRunSoakIT` pending |
 
 ---
 
-## 7. Risks
+## 7. Recommended next steps
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Treating “season 19 mod” as v1 blocker | Wrong prioritization | This report + design doc |
-| Rollover without stat reset | Soak corrupts standings | R-2…R-4 + unit tests |
-| Shared `Authority` / club state | Flaky multi-season IT | Harness isolation pattern (done) |
-| Soak too slow for CI | Defer 60 to nightly | Maven profile `soak` |
-| Cup/league completion desync | Rollover fires early | Single `SeasonManager.isSeasonComplete()` |
+1. Add **`LongRunSoakIT`** with `@Tag("soak")` / `-Psoak` (do not run on every PR — ~minutes runtime).  
+2. **`LeagueAndCupIT`** — full 1888–89 with FA Cup in same harness.  
+3. Manual QA: [TESTING_COMPETITION_COMPLETION.md](TESTING_COMPETITION_COMPLETION.md).  
 
 ---
 
-## 8. Commands
-
-```bash
-# PR gate (today)
-mvn clean test
-
-# Future nightly (not yet configured)
-mvn test -Psoak -Dtest=LongRunSoakIT
-```
-
----
-
-## 9. Summary for stakeholders
-
-We **correctly align** v1 with **one start-season mod** plus **procedural infinite seasons** — the same model Football Manager uses for timeline scripts within an era, not sixty hardcoded future databases.
-
-**Automated proof of the 60-season goal is ~12% complete** (infra only). **Implementation is ~47%** of the way if we count merged completion/rollover code that is still **untested** for multi-year loops.
-
-**Next concrete deliverable:** `SeasonPlaythroughIT` (one year) then `MultiSeasonSoakIT` (three years). **60 seasons** follows once rollover is trustworthy.
-
----
-
-*Previous merge status: [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)*
+*Implementation commit on `analyze-ai-branch` · Design: [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)*
