@@ -231,7 +231,7 @@ Gameplay **v1.0** does not require P2–P4 — procedural 12-club loop is accept
 |---|----------|---------|
 | 1 | Incorporation default | **A)** Timeline scripts only **B)** Auto by `foundation_year` **C)** Both (script overrides auto) |
 | 2 | New game club load | **A)** All country clubs (today) **B)** Active-on-start-date only (recommended) |
-| 3 | First historical evolution milestone | **A)** Nov 1888 rules **B)** 1892 Div 2 **C)** Scotland 1890 |
+| 3 | First historical evolution milestone | **A)** Nov 1888 rules **B)** 1892 Div 2 **C)** Scotland 1890 — **PO leaning B** |
 | 4 | Mid-career country add | **A)** Scripts only **B)** Also PO “expand world” UI later |
 | 5 | Static players v1 | **A)** Keep static; evolution = structure only **B)** Block v1.0 on player pipeline |
 
@@ -248,6 +248,7 @@ Gameplay **v1.0** does not require P2–P4 — procedural 12-club loop is accept
 | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | §12 in-play evolution summary |
 | [DEPARTMENT_WORLD_AND_DATA_V1.md](DEPARTMENT_WORLD_AND_DATA_V1.md) | WE-* tasks |
 | [DEPARTMENT_SEASONS_AND_RULES_V1.md](DEPARTMENT_SEASONS_AND_RULES_V1.md) | Script types + rollover membership |
+| [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) | UI/engine stack for implementers |
 
 ---
 

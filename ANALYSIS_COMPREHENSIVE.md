@@ -55,6 +55,8 @@ Based on code analysis, the game aims to provide:
 
 ## 2. CODEBASE ARCHITECTURE
 
+> **Canonical reference (2026-06-27):** [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) — supersedes the summary below for stack, UI, engine loop, and LibGDX limits.
+
 ### 2.1 Technology Stack
 - **Language:** Java 17
 - **Framework:** LibGDX 1.12.0

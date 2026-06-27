@@ -1,5 +1,7 @@
 # Futtoboru — Project Master Analysis
 
+> **Note (2026-06-27):** Percent-complete figures in §1 and season-lifecycle gaps in §6 are **partially stale** (procedural loop + 59-test gate landed since this audit). For current architecture and LibGDX/UI patterns use **[ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md)**.
+
 **Document type:** Project management / technical audit  
 **Analysis date:** 2025-06-25  
 **Codebase analyzed:** `feature/competitions-finances-seasons` (most complete branch)  

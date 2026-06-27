@@ -206,8 +206,9 @@ Do **not** choose only one track — sequence matters.
 | 1 | **v1.0 ship** (gameplay QA) | Proves product |
 | 2 | **DB-1, DB-2** (IDs + lint) | Unblocks all new content |
 | 3 | **v1.1 gameplay** (XI, ratings) | CM1 parity — uses same squads |
-| 4 | **First new start mod** (1899 or Scotland) | Validates multi-start pipeline |
-| 5 | **Master DB study** | Informs north star funding |
+| 4 | **Wave 1.5** — WE-1–WE-8 + **1892 expansion** (PO leaning) | World evolution + second division |
+| 5 | **First new start mod** (1899 or Scotland) | Validates multi-start pipeline |
+| 6 | **Master DB study** | Informs north star funding |
 
 ---
 
@@ -263,6 +264,8 @@ Do **not** choose only one track — sequence matters.
 **Target:** Dormant registry + timeline scripts (1002–1007) + eventual master DB projection. **Wave 1.5** engineering (WE-1–WE-8) after DB-1/DB-2, before authoring many start mods.
 
 **Canonical design:** [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md)
+
+**UI / LibGDX:** No framework blocker for 1892 — extend competitions tables + inbox; [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md §10](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md).
 
 **PO decisions (§9 of design doc):** auto vs script activation; lazy new-game load; first milestone (Nov 1888 rules vs 1892 Div 2 vs Scotland).
 

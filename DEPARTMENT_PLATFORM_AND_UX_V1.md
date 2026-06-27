@@ -1,8 +1,10 @@
 # Department: Platform & UX — v1 Deep Dive
 
 **Department expert:** _________________  
-**Status:** Headless tests exist; CI ignores failures; **no season/cup/soak harness**  
+**Status:** Headless harness + 59 PR tests + soak profile ✅; manual QA pending  
 **Role in v1:** **Proof gate** — E2E headless simulation blocks release tag
+
+**Engine/UI reference:** [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md)
 
 **Master plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 
@@ -19,14 +21,11 @@ Prove the three core departments work together via **automated season playthroug
 | Asset | Status |
 |-------|--------|
 | JUnit 5 + `gdx-backend-headless` | ✅ |
-| 12 test classes (loaders, script smoke) | ✅ Shallow |
-| `BaseTest` / `BaseTestTools` | ⚠️ Duplicated setup; hardcoded save |
-| Jenkins + Xvfb | ✅ `mvn test` |
-| `maven.test.failure.ignore=true` | ❌ **Tests don't block release** |
-| GitHub Actions | ❌ None |
-| `GameTestHarness` | ❌ Does not exist |
-| Season playthrough IT | ❌ |
-| GUI E2E | ❌ Not recommended as primary gate |
+| `GameTestHarness` + ITs (league/cup/save/soak/10-season) | ✅ Phase 0 complete |
+| GitHub Actions (`mvn test`, nightly soak) | ✅ |
+| `GameTestHarness` | ✅ `harness/GameTestHarness.java` |
+| Season playthrough IT | ✅ Covered by `LeagueAndCupIT`, soak ITs |
+| GUI E2E | ❌ Not primary gate — headless first |
 
 ---
 

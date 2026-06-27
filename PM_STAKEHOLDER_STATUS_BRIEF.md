@@ -30,6 +30,8 @@
 
 **In-play evolution:** [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) — new clubs/comps/countries must enter **`SaveGame`** on historical dates when playing from the earliest season.
 
+**PO direction:** Wave **1.5** + **1892 league expansion** after v1 context docs; engine/UI stack supports it — [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md).
+
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
 **Automated suite:** ✅ **59 PR tests** + nightly **`LongRunSoakIT`** (~5 min) + **`TenSeasonReportIT`** report.
