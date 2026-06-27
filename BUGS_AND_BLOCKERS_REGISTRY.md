@@ -31,7 +31,7 @@ These prevent the stated goal: **play season under correct rules → complete �
 | ID | Severity | Issue | Location | Fix direction |
 |----|----------|-------|----------|---------------|
 | **C-1** | 🔴 | Continue double-click advances 2 days | `MainGameMenuTable.java` | Stage-level input filter or button swap during processing |
-| **C-2** | 🔴 | `AuthorityManager.currentGame` never refreshed | `AuthorityManager.java` L46-51 | Refresh from `game.getCurrentGame()` each call; currently null at startup → daily path no-op |
+| **C-2** | 🔴 | `AuthorityManager.currentGame` never refreshed | `AuthorityManager.java` | ⚠️ **Partial fix Phase 0** — `refreshCurrentGame()`; verify all call sites |
 | **C-3** | 🔴 | Load game skips `initializeJobSystem()` | `LoadGameDialog.java` | Call job init after load |
 | **C-4** | 🔴 | `JobManager` caches stale `SaveGame` | `JobManager.java` | Refresh on `setCurrentGame()` |
 | **C-5** | 🟠 | League created without ID | `ScriptsManager.createLeague()` | `league.setId(...)` — breaks draw screen navigation |

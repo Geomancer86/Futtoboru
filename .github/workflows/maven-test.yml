@@ -1,0 +1,31 @@
+name: Maven Test
+
+on:
+  push:
+    branches: [ main, develop, 'feature/**', 'analyze-ai-branch' ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run tests
+        run: mvn -B clean test
+
+      - name: Upload JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: futtoboru-core/target/site/jacoco/
+          if-no-files-found: ignore

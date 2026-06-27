@@ -135,12 +135,12 @@ Policy detail: [V1_TESTING_AND_SIMULATION_PLAN.md §7](V1_TESTING_AND_SIMULATION
 
 | ID | Criterion | Current state |
 |----|-----------|---------------|
-| AT-1 | `GameTestHarness` headless API | ❌ |
-| AT-2 | `MandatoryGateIT` — draw block + acknowledge | ❌ |
-| AT-3 | `SeasonPlaythroughIT` — 1888 → 1889 rollover | ❌ |
-| AT-4 | `LeagueAndCupIT` — full season both competitions | ❌ |
-| AT-5 | `MultiSeasonSoakIT` — ≥3 seasons without deadlock | ❌ |
-| AT-6 | CI fails on test failure | ❌ `test.failure.ignore=true` |
+| AT-1 | `GameTestHarness` headless API | ✅ Phase 0 |
+| AT-2 | `MandatoryGateIT` — draw block + acknowledge | ✅ Phase 0 |
+| AT-3 | `SeasonPlaythroughIT` — 1888 → 1889 rollover | ❌ Phase 2 |
+| AT-4 | `LeagueAndCupIT` — full season both competitions | ❌ Phase 3 |
+| AT-5 | `MultiSeasonSoakIT` — ≥3 seasons without deadlock | ❌ Phase 4 |
+| AT-6 | CI fails on test failure | ✅ Phase 0 (GHA + Jenkins) |
 
 Full plan: [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md).
 

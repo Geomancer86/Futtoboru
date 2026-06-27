@@ -29,7 +29,7 @@
 | Player contract generator | ✅ | Wages, types, bonuses | `system/generators/PlayerContractGenerator.java` |
 | Name / person generator | ✅ | Random names | `system/generators/NameGenerator.java` |
 | **Player lifecycle (regen/retire/death)** | ❌ **Not in v1** | Static cohort; `birthDate` only | `data/Person.java`, `PersonGenerator.java` |
-| **Automated E2E harness** | ❌ | `GameTestHarness` planned | — |
+| **Automated E2E harness** | ✅ | `GameTestHarness` + `MandatoryGateIT` (Phase 0) |
 
 ---
 
@@ -215,7 +215,8 @@
 | Season mod static | ✅ | `SeasonLeaguesAndTeamsTests` |
 | Players load | ✅ | `PlayersLoaderTests` |
 | Stadiums load | ✅ | `StadiumsLoaderTests` |
-| Mandatory gate / draw block | ❌ | `MandatoryGateIT` |
+| `GameTestHarness` | ❌ → ✅ | `harness/GameTestHarness.java` |
+| Mandatory gate / draw block | ❌ → ✅ | `MandatoryGateIT` |
 | Match simulation | ❌ | `MatchSimulatorTest` |
 | Season completion | ❌ | `LeagueSeasonIT` |
 | FA Cup season | ❌ | `FaCupSeasonIT`, `LeagueAndCupIT` |

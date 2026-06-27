@@ -4,7 +4,7 @@
 **Audience:** PM, PO, Sponsor, department leads, expert sign-off owners  
 **Branch:** `feature/competitions-finances-seasons` (v0.4.0-SNAPSHOT)  
 **Date:** 2025-06-25  
-**Next update:** After Phase 0 test harness or Phase A season loop lands
+**Next update:** After Phase 1 season-loop wiring lands
 
 ---
 
@@ -14,15 +14,15 @@
 
 | Question | Answer |
 |----------|--------|
-| **Can we ship v1 today?** | **No** — season rollover, FA Cup execution, E2E harness missing |
-| **How far are we?** | **~35%** of v1 acceptance criteria; **~12%** of legacy CM4 depth |
-| **Biggest risk** | Mandatory-gate soft-locks + unwired season completion in long runs |
-| **Biggest asset** | Mod/data pipeline + 1888 content |
-| **Recommended focus** | `GameTestHarness` + season/cup ITs + Phase A loop |
+| **Can we ship v1 today?** | **No** — season rollover, FA Cup execution still missing |
+| **How far are we?** | **~35%** acceptance criteria; **Phase 0 test infra ✅** |
+| **Biggest risk** | Mandatory-gate soft-locks + unwired season completion |
+| **Biggest asset** | Mod/data pipeline + **headless `GameTestHarness`** |
+| **Recommended focus** | Phase 1 season loop + same harness as gate |
 
-**v1 plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) — FA Cup in scope; unemployed v1.1; static players (no regen/retire/death).
+**Phase 0:** ✅ [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) — run `mvn clean test` before human QA.
 
-**CM research:** **PAUSED** — [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
+**v1 plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 
 ---
 
@@ -137,7 +137,8 @@ Detail: [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.m
 | CM Magazine CD extract Round 14 | ⚠️ | cmmag-01 samples only; **cmmag-04 deferred** at pause |
 | CM research backlog Round 15 | ✅ | [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md) — full missing inventory |
 | **CM research pause Round 16** | ✅ | [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md) — **stopped**; early games OK for v1 |
-| **MVP / v1 feature sprint** | ✅ **PLANNED** | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) — PO decisions locked |
+| **MVP / v1 feature sprint** | ⚠️ **Phase 0 done** | [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) |
+| **Phase 1 season loop** | 🔲 **NEXT** | `SeasonPlaythroughIT` + RB fixes |
 | CM03/04 supplement | 🔲 | Optional — resume research if needed |
 
 ---
@@ -250,5 +251,6 @@ Full list: [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)
 | 2025-06-25 | Research/doc sprint | Initial PM brief after CM Round 2 + gap analysis |
 | 2025-06-25 | Round 16 | CM legacy research **paused**; next phase MVP/v1 |
 | 2025-06-25 | v1 plan | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) — E2E, FA Cup, static players |
+| 2025-06-25 | Phase 0 | [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) — harness + ITs + CI |
 
 **Distribution:** PM, PO, Sponsor, department leads. Update when Phase A starts or PO resolves open decisions.

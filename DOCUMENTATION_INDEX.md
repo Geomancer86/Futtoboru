@@ -16,7 +16,8 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [PM_STAKEHOLDER_STATUS_BRIEF.md](PM_STAKEHOLDER_STATUS_BRIEF.md) | **PM, all stakeholders** | **Status brief** — progress, docs hub, critical path |
 | [STAKEHOLDERS_AND_DEPARTMENTS.md](STAKEHOLDERS_AND_DEPARTMENTS.md) | PM, PO | Who owns what; core vs broader; sign-off gates |
 | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | PO | v1 acceptance criteria — **PO decisions locked** |
-| [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) | PO, QA, Platform | **E2E harness, soak tests, FA Cup + static player policy** |
+| [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) | PO, QA, Platform | E2E harness, soak tests, FA Cup + static player policy |
+| [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) | **PM** | **Phase 0 complete** — harness, ITs, CI |
 | [PROJECT_MASTER_ANALYSIS.md](PROJECT_MASTER_ANALYSIS.md) | PM, PO | Executive technical status |
 
 ---

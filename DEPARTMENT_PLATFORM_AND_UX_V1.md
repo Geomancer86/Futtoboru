@@ -34,7 +34,7 @@ Prove the three core departments work together via **automated season playthroug
 
 | ID | Deliverable | Acceptance |
 |----|-------------|------------|
-| PU-1 | `GameTestHarness` | Single API for new game, advance, sim season |
+| PU-1 | `GameTestHarness` | ✅ Phase 0 — `harness/GameTestHarness.java` |
 | PU-2 | `SeasonPlaythroughIT` | 1888 complete → rollover → 1889 rules applied |
 | PU-2b | `LeagueAndCupIT` + `FaCupSeasonIT` | Full season both competitions |
 | PU-2c | `MultiSeasonSoakIT` | ≥3 seasons; no mandatory-gate deadlock |

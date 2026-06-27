@@ -47,8 +47,18 @@ public class AuthorityManager {
         
         //
         this.game = parent;
-        this.currentGame = game.getCurrentGame();
         this.fixtureGenerator = new LeagueFixtureGenerator(parent);
+        refreshCurrentGame();
+    }
+
+    /**
+     * Keep cached SaveGame in sync (fixes stale null when constructed before new game).
+     */
+    public void refreshCurrentGame() {
+        this.currentGame = game != null ? game.getCurrentGame() : null;
+        if (this.currentGame != null) {
+            this.mainAuthority = this.currentGame.getMainAuthority();
+        }
     }
     
     /**
@@ -78,6 +88,8 @@ public class AuthorityManager {
      *  TODO: finish/restart FA Cup
      */
     public void checkCompetitionsSchedule() {
+
+        refreshCurrentGame();
 
         //
         Gdx.app.debug("AuthorityManager", "checkCompetitionsSchedule()");

@@ -249,10 +249,11 @@ Add to season mod README (when season 19 lands): *v1 does not spawn new players;
 
 | ID | Work |
 |----|------|
-| T-0 | Implement `GameTestHarness` |
-| T-1 | `MandatoryGateIT` + `SimulationDeadlockException` |
-| T-2 | Remove `maven.test.failure.ignore`; add GitHub Actions `mvn test` |
-| T-3 | JaCoCo report on `futtoboru-core` |
+| T-0 | Implement `GameTestHarness` | ✅ `futtoboru-core/.../harness/GameTestHarness.java` |
+| T-1 | `MandatoryGateIT` + `SimulationDeadlockException` | ✅ 5 ITs |
+| T-0b | `GameTestHarnessTest` smoke | ✅ 3 tests |
+| T-2 | Remove `maven.test.failure.ignore`; add GitHub Actions `mvn test` | ✅ `.github/workflows/maven-test.yml` + Jenkinsfile |
+| T-3 | JaCoCo report on `futtoboru-core` | ✅ existing plugin; report on `mvn test` |
 
 ### Phase 1 — Unblock simulation (parallel with RB fixes)
 
@@ -320,4 +321,5 @@ Parent POM: remove or override `maven.test.failure.ignore` in root `pom.xml` whe
 
 | Date | Change |
 |------|--------|
+| 2025-06-25 | **Phase 0 implemented** — harness, ITs, CI; [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) |
 | 2025-06-25 | Initial plan — PO decisions, harness design, test catalog, static player lifecycle |
