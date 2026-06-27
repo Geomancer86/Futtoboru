@@ -26,6 +26,8 @@
 
 **Features & roadmap (CM/FM aligned):** [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md)
 
+**Historical data expansion (round 2):** [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) — **0 extra years** for forward play; **+3 start mods** recommended after Wave 1 infra.
+
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
 **Automated suite:** ✅ **59 PR tests** + nightly **`LongRunSoakIT`** (~5 min) + **`TenSeasonReportIT`** report.

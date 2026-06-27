@@ -1,11 +1,12 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-06-27 (10-season report + soak timing correction)
+**Last updated:** 2026-06-27 (historical data expansion analysis round 2)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
 > **CM legacy document research is PAUSED** at Round 16. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).  
-> **Active work:** v1 manual QA — [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md) · [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
+> **Active work:** v1 manual QA — [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md) · [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)  
+> **Historical data north star:** [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md)
 
 ---
 
@@ -18,6 +19,9 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | **PO, all eng** | **Season model** — start mod + procedural loop + FM-style scripts |
 | [PM_60_SEASON_GOAL_STATUS.md](PM_60_SEASON_GOAL_STATUS.md) | **PM, Sponsor** | **60-season north star** — test ladder & % complete |
 | [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) | **PM, PO, all leads** | **Features proven vs gaps + CM/FM roadmap** |
+| [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | **PO, World & Data** | **How many start mods / years; Wave 1–2 plan** |
+| [DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md](DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md) | **PO, eng, contributors** | **North star DB architecture + validation** |
+| [HISTORICAL_DATA_SOURCE_LEDGER.md](HISTORICAL_DATA_SOURCE_LEDGER.md) | **Research, contributors** | **Source IDs per mod row (R-H1 stub)** |
 | [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md) | **QA, PO, Designer** | **10-season sim** — champions, finances, v1 gap |
 | [STAKEHOLDERS_AND_DEPARTMENTS.md](STAKEHOLDERS_AND_DEPARTMENTS.md) | PM, PO | Who owns what; core vs broader; sign-off gates |
 | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | PO | v1 acceptance criteria — **PO decisions locked** |
@@ -34,7 +38,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 |----------|-------------|
 | [DEPARTMENT_SEASONS_AND_RULES_V1.md](DEPARTMENT_SEASONS_AND_RULES_V1.md) | Season lifecycle, rules, scripts, rollover |
 | [DEPARTMENT_MATCH_AND_SIMULATION_V1.md](DEPARTMENT_MATCH_AND_SIMULATION_V1.md) | Fixtures, match engine, standings input |
-| [DEPARTMENT_WORLD_AND_DATA_V1.md](DEPARTMENT_WORLD_AND_DATA_V1.md) | Mods, loaders, season 18/19 content |
+| [DEPARTMENT_WORLD_AND_DATA_V1.md](DEPARTMENT_WORLD_AND_DATA_V1.md) | Mods, loaders, start-season content (18 + future starts) |
 | [DEPARTMENT_PLATFORM_AND_UX_V1.md](DEPARTMENT_PLATFORM_AND_UX_V1.md) | CI, harness tests, save/load, UI gates |
 
 ---

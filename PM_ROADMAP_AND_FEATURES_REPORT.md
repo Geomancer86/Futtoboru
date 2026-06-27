@@ -185,7 +185,7 @@ Ordered by [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md §6 P2](CM_LEGACY_FUTTOBORU_GAP_
 | **Platform / UX** | Manual QA support | C-1, load/save UI, inbox cap |
 | **Seasons / Rules** | Procedural loop done | UI rules display, re-election script |
 | **Match / Sim** | Headless complete | Ratings, XI input, balance |
-| **World / Data** | Season 18 solid | In-season scripts, more clubs optional |
+| **World / Data** | Season 18 solid (556 players) | **Wave 1:** DB-1–DB-2 (IDs + lint); **Wave 2:** first new start mod |
 | **QA** | Automated gate green | Manual checklist, regression on 10-season report |
 | **Design** | CM1 benchmark locked | v1.1 tactics/ratings spec from CM1 manual |
 
@@ -213,6 +213,8 @@ Ordered by [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md §6 P2](CM_LEGACY_FUTTOBORU_GAP_
 | v1 acceptance criteria | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) |
 | CM feature checklist | [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md) |
 | System inventory (updated) | [SYSTEMS_AND_FEATURES_REGISTRY.md](SYSTEMS_AND_FEATURES_REGISTRY.md) |
+| Historical data / start seasons | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) |
+| North star DB design | [DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md](DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md) |
 | Test plan | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) |
 | Bugs | [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md) |
 
@@ -223,6 +225,7 @@ Ordered by [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md §6 P2](CM_LEGACY_FUTTOBORU_GAP_
 | Date | Change |
 |------|--------|
 | 2026-06-27 | Initial report post 59-test gate + 10-season analysis |
+| 2026-06-27 | Cross-link historical data expansion report |
 | 2026-06-27 | Supersedes stale execution sections of `ROADMAP_V1.0.md` |
 
 ---

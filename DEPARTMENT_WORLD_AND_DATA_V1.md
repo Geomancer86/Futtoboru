@@ -1,10 +1,10 @@
 # Department: World & Data — v1 Deep Dive
 
 **Department expert:** _________________  
-**Status:** Start season mod 18 ~70% content; **procedural seasons 2+ are engine-owned** (not mod folders)  
-**Blocks release:** Yes — start-mod `competition_rules.txt` + loader; procedural loop proven by ITs (not season 19 folder)
+**Status:** Start season mod 18 ~**85%** content (556 players, 35 clubs); **procedural seasons 2+ are engine-owned**  
+**North star:** [DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md](DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md) · **PM plan:** [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md)
 
-**Season model:** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)
+**Season model:** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) — **no** `mods/seasons/19/` required for v1 proof; additional rows in `seasons.txt` = **new pickable start years**, not simulated years.
 
 ---
 
@@ -14,43 +14,45 @@ Own **start-season mod data** and **loaders** so the picked entry point (1888–
 
 ---
 
-## 2. Season 18 inventory (current)
+## 2. Season 18 inventory (verified 2026-06-27)
 
 | Asset | Count / status |
 |-------|----------------|
 | `mods/seasons.txt` | 1 row (id `18`) |
-| `clubs.txt` | 35 clubs (12 league + 23 cup-only) |
-| `club_players/` | **12 files** (league clubs only) |
-| `club_stadiums/` | **12 files** (league clubs only) |
-| `competition_rules.txt` | ❌ Missing |
+| `clubs.txt` | **35** clubs (12 league + 23 cup/other) — all with `foundation_year` |
+| `club_players/` | **35 files**, **556** named players total |
+| `club_stadiums/` | **35 files** |
+| `competition_rules.txt` | ✅ Present — loaded by `CompetitionRulesLoader` |
 | `scripts/` (filesystem) | ❌ Missing — hardcoded in `ScriptsLoader.java` |
 | `leagues.txt` | Stub — **never loaded** |
 | FA Cup edition | 32 participants in `competitions/1/` |
 | Modifiers / professions | ✅ Present |
+| Playable countries in season | **1** (England `1000`; Wales `1002` commented out) |
 
-**Squad sizes (league):** Preston 18 … Stoke 32 (see dept tasks for full table in research).
+**League squad sizes (ids 1–12):** 18–35 players · **Cup-only clubs:** often 11 players (minimum placeholder).
 
 ---
 
-## 3. Season 19 (required for v1)
+## 3. Additional start seasons (post–v1 — not procedural years)
 
-**Nothing exists.** Minimum package:
+**PO decision:** Simulated year 2+ does **not** need `mods/seasons/19/`. A **new folder** is only for **another pickable career start** (e.g. “begin in 1899–1900”).
+
+Example minimum package for **one** new start id:
 
 ```
-mods/seasons.txt                    → add id 19
-mods/seasons/19/countries.txt
-mods/seasons/19/clubs.txt           → same 12 ids (1–12)
-mods/seasons/19/competition_rules.txt
-mods/seasons/19/club_players/1–12.txt
-mods/seasons/19/club_stadiums/1–12.txt   → Wolves: Molineux (1889)
-mods/seasons/19/scripts/season_start.txt  → NOT league creation
+mods/seasons.txt                    → add row (e.g. id 25 = 1899–1900)
+mods/seasons/25/countries.txt
+mods/seasons/25/clubs.txt
+mods/seasons/25/competition_rules.txt
+mods/seasons/25/club_players/*.txt
+mods/seasons/25/club_stadiums/*.txt
+mods/seasons/25/scripts/           → league/cup timeline (not league re-foundation if already exists)
+mods/seasons/25/competitions/
 ```
 
-**Historical notes for authors:**
-- Same 12 clubs (no relegation yet)
-- 2-1-0 from day one (no Nov amendment in 1889–90)
-- Goal average tie-break
-- Wolves moved to Molineux in 1889
+**Prerequisite:** DB-1–DB-5 in [DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md](DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md) before authoring.
+
+**Recommended first content mods:** see [PM_HISTORICAL_DATA_EXPANSION_REPORT.md §6](PM_HISTORICAL_DATA_EXPANSION_REPORT.md).
 
 ---
 
@@ -93,27 +95,29 @@ description=Points system formalized November 1888
 
 Season 19 file: same 2-1-0 block, **no AMENDMENT**, window `1889-09-01` → `1890-04-30`.
 
+> **Note:** Example only — a **1899–1900 start mod** would ship its own rules block; simulated year 2+ does **not** require a new mod folder ([DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)).
+
 **Loader:** New `CompetitionRulesLoader.load(Season)` → `CompetitionRules` + optional amendments list.
 
 ---
 
-## 6. Player ID strategy (decide before season 19)
+## 6. Player ID strategy (decide before second start mod)
 
 | Option | Scheme | Effort |
 |--------|--------|--------|
 | **A** | `{clubId * 1000 + localId}` | Medium migration |
 | **B** | Scope all lookups by `(clubId, playerId)` | Code-wide |
-| **C** | Delta-only season 19 (reuse save-state players) | Requires rollover code |
+| **C** | Delta-only overlay (reuse save-state players) | Requires rollover code |
 
 **Recommend Option A** — document in player file headers.
 
 ---
 
-## 7. Multi-season club loading (decide before season 19 row)
+## 7. Multi-season club loading (decide before second start mod row)
 
 | Option | Description |
 |--------|-------------|
-| **A** | Season 19 omits `clubs.txt`; rollover reuses save clubs |
+| **A** | Second start mod omits `clubs.txt`; rollover reuses save clubs |
 | **B** | Full `clubs.txt` with **merge-by-ID** in loader (not append) |
 | **C** | Shared global club registry + season overlays |
 
@@ -130,7 +134,7 @@ Season 19 file: same 2-1-0 block, **no AMENDMENT**, window `1889-09-01` → `189
 | WD-3 | Fix modifier loaders → `mods/seasons/{id}/` | Dynamic season path |
 | WD-4 | Refactor `ScriptsLoader` | File-based or season-specific scripts |
 | WD-5 | Fix multi-season club registry | No duplicate IDs |
-| WD-6 | Full season 19 folder | Loads without error |
+| WD-6 | **Second start mod** (PO picks era) | Loads without error; passes V-1–V-9 |
 | WD-7 | Fix `region_modifiers` countryId | Lancashire = 1000 |
 | WD-8 | Data validation tests V-1–V-9 | CI gate |
 | WD-9 | Player ID scheme documented + applied | No global collisions |
@@ -178,7 +182,7 @@ DatabaseLoader.getInstance()
 3. Fix region_modifiers countryId (WD-7)
 4. Dynamic modifier paths (WD-3)
 5. ClubsLoader merge-by-ID + ScriptsLoader refactor (WD-4, WD-5)
-6. Author season 19 content (WD-6)
+6. Author **second start mod** when DB-1–DB-5 done (WD-6)
 7. Validation test suite (WD-8)
 ```
 
@@ -197,8 +201,6 @@ DatabaseLoader.getInstance()
 ## 13. Sign-off checklist (expert)
 
 - [ ] Season 18 rules file loads; 2-1-0 + goal average
-- [ ] Season 19 folder complete; `seasons.txt` row added
-- [ ] Adding season 19 does not duplicate clubs in DB
-- [ ] Season 19 does not attach 1888 league-creation script
-- [ ] Validation tests V-1–V-9 pass in CI
-- [ ] Wolves stadium updated for 1889 in season 19
+- [ ] Season 18 passes validation V-1–V-9 in CI
+- [ ] Second start mod (when PO selects era) loads without duplicate club IDs
+- [ ] Second start mod does not attach 1888-only league-creation script inappropriately
