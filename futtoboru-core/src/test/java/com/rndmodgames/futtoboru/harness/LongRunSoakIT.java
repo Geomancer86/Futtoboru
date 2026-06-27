@@ -34,13 +34,17 @@ class LongRunSoakIT {
 
     @Test
     void sixtyProceduralSeasonsProduceSixtyLeagueChampions() {
-        harness.simulateUntilChampionEditions(TARGET_CHAMPION_EDITIONS, MAX_DAYS);
+        MultiSeasonSimulationReport report =
+                harness.simulateWithReport(TARGET_CHAMPION_EDITIONS, MAX_DAYS, true, true);
 
         assertEquals(TARGET_CHAMPION_EDITIONS, harness.countEditionsWithChampions());
         assertTrue(harness.getSimulatedSeasonIndex() >= TARGET_CHAMPION_EDITIONS - 1);
 
         List<Long> championIds = championClubIds(harness.primaryLeague());
         assertEquals(TARGET_CHAMPION_EDITIONS, championIds.size());
+
+        System.out.println("LongRunSoakIT timing: " + report.getElapsedMs() + " ms, "
+                + String.format("%.2f s/season", report.getSecondsPerSeason()));
     }
 
     private static List<Long> championClubIds(League league) {

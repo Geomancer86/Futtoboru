@@ -27,7 +27,7 @@
 | **Test infra + CI** | Harness, PR suite | **58 tests green**, CI | **100%** Tier 0 |
 | **Single season E2E** | `SeasonPlaythroughIT` | ✅ **2 tests** (~3s) | **~75%** |
 | **3-season soak E2E** | `MultiSeasonSoakIT` | ✅ **1 test** (~5s) | **~25%** of 60 (3/60) |
-| **60-season soak** | `LongRunSoakIT` | ✅ **Implemented** — green in ~10.4h local run | **100%** proven |
+| **60-season soak** | `LongRunSoakIT` | ✅ **~5 min** (stdout quiet; not 10h) | **100%** proven |
 | **League + cup E2E** | `LeagueAndCupIT` | ✅ **1 test** (~5s) | **100%** AT-4 |
 | **Save/load E2E** | `SaveLoadIT` | ✅ **2 tests** (~7s) | **100%** PL-7 IT |
 | **SeasonManager / rollover** | Procedural loop | ✅ Implemented + fixes | **~90%** code |
@@ -41,7 +41,7 @@ v1 pre-manual-QA automation:   ✅ MET
 Next: manual QA checklist      TESTING_COMPETITION_COMPLETION.md
 ```
 
-**Runtime note:** `LongRunSoakIT` is **correct but slow** (~10h on current hardware). Excluded from PR via `@Tag("soak")`; nightly workflow uses 12h Surefire fork budget. Performance tuning is a follow-up, not a blocker for manual QA.
+**Runtime note:** The original ~10.4h soak was **Surefire log capture + `System.out` spam**, not slow simulation. With harness quiet mode: **10 seasons ≈ 54s**, **60 seasons ≈ 5 min**. See [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md).
 
 ---
 
@@ -68,7 +68,8 @@ Next: manual QA checklist      TESTING_COMPETITION_COMPLETION.md
 | E2E | `MultiSeasonSoakIT` | 1 | ✅ **PR gate** |
 | E2E | `LeagueAndCupIT` | 1 | ✅ |
 | E2E | `SaveLoadIT` | 2 | ✅ |
-| Soak | `LongRunSoakIT` | 1 | ✅ **nightly `-Psoak`** |
+| E2E | `TenSeasonReportIT` | 1 | ✅ **10-season report** (~55s) |
+| Soak | `LongRunSoakIT` | 1 | ✅ **nightly `-Psoak`** (~5 min) |
 | Smoke | `GameTestHarnessTest` | 3 | ✅ |
 | Other unit/loaders | … | 41 | ✅ |
 
@@ -76,8 +77,9 @@ Next: manual QA checklist      TESTING_COMPETITION_COMPLETION.md
 
 | Command | Scope |
 |---------|--------|
-| `mvn clean test` | PR gate — **58 tests**, excludes `@Tag("soak")` (~33s) |
-| `mvn test -Psoak -pl futtoboru-core` | `LongRunSoakIT` only (~10h; JaCoCo off) |
+| `mvn clean test` | PR gate — **59 tests**, excludes `@Tag("soak")` (~90s) |
+| `mvn test -Psoak -pl futtoboru-core` | `LongRunSoakIT` only (~5 min; JaCoCo off) |
+| `mvn test -pl futtoboru-core -Dtest=TenSeasonReportIT` | Regenerate `target/ten-season-report.md` |
 
 ---
 
@@ -97,7 +99,7 @@ Next: manual QA checklist      TESTING_COMPETITION_COMPLETION.md
 ## 6. Recommended next steps
 
 1. **Manual QA:** [TESTING_COMPETITION_COMPLETION.md](TESTING_COMPETITION_COMPLETION.md).  
-2. **Performance:** profile `LongRunSoakIT` (save growth / message scan) — target sub-hour nightly if possible.  
+2. **Performance:** archive inbox messages (BLK-4); migrate debug `System.out` to `DebugLogManager`.  
 3. **Tag `v1.0.0`** when manual QA green.
 
 ---

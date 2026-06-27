@@ -16,8 +16,8 @@
 |----------|--------|
 | **Can we ship v1 today?** | **Not yet** — manual QA checklist remains |
 | **How far are we?** | **~90%** v1 automated criteria; **60/60 seasons proven** (`LongRunSoakIT`) |
-| **Biggest risk** | Soak runtime (~10h) — functional, needs perf tuning for CI |
-| **Biggest asset** | Full headless gate green: `MultiSeasonSoakIT`, `LeagueAndCupIT`, `SaveLoadIT`, `LongRunSoakIT` |
+| **Biggest risk** | Inbox growth over long careers (763 msgs @ 10 seasons) — monitor BLK-4 |
+| **Biggest asset** | Full headless gate green; **60 seasons ≈ 5 min** (not 10h — was log I/O) |
 | **Recommended focus** | Manual QA → tag `v1.0.0` |
 
 **Season model (PO):** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) — **no future season mod folders for v1.**
@@ -26,7 +26,7 @@
 
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
-**Automated suite:** ✅ **58 PR tests** + nightly **`LongRunSoakIT`** (`mvn test -Psoak`).
+**Automated suite:** ✅ **59 PR tests** + nightly **`LongRunSoakIT`** (~5 min) + **`TenSeasonReportIT`** report.
 
 **v1 plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 

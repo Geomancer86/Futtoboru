@@ -296,8 +296,9 @@ Add to start season mod README: *v1 uses static squads; procedural seasons copy 
 
 | ID | Work |
 |----|------|
-| T-14 | `LongRunSoakIT` (**60 procedural seasons** minimum north star; 3 on PR via T-6) | ✅ ~10h `-Psoak` |
+| T-14 | `LongRunSoakIT` (**60 procedural seasons** minimum north star; 3 on PR via T-6) | ✅ ~5 min quiet |
 | T-14b | `SaveLoadIT` mid-season + post-rollover | ✅ |
+| T-14c | `TenSeasonReportIT` — champion/finance report for QA | ✅ ~55s |
 | T-15 | Manual QA checklist |
 | T-16 | Tag release |
 

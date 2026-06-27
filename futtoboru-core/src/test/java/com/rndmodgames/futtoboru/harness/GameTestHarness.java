@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.harness;
 
+import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -283,21 +285,130 @@ public final class GameTestHarness {
     }
 
     public void simulateUntilChampionEditions(int targetChampionEditions, int maxDays) {
-        advanceUntil(save -> primaryLeague() != null, 30);
-        simulateDays(5);
-        while (getNextGameAction() == FuttoboruGameEngine.DRAW_ACTION) {
-            acknowledgeMandatoryDraws();
+        simulateWithReport(targetChampionEditions, maxDays, true, false);
+    }
+
+    /**
+     * Simulates league seasons and returns a structured report (champions, finances, timing).
+     *
+     * @param suppressStdout when true, discards {@code System.out} during simulation for realistic timing
+     */
+    public MultiSeasonSimulationReport simulateWithReport(
+            int targetChampionEditions,
+            int maxDays,
+            boolean leagueOnly,
+            boolean suppressStdout) {
+        if (leagueOnly) {
+            game().setAllCups(new ArrayList<>());
         }
-        for (int day = 0; day < maxDays; day++) {
-            if (countEditionsWithChampions() >= targetChampionEditions) {
-                return;
+
+        Club playerClub = game().getCurrentClub();
+        String playerName = playerClub != null ? playerClub.getName() : "?";
+        long playerId = playerClub != null && playerClub.getId() != null ? playerClub.getId() : -1L;
+        MultiSeasonSimulationReport report =
+                new MultiSeasonSimulationReport(playerId, playerName, game().getGameDate());
+
+        PrintStream originalOut = System.out;
+        if (suppressStdout) {
+            System.setOut(new PrintStream(java.io.OutputStream.nullOutputStream()));
+        }
+        long startNs = System.nanoTime();
+        int daysSimulated = 0;
+        int lastChampionCount = 0;
+        try {
+            advanceUntil(save -> primaryLeague() != null, 30);
+            simulateDays(5);
+            daysSimulated += 5;
+            while (getNextGameAction() == FuttoboruGameEngine.DRAW_ACTION) {
+                acknowledgeMandatoryDraws();
             }
-            continueOneDayAcknowledgingDraws();
+            for (int day = 0; day < maxDays; day++) {
+                if (countEditionsWithChampions() >= targetChampionEditions) {
+                    break;
+                }
+                continueOneDayAcknowledgingDraws();
+                daysSimulated++;
+                int championCount = countEditionsWithChampions();
+                if (championCount > lastChampionCount) {
+                    report.addSeason(snapshotLatestChampionEdition(championCount));
+                    lastChampionCount = championCount;
+                }
+            }
+        } finally {
+            if (suppressStdout) {
+                System.setOut(originalOut);
+            }
         }
-        throw new SimulationDeadlockException(
-                "simulateUntilChampionEditions: wanted " + targetChampionEditions
-                        + " champion editions but got " + countEditionsWithChampions()
-                        + " within " + maxDays + " days (date=" + game().getGameDate() + ")");
+
+        long elapsedMs = (System.nanoTime() - startNs) / 1_000_000L;
+        int finalChampions = countEditionsWithChampions();
+        if (finalChampions < targetChampionEditions) {
+            throw new SimulationDeadlockException(
+                    "simulateWithReport: wanted " + targetChampionEditions
+                            + " champion editions but got " + finalChampions
+                            + " within " + maxDays + " days (date=" + game().getGameDate() + ")");
+        }
+
+        SaveGame save = game();
+        int inboxSize = save.getAllMessages() != null ? save.getAllMessages().size() : 0;
+        int simIndex = save.getSimulatedSeasonIndex() != null ? save.getSimulatedSeasonIndex() : 0;
+        report.finish(
+                save.getGameDate(),
+                elapsedMs,
+                daysSimulated,
+                targetChampionEditions,
+                finalChampions,
+                inboxSize,
+                simIndex,
+                leagueOnly);
+        return report;
+    }
+
+    private SeasonEditionSummary snapshotLatestChampionEdition(int editionNumber) {
+        SaveGame save = game();
+        League league = primaryLeague();
+        CompetitionEdition edition = null;
+        if (league != null && league.getEditions() != null) {
+            for (int i = league.getEditions().size() - 1; i >= 0; i--) {
+                CompetitionEdition candidate = league.getEditions().get(i);
+                if (candidate != null && candidate.getChampionsId() != null) {
+                    edition = candidate;
+                    break;
+                }
+            }
+        }
+
+        Long championId = edition != null ? edition.getChampionsId() : null;
+        String championName = resolveClubName(championId);
+        Club player = save.getCurrentClub();
+        BigDecimal balance = player != null ? player.getClubBalance() : null;
+        BigDecimal income = player != null ? player.getSeasonIncome() : null;
+        BigDecimal spend = player != null ? player.getSeasonExpenditure() : null;
+        int simIndex = save.getSimulatedSeasonIndex() != null ? save.getSimulatedSeasonIndex() : 0;
+        int inbox = save.getAllMessages() != null ? save.getAllMessages().size() : 0;
+
+        return new SeasonEditionSummary(
+                editionNumber,
+                edition != null ? edition.getName() : null,
+                championId,
+                championName,
+                save.getGameDate(),
+                balance,
+                income,
+                spend,
+                simIndex,
+                inbox);
+    }
+
+    private static String resolveClubName(Long clubId) {
+        if (clubId == null) {
+            return "?";
+        }
+        Club club = DatabaseLoader.getClubById(clubId);
+        if (club != null && club.getName() != null) {
+            return club.getName();
+        }
+        return "Club#" + clubId;
     }
 
     public LocalDateTime advanceUntil(Predicate<SaveGame> condition, int maxDays) {
