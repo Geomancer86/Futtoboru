@@ -8,6 +8,8 @@ import java.util.function.Predicate;
 
 import com.rndmodgames.futtoboru.data.Authority;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Competition;
+import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Message;
@@ -20,6 +22,7 @@ import com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 
 /**
  * Headless API for new-game setup, day advancement, and mandatory-gate simulation.
@@ -34,14 +37,17 @@ public final class GameTestHarness {
 
     private static final int DEFAULT_MAX_ADVANCE_DAYS = 400;
     private static final int SEASON_SIMULATION_MAX_DAYS = 700;
+    private static final int LEAGUE_AND_CUP_SIMULATION_MAX_DAYS = 1200;
 
     private final Futtoboru application;
     private final FuttoboruGameEngine engine;
+    private final SeasonManager seasonManager;
 
     public GameTestHarness() {
         HeadlessGdxTestSupport.ensureInitialized();
         this.application = HeadlessGdxTestSupport.application();
         this.engine = HeadlessGdxTestSupport.gameEngine();
+        this.seasonManager = new SeasonManager(application);
     }
 
     public Futtoboru application() {
@@ -81,7 +87,7 @@ public final class GameTestHarness {
         for (BasicScript script : season.getSeasonScripts()) {
             save.getGameScripts().add(copyScriptForNewGame(script));
         }
-        save.setSelectedCountries(List.of(england));
+        save.setSelectedCountries(new ArrayList<>(List.of(england)));
 
         List<Club> clubs = dbLoader.getClubsByCountry(england);
         if (clubs != null) {
@@ -92,6 +98,8 @@ public final class GameTestHarness {
             }
             save.getAllClubs().addAll(clubs);
         }
+
+        attachCompetitionsFromDatabase(save);
 
         Person owner = new Person();
         owner.setId(1L);
@@ -105,6 +113,23 @@ public final class GameTestHarness {
         application.setCurrentGame(save);
         HeadlessGdxTestSupport.authorityManager().refreshCurrentGame();
         application.initializeJobSystem();
+    }
+
+    /**
+     * Replaces the active save (mirrors load-game) and refreshes engine caches.
+     */
+    public void replaceCurrentGame(SaveGame loaded) {
+        application.setCurrentGame(loaded);
+        HeadlessGdxTestSupport.authorityManager().refreshCurrentGame();
+    }
+
+    /**
+     * JSON roundtrip through {@link SaveLoadSystem#copySaveGame(SaveGame)}.
+     */
+    public SaveGame roundTripViaJson() {
+        SaveGame copy = SaveLoadSystem.copySaveGame(game());
+        replaceCurrentGame(copy);
+        return copy;
     }
 
     public int getNextGameAction() {
@@ -178,6 +203,13 @@ public final class GameTestHarness {
         return game().getMainAuthority().getLeagues().get(0);
     }
 
+    public Competition primaryCup() {
+        if (game().getAllCups() == null || game().getAllCups().isEmpty()) {
+            return null;
+        }
+        return game().getAllCups().get(0);
+    }
+
     public boolean isPrimaryLeagueComplete() {
         League league = primaryLeague();
         if (league == null) {
@@ -186,8 +218,16 @@ public final class GameTestHarness {
         return new LeagueStandingsManager().isLeagueComplete(league);
     }
 
+    public boolean isPrimaryCupComplete() {
+        return seasonManager.isAnyCupEditionComplete(game());
+    }
+
     public int countEditionsWithChampions() {
-        return new SeasonManager(application).countFinalizedLeagueEditions(game());
+        return seasonManager.countFinalizedLeagueEditions(game());
+    }
+
+    public int countCupEditionsWithChampions() {
+        return seasonManager.countFinalizedCupEditions(game());
     }
 
     public int getSimulatedSeasonIndex() {
@@ -208,6 +248,31 @@ public final class GameTestHarness {
         throw new SimulationDeadlockException(
                 "simulateUntilPrimaryLeagueComplete: league not complete within "
                         + SEASON_SIMULATION_MAX_DAYS + " days (date=" + game().getGameDate() + ")");
+    }
+
+    /**
+     * Simulates until the primary league and FA Cup editions both record champions.
+     */
+    public void simulateUntilLeagueAndCupComplete() {
+        simulateUntilLeagueAndCupComplete(LEAGUE_AND_CUP_SIMULATION_MAX_DAYS);
+    }
+
+    public void simulateUntilLeagueAndCupComplete(int maxDays) {
+        advanceUntil(save -> primaryLeague() != null, 30);
+        simulateDays(5);
+        while (getNextGameAction() == FuttoboruGameEngine.DRAW_ACTION) {
+            acknowledgeMandatoryDraws();
+        }
+        for (int day = 0; day < maxDays; day++) {
+            if (isPrimaryLeagueComplete() && isPrimaryCupComplete()) {
+                return;
+            }
+            continueOneDayAcknowledgingDraws();
+        }
+        throw new SimulationDeadlockException(
+                "simulateUntilLeagueAndCupComplete: league complete=" + isPrimaryLeagueComplete()
+                        + ", cup complete=" + isPrimaryCupComplete()
+                        + " within " + maxDays + " days (date=" + game().getGameDate() + ")");
     }
 
     /**
@@ -326,5 +391,63 @@ public final class GameTestHarness {
             copy.setScriptValues(new HashMap<>(source.getScriptValues()));
         }
         return copy;
+    }
+
+    /**
+     * Mirrors {@link com.rndmodgames.futtoboru.screens.NewGameOverviewScreen} competition setup.
+     */
+    private static void attachCompetitionsFromDatabase(SaveGame save) {
+        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        if (allCompetitions == null) {
+            return;
+        }
+        if (save.getAllCups() == null) {
+            save.setAllCups(new ArrayList<>());
+        }
+        if (save.getAllLeagues() == null) {
+            save.setAllLeagues(new ArrayList<>());
+        }
+        for (Competition comp : allCompetitions) {
+            if (comp == null) {
+                continue;
+            }
+            Competition attached = SaveLoadSystem.copyViaJson(Competition.class, comp);
+            if (Competition.COMPETITION_CUP.equals(attached.getCompetitionType())) {
+                if (!containsCompetitionByName(save.getAllCups(), attached.getName())) {
+                    save.getAllCups().add(attached);
+                }
+            } else if (Competition.COMPETITION_LEAGUE.equals(attached.getCompetitionType())) {
+                if (!containsCompetitionByName(save.getAllLeagues(), attached.getName())) {
+                    save.getAllLeagues().add(attached);
+                }
+            }
+            if (attached.getEditions() != null) {
+                for (CompetitionEdition edition : attached.getEditions()) {
+                    if (edition == null || edition.getParticipantClubsIds() == null) {
+                        continue;
+                    }
+                    for (Long clubId : edition.getParticipantClubsIds()) {
+                        if (clubId != null && save.getClubById(clubId) == null) {
+                            Club club = DatabaseLoader.getClubById(clubId);
+                            if (club != null) {
+                                save.getAllClubs().add(club);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean containsCompetitionByName(List<Competition> competitions, String name) {
+        if (competitions == null || name == null) {
+            return false;
+        }
+        for (Competition existing : competitions) {
+            if (existing != null && name.equals(existing.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

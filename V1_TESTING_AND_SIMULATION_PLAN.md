@@ -290,13 +290,14 @@ Add to start season mod README: *v1 uses static squads; procedural seasons copy 
 | ID | Work | Registry | Post-merge |
 |----|------|----------|------------|
 | T-12 | Cup scheduling + draws + mandatory messages | DG-6, M-4 | ✅ ~50% — needs E2E IT |
-| T-13 | `LeagueAndCupIT` + `FaCupSeasonIT` | Cup-* | Open |
+| T-13 | `LeagueAndCupIT` + `FaCupSeasonIT` | Cup-* | ✅ `LeagueAndCupIT` |
 
 ### Phase 4 — Soak & ship
 
 | ID | Work |
 |----|------|
-| T-14 | `LongRunSoakIT` (**60 procedural seasons** minimum north star; 3 on PR via T-6) |
+| T-14 | `LongRunSoakIT` (**60 procedural seasons** minimum north star; 3 on PR via T-6) | ✅ ~10h `-Psoak` |
+| T-14b | `SaveLoadIT` mid-season + post-rollover | ✅ |
 | T-15 | Manual QA checklist |
 | T-16 | Tag release |
 

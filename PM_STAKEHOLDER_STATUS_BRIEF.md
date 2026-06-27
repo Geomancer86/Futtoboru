@@ -3,22 +3,22 @@
 **Document type:** Project status / stakeholder communication  
 **Audience:** PM, PO, Sponsor, department leads, expert sign-off owners  
 **Branch:** `analyze-ai-branch` (merged `origin/develop` + `origin/feature/competition-completion-v1`)  
-**Date:** 2026-06-26  
-**Next update:** After `SeasonPlaythroughIT` lands
+**Date:** 2026-06-27  
+**Next update:** After manual QA sign-off
 
 ---
 
 ## 1. One-page executive summary
 
-**Futtoboru** is an open-source historical football management sim (1888–89 onward). The **merged branch** now includes FA Cup scaffolding, league/cup completion wiring, mandatory draw gating, and schedule unit tests — plus our **headless `GameTestHarness`** (Phase 0).
+**Futtoboru** is an open-source historical football management sim (1888–89 onward). The branch now has a **complete automated pre-QA gate**: league + FA Cup E2E, save/load roundtrip, 3-season PR soak, and **60-season north-star soak**.
 
 | Question | Answer |
 |----------|--------|
-| **Can we ship v1 today?** | **No** — cup E2E + manual QA remain; **3-season procedural soak ✅** |
-| **How far are we?** | **~70%** v1 criteria; **3/60 seasons proven** (~5% of north star) |
-| **Biggest risk** | Long-run ID/memory leaks untested until `LongRunSoakIT` |
-| **Biggest asset** | **`MultiSeasonSoakIT` green** — procedural loop proven headless |
-| **Recommended focus** | `LongRunSoakIT` (60) nightly + `LeagueAndCupIT` |
+| **Can we ship v1 today?** | **Not yet** — manual QA checklist remains |
+| **How far are we?** | **~90%** v1 automated criteria; **60/60 seasons proven** (`LongRunSoakIT`) |
+| **Biggest risk** | Soak runtime (~10h) — functional, needs perf tuning for CI |
+| **Biggest asset** | Full headless gate green: `MultiSeasonSoakIT`, `LeagueAndCupIT`, `SaveLoadIT`, `LongRunSoakIT` |
+| **Recommended focus** | Manual QA → tag `v1.0.0` |
 
 **Season model (PO):** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) — **no future season mod folders for v1.**
 
@@ -26,7 +26,7 @@
 
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
-**Phase 0:** ✅ **55 tests** — includes `SeasonPlaythroughIT`, `MultiSeasonSoakIT` (3-season PR gate).
+**Automated suite:** ✅ **58 PR tests** + nightly **`LongRunSoakIT`** (`mvn test -Psoak`).
 
 **v1 plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 

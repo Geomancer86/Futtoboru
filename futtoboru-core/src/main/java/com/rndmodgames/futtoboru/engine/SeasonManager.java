@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.CompetitionRules;
 import com.rndmodgames.futtoboru.data.League;
@@ -66,6 +67,28 @@ public class SeasonManager {
             }
         }
         return count;
+    }
+
+    public int countFinalizedCupEditions(SaveGame save) {
+        if (save == null || save.getAllCups() == null) {
+            return 0;
+        }
+        int count = 0;
+        for (Competition cup : save.getAllCups()) {
+            if (cup == null || cup.getEditions() == null) {
+                continue;
+            }
+            for (CompetitionEdition edition : cup.getEditions()) {
+                if (edition != null && edition.getChampionsId() != null) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public boolean isAnyCupEditionComplete(SaveGame save) {
+        return countFinalizedCupEditions(save) > 0;
     }
 
     /**

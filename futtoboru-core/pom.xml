@@ -71,6 +71,7 @@
                     <printSummary>true</printSummary>
                     <reportFormat>brief</reportFormat>
                     <useFile>false</useFile>
+                    <excludedGroups>soak</excludedGroups>
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
@@ -110,6 +111,35 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>soak</id>
+            <properties>
+                <jacoco.skip>true</jacoco.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration combine.self="override">
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <printSummary>true</printSummary>
+                            <reportFormat>brief</reportFormat>
+                            <useFile>false</useFile>
+                            <groups>soak</groups>
+                            <forkedProcessTimeoutInSeconds>43200</forkedProcessTimeoutInSeconds>
+                            <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
 

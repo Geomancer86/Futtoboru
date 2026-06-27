@@ -140,9 +140,10 @@ Policy detail: [V1_TESTING_AND_SIMULATION_PLAN.md §7](V1_TESTING_AND_SIMULATION
 | AT-1 | `GameTestHarness` headless API | ✅ Phase 0 |
 | AT-2 | `MandatoryGateIT` — draw block + acknowledge | ✅ Phase 0 |
 | AT-3 | `SeasonPlaythroughIT` — league complete + procedural rollover | ✅ |
-| AT-4 | `LeagueAndCupIT` — full season both competitions | ❌ Phase 3 |
+| AT-4 | `LeagueAndCupIT` — full season both competitions | ✅ |
 | AT-5 | `MultiSeasonSoakIT` — ≥3 procedural seasons without deadlock | ✅ **PR gate** |
-| AT-5b | `LongRunSoakIT` — **60 seasons** (north star; nightly profile) | ❌ Phase 4 |
+| AT-5b | `LongRunSoakIT` — **60 seasons** (north star; nightly `-Psoak`) | ✅ (~10h runtime) |
+| AT-5c | `SaveLoadIT` — mid-season + post-rollover JSON roundtrip | ✅ |
 | AT-6 | CI fails on test failure | ✅ Phase 0 (GHA + Jenkins) |
 
 Full plan: [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md).

@@ -31,6 +31,26 @@ public class SaveLoadSystem {
     private static final String SAVE_EXTENSION = ".json";
     
     private static final boolean PRODUCTION_MODE_ENCRYPT = false;
+
+    private static Json configuredJson() {
+        Json json = new Json();
+        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
+        json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
+        return json;
+    }
+
+    /**
+     * In-memory JSON roundtrip (used by integration tests; no filesystem).
+     */
+    public static SaveGame copySaveGame(SaveGame saveGame) {
+        Json json = configuredJson();
+        return json.fromJson(SaveGame.class, json.toJson(saveGame));
+    }
+
+    public static <T> T copyViaJson(Class<T> type, T source) {
+        Json json = configuredJson();
+        return json.fromJson(type, json.toJson(source));
+    }
     
     public static void saveGame(SaveGame saveGame, String filename) {
         
@@ -38,9 +58,7 @@ public class SaveLoadSystem {
         
         System.out.println("Saving Game File on USER HOME PATH: " + userHomePath);
         
-        Json json = new Json();
-        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
-        json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
+        Json json = configuredJson();
 
         FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + SAVEGAMES_FOLDER + filename + SAVE_EXTENSION);
         
@@ -64,9 +82,7 @@ public class SaveLoadSystem {
      */
     public static SaveGame loadGame(String saveGameName) {
 
-        Json json = new Json();
-        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
-        json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
+        Json json = configuredJson();
         
         String userHomePath = System.getProperty(USER_HOME);
         FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + SAVEGAMES_FOLDER + saveGameName);
@@ -124,9 +140,7 @@ public class SaveLoadSystem {
         
         System.out.println("Saving New Manager File on USER HOME PATH: " + userHomePath);
         
-        Json json = new Json();
-        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
-        json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
+        Json json = configuredJson();
 
         FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + MANAGERS_FOLDER + filename + SAVE_EXTENSION);
         
@@ -183,9 +197,7 @@ public class SaveLoadSystem {
      */
     public static Person loadPersonFromFile(String filename) {
         
-        Json json = new Json();
-        json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
-        json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
+        Json json = configuredJson();
         
         FileHandle fileHandle = Gdx.files.absolute(filename);
 
