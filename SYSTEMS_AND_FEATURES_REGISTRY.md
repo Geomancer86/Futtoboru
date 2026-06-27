@@ -1,9 +1,33 @@
 # Futtoboru — Systems & Features Registry
 
 **Document type:** Feature inventory  
-**Analysis date:** 2025-06-25  
-**Branch:** `feature/competitions-finances-seasons`  
-**Status legend:** ✅ Complete | ⚠️ Partial | 🔲 Stub | ❌ Missing | 🐛 Broken
+**Last verified:** 2026-06-27 (59-test gate + `TenSeasonReportIT`)  
+**Branch:** `analyze-ai-branch`  
+**Roadmap:** [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md)  
+**Status legend:** ✅ Complete | ⚠️ Partial | 🔲 Stub | ❌ Missing | 🐛 Broken | ✅🧪 Proven by automated IT
+
+> **Note:** Rows below mix code audit (2025-06-25) with **automation overrides** in §0. Prefer §0 + [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) for current truth.
+
+---
+
+## 0. Automation-verified status (2026-06-27)
+
+| System / feature | Status | Test / evidence |
+|------------------|--------|-----------------|
+| Procedural season loop + rollover | ✅🧪 | `SeasonPlaythroughIT`, `MultiSeasonSoakIT`, `TenSeasonReportIT` |
+| 60-season north star | ✅🧪 | `LongRunSoakIT` (~5 min quiet) |
+| League completion (league-only) | ✅🧪 | RB-7 + `LeagueStandingsManagerTest` |
+| Champion editions | ✅🧪 | 10-season report |
+| FA Cup headless season | ✅🧪 | `LeagueAndCupIT` |
+| Mandatory draw gates | ✅🧪 | `MandatoryGateIT` |
+| Save JSON roundtrip | ✅🧪 | `SaveLoadIT` |
+| `competition_rules.txt` on start mod | ✅🧪 | `CompetitionRulesLoaderTest` |
+| `SeasonManager` + save season fields | ✅🧪 | Multi-season ITs |
+| `GameTestHarness` | ✅🧪 | 59 PR tests |
+| Weekly finances / wages (backend) | ✅🧪 | 10-season PNE income/spend |
+| Production load-game UI | 🐛 | Not in IT scope — C-3, H-9 |
+| Tactics / training / transfers UI | 🔲 | Stubs — v1.1+ |
+| CM1 post-match ratings | ❌ | Not started |
 
 ---
 
@@ -13,14 +37,14 @@
 |--------|--------|-------------|-----------|
 | Game engine / day advance | ⚠️ | 12-step daily pipeline | `engine/FuttoboruGameEngine.java` |
 | Script execution | ⚠️ | Only league creation script | `engine/ScriptsManager.java` |
-| Authority manager | 🐛 | Intended for cups/fixtures; `currentGame` stale → no-op | `engine/AuthorityManager.java` |
+| Authority manager | ⚠️ | Cups/fixtures; `refreshCurrentGame()` fixed for tests | `engine/AuthorityManager.java` |
 | Match scheduler | ⚠️ | Ticket sales, friendly proposals | `engine/temporal/MatchScheduler.java` |
 | Match simulator | ⚠️ | Simple strength-based; overwrites attendance | `engine/simulation/MatchSimulator.java` |
 | League fixture generator | ⚠️ | Double RR; ignores `matchFormat` | `engine/temporal/LeagueFixtureGenerator.java` |
 | Competition scheduler | 🔲 | `initializeCompetitions()` empty; draw stub | `engine/temporal/CompetitionScheduler.java` |
-| League standings | ⚠️ | Calculate/sort works; completion unwired | `engine/simulation/LeagueStandingsManager.java` |
-| **Season manager** | ❌ | Does not exist | — |
-| **Season transition** | ❌ | Does not exist | — |
+| League standings | ✅🧪 | Completion wired; league-only stats | `engine/simulation/LeagueStandingsManager.java` |
+| **Season manager** | ✅🧪 | Rollover, archive, rules snapshot | `engine/SeasonManager.java` |
+| **Season transition** | ✅🧪 | Procedural via `AuthorityManager.generateNextSeason()` | `engine/AuthorityManager.java` |
 | Message / inbox | ✅ | Delivery, mandatory blocks, categories | `engine/messages/MessageManager.java` |
 | Expense calculator | ✅ | Weekly historical expenses + wages | `engine/finances/ExpenseCalculator.java` |
 | Job manager | ⚠️ | Backend complete; load/init gaps | `engine/jobs/JobManager.java` |
@@ -45,8 +69,8 @@
 | Competitions loader | ⚠️ | FA Cup edition loads; no execution | `system/loaders/CompetitionsLoader.java` |
 | Nationality/region modifiers | ✅ | Attribute modifiers | `system/loaders/NationalityModifiersLoader.java` |
 | Player professions loader | ✅ | 80 professions | `system/loaders/PlayerProfessionsLoader.java` |
-| Save game model | ⚠️ | No season identity field | `system/SaveGame.java` |
-| Save/load system | ⚠️ | JSON works; no versioning, weak validation | `system/SaveLoadSystem.java` |
+| Save game model | ⚠️ | `startSeasonId`, `simulatedSeasonIndex` added | `system/SaveGame.java` |
+| Save/load system | ⚠️ | JSON roundtrip IT ✅; UI load gaps | `system/SaveLoadSystem.java` |
 | Preferences | ✅ | Locale, resolution, fullscreen | `PreferencesManager.java` |
 
 ---
@@ -163,14 +187,14 @@
 | Day progression | Yes | ⚠️ | Double-click bug |
 | League creation (1888) | Yes | ✅ | — |
 | Fixture draw | Yes | ✅ | League ID sometimes null |
-| League match simulation | Yes | ⚠️ | Wrong rules |
-| League standings | Yes | ⚠️ | Wrong rules |
-| **Season completion** | **Yes** | **❌** | Not implemented |
-| **Season rollover** | **Yes** | **❌** | Not implemented |
-| **Per-season rules** | **Yes** | **❌** | Hardcoded 3-1-0 |
+| League match simulation | Yes | ✅🧪 | Headless complete |
+| League standings | Yes | ⚠️ | Verify 2-1-0 in UI |
+| **Season completion** | **Yes** | **✅🧪** | `SeasonPlaythroughIT` |
+| **Season rollover** | **Yes** | **✅🧪** | Multi-season ITs |
+| **Per-season rules** | **Yes** | **✅🧪** | `competition_rules.txt` |
 | Mid-season rule change | Optional | ❌ | No script type |
 | Re-election (1888) | Optional | ❌ | Comments only |
-| FA Cup | Optional | 🔲 | Data only |
+| FA Cup | Yes | **✅🧪** | `LeagueAndCupIT`; cup UI WIP |
 | Friendlies | Optional | ⚠️ | Hardcoded clubs |
 | Ticket sales | Yes | ⚠️ | Away club bug |
 | Weekly expenses | Yes | ✅ | — |
@@ -198,8 +222,8 @@
 | `nationality_modifiers.txt` | ✅ | `mods/seasons/18/` |
 | `region_modifiers.txt` | ✅ | `mods/seasons/18/` |
 | `player_professions.txt` | ✅ | `mods/seasons/18/` |
-| `competition_rules.txt` | ❌ | Does not exist |
-| Season 19+ data | ❌ | Does not exist |
+| `competition_rules.txt` | ✅ | `mods/seasons/18/competition_rules.txt` |
+| Season 19+ data | ❌ | **Not used** — procedural rollover per PO |
 
 ---
 
@@ -215,16 +239,15 @@
 | Season mod static | ✅ | `SeasonLeaguesAndTeamsTests` |
 | Players load | ✅ | `PlayersLoaderTests` |
 | Stadiums load | ✅ | `StadiumsLoaderTests` |
-| `GameTestHarness` | ❌ → ✅ | `harness/GameTestHarness.java` |
-| Mandatory gate / draw block | ❌ → ✅ | `MandatoryGateIT` |
-| Match simulation | ❌ | `MatchSimulatorTest` |
-| Season completion | ❌ | `LeagueSeasonIT` |
-| FA Cup season | ❌ | `FaCupSeasonIT`, `LeagueAndCupIT` |
-| Season rollover | ❌ | `SeasonPlaythroughIT` |
-| Multi-season soak | ❌ | `MultiSeasonSoakIT`, `LongRunSoakIT` |
-| Player lifecycle static | ❌ | `PlayerLifecycleIT` |
-| Save/load roundtrip | ❌ | `SaveLoadIT` |
-| Rules application | ❌ | `CompetitionRulesLoaderTest` |
+| `GameTestHarness` | ✅🧪 | `harness/GameTestHarness.java` |
+| Mandatory gate / draw block | ✅🧪 | `MandatoryGateIT` |
+| Season completion | ✅🧪 | `SeasonPlaythroughIT` |
+| FA Cup season | ✅🧪 | `LeagueAndCupIT` |
+| Season rollover | ✅🧪 | `SeasonPlaythroughIT` |
+| Multi-season soak | ✅🧪 | `MultiSeasonSoakIT`, `LongRunSoakIT` |
+| 10-season report | ✅🧪 | `TenSeasonReportIT` |
+| Save/load roundtrip | ✅🧪 | `SaveLoadIT` |
+| Rules application | ✅🧪 | `CompetitionRulesLoaderTest` |
 | Finances | ❌ | — |
 
 ---

@@ -367,3 +367,33 @@ Futtoboru legacy target (CM4 depth) [██░░░░░░░░░░░░�
 |------|--------|
 | 2025-06-25 | Link CM1 v1 benchmark + PRE_CM1 genre history |
 | 2025-06-25 | Initial gap analysis vs feature branch |
+| 2026-06-27 | **Post-automation addendum** — see §10 |
+
+---
+
+## 10. Post-automation update (2026-06-27)
+
+After **59 PR tests** and **10-season simulation**, the **P0 gap list in §6 is largely resolved in code**:
+
+| Former P0 gap | Status today |
+|-----------------|--------------|
+| Wire `isLeagueComplete()` | ✅ Done + IT |
+| `SeasonManager` + save fields | ✅ Done |
+| `competition_rules.txt` | ✅ Done (season 18 mod) |
+| Season rollover | ✅ Procedural — **not** season 19 mod folder |
+| Friendly completion pollution (RB-7) | ✅ Fixed |
+| Save/load | ✅ JSON IT; **UI load still open** (C-3) |
+
+**Revised parity (automated season loop):**
+
+| Target | Was (2025-06-25) | Now (2026-06-27) |
+|--------|------------------|------------------|
+| CM1 season loop | ~35% | **~85%** (automated) |
+| CM1 full features | ~40% | **~45%** (ratings, XI still missing) |
+| CM4 depth | ~12% | **~12%** (management stubs unchanged) |
+
+**Still valid from §6:** P1 (ratings, XI, board, friendlies UX), P2 (tactics, training, transfers…), P3 (2D, multi-nation).
+
+**Forward roadmap:** [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md)
+
+---

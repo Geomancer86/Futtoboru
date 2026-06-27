@@ -1,5 +1,7 @@
 # Futtoboru v1.0 Roadmap
 
+> **⚠️ Superseded for execution planning** by [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) (2026-06-27) and [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md). This file is kept for historical phase structure only — many items below are **already implemented** (season loop, match sim, FA Cup IT, save roundtrip).
+
 ## Overview
 This document outlines the plan to complete Futtoboru v1.0 - a playable Football Manager-style game with core features functional.
 

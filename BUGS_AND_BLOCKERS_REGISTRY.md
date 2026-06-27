@@ -1,9 +1,11 @@
 # Futtoboru — Bugs & Blockers Registry
 
 **Document type:** Issue backlog  
-**Analysis date:** 2025-06-25  
-**Branch:** `feature/competitions-finances-seasons`  
+**Analysis date:** 2025-06-25 · **Automation note:** 2026-06-27  
+**Branch:** `analyze-ai-branch`  
 **Severity:** 🔴 Critical | 🟠 High | 🟡 Medium | 🟢 Low
+
+> **RB-1, RB-2, RB-4, RB-5, RB-7, RB-8** are **resolved in code** and covered by integration tests. Rows kept for traceability — see [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) §3.1 for remaining v1 blockers (mostly UI: C-1, C-3, H-3, H-9).
 
 Consolidates `ISSUES_PRIORITY_LIST.md`, code audit, and subagent analysis into one authoritative list.
 

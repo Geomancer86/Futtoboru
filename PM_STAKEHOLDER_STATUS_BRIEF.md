@@ -14,15 +14,17 @@
 
 | Question | Answer |
 |----------|--------|
-| **Can we ship v1 today?** | **Not yet** — manual QA checklist remains |
-| **How far are we?** | **~90%** v1 automated criteria; **60/60 seasons proven** (`LongRunSoakIT`) |
-| **Biggest risk** | Inbox growth over long careers (763 msgs @ 10 seasons) — monitor BLK-4 |
-| **Biggest asset** | Full headless gate green; **60 seasons ≈ 5 min** (not 10h — was log I/O) |
-| **Recommended focus** | Manual QA → tag `v1.0.0` |
+| **Can we ship v1 today?** | **Not yet** — manual QA + UI fixes (load, double-click) |
+| **How far are we?** | **~85% CM1 loop** automated · **~45% CM1 features** · **~12% CM4 depth** |
+| **Biggest risk** | Doc/code drift on UI bugs (C-1, C-3); inbox growth at long careers |
+| **Biggest asset** | Proven infinite season loop + CM research corpus + 59-test gate |
+| **Recommended focus** | Manual QA → v1.0 tag → v1.1 (XI, ratings, unemployed) per roadmap report |
 
 **Season model (PO):** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) — **no future season mod folders for v1.**
 
 **60-season goal:** [PM_60_SEASON_GOAL_STATUS.md](PM_60_SEASON_GOAL_STATUS.md)
+
+**Features & roadmap (CM/FM aligned):** [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md)
 
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
