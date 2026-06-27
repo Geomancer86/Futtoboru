@@ -135,6 +135,7 @@ Phase 3: Integration test with Platform dept
 | 3 | Bottom-4 re-election? | Script / simulate / defer |
 | 4 | FA Cup in season-end gate? | League-only v1 / wait for cups |
 | 5 | Calendar source | `seasons.txt` only / `season_window_*` in rules file |
+| 6 | Rollover participants | Frozen copy (today) / **current save membership** after scripts — [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) |
 
 ---
 

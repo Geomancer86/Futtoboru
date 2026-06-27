@@ -248,6 +248,26 @@ Do **not** choose only one track — sequence matters.
 
 ---
 
+## 12. In-play world evolution (new requirement)
+
+**Principle:** Starting at the **earliest** season, every club, competition, country, rule change, and player that appears later in real history must enter the **running `SaveGame`** on the correct date — **not** via a new mod folder or career restart.
+
+| Today | Gap |
+|-------|-----|
+| League/cup scripts copy clubs into save | ✅ Pattern exists |
+| All England clubs loaded at new game | ⚠️ Eager load — not evolution-friendly at scale |
+| `foundation_year` on clubs | ❌ Not used for activation |
+| Procedural rollover | ❌ Same participants forever |
+| Script types beyond 1000/1001 | ❌ Not implemented |
+
+**Target:** Dormant registry + timeline scripts (1002–1007) + eventual master DB projection. **Wave 1.5** engineering (WE-1–WE-8) after DB-1/DB-2, before authoring many start mods.
+
+**Canonical design:** [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md)
+
+**PO decisions (§9 of design doc):** auto vs script activation; lazy new-game load; first milestone (Nov 1888 rules vs 1892 Div 2 vs Scotland).
+
+---
+
 ## 11. Document map
 
 | Document | Purpose |
@@ -257,6 +277,7 @@ Do **not** choose only one track — sequence matters.
 | [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) | Gameplay features |
 | [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | Procedural loop |
 | [HISTORICAL_DATA_SOURCE_LEDGER.md](HISTORICAL_DATA_SOURCE_LEDGER.md) | Source provenance (R-H1) |
+| [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) | Live save incorporation |
 
 ---
 

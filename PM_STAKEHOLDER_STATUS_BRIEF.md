@@ -28,6 +28,8 @@
 
 **Historical data expansion (round 2):** [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) — **0 extra years** for forward play; **+3 start mods** recommended after Wave 1 infra.
 
+**In-play evolution:** [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) — new clubs/comps/countries must enter **`SaveGame`** on historical dates when playing from the earliest season.
+
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
 **Automated suite:** ✅ **59 PR tests** + nightly **`LongRunSoakIT`** (~5 min) + **`TenSeasonReportIT`** report.

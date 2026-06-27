@@ -70,7 +70,17 @@ Season N completes (league + cup per v1 scope)
   → continue daily loop
 ```
 
-**No mod load step** for N+1.
+**No mod load step** for N+1. Participants for N+1 must reflect **current save membership** after timeline scripts (promotion, new clubs) — not a frozen copy forever ([DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md)).
+
+### 2.4 In-play world evolution
+
+Entities that appear **after** the start date merge into **`SaveGame`** on their historical date:
+
+- **Dormant registry** — authored in start mod, `first_active_date` / `foundation_year`  
+- **Timeline scripts** — types 1002–1007  
+- **Master DB projection** — north star at scale  
+
+League/cup scripts (1000/1001) already demonstrate registry → save incorporation; rollover and new entity types are not wired yet. See [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md).
 
 ---
 
@@ -111,8 +121,11 @@ Single owner for:
 | `LEAGUE_CREATION_SCRIPT` | 1000 | ✅ Exists |
 | `CUP_CREATION_SCRIPT` | 1001 | ✅ Exists |
 | `RULES_AMENDMENT_SCRIPT` | 1002 | **New** — change points/tie-break mid-career |
-| `TIMELINE_EVENT_SCRIPT` | 1003 | **New** — club joins, structural changes (optional v1) |
-| `SEASON_END_HOOK` | 1004 | **New** — optional PO narrative at edition close |
+| `CLUB_ACTIVATION_SCRIPT` | 1003 | **New** — club + squad → `SaveGame.allClubs` |
+| `LEAGUE_MEMBERSHIP_SCRIPT` | 1004 | **New** — add/remove league participant |
+| `COMPETITION_CREATION_SCRIPT` | 1005 | **New** — new cup/league/division |
+| `COUNTRY_ACTIVATION_SCRIPT` | 1006 | **New** — nation playable in save |
+| `PERSON_INCORPORATION_SCRIPT` | 1007 | **New** — named player enters save |
 
 Scripts are **copied into `SaveGame.gameScripts` at new game** (with `isExecuted` per save). Optional: append dynamically generated scripts at rollover (e.g. “re-election result”) without a mod folder.
 

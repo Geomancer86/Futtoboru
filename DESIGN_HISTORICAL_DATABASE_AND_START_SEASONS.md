@@ -103,6 +103,7 @@ Every row must pass:
 | **DB-6** | **Save schema version** + migration | Long careers across game versions |
 | **DB-7** | **Data lint CLI** (`mvn validate-mods`) | Contributor workflow |
 | **DB-8** | **Source registry** row format | Audit trail |
+| **WE-1–WE-8** | **In-play world evolution** ([DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md)) | New clubs/comps/countries in running save |
 
 Most map to existing **WD-1–WD-9** in World & Data dept doc.
 
@@ -159,6 +160,16 @@ New game: pick start mod (year + country)
 
 Optional **timeline scripts** in the start mod fire during the calendar (deaths, rule changes, new clubs) — FM-style on the **start mod timeline**, not new mod folders.
 
+**In-play incorporation (locked principle):** Entities that appear **after** the start date must merge into **`SaveGame`** on their historical date — via dormant registry + activation, timeline scripts, or master DB projection. See [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md).
+
+```
+New game (earliest season)
+    → load only entities active on start date into SaveGame
+    → play; dated scripts / auto-activation add clubs, comps, rules, players
+    → rollover uses current save membership (not frozen forever)
+    → repeat ∞ without loading mods/seasons/{N+1}/
+```
+
 ---
 
 ## 9. Open PO questions
@@ -170,6 +181,7 @@ Optional **timeline scripts** in the start mod fire during the calendar (deaths,
 | 3 | Anonymous players (CM1 style) for lower leagues? | Defer — named where sources exist |
 | 4 | Community mod repo vs in-tree only? | In-tree + PR; external editor later |
 | 5 | Second country before second English era? | PO call — Scotland historically adjacent |
+| 6 | In-play incorporation model? | Scripts + `foundation_year` auto — [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) |
 
 ---
 
@@ -181,6 +193,7 @@ Optional **timeline scripts** in the start mod fire during the calendar (deaths,
 | [DEPARTMENT_WORLD_AND_DATA_V1.md](DEPARTMENT_WORLD_AND_DATA_V1.md) | Loader tasks, validation |
 | [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) | Gameplay features first |
 | [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | Procedural vs start mod |
+| [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) | Live save incorporation |
 
 ---
 

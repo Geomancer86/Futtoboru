@@ -1,6 +1,6 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-06-27 (historical data expansion analysis round 2)
+**Last updated:** 2026-06-27 (in-play world evolution analysis)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
@@ -21,6 +21,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) | **PM, PO, all leads** | **Features proven vs gaps + CM/FM roadmap** |
 | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | **PO, World & Data** | **How many start mods / years; Wave 1–2 plan** |
 | [DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md](DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md) | **PO, eng, contributors** | **North star DB architecture + validation** |
+| [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) | **PO, World & Data, Seasons** | **New history merges into live save** |
 | [HISTORICAL_DATA_SOURCE_LEDGER.md](HISTORICAL_DATA_SOURCE_LEDGER.md) | **Research, contributors** | **Source IDs per mod row (R-H1 stub)** |
 | [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md) | **QA, PO, Designer** | **10-season sim** — champions, finances, v1 gap |
 | [STAKEHOLDERS_AND_DEPARTMENTS.md](STAKEHOLDERS_AND_DEPARTMENTS.md) | PM, PO | Who owns what; core vs broader; sign-off gates |

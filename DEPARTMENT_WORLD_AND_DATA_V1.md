@@ -139,6 +139,21 @@ Season 19 file: same 2-1-0 block, **no AMENDMENT**, window `1889-09-01` → `189
 | WD-8 | Data validation tests V-1–V-9 | CI gate |
 | WD-9 | Player ID scheme documented + applied | No global collisions |
 
+### 8.1 In-play world evolution (Wave 1.5)
+
+After DB-1–DB-2; before bulk new start mods. See [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md).
+
+| ID | Deliverable | Acceptance |
+|----|-------------|------------|
+| WE-1 | `WorldEvolutionManager` — incorporate club/person/rules into save | Single API; no duplicate IDs |
+| WE-2 | `first_active_date` in mod schema + loader | Dormant clubs not in save at new game |
+| WE-3 | New game lazy club load (active on start date only) | Save size matches era |
+| WE-4 | Script types 1002–1007 on disk | Nov 1888 rules OR 1892 club test |
+| WE-5 | Rollover uses current league membership from save | Not frozen participant copy |
+| WE-6 | No `DatabaseLoader` lookups during `continueGame()` | Save-as-truth enforced |
+| WE-7 | Save schema version for mid-career entity adds | Load old saves |
+| WE-8 | `WorldEvolutionIT` | Script date → entity in save |
+
 ---
 
 ## 9. Validation rules (CI)
@@ -154,6 +169,10 @@ Season 19 file: same 2-1-0 block, **no AMENDMENT**, window `1889-09-01` → `189
 | V-7 | Season scripts reference valid IDs |
 | V-8 | No duplicate club IDs after multi-season load |
 | V-9 | Modifier `countryId` references valid countries |
+| V-10 | `foundation_year` / `first_active_date` consistent |
+| V-11 | Global IDs unique across dormant + active sets |
+| V-12 | Post-start activations have script or auto date |
+| V-13 | Simulation: start earliest → date X → entity in save |
 
 ---
 
