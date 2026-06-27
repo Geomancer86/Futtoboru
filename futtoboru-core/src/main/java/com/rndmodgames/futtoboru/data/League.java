@@ -27,6 +27,12 @@ public class League implements Serializable {
      */
     private CompetitionRules rules;
     
+    /**
+     * League Editions (Seasons)
+     * Tracks history of champions, participants, etc.
+     */
+    private List<CompetitionEdition> editions = new java.util.ArrayList<>();
+    
     private transient Country country;
     private transient League parent;
     
@@ -105,6 +111,14 @@ public class League implements Serializable {
      */
     public void setRules(CompetitionRules rules) {
         this.rules = rules;
+    }
+    
+    public List<CompetitionEdition> getEditions() {
+        return editions;
+    }
+
+    public void setEditions(List<CompetitionEdition> editions) {
+        this.editions = editions;
     }
     
     /**

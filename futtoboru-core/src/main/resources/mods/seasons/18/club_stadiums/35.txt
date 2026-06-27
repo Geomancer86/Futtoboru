@@ -1,0 +1,10 @@
+# Heeley - 1888-89 Club Stadium File
+#
+# Stadium is Heeley Ground
+#
+# Source: https://en.wikipedia.org/wiki/Heeley_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+35,Heeley Ground,1862,2000,800,"The home ground of Heeley FC, one of the oldest clubs in Sheffield.",https://en.wikipedia.org/wiki/Heeley_F.C.,400,false,40
+

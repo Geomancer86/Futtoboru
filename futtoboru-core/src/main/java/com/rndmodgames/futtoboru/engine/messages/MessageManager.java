@@ -626,6 +626,49 @@ public class MessageManager {
         return message;
     }
     
+    /**
+     * Create a mandatory cup draw message
+     * This message blocks time advancement until the draw is viewed
+     */
+    public Message createCupDrawMessage(com.rndmodgames.futtoboru.data.Competition cup, 
+                                       com.rndmodgames.futtoboru.data.CompetitionEdition edition, 
+                                       int round, String roundName) {
+        if (cup == null || edition == null) {
+            return null;
+        }
+        
+        Message message = new Message();
+        message.setCategory(MessageCategory.CUP);
+        message.setMessageType("CUP_DRAW");
+        message.setPriority(MessagePriority.URGENT);
+        message.setTitle(cup.getName() + " Draw - " + (roundName != null ? roundName : "Round " + round));
+        message.setIsMandatory(true);  // Blocks time advancement
+        
+        StringBuilder content = new StringBuilder();
+        content.append("The draw for the ");
+        if (roundName != null) {
+            content.append(roundName);
+            content.append(" of the ");
+        } else {
+            content.append("Round ").append(round).append(" of the ");
+        }
+        content.append(cup.getName());
+        content.append(" is ready to be revealed.\n\n");
+        content.append("Click below to view the draw and see the matchups.\n\n");
+        content.append("You must view the complete draw before continuing.");
+        
+        message.setPlainTextMessage(content.toString());
+        message.setRemitent(null);
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        
+        // Link to cup draw screen (shared or specific)
+        message.setActionScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.CUP_DRAW_SCREEN);
+        message.setActionData(edition.getId()); // Pass edition ID to show relevant matches
+        
+        return message;
+    }
+    
     // ========================================
     // MATCH MESSAGE CREATION METHODS
     // ========================================

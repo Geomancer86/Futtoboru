@@ -25,6 +25,7 @@ import com.rndmodgames.components.MainMenuButton;
 import com.rndmodgames.darkblade.screens.tables.ModsSettingsTable;
 import com.rndmodgames.darkblade.screens.tables.SoundSettingsTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.tables.settings.DebugLoggingSettingsTable;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -42,6 +43,9 @@ public class SettingsScreen implements Screen {
 	Stage stage;
 	SpriteBatch batch;
 	Texture img;
+	
+	// Debug Logging Settings Table (stored for refresh)
+	private DebugLoggingSettingsTable debugLoggingSettings;
 
 	/**
 	 * Settings Screen
@@ -63,6 +67,7 @@ this.game = game;
         VisTable soundSettings = new SoundSettingsTable(this.game);
         VisTable gameplaySettings = new VisTable();
         VisTable modSettings = new ModsSettingsTable(this.game);
+        this.debugLoggingSettings = new DebugLoggingSettingsTable(this.game);
         
         VisLabel graphicsSettingsLabel = new VisLabel(LanguageModLoader.getValue("graphic_settings"));
         VisLabel resolutionLabel = new VisLabel(LanguageModLoader.getValue("resolution"));
@@ -320,14 +325,15 @@ this.game = game;
         // Gameplay Settings Panel
         gameplaySettings.add(gameplaySettingsLabel).pad(5);
         
-        // 4 Panel Layout
-        mainContainer.row().colspan(4).expandX().fillX();
+        // 5 Panel Layout (added Debug Logging)
+        mainContainer.row().colspan(5).expandX().fillX();
         
         // 
         mainContainer.add(graphicsSettings).pad(10).align(Align.top);
         mainContainer.add(soundSettings).pad(10).align(Align.top);
         mainContainer.add(gameplaySettings).pad(10).align(Align.top);
         mainContainer.add(modSettings).pad(10).align(Align.top);
+        mainContainer.add(debugLoggingSettings).pad(10).align(Align.top);
 
         // Main Menu Button
         final MainMenuButton exitButton = new MainMenuButton(game);
@@ -336,7 +342,7 @@ this.game = game;
         mainContainer.row();
         
         // Add the Quit to Main Menu button NOTE: weird colspan needed to center, might be easy to fix
-        mainContainer.add(exitButton).colspan(16).pad(5);
+        mainContainer.add(exitButton).colspan(20).pad(5);
 
         // Set debug for Stage and recursive
 //        stage.setDebugAll(DarkBlade.DEBUG_TABLES_ENABLED);
@@ -350,6 +356,11 @@ this.game = game;
         
         // Add input capabilities
         Gdx.input.setInputProcessor(stage);
+        
+        // Refresh debug logging settings to ensure UI matches current preferences
+        if (debugLoggingSettings != null) {
+            debugLoggingSettings.refreshSettings();
+        }
     }
 
     @Override

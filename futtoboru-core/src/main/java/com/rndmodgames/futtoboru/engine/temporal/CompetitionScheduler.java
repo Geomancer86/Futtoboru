@@ -16,14 +16,8 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
  */
 public class CompetitionScheduler {
 
-    //
-    private Futtoboru game;
-    
-    //
     public CompetitionScheduler(Futtoboru parent) {
         
-        //
-        this.game = parent;
     }
     
     /**
@@ -49,38 +43,44 @@ public class CompetitionScheduler {
         List<Long> auxiliarClubsIds = new ArrayList<>(clubIds);
         List<Match> competitionMatches = new ArrayList<>();
         
-        while (!auxiliarClubsIds.isEmpty()) {
+        // Handle bye if odd number of teams
+        if (auxiliarClubsIds.size() % 2 != 0) {
+            // Pick a random team to get a bye
+            int byeIndex = DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size());
+            Long byeClubId = auxiliarClubsIds.remove(byeIndex);
+            Gdx.app.log("CompetitionScheduler", "Club " + byeClubId + " receives a BYE");
+        }
+        
+        while (!auxiliarClubsIds.isEmpty() && auxiliarClubsIds.size() >= 2) {
             
             Gdx.app.log("CompetitionScheduler", "Clubs Left: " + auxiliarClubsIds.size() + ", Matches: " + competitionMatches.size());
             
             // pick random clubs and create new match
             Match match = new Match();
             
-            //
-            match.setHomeClubId(auxiliarClubsIds.get(DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size() - 1)));
+            // Home Club
+            int homeIndex = DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size());
+            match.setHomeClubId(auxiliarClubsIds.remove(homeIndex));
             
-            // concurrent modification exception?
-            auxiliarClubsIds.remove(match.getHomeClubId());
+            // Away Club
+            int awayIndex = DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size());
+            match.setAwayClubId(auxiliarClubsIds.remove(awayIndex));
             
-            // take care of just 1 club in the list
-            if (auxiliarClubsIds.size() == 1) {
-                
-                match.setAwayClubId(auxiliarClubsIds.get(0));
-                
-            } else {
-                
-                match.setAwayClubId(auxiliarClubsIds.get(DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size() - 1)));
-            }
-            
-            // concurrent modification exception?
-            auxiliarClubsIds.remove(match.getAwayClubId());
-            
-            //
             competitionMatches.add(match);
         }
 
         // Should return a list of matches between all participants
-        Gdx.app.log("CompetitionScheduler", "Competition Draw Matches: " + competitionMatches.size());
+        // For 32 teams: 16 matches (no byes)
+        // For 35 teams: 17 matches + 1 bye
+        Gdx.app.log("CompetitionScheduler", "Competition Draw Complete: " + competitionMatches.size() + 
+            " matches for " + clubIds.size() + " teams");
+        
+        // Verify: matches should equal half the number of teams (or half minus 0.5 if odd)
+        int expectedMatches = clubIds.size() / 2;
+        if (competitionMatches.size() != expectedMatches) {
+            Gdx.app.error("CompetitionScheduler", "MISMATCH: Expected " + expectedMatches + 
+                " matches but generated " + competitionMatches.size() + " for " + clubIds.size() + " teams!");
+        }
         
         return competitionMatches;
     }

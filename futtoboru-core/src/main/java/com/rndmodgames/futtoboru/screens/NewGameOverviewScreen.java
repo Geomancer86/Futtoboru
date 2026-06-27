@@ -492,6 +492,51 @@ public class NewGameOverviewScreen implements Screen {
                         throw new IllegalStateException("Clubs by country map is null. Database may not be loaded correctly.");
                     }
                     
+                    /**
+                     * Competitions
+                     * 
+                     * CRITICAL: Ensure all cups and leagues from DatabaseLoader are added to SaveGame.
+                     * Also ensure ALL participant clubs for those competitions are added to SaveGame,
+                     * even if their country wasn't selected (e.g., Linfield in FA Cup).
+                     * This ensures AuthorityManager can find and process them correctly.
+                     */
+                    Gdx.app.log("NewGameOverviewScreen", "Step 6a: Adding competitions and participant clubs to SaveGame...");
+                    List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+                    if (allCompetitions != null) {
+                        for (Competition comp : allCompetitions) {
+                            if (comp == null) continue;
+                            
+                            // Add competition to SaveGame lists
+                            if (Competition.COMPETITION_CUP.equals(comp.getCompetitionType())) {
+                                if (!currentGame.getAllCups().contains(comp)) {
+                                    currentGame.getAllCups().add(comp);
+                                }
+                            } else if (Competition.COMPETITION_LEAGUE.equals(comp.getCompetitionType())) {
+                                if (!currentGame.getAllLeagues().contains(comp)) {
+                                    currentGame.getAllLeagues().add(comp);
+                                }
+                            }
+                            
+                            // Ensure all participant clubs from all editions are in SaveGame.allClubs
+                            if (comp.getEditions() != null) {
+                                for (com.rndmodgames.futtoboru.data.CompetitionEdition edition : comp.getEditions()) {
+                                    if (edition != null && edition.getParticipantClubsIds() != null) {
+                                        for (Long clubId : edition.getParticipantClubsIds()) {
+                                            if (clubId != null && currentGame.getClubById(clubId) == null) {
+                                                Club club = DatabaseLoader.getClubById(clubId);
+                                                if (club != null) {
+                                                    Gdx.app.log("NewGameOverviewScreen", "Adding participant club " + club.getName() + " (ID: " + clubId + ") to SaveGame for competition: " + comp.getName());
+                                                    currentGame.getAllClubs().add(club);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Gdx.app.log("NewGameOverviewScreen", "Step 6a: OK - Total cups: " + currentGame.getAllCups().size() + ", leagues: " + currentGame.getAllLeagues().size() + ", total clubs: " + currentGame.getAllClubs().size());
+                    }
+                    
                     for (Country country : selectedCountries) {
                         if (country == null) {
                             Gdx.app.error("NewGameOverviewScreen", "ERROR: country in selectedCountries is NULL!");

@@ -1,0 +1,18 @@
+# Notts Rangers - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Notts_Rangers_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+2901,Billy,Fletcher,1000,1866
+2902,Johnny,Moore,1000,1865
+2903,Harry,Garside,1000,1866
+2904,George,Gillespie,1001,1859
+2905,Peter,Coupar,1001,1866
+2906,David,Grey,1001,1867
+2907,Arthur,Watson,1000,1868
+2908,John,Weir,1001,1865
+2909,Jimmy,Hannah,1001,1868-10-26
+2910,Fred,Mabane,1000,1866
+2911,Billy,Richardson,1000,1867
+

@@ -173,8 +173,32 @@ public class ClubInfoScreenTable extends VisTable {
                 this.addSeparator().colspan(2).padTop(5).padBottom(5);
                 this.row();
                 this.add(new VisLabel("Source:")).left();
-                VisLabel urlLabel = new VisLabel(club.getStadium().getUrlSource());
+                
+                final String url = club.getStadium().getUrlSource();
+                final VisLabel urlLabel = new VisLabel(url);
                 urlLabel.setColor(0.3f, 0.5f, 1.0f, 1.0f); // Blue for link
+                
+                // Make URL clickable and add hover feedback
+                urlLabel.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
+                    @Override
+                    public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
+                        com.badlogic.gdx.Gdx.net.openURI(url);
+                        return true;
+                    }
+                    
+                    @Override
+                    public void enter(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor fromActor) {
+                        urlLabel.setColor(0.5f, 0.7f, 1.0f, 1.0f); // Brighter blue on hover
+                        com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Hand);
+                    }
+                    
+                    @Override
+                    public void exit(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor toActor) {
+                        urlLabel.setColor(0.3f, 0.5f, 1.0f, 1.0f); // Original blue
+                        com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Arrow);
+                    }
+                });
+                
                 this.add(urlLabel).left().expandX();
                 this.row();
             }

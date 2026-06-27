@@ -8,6 +8,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.RegionModifier;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * Region Modifiers Loader v1.0
@@ -34,8 +35,8 @@ public class RegionModifiersLoader {
         FileHandle modifiersFile = Gdx.files.internal(MODIFIERS_FILE);
         
         if (!modifiersFile.exists()) {
-            Gdx.app.log("RegionModifiersLoader", "Modifiers file not found: " + MODIFIERS_FILE);
-            Gdx.app.log("RegionModifiersLoader", "Will use default modifiers (all +0)");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "RegionModifiersLoader", "Modifiers file not found: " + MODIFIERS_FILE);
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "RegionModifiersLoader", "Will use default modifiers (all +0)");
             return;
         }
         
@@ -125,7 +126,7 @@ public class RegionModifiersLoader {
                             modifiers.put(key, modifier);
                             
                         } catch (NumberFormatException e) {
-                            Gdx.app.error("RegionModifiersLoader", "Error parsing modifier line: " + line + " - " + e.getMessage());
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "RegionModifiersLoader", "Error parsing modifier line: " + line + " - " + e.getMessage());
                         }
                     }
                 }
@@ -136,10 +137,10 @@ public class RegionModifiersLoader {
             reader.close();
             
         } catch (IOException e) {
-            Gdx.app.error("RegionModifiersLoader", "Error reading modifiers file: " + e.getMessage());
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "RegionModifiersLoader", "Error reading modifiers file: " + e.getMessage());
         }
         
-        Gdx.app.log("RegionModifiersLoader", "Loaded " + modifiers.size() + " region modifiers");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "RegionModifiersLoader", "Loaded " + modifiers.size() + " region modifiers");
     }
     
     /**

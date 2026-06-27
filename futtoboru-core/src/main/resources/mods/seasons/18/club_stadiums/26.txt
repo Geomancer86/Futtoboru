@@ -1,0 +1,10 @@
+# Crewe Alexandra - 1888-89 Club Stadium File
+#
+# Stadium is Alexandra Recreation Ground
+#
+# Source: https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+26,Alexandra Recreation Ground,1877,5000,2500,"Crewe Alexandra's home ground from 1877 to 1898, located near the railway station.",https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.,1000,true,0
+

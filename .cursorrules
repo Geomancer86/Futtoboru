@@ -1,0 +1,41 @@
+# Cursor AI Rules for Futtoboru Project
+
+## Git Workflow Rules
+
+**CRITICAL: Git Push Restrictions**
+
+- **NEVER push to remote repositories unless explicitly requested by the user**
+- **NEVER run `git push` commands automatically**
+- **NEVER push feature branches, main, develop, or any branch without explicit user permission**
+- Only commit changes locally (`git add`, `git commit`) unless the user specifically asks to push
+- If the user asks to "wrap up" or "finish" a branch, only commit locally - do NOT push unless explicitly asked
+
+**Allowed Git Operations:**
+- `git status` - Check repository status
+- `git add` - Stage changes
+- `git commit` - Commit changes locally
+- `git log` - View commit history
+- `git branch` - List branches
+- `git diff` - View changes
+- `git checkout` - Switch branches (if explicitly requested)
+
+**Forbidden Git Operations (unless explicitly requested):**
+- `git push` - Pushing to remote
+- `git push origin <branch>` - Pushing any branch
+- `git push --force` - Force pushing (especially forbidden)
+
+## General Development Rules
+
+- Always test changes before committing
+- Use descriptive commit messages
+- Follow existing code style and patterns
+- Document complex logic and decisions
+- Add debug logging when troubleshooting
+
+## Project-Specific Notes
+
+- This is a football management game set in 1888-89
+- Historical accuracy is important
+- Code should be moddable/scriptable where possible
+- Use BigDecimal for all financial calculations
+- Follow the existing package structure

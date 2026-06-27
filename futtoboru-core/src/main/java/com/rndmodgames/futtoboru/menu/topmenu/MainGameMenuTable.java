@@ -16,6 +16,7 @@ import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.tables.widgets.CurrentDateAndTimeWidget;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -68,11 +69,22 @@ public class MainGameMenuTable extends VisTable {
      * Minimum cooldown period in milliseconds between processing cycles
      * Prevents rapid triple-clicks from slipping through
      */
-    private static final long PROCESSING_COOLDOWN_MS = 100;
+    private static final long PROCESSING_COOLDOWN_MS = 200;
+    
+    /**
+     * Fail-safe timeout in milliseconds
+     * If processing takes longer than this, we assume it's stuck and reset the state
+     */
+    private static final long PROCESSING_FAILSAFE_TIMEOUT_MS = 15000; // 15 seconds
+    
+    /**
+     * Timer task for failsafe reset
+     */
+    private Timer.Task failsafeTask = null;
     
     /**
      * Reference to the continue button's InputListener
-     * We remove this listener during processing to prevent queued events from firing
+     * We keep this listener attached but check flags inside it
      */
     private InputListener continueButtonListener = null;
     
@@ -130,7 +142,7 @@ public class MainGameMenuTable extends VisTable {
                     break;
                 
                 default:
-                    System.out.println("OPTION NOT IMPLEMENTED!");
+                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "OPTION NOT IMPLEMENTED!");
                     break;
                 }
                 
@@ -149,91 +161,58 @@ public class MainGameMenuTable extends VisTable {
         /**
          * Continue Game Button
          * 
-         * CRITICAL: We store the listener reference so we can remove it during processing
-         * This prevents queued events from firing even if they were already in the event queue
+         * CRITICAL: We keep the listener attached and use atomic checks on isProcessing.
+         * This prevents the "stuck button" bug where the listener is removed but never re-added.
          */
         continueButtonListener = new InputListener() {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // ABSOLUTE FIRST CHECK: If button is disabled, DO NOTHING - return false immediately
-                // This MUST be the first check, before ANY other code executes
-                if (continueGameButton.isDisabled()) {
-                    return false;
+                // Check if already processing (defense in depth)
+                if (isProcessing || continueGameButton.isDisabled()) {
+                    return false; // Ignore clicks while processing or disabled
                 }
                 
-                // CRITICAL: Use synchronized block to atomically check and set processing flag
                 synchronized (MainGameMenuTable.this) {
-                    // Double-check disabled state (defense in depth)
-                    if (continueGameButton.isDisabled()) {
+                    // Double-check inside synchronized block
+                    if (isProcessing) {
                         return false;
                     }
                     
-                    // Check if already processing (defense in depth)
-                    if (isProcessing) {
-                        continueGameButton.setDisabled(true);
-                        return false; // Block if already processing
-                    }
-                    
-                    // LibGDX Best Practice: Debounce - check minimum time since last click
+                    // Cooldown check
                     long currentTime = System.currentTimeMillis();
-                    long timeSinceLastProcessing = currentTime - lastProcessingStartTime;
-                    
-                    // Block if cooldown hasn't elapsed
-                    if (timeSinceLastProcessing < PROCESSING_COOLDOWN_MS) {
-                        continueGameButton.setDisabled(true);
-                        return false; // Block during cooldown
+                    if (currentTime - lastProcessingStartTime < PROCESSING_COOLDOWN_MS) {
+                        return false;
                     }
                     
-                    // ATOMIC: Set processing flag IMMEDIATELY
+                    // Mark as processing IMMEDIATELY
                     isProcessing = true;
                     lastProcessingStartTime = currentTime;
                     
-                    // CRITICAL: Remove listener IMMEDIATELY to prevent queued events
-                    continueGameButton.removeCaptureListener(continueButtonListener);
-                    
-                    // Disable button
+                    // UI Feedback
                     continueGameButton.setDisabled(true);
                     
+                    // Start failsafe timer
+                    startFailsafeTimer();
+                    
                     return true;
-                } // End synchronized - flag is now set, no other thread can set it
+                }
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                // NOTE: We do NOT check isDisabled() here because touchDown intentionally disables
-                // the button to prevent additional clicks, but we still need touchUp to proceed
-                // for this specific click to call continueGame()
-                
                 // Verify button is still pressed (user didn't drag away)
                 if (!continueGameButton.isPressed()) {
-                    // User dragged away - restore state
-                    synchronized (MainGameMenuTable.this) {
-                        isProcessing = false;
-                        if (!continueGameButton.getCaptureListeners().contains(continueButtonListener, true)) {
-                            continueGameButton.addCaptureListener(continueButtonListener);
-                        }
-                        continueGameButton.setDisabled(false);
-                    }
+                    resetProcessingState("User dragged away");
                     return;
                 }
                 
-                // Verify processing flag is still set (should be true from touchDown)
-                if (!isProcessing) {
-                    // Something went wrong - restore state
-                    if (!continueGameButton.getCaptureListeners().contains(continueButtonListener, true)) {
-                        continueGameButton.addCaptureListener(continueButtonListener);
-                    }
-                    continueGameButton.setDisabled(false);
-                    return;
-                }
-
                 // All checks passed - proceed with game continuation
                 continueGame();
             }
         };
         
-        // Add the listener to the button
+        // Add the listener once and keep it
         continueGameButton.addCaptureListener(continueButtonListener);
         
         /**
@@ -309,7 +288,7 @@ public class MainGameMenuTable extends VisTable {
         // get next action from game engine
         int nextGameAction = ((Futtoboru)(game)).getGameEngine().getNextGameAction();
         
-        System.out.println("SETTING NEXT GAME ACTION BUTTON: " + nextGameAction);
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "SETTING NEXT GAME ACTION BUTTON: " + nextGameAction);
         
         mainButtonContainer.clear();
         
@@ -352,15 +331,19 @@ public class MainGameMenuTable extends VisTable {
                     
                     @Override
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                        System.out.println("MainGameMenuTable: INBOX -> DRAW button clicked");
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: INBOX -> DRAW button clicked");
                         
                         if (mainMenuManager != null) {
-                            // Find the mandatory draw message and navigate directly to draw screen
+                            // Find the mandatory draw message and navigate to draw screen
+                            // Check both getAllMessages() (already delivered) and scheduledMessages (not yet delivered)
                             com.rndmodgames.futtoboru.system.SaveGame currentGame = 
                                 ((Futtoboru)(game)).getCurrentGame();
                             
+                            com.rndmodgames.futtoboru.data.Message messageToProcess = null;
+                            java.time.LocalDateTime currentDate = currentGame != null ? currentGame.getGameDate() : null;
+                            
+                            // First check getAllMessages() for already delivered messages
                             if (currentGame != null && currentGame.getAllMessages() != null) {
-                                // Find the mandatory LEAGUE_DRAW message
                                 for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
                                     if (message != null) {
                                         boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
@@ -372,77 +355,124 @@ public class MainGameMenuTable extends VisTable {
                                             (messageType.equals("LEAGUE_DRAW") || 
                                              messageType.equals("CUP_DRAW") ||
                                              messageType.equals("FIXTURE_DRAW"))) {
-                                            
-                                            System.out.println("MainGameMenuTable: Found mandatory draw message: " + message.getTitle());
-                                            
-                                            // Get league ID from actionData
-                                            if (message.getActionData() instanceof Long) {
-                                                Long leagueId = (Long) message.getActionData();
-                                                System.out.println("MainGameMenuTable: League ID from actionData: " + leagueId);
-                                                
-                                                // Find league in SaveGame
-                                                com.rndmodgames.futtoboru.data.League league = null;
-                                                if (currentGame.getMainAuthority() != null && 
-                                                    currentGame.getMainAuthority().getLeagues() != null) {
-                                                    for (com.rndmodgames.futtoboru.data.League l : 
-                                                         currentGame.getMainAuthority().getLeagues()) {
-                                                        if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
-                                                            league = l;
-                                                            System.out.println("MainGameMenuTable: Found league: " + league.getName());
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                                
-                                                if (league != null) {
-                                                    // Set selected league and navigate directly to draw screen
-                                                    mainMenuManager.setSelectedLeague(league);
-                                                    mainMenuManager.setActiveMainScreen(MainMenuManager.LEAGUE_DRAW_SCREEN);
-                                                    System.out.println("MainGameMenuTable: Navigating directly to draw screen");
-                                                } else {
-                                                    System.out.println("MainGameMenuTable: ERROR - League not found, falling back to inbox");
-                                                    // Fallback: navigate to inbox and select message
-                                                    mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
-                                                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                                                        @Override
-                                                        public void run() {
-                                                            com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable inboxTable = 
-                                                                mainMenuManager.getInboxScreenTable();
-                                                            if (inboxTable != null) {
-                                                                inboxTable.selectMessageByType(messageType);
-                                                            }
-                                                        }
-                                                    }, 0.1f);
-                                                }
-                                            } else {
-                                                System.out.println("MainGameMenuTable: ERROR - actionData is not a Long, falling back to inbox");
-                                                // Fallback: navigate to inbox and select message
-                                                mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
-                                                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                                                    @Override
-                                                    public void run() {
-                                                        com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable inboxTable = 
-                                                            mainMenuManager.getInboxScreenTable();
-                                                        if (inboxTable != null) {
-                                                            inboxTable.selectMessageByType(messageType);
-                                                        }
-                                                    }
-                                                }, 0.1f);
-                                            }
-                                            
-                                            return; // Found and handled the message
+                                            messageToProcess = message;
+                                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found mandatory draw message in getAllMessages: " + message.getTitle());
+                                            break;
                                         }
                                     }
                                 }
-                                
-                                System.out.println("MainGameMenuTable: WARNING - No mandatory draw message found, navigating to inbox");
-                                // No mandatory draw message found, just go to inbox
-                                mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
-                            } else {
-                                System.out.println("MainGameMenuTable: ERROR - currentGame or getAllMessages is null");
                             }
+                            
+                            // If not found in getAllMessages(), check scheduledMessages for ANY mandatory draw messages
+                            // When user clicks INBOX->DRAW button, we deliver the message regardless of scheduled date
+                            // This allows the user to perform the draw even if the message was scheduled for a future date
+                            if (messageToProcess == null && currentGame != null && currentGame.getScheduledMessages() != null) {
+                                for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
+                                    if (message != null) {
+                                        boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
+                                        String messageType = message.getMessageType();
+                                        
+                                        // Deliver ANY mandatory draw message when button is clicked, regardless of scheduled date
+                                        // This ensures the user can access the draw screen when the button is shown
+                                        if (isMandatory && 
+                                            messageType != null && 
+                                            (messageType.equals("LEAGUE_DRAW") || 
+                                             messageType.equals("CUP_DRAW") ||
+                                             messageType.equals("FIXTURE_DRAW"))) {
+                                            // Message is scheduled but not yet delivered - deliver it now so user can access draw screen
+                                            if (((Futtoboru)(game)).getGameEngine() != null &&
+                                                ((Futtoboru)(game)).getGameEngine().getMessageManager() != null) {
+                                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found scheduled mandatory draw message, delivering: " + message.getTitle() + 
+                                                    " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + ")");
+                                                ((Futtoboru)(game)).getGameEngine().getMessageManager().deliverMessage(message);
+                                                messageToProcess = message;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Process the message if found
+                            if (messageToProcess != null) {
+                                String messageType = messageToProcess.getMessageType();
+                                
+                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found mandatory draw message: " + messageToProcess.getTitle());
+                                
+                                // Handle CUP_DRAW separately
+                                if ("CUP_DRAW".equals(messageType)) {
+                                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found mandatory cup draw message");
+                                    mainMenuManager.setActiveMainScreen(MainMenuManager.CUP_DRAW_SCREEN);
+                                    return;
+                                }
+                                
+                                // Handle LEAGUE_DRAW and FIXTURE_DRAW
+                                if ("LEAGUE_DRAW".equals(messageType) || "FIXTURE_DRAW".equals(messageType)) {
+                                    // Get league ID from actionData
+                                    if (messageToProcess.getActionData() instanceof Long) {
+                                        Long leagueId = (Long) messageToProcess.getActionData();
+                                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: League ID from actionData: " + leagueId);
+                                        
+                                        // Find league in SaveGame
+                                        com.rndmodgames.futtoboru.data.League league = null;
+                                        if (currentGame != null && currentGame.getMainAuthority() != null && 
+                                            currentGame.getMainAuthority().getLeagues() != null) {
+                                            for (com.rndmodgames.futtoboru.data.League l : 
+                                                 currentGame.getMainAuthority().getLeagues()) {
+                                                if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
+                                                    league = l;
+                                                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Found league: " + league.getName());
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        
+                                        if (league != null) {
+                                            // Set selected league and navigate directly to draw screen
+                                            mainMenuManager.setSelectedLeague(league);
+                                            mainMenuManager.setActiveMainScreen(MainMenuManager.LEAGUE_DRAW_SCREEN);
+                                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: Navigating directly to league draw screen");
+                                            return;
+                                        } else {
+                                            DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: ERROR - League not found, falling back to inbox");
+                                            // Fallback: navigate to inbox and select message
+                                            mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                                            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                                                @Override
+                                                public void run() {
+                                                    com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable inboxTable = 
+                                                        mainMenuManager.getInboxScreenTable();
+                                                    if (inboxTable != null) {
+                                                        inboxTable.selectMessageByType(messageType);
+                                                    }
+                                                }
+                                            }, 0.1f);
+                                            return;
+                                        }
+                                    } else {
+                                        DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: ERROR - actionData is not a Long, falling back to inbox");
+                                        // Fallback: navigate to inbox and select message
+                                        mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                                        com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                                            @Override
+                                            public void run() {
+                                                com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable inboxTable = 
+                                                    mainMenuManager.getInboxScreenTable();
+                                                if (inboxTable != null) {
+                                                    inboxTable.selectMessageByType(messageType);
+                                                }
+                                            }
+                                        }, 0.1f);
+                                        return;
+                                    }
+                                }
+                            }
+                            
+                            // No mandatory draw message found
+                            DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: WARNING - No mandatory draw message found, navigating to inbox");
+                            mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
                         } else {
-                            System.out.println("MainGameMenuTable: ERROR - mainMenuManager is null");
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable: ERROR - mainMenuManager is null");
                         }
                     }
                 });
@@ -453,7 +483,7 @@ public class MainGameMenuTable extends VisTable {
             break;
             
         default:
-            System.out.println("GAME ACTION " + nextGameAction + " NOT IMPLEMENTED!");
+            DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_UI_MENU, "GAME ACTION " + nextGameAction + " NOT IMPLEMENTED!");
         }
     }
     
@@ -463,7 +493,7 @@ public class MainGameMenuTable extends VisTable {
     public void matchResult() {
        
         //
-        System.out.println("LOADING MATCH RESULT SCREEN!");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "LOADING MATCH RESULT SCREEN!");
         
         // Simulate Match and Advance Time
         ((Futtoboru)(game)).getGameEngine().getMatchResult();
@@ -482,7 +512,7 @@ public class MainGameMenuTable extends VisTable {
     public void matchPreview() {
         
         //
-        System.out.println("LOADING MATCH PREVIEW SCREEN!");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "LOADING MATCH PREVIEW SCREEN!");
         
         mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_PREVIEW_SCREEN);
         
@@ -498,33 +528,20 @@ public class MainGameMenuTable extends VisTable {
     /**
      * Continue game - advances time by one day
      * Prevents double-clicks and shows progress indicator during processing
-     * 
-     * Note: The processing flag is already set in touchDown() to prevent race conditions.
-     * This method just ensures it's still set (defense in depth).
-     * 
-     * TODO: BUG - Double-click bug still exists: Rapid double-clicks can still process two days in a row.
-     * The listener removal approach and disabled state checks are not fully preventing queued events from firing.
-     * Need to investigate LibGDX event queue handling and find a more robust solution.
      */
     private void continueGame() {
         
-        // Defense in depth: Verify flag is still set (should always be true at this point)
-        // If somehow it's not set, we can't proceed safely
+        // Defense in depth: Verify flag is still set
         if (!isProcessing) {
-            System.err.println("MainGameMenuTable: WARNING - continueGame() called but isProcessing is false!");
-            Gdx.app.error("MainGameMenuTable", "WARNING - continueGame() called but isProcessing is false!");
-            continueGameButton.setDisabled(false);
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "continueGame() called but isProcessing is false!");
+            setMainContainerButton();
             return;
         }
-        
-        // Disable button immediately and show progress bar
-        continueGameButton.setDisabled(true);
         
         // Show BusyBar (animates automatically when visible)
         processingBusyBar.setVisible(true);
         
-        System.out.println("MainGameMenuTable: Button disabled, BusyBar visible, scheduling processing");
-        Gdx.app.log("MainGameMenuTable", "Button disabled, BusyBar visible, scheduling processing");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "Starting game engine processing...");
         
         // Schedule the actual processing to happen after a short delay
         // This gives the UI one frame to render the disabled button and busy bar
@@ -532,47 +549,22 @@ public class MainGameMenuTable extends VisTable {
             @Override
             public void run() {
                 try {
-                    System.out.println("MainGameMenuTable: Starting game engine continueGame()");
-                    Gdx.app.log("MainGameMenuTable", "Starting game engine continueGame()");
-                    
                     // Continue the game on the Game Engine (this blocks the thread)
-                    ((Futtoboru)(game)).getGameEngine().continueGame();
+                    try {
+                        ((Futtoboru)(game)).getGameEngine().continueGame();
+                    } catch (Throwable t) {
+                        DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "CRITICAL ERROR in continueGame()", t);
+                    }
                     
-                    System.out.println("MainGameMenuTable: Game engine continueGame() completed");
-                    Gdx.app.log("MainGameMenuTable", "Game engine continueGame() completed");
-                    
-                    // After processing completes, update UI
+                    // After processing completes, update UI on main thread
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println("MainGameMenuTable: Updating UI after processing");
-                            Gdx.app.log("MainGameMenuTable", "Updating UI after processing");
-                            
                             // Update the dynamic date widget
                             dateTimeWidget.updateDynamicComponents();
                             
-                            // Clear processing flag immediately (cooldown check in touchDown will handle rapid clicks)
-                            synchronized (MainGameMenuTable.this) {
-                                isProcessing = false;
-                                System.out.println("MainGameMenuTable: Processing flag cleared");
-                                Gdx.app.log("MainGameMenuTable", "Processing flag cleared");
-                            }
-                            
-                            // Hide progress indicator
-                            processingBusyBar.setVisible(false);
-                            
-                            // CRITICAL: Re-add the listener BEFORE re-enabling the button
-                            // This ensures the listener is ready to handle new clicks
-                            continueGameButton.addCaptureListener(continueButtonListener);
-                            
-                            // Update button state first (this may re-add the button to the container)
-                            setMainContainerButton();
-                            
-                            // Then explicitly re-enable the button (after setMainContainerButton may have reset it)
-                            continueGameButton.setDisabled(false);
-                            
-                            System.out.println("MainGameMenuTable: Listener re-added, button re-enabled, BusyBar hidden");
-                            Gdx.app.log("MainGameMenuTable", "Listener re-added, button re-enabled, BusyBar hidden");
+                            // Reset state
+                            resetProcessingState("Processing complete");
                             
                             // Handle screen transitions
                             if (MainMenuManager.CURRENT_SCREEN == MainMenuManager.MATCH_RESULT_SCREEN) {
@@ -582,36 +574,62 @@ public class MainGameMenuTable extends VisTable {
                     });
                     
                 } catch (Exception e) {
-                    // Always re-enable button and hide progress indicator, even if there's an error
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Clear processing flag immediately
-                            synchronized (MainGameMenuTable.this) {
-                                isProcessing = false;
-                                System.out.println("MainGameMenuTable: Processing flag cleared after error");
-                                Gdx.app.log("MainGameMenuTable", "Processing flag cleared after error");
-                            }
-                            
-                            // Hide progress indicator
-                            processingBusyBar.setVisible(false);
-                            
-                            // CRITICAL: Re-add the listener in case of error (it was removed during processing)
-                            continueGameButton.addCaptureListener(continueButtonListener);
-                            
-                            // Update button state
-                            setMainContainerButton();
-                            
-                            // Explicitly re-enable the button
-                            continueGameButton.setDisabled(false);
-                            
-                            System.err.println("MainGameMenuTable: Error during continueGame(): " + e.getMessage());
-                            Gdx.app.error("MainGameMenuTable", "Error during continueGame()", e);
-                        }
-                    });
+                    DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "Error during continueGame() timer execution", e);
+                    Gdx.app.postRunnable(() -> resetProcessingState("Error during processing: " + e.getMessage()));
                 }
             }
-        }, 0.05f); // Very short delay to allow one render frame to show disabled state
+        }, 0.05f);
+    }
+
+    /**
+     * Starts a fail-safe timer to reset the button state if processing takes too long
+     */
+    private void startFailsafeTimer() {
+        if (failsafeTask != null) {
+            failsafeTask.cancel();
+        }
+        
+        failsafeTask = new Timer.Task() {
+            @Override
+            public void run() {
+                if (isProcessing) {
+                    DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "FAIL-SAFE TRIGGERED: Processing took too long (" + PROCESSING_FAILSAFE_TIMEOUT_MS + "ms). Resetting state.");
+                    Gdx.app.postRunnable(() -> resetProcessingState("Fail-safe timeout"));
+                }
+            }
+        };
+        
+        Timer.schedule(failsafeTask, PROCESSING_FAILSAFE_TIMEOUT_MS / 1000f);
+    }
+
+    /**
+     * Resets the processing state and re-enables the UI
+     * This is the single place where isProcessing is set back to false
+     */
+    private void resetProcessingState(String reason) {
+        synchronized (MainGameMenuTable.this) {
+            if (!isProcessing) return;
+            
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "Resetting processing state. Reason: " + reason);
+            
+            isProcessing = false;
+            
+            if (failsafeTask != null) {
+                failsafeTask.cancel();
+                failsafeTask = null;
+            }
+            
+            // Hide progress indicator
+            processingBusyBar.setVisible(false);
+            
+            // Refresh main container (this will re-add and enable the correct button)
+            setMainContainerButton();
+            
+            // Explicitly ensure the continue button is enabled if it's the current action
+            if (continueGameButton != null) {
+                continueGameButton.setDisabled(false);
+            }
+        }
     }
 
     public MainMenuManager getMainMenuManager() {

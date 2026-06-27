@@ -1,0 +1,10 @@
+# Birmingham St George's - 1888-89 Club Stadium File
+#
+# Stadium is Cape Hill
+#
+# Source: https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+31,Cape Hill,1875,5000,2000,"Cape Hill was the home of Birmingham St George's, located near the Mitchells & Butlers brewery.",https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.,800,false,80
+

@@ -27,6 +27,7 @@ import com.rndmodgames.futtoboru.system.loaders.CompetitionsLoader;
 import com.rndmodgames.futtoboru.system.loaders.NamesLoader;
 import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 import com.rndmodgames.futtoboru.system.loaders.SeasonsLoader;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * Database Loader v1
@@ -345,7 +346,7 @@ public class DatabaseLoader {
             clubs.add(club);
         }
         
-        System.out.println("Total Clubs: " + clubs.size());
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Total Clubs: " + clubs.size());
     }
     
     /**
@@ -394,7 +395,7 @@ public class DatabaseLoader {
                             
                         } catch (Exception e) {
                             
-                            System.out.println("Error Parsing Season Starting Date & Time!");
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "Error Parsing Season Starting Date & Time!");
                         }
                         
                         season.setCountries(new ArrayList<>());
@@ -416,7 +417,7 @@ public class DatabaseLoader {
             // TODO: If file doesn't exist, restore from default
         }
         
-        System.out.println("FINISHED LOADING " + seasons.size() + " SEASONS");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + seasons.size() + " SEASONS");
     }
     
     /**
@@ -469,7 +470,7 @@ public class DatabaseLoader {
             // TODO: If file doesn't exist, restore from default
         }
         
-        System.out.println("FINISHED LOADING " + databases.size() + " DATABASES");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + databases.size() + " DATABASES");
     }
     
     /**
@@ -521,7 +522,7 @@ public class DatabaseLoader {
             // TODO: If file doesn't exist, restore from default
         }
         
-        System.out.println("FINISHED LOADING " + continents.size() + " CONTINENTS");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + continents.size() + " CONTINENTS");
         
         /**
          * Fill the Continents Hash Map so we can get them by ID
@@ -542,7 +543,7 @@ public class DatabaseLoader {
         
         FileHandle countriesTxt = Gdx.files.internal(COUNTRIES_FILE);
 
-        System.out.println("COUNTRIES FILE: " + countriesTxt.path());
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "COUNTRIES FILE: " + countriesTxt.path());
         
         if (countriesTxt.exists()){
             
@@ -554,14 +555,14 @@ public class DatabaseLoader {
                 
                 line = reader.readLine();
 
-                System.out.println(line);
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, line);
                 
                 // Use # symbol as starting for comment (to enable or disable available countries)
                 while (line != null) {
                     
                     if (!line.startsWith("#")) {
                         
-//                        System.out.println(line);
+//                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, line);
   
                         String [] splitted = line.split(",");
                         
@@ -604,7 +605,7 @@ public class DatabaseLoader {
             // TODO: If file doesn't exist, restore from default
         }
         
-        System.out.println("FINISHED LOADING " + countries.size() + " COUNTRIES");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + countries.size() + " COUNTRIES");
         
         /**
          * Fill the Countries By Continent HashMap so we can get them by Continent ID
@@ -673,7 +674,7 @@ public class DatabaseLoader {
             // TODO: If file doesn't exist, restore from default
         }
         
-        System.out.println("FINISHED LOADING " + leagues.size() + " LEAGUES");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + leagues.size() + " LEAGUES");
         
         /**
          * - Iterate and fill the Leagues by Country Hash Map
@@ -739,7 +740,7 @@ public class DatabaseLoader {
             // TODO: If file doesn't exist, restore from default
         }
         
-        System.out.println("FINISHED LOADING " + professions.size() + " PROFESSIONS");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + professions.size() + " PROFESSIONS");
     }
 
     public static HashMap<Long, List<Club>> getClubsByCountry() {

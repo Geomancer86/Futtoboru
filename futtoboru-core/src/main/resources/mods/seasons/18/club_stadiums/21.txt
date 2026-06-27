@@ -1,0 +1,10 @@
+# Chatham Town - 1888-89 Club Stadium File
+#
+# Stadium is Maidstone Road Ground
+#
+# Source: https://en.wikipedia.org/wiki/Chatham_Town_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+21,Maidstone Road Ground,1882,2000,1000,"The home of Chatham Town during their early successful runs in the FA Cup.",https://en.wikipedia.org/wiki/Chatham_Town_F.C.,500,false,50
+

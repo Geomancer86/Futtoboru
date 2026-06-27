@@ -8,6 +8,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.NationalityModifier;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * Nationality Modifiers Loader v1.0
@@ -34,8 +35,8 @@ public class NationalityModifiersLoader {
         FileHandle modifiersFile = Gdx.files.internal(MODIFIERS_FILE);
         
         if (!modifiersFile.exists()) {
-            Gdx.app.log("NationalityModifiersLoader", "Modifiers file not found: " + MODIFIERS_FILE);
-            Gdx.app.log("NationalityModifiersLoader", "Will use default modifiers (all +0)");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "NationalityModifiersLoader", "Modifiers file not found: " + MODIFIERS_FILE);
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "NationalityModifiersLoader", "Will use default modifiers (all +0)");
             return;
         }
         
@@ -123,7 +124,7 @@ public class NationalityModifiersLoader {
                             modifiers.put(modifier.getCountryId(), modifier);
                             
                         } catch (NumberFormatException e) {
-                            Gdx.app.error("NationalityModifiersLoader", "Error parsing modifier line: " + line + " - " + e.getMessage());
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "NationalityModifiersLoader", "Error parsing modifier line: " + line + " - " + e.getMessage());
                         }
                     }
                 }
@@ -134,10 +135,10 @@ public class NationalityModifiersLoader {
             reader.close();
             
         } catch (IOException e) {
-            Gdx.app.error("NationalityModifiersLoader", "Error reading modifiers file: " + e.getMessage());
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "NationalityModifiersLoader", "Error reading modifiers file: " + e.getMessage());
         }
         
-        Gdx.app.log("NationalityModifiersLoader", "Loaded " + modifiers.size() + " nationality modifiers");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "NationalityModifiersLoader", "Loaded " + modifiers.size() + " nationality modifiers");
     }
     
     /**

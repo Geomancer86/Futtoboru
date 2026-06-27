@@ -1,0 +1,10 @@
+# South Shore - 1888-89 Club Stadium File
+#
+# Stadium is South Shore Ground
+#
+# Source: https://en.wikipedia.org/wiki/South_Shore_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+22,South Shore Ground,1879,2000,1000,"The home ground of South Shore FC in Blackpool, who later merged with Blackpool St John's to form Blackpool FC.",https://en.wikipedia.org/wiki/Blackpool_F.C.#Grounds,500,true,0
+

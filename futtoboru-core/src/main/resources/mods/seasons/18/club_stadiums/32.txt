@@ -1,0 +1,10 @@
+# Long Eaton Rangers - 1888-89 Club Stadium File
+#
+# Stadium is Recreation Ground
+#
+# Source: https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C.#Grounds
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+32,Recreation Ground,1881,2000,800,"The home ground of Long Eaton Rangers in Derbyshire.",https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C.,400,false,40
+

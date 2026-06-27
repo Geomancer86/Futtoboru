@@ -1,0 +1,10 @@
+# Old Brightonians - 1888-89 Club Stadium File
+#
+# Stadium is Brighton College Grounds
+#
+# Source: https://en.wikipedia.org/wiki/Old_Brightonians_F.C.
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+15,Brighton College Grounds,1845,1000,500,"The playing fields of Brighton College, used by the Old Brightonians amateur team.",https://en.wikipedia.org/wiki/Brighton_College,300,false,30
+

@@ -1,0 +1,10 @@
+# Small Heath - 1888-89 Club Stadium File
+#
+# Stadium is Muntz Street
+#
+# Source: https://en.wikipedia.org/wiki/Muntz_Street
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+33,Muntz Street,1877,10000,4500,"Muntz Street, also known as Coventry Road, was the home of Small Heath (later Birmingham City) from 1877 to 1906.",https://en.wikipedia.org/wiki/Muntz_Street,1800,true,0
+

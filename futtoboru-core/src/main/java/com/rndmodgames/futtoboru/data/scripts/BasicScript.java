@@ -54,6 +54,7 @@ public class BasicScript implements Serializable {
     
     //
     public static final int LEAGUE_CREATION_SCRIPT = 1000;
+    public static final int CUP_CREATION_SCRIPT    = 1001;
 
     public Long getId() {
         return id;

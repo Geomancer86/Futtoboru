@@ -10,6 +10,7 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerProfession;
 import com.rndmodgames.futtoboru.data.RegionModifier;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.loaders.NationalityModifiersLoader;
 import com.rndmodgames.futtoboru.system.loaders.RegionModifiersLoader;
 
@@ -36,7 +37,7 @@ public class PlayerAttributeGenerator {
     public void generatePlayerAttributes(Player player, Person person, LocalDateTime currentDate) {
         
         if (player == null || person == null) {
-            Gdx.app.error("PlayerAttributeGenerator", "Cannot generate attributes: player or person is null");
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerAttributeGenerator", "Cannot generate attributes: player or person is null");
             return;
         }
         
@@ -78,7 +79,7 @@ public class PlayerAttributeGenerator {
         // Profession bonuses are applied directly (no conversion needed with 3-18 system)
         applyProfessionBonuses(player);
         
-        Gdx.app.debug("PlayerAttributeGenerator", "Generated attributes for: " + person.getName() + 
+        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerAttributeGenerator", "Generated attributes for: " + person.getName() + 
                      " (Age: " + age + ", Age Adj: " + ageAdjustment + ")");
     }
     

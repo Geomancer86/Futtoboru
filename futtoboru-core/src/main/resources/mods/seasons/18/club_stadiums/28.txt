@@ -1,0 +1,10 @@
+# Derby Junction - 1888-89 Club Stadium File
+#
+# Stadium is Derby Junction Ground
+#
+# Source: https://en.wikipedia.org/wiki/Derby_Junction_F.C.
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+28,Derby Junction Ground,1870,2000,800,"The home ground of Derby Junction, one of the prominent clubs in Derby before the rise of Derby County.",https://en.wikipedia.org/wiki/Derby_Junction_F.C.,400,false,40
+

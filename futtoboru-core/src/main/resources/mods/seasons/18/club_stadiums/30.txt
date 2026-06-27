@@ -1,0 +1,10 @@
+# Sheffield Wednesday - 1888-89 Club Stadium File
+#
+# Stadium is Olive Grove
+#
+# Source: https://en.wikipedia.org/wiki/Olive_Grove
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+30,Olive Grove,1887,10000,5000,"Olive Grove was the home of Sheffield Wednesday from 1887 to 1899. It hosted the first ever Steel City Derby.",https://en.wikipedia.org/wiki/Olive_Grove,2000,false,200
+

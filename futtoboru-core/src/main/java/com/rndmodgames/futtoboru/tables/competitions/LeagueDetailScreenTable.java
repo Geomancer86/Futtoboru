@@ -158,6 +158,40 @@ public class LeagueDetailScreenTable extends VisTable {
         
         contentTable.add().height(10).row();
         
+        // Past Champions Section
+        if (selectedLeague.getEditions() != null && !selectedLeague.getEditions().isEmpty()) {
+            contentTable.add(new VisLabel("Past Champions")).pad(5).row();
+            contentTable.addSeparator().pad(2).row();
+            
+            // Show completed editions (those with champions)
+            int completedCount = 0;
+            for (com.rndmodgames.futtoboru.data.CompetitionEdition edition : selectedLeague.getEditions()) {
+                if (edition.getChampionsId() != null) {
+                    completedCount++;
+                    Club champion = currentGame.getClubById(edition.getChampionsId());
+                    Club runnerUp = edition.getRunnersUpId() != null ? currentGame.getClubById(edition.getRunnersUpId()) : null;
+                    
+                    String seasonInfo = edition.getName() != null ? edition.getName() : "Season " + completedCount;
+                    String championName = champion != null ? champion.getName() : "Unknown";
+                    String runnerUpName = runnerUp != null ? runnerUp.getName() : "N/A";
+                    
+                    VisTable historyRow = new VisTable(true);
+                    historyRow.add(new VisLabel(seasonInfo)).width(150).left();
+                    historyRow.add(new VisLabel("Champion: " + championName)).expandX().left();
+                    if (runnerUp != null) {
+                        historyRow.add(new VisLabel("Runner-up: " + runnerUpName)).expandX().left();
+                    }
+                    contentTable.add(historyRow).pad(2).row();
+                }
+            }
+            
+            if (completedCount == 0) {
+                contentTable.add(new VisLabel("No completed seasons yet.")).left().pad(2).row();
+            }
+            
+            contentTable.add().height(10).row();
+        }
+        
         // Standings Section (always show, even if no matches played yet)
         contentTable.add(new VisLabel("League Standings")).pad(5).row();
         contentTable.addSeparator().pad(2).row();

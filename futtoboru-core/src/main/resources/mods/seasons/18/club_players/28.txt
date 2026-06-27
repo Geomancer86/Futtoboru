@@ -1,0 +1,18 @@
+# Derby Junction - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Derby_Junction_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+2801,William,Chatterton,1000,1861-12-27
+2802,John,Higgins,1000,1866
+2803,Harry,Higgins,1000,1867
+2804,Tom,Higgins,1000,1868
+2805,Jack,Higgins,1000,1865
+2806,Fred,Higgins,1000,1866
+2807,George,Higgins,1000,1867
+2808,William,Higgins,1000,1868
+2809,Charles,Higgins,1000,1865
+2810,James,Higgins,1000,1866
+2811,Harry,Higgins,1000,1867
+

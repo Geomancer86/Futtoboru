@@ -1,0 +1,10 @@
+# Old Westminsters - 1888-89 Club Stadium File
+#
+# Stadium is Vincent Square
+#
+# Source: https://en.wikipedia.org/wiki/Old_Westminsters_F.C.
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+13,Vincent Square,1850,2000,1000,"Vincent Square is a grass-covered square in Westminster, London. It is the playing field of Westminster School and was the home ground of the Old Westminsters.",https://en.wikipedia.org/wiki/Vincent_Square,500,false,50
+

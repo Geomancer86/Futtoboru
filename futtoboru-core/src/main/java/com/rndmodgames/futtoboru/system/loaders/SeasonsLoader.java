@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * Seasons Loader v1
@@ -61,7 +62,7 @@ public class SeasonsLoader {
         for (Season season : seasons) {
 
             //
-            System.out.println("LOADING SEASON " + season.getName() + " FROM FILESYSTEM");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "LOADING SEASON " + season.getName() + " FROM FILESYSTEM");
 
             // Load Season Countries
             loadSeasonCountries(season);
@@ -110,9 +111,9 @@ public class SeasonsLoader {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("mods/seasons/" + season.getId() + "/countries.txt doesnt exist");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "mods/seasons/" + season.getId() + "/countries.txt doesnt exist");
         }
 
-        System.out.println("FINISHED LOADING " + season.getCountries().size() + " SEASON COUNTRIES");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + season.getCountries().size() + " SEASON COUNTRIES");
     }
 }

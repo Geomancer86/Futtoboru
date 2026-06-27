@@ -1,0 +1,18 @@
+# Old Brightonians - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Old_Brightonians_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1501,N.C.,Cooper,1000,1864
+1502,G.H.,Cotterill,1000,1868-04-04
+1503,A.M.,Daniel,1000,1866
+1504,W.H.,Dixon,1000,1865
+1505,L.L.,Fernie,1000,1867
+1506,F.G.J.,Ford,1000,1866-12-14
+1507,P.J.,de Paravicini,1000,1862-07-15
+1508,C.O.,Gill,1000,1868
+1509,R.T.,Thornton,1000,1853-07-15
+1510,A.C.,Stone,1000,1867
+1511,H.M.,Walters,1000,1866
+

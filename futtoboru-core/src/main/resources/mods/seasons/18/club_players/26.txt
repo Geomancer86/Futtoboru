@@ -1,0 +1,18 @@
+# Crewe Alexandra - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+2601,Billy,Ollis,1000,1865
+2602,John,Pearson,1000,1868-01-25
+2603,Arthur,Whittaker,1000,1866
+2604,Charles,Sagar,1000,1867
+2605,Joe,Lofthouse,1000,1865-04-14
+2606,Jack,Hill,1000,1866
+2607,Fred,Belfield,1000,1867
+2608,Tom,Belfield,1000,1868
+2609,Harry,Belfield,1000,1865
+2610,William,Belfield,1000,1866
+2611,George,Belfield,1000,1867
+

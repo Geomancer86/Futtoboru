@@ -1,0 +1,10 @@
+# Swifts - 1888-89 Club Stadium File
+#
+# Stadium is Dolphin Ground
+#
+# Source: https://en.wikipedia.org/wiki/Swifts_F.C.
+#
+# COLUMNS (v1.0 Enhanced)
+# id, name, year, capacity, value, description, urlSource, landValue, isOwned, annualRent
+14,Dolphin Ground,1870,2000,800,"The Dolphin Ground in Slough was the home ground of the Swifts, a prominent amateur club in the early days of English football.",https://en.wikipedia.org/wiki/Slough_Town_F.C.#Grounds,400,false,40
+

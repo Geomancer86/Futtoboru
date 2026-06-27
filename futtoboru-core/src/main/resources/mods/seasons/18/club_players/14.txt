@@ -1,0 +1,18 @@
+# Swifts - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Swifts_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1401,Bambridge,Charles,1000,1858-07-30
+1402,Bambridge,Arthur,1000,1861-06-16
+1403,Bambridge,Ernest,1000,1848-06-16
+1404,George,Cotterill,1000,1868-04-04
+1405,Wildam,Hay,1000,1851
+1406,Francis,Pawson,1000,1861-04-11
+1407,Humphrey,Tytheridge,1000,1865
+1408,Robert,Barker,1000,1847-06-19
+1409,William,Nicholl,1000,1868
+1410,John,Yates,1000,1861-01-03
+1411,Harry,Cursham,1000,1859-11-27
+

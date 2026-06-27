@@ -19,6 +19,11 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
 import com.rndmodgames.futtoboru.tables.club.ClubInfoScreenTable;
 import com.rndmodgames.futtoboru.tables.competitions.CompetitionsScreenTable;
+import com.rndmodgames.futtoboru.tables.competitions.CupDetailScreenTable;
+import com.rndmodgames.futtoboru.tables.competitions.CupPlayoffsTable;
+import com.rndmodgames.futtoboru.tables.competitions.LeagueDetailScreenTable;
+import com.rndmodgames.futtoboru.tables.draw.CupDrawScreenTable;
+import com.rndmodgames.futtoboru.tables.draw.LeagueDrawScreenTable;
 import com.rndmodgames.futtoboru.tables.finances.FinancesScreenTable;
 import com.rndmodgames.futtoboru.tables.inbox.InboxScreenTable;
 import com.rndmodgames.futtoboru.tables.main.HomeScreenTable;
@@ -62,6 +67,8 @@ public class MainMenuManager {
     
     private static final int LEAGUE_SCREEN           =  500;
     public static final int LEAGUE_DETAIL_SCREEN      =  501;    
+    public static final int CUP_DETAIL_SCREEN         =  502;
+    public static final int CUP_PLAYOFFS_SCREEN       =  503;
     private static final int WORLD_SCREEN            =  600;
     
     //
@@ -89,6 +96,10 @@ public class MainMenuManager {
     
     // Draw Screen (v1.0)
     public static final int LEAGUE_DRAW_SCREEN = 10008;
+    public static final int CUP_DRAW_SCREEN = 10009;
+    
+    // Match Engine Debug Screen (v1.0)
+    public static final int MATCH_ENGINE_DEBUG_SCREEN = 10010;
         
     //
     public static int PREVIOUS_SCREEN = -1; //
@@ -109,6 +120,7 @@ public class MainMenuManager {
     private VisTextButton clubInfoButton = null;
     private VisTextButton financesButton = null;
     private VisTextButton competitionsButton = null;
+    private VisTextButton matchEngineDebugButton = null;
     
     // Job System Buttons (v1.0)
     private VisTextButton clubBrowserButton = null;
@@ -128,11 +140,15 @@ public class MainMenuManager {
     private ClubInfoScreenTable clubInfoScreenTable = null;
     private FinancesScreenTable financesScreenTable = null;
     private CompetitionsScreenTable competitionsScreenTable = null;
-    private com.rndmodgames.futtoboru.tables.competitions.LeagueDetailScreenTable leagueDetailScreenTable = null;
-    private com.rndmodgames.futtoboru.tables.draw.LeagueDrawScreenTable leagueDrawScreenTable = null;
+    private LeagueDetailScreenTable leagueDetailScreenTable = null;
+    private CupDetailScreenTable cupDetailScreenTable = null;
+    private CupPlayoffsTable cupPlayoffsTable = null;
+    private LeagueDrawScreenTable leagueDrawScreenTable = null;
+    private CupDrawScreenTable cupDrawScreenTable = null;
     
     // Selected league for detail view
     private com.rndmodgames.futtoboru.data.League selectedLeague = null;
+    private com.rndmodgames.futtoboru.data.Competition selectedCup = null;
     
     // Job System Screens (v1.0)
     private com.rndmodgames.futtoboru.tables.jobs.ClubBrowserScreenTable clubBrowserScreenTable = null;
@@ -144,6 +160,9 @@ public class MainMenuManager {
     
     // Player Detail Screen (v1.0)
     private com.rndmodgames.futtoboru.tables.player.PlayerDetailScreenTable playerDetailScreenTable = null;
+    
+    // Match Engine Debug Screen (v1.0)
+    private com.rndmodgames.futtoboru.tables.match.engine.MatchEngineDebugScreenTable matchEngineDebugScreenTable = null;
     
     // Selected club for detail view and job application
     private Club selectedClubForDetail = null;
@@ -182,12 +201,21 @@ public class MainMenuManager {
         financesScreenTable = new FinancesScreenTable(game);
         competitionsScreenTable = new CompetitionsScreenTable(game);
         competitionsScreenTable.setMenuManager(this);
-        leagueDetailScreenTable = new com.rndmodgames.futtoboru.tables.competitions.LeagueDetailScreenTable(game);
+        leagueDetailScreenTable = new LeagueDetailScreenTable(game);
         leagueDetailScreenTable.setMenuManager(this);
         
+        cupDetailScreenTable = new CupDetailScreenTable(game);
+        cupDetailScreenTable.setMenuManager(this);
+        
+        cupPlayoffsTable = new CupPlayoffsTable(game);
+        cupPlayoffsTable.setMenuManager(this);
+        
         // Draw Screen (v1.0)
-        leagueDrawScreenTable = new com.rndmodgames.futtoboru.tables.draw.LeagueDrawScreenTable(game);
+        leagueDrawScreenTable = new LeagueDrawScreenTable(game);
         leagueDrawScreenTable.setMenuManager(this);
+        
+        cupDrawScreenTable = new CupDrawScreenTable(game);
+        cupDrawScreenTable.setMenuManager(this);
         
         // Job System Screens (v1.0)
         clubBrowserScreenTable = new com.rndmodgames.futtoboru.tables.jobs.ClubBrowserScreenTable(game);
@@ -221,6 +249,7 @@ public class MainMenuManager {
         clubInfoButton = new ClubInfoButton(this);
         financesButton = new FinancesButton(this);
         competitionsButton = new CompetitionsButton(this);
+        matchEngineDebugButton = new com.rndmodgames.futtoboru.menu.buttons.MatchEngineDebugButton(this);
         
         // Job System Buttons (v1.0)
         clubBrowserButton = new com.rndmodgames.futtoboru.menu.buttons.ClubBrowserButton(this);
@@ -324,6 +353,10 @@ public class MainMenuManager {
             
             // Finances
             buttonsMenu.add(financesButton).fill();
+            buttonsMenu.row();
+            
+            // Match Engine Debug (Development)
+            buttonsMenu.add(matchEngineDebugButton).fill();
             buttonsMenu.row();
             
             // Separator
@@ -509,6 +542,46 @@ public class MainMenuManager {
             parentTable.add(leagueDrawScreenTable).grow().fill();
             
             break;
+            
+        case CUP_DRAW_SCREEN:
+            System.out.println("MainMenuManager: Showing cup draw screen");
+            
+            // Try to find edition ID from draw message
+            com.rndmodgames.futtoboru.data.CompetitionEdition edition = null;
+            if (currentGame != null && currentGame.getAllMessages() != null) {
+                for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
+                    if (message != null && message.getIsMandatory() != null && message.getIsMandatory() &&
+                        "CUP_DRAW".equals(message.getMessageType())) {
+                        
+                        if (message.getActionData() instanceof Long) {
+                            Long editionId = (Long) message.getActionData();
+                            // Find edition in any cup
+                            for (com.rndmodgames.futtoboru.data.Competition cup : currentGame.getAllCups()) {
+                                if (cup.getEditions() != null) {
+                                    for (com.rndmodgames.futtoboru.data.CompetitionEdition ed : cup.getEditions()) {
+                                        if (ed.getId().equals(editionId)) {
+                                            edition = ed;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (edition != null) break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            if (edition != null) {
+                cupDrawScreenTable.setCompetitionEdition(edition);
+                parentTable.add(cupDrawScreenTable).grow().fill();
+            } else {
+                Gdx.app.error("MainMenuManager", "Could not find competition edition for cup draw");
+                setActiveMainScreen(INBOX_SCREEN);
+            }
+            
+            break;
            
         // 
         case AUTHORITY_SCREEN:
@@ -614,6 +687,15 @@ public class MainMenuManager {
             
             break;
             
+        //
+        case MATCH_ENGINE_DEBUG_SCREEN:
+            
+            // Match Engine Debug Screen - Development/Testing
+            matchEngineDebugScreenTable.updateDynamicComponents();
+            parentTable.add(matchEngineDebugScreenTable).grow();
+            
+            break;
+            
         case COMPETITIONS_SCREEN:
             
             // Update dynamic components
@@ -642,6 +724,42 @@ public class MainMenuManager {
             // Set as main content
             parentTable.add(leagueDetailScreenTable).grow().fill();
             
+            break;
+            
+        case CUP_DETAIL_SCREEN:
+            if (selectedCup == null) {
+                setActiveMainScreen(COMPETITIONS_SCREEN);
+                return;
+            }
+            cupDetailScreenTable.setSelectedCup(selectedCup);
+            parentTable.add(cupDetailScreenTable).grow().fill();
+            break;
+            
+        case CUP_PLAYOFFS_SCREEN:
+            if (selectedCup == null) {
+                setActiveMainScreen(COMPETITIONS_SCREEN);
+                return;
+            }
+            // Find current edition
+            com.rndmodgames.futtoboru.data.CompetitionEdition cupEd = null;
+            java.time.LocalDateTime now = currentGame.getGameDate();
+            for (com.rndmodgames.futtoboru.data.CompetitionEdition ed : selectedCup.getEditions()) {
+                if (ed.getStartDate() != null && ed.getEndDate() != null &&
+                    !now.isBefore(ed.getStartDate()) && !now.isAfter(ed.getEndDate())) {
+                    cupEd = ed;
+                    break;
+                }
+            }
+            if (cupEd == null && !selectedCup.getEditions().isEmpty()) {
+                cupEd = selectedCup.getEditions().get(selectedCup.getEditions().size() - 1);
+            }
+            
+            if (cupEd != null) {
+                cupPlayoffsTable.setCompetitionEdition(cupEd);
+                parentTable.add(cupPlayoffsTable).grow().fill();
+            } else {
+                setActiveMainScreen(COMPETITIONS_SCREEN);
+            }
             break;
             
         case CLUB_INFO_SCREEN:
@@ -829,6 +947,18 @@ public class MainMenuManager {
             
             break;
             
+        case CUP_DETAIL_SCREEN:
+            if (selectedCup != null) {
+                cupDetailScreenTable.updateDynamicComponents();
+            }
+            break;
+            
+        case CUP_PLAYOFFS_SCREEN:
+            if (selectedCup != null) {
+                cupPlayoffsTable.updateDynamicComponents();
+            }
+            break;
+            
         case LEAGUE_DRAW_SCREEN:
             
             // Update dynamic components with selected league
@@ -839,6 +969,11 @@ public class MainMenuManager {
             // Set as main content
             parentTable.add(leagueDrawScreenTable).grow();
             
+            break;
+            
+        case CUP_DRAW_SCREEN:
+            // Content is already updated in setCompetitionEdition
+            parentTable.add(cupDrawScreenTable).grow();
             break;
             
         case MATCH_HISTORY_SCREEN:
@@ -915,41 +1050,31 @@ public class MainMenuManager {
     public com.rndmodgames.futtoboru.data.League getSelectedLeague() {
         return selectedLeague;
     }
-    
-    /**
-     * Set selected player for detail view (v1.0)
-     */
+
+    public void setSelectedCup(com.rndmodgames.futtoboru.data.Competition cup) {
+        this.selectedCup = cup;
+    }
+
+    public com.rndmodgames.futtoboru.data.Competition getSelectedCup() {
+        return selectedCup;
+    }
+
     public void setSelectedPlayer(com.rndmodgames.futtoboru.data.Player player) {
         this.selectedPlayer = player;
     }
-    
-    /**
-     * Get selected player for detail view (v1.0)
-     */
+
     public com.rndmodgames.futtoboru.data.Player getSelectedPlayer() {
         return selectedPlayer;
     }
-    
-    /**
-     * Get inbox screen table (v1.0)
-     * Used by MainGameMenuTable to select specific messages
-     */
+
     public InboxScreenTable getInboxScreenTable() {
         return inboxScreenTable;
     }
-    
-    /**
-     * Get top menu table (v1.0)
-     * Used to refresh button state after draw completion
-     */
+
     public com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable getTopMenu() {
         return topMenuTable;
     }
-    
-    /**
-     * Set top menu table reference (v1.0)
-     * Called from MainGameScreen after creating MainGameMenuTable
-     */
+
     public void setTopMenuTable(com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable topMenuTable) {
         this.topMenuTable = topMenuTable;
     }

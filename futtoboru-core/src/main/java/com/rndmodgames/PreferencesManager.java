@@ -60,7 +60,10 @@ public class PreferencesManager {
 		    System.out.println("PREFS IS NULL");
 		}
 		
-		Gdx.app.log("PreferencesManager", "Preferences file is: " + PREFERENCES_NAME);
+		// PreferencesManager logging - use System.out directly to avoid circular dependency
+		// (DebugLogManager may not be initialized yet, and DebugLogManager uses PreferencesManager)
+		// This will be migrated to DebugLogManager later if needed, but must be done carefully
+		System.out.println("[PreferencesManager] Preferences file is: " + PREFERENCES_NAME);
 	}
 	
 	/**

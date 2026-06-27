@@ -1,0 +1,18 @@
+# Grimsby Town - 1888-89 Player File
+#
+# Source: https://en.wikipedia.org/wiki/Grimsby_Town_F.C.
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+2301,Chris,Short,1000,1865
+2302,Tom,Frith,1000,1866
+2303,Chris,Gibson,1000,1867
+2304,Chris,Johnston,1000,1868
+2305,Chris,Atkinson,1000,1865
+2306,Chris,Hulse,1000,1866
+2307,Chris,Higgins,1000,1867
+2308,Chris,Wright,1000,1868
+2309,Chris,Taylor,1000,1865
+2310,Chris,Brown,1000,1866
+2311,Chris,Smith,1000,1867
+

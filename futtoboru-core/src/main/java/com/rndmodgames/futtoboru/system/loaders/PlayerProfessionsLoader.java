@@ -8,6 +8,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.rndmodgames.futtoboru.data.PlayerProfession;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 
 /**
  * Player Professions Loader v1.0
@@ -34,8 +35,8 @@ public class PlayerProfessionsLoader {
         FileHandle professionsFile = Gdx.files.internal(PROFESSIONS_FILE);
         
         if (!professionsFile.exists()) {
-            Gdx.app.log("PlayerProfessionsLoader", "Professions file not found: " + PROFESSIONS_FILE);
-            Gdx.app.log("PlayerProfessionsLoader", "Will use default professions or random generation");
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "PlayerProfessionsLoader", "Professions file not found: " + PROFESSIONS_FILE);
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "PlayerProfessionsLoader", "Will use default professions or random generation");
             return;
         }
         
@@ -118,7 +119,7 @@ public class PlayerProfessionsLoader {
                             professions.put(profession.getId(), profession);
                             
                         } catch (NumberFormatException e) {
-                            Gdx.app.error("PlayerProfessionsLoader", "Error parsing profession line: " + line + " - " + e.getMessage());
+                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "PlayerProfessionsLoader", "Error parsing profession line: " + line + " - " + e.getMessage());
                         }
                     }
                 }
@@ -129,10 +130,10 @@ public class PlayerProfessionsLoader {
             reader.close();
             
         } catch (IOException e) {
-            Gdx.app.error("PlayerProfessionsLoader", "Error reading professions file: " + e.getMessage());
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "PlayerProfessionsLoader", "Error reading professions file: " + e.getMessage());
         }
         
-        Gdx.app.log("PlayerProfessionsLoader", "Loaded " + professions.size() + " player professions");
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "PlayerProfessionsLoader", "Loaded " + professions.size() + " player professions");
     }
     
     /**

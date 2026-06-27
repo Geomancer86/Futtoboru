@@ -110,7 +110,9 @@ public class PersonGenerator {
 
                     if (person.getName().equals(check.getName()) && person.getLastname().equals(check.getLastname())) {
 
-                        System.out.println("DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
+                        com.rndmodgames.futtoboru.system.DebugLogManager.getInstance().log(
+                            com.rndmodgames.futtoboru.system.DebugLogManager.CATEGORY_DATA_GENERATION, 
+                            "DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
                         return null;
                     }
                 }
@@ -125,7 +127,9 @@ public class PersonGenerator {
 
                     if (person.getName().equals(check.getName()) && person.getLastname().equals(check.getLastname())) {
 
-                        System.out.println("DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
+                        com.rndmodgames.futtoboru.system.DebugLogManager.getInstance().log(
+                            com.rndmodgames.futtoboru.system.DebugLogManager.CATEGORY_DATA_GENERATION, 
+                            "DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
                         return null;
                     }
                 }
