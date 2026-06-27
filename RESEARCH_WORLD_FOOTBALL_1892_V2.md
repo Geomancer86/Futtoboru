@@ -129,7 +129,7 @@ These share rules culture, travel distance, and source overlap (RSSSF, Wikipedia
 
 | Country | League from | circa 1892 | Notes |
 |---------|-------------|------------|-------|
-| **Argentina** | **1891** (one season); **1893** stable AFA | **No 1892 championship** | Five clubs 1891; British-expat clubs; **R-H12** for **1893–94** start better than 1892 |
+| **Argentina** | **1891** (one season); **1893** stable AFA | **No 1892 championship** | Five clubs 1891; British-expat clubs; **R-H12** for **1893–94** start; **hiatus + restart** required — [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) §6 |
 | **Uruguay** | **1900** (official league) | Clubs from **1891** (CURCC / Peñarol lineage) | Research stub only |
 | **Paraguay** | 1906 | — | V4+ |
 | **USA** | 1921 | Amateur/regional | Out of scope |

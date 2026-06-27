@@ -17,6 +17,8 @@ This is the **runtime world model** behind the north star in [DESIGN_HISTORICAL_
 - **Procedural rollover** = next competition year with **same save**  
 - **World evolution** = dated events that **mutate `SaveGame`**, not static files per simulated year
 
+**Player learns via news (locked):** Every structural change (new league, hiatus, restart, country) must surface in **inbox / newspaper** messages. Competitions may enter **HIATUS** or **RESTART** — e.g. Argentina 1891 → gap 1892 → AFA 1893. See [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md).
+
 ---
 
 ## 2. Canonical rule: save is truth during play

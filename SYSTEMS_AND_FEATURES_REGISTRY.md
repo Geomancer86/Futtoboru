@@ -20,6 +20,8 @@
 | Champion editions | ✅🧪 | 10-season report |
 | FA Cup headless season | ✅🧪 | `LeagueAndCupIT` |
 | Mandatory draw gates | ✅🧪 | `MandatoryGateIT` |
+| Inbox / world news (hiatus, restart) | ❌ | **NEWS-2** — [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) |
+| Player/club knowledge (fog) | ❌ | **KNOW-1** planned |
 | Save JSON roundtrip | ✅🧪 | `SaveLoadIT` |
 | `competition_rules.txt` on start mod | ✅🧪 | `CompetitionRulesLoaderTest` |
 | `SeasonManager` + save season fields | ✅🧪 | Multi-season ITs |
