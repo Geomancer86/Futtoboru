@@ -14,11 +14,16 @@
 
 | Layer | Name | What it means | Status |
 |-------|------|---------------|--------|
-| **A** | **V1.0 ship** | Procedural league + cup loop, employed start, static squads, manual QA | **~90% automated** · **UI polish + QA open** |
+| **A** | **V1.0 complete** | Procedural league + cup loop, employed start, static squads, manual QA | **~90% automated** · **UI polish + QA open** |
 | **B** | **V1 MVP complete** | CM1-minimum **management feel**: pick XI, basic tactics, credible match sim, attendance/fans, post-match ratings | **~25%** — mostly stubs / RNG sim |
 | **C** | **V1.5 (1892 expansion)** | World evolution + Division Two + new clubs in live save | **0% content** · design ready ([DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md)) |
 
-**PO direction (recorded):** Finish **Layer A**, then **Layer B** (sim + XI + fans are pre-requisites for fun sign-off), then **Layer C** (1892) on top of Wave 1.5 infra.
+**PO direction (recorded):** Finish **Layer A**, then **Layer B** (sim + XI + fans), then **Layer C** (1892) on Wave 1.5 infra. **Distribution and git remote pushes are PO-controlled** — docs do not prescribe release timing or `git push`.
+
+**Project constraints (PO):**
+
+- **No public release schedule** in project docs — PO decides when/how anything is shared.
+- **Never push to remote git** from automation or agents — local commits only unless PO explicitly runs push.
 
 **Key insight:** The **season loop is proven** (headless). The **management game** is not — sim uses **full-squad average + heavy RNG**, no picked team, attendance is **60–90% random**, tactics screen is a **placeholder**. Accrington won **8/10** procedural seasons — acceptable for systems test, **not** for MVP authenticity.
 
@@ -28,8 +33,8 @@
 
 | Term | Meaning |
 |------|---------|
-| **V1.0 tag** | Layer A — ship infinite 1888 loop with FA Cup; may waive sim depth if PO accepts “systems v1” |
-| **V1 MVP** | Layer A + **Layer B** — what players expect from “Football Manager 1888” minimum |
+| **V1.0 milestone** | Layer A — internal milestone when PO accepts checklist |
+| **V1 MVP** | Layer A + **Layer B** — CM1-minimum management feel |
 | **V1.5** | Layer C — 1892 league expansion + `WorldEvolutionManager` (not a version bump on Layer A alone) |
 | **v1.1 / v1.2** | Old doc labels for unemployed, transfers — folded into this plan as **MVP-*** and **1892-*** IDs |
 
@@ -94,7 +99,7 @@ scorers = random player from full squad
 | **A-6** | Cup UI smoke (headless already ✅) | Platform | Bracket/draw visible in manual QA | P1 |
 | **A-7** | Inbox policy for long careers | Platform | Cap/archive or PO waiver BLK-4 | P1 |
 | **A-8** | Update stale docs (`RELEASE_V1_DEFINITION` §4 rows) | PM | Point to automation truth | P1 |
-| **A-9** | PO sign-off + **`v1.0.0` tag** | PO | — | P0 |
+| **A-9** | PO sign-off on Layer A checklist | PO | Manual QA + automation green | P0 |
 
 ### 4.2 Explicitly NOT required for V1.0 tag (PO locked)
 
@@ -113,7 +118,7 @@ scorers = random player from full squad
 ✅ 59 PR tests green
 ✅ Manual QA §9 checklist (league + cup + 3 procedural seasons UI)
 ✅ No C-1 / C-3 / H-3 / H-9 blockers
-✅ PO accepts sim balance waiver OR fast-follow Layer B before public release
+✅ PO accepts Layer A complete (sim depth continues in Layer B)
 ```
 
 **Estimated effort:** 1–2 weeks (mostly Platform/UX + QA).
@@ -129,9 +134,9 @@ scorers = random player from full squad
 | ID | Feature | CM1 / FM ref | Code today | MVP spec (minimum) |
 |----|---------|--------------|------------|-------------------|
 | **MVP-1** | **Pick starting XI (11)** | CM1 team selection | ❌ No model; sim uses full squad | `Club.selectedPlayerIds` (11); UI on squad or tactics; default auto-best-11 |
-| **MVP-2** | **Basic tactics / formation** | CM1 formations menu | 🔲 Placeholder table, unwired | 1888-era formation (e.g. 2-3-5); affects position weights in sim only — no pitch view required |
-| **MVP-3** | **Match sim v2** | CM1 abstract match | ⚠️ RNG + squad avg | Sim uses **XI only**; Poisson/event goals; **form** from league position; **opponent strength** delta; reduce pure RNG band |
-| **MVP-4** | **Fan / attendance model** | FM table + opponent | ⚠️ Random % capacity | Formula: `baseFill * positionFactor * opponentFactor * matchType`; league position bands; fix **H-1** (don’t overwrite ticket sales) |
+| **MVP-2** | **Basic tactics / formation** | CM1 formations menu | 🔲 Placeholder | **2–3 era formations now** on extensible schema — [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) |
+| **MVP-3** | **Match sim v2** | CM1 abstract match | ⚠️ RNG + squad avg | XI + formation weights + form + opponent; reduced RNG |
+| **MVP-4** | **Fan / attendance model** | FM table + opponent + form + derbies | ⚠️ Random % capacity | **PO locked:** table position + opponent + **recent form** + **derby flag**; fix H-1 |
 | **MVP-5** | **Post-match player ratings (0–10)** | CM1 genre first | ❌ | Compute from XI performance proxy; show on result screen + optional squad column |
 | **MVP-6** | **Match result UI** | CM1 text result | ⚠️ Latest only | Score, scorers by name, attendance, ratings snippet |
 | **MVP-7** | **Match preview UI** | CM1 preview | 🔲 Stub | Both XIs (yours editable), opponent auto, strength hint |
@@ -159,39 +164,37 @@ scorers = random player from full squad
 
 ### 5.3 Fan / attendance model — design sketch
 
-**Not** a full dynamic fan loyalty sim — **static formula** per PO request:
+**PO locked:** include **league position**, **opponent quality**, **recent form**, and **derbies** — not a full dynamic fan loyalty sim.
 
 ```
 attendance = stadiumCapacity
-           * baseFill(matchType)          // league 0.55, cup 0.65, friendly 0.12
-           * positionFactor(leagueRank)   // 1st +12%, mid 0%, bottom −8%
-           * opponentFactor(opponentRank) // top-3 opponent +10%, derby flag +15% (future)
+           * baseFill(matchType)           // league ~0.55, cup ~0.65, friendly ~0.12
+           * positionFactor(leagueRank)    // 1st +12%, mid 0%, bottom −8%
+           * opponentFactor(opponentRank)  // top-3 +10%
+           * formFactor(last5Results)      // WW +8%, LL −10%, mixed 0%
+           * derbyFactor(isDerby)          // +18% if derby pair (mod/script registry)
            * clamp(0.08, 0.98)
 ```
 
-- **Ticket revenue:** use computed attendance × price (align [ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md](ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md)).  
-- **Fix H-1:** `MatchSimulator` sets attendance only if not already sold via `MatchScheduler`.  
-- **UI:** finances table column “Avg attendance”; match result shows count.
+**Derby registry (data):** `mods/derbies.txt` or season mod — pairs of club ids (e.g. Liverpool–Everton later; 1888 pack may be empty/minimal until clubs exist). Engine reads pairs; MVP can ship with **0 derbies** in 1888 and structure ready for 1892+.
+
+**Recent form:** last 5 competitive results (W/D/L) for home club — points rate vs max.
+
+- **Ticket revenue:** attendance × price ([ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md](ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md)).  
+- **Fix H-1:** `MatchSimulator` does not overwrite attendance already set by ticket sales.  
+- **UI:** finances avg attendance; match result shows count + “Derby” label when applicable.
 
 ### 5.4 Tactics & XI — design sketch
 
-**Data model:**
+**Full extensible design:** [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md)
 
-```java
-// Club (SaveGame)
-List<Long> selectedPlayerIds;     // size 11 when set
-String formationId;               // e.g. "2-3-5"
-```
+**MVP implements:**
 
-**UI flow (CM1-style):**
+- `ClubTacticsSetup` — formation template id + 11 slot assignments + empty `TeamInstructions` (future tactics)
+- `FormationRegistry` — 2–3 templates (default `2-3-5-1888`)
+- `MatchLineup` snapshot consumed by sim
 
-1. Sidebar **Tactics** (employed only)  
-2. Squad list with checkboxes / pick 11  
-3. Formation dropdown (3–5 options for 1888)  
-4. Optional: “Best XI” auto-fill button  
-5. Before player’s match: `MatchPreviewScreenTable` shows lineup  
-
-**Sim:** If `selectedPlayerIds` null or < 11 → auto-pick highest aggregate attribute 11 (logged once).
+**UI:** sidebar Tactics; formation dropdown; pick 11; “Best XI” auto-fill.
 
 ### 5.5 Post-match ratings — design sketch
 
@@ -260,7 +263,7 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 |----|---------|------------|
 | **1892-G1** | Second league in `SaveGame` / authority | WE-4, WE-5 |
 | **1892-G2** | Competitions UI — multi-league list | [ENGINE_LIBGDX §10](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) |
-| **1892-G3** | Promotion / re-election or static membership | PO + R-H6 research |
+| **1892-G3** | Division membership rules | PO decision — [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) |
 | **1892-G4** | Cup participant pool expands with new clubs | WE-1 |
 | **1892-G5** | Per-division fixture draw gates | Existing draw pattern ×2 |
 | **1892-G6** | Sim v2 at 24+ clubs | MVP-3 |
@@ -283,7 +286,7 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  NOW → 2 wk     Layer A: V1.0 tag (UI bugs + manual QA)      │
+│  NOW → 2 wk     Layer A: V1.0 complete (UI bugs + manual QA)│
 ├─────────────────────────────────────────────────────────────┤
 │  +6–10 wk       Layer B: MVP sim + XI + fans + ratings       │
 │                 (parallel: DB-1/DB-2 infra for 1892)         │
@@ -301,15 +304,33 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 
 ---
 
-## 8. PO decisions requested
+## 8. PO decisions
 
-| # | Decision | Options | Default |
-|---|----------|---------|---------|
-| 1 | **Public release after V1.0 tag or after MVP Layer B?** | A) Systems v1 public B) Wait for MVP B | B recommended |
-| 2 | **Formation depth for MVP** | A) XI only B) XI + 3 formations C) Full tactics | B |
-| 3 | **Attendance model complexity** | A) Table + opponent B) + recent form C) + derby flags | A |
-| 4 | **1892 promotion rules** | A) Historical static membership B) Re-election script C) Full promotion/relegation | PO leaning historical |
-| 5 | **Nov 1888 rules amendment** | A) Before 1892 B) With 1892 pack C) Defer | C |
+### 8.1 Locked (2026-06-27)
+
+| # | Decision | Choice |
+|---|----------|--------|
+| 1 | **Formations MVP** | Basic (2–3 historical templates + pick XI) on **extensible schema** — [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) |
+| 2 | **Attendance model** | Table position + opponent + **recent form** + **derbies** (structure + formula; derby data file) |
+| 3 | **Distribution / git** | PO decides when/how to share builds; **no remote git push** from agents |
+
+### 8.2 Open — needs PO (1892 membership)
+
+**Plain-language brief:** [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md)
+
+**One-sentence question:** When Division Two starts in 1892, do Div 1/Div 2 club lists follow **real history**, **your save’s league table**, or a **hybrid**?
+
+| Option | Summary |
+|--------|---------|
+| **A** | Historical script — real 1892–93 split regardless of your results |
+| **B** | Re-election flavour 1888–91, then historical 1892 split |
+| **C** | Save-driven — your table decides who is in each division |
+| **D** | Hybrid — real new clubs always; PO picks historical vs save split |
+
+| # | Other open items | Default |
+|---|------------------|---------|
+| 4 | Nov 1888 rules amendment | Defer (C) |
+| 5 | Promotion/relegation after 1892 | Defer until post-1892 milestone |
 
 ---
 
@@ -334,7 +355,7 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 | CM1 loop (automated) | ~85% | ~90% | ~95% | ~95% |
 | CM1 **management** feel | ~25% | ~25% | **~70%** | ~75% |
 | Pick XI affects sim | ❌ | ❌ | ✅ | ✅ |
-| Attendance vs table | ❌ | ❌ | ✅ | ✅ |
+| Attendance vs table + form + derby | ❌ | ❌ | ✅ | ✅ |
 | Playable leagues | 1 | 1 | 1 | **2** (1892+) |
 | Manual QA | Not started | ✅ | Re-run | Re-run |
 
@@ -350,6 +371,8 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 | Sim evidence | [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md) |
 | Attendance research | [ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md](ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md) |
 | CM1 benchmark | [CM1_REFERENCE.md](CM1_REFERENCE.md) |
+| Tactics / formations architecture | [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) |
+| 1892 membership PO brief | [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) |
 | 1892 world model | [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) |
 | UI/engine | [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) |
 | Bugs | [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md) |
@@ -360,7 +383,7 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 
 | Date | Change |
 |------|--------|
-| 2026-06-27 | Initial master plan — Layer A/B/C, MVP-1–10, 1892 pack |
+| 2026-06-27 | PO locks: extensible formations, attendance+form+derbies; 1892 brief; no release/push prescriptive language |
 
 ---
 

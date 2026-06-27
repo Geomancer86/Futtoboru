@@ -267,4 +267,4 @@ Scripts fire on `executionTime` during the save; they are **not** “load next y
 
 **Automation for Layer A is largely complete** (~90%). Remaining work is **UI stabilization + manual QA** (see [PM_V1_MVP_AND_1892_MASTER_PLAN.md §4](PM_V1_MVP_AND_1892_MASTER_PLAN.md)).
 
-**V1 MVP complete (Layer B)** adds CM1-minimum **pick XI, tactics, credible sim, attendance, ratings** — planned after tag unless PO gates public release on Layer B.
+**V1 MVP complete (Layer B)** adds CM1-minimum **pick XI, tactics, credible sim, attendance (form + derbies), ratings** — after Layer A per [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md).

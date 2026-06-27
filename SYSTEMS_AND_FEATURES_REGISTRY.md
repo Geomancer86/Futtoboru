@@ -40,7 +40,7 @@ See [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5](PM_V1_MVP_AND_1892_MASTER_PLAN.md).
 | MVP-1 | Pick starting XI (11) | ❌ Sim uses full squad |
 | MVP-2 | Basic formation / tactics UI | 🔲 Placeholder unwired |
 | MVP-3 | Match sim v2 (XI, form, opponent) | ❌ RNG + squad avg today |
-| MVP-4 | Fan / attendance (table + opponent) | ⚠️ Random 60–90% capacity |
+| MVP-4 | Fan / attendance (table + opponent + form + derbies) | ⚠️ Random 60–90% capacity |
 | MVP-5 | Post-match ratings 0–10 | ❌ |
 | MVP-6–7 | Match result / preview UI | ⚠️ Stubs |
 | MVP-8 | Sim balance (champion diversity) | ⚠️ Accrington 8/10 |

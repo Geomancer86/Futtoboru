@@ -234,4 +234,4 @@ Ordered by [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md §6 P2](CM_LEGACY_FUTTOBORU_GAP_
 
 ---
 
-*Next PM update: after manual QA sign-off or v1.0.0 tag.*
+*Next PM update: after PO locks 1892 membership (Option A/B/C/D) or Layer A manual QA.*

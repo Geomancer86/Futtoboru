@@ -18,7 +18,9 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | **PO, all eng** | **Season model** — start mod + procedural loop + FM-style scripts |
 | [PM_60_SEASON_GOAL_STATUS.md](PM_60_SEASON_GOAL_STATUS.md) | **PM, Sponsor** | **60-season north star** — test ladder & % complete |
 | [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) | **PM, PO, all leads** | **Features proven vs gaps + CM/FM roadmap** |
-| [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) | **PO, PM, all leads** | **Layer A ship · MVP sim/XI/fans · 1892 plan** |
+| [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) | **PO, PM, all leads** | **Layer A · MVP sim/XI/fans · 1892 plan** |
+| [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) | **Match/Sim, UX** | **Extensible formations + XI schema** |
+| [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) | **PO** | **Plain-language 1892 Div 1/Div 2 decision** |
 | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | **PO, World & Data** | **How many start mods / years; Wave 1–2 plan** |
 | [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) | **All engineers, PO** | **LibGDX stack, UI patterns, framework limits** |
 | [FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md](FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md) | **UI implementers** | Colours, fonts, visibility (companion to engine doc) |
