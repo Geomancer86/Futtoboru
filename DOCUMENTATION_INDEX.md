@@ -1,10 +1,11 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2025-06-25 (Round 16 — **research paused**; next: MVP/v1)
+**Last updated:** 2025-06-25 (v1 testing plan + PO decisions)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
-> **CM legacy document research is PAUSED** at Round 15. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md). **Next focus:** MVP / v1 features per [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md).
+> **CM legacy document research is PAUSED** at Round 15. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).  
+> **Active work:** v1 implementation — [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) · [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md)
 
 ---
 
@@ -14,7 +15,8 @@ Use this index to navigate project documentation. **Start here** after cloning.
 |----------|----------|---------|
 | [PM_STAKEHOLDER_STATUS_BRIEF.md](PM_STAKEHOLDER_STATUS_BRIEF.md) | **PM, all stakeholders** | **Status brief** — progress, docs hub, critical path |
 | [STAKEHOLDERS_AND_DEPARTMENTS.md](STAKEHOLDERS_AND_DEPARTMENTS.md) | PM, PO | Who owns what; core vs broader; sign-off gates |
-| [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | PO | v1 acceptance criteria |
+| [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | PO | v1 acceptance criteria — **PO decisions locked** |
+| [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) | PO, QA, Platform | **E2E harness, soak tests, FA Cup + static player policy** |
 | [PROJECT_MASTER_ANALYSIS.md](PROJECT_MASTER_ANALYSIS.md) | PM, PO | Executive technical status |
 
 ---

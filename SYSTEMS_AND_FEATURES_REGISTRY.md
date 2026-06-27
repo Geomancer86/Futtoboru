@@ -28,6 +28,8 @@
 | Player attribute generator | ⚠️ | 3d6 + modifiers; daily changes placeholder | `system/generators/PlayerAttributeGenerator.java` |
 | Player contract generator | ✅ | Wages, types, bonuses | `system/generators/PlayerContractGenerator.java` |
 | Name / person generator | ✅ | Random names | `system/generators/NameGenerator.java` |
+| **Player lifecycle (regen/retire/death)** | ❌ **Not in v1** | Static cohort; `birthDate` only | `data/Person.java`, `PersonGenerator.java` |
+| **Automated E2E harness** | ❌ | `GameTestHarness` planned | — |
 
 ---
 
@@ -203,19 +205,25 @@
 
 ## 10. Test coverage map
 
-| Area | Test exists? | File |
-|------|--------------|------|
+**Target state:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
+
+| Area | Test exists? | Planned test |
+|------|--------------|--------------|
 | DB load | ✅ | `DatabaseLoaderTests` |
 | Competitions load/draw | ✅ | `CompetitionsLoaderTests` |
 | League script | ✅ | `ScriptManagerTests` |
 | Season mod static | ✅ | `SeasonLeaguesAndTeamsTests` |
 | Players load | ✅ | `PlayersLoaderTests` |
 | Stadiums load | ✅ | `StadiumsLoaderTests` |
-| Match simulation | ❌ | — |
-| Season completion | ❌ | — |
-| Season rollover | ❌ | — |
-| Save/load roundtrip | ❌ | — |
-| Rules application | ❌ | — |
+| Mandatory gate / draw block | ❌ | `MandatoryGateIT` |
+| Match simulation | ❌ | `MatchSimulatorTest` |
+| Season completion | ❌ | `LeagueSeasonIT` |
+| FA Cup season | ❌ | `FaCupSeasonIT`, `LeagueAndCupIT` |
+| Season rollover | ❌ | `SeasonPlaythroughIT` |
+| Multi-season soak | ❌ | `MultiSeasonSoakIT`, `LongRunSoakIT` |
+| Player lifecycle static | ❌ | `PlayerLifecycleIT` |
+| Save/load roundtrip | ❌ | `SaveLoadIT` |
+| Rules application | ❌ | `CompetitionRulesLoaderTest` |
 | Finances | ❌ | — |
 
 ---
@@ -230,4 +238,4 @@
 | ❌ Missing | 2 | 0 | 6 |
 | 🐛 Broken | 1 | 2 | 2 |
 
-**For v1.0:** focus on moving **Season manager**, **Season transition**, and **Per-season rules** from ❌ to ✅ before adding new UI features.
+**For v1.0:** **`GameTestHarness` + season/cup/soak ITs** alongside **Season manager**, **FA Cup execution**, and **per-season rules** — see [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md).

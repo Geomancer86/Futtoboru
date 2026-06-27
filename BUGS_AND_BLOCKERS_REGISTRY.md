@@ -101,10 +101,25 @@ These prevent the stated goal: **play season under correct rules → complete �
 | **DG-3** | Season 1889–90 mod data | Yes |
 | **DG-4** | Mid-season Nov 1888 points rule change | Optional |
 | **DG-5** | Bottom-4 re-election AGM | Optional |
-| **DG-6** | FA Cup round progression | Optional for v1 |
+| **DG-6** | FA Cup round progression | **Yes** — PO locked 2025-06-25 |
 | **DG-7** | Training / tactics / transfers screens | No |
 | **DG-8** | Match preview detail (lineups, form) | No |
 | **DG-9** | Promotion/relegation system | Later seasons |
+| **DG-10** | Youth regens / retirement / mortality | **No in v1** — static cohort policy |
+| **DG-11** | `GameTestHarness` + season/cup/soak ITs | **Yes** — release gate |
+
+---
+
+## Simulation / blocking issues (test targets)
+
+| ID | Severity | Issue | Test |
+|----|----------|-------|------|
+| **BLK-1** | 🔴 | Stuck on mandatory draw not acknowledged | `MandatoryGateIT` |
+| **BLK-2** | 🔴 | Draw viewed but `isRead` not set | Gate IT + UI test |
+| **BLK-3** | 🟠 | Scheduled draw not delivered | Message delivery IT |
+| **BLK-4** | 🟠 | Long-run ID collision (messages/jobs) | `LongRunSoakIT` |
+
+See [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) §3.
 
 ---
 
@@ -152,6 +167,9 @@ For each critical fix, verify:
 - [ ] **C-3:** Load save → job board apply works
 - [ ] **C-5:** Draw message → league draw screen shows correct fixtures
 - [ ] **RB-6:** Complete season → Continue 30 days → fixture count unchanged
+- [ ] **AT-2:** Mandatory draw blocks → acknowledge → date advances
+- [ ] **Cup-6:** League + FA Cup complete headless in one season
+- [ ] **LP-5:** 3-season soak without deadlock
 
 ---
 
@@ -164,6 +182,6 @@ For each critical fix, verify:
 | 🟠 High | 9 |
 | 🟡 Medium | 12 |
 | 🟢 Low | 10 |
-| Design gaps (v1) | 3 required, 3 optional |
+| Design gaps (v1) | 5 required, 3 optional |
 
-**Minimum to ship v1.0:** fix all **RB-*** items + **C-1** through **C-5** + season 2 content.
+**Minimum to ship v1.0:** fix all **RB-*** + **C-1** through **C-5** + season 2 content + **FA Cup** + **`GameTestHarness` / `SeasonPlaythroughIT` green**.

@@ -4,23 +4,25 @@
 **Audience:** PM, PO, Sponsor, department leads, expert sign-off owners  
 **Branch:** `feature/competitions-finances-seasons` (v0.4.0-SNAPSHOT)  
 **Date:** 2025-06-25  
-**Next update:** After MVP/v1 feature definition sprint or Phase A implementation start
+**Next update:** After Phase 0 test harness or Phase A season loop lands
 
 ---
 
 ## 1. One-page executive summary
 
-**Futtoboru** is an open-source historical football management sim (1888–89 onward). The **feature branch** adds match simulation, finances, contracts, inbox, and jobs on top of a 2023 foundation — but **does not yet deliver the product promise**: play a season under correct rules, finish it, and start the next season forever.
+**Futtoboru** is an open-source historical football management sim (1888–89 onward). The **feature branch** adds match simulation, finances, contracts, inbox, and jobs — but **does not yet deliver the product promise**: play **league and FA Cup** under correct rules, finish the season, roll into the next **forever**, without **blocking** on mandatory prompts.
 
 | Question | Answer |
 |----------|--------|
-| **Can we ship v1 today?** | **No** — season end, rollover, and historical rules are missing or broken |
-| **How far are we?** | **~35%** of v1 acceptance criteria; **~12%** of legacy CM4 system depth |
-| **Biggest risk** | Season lifecycle unwired despite partial code existing |
-| **Biggest asset** | Mod/data pipeline + 1888 researched content |
-| **Recommended focus** | P0 season loop (3 departments) before any CM4-depth features |
+| **Can we ship v1 today?** | **No** — season rollover, FA Cup execution, E2E harness missing |
+| **How far are we?** | **~35%** of v1 acceptance criteria; **~12%** of legacy CM4 depth |
+| **Biggest risk** | Mandatory-gate soft-locks + unwired season completion in long runs |
+| **Biggest asset** | Mod/data pipeline + 1888 content |
+| **Recommended focus** | `GameTestHarness` + season/cup ITs + Phase A loop |
 
-**Competitive research:** **PAUSED** at Round 15 (Jun 2025). CM1–CM4 wiki + FM bible R1 + gap analysis + early-game sources **sufficient for v1 design**. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md). **Next doc sprint:** MVP feature set + refresh [MVP_PRIORITY_ROADMAP.md](MVP_PRIORITY_ROADMAP.md).
+**v1 plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) — FA Cup in scope; unemployed v1.1; static players (no regen/retire/death).
+
+**CM research:** **PAUSED** — [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
 
 ---
 
@@ -135,7 +137,7 @@ Detail: [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.m
 | CM Magazine CD extract Round 14 | ⚠️ | cmmag-01 samples only; **cmmag-04 deferred** at pause |
 | CM research backlog Round 15 | ✅ | [CM_LEGACY_RESEARCH_BACKLOG.md](CM_LEGACY_RESEARCH_BACKLOG.md) — full missing inventory |
 | **CM research pause Round 16** | ✅ | [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md) — **stopped**; early games OK for v1 |
-| **MVP / v1 feature sprint** | 🔲 **NEXT** | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) + gap analysis → MVP cut |
+| **MVP / v1 feature sprint** | ✅ **PLANNED** | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) — PO decisions locked |
 | CM03/04 supplement | 🔲 | Optional — resume research if needed |
 
 ---
@@ -161,7 +163,7 @@ Detail: [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.m
 
 - Tactics → training → transfers → scouting → morale/media  
 
-**PO decisions still open:** FA Cup in v1? Nov 1888 points rule? Unemployed start? Re-election?
+**PO decisions still open:** Merge strategy · release tag only (gameplay locked in RELEASE_V1 §10)
 
 Document: [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) §8.
 
@@ -247,5 +249,6 @@ Full list: [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)
 |------|--------|--------|
 | 2025-06-25 | Research/doc sprint | Initial PM brief after CM Round 2 + gap analysis |
 | 2025-06-25 | Round 16 | CM legacy research **paused**; next phase MVP/v1 |
+| 2025-06-25 | v1 plan | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) — E2E, FA Cup, static players |
 
 **Distribution:** PM, PO, Sponsor, department leads. Update when Phase A starts or PO resolves open decisions.

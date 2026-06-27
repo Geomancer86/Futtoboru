@@ -1,5 +1,7 @@
 # MVP Priority Roadmap - Next Steps
 
+> **⚠️ Superseded for v1 scope and priorities** by [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) and [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) (PO decisions locked 2025-06-25). Keep for historical weighting methodology only.
+
 **Date:** 2025-01-XX  
 **Current Version:** v0.4.0-SNAPSHOT  
 **Goal:** Identify top 5 MVP features with calculated priority percentages

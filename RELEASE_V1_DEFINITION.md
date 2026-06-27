@@ -2,7 +2,7 @@
 
 **Document type:** Product scope / acceptance criteria  
 **Analysis date:** 2025-06-25  
-**Status:** Draft for team decision — analysis only, no implementation committed
+**Status:** **Active** — PO decisions locked 2025-06-25 · see [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 
 ---
 
@@ -21,12 +21,13 @@ To prevent scope creep, v1.0 explicitly **does not require**:
 - Full FM feature parity (tactics, training, scouting, transfers market)
 - 3D match engine or detailed match events
 - All 35 clubs playable with full squads
-- FA Cup full knockout simulation *(may be Phase 1.1 if league loop ships first)*
 - Multi-country leagues beyond England
 - Multiplayer or modding tools
 - Mobile/Android build
+- **Youth regens, player retirements, or mortality** *(v1 uses static squads — see §4.7)*
+- **Unemployed career start** *(v1.1)*
 
-These can follow v1.0 if the season loop is solid.
+**In v1.0:** League **and FA Cup** full season simulation, infinite season rollover, employed start only.
 
 ---
 
@@ -40,7 +41,7 @@ and automatically (or via clear prompt) begin the next season
 with that season's configured rules — repeating indefinitely.
 ```
 
-**Alternate path (unemployed):** v1.0 may require starting **employed at a league club** for the season loop. Unemployed → job → first season can be v1.1 if it delays the core loop.
+**Alternate path (unemployed):** **Deferred to v1.1.** v1.0 requires starting **employed at a league club** to prove the season loop.
 
 ---
 
@@ -106,6 +107,43 @@ with that season's configured rules — repeating indefinitely.
 | LP-5 | Save game survives 3+ season transitions | ❌ Untested |
 | LP-6 | No memory/state leak across seasons (IDs, messages, scripts) | ❌ Untested |
 
+### 4.6 FA Cup (in v1.0)
+
+| ID | Criterion | Current state |
+|----|-----------|---------------|
+| Cup-1 | FA Cup 1888–89 loaded and scheduled | ⚠️ Data exists; execution stub |
+| Cup-2 | Cup draw uses mandatory inbox gate | ❌ |
+| Cup-3 | Knockout rounds eliminate losers | ❌ |
+| Cup-4 | Cup results do not break league completion signal | ❌ |
+| Cup-5 | Cup winner on `CompetitionEdition` | ❌ |
+| Cup-6 | League + cup completable same season | ❌ |
+
+### 4.7 Player lifecycle (v1.0 — static world)
+
+| ID | Criterion | Current state |
+|----|-----------|---------------|
+| PL-9 | No youth regen or intake pipeline | ✅ None implemented |
+| PL-10 | No player retirement | ✅ None implemented |
+| PL-11 | No player death / mortality | ✅ None implemented |
+| PL-12 | `birthDate` fixed; age display may increase with calendar | ⚠️ Implicit only |
+| PL-13 | Same player IDs persist across season rollovers | ❌ Rollover not implemented |
+| PL-14 | Squad size stable unless season mod replaces players | ❌ Untested |
+
+Policy detail: [V1_TESTING_AND_SIMULATION_PLAN.md §7](V1_TESTING_AND_SIMULATION_PLAN.md#7-player-lifecycle--static-world-v1-policy).
+
+### 4.8 Automated testing (v1.0 gate)
+
+| ID | Criterion | Current state |
+|----|-----------|---------------|
+| AT-1 | `GameTestHarness` headless API | ❌ |
+| AT-2 | `MandatoryGateIT` — draw block + acknowledge | ❌ |
+| AT-3 | `SeasonPlaythroughIT` — 1888 → 1889 rollover | ❌ |
+| AT-4 | `LeagueAndCupIT` — full season both competitions | ❌ |
+| AT-5 | `MultiSeasonSoakIT` — ≥3 seasons without deadlock | ❌ |
+| AT-6 | CI fails on test failure | ❌ `test.failure.ignore=true` |
+
+Full plan: [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md).
+
 ---
 
 ## 5. Rules configuration model (required design)
@@ -147,7 +185,7 @@ Each year's edition carries its own `CompetitionRules` snapshot.
 | Season 1889–90 (id 19) | ✅ Yes — proves loop |
 | Season 1890–91 (id 20) | ⚠️ Strongly recommended — proves "forever" |
 | 12 league clubs with squads | ✅ Yes |
-| FA Cup full simulation | ❌ Defer to v1.1 unless trivial |
+| **FA Cup 1888–89 full knockout** | ✅ **Yes — in v1** |
 | 23 non-league clubs | ❌ Nice to have |
 
 ---
@@ -163,6 +201,8 @@ Each year's edition carries its own `CompetitionRules` snapshot.
 | Rules loader | Read rules from season mod or edition |
 | Season 19 mod folder | Clubs, scripts, rules for 1889–90 |
 | Integration test | New game → sim full season → verify rollover → play season 2 |
+| **FA Cup integration test** | League + cup complete in one season headless |
+| **Multi-season soak test** | ≥3 seasons without mandatory-gate deadlock |
 | Bug fixes from registry | All CRITICAL items in BUGS_AND_BLOCKERS_REGISTRY.md |
 
 ---
@@ -193,24 +233,27 @@ Each year's edition carries its own `CompetitionRules` snapshot.
 - [ ] Save mid-season → load → state identical
 - [ ] Save after season 1 → load → season 2 still works
 - [ ] Play through 3 seasons without new game
+- [ ] FA Cup knockout completes; does not block league completion
+- [ ] No soft-lock on mandatory draw (league or cup)
 
 ---
 
-## 10. Open decisions for the team
+## 10. PO decisions log
 
-1. **Unemployed start in v1.0?** Yes / No / v1.1
-2. **FA Cup in v1.0?** Yes / No / simplified
-3. **Nov 1888 mid-season points change?** Required / simplified / defer
-4. **Re-election bottom 4?** Script only / full simulation / defer
-5. **Merge strategy:** feature branch → develop → main, or squash?
-6. **Release tag:** v1.0.0 vs v0.5.0 incremental?
-
-Document decisions here when made.
+| # | Decision | **Resolved (2025-06-25)** |
+|---|----------|---------------------------|
+| 1 | Unemployed start in v1.0? | **No — v1.1** |
+| 2 | FA Cup in v1.0? | **Yes — full knockout with league** |
+| 3 | Nov 1888 mid-season points change? | **Defer** — single 2-1-0 for 1888–89 first |
+| 4 | Re-election bottom 4? | **Script/message only** — full sim defer |
+| 5 | Player regens / retirement / death? | **None in v1** — static squads; aging display-only |
+| 6 | Merge strategy | **Open** — feature branch → develop → main TBD |
+| 7 | Release tag | **Open** — `v1.0.0` when harness + QA green |
 
 ---
 
 ## 11. Summary
 
-**v1.0 = a closed loop:** start season → play under that season's rules → season ends → next season starts under new rules → repeat.
+**v1.0 = a closed loop:** start season → play **league and FA Cup** under that season's rules → season ends → next season starts → repeat **forever**, with **automated tests** proving no mandatory-gate deadlock over multi-season runs.
 
-Current codebase is approximately **30–40% of the way** to this definition. The missing 60% is concentrated in **season lifecycle**, **rules configuration**, and **stabilization** — not in building more UI screens.
+Current codebase is approximately **30–40% of the way** to this definition. The missing 60% is concentrated in **season lifecycle**, **FA Cup execution**, **rules configuration**, **test harness**, and **stabilization** — not in building more UI screens.

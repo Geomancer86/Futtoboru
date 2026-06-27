@@ -123,7 +123,7 @@ Research **informs** scope; it does **not** expand v1 by default.
 | [MVP_PRIORITY_ROADMAP.md](MVP_PRIORITY_ROADMAP.md) | **Stale** — refresh against gap analysis + RELEASE_V1 in next sprint |
 | [SYSTEMS_AND_FEATURES_REGISTRY.md](SYSTEMS_AND_FEATURES_REGISTRY.md) | Screen/system status for MVP cut |
 
-**PO action (next session):** Define MVP feature set, mark gaps in implementation registries, resolve open decisions in RELEASE_V1 §8 (FA Cup, unemployed start, Nov 1888 points rule).
+**Next phase:** **v1 implementation** — [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) · [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) (PO decisions locked 2025-06-25)
 
 ---
 

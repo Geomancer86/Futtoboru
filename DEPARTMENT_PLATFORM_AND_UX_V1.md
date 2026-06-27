@@ -1,8 +1,10 @@
 # Department: Platform & UX — v1 Deep Dive
 
 **Department expert:** _________________  
-**Status:** Headless tests exist; CI ignores failures; no season harness  
-**Role in v1:** **Proof gate** — not a core feature dept, but **blocks release tag**
+**Status:** Headless tests exist; CI ignores failures; **no season/cup/soak harness**  
+**Role in v1:** **Proof gate** — E2E headless simulation blocks release tag
+
+**Master plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 
 ---
 
@@ -34,6 +36,10 @@ Prove the three core departments work together via **automated season playthroug
 |----|-------------|------------|
 | PU-1 | `GameTestHarness` | Single API for new game, advance, sim season |
 | PU-2 | `SeasonPlaythroughIT` | 1888 complete → rollover → 1889 rules applied |
+| PU-2b | `LeagueAndCupIT` + `FaCupSeasonIT` | Full season both competitions |
+| PU-2c | `MultiSeasonSoakIT` | ≥3 seasons; no mandatory-gate deadlock |
+| PU-2d | `LongRunSoakIT` | 10 in-game years or 3650 days max |
+| PU-2e | `MandatoryGateIT` | Draw block + acknowledge path |
 | PU-3 | Save/load roundtrip test | Mid-season + post-rollover |
 | PU-4 | CI fails on test failure | Remove `test.failure.ignore` |
 | PU-5 | GitHub Actions workflow | Java 17 + `mvn test` on PR |
