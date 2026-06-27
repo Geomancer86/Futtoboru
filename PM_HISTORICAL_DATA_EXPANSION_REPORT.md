@@ -189,7 +189,18 @@ CM/FM **game design** research is strong and **paused** ([CM_LEGACY_RESEARCH_PAU
 - Second country playable end-to-end  
 - Begin master DB feasibility (R-H6)
 
-### Wave 4 — North star (18+ months)
+### Wave 4 — V2 multi-country (post Layer C)
+
+See **[RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md)**:
+
+| Deliverable | Priority |
+|-------------|----------|
+| R-H4b Scotland 1892–93 pack | P0 |
+| R-H7 Ireland IFA pack | P1 |
+| R-H8 Wales cup/regional | P2 |
+| MC-1 country activation scripts | Engineering |
+
+### Wave 5 — North star (18+ months)
 
 - Master historical DB **or** 25–40 milestone mods  
 - Community editor / external lint service  
@@ -281,6 +292,7 @@ Do **not** choose only one track — sequence matters.
 | [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | Procedural loop |
 | [HISTORICAL_DATA_SOURCE_LEDGER.md](HISTORICAL_DATA_SOURCE_LEDGER.md) | Source provenance (R-H1) |
 | [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) | Live save incorporation |
+| [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) | V2 worldwide nations circa 1892 |
 
 ---
 

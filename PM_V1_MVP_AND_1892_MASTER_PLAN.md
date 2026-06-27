@@ -280,6 +280,21 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 
 **Estimated effort:** 8–12 weeks after DB-1/DB-2 + Layer B sim (content-heavy).
 
+### 6.5 V2 — Worldwide nations (after Layer C)
+
+Full research: **[RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md)**
+
+| Priority | Nation | circa 1892 | League? | V2 role |
+|----------|--------|------------|---------|---------|
+| **P0** | **Scotland** | SFL season 3; Celtic 1893 champ | ✅ 10 clubs | First non-England playable |
+| **P1** | **Ireland (IFA)** | Irish League season 4 | ✅ ~8 Belfast clubs | Second British nation |
+| **P2** | **Wales** | Welsh Cup + regional only | ❌ no national league | Cup/regional path |
+| **P2** | **Netherlands** | NBvB league from 1890 | ✅ western clubs | First continental (research V2, ship V3) |
+| **P3** | **Argentina** | gap 1892; AFA 1893 | ⚠️ 1893+ | Americas milestone |
+| **Defer** | Uruguay, Belgium, Italy, … | clubs or leagues later | — | V3+ |
+
+**Not in 1892 scope:** Africa, Asia, most of continental Europe (national leagues **1900+**).
+
 ---
 
 ## 7. Recommended master sequence
@@ -331,6 +346,7 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 |---|------------------|---------|
 | 4 | Nov 1888 rules amendment | Defer (C) |
 | 5 | Promotion/relegation after 1892 | Defer until post-1892 milestone |
+| 6 | **V2 first country after England 1892?** | **A)** Scotland **B)** Ireland **C)** Wales — [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) |
 
 ---
 
@@ -374,6 +390,7 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 | Tactics / formations architecture | [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) |
 | 1892 membership PO brief | [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) |
 | 1892 world model | [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) |
+| **V2 worldwide research (1892 era)** | [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) |
 | UI/engine | [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) |
 | Bugs | [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md) |
 

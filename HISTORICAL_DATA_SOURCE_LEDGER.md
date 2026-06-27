@@ -40,7 +40,9 @@ Add rows below before using a new prefix in content PRs.
 |-----------|----------------|--------|:--------:|
 | `S-WIKI-EFL1888-01` | https://en.wikipedia.org/wiki/1888–89_Football_League | League table, clubs, rules context | ⚠️ Partial |
 | `S-WIKI-FACUP1888-01` | https://en.wikipedia.org/wiki/1888–89_FA_Cup | FA Cup participants | ⚠️ Partial |
-| `S-RSSSF-ENG1888-01` | https://www.rsssf.org/tablese/eng1889.html | Tables, dates | ❌ Not linked in files yet |
+| `S-RSSSF-SCO1893-01` | https://www.rsssf.org/tabless/scot1893.html | Scottish league 1892–93 | ❌ Not linked |
+| `S-WIKI-SCO1892-01` | https://en.wikipedia.org/wiki/1892%E2%80%9393_in_Scottish_football | Scotland season overview | ❌ Not linked |
+| `S-WIKI-IRL1890-01` | https://en.wikipedia.org/wiki/Northern_Ireland_Football_League | Irish League history | ❌ Not linked |
 
 **Action:** Backfill `source:` comments in `mods/seasons/18/` during DB-2 validation pass.
 
@@ -52,6 +54,13 @@ Add rows below before using a new prefix in content PRs.
 |---------|-----|--------|---------|
 | `R-H3` | England 1899–1900 | ❌ Not started | First Tier-1 start mod candidate |
 | `R-H4` | Scotland 1890–91 | ❌ Not started | First country expansion candidate |
+| `R-H4b` | Scotland **1892–93** full league + cup | ❌ Not started | **V2 P0** — see [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) |
+| `R-H7` | Ireland IFA Irish League 1890–93 | ❌ Not started | V2 P1 |
+| `R-H8` | Wales 1890s cup + regional | ❌ Not started | V2 P2 |
+| `R-H9` | British Home Championship | ❌ Not started | Design only V3 |
+| `R-H10` | Netherlands 1890–91 league | ❌ Not started | V2 research / V3 playable |
+| `R-H11` | Belgium 1895+ | ❌ Not started | V3 stub |
+| `R-H12` | Argentina 1893–94 | ❌ Not started | V3 Americas milestone |
 
 ---
 
