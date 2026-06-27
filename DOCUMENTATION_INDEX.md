@@ -22,6 +22,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) | **Match/Sim, UX** | **Extensible formations + XI schema** |
 | [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) | **PO** | **Plain-language 1892 Div 1/Div 2 decision** |
 | [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) | **PO, Research** | **Scotland, Ireland, Wales, NL, Americas circa 1892** |
+| [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) | **PO, all leads** | **Historical accuracy, inbox/news, player knowledge** |
 | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | **PO, World & Data** | **How many start mods / years; Wave 1–2 plan** |
 | [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) | **All engineers, PO** | **LibGDX stack, UI patterns, framework limits** |
 | [FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md](FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md) | **UI implementers** | Colours, fonts, visibility (companion to engine doc) |

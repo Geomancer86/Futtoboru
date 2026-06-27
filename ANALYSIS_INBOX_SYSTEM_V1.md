@@ -2,7 +2,8 @@
 
 **Analysis Date:** 2025-12-14  
 **Branch:** feature/match-simulation-v1  
-**Priority:** HIGH - Critical for player information and game immersion
+**Priority:** HIGH - Critical for player information and game immersion  
+**Superseded in part by:** [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) (PO intentions — world news, hiatus/restart, knowledge)
 
 ---
 

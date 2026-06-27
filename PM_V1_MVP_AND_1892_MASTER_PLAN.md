@@ -18,12 +18,14 @@
 | **B** | **V1 MVP complete** | CM1-minimum **management feel**: pick XI, basic tactics, credible match sim, attendance/fans, post-match ratings | **~25%** — mostly stubs / RNG sim |
 | **C** | **V1.5 (1892 expansion)** | World evolution + Division Two + new clubs in live save | **0% content** · design ready ([DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md)) |
 
-**PO direction (recorded):** Finish **Layer A**, then **Layer B** (sim + XI + fans), then **Layer C** (1892) on Wave 1.5 infra. **Distribution and git remote pushes are PO-controlled** — docs do not prescribe release timing or `git push`.
+| **H-4** | The **inbox / news** reports world events (league hiatus, restarts, new countries) — core immersion, not optional. |
+| **H-5** | Players, clubs, managers, staff are **discovered over time** — not all known on day one. |
 
-**Project constraints (PO):**
+**Canonical design:** [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md)
 
-- **No public release schedule** in project docs — PO decides when/how anything is shared.
-- **Never push to remote git** from automation or agents — local commits only unless PO explicitly runs push.
+**Project constraints (PO):** PO controls distribution; **no remote git push** from automation.
+
+**Core product (PO):** Historical structure + **news/inbox** + gradual **knowledge** — [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md).
 
 **Key insight:** The **season loop is proven** (headless). The **management game** is not — sim uses **full-squad average + heavy RNG**, no picked team, attendance is **60–90% random**, tactics screen is a **placeholder**. Accrington won **8/10** procedural seasons — acceptable for systems test, **not** for MVP authenticity.
 
