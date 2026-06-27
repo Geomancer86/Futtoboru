@@ -18,6 +18,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | PO | v1 acceptance criteria — **PO decisions locked** |
 | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) | PO, QA, Platform | E2E harness, soak tests, FA Cup + static player policy |
 | [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) | **PM** | **Phase 0 complete** — harness, ITs, CI |
+| [scripts/README.md](scripts/README.md) | DevOps | **Maven 3.9.16** system install (Windows) |
 | [PROJECT_MASTER_ANALYSIS.md](PROJECT_MASTER_ANALYSIS.md) | PM, PO | Executive technical status |
 
 ---

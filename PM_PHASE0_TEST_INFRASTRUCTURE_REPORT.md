@@ -21,9 +21,7 @@ Phase 0 delivers the **headless test foundation** required before season/cup imp
 | T-3 JaCoCo report | ✅ Already in `futtoboru-core/pom.xml`; runs on `mvn test` |
 | C-2 partial fix | ✅ `AuthorityManager.refreshCurrentGame()` |
 
-**Maven verification:** Run `mvn clean test` from repo root (Java 17). CI: `.github/workflows/maven-test.yml`.
-
-**Local note:** Agent environment had no `mvn` on PATH; verify on developer machine or CI after push.
+**Maven verification:** Run `mvn clean test` from repo root (Java 17). Installed system-wide: **Apache Maven 3.9.16** — see [scripts/README.md](scripts/README.md).
 
 ---
 
