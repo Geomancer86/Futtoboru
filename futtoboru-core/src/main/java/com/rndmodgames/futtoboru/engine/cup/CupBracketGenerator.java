@@ -200,17 +200,43 @@ public class CupBracketGenerator {
             boolean addByeToThisRound) {
         
         List<Match> roundMatches = new ArrayList<>();
-        int matchesInRound = previousRoundMatches.size() / 2;
         
-        // If there was a bye and this is Round 2, we need one extra match
-        if (addByeToThisRound && byeTeamId != null) {
-            matchesInRound++;
+        // CRITICAL FIX: Calculate exact number of matches needed
+        // Each match in previous round produces 1 winner, so we need (previousRoundMatches.size() + byeCount) / 2 matches
+        int winnersFromPreviousRound = previousRoundMatches.size();
+        int byeCount = (addByeToThisRound && byeTeamId != null) ? 1 : 0;
+        int totalWinners = winnersFromPreviousRound + byeCount;
+        
+        // CRITICAL: Semi-finals must have exactly 2 matches (4 teams)
+        // Final must have exactly 1 match (2 teams)
+        int expectedMatches = totalWinners / 2;
+        
+        // Validate: Semi-finals (Round 4 typically) should have exactly 2 matches
+        if (roundNumber == 4 || (roundNumber >= 4 && expectedMatches == 2)) {
+            if (expectedMatches != 2) {
+                System.err.println("CupBracketGenerator: CRITICAL ERROR - Semi-finals should have exactly 2 matches, but calculated " + expectedMatches);
+                System.err.println("  Previous round matches: " + previousRoundMatches.size());
+                System.err.println("  Bye count: " + byeCount);
+                System.err.println("  Total winners: " + totalWinners);
+                // Force to 2 matches for semi-finals
+                expectedMatches = 2;
+            }
+        }
+        
+        // Validate: Final (last round) should have exactly 1 match
+        if (expectedMatches == 1 && roundNumber > 4) {
+            // This is likely the final
+            if (expectedMatches != 1) {
+                System.err.println("CupBracketGenerator: CRITICAL ERROR - Final should have exactly 1 match, but calculated " + expectedMatches);
+                expectedMatches = 1;
+            }
         }
         
         int matchNumber = 1;
         
         // Create matches pairing winners of previous round
-        for (int i = 0; i < previousRoundMatches.size(); i += 2) {
+        // CRITICAL FIX: Only create exactly expectedMatches matches
+        for (int i = 0; i < previousRoundMatches.size() && roundMatches.size() < expectedMatches; i += 2) {
             Match match = new Match();
             
             // Set match ID
@@ -225,9 +251,11 @@ public class CupBracketGenerator {
             if (parent2 != null) {
                 match.setParentMatch2Id(parent2.getId());
             } else {
-                // Odd number - this match gets the bye team
+                // Odd number - this match gets the bye team (only if we're adding bye to this round)
                 match.setParentMatch2Id(null);
-                match.setAwayClubId(byeTeamId); // Bye team goes to away position
+                if (addByeToThisRound && byeTeamId != null) {
+                    match.setAwayClubId(byeTeamId); // Bye team goes to away position
+                }
             }
             
             // Teams not yet determined (will be populated when parents complete)
@@ -263,38 +291,67 @@ public class CupBracketGenerator {
             matchNumber++;
         }
         
-        // Handle bye team in Round 2
-        if (addByeToThisRound && byeTeamId != null && previousRoundMatches.size() % 2 == 0) {
-            // Create an extra match for the bye team
-            Match byeMatch = new Match();
-            byeMatch.setId(System.currentTimeMillis() + (roundNumber * 10000) + matchNumber + (int)(Math.random() * 1000));
+        // Handle bye team in Round 2 (only if we haven't already added it)
+        if (addByeToThisRound && byeTeamId != null && roundMatches.size() < expectedMatches) {
+            // Check if bye team is already in a match
+            boolean byeAlreadyAdded = false;
+            for (Match m : roundMatches) {
+                if (m.getAwayClubId() != null && m.getAwayClubId().equals(byeTeamId)) {
+                    byeAlreadyAdded = true;
+                    break;
+                }
+            }
             
-            // Last match from previous round
-            Match lastParent = previousRoundMatches.get(previousRoundMatches.size() - 1);
-            byeMatch.setParentMatch1Id(lastParent.getId());
-            byeMatch.setParentMatch2Id(null);
-            byeMatch.setAwayClubId(byeTeamId); // Bye team
-            
-            byeMatch.setHomeClubId(null); // Will be populated when parent completes
-            
-            byeMatch.setCompetitionId(competitionId);
-            byeMatch.setCompetitionEditionId(editionId);
-            byeMatch.setMatchType(Match.CUP_MATCH);
-            byeMatch.setRound(roundNumber);
-            byeMatch.setBracketPosition(matchNumber);
-            byeMatch.setBracketPath("R" + roundNumber + "M" + matchNumber);
-            
-            byeMatch.setMatchDateTime(matchDate);
-            byeMatch.setIsProposed(false);
-            byeMatch.setIsAccepted(true);
-            byeMatch.setIsPlayed(false);
-            
-            roundMatches.add(byeMatch);
-            allMatches.add(byeMatch);
+            if (!byeAlreadyAdded) {
+                // Create an extra match for the bye team
+                Match byeMatch = new Match();
+                byeMatch.setId(System.currentTimeMillis() + (roundNumber * 10000) + matchNumber + (int)(Math.random() * 1000));
+                
+                // Last match from previous round
+                Match lastParent = previousRoundMatches.get(previousRoundMatches.size() - 1);
+                byeMatch.setParentMatch1Id(lastParent.getId());
+                byeMatch.setParentMatch2Id(null);
+                byeMatch.setAwayClubId(byeTeamId); // Bye team
+                
+                byeMatch.setHomeClubId(null); // Will be populated when parent completes
+                
+                byeMatch.setCompetitionId(competitionId);
+                byeMatch.setCompetitionEditionId(editionId);
+                byeMatch.setMatchType(Match.CUP_MATCH);
+                byeMatch.setRound(roundNumber);
+                byeMatch.setBracketPosition(matchNumber);
+                byeMatch.setBracketPath("R" + roundNumber + "M" + matchNumber);
+                
+                byeMatch.setMatchDateTime(matchDate);
+                byeMatch.setIsProposed(false);
+                byeMatch.setIsAccepted(true);
+                byeMatch.setIsPlayed(false);
+                
+                roundMatches.add(byeMatch);
+                allMatches.add(byeMatch);
+            }
         }
         
-        String roundName = getRoundName(roundNumber, matchesInRound * 2);
+        // CRITICAL VALIDATION: Verify we have the correct number of matches
+        if (roundMatches.size() != expectedMatches) {
+            System.err.println("CupBracketGenerator: CRITICAL ERROR - Round " + roundNumber + " has " + 
+                roundMatches.size() + " matches but expected " + expectedMatches);
+            System.err.println("  Previous round matches: " + previousRoundMatches.size());
+            System.err.println("  Bye count: " + byeCount);
+            System.err.println("  Total winners: " + totalWinners);
+            System.err.println("  This is a SEMI-FINAL bug if roundMatches.size() == 3!");
+        }
+        
+        String roundName = getRoundName(roundNumber, roundMatches.size() * 2);
         Gdx.app.log("CupBracketGenerator", roundName + " (Round " + roundNumber + "): Generated " + roundMatches.size() + " matches");
+        
+        // CRITICAL VALIDATION: Log if semi-finals has wrong number of matches
+        if (roundNumber == 4 || (roundMatches.size() == 2 && roundNumber >= 4)) {
+            if (roundMatches.size() != 2) {
+                System.err.println("CupBracketGenerator: *** SEMI-FINALS BUG DETECTED *** Round " + roundNumber + 
+                    " has " + roundMatches.size() + " matches (should be 2)!");
+            }
+        }
         
         return roundMatches;
     }

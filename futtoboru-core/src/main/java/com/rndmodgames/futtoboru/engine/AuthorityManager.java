@@ -157,6 +157,10 @@ public class AuthorityManager {
                     // For now, let's check if the champion message was already sent
                     if (!isLeagueAlreadyCompleted(league)) {
                         completeLeagueSeason(league, standingsManager);
+                        
+                        // CRITICAL FIX: After completing a league season, check if next season needs to be generated
+                        // This ensures new seasons are created immediately after completion, not just in July
+                        checkAndGenerateNextSeasonForLeague(league);
                     }
                 }
             }
@@ -1027,7 +1031,7 @@ public class AuthorityManager {
                     
                     if (winners.size() == 1) {
                         // Cup complete!
-                        completeCup(cup, edition, winners.get(0));
+                        completeCupEdition(cup, edition, winners.get(0));
                     } else {
                         // Advance to next round
                         advanceCupRound(cup, edition, winners);
@@ -1083,14 +1087,26 @@ public class AuthorityManager {
      * Get all matches for a competition edition
      */
     private List<Match> getMatchesForEdition(CompetitionEdition edition) {
+        return getMatchesForEdition(edition, currentGame);
+    }
+    
+    /**
+     * Get all matches for a competition edition (with SaveGame parameter)
+     */
+    private List<Match> getMatchesForEdition(CompetitionEdition edition, SaveGame saveGame) {
         List<Match> matches = new ArrayList<>();
         
         if (edition == null || edition.getId() == null) {
             return matches;
         }
         
+        if (saveGame == null || saveGame.getAllClubs() == null) {
+            Gdx.app.error("AuthorityManager", "Cannot get matches for edition: SaveGame is null");
+            return matches;
+        }
+        
         // Search through all clubs' scheduled and played matches
-        for (Club club : currentGame.getAllClubs()) {
+        for (Club club : saveGame.getAllClubs()) {
             if (club == null) {
                 continue;
             }
@@ -1298,10 +1314,31 @@ public class AuthorityManager {
     
     /**
      * Complete cup and declare winner
+     * Public method to allow CupBracketManager to trigger completion
      */
-    private void completeCup(Competition cup, CompetitionEdition edition, Club winner) {
+    public void completeCupEdition(Competition cup, CompetitionEdition edition, Club winner) {
+        completeCupEdition(cup, edition, winner, null);
+    }
+    
+    /**
+     * Complete cup and declare winner (with optional SaveGame parameter)
+     * Public method to allow CupBracketManager to trigger completion
+     * 
+     * @param cup The cup competition
+     * @param edition The competition edition
+     * @param winner The winning club
+     * @param saveGame Optional SaveGame instance (if null, uses this.currentGame)
+     */
+    public void completeCupEdition(Competition cup, CompetitionEdition edition, Club winner, SaveGame saveGame) {
         if (winner == null) {
             Gdx.app.error("AuthorityManager", "Cannot complete cup: winner is null");
+            return;
+        }
+        
+        // Use provided SaveGame or fall back to currentGame
+        SaveGame gameToUse = saveGame != null ? saveGame : currentGame;
+        if (gameToUse == null) {
+            Gdx.app.error("AuthorityManager", "Cannot complete cup: SaveGame is null");
             return;
         }
         
@@ -1309,20 +1346,25 @@ public class AuthorityManager {
         edition.setChampionsId(winner.getId());
         
         // Find runner-up (loser of final)
-        List<Match> finalMatches = getMatchesForEdition(edition);
+        List<Match> finalMatches = getMatchesForEdition(edition, gameToUse);
         Integer finalRound = getCurrentRound(finalMatches);
         if (finalRound != null) {
             for (Match match : finalMatches) {
                 if (match.getRound() != null && match.getRound().equals(finalRound) &&
                     match.getIsPlayed() != null && match.getIsPlayed()) {
-                    Club runnerUp = getMatchLoser(match, winner);
+                    Club runnerUp = getMatchLoser(match, winner, gameToUse);
                     if (runnerUp != null) {
                         edition.setRunnersUpId(runnerUp.getId());
+                        Gdx.app.log("AuthorityManager", "Cup runner-up saved: " + runnerUp.getName() + " (ID: " + runnerUp.getId() + ")");
                         break;
                     }
                 }
             }
         }
+        
+        // Log completion details
+        Gdx.app.log("AuthorityManager", "Cup completion saved - Champion ID: " + edition.getChampionsId() + 
+            ", Runner-up ID: " + edition.getRunnersUpId());
         
         // Create cup completion message
         MessageManager messageManager = game.getGameEngine().getMessageManager();
@@ -1338,12 +1380,19 @@ public class AuthorityManager {
      * Get loser of a match (opposite of winner)
      */
     private Club getMatchLoser(Match match, Club winner) {
-        if (match == null || winner == null) {
+        return getMatchLoser(match, winner, currentGame);
+    }
+    
+    /**
+     * Get loser of a match (opposite of winner) with explicit SaveGame
+     */
+    private Club getMatchLoser(Match match, Club winner, SaveGame saveGame) {
+        if (match == null || winner == null || saveGame == null) {
             return null;
         }
         
-        Club homeClub = currentGame.getClubById(match.getHomeClubId());
-        Club awayClub = currentGame.getClubById(match.getAwayClubId());
+        Club homeClub = saveGame.getClubById(match.getHomeClubId());
+        Club awayClub = saveGame.getClubById(match.getAwayClubId());
         
         if (homeClub != null && homeClub.getId().equals(winner.getId())) {
             return awayClub;
@@ -1555,15 +1604,14 @@ public class AuthorityManager {
 
     /**
      * Check if any competition needs a new season edition generated
+     * CRITICAL FIX: Now checks more frequently (not just July) and also after league completion
      */
     private void checkNewSeasonGeneration() {
         LocalDateTime currentDate = currentGame.getGameDate();
         if (currentDate == null) return;
         
-        // Usually generate next season around July
-        if (currentDate.getMonthValue() != 7) return;
-        
-        // Check leagues
+        // Check leagues - now checks every month, not just July
+        // This ensures seasons are generated even if league completes outside of July
         if (currentGame.getMainAuthority() != null && currentGame.getMainAuthority().getLeagues() != null) {
             for (League league : currentGame.getMainAuthority().getLeagues()) {
                 if (needsNextSeasonGeneration(league, currentDate)) {
@@ -1579,6 +1627,22 @@ public class AuthorityManager {
                     generateNextCupStaging(cup, currentDate);
                 }
             }
+        }
+    }
+    
+    /**
+     * Check and generate next season for a specific league
+     * Called after league completion to ensure new season is created immediately
+     */
+    private void checkAndGenerateNextSeasonForLeague(League league) {
+        if (league == null) return;
+        
+        LocalDateTime currentDate = currentGame.getGameDate();
+        if (currentDate == null) return;
+        
+        if (needsNextSeasonGeneration(league, currentDate)) {
+            Gdx.app.log("AuthorityManager", "Generating next season for " + league.getName() + " after completion");
+            generateNextSeason(league, currentDate);
         }
     }
 
@@ -1615,6 +1679,12 @@ public class AuthorityManager {
         }
         
         league.getEditions().add(nextEdition);
+        
+        // CRITICAL: Generate fixtures for the new season
+        // This ensures the league can be played immediately
+        List<com.rndmodgames.futtoboru.data.Match> fixtures = 
+            fixtureGenerator.generateLeagueFixtures(league, nextEdition.getStartDate(), nextEdition.getEndDate());
+        Gdx.app.log("AuthorityManager", "Generated " + fixtures.size() + " fixtures for new season: " + nextEdition.getName());
         
         // Reset league stats for all participating clubs
         for (Long clubId : nextEdition.getParticipantClubsIds()) {
@@ -1657,13 +1727,27 @@ public class AuthorityManager {
         int startYear = currentDate.getYear();
         nextEdition.setName(cup.getName() + " " + startYear + "-" + ((startYear + 1) % 100));
         
+        // Set dates for cup staging
+        nextEdition.setStartDate(currentDate);
+        nextEdition.setEndDate(currentDate.plusMonths(6)); // Cup typically runs 6 months
+        
         // Copy participants from previous edition if applicable
         if (!cup.getEditions().isEmpty()) {
             CompetitionEdition lastEdition = cup.getEditions().get(cup.getEditions().size() - 1);
             nextEdition.getParticipantClubsIds().addAll(lastEdition.getParticipantClubsIds());
             nextEdition.setParticipantClubs(lastEdition.getParticipantClubs());
+        } else {
+            // Get participants from leagues (if first edition)
+            List<Long> participantIds = getCupParticipantClubs();
+            nextEdition.setParticipantClubsIds(participantIds);
+            nextEdition.setParticipantClubs(participantIds.size());
         }
         
         cup.getEditions().add(nextEdition);
+        
+        // CRITICAL: Generate cup draw for the new staging
+        // This ensures the cup can be played immediately
+        generateCupDraw(cup, nextEdition);
+        Gdx.app.log("AuthorityManager", "Generated cup draw for new staging: " + nextEdition.getName());
     }
 }
