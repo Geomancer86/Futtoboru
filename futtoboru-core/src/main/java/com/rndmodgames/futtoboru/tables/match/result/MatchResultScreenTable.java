@@ -24,6 +24,9 @@ public class MatchResultScreenTable extends VisTable {
     //
     Futtoboru game;
     
+    /** When set, shows this match instead of the latest played match (H-3). */
+    private Match displayMatch;
+    
     // Dynamic Components
     VisTable mainTable = new VisTable(true);
     
@@ -35,6 +38,14 @@ public class MatchResultScreenTable extends VisTable {
         
         this.game = (Futtoboru) parent;
     }
+
+    public void setDisplayMatch(Match match) {
+        this.displayMatch = match;
+    }
+
+    public void clearDisplayMatch() {
+        this.displayMatch = null;
+    }
     
     //
     public void updateDynamicComponents() {
@@ -45,13 +56,16 @@ public class MatchResultScreenTable extends VisTable {
         // Get current club
         Club currentClub = game.getCurrentGame().getCurrentClub();
         
-        if (currentClub == null || currentClub.getPlayedMatches() == null || currentClub.getPlayedMatches().isEmpty()) {
+        if (currentClub == null) {
             this.add("No match results available.");
             return;
         }
-        
-        // Get the most recently played match (last in chronological order)
-        Match match = currentClub.getPlayedMatches().get(currentClub.getPlayedMatches().size() - 1);
+
+        Match match = resolveDisplayMatch(currentClub);
+        if (match == null) {
+            this.add("No match results available.");
+            return;
+        }
         
         // Get clubs
         Club homeClub = game.getCurrentGame().getClubById(match.getHomeClubId());
@@ -154,5 +168,15 @@ public class MatchResultScreenTable extends VisTable {
             this.add("Capacity:").padRight(10);
             this.add(String.valueOf(homeClub.getStadium().getCapacity())).left();
         }
+    }
+
+    private Match resolveDisplayMatch(Club currentClub) {
+        if (displayMatch != null) {
+            return displayMatch;
+        }
+        if (currentClub.getPlayedMatches() == null || currentClub.getPlayedMatches().isEmpty()) {
+            return null;
+        }
+        return currentClub.getPlayedMatches().get(currentClub.getPlayedMatches().size() - 1);
     }
 }

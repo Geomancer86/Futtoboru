@@ -27,6 +27,7 @@ import com.rndmodgames.futtoboru.screens.NewGameSetupScreen;
 import com.rndmodgames.futtoboru.screens.NewManagerScreen;
 import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.HistoricalMode;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
@@ -354,6 +355,28 @@ public class Futtoboru extends Game {
 
     public void setCurrentGame(SaveGame currentGame) {
         this.currentGame = currentGame;
+    }
+
+    /**
+     * Load or resume a save: apply defaults, bind job system, ready for {@link #changeScreen(int)} to game UI.
+     * Fixes C-3 / H-9 (load skips job init).
+     */
+    public void activateSaveGame(SaveGame saveGame) {
+        if (saveGame == null) {
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru",
+                "activateSaveGame: saveGame is null");
+            throw new IllegalArgumentException("saveGame cannot be null");
+        }
+        if (saveGame.getHistoricalMode() == null) {
+            saveGame.setHistoricalMode(HistoricalMode.SANDBOX_FIRST);
+        }
+        setCurrentGame(saveGame);
+        clubStaffManager = null;
+        jobManager = null;
+        initializeJobSystem();
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_SYSTEM_INIT, "Futtoboru",
+            "Save activated — historicalMode=" + saveGame.getHistoricalMode()
+                + ", date=" + saveGame.getGameDate());
     }
 
     public ScriptsManager getScriptsManager() {

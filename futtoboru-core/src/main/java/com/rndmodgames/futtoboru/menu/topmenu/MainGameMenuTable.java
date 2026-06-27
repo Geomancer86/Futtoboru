@@ -12,6 +12,7 @@ import com.kotcrab.vis.ui.widget.BusyBar;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -39,6 +40,7 @@ public class MainGameMenuTable extends VisTable {
      * Dialogs
      */
     private SaveGameDialog saveGameDialog = null;
+    private LoadGameDialog loadGameDialog = null;
     
     /**
      * Dynamic Main Game Menu table
@@ -69,7 +71,7 @@ public class MainGameMenuTable extends VisTable {
      * Minimum cooldown period in milliseconds between processing cycles
      * Prevents rapid triple-clicks from slipping through
      */
-    private static final long PROCESSING_COOLDOWN_MS = 200;
+    private static final long PROCESSING_COOLDOWN_MS = 500;
     
     /**
      * Fail-safe timeout in milliseconds
@@ -83,10 +85,9 @@ public class MainGameMenuTable extends VisTable {
     private Timer.Task failsafeTask = null;
     
     /**
-     * Reference to the continue button's InputListener
-     * We keep this listener attached but check flags inside it
+     * Monotonic id so stale timer tasks cannot advance the game twice (C-1).
      */
-    private InputListener continueButtonListener = null;
+    private volatile long continueOperationId = 0;
     
     CurrentDateAndTimeWidget dateTimeWidget = null;
     
@@ -140,6 +141,13 @@ public class MainGameMenuTable extends VisTable {
                     // 
                     saveGameDialog.show(stage);
                     break;
+
+                case 2:
+                    if (loadGameDialog == null) {
+                        loadGameDialog = new LoadGameDialog(game);
+                    }
+                    loadGameDialog.show(stage);
+                    break;
                 
                 default:
                     DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "OPTION NOT IMPLEMENTED!");
@@ -159,61 +167,38 @@ public class MainGameMenuTable extends VisTable {
         dateTimeWidget = new CurrentDateAndTimeWidget(game);
 
         /**
-         * Continue Game Button
-         * 
-         * CRITICAL: We keep the listener attached and use atomic checks on isProcessing.
-         * This prevents the "stuck button" bug where the listener is removed but never re-added.
+         * Continue Game Button — single action on touchDown only (C-1 fix).
          */
-        continueButtonListener = new InputListener() {
+        continueGameButton.addCaptureListener(new InputListener() {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // Check if already processing (defense in depth)
                 if (isProcessing || continueGameButton.isDisabled()) {
-                    return false; // Ignore clicks while processing or disabled
+                    event.cancel();
+                    return true;
                 }
-                
+
                 synchronized (MainGameMenuTable.this) {
-                    // Double-check inside synchronized block
                     if (isProcessing) {
-                        return false;
+                        event.cancel();
+                        return true;
                     }
-                    
-                    // Cooldown check
+
                     long currentTime = System.currentTimeMillis();
                     if (currentTime - lastProcessingStartTime < PROCESSING_COOLDOWN_MS) {
-                        return false;
+                        event.cancel();
+                        return true;
                     }
-                    
-                    // Mark as processing IMMEDIATELY
+
                     isProcessing = true;
                     lastProcessingStartTime = currentTime;
-                    
-                    // UI Feedback
                     continueGameButton.setDisabled(true);
-                    
-                    // Start failsafe timer
                     startFailsafeTimer();
-                    
+                    continueGame();
                     return true;
                 }
             }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                // Verify button is still pressed (user didn't drag away)
-                if (!continueGameButton.isPressed()) {
-                    resetProcessingState("User dragged away");
-                    return;
-                }
-                
-                // All checks passed - proceed with game continuation
-                continueGame();
-            }
-        };
-        
-        // Add the listener once and keep it
-        continueGameButton.addCaptureListener(continueButtonListener);
+        });
         
         /**
          * Match Preview Button
@@ -495,6 +480,10 @@ public class MainGameMenuTable extends VisTable {
         //
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "LOADING MATCH RESULT SCREEN!");
         
+        if (mainMenuManager != null) {
+            mainMenuManager.clearLiveMatchResultSelection();
+        }
+        
         // Simulate Match and Advance Time
         ((Futtoboru)(game)).getGameEngine().getMatchResult();
         
@@ -531,42 +520,43 @@ public class MainGameMenuTable extends VisTable {
      */
     private void continueGame() {
         
-        // Defense in depth: Verify flag is still set
         if (!isProcessing) {
             DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "continueGame() called but isProcessing is false!");
             setMainContainerButton();
             return;
         }
+
+        final long operationId = ++continueOperationId;
         
         // Show BusyBar (animates automatically when visible)
         processingBusyBar.setVisible(true);
         
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "Starting game engine processing...");
         
-        // Schedule the actual processing to happen after a short delay
-        // This gives the UI one frame to render the disabled button and busy bar
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
+                if (operationId != continueOperationId || !isProcessing) {
+                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable",
+                        "Skipping stale continue operation " + operationId);
+                    return;
+                }
                 try {
-                    // Continue the game on the Game Engine (this blocks the thread)
                     try {
                         ((Futtoboru)(game)).getGameEngine().continueGame();
                     } catch (Throwable t) {
                         DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "CRITICAL ERROR in continueGame()", t);
                     }
                     
-                    // After processing completes, update UI on main thread
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            // Update the dynamic date widget
+                            if (operationId != continueOperationId) {
+                                return;
+                            }
                             dateTimeWidget.updateDynamicComponents();
-                            
-                            // Reset state
                             resetProcessingState("Processing complete");
                             
-                            // Handle screen transitions
                             if (MainMenuManager.CURRENT_SCREEN == MainMenuManager.MATCH_RESULT_SCREEN) {
                                 mainMenuManager.setActiveMainScreen(MainMenuManager.BEFORE_MATCH_SCREEN);
                             }

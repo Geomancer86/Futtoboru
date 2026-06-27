@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.data.jobs.JobApplication;
 import com.rndmodgames.futtoboru.data.jobs.JobOffer;
 import com.rndmodgames.futtoboru.data.jobs.JobOpening;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
+import com.rndmodgames.futtoboru.system.HistoricalMode;
 
 /**
  * Save Game v1
@@ -62,6 +63,11 @@ public class SaveGame implements Serializable {
 
     /** How many procedural competition years have been generated after the first (0 = only first season). */
     private Integer simulatedSeasonIndex = 0;
+
+    /**
+     * PO-locked career rule: {@link HistoricalMode#SANDBOX_FIRST} default at new game.
+     */
+    private HistoricalMode historicalMode = HistoricalMode.SANDBOX_FIRST;
     
     /**
      * We need to Save and Track updated data, the data on Database is mostly static
@@ -422,5 +428,13 @@ public class SaveGame implements Serializable {
             }
         }
         return result;
+    }
+
+    public HistoricalMode getHistoricalMode() {
+        return historicalMode != null ? historicalMode : HistoricalMode.SANDBOX_FIRST;
+    }
+
+    public void setHistoricalMode(HistoricalMode historicalMode) {
+        this.historicalMode = historicalMode;
     }
 }

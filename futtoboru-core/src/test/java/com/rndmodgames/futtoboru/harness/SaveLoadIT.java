@@ -56,4 +56,11 @@ class SaveLoadIT {
         assertEquals(seasonIndexBefore, reloaded.getSimulatedSeasonIndex());
         assertTrue(harness.getSimulatedSeasonIndex() >= 1);
     }
+
+    @Test
+    void roundTripPreservesHistoricalMode() {
+        harness.game().setHistoricalMode(com.rndmodgames.futtoboru.system.HistoricalMode.HISTORICAL_FIRST);
+        SaveGame reloaded = harness.roundTripViaJson();
+        assertEquals(com.rndmodgames.futtoboru.system.HistoricalMode.HISTORICAL_FIRST, reloaded.getHistoricalMode());
+    }
 }

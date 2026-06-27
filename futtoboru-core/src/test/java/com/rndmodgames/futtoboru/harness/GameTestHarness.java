@@ -121,7 +121,7 @@ public final class GameTestHarness {
      * Replaces the active save (mirrors load-game) and refreshes engine caches.
      */
     public void replaceCurrentGame(SaveGame loaded) {
-        application.setCurrentGame(loaded);
+        application.activateSaveGame(loaded);
         HeadlessGdxTestSupport.authorityManager().refreshCurrentGame();
     }
 

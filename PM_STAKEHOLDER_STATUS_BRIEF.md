@@ -36,6 +36,8 @@
 
 **Historical Mode (PO locked 2026-06-27):** Default **`SANDBOX_FIRST`** (alternate history); second setting **`HISTORICAL_FIRST`**. Agency on all leagues; news latency by era/distance — [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md).
 
+**Layer A sprint (2026-06-27):** C-1 / C-3 / H-3 fixes in code — [PM_LAYER_A_SPRINT_PROGRESS.md](PM_LAYER_A_SPRINT_PROGRESS.md).
+
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
 **Automated suite:** ✅ **59 PR tests** + nightly **`LongRunSoakIT`** (~5 min) + **`TenSeasonReportIT`** report.

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.menu.buttons.AuthorityButton;
 import com.rndmodgames.futtoboru.menu.buttons.ClubInfoButton;
 import com.rndmodgames.futtoboru.menu.buttons.CompetitionsButton;
@@ -375,6 +376,23 @@ public class MainMenuManager {
     /**
      * Handle the Table Switching for the Main Screen
      */
+    /**
+     * Open match result for a specific past match (H-3).
+     */
+    public void showMatchResult(Match match) {
+        if (match == null || matchResultScreenTable == null) {
+            return;
+        }
+        matchResultScreenTable.setDisplayMatch(match);
+        setActiveMainScreen(MATCH_RESULT_SCREEN);
+    }
+
+    public void clearLiveMatchResultSelection() {
+        if (matchResultScreenTable != null) {
+            matchResultScreenTable.clearDisplayMatch();
+        }
+    }
+
     public void setActiveMainScreen(int screen) {
 
         // Clear the main table
@@ -660,7 +678,6 @@ public class MainMenuManager {
             
         case MATCH_RESULT_SCREEN:
 
-            // Update dynamic components
             matchResultScreenTable.updateDynamicComponents();
             
             // Set as main content

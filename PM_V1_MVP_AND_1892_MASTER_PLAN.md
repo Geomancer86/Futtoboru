@@ -98,9 +98,9 @@ scorers = random player from full squad
 | ID | Deliverable | Dept | Acceptance | Priority |
 |----|-------------|------|------------|----------|
 | **A-1** | Manual QA checklist green | QA | [RELEASE_V1_DEFINITION.md §9](RELEASE_V1_DEFINITION.md) | P0 |
-| **A-2** | Fix **C-1** Continue double-click | Platform | One day per click | P0 |
-| **A-3** | Fix **C-3/C-4/H-9** load + job init + top-menu load | Platform | Load career → jobs work | P0 |
-| **A-4** | Fix **H-3** match history → result | Platform | Click opens correct match | P0 |
+| **A-2** | Fix **C-1** Continue double-click | Platform | One day per click | P0 | **Code done** — QA |
+| **A-3** | Fix **C-3/C-4/H-9** load + job init + top-menu load | Platform | Load career → jobs work | P0 | **Code done** — QA |
+| **A-4** | Fix **H-3** match history → result | Platform | Click opens correct match | P0 | **Code done** — QA |
 | **A-5** | Verify **2-1-0 + goal average** in league UI | Seasons | Table matches mod rules | P0 |
 | **A-6** | Cup UI smoke (headless already ✅) | Platform | Bracket/draw visible in manual QA | P1 |
 | **A-7** | Inbox policy for long careers | Platform | Cap/archive or PO waiver BLK-4 | P1 |

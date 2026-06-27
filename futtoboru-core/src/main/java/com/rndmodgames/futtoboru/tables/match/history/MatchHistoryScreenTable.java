@@ -188,18 +188,8 @@ public class MatchHistoryScreenTable extends VisTable {
         if (match == null || mainMenuManager == null) {
             return;
         }
-        
-        // Store selected match (we'll need to add a setSelectedMatch method to MatchResultScreenTable)
         selectedMatch = match;
-        
-        // TODO: For now, we can only show the most recent match in MatchResultScreenTable
-        // In the future, we should add setSelectedMatch() to MatchResultScreenTable
-        Gdx.app.log("MatchHistoryScreenTable", "Match clicked: " + 
-            (match.getHomeGoals() != null ? match.getHomeGoals() : 0) + " - " + 
-            (match.getAwayGoals() != null ? match.getAwayGoals() : 0));
-        
-        // For now, just log - we'll need to enhance MatchResultScreenTable to accept a specific match
-        // mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_RESULT_SCREEN);
+        mainMenuManager.showMatchResult(match);
     }
 
     public Club getCurrentClub() {

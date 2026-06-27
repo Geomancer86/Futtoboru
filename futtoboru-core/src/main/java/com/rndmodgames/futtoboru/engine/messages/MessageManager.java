@@ -31,6 +31,7 @@ public class MessageManager {
     
     private Futtoboru gameInstance;
     private long nextMessageId = 1L;
+    private final NewsLatencyResolver newsLatencyResolver = new NewsLatencyResolver();
     
     public MessageManager(Futtoboru game) {
         this.gameInstance = game;
@@ -151,6 +152,19 @@ public class MessageManager {
         currentGame.getScheduledMessages().add(message);
         
         Gdx.app.log("MessageManager", "Scheduled message: " + message.getTitle() + " for " + message.getScheduledDate());
+    }
+
+    /**
+     * Schedule a cross-region world message with delivery latency (NEWS-8).
+     */
+    public void scheduleWorldMessage(Message message, LocalDateTime eventDate,
+                                     String originRegion, String recipientRegion) {
+        if (message == null || eventDate == null) {
+            scheduleMessage(message);
+            return;
+        }
+        message.setScheduledDate(newsLatencyResolver.deliveryDate(eventDate, originRegion, recipientRegion));
+        scheduleMessage(message);
     }
     
     /**

@@ -30,7 +30,11 @@
 | `SeasonManager` + save season fields | ✅🧪 | Multi-season ITs |
 | `GameTestHarness` | ✅🧪 | 59 PR tests |
 | Weekly finances / wages (backend) | ✅🧪 | 10-season PNE income/spend |
-| Production load-game UI | 🐛 | Not in IT scope — C-3, H-9 |
+| Production load-game UI | ⚠️ | `activateSaveGame` + in-game load menu — **manual QA** (A-3) |
+| Continue double-click (C-1) | ⚠️ | **Fixed in code** — manual QA (A-2) |
+| Match history → result (H-3) | ⚠️ | **Fixed in code** — manual QA (A-4) |
+| HistoricalMode on save (FLEX-1) | ✅🧪 | `SaveLoadIT.roundTripPreservesHistoricalMode` |
+| News latency (NEWS-8) | ✅🧪 | `NewsLatencyResolverTest` |
 | Tactics / training / transfers UI | 🔲 | Stubs — **Layer B MVP** (XI, sim, fans) |
 | CM1 post-match ratings | ❌ | **MVP-5** in master plan |
 
