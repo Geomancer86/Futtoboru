@@ -6,7 +6,7 @@
 **Branch:** `analyze-ai-branch`  
 **Status:** **Gap confirmed** — no in-game UI scale; resolution setting alone does not fix tiny text
 
-**Related:** [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) · [DEPARTMENT_PLATFORM_AND_UX_V1.md](DEPARTMENT_PLATFORM_AND_UX_V1.md) · [FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md](FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md)
+**Related:** [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) · [DEPARTMENT_PLATFORM_AND_UX_V1.md](DEPARTMENT_PLATFORM_AND_UX_V1.md) · [FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md](FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md) · [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) (Settings screen deep dive + integration plan)
 
 ---
 
@@ -87,7 +87,7 @@ Priority for **Platform & UX** — blocks comfortable manual QA on HiDPI laptops
 
 | ID | Deliverable | Approach | Effort |
 |----|-------------|----------|--------|
-| **PU-10a** | **UI scale setting** (100% / 125% / 150% / 200%) | `VisUI.setScale(f)` after `VisUI.load()`; persist in `PreferencesManager`; slider or select in Settings | **Small** |
+| **PU-10a** | **UI scale setting** (100% / 125% / 150% / 200%) | `VisUI.setScale(f)` before/after reload; persist in `PreferencesManager`; **Graphics row in SettingsScreen** — see [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) | **Small** |
 | **PU-10b** | **HiDPI mode** in launcher | `configuration.setHdpiMode(HdpiMode.Pixels)` or `PixelsPerPoint` + test on Galaxy Book / 125% Windows | **Small** |
 | **PU-10c** | **Density-aware skin** (optional) | Larger bitmap fonts in skin JSON for “large UI” preset | **Medium** |
 | **PU-10d** | **Stage root scale** | Scale root `VisTable` on all screens if VisUI scale insufficient for custom widgets | **Medium** |

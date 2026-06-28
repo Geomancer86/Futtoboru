@@ -127,7 +127,7 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1
 |--------|--------|-------|------|
 | Splash | ⚠️ | Basic | `screens/SplashScreen.java` |
 | Main menu | ⚠️ | Load game partial | `screens/MenuScreen.java` |
-| Settings | ⚠️ | Resolution, locale — **no UI scale** | `screens/SettingsScreen.java` |
+| Settings | ⚠️ | Resolution, locale, debug logging persist; **no UI scale**; in-game Options→Settings **not wired** | `screens/SettingsScreen.java` — [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) |
 | New game setup | ⚠️ | Country selection | `screens/NewGameSetupScreen.java` |
 | New manager | ⚠️ | Create person | `screens/NewManagerScreen.java` |
 | New game season | ⚠️ | One season only | `screens/NewGameSeasonScreen.java` |
