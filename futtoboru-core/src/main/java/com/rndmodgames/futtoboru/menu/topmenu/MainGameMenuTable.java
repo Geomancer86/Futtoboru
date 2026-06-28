@@ -148,6 +148,10 @@ public class MainGameMenuTable extends VisTable {
                     }
                     loadGameDialog.show(stage);
                     break;
+
+                case 3:
+                    ((Futtoboru) game).changeScreen(Futtoboru.SETTINGS_SCREEN);
+                    break;
                 
                 default:
                     DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "OPTION NOT IMPLEMENTED!");

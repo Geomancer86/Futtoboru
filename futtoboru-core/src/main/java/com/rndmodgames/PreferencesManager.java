@@ -32,6 +32,7 @@ public class PreferencesManager {
 	// GRAPHIC SETTINGS
 	public static final String SETTINGS_FULLSCREEN_PREF = "settings.fullscreen";
 	public static final String SETTINGS_RESOLUTION_PREF = "settings.resolution";
+	public static final String SETTINGS_UI_SCALE_PREF = "settings.ui_scale";
 	public static final String SETTINGS_DAY_NIGHT_RENDERING_PREF = "settings.day_night_cycle_rendering";
 	public static final String SETTINGS_DAMAGE_COUNTERS_RENDERING_PREF = "settings.damage_counters_rendering";
 	public static final String SETTINGS_DEBUG_SIGHT_PREF = "settings.debug_sight_rendering";
@@ -48,6 +49,7 @@ public class PreferencesManager {
 	
 	// DEFAULT VALUES
 	public static String DEFAULT_RESOLUTION = "1280x1024";
+	public static float DEFAULT_UI_SCALE = 1.0f;
 	public static String DEFAULT_LOCALE = "en_US";
 	
 	public PreferencesManager() {
@@ -211,6 +213,30 @@ public class PreferencesManager {
 	public void updateScreenResolution(String resolution) {
 
 		updateUserPreference(SETTINGS_RESOLUTION_PREF, resolution);
+	}
+
+	/**
+	 * Returns the UI scale preference (1.0 = 100%).
+	 */
+	public float getUiScale() {
+		String raw = prefs.getString(SETTINGS_UI_SCALE_PREF, null);
+		if (raw != null && !raw.isEmpty()) {
+			try {
+				return Float.parseFloat(raw);
+			} catch (NumberFormatException ignored) {
+				// fall through to default
+			}
+		}
+		prefs.putString(SETTINGS_UI_SCALE_PREF, Float.toString(DEFAULT_UI_SCALE));
+		prefs.flush();
+		return DEFAULT_UI_SCALE;
+	}
+
+	public void updateUiScale(float scale) {
+		if (scale <= 0f) {
+			scale = DEFAULT_UI_SCALE;
+		}
+		updateUserPreference(SETTINGS_UI_SCALE_PREF, Float.toString(scale));
 	}
 	
 	/**

@@ -77,6 +77,16 @@ class PreferenceManagerTests {
         // Resolution should be set to the default
         assertEquals(PreferencesManager.DEFAULT_RESOLUTION, application.preferences.getResolution());
     }
+
+    @Test
+    void uiScalePreferenceRoundTrip() {
+        application.create();
+        application.preferences.updateUiScale(1.5f);
+        assertEquals(1.5f, application.preferences.getUiScale(), 0.001f);
+        assertEquals("1.5", application.preferences.getPreference(PreferencesManager.SETTINGS_UI_SCALE_PREF));
+        application.preferences.updateUiScale(PreferencesManager.DEFAULT_UI_SCALE);
+        assertEquals(1.0f, application.preferences.getUiScale(), 0.001f);
+    }
     
     @Test
     void savePreferenceTest() {

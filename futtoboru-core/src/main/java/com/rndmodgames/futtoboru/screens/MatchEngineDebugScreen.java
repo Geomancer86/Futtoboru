@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.rndmodgames.futtoboru.ui.UiScale;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
@@ -130,7 +130,7 @@ public class MatchEngineDebugScreen implements Screen {
         this.futtoboru = (Futtoboru) parent;
         this.currentGame = futtoboru != null ? futtoboru.getCurrentGame() : null;
         
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(UiScale.newViewport());
         
         // Main table (fills screen)
         mainTable = new VisTable(true);
@@ -1299,7 +1299,7 @@ public class MatchEngineDebugScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        UiScale.updateStageViewport(stage, width, height);
     }
 
     @Override

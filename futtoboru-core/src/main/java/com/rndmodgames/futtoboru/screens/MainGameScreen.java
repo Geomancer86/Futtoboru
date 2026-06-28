@@ -8,7 +8,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.rndmodgames.futtoboru.ui.UiScale;
 import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
@@ -69,7 +69,7 @@ public class MainGameScreen implements Screen {
         }
         
         //
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(UiScale.newViewport());
         
         // Full Game Window
         final VisTable gameWindowTable = new VisTable(true);
@@ -112,7 +112,7 @@ public class MainGameScreen implements Screen {
 
         // Initialize Toast Manager
         toastManager = new ToastManager(stage);
-        toastManager.setScreenPadding(10, 60); // hardcoded to let the toast show on not under the top menu, 
+        toastManager.setScreenPadding(UiScale.scaled(10), UiScale.scaled(60));
         toastManager.toFront(); // TODO FIX: showing the toast in front/foreground is not priority as they are mostly for debug
         
         //
@@ -182,7 +182,7 @@ public class MainGameScreen implements Screen {
     public void resize(int width, int height) {
         
         // Update viewport on resize to keep event coordinate for buttons/widgets
-        stage.getViewport().update(width, height, true);
+        UiScale.updateStageViewport(stage, width, height);
     }
 
     @Override

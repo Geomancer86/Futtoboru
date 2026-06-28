@@ -28,7 +28,7 @@ Work started on the **recommended order**: **Layer A (UI blockers)** first, with
 | **A-2** | C-1 Continue double-click | **Fixed** — single `touchDown` action, 500 ms cooldown, stale-operation guard |
 | **A-3** | C-3 / H-9 load + job init | **Fixed** — `Futtoboru.activateSaveGame()`; `LoadGameDialog` + in-game **Load** menu option |
 | **A-4** | H-3 match history → result | **Fixed** — `MatchHistoryScreenTable` → `MainMenuManager.showMatchResult()` |
-| **A-1** | Manual QA checklist | **Open** — PO/QA; **HiDPI:** UI tiny on Galaxy Book3 Pro — see [ANALYSIS_UI_SCALING_HIDPI_V1.md](ANALYSIS_UI_SCALING_HIDPI_V1.md) |
+| **A-1** | Manual QA checklist | **Open** — try **Settings → UI scale 150%** on Galaxy Book3 Pro |
 | **A-5** | 2-1-0 UI verify | **Open** |
 | **A-9** | PO Layer A sign-off | **Open** |
 

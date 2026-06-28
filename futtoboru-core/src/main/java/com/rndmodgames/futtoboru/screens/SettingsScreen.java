@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
@@ -26,6 +25,7 @@ import com.rndmodgames.darkblade.screens.tables.ModsSettingsTable;
 import com.rndmodgames.darkblade.screens.tables.SoundSettingsTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.tables.settings.DebugLoggingSettingsTable;
+import com.rndmodgames.futtoboru.ui.UiScale;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -56,7 +56,7 @@ public class SettingsScreen implements Screen {
 		
 this.game = game;
         
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(UiScale.newViewport());
         
         VisTable mainContainer = new VisTable();
 
@@ -72,6 +72,7 @@ this.game = game;
         VisLabel graphicsSettingsLabel = new VisLabel(LanguageModLoader.getValue("graphic_settings"));
         VisLabel resolutionLabel = new VisLabel(LanguageModLoader.getValue("resolution"));
         VisLabel fullScreenLabel = new VisLabel(LanguageModLoader.getValue("fullscreen"));
+        VisLabel uiScaleLabel = new VisLabel(LanguageModLoader.getValue("ui_scale"));
         VisLabel dayNightTintLabel = new VisLabel(LanguageModLoader.getValue("day_night_tint"));
         VisLabel damageCountersLabel = new VisLabel(LanguageModLoader.getValue("damage_counters"));
         VisLabel debugPhysicsLabel = new VisLabel(LanguageModLoader.getValue("debug_physics"));
@@ -156,12 +157,30 @@ this.game = game;
         });
         
         // Set FullScreen to Saved Value
-//        fullScreenCheckBox.setChecked(DarkBlade.FULLSCREEN);
+        fullScreenCheckBox.setChecked(Futtoboru.FULLSCREEN);
         fullScreenCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                 
                 ((Futtoboru) game).toggleFullscreen();
+            }
+        });
+
+        final VisSelectBox<String> uiScaleSelectBox = new VisSelectBox<>();
+        String[] uiScaleItems = new String[UiScale.PRESET_SCALES.length];
+        for (int i = 0; i < UiScale.PRESET_SCALES.length; i++) {
+            uiScaleItems[i] = UiScale.formatPercent(UiScale.PRESET_SCALES[i]);
+        }
+        uiScaleSelectBox.setItems(uiScaleItems);
+        uiScaleSelectBox.setSelected(UiScale.nearestPresetLabel(Futtoboru.UI_SCALE));
+        uiScaleSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                float scale = UiScale.parsePercent(uiScaleSelectBox.getSelected());
+                if (Math.abs(scale - Futtoboru.UI_SCALE) < 0.001f) {
+                    return;
+                }
+                ((Futtoboru) game).updateUiScale(scale);
             }
         });
         
@@ -285,6 +304,10 @@ this.game = game;
         graphicsSettings.add(fullScreenLabel).pad(5).fill().align(Align.center);
         graphicsSettings.add(fullScreenCheckBox).pad(0).align(Align.right);
         graphicsSettings.row().pad(5).expandX().align(Align.center);
+
+        graphicsSettings.add(uiScaleLabel).pad(5).fill().align(Align.center);
+        graphicsSettings.add(uiScaleSelectBox).pad(5).fill();
+        graphicsSettings.row().pad(5).expandX().align(Align.center);
         
         // Day-Night Cycle Rendering
         graphicsSettings.add(dayNightTintLabel).pad(5).fill().align(Align.center);
@@ -379,7 +402,7 @@ this.game = game;
     public void resize(int width, int height) {
         
         // Update viewport on resize to keep event coordinate for buttons/widgets
-        stage.getViewport().update(width, height, true);
+        UiScale.updateStageViewport(stage, width, height);
     }
 
     @Override

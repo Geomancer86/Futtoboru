@@ -314,7 +314,19 @@ configuration.setHdpiMode(HdpiMode.Pixels);
 
 ---
 
-## 9. Summary
+## 9. Implementation status (2026-06-28)
+
+| Item | Status |
+|------|--------|
+| `settings.ui_scale` pref | ✅ |
+| Settings → UI scale select (100–200%) | ✅ |
+| `UiScale` viewport on all management screens | ✅ |
+| Persist + reload on startup | ✅ |
+| In-game Options → Settings | ✅ |
+| Match engine overlay | ⏸ Deferred |
+| `VisUI.setScale` | N/A (not in vis-ui 1.5.2) |
+| Per-screen layout polish | 🔲 QA follow-up |
+
 
 | Question | Answer |
 |----------|--------|

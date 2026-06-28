@@ -1,11 +1,10 @@
 package com.rndmodgames.components;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.rndmodgames.futtoboru.screens.SettingsScreen;
+import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.localization.LanguageModLoader;
 
 public class SettingsButton extends VisTextButton {
@@ -29,8 +28,7 @@ public class SettingsButton extends VisTextButton {
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				if (isPressed()){
-					
-					game.setScreen((Screen) new SettingsScreen(game));
+					((Futtoboru) game).changeScreen(Futtoboru.SETTINGS_SCREEN);
 				}
 			}
 		});

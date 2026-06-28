@@ -80,6 +80,9 @@ public class Futtoboru extends Game {
      */
     public static String RESOLUTION = "640x480";              // Working
     public static boolean FULLSCREEN = false;                 // Working
+    public static float UI_SCALE = 1.0f;                      // 1.0 = 100% UI zoom
+    
+    private int currentScreenId = MENU_SCREEN;
     
     /**
      * DEBUGGING SETTINGS
@@ -150,14 +153,14 @@ public class Futtoboru extends Game {
             
             RESOLUTION = preferences.getResolution();
         }
+
+        UI_SCALE = preferences.getUiScale();
         
         // This will take care of Setting the Right Fullscreen/Windowed Resolution mode
         setScreen();
         
         // Load VisUI NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
-        if (com.badlogic.gdx.Gdx.gl != null) {
-            VisUI.load(Gdx.files.internal("skin/tixel.json"));
-        }
+        loadVisUiSkin();
         
         // 
         manager.finishLoading();
@@ -202,6 +205,8 @@ public class Futtoboru extends Game {
      * @param screen
      */
     public void changeScreen(int screen) {
+        
+        currentScreenId = screen;
         
         switch(screen) {
         
@@ -273,6 +278,8 @@ public class Futtoboru extends Game {
      */
     public void changeScreen(int screen, Season startingSeason, List<Country> selectedCountries) {
         
+        currentScreenId = screen;
+        
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_SYSTEM_INIT, "Starting Season: " + startingSeason);
         
         switch (screen) {
@@ -292,6 +299,29 @@ public class Futtoboru extends Game {
     public void updateScreenResolution(String resolution) {
 
         preferences.updateScreenResolution(resolution);
+    }
+
+    /**
+     * Updates UI zoom factor, persists, reloads VisUI skin, and rebuilds the active screen.
+     */
+    public void updateUiScale(float scale) {
+        if (scale <= 0f) {
+            scale = PreferencesManager.DEFAULT_UI_SCALE;
+        }
+        UI_SCALE = scale;
+        preferences.updateUiScale(scale);
+        loadVisUiSkin();
+        changeScreen(currentScreenId);
+    }
+
+    private void loadVisUiSkin() {
+        if (Gdx.gl == null) {
+            return;
+        }
+        if (VisUI.isLoaded()) {
+            VisUI.dispose();
+        }
+        VisUI.load(Gdx.files.internal("skin/tixel.json"));
     }
     
     /**

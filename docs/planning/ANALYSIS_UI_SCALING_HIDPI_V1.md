@@ -4,7 +4,7 @@
 **Date:** 2026-06-28  
 **Reported on:** Samsung Galaxy Book3 Pro (high-DPI laptop)  
 **Branch:** `analyze-ai-branch`  
-**Status:** **Gap confirmed** — no in-game UI scale; resolution setting alone does not fix tiny text
+**Status:** **PU-10 MVP implemented** (2026-06-28) — `settings.ui_scale`, `UiScale` viewport helper, Settings select box. VisUI 1.5.2 has no `setScale()`; zoom is viewport-based. Match engine excluded per PO.
 
 **Related:** [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) · [DEPARTMENT_PLATFORM_AND_UX_V1.md](DEPARTMENT_PLATFORM_AND_UX_V1.md) · [FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md](FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md) · [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) (Settings screen deep dive + integration plan)
 

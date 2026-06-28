@@ -95,7 +95,7 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1
 | Player professions loader | ✅ | 80 professions | `system/loaders/PlayerProfessionsLoader.java` |
 | Save game model | ⚠️ | `startSeasonId`, `simulatedSeasonIndex` added | `system/SaveGame.java` |
 | Save/load system | ⚠️ | JSON roundtrip IT ✅; UI load gaps | `system/SaveLoadSystem.java` |
-| Preferences | ✅ | Locale, resolution, fullscreen — **no UI scale / HiDPI** | `PreferencesManager.java` — see [ANALYSIS_UI_SCALING_HIDPI_V1.md](ANALYSIS_UI_SCALING_HIDPI_V1.md) |
+| Preferences | ✅ | Locale, resolution, fullscreen, **UI scale** (`settings.ui_scale`) | `PreferencesManager.java` |
 
 ---
 
@@ -127,7 +127,7 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1
 |--------|--------|-------|------|
 | Splash | ⚠️ | Basic | `screens/SplashScreen.java` |
 | Main menu | ⚠️ | Load game partial | `screens/MenuScreen.java` |
-| Settings | ⚠️ | Resolution, locale, debug logging persist; **no UI scale**; in-game Options→Settings **not wired** | `screens/SettingsScreen.java` — [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) |
+| Settings | ✅ | Resolution, fullscreen, **UI scale** (100–200%), debug logging | `SettingsScreen.java`, `ui/UiScale.java` |
 | New game setup | ⚠️ | Country selection | `screens/NewGameSetupScreen.java` |
 | New manager | ⚠️ | Create person | `screens/NewManagerScreen.java` |
 | New game season | ⚠️ | One season only | `screens/NewGameSeasonScreen.java` |

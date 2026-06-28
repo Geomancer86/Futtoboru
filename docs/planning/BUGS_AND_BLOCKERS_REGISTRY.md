@@ -55,8 +55,8 @@ These prevent the stated goal: **play season under correct rules → complete �
 | **H-7** | 🟠 | Friendly scheduling always accepted, no conflict check | `MatchScheduler.java` |
 | **H-8** | 🟠 | Save file has no version field | `SaveLoadSystem.java` |
 | **H-9** | 🟠 | Top menu Load/Settings/Quit not implemented | `MainGameMenuTable.java` |
-| **SET-1** | 🟡 | In-game Options → Settings not implemented | `MainGameMenuTable.java` case 3 |
-| **UX-1** | 🟠 | **No UI scale / HiDPI** — tiny fonts on high-DPI laptops (e.g. Galaxy Book3 Pro) | See [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) |
+| **UX-1** | 🟡 | **UI scale MVP shipped** — viewport zoom via Settings; match engine + per-screen polish open | `UiScale.java`, `SettingsScreen.java` |
+| **SET-1** | ✅ | In-game Options → Settings | `MainGameMenuTable.java` case 3 |
 | **SET-2** | 🟡 | Fullscreen checkbox not loaded from saved pref | `SettingsScreen.java` L159 commented |
 
 ---
