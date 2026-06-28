@@ -1,9 +1,9 @@
 # Futtoboru — Systems & Features Registry
 
 **Document type:** Feature inventory  
-**Last verified:** 2026-06-27 (59-test gate + `TenSeasonReportIT`)  
+**Last verified:** 2026-06-27 (63-test suite; 62 pass)  
 **Branch:** `analyze-ai-branch`  
-**Roadmap:** [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md)  
+**Roadmap:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) · [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)  
 **Status legend:** ✅ Complete | ⚠️ Partial | 🔲 Stub | ❌ Missing | 🐛 Broken | ✅🧪 Proven by automated IT
 
 > **Note:** Rows below mix code audit (2025-06-25) with **automation overrides** in §0. Prefer §0 + [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) for current truth.
@@ -21,21 +21,20 @@
 | FA Cup headless season | ✅🧪 | `LeagueAndCupIT` |
 | Mandatory draw gates | ✅🧪 | `MandatoryGateIT` |
 | Inbox / world news (hiatus, restart) | ❌ | **NEWS-2** — [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) |
-| Historical Mode (`SANDBOX_FIRST` default) | ❌ | **FLEX-1** — [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md) |
+| Historical Mode on save (`SANDBOX_FIRST` default) | ✅🧪 | `SaveLoadIT.roundTripPreservesHistoricalMode` — UI + forks **FLEX-1** open |
+| New-game Historical Mode UI | ❌ | **FLEX-1** |
 | Fork events + agency tiers (all leagues) | ❌ | **FLEX-2–4**, **AGENCY-1** |
-| News latency (era + distance) | ❌ | **NEWS-8** |
+| News latency (era + distance) | ✅🧪 | `NewsLatencyResolverTest` — wire to inbox **NEWS-8** |
 | Player/club knowledge (fog) | ❌ | **KNOW-1** planned |
 | Save JSON roundtrip | ✅🧪 | `SaveLoadIT` |
 | `competition_rules.txt` on start mod | ✅🧪 | `CompetitionRulesLoaderTest` |
 | `SeasonManager` + save season fields | ✅🧪 | Multi-season ITs |
-| `GameTestHarness` | ✅🧪 | 59 PR tests |
+| `GameTestHarness` | ✅🧪 | 63 tests (62 pass) |
 | Weekly finances / wages (backend) | ✅🧪 | 10-season PNE income/spend |
-| Production load-game UI | ⚠️ | `activateSaveGame` + in-game load menu — **manual QA** (A-3) |
-| Continue double-click (C-1) | ⚠️ | **Fixed in code** — manual QA (A-2) |
-| Match history → result (H-3) | ⚠️ | **Fixed in code** — manual QA (A-4) |
-| HistoricalMode on save (FLEX-1) | ✅🧪 | `SaveLoadIT.roundTripPreservesHistoricalMode` |
-| News latency (NEWS-8) | ✅🧪 | `NewsLatencyResolverTest` |
-| Tactics / training / transfers UI | 🔲 | Stubs — **Layer B MVP** (XI, sim, fans) |
+| Production load-game UI | ⚠️ | `activateSaveGame` — **manual QA** (A-3) |
+| Continue double-click (C-1) | ⚠️ | **Fixed in code** — **manual QA** (A-2) |
+| Match history → result (H-3) | ⚠️ | **Fixed in code** — **manual QA** (A-4) |
+| Tactics / training / transfers UI | 🔲 | Stubs — **Layer B MVP** |
 | CM1 post-match ratings | ❌ | **MVP-5** in master plan |
 
 ---

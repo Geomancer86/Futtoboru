@@ -1,10 +1,11 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-06-27 (V1 MVP + 1892 master plan)
+**Last updated:** 2026-06-27 (PO eagle view report)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
-> **Planning:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) — finish V1.0 · MVP gaps (XI, sim, fans) · 1892 expansion  
+> **PO eagle view:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) — horizons, progress, decisions, critical path  
+> **Execution detail:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)  
 > **CM legacy research is PAUSED** at Round 16. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
 
 ---
@@ -13,6 +14,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 
 | Document | Audience | Purpose |
 |----------|----------|---------|
+| [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, Sponsor, all leads** | **Eagle view** — horizons, progress, decisions, risks |
 | [PM_STAKEHOLDER_STATUS_BRIEF.md](PM_STAKEHOLDER_STATUS_BRIEF.md) | **PM, all stakeholders** | **Status brief** — progress, docs hub, critical path |
 | [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md) | **PM, PO, QA** | **Post-merge** — develop + competition-completion-v1 integrated |
 | [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | **PO, all eng** | **Season model** — start mod + procedural loop + FM-style scripts |

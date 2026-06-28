@@ -6,7 +6,9 @@
 **Audience:** PO, PM, all department leads, QA, Design  
 **Purpose:** Ground the project in **what remains for V1.0 ship**, **what the true MVP still lacks** (tactics, XI, sim, fans), and **what V1.5 (1892 expansion)** adds — before implementation starts.
 
-**Evidence:** 59 automated tests · [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md) · [SYSTEMS_AND_FEATURES_REGISTRY.md](SYSTEMS_AND_FEATURES_REGISTRY.md) · code audit `MatchSimulator.java`, stub UI tables
+**Evidence:** 63 automated tests (62 pass) · [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md) · [SYSTEMS_AND_FEATURES_REGISTRY.md](SYSTEMS_AND_FEATURES_REGISTRY.md) · [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)
+
+**PO eagle view:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) — use for scope and sequencing decisions.
 
 ---
 

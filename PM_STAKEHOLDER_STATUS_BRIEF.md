@@ -4,7 +4,9 @@
 **Audience:** PM, PO, Sponsor, department leads, expert sign-off owners  
 **Branch:** `analyze-ai-branch` (merged `origin/develop` + `origin/feature/competition-completion-v1`)  
 **Date:** 2026-06-27  
-**Next update:** After manual QA sign-off
+**Next update:** After PO reviews [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) or Layer A manual QA
+
+> **PO eagle view (start here):** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)
 
 ---
 
@@ -48,7 +50,7 @@
 
 ## 2. Documentation inventory (what stakeholders can read)
 
-**Start here:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)
+**Start here:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) · **PO:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)
 
 ### Project & governance
 
@@ -271,6 +273,7 @@ Full list: [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)
 | 2025-06-25 | Research/doc sprint | Initial PM brief after CM Round 2 + gap analysis |
 | 2025-06-25 | Round 16 | CM legacy research **paused**; next phase MVP/v1 |
 | 2025-06-25 | v1 plan | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) — E2E, FA Cup, static players |
+| 2026-06-27 | PM | [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) — PO eagle view; §1 refreshed |
 | 2025-06-25 | Phase 0 | [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) — harness + ITs + CI |
 
 **Distribution:** PM, PO, Sponsor, department leads. Update when Phase A starts or PO resolves open decisions.
