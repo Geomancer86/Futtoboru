@@ -16,11 +16,13 @@
 
 | Question | Answer |
 |----------|--------|
-| **Can we ship v1 today?** | **Not yet** — manual QA + UI fixes (load, double-click) |
-| **How far are we?** | **~85% CM1 loop** automated · **~45% CM1 features** · **~12% CM4 depth** |
-| **Biggest risk** | Doc/code drift on UI bugs (C-1, C-3); inbox growth at long careers |
-| **Biggest asset** | Proven infinite season loop + CM research corpus + 59-test gate |
-| **Recommended focus** | Layer A manual QA → tag → **Layer B MVP** (XI, sim, fans) → **Layer C 1892** |
+| **Can we ship v1 today?** | **Not yet** — manual QA; UI fixes coded (C-1/C-3/H-3) not signed off |
+| **How far are we?** | **H1 ~85%** · **H2 ~25%** · **H3–H4 ~0–5%** — [eagle view](PM_EAGLE_VIEW_REPORT.md) |
+| **Biggest risk** | **Scope breadth** (management + living history + V2) vs one critical path |
+| **Biggest asset** | Proven season loop + design corpus + **62/63 tests** |
+| **Recommended focus** | Layer A QA → **Layer B MVP** → **Layer C 1892** → world/forks |
+
+**Eagle view:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)
 
 **Master plan:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)
 
@@ -42,7 +44,7 @@
 
 **Post-merge analysis:** [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md)
 
-**Automated suite:** ✅ **59 PR tests** + nightly **`LongRunSoakIT`** (~5 min) + **`TenSeasonReportIT`** report.
+**Automated suite:** ✅ **63 tests** (62 pass) + **`LongRunSoakIT`** + **`TenSeasonReportIT`**
 
 **v1 plan:** [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
 
