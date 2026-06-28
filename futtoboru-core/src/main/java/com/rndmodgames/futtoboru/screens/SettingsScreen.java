@@ -61,7 +61,7 @@ this.game = game;
         VisTable mainContainer = new VisTable();
 
         // TODO: padding relative to resolution so stays relatively centered
-        mainContainer.pad(50).setFillParent(true);
+        mainContainer.pad(50);
 
         VisTable graphicsSettings = new VisTable();
         VisTable soundSettings = new SoundSettingsTable(this.game);
@@ -371,7 +371,7 @@ this.game = game;
 //        stage.setDebugAll(DarkBlade.DEBUG_TABLES_ENABLED);
         
         // Add Settings Screen Main Container to Stage
-        stage.addActor(mainContainer);
+        UiScale.addScrollableRoot(stage, mainContainer, false);
     }
     
     @Override

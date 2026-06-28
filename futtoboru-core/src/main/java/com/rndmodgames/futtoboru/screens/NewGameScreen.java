@@ -50,7 +50,7 @@ public class NewGameScreen implements Screen {
 		stage = new Stage(UiScale.newViewport());
 		
 		VisTable mainContainer = new VisTable();
-		mainContainer.pad(50).setFillParent(true);
+		mainContainer.pad(50);
     
 		// 
 		final VisTable table = new VisTable();
@@ -136,7 +136,7 @@ public class NewGameScreen implements Screen {
         mainContainer.add(table);
 		
 		// Add Settings Screen Main Container to Stage
-		stage.addActor(mainContainer);
+		UiScale.addScrollableRoot(stage, mainContainer);
 	}
 	
 	@Override

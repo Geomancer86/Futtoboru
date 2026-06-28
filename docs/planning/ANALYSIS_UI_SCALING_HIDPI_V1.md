@@ -4,7 +4,7 @@
 **Date:** 2026-06-28  
 **Reported on:** Samsung Galaxy Book3 Pro (high-DPI laptop)  
 **Branch:** `analyze-ai-branch`  
-**Status:** **PU-10 MVP shipped** — known **clipping at 150%+** (see [ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md](ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md)). Fix: **PU-10-R2** (ScrollPane + root scale, not `unitsPerPixel`).
+**Status:** **PU-10-R2 shipped** — `UiScale.addScrollableRoot()` (1:1 viewport, root scale, `VisScrollPane`). Manual QA at 150%/200% still required.
 
 **Related:** [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) · [DEPARTMENT_PLATFORM_AND_UX_V1.md](DEPARTMENT_PLATFORM_AND_UX_V1.md) · [FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md](FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md) · [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) (Settings screen deep dive + integration plan)
 
