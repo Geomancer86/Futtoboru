@@ -41,7 +41,7 @@
 
 ## 0.1 Layer B MVP gaps (planned — not in V1.0 tag)
 
-See [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5](PM_V1_MVP_AND_1892_MASTER_PLAN.md).
+See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5](PM_V1_MVP_AND_1892_MASTER_PLAN.md).
 
 | ID | Feature | Status |
 |----|---------|--------|

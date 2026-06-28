@@ -260,24 +260,26 @@ No ELSPA blockbuster at CM1 scale — breakthrough sales **CM2 / CM97/98**.
 
 ## 11. Futtoboru comparison — CM1 v1 benchmark
 
-CM1 is the **minimum shippable management sim** Futtoboru v1 should match — not CM3/CM4 depth.
+CM1 is the **minimum shippable management sim** Futtoboru **V1 MVP (Layer B)** should match — not CM3/CM4 depth.
 
-| CM1 feature | Futtoboru feature branch | v1 priority |
-|-------------|-------------------------|-------------|
-| Full season completes | ❌ Not wired | **P0** |
-| Correct league rules | ❌ `createHistoricalRules()` unused | **P0** |
-| League table | ⚠️ Works | **P0** |
-| Champion declared | ❌ | **P0** |
-| Season rollover | ❌ No `SeasonManager` | **P0** |
-| Text/abstract match | ⚠️ Simple sim (no commentary) | P1 |
-| Player ratings 0–10 | ❌ | P1 |
-| FA Cup / cups | ⚠️ Data only | PO decision |
-| Transfers | ❌ | Post-v1 |
-| Hotseat 4-player | ❌ | Defer |
-| Real player names | ❌ CM1 | ✅ **1888 researched names** (ahead) |
-| Save game | ⚠️ JSON partial | P1 |
+**Canonical Layer B design:** [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md)
 
-**Critical path:** Wire `LeagueStandingsManager.isLeagueComplete()` in game engine → apply 1888 rules → `SeasonManager` rollover. See [PM_STAKEHOLDER_STATUS_BRIEF.md](PM_STAKEHOLDER_STATUS_BRIEF.md) Phase A.
+| CM1 feature | Futtoboru (2026-06-27) | Horizon |
+|-------------|-------------------------|---------|
+| Full season completes + rollover | ✅🧪 Proven headless | H1 ✅ |
+| Correct league rules (1888 2-1-0) | ✅🧪 Loader + IT; **UI verify open** (A-5) | H1 |
+| League table | ✅ | H1 |
+| Champion declared | ✅🧪 | H1 |
+| Text/abstract match uses **your XI** | ❌ Squad avg + RNG | **H2 — MVP-3** |
+| Player ratings 0–10 | ❌ | **H2 — MVP-5** |
+| Formations + pick 11 | 🔲 Stub | **H2 — MVP-1/2/9** |
+| Credible attendance | ❌ Random | **H2 — MVP-4** |
+| FA Cup / cups | ✅🧪 headless | H1 |
+| Transfers | ❌ | Post–Layer B |
+| Real player names | ✅ **1888 researched** (ahead of CM1) | — |
+| Save game | ✅🧪 JSON roundtrip | H1 |
+
+**Critical path:** Layer A manual QA → **Layer B** per [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) → 1892 → world/V2.
 
 ---
 

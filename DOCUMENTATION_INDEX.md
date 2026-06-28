@@ -15,6 +15,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | Document | Audience | Purpose |
 |----------|----------|---------|
 | [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, Sponsor, all leads** | **Eagle view** — horizons, progress, decisions, risks |
+| [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) | **PO, Match/Sim, UX** | **Layer B CM1 loop — gaps, design, phasing** |
 | [PM_STAKEHOLDER_STATUS_BRIEF.md](PM_STAKEHOLDER_STATUS_BRIEF.md) | **PM, all stakeholders** | **Status brief** — progress, docs hub, critical path |
 | [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md) | **PM, PO, QA** | **Post-merge** — develop + competition-completion-v1 integrated |
 | [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | **PO, all eng** | **Season model** — start mod + procedural loop + FM-style scripts |
@@ -22,6 +23,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) | **PM, PO, all leads** | **Features proven vs gaps + CM/FM roadmap** |
 | [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) | **PO, PM, all leads** | **Layer A · MVP sim/XI/fans · 1892 plan** |
 | [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) | **Match/Sim, UX** | **Extensible formations + XI schema** |
+| [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) | **PO, Match/Sim, UX** | **Layer B — CM1 gaps & MVP phasing** |
 | [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) | **PO** | **Plain-language 1892 Div 1/Div 2 decision** |
 | [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md) | **PO** | **Argentina hiatus fork — vote & Historical Mode** |
 | [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md) | **PO, PM, all leads** | **PO lock: Sandbox default, agency, news latency** |

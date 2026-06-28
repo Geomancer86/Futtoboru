@@ -275,6 +275,7 @@ Full list: [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)
 | 2025-06-25 | Research/doc sprint | Initial PM brief after CM Round 2 + gap analysis |
 | 2025-06-25 | Round 16 | CM legacy research **paused**; next phase MVP/v1 |
 | 2025-06-25 | v1 plan | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) — E2E, FA Cup, static players |
+| 2026-06-27 | PM | [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) — critical path + CM1 gap design |
 | 2026-06-27 | PM | [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) — PO eagle view; §1 refreshed |
 | 2025-06-25 | Phase 0 | [PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md](PM_PHASE0_TEST_INFRASTRUCTURE_REPORT.md) — harness + ITs + CI |
 

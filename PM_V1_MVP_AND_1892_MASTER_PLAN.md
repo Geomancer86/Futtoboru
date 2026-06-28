@@ -137,6 +137,10 @@ scorers = random player from full squad
 
 **Goal:** A player **chooses a team**, **picks who plays**, sees **credible results and crowds**, gets **ratings** — CM1-minimum loop per [CM1_REFERENCE.md §11](CM1_REFERENCE.md).
 
+**Canonical design (CM/FM gap analysis + phasing):** [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md)
+
+**PO locked:** Default critical path H1 → **H2** → H3 → H4; **fork UI deferred**.
+
 ### 5.1 Feature matrix — MVP gaps
 
 | ID | Feature | CM1 / FM ref | Code today | MVP spec (minimum) |
@@ -307,6 +311,8 @@ Full research: **[RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_18
 
 ## 7. Recommended master sequence
 
+**PO adopted (2026-06-27):** default critical path below. Fork/agency **UI deferred**; engine design kept for H4.
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  NOW → 2 wk     Layer A: V1.0 complete (UI bugs + manual QA)│
@@ -336,6 +342,8 @@ Full research: **[RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_18
 | 1 | **Formations MVP** | Basic (2–3 historical templates + pick XI) on **extensible schema** — [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) |
 | 2 | **Attendance model** | Table position + opponent + **recent form** + **derbies** (structure + formula; derby data file) |
 | 3 | **Distribution / git** | PO decides when/how to share builds; **no remote git push** from agents |
+| 4 | **Critical path** | **H1 QA → H2 Layer B → H3 1892 → H4 world/V2** — [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) |
+| 5 | **Fork UI** | **Deferred** — implement after Layer B + WE-1 |
 
 ### 8.2 Open — needs PO (1892 membership)
 

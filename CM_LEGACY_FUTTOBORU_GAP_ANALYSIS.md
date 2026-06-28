@@ -1,10 +1,12 @@
 # CM Legacy → Futtoboru Gap Analysis
 
 **Document type:** Competitive gap / roadmap reference  
-**Branch audited:** `feature/competitions-finances-seasons` (v0.4.0-SNAPSHOT)  
-**Baseline:** Legacy CM feature set through **CM4** (see [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md)) · **v1 target:** [CM1_REFERENCE.md](CM1_REFERENCE.md) · **Genre origins:** [PRE_CM1_GENRE_HISTORY.md](PRE_CM1_GENRE_HISTORY.md)  
-**Date:** 2025-06-25  
-**Overall legacy parity (CM4-equivalent systems):** **~12%** · **Core season-loop parity (CM1-level):** **~35%**
+**Branch audited:** `analyze-ai-branch` (v0.4.0-SNAPSHOT)  
+**Baseline:** Legacy CM feature set through **CM4** · **v1 target:** [CM1_REFERENCE.md](CM1_REFERENCE.md)  
+**Date:** 2025-06-25 · **Automation refresh:** 2026-06-27  
+**Overall legacy parity (CM4-equivalent systems):** **~12%** · **Core season-loop parity (CM1-level):** **~85% automated** · **CM1 management feel:** **~25%**
+
+> **⚠️ Superseded for season loop:** §3.2 rows on unwired `isLeagueComplete` / no rollover are **fixed** — see [SYSTEMS_AND_FEATURES_REGISTRY.md §0](SYSTEMS_AND_FEATURES_REGISTRY.md). **Active gap work:** [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) (Layer B — XI, sim, ratings, attendance).
 
 ---
 
@@ -12,13 +14,15 @@
 
 Futtoboru on the feature branch is a **historical league prototype** with strong **mod/data foundations** and a working **day-by-day loop** (advance → sim matches → standings → finances → inbox). It is **not yet** a Championship Manager–class management sim, even at **CM1 (1992)** completeness for season closure.
 
-### The three gaps that matter most
+### The three gaps that matter most (2026-06-27)
 
 | Gap | CM era | Futtoboru today |
 |-----|--------|-----------------|
-| **Season never ends** | CM1 had a full league season + champion | `isLeagueComplete()` exists but is **unwired**; no rollover |
-| **Wrong rules** | CM always applied league rules | `createHistoricalRules()` exists but **`createDefaultRules()` (3-1-0) is used** |
-| **No management depth** | CM3+ training/tactics/scouting; CM4 media/personalities | **Placeholder UI only** for training, tactics, scouting, board, transfers |
+| **Management loop thin** | CM1: lineup → match → **ratings** | Sim uses **full squad + RNG**; no XI, no 0–10 ratings |
+| **Tactics / pick XI** | CM1 formations menu | **Stub**; not in sidebar |
+| **Crowds not credible** | FM-style table context | **Random** attendance; H-1 overwrite |
+
+**Season loop (was P0):** ✅ Proven — completion, rollover, 60-season soak. See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md).
 
 ### What already exceeds CM1–CM2 in specific areas
 

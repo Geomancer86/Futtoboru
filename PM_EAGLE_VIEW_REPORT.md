@@ -192,11 +192,11 @@ Latest commit: `6840610` — see [PM_LAYER_A_SPRINT_PROGRESS.md](PM_LAYER_A_SPRI
 
 ## 11. Where PO goes next (suggested agenda)
 
-1. **Approve or adjust sequence §7** — especially whether H2 is mandatory before any 1892 work.  
-2. **Run or delegate Layer A manual QA** — unblocks “V1.0 complete” language.  
-3. **Pick 1892 membership option** (A/B/C/D) — unblocks World & Data.  
-4. **Confirm V2 first country** (Scotland recommended) — unblocks research packs.  
-5. **Explicitly defer or commit** to fork/agency **UI** in Layer B vs after WE-1.
+1. ~~Approve sequence §7~~ — **Adopted:** H1 QA → H2 → H3 → H4 — [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md)  
+2. **Run or delegate Layer A manual QA** — unblocks “V1.0 complete”  
+3. **Pick 1892 membership** (A/B/C/D) — after Layer B  
+4. **Confirm V2 first country** (Scotland recommended) — after Layer C  
+5. ~~Fork UI timing~~ — **Deferred** to post–WE-1
 
 ---
 
@@ -220,6 +220,7 @@ Latest commit: `6840610` — see [PM_LAYER_A_SPRINT_PROGRESS.md](PM_LAYER_A_SPRI
 
 | Date | Change |
 |------|--------|
+| 2026-06-27 | Critical path adopted; fork UI deferred; link Layer B design |
 | 2026-06-27 | Initial eagle view for PO visibility |
 
 ---
