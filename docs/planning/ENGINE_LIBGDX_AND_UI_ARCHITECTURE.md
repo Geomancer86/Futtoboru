@@ -18,7 +18,7 @@
 | Question | Answer |
 |----------|--------|
 | **Is there one perfect doc today?** | **This file** — previously info was split across 5+ docs, some outdated. |
-| **Stack** | Java **17**, LibGDX **1.12.0**, VisUI **1.5.2**, Maven multi-module, LWJGL3 desktop. |
+| **Stack** | Java **17**, LibGDX **1.12.0** (latest upstream **1.14.2** — see §2.1), VisUI **1.5.2**, Maven multi-module, LWJGL3 desktop. |
 | **UI model** | LibGDX **Scene2D** + **VisUI** widgets; one `MainGameScreen` with **sidebar table switching** (`MainMenuManager`). |
 | **Game model** | **Simulation-first**: `FuttoboruGameEngine` + managers mutate `SaveGame`; UI reads save and refreshes tables. |
 | **Can we build CM/FM depth + Wave 1.5 (1892 expansion)?** | **Yes** on desktop — LibGDX is not the blocker. Blockers are **engine/data patterns** (save-as-truth, world evolution) and **UI refresh conventions**, not framework limits. |
@@ -27,6 +27,16 @@
 ---
 
 ## 2. Technology stack (verified from `pom.xml`)
+
+### 2.1 Version matrix (2026-06-28)
+
+| Component | Pinned in repo | Latest stable (upstream) | Upgrade notes |
+|-----------|----------------|--------------------------|---------------|
+| LibGDX | **1.12.0** | **1.14.2** | [Release notes](https://libgdx.com/news/2026/05/gdx-1-14-1); bump in separate **TECH-UPG-1** PR |
+| VisUI | **1.5.2** | **1.5.4** (gdx 1.12.1) · **1.5.10** (gdx 1.14.1) | Match LibGDX row in [vis-ui CHANGES](https://github.com/kotcrab/vis-ui/blob/master/ui/CHANGES.md) |
+| Java | **17** | 17 LTS | OK |
+
+**UI scale (PU-10):** `ui/UiScale.java` + Settings pref `settings.ui_scale`. Known issue: viewport shrink clips wide layouts — fix **PU-10-R2** in [ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md](ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md).
 
 | Layer | Choice | Location |
 |-------|--------|----------|
@@ -283,7 +293,8 @@ Honest assessment for PO and roadmap planning.
 | **Large scroll lists** | 500+ club league tables lag if naive | `ScrollPane` + reuse actors; virtual lists for FM-scale (future) |
 | **JSON save size** | Very long careers, big inbox | Compression, prune inbox, schema versioning |
 | **LibGDX Json + generics** | `List.of()` immutable breaks load | Use `ArrayList`; test roundtrip (`SaveLoadIT`) |
-| **VisUI maintenance** | Tied to LibGDX 1.12 | Pin versions; upgrade as coordinated bump |
+| **VisUI maintenance** | Tied to LibGDX 1.12 | Pin versions; upgrade as coordinated bump — see §2.1 |
+| **UI scale / HiDPI** | PU-10 MVP shipped; **clips at 150%+** | **PU-10-R2:** ScrollPane + root scale — [ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md](ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md) |
 | **Magic screen IDs** | Refactor cost | Enum/router v2 — not blocking features |
 
 ### 9.3 Real scope boundaries (choose consciously)
@@ -330,6 +341,7 @@ When PO proceeds with [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_E
 | TD-U5 | `DatabaseLoader` used during sim | **Yes** for world evolution |
 | TD-U6 | No save schema version | Long-save risk |
 | TD-U7 | `PROJECT_MASTER_ANALYSIS` % outdated | Docs only |
+| TD-U8 | UI scale clips at 150%+ (`unitsPerPixel` shrinks canvas) | **Yes for HiDPI QA** — [ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md](ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md) |
 
 Track UI bugs: [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)
 
