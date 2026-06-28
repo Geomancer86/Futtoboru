@@ -112,7 +112,7 @@ These prevent the stated goal: **play season under correct rules → complete �
 | **DG-9** | Promotion/relegation system | Later seasons |
 | **DG-10** | Youth regens / retirement / mortality | **No in v1** — static cohort policy |
 | **DG-11** | `GameTestHarness` + season/cup/soak ITs | **Yes** — release gate |
-| **DG-12** | **UI scale / HiDPI** (Settings + launcher) | **No for logic** — **Yes for manual QA UX** on high-DPI laptops — [ANALYSIS_UI_SCALING_HIDPI_V1.md](ANALYSIS_UI_SCALING_HIDPI_V1.md) |
+| **DG-12** | **UI scale / HiDPI** (Settings + launcher) | **No for logic** — **Yes for manual QA UX** — implement **PU-10-R** not VisUI-only — [ANALYSIS_UI_SCALE_BROWSER_PARITY_V1.md](ANALYSIS_UI_SCALE_BROWSER_PARITY_V1.md) |
 
 ---
 

@@ -166,9 +166,38 @@ public static float UI_SCALE = 1.0f;
 
 Load in `create()` **before** `VisUI.load()`.
 
-### 7.3 Apply scale — two implementation options
+### 7.3 Apply scale — recommended: PU-10-R (browser-like)
 
-#### Option A — VisUI global scale (preferred for VisUI widgets)
+> **Decision support:** [ANALYSIS_UI_SCALE_BROWSER_PARITY_V1.md](ANALYSIS_UI_SCALE_BROWSER_PARITY_V1.md) — original VisUI-only plan is **not** equivalent to browser/Cursor zoom.
+
+**Do not ship VisUI-only** if the goal is Cursor/browser behaviour. Use **viewport scale + VisUI.setScale**:
+
+#### Primary — Stage viewport (uniform zoom)
+
+```java
+// UiScale helper — use in every Screen constructor + resize()
+ScreenViewport vp = new ScreenViewport();
+vp.setUnitsPerPixel(1f / Futtoboru.UI_SCALE);
+stage = new Stage(vp);
+```
+
+Scales **layout + text + hardcoded `.width()`** together (browser-like).
+
+#### Secondary — VisUI skin (crisp widgets)
+
+```java
+VisUI.setScale(UI_SCALE);
+VisUI.load(Gdx.files.internal("skin/tixel.json"));
+```
+
+#### On change from Settings
+
+Save pref → update `UI_SCALE` → reload VisUI → `changeScreen(current)` (rebuild).
+
+#### Legacy options (not recommended alone)
+
+<details>
+<summary>Option A — VisUI global scale only (insufficient alone)</summary>
 
 **Startup:**
 
@@ -197,9 +226,12 @@ public void applyUiScale() {
 ```
 
 **Pros:** Scales buttons, labels, paddings from skin.  
-**Cons:** Requires **screen rebuild** after change; must not call from mid-game without preserving save state (safe from Settings — user expects visual refresh).
+**Cons:** Hardcoded `.width(N)` and `setFontScale` do not scale uniformly — **not browser-like**.
 
-#### Option B — Viewport `unitsPerPixel` (per-Stage)
+</details>
+
+<details>
+<summary>Option B — Viewport only (sufficient alone; pair with VisUI for crispness)</summary>
 
 Set on each `Stage` after creation:
 
@@ -208,10 +240,12 @@ Set on each `Stage` after creation:
 stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 ```
 
-**Pros:** Can update in `resize()` without reloading VisUI.  
-**Cons:** Must touch **every** `Stage` constructor (~20 files); custom `setFontScale` titles may look inconsistent.
+**Pros:** Uniform zoom on all actors on that stage.  
+**Cons:** Must use **`UiScale` helper** in every Screen (~10 files) + `MatchEngineScreen.uiStage`.
 
-**Recommendation:** **Option A** for PU-10 MVP (centralized in `Futtoboru.create()` + `applyUiScale()`); Option B only if reload flicker is unacceptable.
+</details>
+
+**Recommendation:** **PU-10-R = viewport helper + VisUI.setScale + Settings row.** See browser parity doc §5.
 
 ### 7.4 SettingsScreen wiring (concrete steps)
 
@@ -250,13 +284,15 @@ configuration.setHdpiMode(HdpiMode.Pixels);
 
 | File | Change |
 |------|--------|
+| **`UiScale.java`** (new) | `newViewport()`, `updateViewport()` |
 | `PreferencesManager.java` | `SETTINGS_UI_SCALE_PREF`, get/update |
-| `Futtoboru.java` | `UI_SCALE`, load in `create()`, `updateUiScale()`, `applyUiScale()` |
+| `Futtoboru.java` | `UI_SCALE`, load in `create()`, `updateUiScale()`, rebuild screen |
+| **All `*Screen.java`** (~10) | Use `UiScale.newViewport()`; resize via helper |
+| `MatchEngineScreen.java` | Apply to `uiStage`; replace `BitmapFont` Label or scale overlay |
 | `SettingsScreen.java` | Graphics row + listener |
+| `MainGameScreen.java` | Toast padding × scale |
 | `BaseBundle_*.properties` | `ui_scale` label |
-| `PreferenceManagerTests.java` | Round-trip `updateUiScale` / `getUiScale` |
-| `SYSTEMS_AND_FEATURES_REGISTRY.md` | Settings row |
-| `MainGameMenuTable.java` | **Optional SET-1 fix:** case 3 → `changeScreen(SETTINGS_SCREEN)` |
+| `PreferenceManagerTests.java` | Round-trip scale pref |
 
 ### 7.6 Acceptance
 
