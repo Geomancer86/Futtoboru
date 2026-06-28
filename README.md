@@ -3,9 +3,15 @@ Futtoboru is an Open Source Alternative to the Football Manager Series
 
 ## Requirements
 - Java 17 or higher
-- Maven 3.6+ (or use Maven wrapper if available)
+- Maven 3.6+ on PATH (or run `scripts\install-maven-windows.ps1` as Administrator — see [scripts/README.md](scripts/README.md))
+
+## Documentation
+
+Planning and design docs: **[docs/planning/DOCUMENTATION_INDEX.md](docs/planning/DOCUMENTATION_INDEX.md)** (root [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) redirects there).
 
 ## Build Instructions
+
+**First time or if scripts fail:** run `check-env.bat` to verify Java, Maven, and whether the game JAR is built.
 
 ### Option 1: Using Build Scripts (Recommended for Windows)
 

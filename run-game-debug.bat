@@ -1,30 +1,40 @@
 @echo off
 title Futtoboru Debug Console
 color 0A
+cd /d "%~dp0"
+call scripts\env.bat
+if errorlevel 1 (
+    pause
+    exit /b 1
+)
+
+if not exist "%JAR_FILE%" (
+    echo ERROR: Game JAR not found.
+    echo   %JAR_FILE%
+    echo.
+    echo Run build.bat first, or build-and-run.bat
+    pause
+    exit /b 1
+)
+
 echo ========================================
 echo Futtoboru Game Launcher (Debug Mode)
 echo ========================================
 echo.
-echo Starting game with error logging...
-echo All output will be saved to: game-debug.log
+echo Log file: %REPO_ROOT%\game-debug.log
 echo.
 echo ========================================
 echo.
 
-REM Run Java with output visible on screen AND logged to file
-REM Using PowerShell Tee-Object to show on screen and save to file
-powershell -NoProfile -Command "java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar 2>&1 | Tee-Object -FilePath game-debug.log"
+powershell -NoProfile -Command "java -jar '%JAR_FILE%' 2>&1 | Tee-Object -FilePath '%REPO_ROOT%\game-debug.log'"
+set RUN_EXIT=%ERRORLEVEL%
 
 echo.
-echo ========================================
-echo Game has exited. Exit code: %ERRORLEVEL%
-echo ========================================
+echo Game exited with code %RUN_EXIT%.
+echo Check game-debug.log for full output.
 echo.
-echo Check game-debug.log for all output and errors
+pause
+type "%REPO_ROOT%\game-debug.log"
 echo.
-echo Press any key to view the log file...
-pause >nul
-type game-debug.log
-echo.
-echo Press any key to close...
-pause >nul
+pause
+exit /b %RUN_EXIT%

@@ -1,5 +1,15 @@
 # Windows tooling scripts
 
+## Dev environment (`env.bat`)
+
+All root `.bat` launchers call **`scripts/env.bat`**, which:
+
+- Sets repo root and `JAR_FILE` path
+- Finds Java 17+ (PATH, `JAVA_HOME`, or common install dirs)
+- Finds Maven (`mvn` on PATH, `MAVEN_HOME`, or `C:\Program Files\Apache\Maven\...`)
+
+From repo root, run **`check-env.bat`** to print Java/Maven/JAR status before building.
+
 ## Apache Maven (system install)
 
 **Script:** [install-maven-windows.ps1](install-maven-windows.ps1)

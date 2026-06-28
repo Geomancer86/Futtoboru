@@ -4,15 +4,22 @@
 
 This document describes the build and testing workflow for Futtoboru.
 
+## Environment check
+
+Run **`check-env.bat`** from the repo root. It reports Java, Maven, JAR path, and whether the game is already compiled.
+
+Shared setup lives in **`scripts/env.bat`** (Java 17+, Maven from PATH / `MAVEN_HOME` / standard install paths).
+
 ## Build Scripts
 
 ### `build.bat`
 - **Purpose:** Builds the project using Maven
 - **Usage:** `build.bat`
 - **What it does:**
+  - Loads `scripts/env.bat` (repo root, Java, Maven)
+  - Runs `generate-build-info.bat`
   - Runs `mvn clean install -DskipTests`
-  - Creates the JAR file in `futtoboru-desktop/target/`
-  - Shows build status (success/failure)
+  - Verifies the JAR exists in `futtoboru-desktop/target/`
 
 ### `build-and-run.bat`
 - **Purpose:** Builds the project and then runs it
@@ -59,9 +66,8 @@ The script will automatically detect if a rebuild is needed.
 ## Maven Requirements
 
 - **Maven 3.6+** required
-- Maven should be in your PATH, OR
-- Set `MAVEN_HOME` environment variable, OR
-- Edit `build.bat` to use: `C:\apache-maven-3.6.3\bin\mvn.cmd`
+- Maven on PATH (recommended), or `MAVEN_HOME`, or install via [scripts/install-maven-windows.ps1](scripts/install-maven-windows.ps1)
+- Scripts auto-detect `C:\Program Files\Apache\Maven\apache-maven-3.9.16` if present
 
 ## Build Output
 
@@ -73,9 +79,9 @@ After a successful build:
 ## Troubleshooting
 
 ### "Maven not found"
-- Add Maven to your PATH
-- Or set MAVEN_HOME environment variable
-- Or edit `build.bat` to use full path to Maven
+- Run `check-env.bat` for a clear error
+- Add Maven to PATH or set `MAVEN_HOME`
+- Or run `scripts\install-maven-windows.ps1` as Administrator (see [scripts/README.md](scripts/README.md))
 
 ### "JAR file not found"
 - Run `build.bat` first
@@ -90,5 +96,5 @@ After a successful build:
 
 ---
 
-*Last updated: 2025-12-14*
+*Last updated: 2026-06-28*
 

@@ -1,23 +1,35 @@
 @echo off
+title Futtoboru Game Launcher
+cd /d "%~dp0"
+call scripts\env.bat
+if errorlevel 1 (
+    pause
+    exit /b 1
+)
+
+if not exist "%JAR_FILE%" (
+    echo ERROR: Game JAR not found.
+    echo   %JAR_FILE%
+    echo.
+    echo Run build.bat first, or build-and-run.bat
+    pause
+    exit /b 1
+)
+
 echo ========================================
 echo Futtoboru Game Launcher
 echo ========================================
 echo.
 echo Starting game...
-echo.
-echo NOTE: This window will stay open to show any errors
-echo Press Ctrl+C to close this window after the game exits
+echo Press Ctrl+C after the game exits
 echo.
 echo ========================================
 echo.
 
-java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar "%JAR_FILE%"
+set RUN_EXIT=%ERRORLEVEL%
 
 echo.
-echo ========================================
-echo Game has exited. Exit code: %ERRORLEVEL%
-echo ========================================
-echo.
-echo Press any key to close this window...
-pause >nul
-
+echo Game exited with code %RUN_EXIT%.
+pause
+exit /b %RUN_EXIT%

@@ -95,7 +95,7 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1
 | Player professions loader | ✅ | 80 professions | `system/loaders/PlayerProfessionsLoader.java` |
 | Save game model | ⚠️ | `startSeasonId`, `simulatedSeasonIndex` added | `system/SaveGame.java` |
 | Save/load system | ⚠️ | JSON roundtrip IT ✅; UI load gaps | `system/SaveLoadSystem.java` |
-| Preferences | ✅ | Locale, resolution, fullscreen | `PreferencesManager.java` |
+| Preferences | ✅ | Locale, resolution, fullscreen — **no UI scale / HiDPI** | `PreferencesManager.java` — see [ANALYSIS_UI_SCALING_HIDPI_V1.md](ANALYSIS_UI_SCALING_HIDPI_V1.md) |
 
 ---
 
@@ -127,7 +127,7 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1
 |--------|--------|-------|------|
 | Splash | ⚠️ | Basic | `screens/SplashScreen.java` |
 | Main menu | ⚠️ | Load game partial | `screens/MenuScreen.java` |
-| Settings | ⚠️ | Resolution, locale | `screens/SettingsScreen.java` |
+| Settings | ⚠️ | Resolution, locale — **no UI scale** | `screens/SettingsScreen.java` |
 | New game setup | ⚠️ | Country selection | `screens/NewGameSetupScreen.java` |
 | New manager | ⚠️ | Create person | `screens/NewManagerScreen.java` |
 | New game season | ⚠️ | One season only | `screens/NewGameSeasonScreen.java` |
