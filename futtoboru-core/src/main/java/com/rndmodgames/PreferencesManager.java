@@ -33,8 +33,8 @@ public class PreferencesManager {
 	public static final String SETTINGS_FULLSCREEN_PREF = "settings.fullscreen";
 	public static final String SETTINGS_RESOLUTION_PREF = "settings.resolution";
 	public static final String SETTINGS_UI_SCALE_PREF = "settings.ui_scale";
-	/** One-time reset after broken ScrollPane+setScale attempt (PU-10-R2 revert). */
-	public static final String SETTINGS_UI_SCALE_MIGRATION_PREF = "settings.ui_scale_migration_v4";
+	/** One-time HiDPI dev default (200% UI scale). */
+	public static final String SETTINGS_UI_SCALE_MIGRATION_V5_PREF = "settings.ui_scale_migration_v5_hidpi";
 	public static final String SETTINGS_DAY_NIGHT_RENDERING_PREF = "settings.day_night_cycle_rendering";
 	public static final String SETTINGS_DAMAGE_COUNTERS_RENDERING_PREF = "settings.damage_counters_rendering";
 	public static final String SETTINGS_DEBUG_SIGHT_PREF = "settings.debug_sight_rendering";
@@ -51,7 +51,7 @@ public class PreferencesManager {
 	
 	// DEFAULT VALUES
 	public static String DEFAULT_RESOLUTION = "1280x1024";
-	public static float DEFAULT_UI_SCALE = 1.0f;
+	public static float DEFAULT_UI_SCALE = 2.0f;
 	public static String DEFAULT_LOCALE = "en_US";
 	
 	public PreferencesManager() {
@@ -242,15 +242,19 @@ public class PreferencesManager {
 	}
 
 	/**
-	 * Resets UI scale to 100% once after the reverted PU-10-R2 scroll-root experiment.
+	 * One-time migrations for UI scale. v4 reset broken ScrollPane experiment; v5 sets HiDPI default.
 	 * UI scale is global (not per savegame).
 	 */
-	public void migrateUiScaleAfterScrollRootRevert() {
-		if (prefs.getBoolean(SETTINGS_UI_SCALE_MIGRATION_PREF, false)) {
+	public void migrateUiScalePreferences() {
+		if (!prefs.getBoolean("settings.ui_scale_migration_v4", false)) {
+			updateUiScale(1.0f);
+			prefs.putBoolean("settings.ui_scale_migration_v4", true);
+		}
+		if (prefs.getBoolean(SETTINGS_UI_SCALE_MIGRATION_V5_PREF, false)) {
 			return;
 		}
 		updateUiScale(DEFAULT_UI_SCALE);
-		prefs.putBoolean(SETTINGS_UI_SCALE_MIGRATION_PREF, true);
+		prefs.putBoolean(SETTINGS_UI_SCALE_MIGRATION_V5_PREF, true);
 		prefs.flush();
 	}
 	

@@ -154,7 +154,7 @@ public class Futtoboru extends Game {
             RESOLUTION = preferences.getResolution();
         }
 
-        preferences.migrateUiScaleAfterScrollRootRevert();
+        preferences.migrateUiScalePreferences();
 
         UI_SCALE = preferences.getUiScale();
         

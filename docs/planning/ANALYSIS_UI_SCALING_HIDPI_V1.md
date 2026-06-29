@@ -4,7 +4,7 @@
 **Date:** 2026-06-28  
 **Reported on:** Samsung Galaxy Book3 Pro (high-DPI laptop)  
 **Branch:** `analyze-ai-branch`  
-**Status:** **PU-10 MVP** — viewport `unitsPerPixel` zoom. PU-10-R2 (ScrollPane + setScale) **reverted** — resets to **100%** on next launch via pref migration.
+**Status:** **PU-10-R3 shipped** — default **200%** `unitsPerPixel` zoom; overflow scroll on wide screens; Settings panels stacked vertically.
 
 **Related:** [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) · [DEPARTMENT_PLATFORM_AND_UX_V1.md](DEPARTMENT_PLATFORM_AND_UX_V1.md) · [FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md](FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md) · [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) (Settings screen deep dive + integration plan)
 

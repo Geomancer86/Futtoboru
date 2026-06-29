@@ -36,7 +36,7 @@
 | VisUI | **1.5.2** | **1.5.4** (gdx 1.12.1) · **1.5.10** (gdx 1.14.1) | Match LibGDX row in [vis-ui CHANGES](https://github.com/kotcrab/vis-ui/blob/master/ui/CHANGES.md) |
 | Java | **17** | 17 LTS | OK |
 
-**UI scale (PU-10):** `ui/UiScale.java` — Settings pref `settings.ui_scale`; viewport zoom via `unitsPerPixel`. Clipping at 150%+ open. **Not per savegame** — stored in `.prefs/Futtuboru Preferences`.
+**UI scale (PU-10-R3):** `ui/UiScale.java` — default **200%** via `unitsPerPixel`; `addOverflowScroll()` for wide roots; Settings stacked vertically. Global pref `.prefs/Futtuboru Preferences`.
 
 | Layer | Choice | Location |
 |-------|--------|----------|
@@ -294,7 +294,7 @@ Honest assessment for PO and roadmap planning.
 | **JSON save size** | Very long careers, big inbox | Compression, prune inbox, schema versioning |
 | **LibGDX Json + generics** | `List.of()` immutable breaks load | Use `ArrayList`; test roundtrip (`SaveLoadIT`) |
 | **VisUI maintenance** | Tied to LibGDX 1.12 | Pin versions; upgrade as coordinated bump — see §2.1 |
-| **UI scale / HiDPI** | PU-10 MVP (`unitsPerPixel`); **clips at 150%+** | PU-10-R2 reverted; need viewport-safe scroll strategy |
+| **UI scale / HiDPI** | ✅ **PU-10-R3** — default 200%, overflow scroll | Manual QA on laptop |
 | **Magic screen IDs** | Refactor cost | Enum/router v2 — not blocking features |
 
 ### 9.3 Real scope boundaries (choose consciously)
@@ -341,7 +341,7 @@ When PO proceeds with [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_E
 | TD-U5 | `DatabaseLoader` used during sim | **Yes** for world evolution |
 | TD-U6 | No save schema version | Long-save risk |
 | TD-U7 | `PROJECT_MASTER_ANALYSIS` % outdated | Docs only |
-| TD-U8 | UI scale clips at 150%+ (`unitsPerPixel` shrinks canvas) | **Yes for HiDPI QA** — PU-10-R2 reverted |
+| TD-U8 | UI scale clipping at high zoom | **Mitigated R3** — overflow scroll + Settings stack |
 
 Track UI bugs: [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)
 

@@ -1,13 +1,15 @@
 package com.rndmodgames.futtoboru.ui;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 
 /**
  * Global UI zoom via {@link ScreenViewport#setUnitsPerPixel(float)} so layout, drawing, and
- * hit-testing stay aligned. Clipping at high scale is a known follow-up (ScrollPane per screen).
+ * hit-testing stay aligned. Use {@link #addOverflowScroll} on wide roots when scale clips content.
  */
 public final class UiScale {
 
@@ -36,6 +38,19 @@ public final class UiScale {
             applyUnitsPerPixel((ScreenViewport) viewport);
         }
         viewport.update(width, height, true);
+    }
+
+    /**
+     * Scroll overflow within the scaled viewport. Does not apply {@code setScale} — safe with
+     * {@code unitsPerPixel} zoom. Content must not use {@code setFillParent(true)}.
+     */
+    public static VisScrollPane addOverflowScroll(Stage stage, Actor content) {
+        VisScrollPane scroll = new VisScrollPane(content);
+        scroll.setFillParent(true);
+        scroll.setFadeScrollBars(false);
+        scroll.setOverscroll(false, false);
+        stage.addActor(scroll);
+        return scroll;
     }
 
     public static String formatPercent(float scale) {

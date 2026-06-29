@@ -61,7 +61,7 @@ this.game = game;
         VisTable mainContainer = new VisTable();
 
         // TODO: padding relative to resolution so stays relatively centered
-        mainContainer.pad(50).setFillParent(true);
+        mainContainer.pad(50);
 
         VisTable graphicsSettings = new VisTable();
         VisTable soundSettings = new SoundSettingsTable(this.game);
@@ -348,15 +348,17 @@ this.game = game;
         // Gameplay Settings Panel
         gameplaySettings.add(gameplaySettingsLabel).pad(5);
         
-        // 5 Panel Layout (added Debug Logging)
-        mainContainer.row().colspan(5).expandX().fillX();
-        
-        // 
-        mainContainer.add(graphicsSettings).pad(10).align(Align.top);
-        mainContainer.add(soundSettings).pad(10).align(Align.top);
-        mainContainer.add(gameplaySettings).pad(10).align(Align.top);
-        mainContainer.add(modSettings).pad(10).align(Align.top);
-        mainContainer.add(debugLoggingSettings).pad(10).align(Align.top);
+        // Stack panels vertically so 150–200% UI scale does not clip the five-column row
+        mainContainer.row();
+        mainContainer.add(graphicsSettings).pad(10).growX().fillX();
+        mainContainer.row();
+        mainContainer.add(soundSettings).pad(10).growX().fillX();
+        mainContainer.row();
+        mainContainer.add(gameplaySettings).pad(10).growX().fillX();
+        mainContainer.row();
+        mainContainer.add(modSettings).pad(10).growX().fillX();
+        mainContainer.row();
+        mainContainer.add(debugLoggingSettings).pad(10).growX().fillX();
 
         // Main Menu Button
         final MainMenuButton exitButton = new MainMenuButton(game);
@@ -371,7 +373,7 @@ this.game = game;
 //        stage.setDebugAll(DarkBlade.DEBUG_TABLES_ENABLED);
         
         // Add Settings Screen Main Container to Stage
-        stage.addActor(mainContainer);
+        UiScale.addOverflowScroll(stage, mainContainer);
     }
     
     @Override
