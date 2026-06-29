@@ -95,7 +95,7 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1
 | Player professions loader | ✅ | 80 professions | `system/loaders/PlayerProfessionsLoader.java` |
 | Save game model | ⚠️ | `startSeasonId`, `simulatedSeasonIndex` added | `system/SaveGame.java` |
 | Save/load system | ⚠️ | JSON roundtrip IT ✅; UI load gaps | `system/SaveLoadSystem.java` |
-| Preferences | ✅ | Locale, resolution, fullscreen, **UI scale** (`settings.ui_scale`) | `PreferencesManager.java` |
+| Preferences | ✅ | Locale, resolution, fullscreen, **UI scale** (default 200%) | `PreferencesManager.java` |
 
 ---
 

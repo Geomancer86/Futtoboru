@@ -36,7 +36,7 @@
 | VisUI | **1.5.2** | **1.5.4** (gdx 1.12.1) · **1.5.10** (gdx 1.14.1) | Match LibGDX row in [vis-ui CHANGES](https://github.com/kotcrab/vis-ui/blob/master/ui/CHANGES.md) |
 | Java | **17** | 17 LTS | OK |
 
-**UI scale (PU-10-R3):** `ui/UiScale.java` — default **200%** via `unitsPerPixel`; `addOverflowScroll()` for wide roots; Settings stacked vertically. Global pref `.prefs/Futtuboru Preferences`.
+**UI scale (PU-10):** ✅ Complete — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md). `UiScale` viewport zoom; `MainGameScreen` fixed top bar + scrollable body; Settings vertical stack.
 
 | Layer | Choice | Location |
 |-------|--------|----------|
@@ -341,7 +341,7 @@ When PO proceeds with [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_E
 | TD-U5 | `DatabaseLoader` used during sim | **Yes** for world evolution |
 | TD-U6 | No save schema version | Long-save risk |
 | TD-U7 | `PROJECT_MASTER_ANALYSIS` % outdated | Docs only |
-| TD-U8 | UI scale clipping at high zoom | **Mitigated R3** — overflow scroll + Settings stack |
+| TD-U8 | UI scale clipping at high zoom | ✅ **Mitigated** — PU-10-R3/R3b |
 
 Track UI bugs: [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)
 

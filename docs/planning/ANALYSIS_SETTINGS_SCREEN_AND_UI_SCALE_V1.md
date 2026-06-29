@@ -245,7 +245,7 @@ stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), tr
 
 </details>
 
-**Recommendation:** **PU-10-R2 = Option A** (ScrollPane + root scale). See [ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md](ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md). Original `unitsPerPixel` approach causes clipping.
+**Recommendation:** ✅ **PU-10 shipped** — see [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md).
 
 ### 7.4 SettingsScreen wiring (concrete steps)
 
@@ -325,7 +325,8 @@ configuration.setHdpiMode(HdpiMode.Pixels);
 | In-game Options → Settings | ✅ |
 | Match engine overlay | ⏸ Deferred |
 | `VisUI.setScale` | N/A (not in vis-ui 1.5.2) |
-| Viewport clipping at 150%+ | 🟠 Open — PU-10-R2 reverted |
+| Viewport clipping at 150%+ | ✅ Mitigated — overflow scroll + Settings stack |
+| In-game top menu stretched by wide panels | ✅ Fixed — `MainGameScreen` fixed header (R3b) |
 | Per-screen layout polish | 🔲 After new clipping strategy |
 
 

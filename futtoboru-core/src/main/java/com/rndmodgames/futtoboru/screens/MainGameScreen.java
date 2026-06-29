@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.rndmodgames.futtoboru.ui.UiScale;
 import com.kotcrab.vis.ui.util.ToastManager;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -70,52 +71,42 @@ public class MainGameScreen implements Screen {
         
         //
         stage = new Stage(UiScale.newViewport());
-        
-        // Full Game Window
-        final VisTable gameWindowTable = new VisTable(true);
-        gameWindowTable.setDebug(true);
-        gameWindowTable.pad(5);
-        
-        // Top Menu (save, load, settings, advance time)
+
         mainGameMenu = new MainGameMenuTable(game, stage);
-        
-        //
-        gameWindowTable.row().colspan(2);
-        gameWindowTable.add(mainGameMenu).growX().top().right();
-        
-        // Takes care of Buttons Menu Dynamically
         mainTable = new VisTable(true);
         menuManager = new MainMenuManager(game, currentGame, mainTable);
-        
-        // Set the reference to allow dynamic screen updates from the Game Engine after data changes
-        FuttoboruGameEngine gameEngine = ((Futtoboru)game).getGameEngine();
+
+        FuttoboruGameEngine gameEngine = ((Futtoboru) game).getGameEngine();
         if (gameEngine != null) {
             gameEngine.setMainMenuManager(menuManager);
         } else {
             Gdx.app.error("MainGameScreen", "GameEngine is null! Some features may not work correctly.");
         }
-        
-        /**
-         * Set the reference to allow calling screen changes from the top menu
-         * TODO: fix / decouple / couple the menu managers to avoid too much passing objects around
-         */
-        mainGameMenu.setMainMenuManager(menuManager);
-        
-        // Set the reference to allow MainMenuManager to refresh button state
-        menuManager.setTopMenuTable(mainGameMenu);
-        
-        //
-        gameWindowTable.row();
-        gameWindowTable.add(menuManager.getButtonsMenu()).top();
-        gameWindowTable.add(mainTable).grow();
 
-        // Initialize Toast Manager
+        mainGameMenu.setMainMenuManager(menuManager);
+        menuManager.setTopMenuTable(mainGameMenu);
+
+        // Shell: fixed top menu; only body scrolls when in-game panels (e.g. squad list) are wider than viewport
+        final VisTable shell = new VisTable(true);
+        shell.setFillParent(true);
+        shell.pad(5);
+
+        shell.row().colspan(2);
+        shell.add(mainGameMenu).growX().fillX().top().right();
+
+        VisTable bodyTable = new VisTable(true);
+        bodyTable.add(menuManager.getButtonsMenu()).top();
+        bodyTable.add(mainTable).grow();
+
+        VisScrollPane bodyScroll = UiScale.newOverflowScrollPane(bodyTable);
+        shell.row();
+        shell.add(bodyScroll).colspan(2).grow().fill();
+
         toastManager = new ToastManager(stage);
         toastManager.setScreenPadding(UiScale.scaled(10), UiScale.scaled(60));
-        toastManager.toFront(); // TODO FIX: showing the toast in front/foreground is not priority as they are mostly for debug
-        
-        //
-        UiScale.addOverflowScroll(stage, gameWindowTable);
+        toastManager.toFront();
+
+        stage.addActor(shell);
     }
     
     @Override

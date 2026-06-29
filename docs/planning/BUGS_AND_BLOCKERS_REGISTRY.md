@@ -55,7 +55,8 @@ These prevent the stated goal: **play season under correct rules → complete �
 | **H-7** | 🟠 | Friendly scheduling always accepted, no conflict check | `MatchScheduler.java` |
 | **H-8** | 🟠 | Save file has no version field | `SaveLoadSystem.java` |
 | **H-9** | 🟠 | Top menu Load/Settings/Quit not implemented | `MainGameMenuTable.java` |
-| **UX-1** | 🟡 | **UI scale** — default **200%**; overflow scroll on wide screens; QA on Galaxy Book | `UiScale.java` |
+| **UX-1** | ✅ | **UI scale / HiDPI** — PU-10 complete; default 200% | [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
+| **UX-2** | ✅ | Squad screen stretched top menu off-screen | Fixed R3b — `MainGameScreen` fixed header + scroll body |
 | **SET-1** | ✅ | In-game Options → Settings | `MainGameMenuTable.java` case 3 |
 | **SET-2** | 🟡 | Fullscreen checkbox not loaded from saved pref | `SettingsScreen.java` L159 commented |
 

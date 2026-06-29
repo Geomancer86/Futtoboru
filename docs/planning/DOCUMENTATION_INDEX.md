@@ -31,7 +31,8 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) | **PO, all leads** | **Historical accuracy, inbox/news, player knowledge** |
 | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | **PO, World & Data** | **How many start mods / years; Wave 1–2 plan** |
 | [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) | **All engineers, PO** | **LibGDX stack, UI patterns, framework limits** |
-| [ANALYSIS_UI_SCALING_HIDPI_V1.md](ANALYSIS_UI_SCALING_HIDPI_V1.md) | **Platform, QA, PO** | **HiDPI / UI scale gap** — Galaxy Book3 Pro tiny UI |
+| [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) | **PO, Platform, QA** | **PU-10 closure** — HiDPI UI scale shipped |
+| [ANALYSIS_UI_SCALING_HIDPI_V1.md](ANALYSIS_UI_SCALING_HIDPI_V1.md) | **Platform, QA, PO** | HiDPI gap analysis (historical) |
 | [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) | **Platform, QA** | **Settings screen** — persistence, inventory, UI scale plan |
 | [ANALYSIS_UI_SCALE_BROWSER_PARITY_V1.md](ANALYSIS_UI_SCALE_BROWSER_PARITY_V1.md) | **PO, Platform, QA** | **Browser/Cursor parity** — will all screens scale? |
 | [ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md](ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md) | **Platform, QA** | Clipping analysis — PU-10-R2 reverted |

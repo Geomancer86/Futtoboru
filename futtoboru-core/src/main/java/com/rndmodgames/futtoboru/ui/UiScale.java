@@ -44,11 +44,16 @@ public final class UiScale {
      * Scroll overflow within the scaled viewport. Does not apply {@code setScale} — safe with
      * {@code unitsPerPixel} zoom. Content must not use {@code setFillParent(true)}.
      */
-    public static VisScrollPane addOverflowScroll(Stage stage, Actor content) {
+    public static VisScrollPane newOverflowScrollPane(Actor content) {
         VisScrollPane scroll = new VisScrollPane(content);
-        scroll.setFillParent(true);
         scroll.setFadeScrollBars(false);
         scroll.setOverscroll(false, false);
+        return scroll;
+    }
+
+    public static VisScrollPane addOverflowScroll(Stage stage, Actor content) {
+        VisScrollPane scroll = newOverflowScrollPane(content);
+        scroll.setFillParent(true);
         stage.addActor(scroll);
         return scroll;
     }

@@ -2,7 +2,7 @@
 
 **Document type:** Platform / UX analysis (fix proposal)  
 **Date:** 2026-06-28  
-**Status:** **PU-10-R2 reverted** (2026-06-25) — ScrollPane + `setScale` broke rendering and hit-testing; back to **`unitsPerPixel`** viewport zoom. Clipping at 150%+ remains open.
+**Status:** ✅ **Mitigated by PU-10-R3/R3b** — see [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md).
 **Branch:** `analyze-ai-branch`  
 **Symptom:** After raising **UI scale** in Settings, widgets grow but **content is cut off** — large parts of the UI are outside the visible area and unusable.
 
