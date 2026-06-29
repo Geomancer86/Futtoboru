@@ -48,7 +48,7 @@ public class MenuScreen implements Screen {
 		stage = new Stage(UiScale.newViewport());
 
 		final VisTable mainTable = new VisTable(true);
-		
+        mainTable.setFillParent(true);
 		final VisTable table = new VisTable();
 		
 		/**
@@ -182,7 +182,7 @@ public class MenuScreen implements Screen {
         mainTable.add(bottomRow).growX().fillX().padBottom(10);
         
         //
-        UiScale.addScrollableRoot(stage, mainTable);
+        stage.addActor(mainTable);
 	}
 	
 	@Override

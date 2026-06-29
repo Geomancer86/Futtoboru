@@ -55,7 +55,7 @@ These prevent the stated goal: **play season under correct rules → complete �
 | **H-7** | 🟠 | Friendly scheduling always accepted, no conflict check | `MatchScheduler.java` |
 | **H-8** | 🟠 | Save file has no version field | `SaveLoadSystem.java` |
 | **H-9** | 🟠 | Top menu Load/Settings/Quit not implemented | `MainGameMenuTable.java` |
-| **UX-1** | 🟡 | **UI scale** — PU-10-R2 shipped; manual QA at 150%/200% pending | `UiScale.addScrollableRoot()` |
+| **UX-1** | 🟠 | **UI scale** — viewport zoom works; **clips** at 150%+; ScrollPane R2 **reverted** (broken clicks) | `UiScale.java` |
 | **SET-1** | ✅ | In-game Options → Settings | `MainGameMenuTable.java` case 3 |
 | **SET-2** | 🟡 | Fullscreen checkbox not loaded from saved pref | `SettingsScreen.java` L159 commented |
 

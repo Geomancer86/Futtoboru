@@ -34,7 +34,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [ANALYSIS_UI_SCALING_HIDPI_V1.md](ANALYSIS_UI_SCALING_HIDPI_V1.md) | **Platform, QA, PO** | **HiDPI / UI scale gap** — Galaxy Book3 Pro tiny UI |
 | [ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md](ANALYSIS_SETTINGS_SCREEN_AND_UI_SCALE_V1.md) | **Platform, QA** | **Settings screen** — persistence, inventory, UI scale plan |
 | [ANALYSIS_UI_SCALE_BROWSER_PARITY_V1.md](ANALYSIS_UI_SCALE_BROWSER_PARITY_V1.md) | **PO, Platform, QA** | **Browser/Cursor parity** — will all screens scale? |
-| [ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md](ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md) | **Platform, QA** | **Clipping fix (PU-10-R2)** — implemented |
+| [ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md](ANALYSIS_UI_SCALE_VIEWPORT_CLIPPING_V1.md) | **Platform, QA** | Clipping analysis — PU-10-R2 reverted |
 | [FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md](FUTTOBORU_UI_UX_STYLE_GUIDE_V1.md) | **UI implementers** | Colours, fonts, visibility (companion to engine doc) |
 | [ANALYSIS_VISUI_PATTERNS_AND_PROTOTYPE_V1.md](ANALYSIS_VISUI_PATTERNS_AND_PROTOTYPE_V1.md) | **UI implementers** | VisUI widget cookbook |
 | [DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md](DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md) | **PO, eng, contributors** | **North star DB architecture + validation** |

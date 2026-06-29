@@ -71,7 +71,7 @@ public class NewManagerScreen implements Screen {
 		Person manager = new Person();
 		
 		VisTable mainContainer = new VisTable(true);
-		mainContainer.pad(50);
+		mainContainer.pad(50).setFillParent(true);
 		
 		/**
 		 * Name Label
@@ -292,7 +292,7 @@ public class NewManagerScreen implements Screen {
 //        stage.setDebugAll(DarkBlade.DEBUG_TABLES_ENABLED);
         
         // Add Settings Screen Main Container to Stage
-        UiScale.addScrollableRoot(stage, mainContainer);
+        stage.addActor(mainContainer);
 	}
 	
 	@Override

@@ -2,7 +2,7 @@
 
 **Document type:** Platform / UX analysis (fix proposal)  
 **Date:** 2026-06-28  
-**Status:** **PU-10-R2a/b implemented** (2026-06-25) — `UiScale.addScrollableRoot()` on all management screens  
+**Status:** **PU-10-R2 reverted** (2026-06-25) — ScrollPane + `setScale` broke rendering and hit-testing; back to **`unitsPerPixel`** viewport zoom. Clipping at 150%+ remains open.
 **Branch:** `analyze-ai-branch`  
 **Symptom:** After raising **UI scale** in Settings, widgets grow but **content is cut off** — large parts of the UI are outside the visible area and unusable.
 
@@ -17,7 +17,7 @@
 | Why does scaled UI clip? | Current `UiScale` shrinks the **logical canvas** while layouts still assume **full-window** width (especially Settings’ 5-column row). |
 | Is this a LibGDX bug? | **No** — wrong scaling strategy for fixed-width layouts. |
 | HTML responsive equivalent in LibGDX? | **`Table` layout** (flex-like) + **`ScrollPane`** (overflow) + optional **`ExtendViewport`** (design resolution). There is no CSS `@media` — you engineer it. |
-| Recommended fix (native, not over-engineered) | **PU-10-R2:** viewport **1:1 pixels** + **root content scale** + **`ScrollPane`** — **done** via `UiScale.addScrollableRoot()` |
+| Recommended fix (native, not over-engineered) | **PU-10-R2** attempted — **reverted**; next try must keep **viewport-level** scale (not actor `setScale` + ScrollPane root) |
 | Upgrade LibGDX/VisUI now? | **Optional separate bump** — fix clipping does not require 1.14.2; upgrade path documented in §6. |
 
 ---
@@ -29,14 +29,7 @@
 viewport.setUnitsPerPixel(1f / currentScale());
 ```
 
-**After PU-10-R2**, `UiScale` uses a 1:1 `ScreenViewport`, scales content with `Actor.setScale`, and wraps roots in `VisScrollPane` via `addScrollableRoot(stage, content)`.
-
-```java
-// UiScale.java (PU-10-R2)
-content.setOrigin(Align.bottomLeft);
-content.setScale(currentScale(), currentScale());
-// wrapper sized to layout × scale; VisScrollPane fills stage
-```
+**After PU-10-R2 (reverted):** actor `setScale` inside `VisScrollPane` did **not** enlarge skin/fonts reliably and **broke click hit-testing**. Production code uses **`unitsPerPixel = 1/scale`** again. One-time pref migration resets `settings.ui_scale` to **100%** on next launch (`settings.ui_scale_migration_v4`).
 
 ```text
 worldWidth  = screenWidth  × unitsPerPixel
@@ -183,8 +176,8 @@ VisUI **does not expose `setScale(float)`** on 1.5.x — scaling is **`SkinScale
 
 | ID | Deliverable | Approach | Effort |
 |----|-------------|----------|--------|
-| **PU-10-R2a** | Fix clipping | Option **A** — revert `unitsPerPixel` zoom; root scale + `ScrollPane` | ✅ **Done** |
-| **PU-10-R2b** | `ScreenShell` helper | `UiScale.addScrollableRoot(stage, content)` on all management `*Screen` | ✅ **Done** |
+| **PU-10-R2a** | Fix clipping | Option **A** — ScrollPane + root scale | ❌ **Reverted** — no visual scale, broken clicks |
+| **PU-10-R2b** | `ScreenShell` helper | `UiScale.addScrollableRoot` | ❌ **Reverted** |
 | **PU-10-R2c** | Settings layout | Option **D** — stack panels or 2-row grid; highest impact | **Medium** |
 | **PU-10-R3** | Optional fit mode | Option **C** toggle | **Small** |
 | **PU-10-R4** | ExtendViewport | Option **B** if window resize stability matters | **Medium** |

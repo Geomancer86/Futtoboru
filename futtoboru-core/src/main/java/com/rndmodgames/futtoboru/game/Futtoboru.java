@@ -154,6 +154,8 @@ public class Futtoboru extends Game {
             RESOLUTION = preferences.getResolution();
         }
 
+        preferences.migrateUiScaleAfterScrollRootRevert();
+
         UI_SCALE = preferences.getUiScale();
         
         // This will take care of Setting the Right Fullscreen/Windowed Resolution mode

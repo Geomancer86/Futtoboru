@@ -325,8 +325,8 @@ configuration.setHdpiMode(HdpiMode.Pixels);
 | In-game Options → Settings | ✅ |
 | Match engine overlay | ⏸ Deferred |
 | `VisUI.setScale` | N/A (not in vis-ui 1.5.2) |
-| Viewport clipping at 150%+ | ✅ **Fixed PU-10-R2** — `UiScale.addScrollableRoot()` |
-| Per-screen layout polish | 🔲 Optional **PU-10-R2c** — Settings column stack |
+| Viewport clipping at 150%+ | 🟠 Open — PU-10-R2 reverted |
+| Per-screen layout polish | 🔲 After new clipping strategy |
 
 
 | Question | Answer |

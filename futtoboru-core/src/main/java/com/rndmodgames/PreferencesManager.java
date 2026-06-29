@@ -33,6 +33,8 @@ public class PreferencesManager {
 	public static final String SETTINGS_FULLSCREEN_PREF = "settings.fullscreen";
 	public static final String SETTINGS_RESOLUTION_PREF = "settings.resolution";
 	public static final String SETTINGS_UI_SCALE_PREF = "settings.ui_scale";
+	/** One-time reset after broken ScrollPane+setScale attempt (PU-10-R2 revert). */
+	public static final String SETTINGS_UI_SCALE_MIGRATION_PREF = "settings.ui_scale_migration_v4";
 	public static final String SETTINGS_DAY_NIGHT_RENDERING_PREF = "settings.day_night_cycle_rendering";
 	public static final String SETTINGS_DAMAGE_COUNTERS_RENDERING_PREF = "settings.damage_counters_rendering";
 	public static final String SETTINGS_DEBUG_SIGHT_PREF = "settings.debug_sight_rendering";
@@ -237,6 +239,19 @@ public class PreferencesManager {
 			scale = DEFAULT_UI_SCALE;
 		}
 		updateUserPreference(SETTINGS_UI_SCALE_PREF, Float.toString(scale));
+	}
+
+	/**
+	 * Resets UI scale to 100% once after the reverted PU-10-R2 scroll-root experiment.
+	 * UI scale is global (not per savegame).
+	 */
+	public void migrateUiScaleAfterScrollRootRevert() {
+		if (prefs.getBoolean(SETTINGS_UI_SCALE_MIGRATION_PREF, false)) {
+			return;
+		}
+		updateUiScale(DEFAULT_UI_SCALE);
+		prefs.putBoolean(SETTINGS_UI_SCALE_MIGRATION_PREF, true);
+		prefs.flush();
 	}
 	
 	/**

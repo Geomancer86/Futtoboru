@@ -134,6 +134,7 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Main table (fills screen)
         mainTable = new VisTable(true);
+        mainTable.setFillParent(true);
         mainTable.pad(20);
         
         // Header section
@@ -167,7 +168,7 @@ public class MatchEngineDebugScreen implements Screen {
         buildInfoLabel.setColor(0.7f, 0.7f, 0.7f, 1f);
         mainTable.add(buildInfoLabel).left().bottom().padLeft(10).padBottom(10);
         
-        UiScale.addScrollableRoot(stage, mainTable);
+        stage.addActor(mainTable);
     }
     
     /**

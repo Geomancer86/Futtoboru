@@ -127,7 +127,7 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1
 |--------|--------|-------|------|
 | Splash | ⚠️ | Basic | `screens/SplashScreen.java` |
 | Main menu | ⚠️ | Load game partial | `screens/MenuScreen.java` |
-| Settings | ✅ | Resolution, fullscreen, **UI scale** (100–200%, scroll + root zoom), debug logging | `SettingsScreen.java`, `ui/UiScale.java` |
+| Settings | ✅ | Resolution, fullscreen, **UI scale** (100–200%, viewport zoom), debug logging | `SettingsScreen.java`, `ui/UiScale.java` |
 | New game setup | ⚠️ | Country selection | `screens/NewGameSetupScreen.java` |
 | New manager | ⚠️ | Create person | `screens/NewManagerScreen.java` |
 | New game season | ⚠️ | One season only | `screens/NewGameSeasonScreen.java` |

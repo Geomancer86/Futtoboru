@@ -74,6 +74,7 @@ public class MainGameScreen implements Screen {
         // Full Game Window
         final VisTable gameWindowTable = new VisTable(true);
         gameWindowTable.setDebug(true);
+        gameWindowTable.setFillParent(true);
         gameWindowTable.pad(5);
         
         // Top Menu (save, load, settings, advance time)
@@ -115,7 +116,7 @@ public class MainGameScreen implements Screen {
         toastManager.toFront(); // TODO FIX: showing the toast in front/foreground is not priority as they are mostly for debug
         
         //
-        UiScale.addScrollableRoot(stage, gameWindowTable);
+        stage.addActor(gameWindowTable);
     }
     
     @Override

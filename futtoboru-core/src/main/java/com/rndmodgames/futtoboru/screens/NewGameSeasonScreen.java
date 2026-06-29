@@ -63,7 +63,7 @@ public class NewGameSeasonScreen implements Screen {
         stage = new Stage(UiScale.newViewport());
         
         VisTable mainContainer = new VisTable();
-        mainContainer.pad(50);
+        mainContainer.pad(50).setFillParent(true);
     
         // 
         final VisTable table = new VisTable(true);
@@ -266,7 +266,7 @@ public class NewGameSeasonScreen implements Screen {
         mainContainer.add(table);
         
         // Add Settings Screen Main Container to Stage
-        UiScale.addScrollableRoot(stage, mainContainer);
+        stage.addActor(mainContainer);
     }
     
     /**
