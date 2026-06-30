@@ -6,7 +6,7 @@
 **Audience:** PO, PM, Match/Sim, Platform/UX, QA  
 **Research base:** [CM1_REFERENCE.md](CM1_REFERENCE.md) · [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md) · [FM_COMPETITIVE_BIBLE.md](FM_COMPETITIVE_BIBLE.md) (attendance only)
 
-**Execution:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5](PM_V1_MVP_AND_1892_MASTER_PLAN.md) · [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) · [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)
+**Execution:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5](PM_V1_MVP_AND_1892_MASTER_PLAN.md) · [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) · [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) · [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)
 
 ---
 
@@ -95,7 +95,7 @@ Formula: [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5.3](PM_V1_MVP_AND_1892_MASTER_PLA
 | A-2 | Continue double-click | **Coded** — QA |
 | A-3 | Load game + job init | **Coded** — QA |
 | A-4 | Match history → result | **Coded** — QA |
-| A-5 | 2-1-0 + goal average in league UI | **Open** |
+| A-5 | 2-1-0 + goal average in league UI | ✅ **Automated** |
 | A-9 | PO Layer A sign-off | **Open** |
 
 ### 4.3 Layer B gaps — **the management sim** (CM1 P1)
@@ -141,7 +141,7 @@ CM1 main menu (manual): Continue · **Tactics** · Transfers · Tables · Cups �
 | **Continue** | Top bar Continue | ✅ (Layer A) |
 | **Tactics** | Sidebar **Tactics** (`TacticsScreenTable`) | MVP-2, MVP-9 |
 | *(lineup)* | Squad screen pick 11 / Best XI | MVP-1 |
-| **Tables** | League detail / standings | ✅ verify 2-1-0 UI (A-5) |
+| **Tables** | League detail / standings | ✅ 2-1-0 automated (A-5) |
 | **Cups** | Competitions / draw | ✅ headless; UI smoke A-6 |
 | Match result | Match result + history click | MVP-6, A-4 |
 | Match preview | Before match | MVP-7 |
@@ -200,7 +200,7 @@ Store `lastMatchRatings` on club or match snapshot; show on MVP-6.
 
 | Phase | IDs | CM1 equivalent | Exit test |
 |-------|-----|----------------|-----------|
-| **B0** | A-1, A-5, A-9 | Playable Done + tables | Manual QA green |
+| **B0** | A-1, A-5, A-9 | Playable Done + tables | A-5 ✅ automated; A-9 PO sign-off |
 | **B1 — Sim core** | DATA-B1, MVP-1, MVP-3, MVP-8 | Lineup affects matches | `MatchSimulatorV2Test`; 10-season diversity |
 | **B2 — Crowds** | MVP-4, H-1 | Crowds “feel” real | Attendance IT; finances avg |
 | **B3 — Feedback** | MVP-5, MVP-6, MVP-7 | Ratings + result/preview | Manual CM1 loop walkthrough |

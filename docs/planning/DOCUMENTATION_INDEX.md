@@ -1,6 +1,6 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-06-28 (docs moved to `docs/planning/`)
+**Last updated:** 2026-06-28 (Layer B gap analysis + A-5 tests)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
@@ -16,6 +16,8 @@ Use this index to navigate project documentation. **Start here** after cloning.
 |----------|----------|---------|
 | [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, Sponsor, all leads** | **Eagle view** — horizons, progress, decisions, risks |
 | [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) | **PO, Match/Sim, UX** | **Layer B CM1 loop — gaps, design, phasing** |
+| [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) | **PO, Match/Sim, QA** | **What's missing** — XI, tactics, match sim, condition; CM/FM map |
+| [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) | **Match/Sim** | **B5** — fitness, form, injuries, fatigue, morale (post–Layer B) |
 | [PM_STAKEHOLDER_STATUS_BRIEF.md](PM_STAKEHOLDER_STATUS_BRIEF.md) | **PM, all stakeholders** | **Status brief** — progress, docs hub, critical path |
 | [PM_V1_POST_MERGE_REANALYSIS.md](PM_V1_POST_MERGE_REANALYSIS.md) | **PM, PO, QA** | **Post-merge** — develop + competition-completion-v1 integrated |
 | [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md) | **PO, all eng** | **Season model** — start mod + procedural loop + FM-style scripts |

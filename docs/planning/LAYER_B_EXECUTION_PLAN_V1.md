@@ -3,9 +3,9 @@
 **Document type:** PM / engineering execution plan  
 **Date:** 2026-06-25  
 **Branch:** `analyze-ai-branch`  
-**Status:** **Approved** — start B1 after Layer A gates A-5 + A-9  
-**Roadmap:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · **Tests:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md)  
-**Branch:** `analyze-ai-branch` only — no push
+**Status:** **Approved** — A-5 automated ✅; start B1 after **A-9**  
+**Gap analysis:** [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md)  
+**Roadmap:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · **Tests:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) · **Condition (B5):** [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md)
 
 ---
 
@@ -23,7 +23,7 @@ Deliver the **CM1-minimum loop**: pick XI → formation → advance time → mat
 |-------|----------|
 | **MVP-10 save schema versioning** | **Deferred** — add fields to existing JSON save first; formal `saveVersion` + migrations later |
 | **Future storage** | Consider **embedded document DB** (MongoDB-compatible or similar) for large saves — **V2+ release**, not Layer B blocker — see [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) |
-| **Layer A** | Close **A-5** (2-1-0 UI) + **A-9** (PO sign-off) before B1 coding |
+| **Layer A** | Close **A-9** (PO sign-off) before B1 coding — **A-5 ✅ automated** |
 | **UI scale / shell** | ✅ Done (PU-10) — no further global UI work unless a screen is touched |
 | **Match Engine Debug** | Hidden until NPE fixed (`DEBUG_SCREEN_UI_ENABLED`) |
 
@@ -80,6 +80,10 @@ Layer A close (A-5, A-9)
 │ B4 — Tactics UX (1–2 weeks)                                │
 │   MVP-2 Formation picker (2–3 templates)                   │
 │   MVP-9 Wire Tactics in sidebar                            │
+├───────────────────────────────────────────────────────────┤
+│ B5 — Player condition (3–4 weeks) — after B-9 only         │
+│   COND-1 fitness → COND-5 morale; injury generator         │
+│   Tests: FitnessSimModifierIT, InjuredPlayerLineupIT       │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
@@ -127,18 +131,33 @@ Layer A close (A-5, A-9)
 | **MVP-2** | Formation dropdown; 2–3 templates (`2-3-5-1888`, …) | Changes sim weights |
 | **MVP-9** | `TacticsScreenTable` in `MainMenuManager` sidebar | CM1 menu parity |
 
+### B5 — Player condition (post B-9)
+
+Full spec: [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md).
+
+| ID | Work | Acceptance |
+|----|------|------------|
+| **COND-1** | `PlayerCondition` on `Player`; fitness tick; sim strength modifier | `FitnessSimModifierIT` |
+| **COND-2** | Sharpness (match form) tick | `PlayerFormTest` |
+| **COND-3** | `InjuryGenerator`; squad UI; exclude from XI | `InjuredPlayerLineupIT` |
+| **COND-4** | Fatigue from minutes; daily recovery | `FatigueRecoveryTest` |
+| **COND-5** | Morale from results + ratings | `MoraleUpdateTest` |
+
 ---
 
 ## 6. Tests to add (Layer B gate)
 
-| Test | Phase | Proves |
-|------|-------|--------|
-| `MatchSimulatorV2Test` | B1 | XI strength affects goals |
-| `StartingElevenIT` | B1 | Picked players used in sim |
-| `ClubTacticsSetupSaveLoadIT` | B1 | New fields survive JSON roundtrip |
-| `AttendanceModelTest` | B2 | Table/form/derby affect attendance |
-| `MatchRatingsTest` | B3 | Rating rules |
-| `TenSeasonReportIT` (regression) | B1+ | No deadlock after sim v2 |
+| Test | Phase | Proves | Status |
+|------|-------|--------|--------|
+| `HistoricalLeagueRulesIT` | B0/A-5 | 2-1-0 rules + points | ✅ |
+| `LeagueCompetitionRulesFormatterTest` | B0/A-5 | League UI rules text | ✅ |
+| `MatchSimulatorV2Test` | B1 | XI strength affects goals | Pending |
+| `StartingElevenIT` | B1 | Picked players used in sim | Pending |
+| `ClubTacticsSetupSaveLoadIT` | B1 | New fields survive JSON roundtrip | Pending |
+| `AttendanceModelTest` | B2 | Table/form/derby affect attendance | Pending |
+| `MatchRatingsTest` | B3 | Rating rules | Pending |
+| `TenSeasonReportIT` (regression) | B1+ | No deadlock after sim v2 | ✅ (re-run after B1) |
+| `FitnessSimModifierIT` | B5 | Condition affects sim | Planned |
 
 ---
 

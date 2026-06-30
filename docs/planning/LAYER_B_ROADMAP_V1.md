@@ -3,7 +3,8 @@
 **Document type:** PM master roadmap — analyze → design → develop → test  
 **Date:** 2026-06-25  
 **Branch:** `analyze-ai-branch` (**only** — no push, no child branches)  
-**Status:** **Approved** — start B1 after Layer A gates A-5 + A-9  
+**Status:** **Approved** — A-5 automated ✅; start B1 after **A-9** PO sign-off  
+**Gap analysis:** [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) · **Player condition (B5):** [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md)  
 **Goal:** **Pick XI → formation → Continue → match uses your 11 → sensible crowds → 0–10 ratings → readable result/preview**
 
 **Companion docs:** [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) · [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) · [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md)
@@ -22,7 +23,7 @@
 | 6 | **0–10 ratings** | MVP-5 | B3 | `MatchRatingsTest` | Scorers rate higher on result screen |
 | 7 | **Result / preview UI** | MVP-6, MVP-7 | B3 | `MatchFeedbackIT` | Preview edit XI → result shows score, scorers, ratings |
 
-**Deferred:** MVP-10 save versioning · embedded DB · transfers · training · per-screen UI polish beyond touched screens.
+**Deferred (B5+):** MVP-10 save versioning · embedded DB · transfers · training · **player fitness/injuries/fatigue/morale** · per-screen UI polish beyond touched screens.
 
 ---
 
@@ -52,7 +53,7 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ B0  Layer A close     A-5 (2-1-0 UI)  →  A-9 PO sign-off               │
+│ B0  Layer A close     A-5 ✅ automated  →  A-9 PO sign-off              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │ B1  Sim core (~4–5 wk)                                                  │
 │     DATA-B1 → MVP-1 → MVP-3 → MVP-8                                     │
@@ -69,6 +70,10 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 │ B4  Tactics UX (~1–2 wk)                                                │
 │     MVP-2 → MVP-9                                                         │
 │     Exit: Formation picker + sidebar; B-9 PO Layer B sign-off            │
+├─────────────────────────────────────────────────────────────────────────┤
+│ B5  Player condition (~3–4 wk) — post B-9                               │
+│     COND-1 → COND-5 (fitness, sharpness, injuries, fatigue, morale)      │
+│     Exit: FitnessSimModifierIT + InjuredPlayerLineupIT green             │
 └─────────────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -85,7 +90,7 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 
 | ID | Analyze | Design | Develop | Test |
 |----|---------|--------|---------|------|
-| **A-5** | League UI vs `competition_rules.txt` 2-1-0 | — | Fix display if wrong | Manual + optional `LeagueStandingsDisplayTest` |
+| **A-5** | League UI vs `competition_rules.txt` 2-1-0 | — | `LeagueCompetitionRulesFormatter` | ✅ `HistoricalLeagueRulesIT`, `LeagueCompetitionRulesFormatterTest`, `LeagueStandingsManagerTest` |
 | **A-9** | Checklist [RELEASE_V1_DEFINITION.md §9](RELEASE_V1_DEFINITION.md) | — | — | PO sign-off |
 
 ---
@@ -134,6 +139,16 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 | **MVP-9** | Tactics not in sidebar | §5 CM1 menu map | Wire `TacticsScreenTable` in `MainMenuManager` | — | Manual navigation |
 
 **B4 exit:** **B-9** PO Layer B sign-off ([§6](#6-exit-criteria-b-9)).
+
+---
+
+### B5 — Player condition (post B-9)
+
+| ID | Analyze | Design | Develop | Unit tests | IT / E2E |
+|----|---------|--------|---------|------------|----------|
+| **COND-1–5** | [ANALYSIS_LAYER_B §4](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) | [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) | `PlayerCondition`; daily tick; sim modifier | `PlayerFitnessTest`, `MoraleUpdateTest` | `FitnessSimModifierIT`, `InjuredPlayerLineupIT` |
+
+**B5 exit:** Condition affects sim; injured excluded from XI; squad UI shows fit/injured.
 
 ---
 

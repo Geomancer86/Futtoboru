@@ -175,6 +175,7 @@ Adding these = **new fields + sim weights** — not new save format.
 |-----|------|
 | [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) | MVP-1, MVP-2, phases |
 | [ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md](ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md) | Crowds (separate system) |
+| [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) | Gap analysis + B1–B5 test map |
 | [CM1_REFERENCE.md](CM1_REFERENCE.md) | CM1 team selection benchmark |
 
 ---

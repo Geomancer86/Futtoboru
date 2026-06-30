@@ -133,22 +133,9 @@ public class LeagueDetailScreenTable extends VisTable {
         contentTable.add(new VisLabel("Competition Rules")).pad(5).row();
         contentTable.addSeparator().pad(2).row();
         
-        // Points system
-        String pointsSystem = rules.getPointsForWin() + " points for win, " + 
-                              rules.getPointsForDraw() + " point" + (rules.getPointsForDraw() != 1 ? "s" : "") + 
-                              " for draw, " + rules.getPointsForLoss() + " for loss";
-        contentTable.add(new VisLabel("Points System: " + pointsSystem)).left().pad(2).row();
-        
-        // Tie-breaking criteria
-        StringBuilder tieBreakers = new StringBuilder("Tie-breakers: ");
-        java.util.List<com.rndmodgames.futtoboru.data.CompetitionRules.TieBreaker> tieBreakingOrder = rules.getTieBreakingOrder();
-        for (int i = 0; i < tieBreakingOrder.size(); i++) {
-            if (i > 0) {
-                tieBreakers.append(" → ");
-            }
-            tieBreakers.append(formatTieBreaker(tieBreakingOrder.get(i)));
-        }
-        contentTable.add(new VisLabel(tieBreakers.toString())).left().pad(2).row();
+        contentTable.add(new VisLabel("Points System: " + LeagueCompetitionRulesFormatter.formatPointsSystem(rules)))
+                .left().pad(2).row();
+        contentTable.add(new VisLabel(LeagueCompetitionRulesFormatter.formatTieBreakers(rules))).left().pad(2).row();
         
         // Match format
         String matchFormat = rules.getMatchFormat() == com.rndmodgames.futtoboru.data.CompetitionRules.MatchFormat.DOUBLE_ROUND_ROBIN 
@@ -326,30 +313,6 @@ public class LeagueDetailScreenTable extends VisTable {
         upcoming.sort(Comparator.comparing(Match::getMatchDateTime, Comparator.nullsLast(Comparator.naturalOrder())));
         
         return upcoming;
-    }
-    
-    /**
-     * Format tie-breaker enum to readable string
-     */
-    private String formatTieBreaker(com.rndmodgames.futtoboru.data.CompetitionRules.TieBreaker breaker) {
-        switch (breaker) {
-            case POINTS:
-                return "Points";
-            case GOAL_DIFFERENCE:
-                return "Goal Difference";
-            case GOAL_AVERAGE:
-                return "Goal Average";
-            case GOALS_SCORED:
-                return "Goals Scored";
-            case GOALS_CONCEDED:
-                return "Goals Conceded";
-            case HEAD_TO_HEAD:
-                return "Head-to-Head";
-            case ALPHABETICAL:
-                return "Alphabetical";
-            default:
-                return breaker.toString();
-        }
     }
 }
 

@@ -1,9 +1,9 @@
 # Layer B — Test Plan (Unit + Headless E2E)
 
 **Document type:** QA / engineering test plan  
-**Date:** 2026-06-25  
+**Date:** 2026-06-28  
 **Branch:** `analyze-ai-branch`  
-**Parent:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md)
+**Parent:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) · [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md)
 
 ---
 
@@ -25,9 +25,20 @@ mvn test -pl futtoboru-core -Psoak    # after B1 (TenSeasonReportIT sensitive)
 
 ---
 
-## 2. Test inventory — to implement
+## 2. Test inventory
 
-### B1 — Sim core
+### B0 — Layer A (done)
+
+| Class | Type | Proves | Status |
+|-------|------|--------|--------|
+| `CompetitionRulesLoaderTest` | Unit | Season 18 mod → 2-1-0, goal average tie-break | ✅ |
+| `LeagueStandingsManagerTest` | Unit | Goal average sort; points order; friendlies excluded | ✅ |
+| `LeagueCompetitionRulesFormatterTest` | Unit | League UI rules text (2-1-0, Goal Average) | ✅ |
+| `HistoricalLeagueRulesIT` | IT | New game rules + full season 2-1-0 points | ✅ |
+
+---
+
+### B1 — Sim core (to implement)
 
 | Class | Type | Proves | Depends on |
 |-------|------|--------|------------|
@@ -83,6 +94,23 @@ mvn test -pl futtoboru-core -Psoak    # after B1 (TenSeasonReportIT sensitive)
 
 ---
 
+### B5 — Player condition (post B-9)
+
+See [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md).
+
+| Class | Type | Proves | Depends on |
+|-------|------|--------|------------|
+| `PlayerConditionDefaultsTest` | Unit | New players fit, fitness 100 | COND-1 |
+| `PlayerFitnessTest` | Unit | Match −fitness; rest +recovery | COND-1 |
+| `PlayerFormTest` | Unit | Sharpness up after match; decays when idle | COND-2 |
+| `InjuryGeneratorTest` | Unit | Injury roll; valid weeks/type | COND-3 |
+| `InjuredPlayerLineupIT` | IT | Injured player excluded from auto XI | COND-3, MVP-1 |
+| `FitnessSimModifierIT` | IT | Low fitness XI underperforms vs 100% | COND-1, MVP-3 |
+| `MoraleUpdateTest` | Unit | Win/loss/rating adjust morale | COND-5, MVP-5 |
+| `FatigueRecoveryTest` | Unit | Daily fatigue decay | COND-4 |
+
+---
+
 ## 3. `GameTestHarness` API additions
 
 Implement in `futtoboru-core/src/test/.../harness/GameTestHarness.java`:
@@ -97,6 +125,8 @@ Implement in `futtoboru-core/src/test/.../harness/GameTestHarness.java`:
 | `int getLastMatchAttendance()` | B2 |
 | `Map<Long, Float> getLastMatchRatings(long clubId)` | B3 |
 | `void confirmPreviewLineup()` | B3 |
+| `void setPlayerFitness(long playerId, int pct)` | B5 |
+| `void setPlayerInjury(long playerId, String typeId, int weeks)` | B5 |
 
 ---
 
@@ -121,7 +151,7 @@ Run at **200% UI scale** on Galaxy Book or 1920×1080 after automated suite gree
 | M3 | Match preview → edit XI → Continue → match sim runs | ☐ |
 | M4 | Result screen → score, scorers, attendance, ratings visible | ☐ |
 | M5 | Match history → click past match → result (A-4 regression) | ☐ |
-| M6 | League table → 2-1-0 points (A-5 regression) | ☐ |
+| M6 | League table → 2-1-0 points (A-5 regression) | ✅ automated — `HistoricalLeagueRulesIT` |
 | M7 | Top club home match → attendance visibly higher than early-season low table | ☐ |
 | M8 | Continue once per click (A-2 regression) | ☐ |
 
@@ -140,6 +170,8 @@ Run at **200% UI scale** on Galaxy Book or 1920×1080 after automated suite gree
 | Crowds | MVP-4 | `AttendanceCalculatorTest` | `AttendanceModelIT` | M7 |
 | Ratings | MVP-5 | `MatchRatingsTest` | `MatchFeedbackIT` | M4 |
 | Result/preview | MVP-6,7 | — | `MatchLineupPreviewIT` | M3, M4, M5 |
+| 2-1-0 rules | A-5 | `LeagueCompetitionRulesFormatterTest` | `HistoricalLeagueRulesIT` | M6 (auto) |
+| Player condition | COND-* | `PlayerFitnessTest`, etc. | `FitnessSimModifierIT` | Squad columns (B5) |
 
 ---
 

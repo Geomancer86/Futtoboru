@@ -169,7 +169,9 @@ Refactor existing `BaseTest` / `BaseTestTools` to delegate here.
 
 | Suite | Targets | Priority |
 |-------|---------|----------|
-| `LeagueStandingsManagerTest` | 2-1-0 points, goal average, completion excludes friendlies | P0 |
+| `LeagueStandingsManagerTest` | 2-1-0 points, goal average, completion excludes friendlies | P0 ✅ |
+| `HistoricalLeagueRulesIT` | Full season 2-1-0 points; rules on new game | P0 ✅ |
+| `LeagueCompetitionRulesFormatterTest` | League UI rules text (2-1-0, Goal Average) | P0 ✅ |
 | `CompetitionRulesLoaderTest` | Parse `competition_rules.txt` on **start mod** | P0 |
 | `MessageManagerTest` | Mandatory flag, delivery, mark read, ID persistence | P0 |
 | `LeagueFixtureGeneratorTest` | 132 league matches, double RR | P1 |
@@ -280,7 +282,7 @@ Add to start season mod README: *v1 uses static squads; procedural seasons copy 
 | ID | Work | Registry | Post-merge |
 |----|------|----------|------------|
 | T-8 | `SeasonManager` + save fields | RB-2, RB-5 | Partial — no dedicated class |
-| T-9 | Historical 2-1-0 rules from mod | RB-3, RB-4 | Open |
+| T-9 | Historical 2-1-0 rules from mod | RB-3, RB-4 | ✅ `HistoricalLeagueRulesIT` + loader tests |
 | T-10 | Start-mod rules + edition snapshot at rollover | DG-3 | Open — **not** season 19 mod folder |
 | T-11 | `SeasonPlaythroughIT` green | LP-1, LP-5 | ✅ |
 | T-6b | `MultiSeasonSoakIT` (3 seasons) | LP-5 | ✅ **PR gate** |

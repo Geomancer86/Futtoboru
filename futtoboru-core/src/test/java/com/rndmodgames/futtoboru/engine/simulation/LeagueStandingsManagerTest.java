@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,53 @@ class LeagueStandingsManagerTest {
         }
         assertFalse(manager.isLeagueComplete(league));
         assertEquals(0, manager.countCompletedLeagueMatches(league.getLeagueClubs().get(0)));
+    }
+
+    @Test
+    void standingsSortByPointsDescending() {
+        Club leader = league.getLeagueClubs().get(0);
+        Club follower = league.getLeagueClubs().get(1);
+        leader.setPoints(6);
+        follower.setPoints(4);
+
+        List<Club> standings = manager.calculateStandings(league);
+
+        assertEquals(leader.getId(), standings.get(0).getId());
+        assertEquals(follower.getId(), standings.get(1).getId());
+    }
+
+    @Test
+    void goalAverageBreaksTieWhenPointsAndGoalDifferenceEqual() {
+        Club lowerGoalAverage = league.getLeagueClubs().get(0);
+        Club higherGoalAverage = league.getLeagueClubs().get(1);
+        lowerGoalAverage.setPoints(4);
+        higherGoalAverage.setPoints(4);
+        lowerGoalAverage.setGoalsScored(10);
+        lowerGoalAverage.setGoalsConceded(4);
+        higherGoalAverage.setGoalsScored(8);
+        higherGoalAverage.setGoalsConceded(2);
+
+        List<Club> standings = manager.calculateStandings(league);
+
+        assertEquals(higherGoalAverage.getId(), standings.get(0).getId());
+        assertEquals(lowerGoalAverage.getId(), standings.get(1).getId());
+    }
+
+    @Test
+    void goalsScoredBreaksTieWhenPointsAndGoalAverageEqual() {
+        Club moreGoals = league.getLeagueClubs().get(0);
+        Club fewerGoals = league.getLeagueClubs().get(1);
+        moreGoals.setPoints(4);
+        fewerGoals.setPoints(4);
+        moreGoals.setGoalsScored(12);
+        moreGoals.setGoalsConceded(6);
+        fewerGoals.setGoalsScored(10);
+        fewerGoals.setGoalsConceded(5);
+
+        List<Club> standings = manager.calculateStandings(league);
+
+        assertEquals(moreGoals.getId(), standings.get(0).getId());
+        assertEquals(fewerGoals.getId(), standings.get(1).getId());
     }
 
     @Test
