@@ -179,6 +179,9 @@ public final class SimulationHealthMonitor {
     }
 
     private static boolean isCupReplayMatch(Match match) {
+        if (match.getParentMatch1Id() != null) {
+            return true;
+        }
         String path = match.getBracketPath();
         return path != null && path.endsWith("R");
     }

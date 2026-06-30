@@ -105,9 +105,22 @@ public final class GameTestHarness {
         List<Club> clubs = dbLoader.getClubsByCountry(england);
         if (clubs != null) {
             for (Club club : clubs) {
-                if (club != null && club.getScheduledMatches() != null) {
+                if (club == null) {
+                    continue;
+                }
+                if (club.getScheduledMatches() != null) {
                     club.getScheduledMatches().clear();
                 }
+                if (club.getPlayedMatches() != null) {
+                    club.getPlayedMatches().clear();
+                }
+                club.setMatchesPlayed(0);
+                club.setMatchesWon(0);
+                club.setMatchesDrawn(0);
+                club.setMatchesLost(0);
+                club.setPoints(0);
+                club.setGoalsScored(0);
+                club.setGoalsConceded(0);
             }
             save.getAllClubs().addAll(clubs);
         }

@@ -85,7 +85,7 @@ Skip cup TBD placeholders **before** ticket sales (align with `MatchSimulator` /
 
 | Test | Proves |
 |------|--------|
-| `CupBracketGeneratorTest` | Bracket shape 8/12/16/32 teams; **12-team = production FA Cup size** |
+| `CupBracketGeneratorTest` | Bracket shape 8/16/32 teams; semi-finals always 2 |
 | `SimulationHealthMonitorTest` | Health scan detects TBD + bad semi-finals |
 | `LeagueAndCupIT` | 1 season league+cup complete + **health clean** |
 | `MultiSeasonSoakIT` | 3 procedural league champions + economy + **health** |
@@ -111,10 +111,12 @@ Skip cup TBD placeholders **before** ticket sales (align with `MatchSimulator` /
 
 | ID | Issue | Status |
 |----|-------|--------|
-| **CUP-B1** | 12-team FA Cup bracket semi-finals may ≠ 2 | `CupBracketGeneratorTest.testCompleteBracketStructureFor12Teams` exposes; fix in engine TBD |
-| **CUP-B2** | Cup fixtures not archived on season rollover | Causes stale schedules in multi-season cup runs |
-| **H-10** | TBD cup matches in ticket-sales path | **Fixed** — skip with debug log |
+| **CUP-B1** | Duplicate draw / replay inflated semi-final counts | **Fixed** 2026-06-30 |
+| **CUP-B2** | Cup fixtures not archived on rollover | **Fixed** 2026-06-30 |
+| **H-10** | TBD cup matches in ticket-sales path | **Fixed** |
 | **TEST-1** | Soaks passed despite CRITICAL spam | **Fixed** — health + log gates |
+| **TEST-2** | Harness shared club state polluted ITs | **Fixed** 2026-06-30 — reset schedules + stats in `newGameEmployedAtClub` |
+| **SOAK-CUP-1** | No 60-season league+cup soak | Tracked — nightly 2-season cup soak covers regression |
 
 ---
 

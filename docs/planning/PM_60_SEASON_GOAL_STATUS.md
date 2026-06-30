@@ -1,8 +1,9 @@
 # PM Report — Distance to the 60-Season Goal
 
 **Document type:** PM status / north-star tracking  
-**Date:** 2026-06-27 (updated after WP-7–9 — pre-manual QA gate)  
+**Date:** 2026-06-30 (updated after cup scheduling + test isolation fixes)  
 **Branch:** `analyze-ai-branch`  
+**Latest PM report:** [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md)  
 **Audience:** PM, PO, Sponsor, Tech lead, QA
 
 **Season model (PO locked):** [DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md](DESIGN_SEASON_MODEL_AND_SCRIPTS_V1.md)
