@@ -31,7 +31,9 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) | **PO, all leads** | **Historical accuracy, inbox/news, player knowledge** |
 | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | **PO, World & Data** | **How many start mods / years; Wave 1–2 plan** |
 | [ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md](ENGINE_LIBGDX_AND_UI_ARCHITECTURE.md) | **All engineers, PO** | **LibGDX stack, UI patterns, framework limits** |
-| [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) | **PO, Match/Sim, PM** | **Layer B execution** — CM1 MVP phasing |
+| [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) | **PO, Match/Sim, PM, QA** | **Layer B master roadmap** — CM1 loop end-to-end |
+| [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) | **QA, Platform** | Unit + IT + manual B-9 checklist |
+| [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) | **Match/Sim, PM** | Phase deliverables detail |
 | [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) | **Platform** | Save storage future (MVP-10 deferred) |
 | [BRANCH_STRATEGY_ANALYZE_AI.md](BRANCH_STRATEGY_ANALYZE_AI.md) | **PO, Dev** | Git branch workflow |
 | [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) | **PO, Platform, QA** | **PU-10 closure** — HiDPI UI scale shipped |

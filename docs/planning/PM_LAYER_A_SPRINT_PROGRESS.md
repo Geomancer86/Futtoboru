@@ -14,7 +14,7 @@
 | Track | Status |
 |-------|--------|
 | **Layer A** | **~95%** — A-5 + A-9 open; A-6/A-7/A-8 optional P1 |
-| **Layer B (V1 MVP feel)** | **Planned** — [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md); MVP-10 deferred |
+| **Layer B (V1 MVP feel)** | **Planned** — [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) + [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) |
 | **Layer C (1892 / WE-1)** | **Design only** — blocked on Layer B + PO decisions |
 | **PU-10 HiDPI** | ✅ Complete — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
 | **FLEX-1 / NEWS-8** | ✅ Stubs on save / latency resolver |
@@ -72,7 +72,7 @@ Full suite                  — 62 pass, 1 pre-existing PreferenceManagerTests a
 
 1. **A-5** — Verify **2-1-0 + goal average** in league UI  
 2. **A-9** — PO **Layer A sign-off**  
-3. **Layer B** — [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) (MVP-10 deferred; cut `feature/layer-b` when B1 starts)  
+3. **Layer B** — [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) (analyze → design → develop → unit + IT per MVP)  
 4. **WE-1** + 1892 — after Layer B  
 5. Optional: Match Engine Debug (ME-D1), embedded DB — [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md)  
 

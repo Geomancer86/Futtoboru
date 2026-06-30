@@ -46,7 +46,9 @@ Prove the three core departments work together via **automated season playthroug
 | PU-7 | Fix C-2/C-3/C-4 manager refresh | Authority, Job on load |
 | PU-8 | Fix C-5 league ID | Draw navigation |
 | PU-9 | Headless UI tests (optional, 3–5) | Draw gate blocks continue |
-| PU-10 | **UI scale** (Settings + HiDPI) | ✅ **Complete** — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
+| PU-10 | **UI scale** (Settings + HiDPI) | ✅ [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
+| **LB-TEST** | Layer B unit + IT per MVP | 🔲 [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) |
+| **LB-HARNESS** | Extend `GameTestHarness` for XI/attendance/ratings | 🔲 B1–B3 |
 
 **Explicitly not v1:** Sikuli/Robot full GUI E2E, every screen polished.
 

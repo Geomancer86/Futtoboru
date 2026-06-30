@@ -261,7 +261,9 @@ Does **not** require: transfers, training, fork UI, 1892, world news, Scotland p
 
 | Doc | Role |
 |-----|------|
-| [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) | Execution plan + phasing |
+| [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) | Master roadmap + analyze/design/develop/test |
+| [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) | Unit + IT + manual B-9 |
+| [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) | Execution plan detail |
 | [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) | Schema detail |
 | [ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md](ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md) | Ticket revenue |
 | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | Layer A criteria |
@@ -274,6 +276,7 @@ Does **not** require: transfers, training, fork UI, 1892, world news, Scotland p
 | Date | Change |
 |------|--------|
 | 2026-06-27 | Initial Layer B design from CM1 benchmark + critical path adoption |
+| 2026-06-25 | Roadmap + test plan — [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md), [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) |
 
 ---
 

@@ -327,6 +327,27 @@ Parent POM: remove or override `maven.test.failure.ignore` in root `pom.xml` whe
 | Season / rules | [DEPARTMENT_SEASONS_AND_RULES_V1.md](DEPARTMENT_SEASONS_AND_RULES_V1.md) |
 | Match / cup | [DEPARTMENT_MATCH_AND_SIMULATION_V1.md](DEPARTMENT_MATCH_AND_SIMULATION_V1.md) |
 | Gap vs CM | [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md) |
+| **Layer B tests** | [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) |
+| **Layer B roadmap** | [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) |
+
+---
+
+## 11. Layer B testing (CM1 management loop)
+
+After Layer A sign-off, every Layer B MVP follows the same gate as season engine work:
+
+**Analyze → Design → Develop → Unit test + Headless IT → Manual (B-9)**
+
+| Phase | New automated tests | Gate |
+|-------|---------------------|------|
+| B1 | `FormationRegistryTest`, `BestElevenSelectorTest`, `ClubTacticsSetupSaveLoadIT`, `MatchSimulatorV2Test`, `StartingElevenIT` | Sim uses XI only |
+| B2 | `AttendanceCalculatorTest`, `AttendanceModelIT`, `AttendanceOverwriteIT` | Crowds not random-only |
+| B3 | `MatchRatingsTest`, `MatchFeedbackIT`, `MatchLineupPreviewIT` | Ratings + result data |
+| B4 | `FormationSimWeightTest` + manual M2 | Tactics sidebar |
+
+Extend `GameTestHarness` per [LAYER_B_TEST_PLAN_V1.md §3](LAYER_B_TEST_PLAN_V1.md). Regression: existing soak ITs after B1 (`TenSeasonReportIT`).
+
+**Branch:** all commits on `analyze-ai-branch`; no push until PO requests.
 | Draw debug | [DEBUG_DRAW_MESSAGE_ISSUES.md](DEBUG_DRAW_MESSAGE_ISSUES.md) |
 
 ---

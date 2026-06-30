@@ -137,7 +137,7 @@ scorers = random player from full squad
 
 **Goal:** A player **chooses a team**, **picks who plays**, sees **credible results and crowds**, gets **ratings** — CM1-minimum loop per [CM1_REFERENCE.md §11](CM1_REFERENCE.md).
 
-**Execution plan:** [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) · **Branch:** [BRANCH_STRATEGY_ANALYZE_AI.md](BRANCH_STRATEGY_ANALYZE_AI.md)
+**Execution plan:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · **Tests:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) · **Branch:** `analyze-ai-branch` only
 
 **PO locked:** Default critical path H1 → **H2** → H3 → H4; **fork UI deferred**.
 

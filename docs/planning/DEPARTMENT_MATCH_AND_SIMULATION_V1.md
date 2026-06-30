@@ -169,3 +169,5 @@ continueGame()
 | B4 | MVP-2 | Formation templates (sim weights) |
 
 **Deferred:** MVP-10 save versioning; future embedded DB — [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md)
+
+**Tests:** every MVP ships with unit + IT per [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md)

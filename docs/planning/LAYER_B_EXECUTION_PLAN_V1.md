@@ -3,8 +3,9 @@
 **Document type:** PM / engineering execution plan  
 **Date:** 2026-06-25  
 **Branch:** `analyze-ai-branch`  
-**Status:** **Approved to start** after Layer A gates A-5 + A-9  
-**Canonical design:** [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md)
+**Status:** **Approved** — start B1 after Layer A gates A-5 + A-9  
+**Roadmap:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · **Tests:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md)  
+**Branch:** `analyze-ai-branch` only — no push
 
 ---
 
@@ -183,10 +184,9 @@ Same as [DESIGN_LAYER_B_CM1_CORE_LOOP.md §7](DESIGN_LAYER_B_CM1_CORE_LOOP.md):
 
 | # | Action | Owner |
 |---|--------|-------|
-| 1 | **A-5** — verify 2-1-0 + goal average in league UI | QA |
-| 2 | **A-9** — PO Layer A sign-off | PO |
-| 3 | Create **`feature/layer-b`** from current `analyze-ai-branch` HEAD (recommended) | Dev |
-| 4 | **B1 sprint 1** — `FormationRegistry` + `ClubTacticsSetup` + `SaveLoadIT` extension | Match/Sim |
-| 5 | **B1 sprint 2** — `MatchSimulator v2` + `MatchSimulatorV2Test` | Match/Sim |
+| 1 | **A-5** — 2-1-0 + goal average UI verify | QA |
+| 2 | **A-9** — Layer A PO sign-off | PO |
+| 3 | **B1** — follow [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) §9 | Match/Sim + Platform |
+| 4 | Tests per [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) with each MVP | All |
 
-See [BRANCH_STRATEGY_ANALYZE_AI.md](BRANCH_STRATEGY_ANALYZE_AI.md) for git workflow.
+**Git:** all commits on **`analyze-ai-branch`** — [BRANCH_STRATEGY_ANALYZE_AI.md](BRANCH_STRATEGY_ANALYZE_AI.md)
