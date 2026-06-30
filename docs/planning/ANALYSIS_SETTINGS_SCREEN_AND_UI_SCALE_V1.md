@@ -326,7 +326,8 @@ configuration.setHdpiMode(HdpiMode.Pixels);
 | Match engine overlay | ⏸ Deferred |
 | `VisUI.setScale` | N/A (not in vis-ui 1.5.2) |
 | Viewport clipping at 150%+ | ✅ Mitigated — overflow scroll + Settings stack |
-| In-game top menu stretched by wide panels | ✅ Fixed — `MainGameScreen` fixed header (R3b) |
+| In-game top menu stretched by wide panels | ✅ Mitigated — fixed header + content scroll |
+| Left sidebar scrolls off-screen | ✅ Fixed R3c |
 | Per-screen layout polish | 🔲 After new clipping strategy |
 
 

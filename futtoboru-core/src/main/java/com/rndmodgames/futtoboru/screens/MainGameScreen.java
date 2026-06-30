@@ -86,7 +86,7 @@ public class MainGameScreen implements Screen {
         mainGameMenu.setMainMenuManager(menuManager);
         menuManager.setTopMenuTable(mainGameMenu);
 
-        // Shell: fixed top menu; only body scrolls when in-game panels (e.g. squad list) are wider than viewport
+        // Fixed top bar + fixed left nav; only main content panel scrolls (wide/tall tables e.g. squad)
         final VisTable shell = new VisTable(true);
         shell.setFillParent(true);
         shell.pad(5);
@@ -94,13 +94,10 @@ public class MainGameScreen implements Screen {
         shell.row().colspan(2);
         shell.add(mainGameMenu).growX().fillX().top().right();
 
-        VisTable bodyTable = new VisTable(true);
-        bodyTable.add(menuManager.getButtonsMenu()).top();
-        bodyTable.add(mainTable).grow();
-
-        VisScrollPane bodyScroll = UiScale.newOverflowScrollPane(bodyTable);
+        VisScrollPane contentScroll = UiScale.newOverflowScrollPane(mainTable);
         shell.row();
-        shell.add(bodyScroll).colspan(2).grow().fill();
+        shell.add(menuManager.getButtonsMenu()).top();
+        shell.add(contentScroll).grow().fill();
 
         toastManager = new ToastManager(stage);
         toastManager.setScreenPadding(UiScale.scaled(10), UiScale.scaled(60));

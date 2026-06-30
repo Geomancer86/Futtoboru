@@ -29,6 +29,11 @@ public class MatchEngineVersion {
      * Based on DarkBlade engine analysis
      */
     public static final String ARCHITECTURE_VERSION = "DarkBlade-v1";
+
+    /**
+     * Match Engine Debug screen/menu entry — disabled until prototype is stable (known NPE).
+     */
+    public static final boolean DEBUG_SCREEN_UI_ENABLED = false;
     
     /**
      * Get full version string with build info

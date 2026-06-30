@@ -28,9 +28,10 @@ Work started on the **recommended order**: **Layer A (UI blockers)** first, with
 | **A-2** | C-1 Continue double-click | **Fixed** — single `touchDown` action, 500 ms cooldown, stale-operation guard |
 | **A-3** | C-3 / H-9 load + job init | **Fixed** — `Futtoboru.activateSaveGame()`; `LoadGameDialog` + in-game **Load** menu option |
 | **A-4** | H-3 match history → result | **Fixed** — `MatchHistoryScreenTable` → `MainMenuManager.showMatchResult()` |
-| **A-1** | Manual QA checklist — UI scale / HiDPI | ✅ **Done** — Galaxy Book3 Pro; see [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
-| **A-5** | 2-1-0 UI verify | **Open** |
-| **A-9** | PO Layer A sign-off | **Open** |
+| **A-1** | Manual QA — UI scale / HiDPI | ✅ Done — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
+| **A-1b** | In-game shell scroll (top bar + left nav fixed) | ✅ R3b/R3c |
+| **A-5** | 2-1-0 UI verify | **Open** — next Layer A item |
+| **A-9** | PO Layer A sign-off | **Open** — after A-5 |
 
 ### Code touchpoints
 
@@ -68,11 +69,12 @@ Full suite                  — 62 pass, 1 pre-existing PreferenceManagerTests a
 
 ## 5. Next steps (strict order)
 
-1. **Manual QA** — Layer A checklist ([RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) §9)  
-2. **Layer B** — MVP-10 save schema → MVP-1 XI → MVP-3 sim v2 → MVP-4 attendance  
-3. **WE-1** + NEWS-2 hook + FLEX-2 fork scripts  
-4. **1892 England** — pending PO membership decision  
-5. **R-H12 Americas** — Argentina fork content  
+1. **A-5** — Verify **2-1-0 + goal average** in league UI ([RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md))  
+2. **A-9** — PO **Layer A sign-off** (A-2, A-3, A-4, A-1, A-1b done)  
+3. **Layer B** — MVP-10 save schema → MVP-1 XI → MVP-3 sim v2 → MVP-4 attendance ([DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md))  
+4. **WE-1** + NEWS-2 hook + FLEX-2 fork scripts  
+5. **1892 England** — pending PO membership decision  
+6. **Optional:** re-enable Match Engine Debug when NPE fixed (`MatchEngineVersion.DEBUG_SCREEN_UI_ENABLED`)  
 
 ---
 

@@ -56,7 +56,9 @@ These prevent the stated goal: **play season under correct rules → complete �
 | **H-8** | 🟠 | Save file has no version field | `SaveLoadSystem.java` |
 | **H-9** | 🟠 | Top menu Load/Settings/Quit not implemented | `MainGameMenuTable.java` |
 | **UX-1** | ✅ | **UI scale / HiDPI** — PU-10 complete; default 200% | [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
-| **UX-2** | ✅ | Squad screen stretched top menu off-screen | Fixed R3b — `MainGameScreen` fixed header + scroll body |
+| **UX-2** | ✅ | Squad stretched top menu off-screen | Fixed R3b |
+| **UX-3** | ✅ | Left nav scrolled away with overflow scroll | Fixed R3c — content-only scroll |
+| **ME-D1** | ⏸ | Match Engine Debug screen NPE | Hidden — `DEBUG_SCREEN_UI_ENABLED` |
 | **SET-1** | ✅ | In-game Options → Settings | `MainGameMenuTable.java` case 3 |
 | **SET-2** | 🟡 | Fullscreen checkbox not loaded from saved pref | `SettingsScreen.java` L159 commented |
 

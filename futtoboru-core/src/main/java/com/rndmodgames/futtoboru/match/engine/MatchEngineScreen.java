@@ -406,7 +406,11 @@ public class MatchEngineScreen implements Screen {
             @Override
             public boolean keyDown(int keycode) {
                 if (keycode == Input.Keys.ESCAPE) {
-                    ((Futtoboru)game).changeScreen(Futtoboru.MATCH_ENGINE_DEBUG_SCREEN);
+                    if (MatchEngineVersion.DEBUG_SCREEN_UI_ENABLED) {
+                        ((Futtoboru) game).changeScreen(Futtoboru.MATCH_ENGINE_DEBUG_SCREEN);
+                    } else {
+                        ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
+                    }
                     return true;
                 }
                 return false;
@@ -487,8 +491,9 @@ public class MatchEngineScreen implements Screen {
     
     @Override
     public void hide() {
-        // Return to debug screen on hide
-        ((Futtoboru)game).changeScreen(Futtoboru.MATCH_ENGINE_DEBUG_SCREEN);
+        if (MatchEngineVersion.DEBUG_SCREEN_UI_ENABLED) {
+            ((Futtoboru) game).changeScreen(Futtoboru.MATCH_ENGINE_DEBUG_SCREEN);
+        }
     }
     
     @Override

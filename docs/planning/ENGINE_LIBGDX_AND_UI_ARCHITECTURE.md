@@ -36,7 +36,7 @@
 | VisUI | **1.5.2** | **1.5.4** (gdx 1.12.1) · **1.5.10** (gdx 1.14.1) | Match LibGDX row in [vis-ui CHANGES](https://github.com/kotcrab/vis-ui/blob/master/ui/CHANGES.md) |
 | Java | **17** | 17 LTS | OK |
 
-**UI scale (PU-10):** ✅ Complete — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md). `UiScale` viewport zoom; `MainGameScreen` fixed top bar + scrollable body; Settings vertical stack.
+**UI scale (PU-10):** ✅ Complete — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md). In-game shell: fixed top bar + fixed left nav; `VisScrollPane` on content panel only.
 
 | Layer | Choice | Location |
 |-------|--------|----------|

@@ -6,6 +6,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.match.engine.MatchEngineVersion;
 import com.rndmodgames.futtoboru.menu.buttons.AuthorityButton;
 import com.rndmodgames.futtoboru.menu.buttons.ClubInfoButton;
 import com.rndmodgames.futtoboru.menu.buttons.CompetitionsButton;
@@ -356,9 +357,11 @@ public class MainMenuManager {
             buttonsMenu.add(financesButton).fill();
             buttonsMenu.row();
             
-            // Match Engine Debug (Development)
-            buttonsMenu.add(matchEngineDebugButton).fill();
-            buttonsMenu.row();
+            // Match Engine Debug (Development) — hidden until prototype stable
+            if (MatchEngineVersion.DEBUG_SCREEN_UI_ENABLED) {
+                buttonsMenu.add(matchEngineDebugButton).fill();
+                buttonsMenu.row();
+            }
             
             // Separator
             buttonsMenu.addSeparator();

@@ -109,26 +109,27 @@ public class MenuScreen implements Screen {
 		final VisTextButton settingsButton = new SettingsButton(game);
 		
 		/**
-		 * Match Engine Debug Button
-		 * Development/Testing screen for match engine
+		 * Match Engine Debug Button (hidden until prototype stable)
 		 */
 		final VisTextButton matchEngineDebugButton = new VisTextButton("Match Engine Debug");
 		
-		matchEngineDebugButton.addCaptureListener(new InputListener() {
-			
-		    @Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+		if (MatchEngineVersion.DEBUG_SCREEN_UI_ENABLED) {
+			matchEngineDebugButton.addCaptureListener(new InputListener() {
 				
-			    if (matchEngineDebugButton.isPressed()) {
-					((Futtoboru)game).changeScreen(Futtoboru.MATCH_ENGINE_DEBUG_SCREEN);
+			    @Override
+				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+					return true;
 				}
-			}
-		});
+
+				@Override
+				public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+					
+				    if (matchEngineDebugButton.isPressed()) {
+						((Futtoboru)game).changeScreen(Futtoboru.MATCH_ENGINE_DEBUG_SCREEN);
+					}
+				}
+			});
+		}
 
 		/**
 		 * Exit Button
@@ -147,9 +148,10 @@ public class MenuScreen implements Screen {
 		table.row();
 		table.add(settingsButton).fill();
 		
-		//
-		table.row();
-		table.add(matchEngineDebugButton).fill();
+		if (MatchEngineVersion.DEBUG_SCREEN_UI_ENABLED) {
+			table.row();
+			table.add(matchEngineDebugButton).fill();
+		}
 		
 		//
 		table.row();
