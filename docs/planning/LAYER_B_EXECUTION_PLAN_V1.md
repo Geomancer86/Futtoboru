@@ -3,7 +3,7 @@
 **Document type:** PM / engineering execution plan  
 **Date:** 2026-06-25  
 **Branch:** `analyze-ai-branch`  
-**Status:** **Approved** — A-5 automated ✅; start B1 after **A-9**  
+**Status:** **Active** — **Layer B started** per [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) (2026-06-30)  
 **Gap analysis:** [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md)  
 **Roadmap:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · **Tests:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) · **Condition (B5):** [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md)
 
@@ -23,7 +23,7 @@ Deliver the **CM1-minimum loop**: pick XI → formation → advance time → mat
 |-------|----------|
 | **MVP-10 save schema versioning** | **Deferred** — add fields to existing JSON save first; formal `saveVersion` + migrations later |
 | **Future storage** | Consider **embedded document DB** (MongoDB-compatible or similar) for large saves — **V2+ release**, not Layer B blocker — see [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) |
-| **Layer A** | Close **A-9** (PO sign-off) before B1 coding — **A-5 ✅ automated** |
+| **Layer A** | A-5 automated ✅; UI polish/bugs fixed **as needed** — **not a release gate** |
 | **UI scale / shell** | ✅ Done (PU-10) — no further global UI work unless a screen is touched |
 | **Match Engine Debug** | Hidden until NPE fixed (`DEBUG_SCREEN_UI_ENABLED`) |
 

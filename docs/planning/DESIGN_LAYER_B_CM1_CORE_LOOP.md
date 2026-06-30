@@ -10,15 +10,15 @@
 
 ---
 
-## 1. PO direction (locked 2026-06-27)
+## 1. PO direction (locked 2026-06-30)
 
 | Decision | Choice |
 |----------|--------|
-| **Sequence** | **Default critical path** — H1 QA → **H2 Layer B** → H3 1892 → H4 world/V2 |
-| **Management benchmark** | **CM1 (1992) minimum loop** — not CM3/CM4 depth |
-| **FM borrow for Layer B** | **Attendance model only** (table + opponent + form + derbies) — not FM tactics/transfers/scouting |
-| **Fork UI** | **Deferred** — design kept; implement after Layer B + WE-1 |
-| **Historical world (news/knowledge)** | **Deferred to H3/H4** — do not block Layer B |
+| **Release** | **None planned** — local development until ready ([PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md)) |
+| **Sequence** | **Layer B now** → Layer C (1892) → world/V2 → full CM+FM horizon |
+| **Management benchmark** | **CM1 (1992) minimum loop** for Layer B — FM-depth comes later |
+| **Layer A gate** | **Not blocking Layer B** — fix UI bugs when they impede B work |
+| **Fork UI / historical world** | **Deferred** — mid/long term |
 
 ---
 

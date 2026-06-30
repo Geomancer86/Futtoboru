@@ -4,19 +4,21 @@
 **Date:** 2026-06-30  
 **Branch:** `analyze-ai-branch`  
 **Audience:** PO, PM, Tech lead, QA  
-**PO meeting brief:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) — **start there** (3 decisions, traffic lights)
+**PO direction:** [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) · **Eagle view:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)
 
 ---
 
 ## 1. Executive summary
 
+**Direction:** [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) — **no public release**; **Layer B now**; long-term CM+FM completeness.
+
 | Question | Answer |
 |----------|--------|
-| **Is anything missing for 1888–89 FA Cup first round?** | **No** — all 32 historical first-round teams are in mod data ([ANALYSIS_FA_CUP_1888_89_PARTICIPANTS_V1.md](ANALYSIS_FA_CUP_1888_89_PARTICIPANTS_V1.md)). |
-| **Is the main E2E test working?** | **Yes** — `LeagueAndCupIT` completes league + cup with health gates (~3–5s). |
-| **Is the PR test suite green?** | **Yes** — `mvn test -pl futtoboru-core` → **100/100** (2026-06-30). |
-| **Ready to restart long soaks?** | **Yes, with preflight** — see [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) and [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md). |
-| **Is v1 shippable?** | **Not yet** — automation green for core loop; manual QA + UI blockers remain. |
+| **Are we shipping v1?** | **No** — local development until the team is satisfied. |
+| **What are we building now?** | **Layer B** — pick XI, tactics, believable sim, attendance, ratings. |
+| **Is the season engine solid?** | **Yes** — league + cup E2E green; 100/100 PR suite (2026-06-30). |
+| **Long-term goal?** | Full **CM + FM** historical feature set — years of work ahead. |
+| **60-season soak?** | Optional confidence check — preflight first ([SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)). |
 
 ---
 
@@ -93,7 +95,7 @@ mvn test -pl futtoboru-core -Psoak -Dtest=LongRunSoakIT -Dfuttoboru.test.logProf
 | **QUAL-1** | FA Cup qualifying rounds not modelled | Historically correct for first round proper; future feature |
 | **CUP-UI** | Cup draw / bracket UI incomplete | Headless path OK; player-facing WIP |
 
-### Product / v1 ship (from [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md))
+### UI bugs (fix when blocking Layer B — from [BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md))
 
 | ID | Gap |
 |----|-----|
@@ -115,23 +117,25 @@ mvn test -pl futtoboru-core -Psoak -Dtest=LongRunSoakIT -Dfuttoboru.test.logProf
 
 ## 6. Recommended next steps (priority order)
 
-### Sprint A — Soak & confidence (this week)
+### Now — Layer B ([LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md))
 
-1. **Run and record** `mvn test -pl futtoboru-core -Pnightly` and `-Psoak` on CI or locally; archive report.
-2. **Add `LongRunLeagueAndCupSoakIT`** (optional `@Tag("soak")`) — 5–10 seasons league+cup with health gates; bridges gap between nightly-2 and north-star-60-league-only.
-3. Keep **default profile quiet**; document soak failure triage in [SIMULATION_TEST_SUITE_V2.md](SIMULATION_TEST_SUITE_V2.md).
+1. **MVP-1** — Pick XI on squad screen; sim reads `MatchLineup` only.  
+2. **MVP-2 / MVP-9** — Tactics screen + formation presets (2–3 templates).  
+3. **MVP-3** — Match sim v2 — team strength, reduced RNG.  
+4. **MVP-4** — Shared `AttendanceCalculator` (table + form + derbies).  
+5. **MVP-5 / MVP-6 / MVP-7** — Ratings + match preview/result screens.
 
-### Sprint B — v1 playable loop (next)
+Fix Layer A UI bugs when they block the above ([BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)).
 
-4. **Manual QA pass** — employed manager, one full 1888–89 season in UI (not just headless).
-5. Fix **C-1** (continue double-click) and **C-3/C-4** (load/save job cache).
-6. **Cup draw UI** — wire `CupDrawScreenTable` to same path as `AuthorityManager` (no duplicate draw).
+### Parallel — engine confidence (when useful)
 
-### Sprint C — Depth (post–v1)
+6. Preflight + optional 60-season soak — not a release gate.  
+7. Nightly cup soak + optional `LongRunLeagueAndCupSoakIT` (5–10 seasons).
 
-7. FA Cup qualifying + invited-club scripts.
-8. Second start season mod (e.g. 1899–1900) per [DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md](DESIGN_HISTORICAL_DATABASE_AND_START_SEASONS.md).
-9. Layer B management features (training, transfers) per master plan.
+### Mid term (after Layer B core)
+
+8. 1892 expansion + `WorldEvolutionManager`.  
+9. FA Cup qualifying, second start season mod, deeper FM systems per master plan.
 
 ---
 

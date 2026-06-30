@@ -9,7 +9,7 @@
 
 ## 1. Executive summary
 
-**Layer A is nearly complete.** UI scale (PU-10), in-game shell layout (R3b/R3c), code fixes A-2/A-3/A-4, and **A-5 league rules automation** are **done**. **One Layer A gate remains:** PO sign-off (**A-9**). **Layer B has not started in code** — full gap analysis and B5 condition design published in [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md).
+**Layer A engine/UI baseline is in place.** Per [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) (2026-06-30), **Layer B is now** — A-9 PO sign-off is **not** a gate. UI bugs fixed when they block B work.
 
 | Track | Status |
 |-------|--------|

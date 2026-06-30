@@ -1,8 +1,8 @@
 # Futtoboru — Release v1.0 Definition
 
 **Document type:** Product scope / acceptance criteria  
-**Analysis date:** 2025-06-25 · **PO update:** 2026-06-26 (season model — procedural loop)  
-**Status:** **Active** — Layer A acceptance criteria below  
+**Analysis date:** 2025-06-25 · **PO update:** 2026-06-30  
+**Status:** **Reference only** — not a release plan. Active direction: [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) (local dev, Layer B now, no ship date).  
 **Master plan (Layer A + MVP + 1892):** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)
 
 ---

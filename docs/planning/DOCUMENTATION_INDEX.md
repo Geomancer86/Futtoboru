@@ -1,12 +1,13 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-06-30 (PO eagle view simplified)
+**Last updated:** 2026-06-30 (PO direction: no release, Layer B now)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
-> **PO / PM meeting:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) — **3 decisions, traffic lights, one critical path**  
+> **PO direction (authoritative):** [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) — local dev, Layer B now, CM+FM north star  
+> **Eagle view:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)  
 > **PM detail:** [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md)  
-> **Execution detail:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)  
+> **Layer B execution:** [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md)  
 > **CM legacy research is PAUSED** at Round 16. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
 
 ---
@@ -15,8 +16,10 @@ Use this index to navigate project documentation. **Start here** after cloning.
 
 | Document | Audience | Purpose |
 |----------|----------|---------|
-| [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, PM** | **Meeting brief** — traffic lights, **3 decisions**, critical path |
+| [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — no release, Layer B now, CM+FM north star |
+| [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, PM** | Eagle view — horizons, traffic lights, Layer B focus |
 | [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) | **PM, QA, Tech** | Test matrix, soak protocol, backlog detail |
+| [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) | **Match/Sim, PM** | **Current work** — MVP-1 through MVP-7 |
 | [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) | **PO, Match/Sim, UX** | **Layer B CM1 loop — gaps, design, phasing** |
 | [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) | **PO, Match/Sim, QA** | **What's missing** — XI, tactics, match sim, condition; CM/FM map |
 | [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) | **Match/Sim** | **B5** — fitness, form, injuries, fatigue, morale (post–Layer B) |
