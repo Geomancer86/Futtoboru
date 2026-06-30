@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.rndmodgames.futtoboru.engine.economy.EconomyHealthMonitor;
@@ -11,6 +12,7 @@ import com.rndmodgames.futtoboru.engine.economy.EconomyHealthMonitor;
 /**
  * Long-run gate: multi-season sim completes with champions and no negative club balances.
  */
+@Tag("nightly")
 class LongRunEconomySoakIT {
 
     private static final int TARGET_SEASONS = 3;

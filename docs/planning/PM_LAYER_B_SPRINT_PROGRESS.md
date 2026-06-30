@@ -68,9 +68,12 @@ mvn test -pl futtoboru-core -Psoak   # LongRunSoakIT (league + cup multi-season)
 
 ## 5. Next steps
 
-1. **B3** — Post-match 0–10 ratings + result/preview UI  
-2. **B4** — Formation picker + Tactics sidebar  
+1. **Fix CUP-B1** — `CupBracketGenerator` for 12 FL teams; enable `testCompleteBracketStructureFor12Teams`
+2. **B3** — Post-match 0–10 ratings + result/preview UI  
+3. **B4** — Formation picker + Tactics sidebar  
+
+**Test suite v2:** [SIMULATION_TEST_SUITE_V2.md](SIMULATION_TEST_SUITE_V2.md) — health gates, tiered profiles (`fast` / `-Pnightly` / `-Psoak`)
 
 ---
 
-*Next PM update: after B3 MatchFeedbackIT green.*
+*Next PM update: after CUP-B1 or B3 MatchFeedbackIT green.*

@@ -46,7 +46,7 @@ These prevent the stated goal: **play season under correct rules → complete �
 
 | ID | Severity | Issue | Location |
 |----|----------|-------|----------|
-| **H-1** | 🟠 | Match simulator overwrites ticket-sales attendance | `MatchSimulator.simulateMatch()` L86-95 |
+| **H-1** | 🟠 | Match simulator overwrites ticket-sales attendance | `MatchSimulator.simulateMatch()` L86-95 | ✅ Fixed B2 |
 | **H-2** | 🟠 | Away club ticket sales use wrong stadium | `MatchScheduler.checkClubSheduledMatches()` |
 | **H-3** | 🟠 | Match history clicks don't open selected result | `MatchHistoryScreenTable.java` — no `setSelectedMatch()` on result screen |
 | **H-4** | 🟠 | My Applications screen stale after apply | `MyApplicationsScreenTable.java` — refresh not guaranteed |
@@ -55,6 +55,11 @@ These prevent the stated goal: **play season under correct rules → complete �
 | **H-7** | 🟠 | Friendly scheduling always accepted, no conflict check | `MatchScheduler.java` |
 | **H-8** | 🟠 | Save file has no version field | `SaveLoadSystem.java` |
 | **H-9** | 🟠 | Top menu Load/Settings/Quit not implemented | `MainGameMenuTable.java` |
+| **H-10** | ✅ | Cup TBD matches hit ticket-sales path → CRITICAL log spam | `MatchScheduler.checkClubSheduledMatches()` — skip TBD (2026-06-30) |
+| **CUP-B1** | 🔴 | 12-team FA Cup bracket semi-finals may have ≠ 2 matches | `CupBracketGenerator.generateNextRound()` — `CupBracketGeneratorTest` |
+| **CUP-B2** | 🟠 | Cup fixtures not archived on season rollover | `SeasonManager` — stale schedules in multi-season cup |
+| **TEST-1** | ✅ | Long-run soaks passed despite CRITICAL spam | Fixed: `SimulationHealthMonitor` + `HarnessCriticalLogCounter` |
+| **SCHED-1** | 🟠 | Duplicate match IDs on single club schedule lists | Tracked in health report; not a gate yet |
 | **UX-1** | ✅ | **UI scale / HiDPI** — PU-10 complete; default 200% | [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
 | **UX-2** | ✅ | Squad stretched top menu off-screen | Fixed R3b |
 | **UX-3** | ✅ | Left nav scrolled away with overflow scroll | Fixed R3c — content-only scroll |

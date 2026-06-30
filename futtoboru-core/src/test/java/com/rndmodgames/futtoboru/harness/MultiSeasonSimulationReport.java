@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rndmodgames.futtoboru.engine.economy.EconomyHealthMonitor;
+import com.rndmodgames.futtoboru.engine.health.SimulationHealthMonitor;
 
 /**
  * Structured output from a multi-season headless run (champions, finances, diagnostics).
@@ -32,6 +33,9 @@ public final class MultiSeasonSimulationReport {
     private BigDecimal lowestLeagueClubBalance = BigDecimal.ZERO;
     private final List<EconomyHealthMonitor.ClubBalanceAlert> negativeBalanceAlerts = new ArrayList<>();
     private final List<EconomyHealthMonitor.ClubBalanceAlert> negativeLeagueBalanceAlerts = new ArrayList<>();
+    private int worstTbdInTicketWindow;
+    private int worstDuplicateMatchIds;
+    private final List<String> healthIssues = new ArrayList<>();
 
     MultiSeasonSimulationReport(long playerClubId, String playerClubName, LocalDateTime startDate) {
         this.playerClubId = playerClubId;
@@ -114,8 +118,33 @@ public final class MultiSeasonSimulationReport {
         }
     }
 
+    void recordHealthScan(SimulationHealthMonitor.HealthReport health) {
+        if (health == null) {
+            return;
+        }
+        if (health.getTbdMatchesInTicketWindow() > worstTbdInTicketWindow) {
+            worstTbdInTicketWindow = health.getTbdMatchesInTicketWindow();
+        }
+        if (health.getDuplicateMatchIds() > worstDuplicateMatchIds) {
+            worstDuplicateMatchIds = health.getDuplicateMatchIds();
+        }
+        for (String issue : health.getIssues()) {
+            if (!healthIssues.contains(issue)) {
+                healthIssues.add(issue);
+            }
+        }
+    }
+
     public BigDecimal getLowestLeagueClubBalance() {
         return lowestLeagueClubBalance;
+    }
+
+    public int getWorstTbdInTicketWindow() {
+        return worstTbdInTicketWindow;
+    }
+
+    public List<String> getHealthIssues() {
+        return List.copyOf(healthIssues);
     }
 
     public List<EconomyHealthMonitor.ClubBalanceAlert> getNegativeLeagueBalanceAlerts() {
@@ -160,6 +189,14 @@ public final class MultiSeasonSimulationReport {
         md.append("| Lowest FL club balance | ").append(lowestLeagueClubBalance).append(" |\n");
         md.append("| Negative balance alerts (all) | ").append(negativeBalanceAlerts.size()).append(" |\n");
         md.append("| Negative balance alerts (FL clubs) | ").append(negativeLeagueBalanceAlerts.size()).append(" |\n");
+        md.append("| Worst TBD matches in ticket window | ").append(worstTbdInTicketWindow).append(" |\n");
+        md.append("| Simulation health issues | ").append(healthIssues.size()).append(" |\n");
+        if (!healthIssues.isEmpty()) {
+            md.append("\n### Simulation health alerts\n\n");
+            for (String issue : healthIssues) {
+                md.append("- ").append(issue).append("\n");
+            }
+        }
         if (!negativeLeagueBalanceAlerts.isEmpty()) {
             md.append("\n### Football League economy alerts\n\n");
             for (EconomyHealthMonitor.ClubBalanceAlert alert : negativeLeagueBalanceAlerts) {

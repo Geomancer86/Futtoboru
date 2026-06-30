@@ -6,11 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
  * Runs 10 procedural league seasons and writes a champion/finance report for v1 review.
  */
+@Tag("nightly")
 class TenSeasonReportIT {
 
     private static final int TARGET_SEASONS = 10;

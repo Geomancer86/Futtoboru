@@ -19,6 +19,7 @@ import com.rndmodgames.PreferencesManager;
 public class DebugLogManager {
     
     private static DebugLogManager instance;
+    private static volatile java.util.function.Consumer<String> testErrorListener;
     private com.badlogic.gdx.Preferences preferences; // Direct reference to ensure same instance
     private Map<String, Boolean> categoryStates;
     private boolean allEnabled; // Master switch
@@ -209,6 +210,17 @@ public class DebugLogManager {
         }
     }
     
+    public static void setTestErrorListener(java.util.function.Consumer<String> listener) {
+        testErrorListener = listener;
+    }
+
+    private void notifyTestListener(String message) {
+        java.util.function.Consumer<String> l = testErrorListener;
+        if (l != null && message != null) {
+            l.accept(message);
+        }
+    }
+
     /**
      * Log an error message (always enabled for safety)
      * 
@@ -216,6 +228,7 @@ public class DebugLogManager {
      * @param message The message to log
      */
     public void error(String category, String message) {
+        notifyTestListener(message);
         Gdx.app.error("ERROR", "[" + category + "] " + message);
         System.err.println("[ERROR][" + category + "] " + message);
     }
@@ -228,6 +241,7 @@ public class DebugLogManager {
      * @param message The message to log
      */
     public void error(String category, String tag, String message) {
+        notifyTestListener(message);
         Gdx.app.error(tag, "[" + category + "] " + message);
         System.err.println("[ERROR][" + category + "][" + tag + "] " + message);
     }

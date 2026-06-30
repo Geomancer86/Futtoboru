@@ -196,6 +196,13 @@ public class MatchScheduler {
                 DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Match date has passed but not marked as played, skipping");
                 continue;
             }
+
+            // Cup TBD placeholders — teams filled when parent ties complete (see CupBracketGenerator)
+            if (scheduled.getHomeClubId() == null || scheduled.getAwayClubId() == null) {
+                DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_SCHEDULING,
+                        "MatchScheduler: Skipping TBD match (teams not set yet), matchId=" + scheduled.getId());
+                continue;
+            }
             
             /**
              * RANDOM TICKETS:
@@ -214,8 +221,8 @@ public class MatchScheduler {
             Club awayClub = DatabaseLoader.getClubById(scheduled.getAwayClubId());
 
             if (homeClub == null || awayClub == null) {
-                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler",
-                        "CRITICAL: Cannot find club(s) for match. HomeClubId: " + scheduled.getHomeClubId()
+                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler",
+                        "Unknown club id for match. HomeClubId: " + scheduled.getHomeClubId()
                                 + ", AwayClubId: " + scheduled.getAwayClubId() + ", Match ID: " + scheduled.getId());
                 continue;
             }

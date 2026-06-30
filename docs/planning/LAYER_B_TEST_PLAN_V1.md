@@ -19,9 +19,12 @@
 **Commands:**
 
 ```bash
-mvn test -pl futtoboru-core
-mvn test -pl futtoboru-core -Psoak    # after B1 (TenSeasonReportIT sensitive)
+mvn test -pl futtoboru-core                    # fast PR gate (~2 min)
+mvn test -pl futtoboru-core -Pnightly          # 10-season + league+cup multi-season
+mvn test -pl futtoboru-core -Psoak             # 60-season north star
 ```
+
+See [SIMULATION_TEST_SUITE_V2.md](SIMULATION_TEST_SUITE_V2.md) for health gates and tier design.
 
 ---
 

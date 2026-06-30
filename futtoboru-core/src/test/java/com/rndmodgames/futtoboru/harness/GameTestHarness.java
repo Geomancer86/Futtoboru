@@ -26,6 +26,7 @@ import com.rndmodgames.futtoboru.data.tactics.MatchLineup;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.SeasonManager;
 import com.rndmodgames.futtoboru.engine.economy.EconomyHealthMonitor;
+import com.rndmodgames.futtoboru.engine.health.SimulationHealthMonitor;
 import com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager;
 import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
 import com.rndmodgames.futtoboru.engine.tactics.BestElevenSelector;
@@ -250,16 +251,22 @@ public final class GameTestHarness {
      * Advances through league creation, mandatory draws, and until the primary league season completes.
      */
     public void simulateUntilPrimaryLeagueComplete() {
-        advanceUntil(save -> primaryLeague() != null, 30);
-        for (int day = 0; day < SEASON_SIMULATION_MAX_DAYS; day++) {
-            if (isPrimaryLeagueComplete()) {
-                return;
+        HarnessCriticalLogCounter.start();
+        try {
+            advanceUntil(save -> primaryLeague() != null, 30);
+            for (int day = 0; day < SEASON_SIMULATION_MAX_DAYS; day++) {
+                if (isPrimaryLeagueComplete()) {
+                    assertSimulationHealthy(false);
+                    return;
+                }
+                continueOneDayAcknowledgingDraws();
             }
-            continueOneDayAcknowledgingDraws();
+            throw new SimulationDeadlockException(
+                    "simulateUntilPrimaryLeagueComplete: league not complete within "
+                            + SEASON_SIMULATION_MAX_DAYS + " days (date=" + game().getGameDate() + ")");
+        } finally {
+            HarnessCriticalLogCounter.stop();
         }
-        throw new SimulationDeadlockException(
-                "simulateUntilPrimaryLeagueComplete: league not complete within "
-                        + SEASON_SIMULATION_MAX_DAYS + " days (date=" + game().getGameDate() + ")");
     }
 
     /**
@@ -270,21 +277,27 @@ public final class GameTestHarness {
     }
 
     public void simulateUntilLeagueAndCupComplete(int maxDays) {
-        advanceUntil(save -> primaryLeague() != null, 30);
-        simulateDays(5);
-        while (getNextGameAction() == FuttoboruGameEngine.DRAW_ACTION) {
-            acknowledgeMandatoryDraws();
-        }
-        for (int day = 0; day < maxDays; day++) {
-            if (isPrimaryLeagueComplete() && isPrimaryCupComplete()) {
-                return;
+        HarnessCriticalLogCounter.start();
+        try {
+            advanceUntil(save -> primaryLeague() != null, 30);
+            simulateDays(5);
+            while (getNextGameAction() == FuttoboruGameEngine.DRAW_ACTION) {
+                acknowledgeMandatoryDraws();
             }
-            continueOneDayAcknowledgingDraws();
+            for (int day = 0; day < maxDays; day++) {
+                if (isPrimaryLeagueComplete() && isPrimaryCupComplete()) {
+                    assertSimulationHealthy();
+                    return;
+                }
+                continueOneDayAcknowledgingDraws();
+            }
+            throw new SimulationDeadlockException(
+                    "simulateUntilLeagueAndCupComplete: league complete=" + isPrimaryLeagueComplete()
+                            + ", cup complete=" + isPrimaryCupComplete()
+                            + " within " + maxDays + " days (date=" + game().getGameDate() + ")");
+        } finally {
+            HarnessCriticalLogCounter.stop();
         }
-        throw new SimulationDeadlockException(
-                "simulateUntilLeagueAndCupComplete: league complete=" + isPrimaryLeagueComplete()
-                        + ", cup complete=" + isPrimaryCupComplete()
-                        + " within " + maxDays + " days (date=" + game().getGameDate() + ")");
     }
 
     /**
@@ -325,6 +338,7 @@ public final class GameTestHarness {
         long startNs = System.nanoTime();
         int daysSimulated = 0;
         int lastChampionCount = 0;
+        HarnessCriticalLogCounter.start();
         try {
             advanceUntil(save -> primaryLeague() != null, 30);
             simulateDays(5);
@@ -342,10 +356,12 @@ public final class GameTestHarness {
                 if (championCount > lastChampionCount) {
                     report.addSeason(snapshotLatestChampionEdition(championCount));
                     report.recordEconomyScan(game());
+                    report.recordHealthScan(scanSimulationHealth(!leagueOnly));
                     lastChampionCount = championCount;
                 }
             }
         } finally {
+            HarnessCriticalLogCounter.stop();
             if (suppressStdout) {
                 System.setOut(originalOut);
             }
@@ -373,7 +389,32 @@ public final class GameTestHarness {
                 simIndex,
                 leagueOnly);
         report.recordEconomyScan(save);
+        report.recordHealthScan(scanSimulationHealth(!leagueOnly));
+        assertSimulationHealthy(!leagueOnly);
         return report;
+    }
+
+    public SimulationHealthMonitor.HealthReport scanSimulationHealth(boolean includeCupChecks) {
+        return SimulationHealthMonitor.scan(game(), includeCupChecks);
+    }
+
+    public SimulationHealthMonitor.HealthReport scanSimulationHealth() {
+        return scanSimulationHealth(true);
+    }
+
+    /**
+     * Fails if CRITICAL logs were emitted or save-state health scan finds bracket/schedule defects.
+     */
+    public void assertSimulationHealthy(boolean includeCupChecks) {
+        HarnessCriticalLogCounter.assertNoCriticalLogs();
+        SimulationHealthMonitor.HealthReport health = scanSimulationHealth(includeCupChecks);
+        if (!health.isHealthy()) {
+            throw new AssertionError("Simulation health check failed: " + health);
+        }
+    }
+
+    public void assertSimulationHealthy() {
+        assertSimulationHealthy(true);
     }
 
     public double averageHomeAttendance(Club club) {
