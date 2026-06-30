@@ -25,7 +25,7 @@ Own **start-season mod data** and **loaders** so the picked entry point (1888–
 | `competition_rules.txt` | ✅ Present — loaded by `CompetitionRulesLoader` |
 | `scripts/` (filesystem) | ❌ Missing — hardcoded in `ScriptsLoader.java` |
 | `leagues.txt` | Stub — **never loaded** |
-| FA Cup edition | 32 participants in `competitions/1/` |
+| FA Cup edition | **32** first-round-proper participants in `competitions/1/` — audited vs Wikipedia ([ANALYSIS_FA_CUP_1888_89_PARTICIPANTS_V1.md](ANALYSIS_FA_CUP_1888_89_PARTICIPANTS_V1.md), 2026-06-30) |
 | Modifiers / professions | ✅ Present |
 | Playable countries in season | **1** (England `1000`; Wales `1002` commented out) |
 

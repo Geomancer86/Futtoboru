@@ -7,7 +7,7 @@
 
 - The **Football League 1888–89 had 12 clubs** — that is correct for the league mod.
 - The **FA Cup first round proper 1888–89 had 32 teams** (16 ties), mixing league clubs and invited non-league sides after qualifying rounds (qualifying not modelled in v1).
-- Mod data: `mods/seasons/18/competitions/1/competition_edition.txt` lists **32 participant club IDs**.
+- Mod data: `mods/seasons/18/competitions/1/competition_edition.txt` lists **32 participant club IDs** (verified vs Wikipedia first round proper — see [ANALYSIS_FA_CUP_1888_89_PARTICIPANTS_V1.md](ANALYSIS_FA_CUP_1888_89_PARTICIPANTS_V1.md)).
 - `ScriptsLoader` now uses the same 32 IDs as the mod file (not a naive `1..32` loop).
 
 ## Generic bracket generator
