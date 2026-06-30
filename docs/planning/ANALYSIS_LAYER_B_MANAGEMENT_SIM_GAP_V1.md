@@ -3,7 +3,7 @@
 **Document type:** Gap analysis + delivery plan  
 **Date:** 2026-06-28  
 **Branch:** `analyze-ai-branch`  
-**Status:** **Active** — PO path after Layer A gates  
+**Status:** **Active** — B1/B2 engine complete; **wrap-up:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)  
 **Audience:** PO, PM, Match/Sim, World/Data, QA  
 
 **Companions:** [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) · [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) · [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md)
@@ -12,16 +12,16 @@
 
 ## 1. Executive summary
 
-**Season infrastructure is proven** (fixtures, auto-sim, cup brackets, 2-1-0 rules, headless soak). **The CM1 management layer is ~0% implemented in code** — it exists almost entirely in planning docs.
+**Season infrastructure is proven** (fixtures, auto-sim, cup brackets, 2-1-0 rules, headless soak). **Layer B engine (~B1/B2) is implemented and tested.** **Layer B UI and feedback (B3/B4) are not** — see [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md).
 
 | User question | Layer B (B1–B4) | Post–Layer B (B5+) |
 |---------------|-----------------|---------------------|
-| **Initial XI / pick 11** | ✅ **MVP-1 — B1 done** | — |
-| **Tactics / formation** | ✅ Default 2-3-5; B4 picker pending | Mentality, roles, set pieces |
-| **Match basic simulation** | ✅ **MVP-3 — B1 done** | Condition modifiers (B5) |
-| **Team form (last 5 W/D/L)** | ✅ **MVP-4** — B2 (attendance + light sim) | — |
-| **Post-match ratings 0–10** | ✅ **MVP-5** — B3 | Feed morale later |
-| **Result / preview UI** | ✅ **MVP-6, MVP-7** — B3 | — |
+| **Initial XI / pick 11** | ⚠️ Engine ✅; **manual UI** ❌ | — |
+| **Tactics / formation** | ⚠️ Default 2-3-5 in sim; **picker + sidebar** ❌ | Mentality, roles |
+| **Match basic simulation** | ✅ **MVP-3** | Condition modifiers (B5) |
+| **Team form (last 5 W/D/L)** | ✅ **MVP-4** — attendance | — |
+| **Post-match ratings 0–10** | ❌ **MVP-5** — design ready | Feed morale later |
+| **Result / preview UI** | ⚠️ Score/attendance only; **flow + ratings** ❌ | — |
 | **Player fitness %** | 🔲 Display stub optional B3 | **B5 — COND-1** |
 | **Player form / sharpness** | 🔲 Attribute delta display only (today) | **B5 — COND-2** |
 | **Injuries** | ❌ Not Layer B | **B5 — COND-3** (CM93 depth) |
@@ -55,40 +55,35 @@ Sources: [CM1_REFERENCE.md](CM1_REFERENCE.md), [CM_MANUALS_DEEP_ANALYSIS_BY_RELE
 
 ---
 
-## 3. Code truth today (2026-06-28)
+## 3. Code truth today (2026-06-30)
 
-### 3.1 What EXISTS
+### 3.1 What EXISTS (engine + tests)
 
 | Area | Evidence |
 |------|----------|
-| Season + sim loop | `FuttoboruGameEngine.simulateMatchesForDate()`, `MatchSimulator`, `LeagueStandingsManager` |
-| 1888 rules 2-1-0 | `CompetitionRulesLoader`, `HistoricalLeagueRulesIT` ✅ |
-| Headless E2E | `GameTestHarness`, `SeasonPlaythroughIT`, `LeagueAndCupIT`, `TenSeasonReportIT`, `MultiSeasonSoakIT` |
-| Squad list UI | `SquadScreenTable`, `PlayerDetailScreenTable` |
-| Attribute snapshots | `PlayerAttributeSnapshot`, weekly tracking (display “form” as attr delta) |
-| Match data | `Match` stores scorers, attendance, goals — result UI does not show scorers/ratings |
-| 2D engine prototype | `match/engine/*` — **not** wired to career sim |
+| Season + sim loop | `FuttoboruGameEngine`, `MatchSimulator` v2, soak ITs |
+| XI + tactics data | `ClubTacticsSetup`, `FormationRegistry`, `MatchLineup`, `BestElevenSelector` |
+| XI in sim | `MatchLineupBuilder`, `LineupStrengthCalculator`, `StartingElevenIT` ✅ |
+| Attendance model | `AttendanceCalculator`, `DerbyRegistry`, `AttendanceModelIT` ✅ |
+| Economy watch | `EconomyHealthMonitor`, `LongRunEconomySoakIT` ✅ |
+| Squad UI (partial) | `SquadScreenTable` — **Best XI** button only |
+| Match data | Scorers + lineup ids on `Match`; result UI shows score + attendance |
+| Headless E2E | 100+ tests green |
 
-### 3.2 What is STUB or MISSING
+### 3.2 What is STUB or MISSING (wrap-up scope)
 
-| Area | Code | Gap |
-|------|------|-----|
-| **Starting XI** | No `ClubTacticsSetup`, no `selectedPlayerIds` | Sim uses **full squad** average |
-| **Formation** | `TacticsScreenTable` placeholder; not in sidebar | No `FormationRegistry` |
-| **Match sim v2** | `MatchSimulator.calculateTeamStrength()` over all players | No `MatchLineup` input; RNG 0.7–1.3 |
-| **Scorers** | Random from full squad | Should prefer XI forwards |
-| **Attendance** | Random 60–90% capacity | **H-1** overwrites ticket sales |
-| **Ratings** | None | MVP-5 |
-| **Preview / result UI** | Minimal text | MVP-6, MVP-7 |
-| **Fitness / injury / fatigue** | Comments in `SquadScreenTable` TODO | No fields on `Player` |
-| **Layer B tests** | B1 gate tests ✅; B2–B5 pending | See [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) |
+| Area | Gap |
+|------|-----|
+| **Manual XI UI** | No slot assignment UI — only Best XI |
+| **Match-day flow** | Continue auto-sims; preview bypassed |
+| **Ratings** | No `MatchRatingsCalculator`; no fields on `Match` |
+| **Result UI** | No scorers list, no ratings |
+| **Preview UI** | Title only; no kick off |
+| **Tactics screen** | Placeholder; **not in sidebar** |
+| **Formation picker** | Single default template in play |
+| **Layer B tests B3/B4** | `MatchRatingsTest`, `MatchFeedbackIT`, etc. pending |
 
-**Key files:**
-
-- `engine/simulation/MatchSimulator.java` — career sim (not 2D engine)
-- `data/Club.java`, `data/Player.java` — no tactics/condition fields
-- `tables/main/TacticsScreenTable.java` — stub
-- `menu/MainMenuManager.java` — no Tactics sidebar button
+Design: [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) · [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md)
 
 ---
 
@@ -233,13 +228,16 @@ Full specs: [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md).
 
 ## 7. Recommended start order (strict)
 
+Per [PM_LAYER_B_WRAP_UP_PLAN.md §4](PM_LAYER_B_WRAP_UP_PLAN.md):
+
 ```
-A-9 PO sign-off (Layer A)
-    → B1 DATA-B1 + MVP-1 + MVP-3 + tests
-    → B2 MVP-4 + H-1 + tests
-    → B3 MVP-5/6/7 + tests
-    → B4 MVP-2/9 + B-9 sign-off
-    → B5 player condition (optional product decision)
+B3a MatchRatingsCalculator + tests
+    → B3b Preview → kick off → result flow
+    → B3c Result UI (scorers + ratings)
+    → B4 Tactics screen + sidebar + formation picker
+    → B1 UI manual XI on Tactics
+    → B-9 local CM1 loop check
+    → B5 player condition (optional — PO decision D1)
 ```
 
 **Do not parallel:** 2D engine, transfers, training, 1892 content, fork UI.
@@ -267,4 +265,4 @@ A-9 PO sign-off (Layer A)
 
 ---
 
-*Next update: after B3 MatchFeedbackIT or PO reprioritises B5.*
+*Next update: after B3a MatchRatingsTest or PO locks wrap-up decisions.*

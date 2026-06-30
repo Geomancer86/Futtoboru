@@ -15,7 +15,7 @@
 | Question | Answer |
 |----------|--------|
 | **Are we shipping v1?** | **No** — local development until the team is satisfied. |
-| **What are we building now?** | **Layer B** — pick XI, tactics, believable sim, attendance, ratings. |
+| **What are we building now?** | **Layer B wrap-up** — ratings, preview flow, Tactics UI ([PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)) |
 | **Is the season engine solid?** | **Yes** — league + cup E2E green; 100/100 PR suite (2026-06-30). |
 | **Long-term goal?** | Full **CM + FM** historical feature set — years of work ahead. |
 | **60-season soak?** | Optional confidence check — preflight first ([SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)). |
@@ -103,7 +103,7 @@ mvn test -pl futtoboru-core -Psoak -Dtest=LongRunSoakIT -Dfuttoboru.test.logProf
 | **C-3 / C-4** | Load game / JobManager stale save |
 | **H-3** | Match history navigation |
 | **H-9** | Top menu Load/Settings/Quit |
-| **Manual QA** | [TESTING_COMPETITION_COMPLETION.md](TESTING_COMPETITION_COMPLETION.md) checklist not signed off |
+| **Manual QA** | [TESTING_COMPETITION_COMPLETION.md](TESTING_COMPETITION_COMPLETION.md) — useful when playing locally; **not a release gate** |
 
 ### Data (low urgency for v1)
 
@@ -117,25 +117,24 @@ mvn test -pl futtoboru-core -Psoak -Dtest=LongRunSoakIT -Dfuttoboru.test.logProf
 
 ## 6. Recommended next steps (priority order)
 
-### Now — Layer B ([LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md))
+**Master plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) (~55% complete)
 
-1. **MVP-1** — Pick XI on squad screen; sim reads `MatchLineup` only.  
-2. **MVP-2 / MVP-9** — Tactics screen + formation presets (2–3 templates).  
-3. **MVP-3** — Match sim v2 — team strength, reduced RNG.  
-4. **MVP-4** — Shared `AttendanceCalculator` (table + form + derbies).  
-5. **MVP-5 / MVP-6 / MVP-7** — Ratings + match preview/result screens.
+### Now — finish Layer B
 
-Fix Layer A UI bugs when they block the above ([BUGS_AND_BLOCKERS_REGISTRY.md](BUGS_AND_BLOCKERS_REGISTRY.md)).
+1. **B3a** — `MatchRatingsCalculator` + persist on `Match` — [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md)  
+2. **B3b** — Preview → kick off → result (fix Continue bypassing preview)  
+3. **B3c** — Result UI: scorers + 0–10 ratings  
+4. **B4** — Tactics screen + sidebar + formation picker — [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md)  
+5. **B1 UI** — Manual XI slot assignment on Tactics  
 
-### Parallel — engine confidence (when useful)
+### PO decisions before B3b UI
 
-6. Preflight + optional 60-season soak — not a release gate.  
-7. Nightly cup soak + optional `LongRunLeagueAndCupSoakIT` (5–10 seasons).
+6. Review [PM_LAYER_B_WRAP_UP_PLAN.md §6](PM_LAYER_B_WRAP_UP_PLAN.md) — B5 in scope?, manual XI?, auto-sim others?
 
-### Mid term (after Layer B core)
+### Parallel (optional)
 
-8. 1892 expansion + `WorldEvolutionManager`.  
-9. FA Cup qualifying, second start season mod, deeper FM systems per master plan.
+7. Preflight + soak when useful — not blocking Layer B  
+8. Fix Layer A UI bugs when they block B work
 
 ---
 

@@ -41,30 +41,18 @@ See [SIMULATION_TEST_SUITE_V2.md](SIMULATION_TEST_SUITE_V2.md) for health gates 
 
 ---
 
-### B1 — Sim core (to implement)
+### B1 — Sim core ✅ (engine)
 
-| Class | Type | Proves | Depends on | Status |
-|-------|------|--------|------------|--------|
-| `FormationRegistryTest` | Unit | 3 templates load; 11 slots each; default `2-3-5-1888` | DATA-B1 | ✅ |
-| `BestElevenSelectorTest` | Unit | Picks 11 by attribute sum; handles <11 squad edge | MVP-1 | ✅ |
-| `ClubTacticsSetupSaveLoadIT` | IT | `ClubTacticsSetup` survives `SaveLoadSystem.copySaveGame` | DATA-B1 | ✅ |
-| `MatchSimulatorV2Test` | Unit | Stronger `MatchLineup` → higher expected goals over N runs | MVP-3 | ✅ |
-| `StartingElevenIT` | IT | Set weak XI vs strong XI on same club fixture → weak loses more | MVP-1, MVP-3 | ✅ |
-| `TenSeasonReportIT` | E2E soak | No deadlock; champion count >1 club after MVP-8 tune | MVP-8 | ✅ regression |
+| Class | Type | Proves | Status |
+|-------|------|--------|--------|
+| `FormationRegistryTest` | Unit | 3 templates; default | ✅ |
+| `BestElevenSelectorTest` | Unit | Picks 11 | ✅ |
+| `ClubTacticsSetupSaveLoadIT` | IT | JSON roundtrip | ✅ |
+| `MatchSimulatorV2Test` | Unit | Lineup strength | ✅ |
+| `StartingElevenIT` | IT | Weak vs strong XI | ✅ |
+| `TenSeasonReportIT` | E2E | Balance regression | ✅ |
 
-**`StartingElevenIT` sketch:**
-
-```java
-@Test void weakLineupLosesMoreOftenThanStrongLineup() {
-  harness.newGameEmployedAtClub(PNE, SEASON_18);
-  // build strong XI = best 11; weak XI = worst 11
-  harness.setClubLineup(homeId, weakIds);
-  int weakWins = harness.simulateSameFixtureNTimes(50);
-  harness.setClubLineup(homeId, strongIds);
-  int strongWins = harness.simulateSameFixtureNTimes(50);
-  assertTrue(strongWins > weakWins);
-}
-```
+**UI gap:** manual XI — see [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md)
 
 ---
 
@@ -80,13 +68,15 @@ See [SIMULATION_TEST_SUITE_V2.md](SIMULATION_TEST_SUITE_V2.md) for health gates 
 
 ---
 
-### B3 — Feedback
+### B3 — Feedback (to implement)
 
-| Class | Type | Proves | Depends on |
-|-------|------|--------|------------|
-| `MatchRatingsTest` | Unit | Scorer > non-scorer; win bonus; clamp 4–9.5 | MVP-5 |
-| `MatchFeedbackIT` | IT | Sim match → ratings map size 11; scorers in result data | MVP-5, MVP-6 |
-| `MatchLineupPreviewIT` | IT | Preview snapshot ids == sim lineup ids | MVP-7 |
+Design: [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md)
+
+| Class | Type | Proves | Status |
+|-------|------|--------|--------|
+| `MatchRatingsTest` | Unit | Rating formula | ❌ |
+| `MatchFeedbackIT` | IT | Ratings after sim | ❌ |
+| `MatchLineupPreviewIT` | IT | Preview lineup = sim lineup | ❌ |
 
 ---
 

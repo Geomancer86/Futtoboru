@@ -3,7 +3,7 @@
 **Document type:** PM master roadmap — analyze → design → develop → test  
 **Date:** 2026-06-25  
 **Branch:** `analyze-ai-branch` (**only** — no push, no child branches)  
-**Status:** **Approved** — A-5 automated ✅; start B1 after **A-9** PO sign-off  
+**Status:** **Wrap-up** — B1/B2 ✅ · B3/B4 pending — [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)  
 **Gap analysis:** [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) · **Player condition (B5):** [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md)  
 **Goal:** **Pick XI → formation → Continue → match uses your 11 → sensible crowds → 0–10 ratings → readable result/preview**
 
@@ -95,16 +95,16 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 
 ---
 
-### B1 — Sim core (Pick XI + match uses your 11)
+### B1 — Sim core ✅ (engine); UI partial
 
-| ID | Analyze | Design | Develop | Unit tests | IT / E2E |
-|----|---------|--------|---------|------------|----------|
-| **DATA-B1** | [DESIGN_LAYER_B §4.3](DESIGN_LAYER_B_CM1_CORE_LOOP.md) | [DESIGN_TACTICS §3](DESIGN_TACTICS_AND_FORMATIONS.md) | `FormationTemplate`, `FormationRegistry`, `ClubTacticsSetup`, `MatchLineup`; fields on `Club` | `FormationRegistryTest` | `ClubTacticsSetupSaveLoadIT` |
-| **MVP-1** | Squad has no XI selection | §3.3–3.4 tactics doc | `BestElevenSelector`; Squad/Tactics pick 11; persist on club | `BestElevenSelectorTest` | `StartingElevenIT` |
-| **MVP-3** | [MatchSimulator](futtoboru-core/.../MatchSimulator.java) uses full squad | §3.5 sim hook | `MatchSimulator` v2 reads `MatchLineup`; build lineup at sim time for AI | `MatchSimulatorV2Test` | Extend `GameTestHarness.simulateNextLeagueMatch()` assert XI ids |
-| **MVP-8** | Accrington 8/10 champions | Tune weights in design doc | Adjust constants; document in test report | — | `TenSeasonReportIT` regression |
+| ID | Analyze | Design | Develop | Unit tests | IT / E2E | Status |
+|----|---------|--------|---------|------------|----------|--------|
+| **DATA-B1** | §4.3 Layer B design | [DESIGN_TACTICS §3](DESIGN_TACTICS_AND_FORMATIONS.md) | Registry + setup on `Club` | `FormationRegistryTest` | `ClubTacticsSetupSaveLoadIT` | ✅ |
+| **MVP-1** | Squad XI | §3 + [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) | Best XI ✅; **manual slots** ❌ | `BestElevenSelectorTest` | `StartingElevenIT` | ⚠️ |
+| **MVP-3** | Sim v1 gap | §3.5 | `MatchSimulator` v2 | `MatchSimulatorV2Test` | `StartingElevenIT` | ✅ |
+| **MVP-8** | Champion spread | Tune weights | Constants | — | `TenSeasonReportIT` | ✅ |
 
-**B1 exit:** All B1 tests green; `MatchSimulator` never uses full squad for strength.
+**B1 exit (engine):** ✅ **B1 UI exit:** manual XI on Tactics — pending B4.
 
 ---
 
@@ -122,11 +122,13 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 
 ### B3 — Ratings + result / preview
 
-| ID | Analyze | Design | Develop | Unit tests | IT / E2E |
-|----|---------|--------|---------|------------|----------|
-| **MVP-5** | No post-match ratings | §5.4 ratings table in Layer B design | `MatchRatingsCalculator`; store on match/club | `MatchRatingsTest` | Assert ratings in `MatchFeedbackIT` |
-| **MVP-6** | Result stub | CM1 result layout | `MatchResultScreenTable` — score, scorers, attendance, ratings | — | Manual + history click (A-4 regression) |
-| **MVP-7** | Preview stub | Editable XI before match | `MatchPreviewScreenTable`; confirm → `MatchLineup` snapshot | — | `MatchFeedbackIT` preview path |
+Design: [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md)
+
+| ID | Analyze | Design | Develop | Unit tests | IT / E2E | Status |
+|----|---------|--------|---------|------------|----------|--------|
+| **MVP-5** | No ratings | §3 calculator | `MatchRatingsCalculator` | `MatchRatingsTest` | `MatchFeedbackIT` | ❌ |
+| **MVP-6** | Result partial | §2.4 | Scorers + ratings on result | — | Manual + A-4 | ❌ |
+| **MVP-7** | Preview stub; Continue bypasses | §2 flow | Preview + kick off | — | `MatchLineupPreviewIT` | ❌ |
 
 **B3 exit:** Full loop in UI: preview → continue → result with ratings (manual checklist §5).
 
@@ -134,10 +136,12 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 
 ### B4 — Formation UX
 
-| ID | Analyze | Design | Develop | Unit tests | IT / E2E |
-|----|---------|--------|---------|------------|----------|
-| **MVP-2** | One placeholder formation | §3.2 templates | 2–3 templates in registry; dropdown | `FormationSimWeightTest` | Formation change affects sim in `MatchSimulatorV2Test` |
-| **MVP-9** | Tactics not in sidebar | §5 CM1 menu map | Wire `TacticsScreenTable` in `MainMenuManager` | — | Manual navigation |
+Design: [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md)
+
+| ID | Analyze | Design | Develop | Unit tests | IT / E2E | Status |
+|----|---------|--------|---------|------------|----------|--------|
+| **MVP-2** | One template | §2.3 | 2–3 templates + dropdown | `FormationSimWeightTest` | Sim weight change | ❌ |
+| **MVP-9** | Not in sidebar | §2.1 | `TacticsScreenTable` + button | — | Manual | ❌ |
 
 **B4 exit:** **B-9** PO Layer B sign-off ([§6](#6-exit-criteria-b-9)).
 
@@ -212,11 +216,10 @@ See [BRANCH_STRATEGY_ANALYZE_AI.md](BRANCH_STRATEGY_ANALYZE_AI.md).
 
 | # | Action | Owner |
 |---|--------|-------|
-| 1 | **A-5** — 2-1-0 + goal average UI verify | QA |
-| 2 | **A-9** — Layer A PO sign-off | PO |
-| 3 | **B1** — DATA-B1 + `FormationRegistryTest` + `ClubTacticsSetupSaveLoadIT` | Match/Sim |
-| 4 | **B1** — MVP-3 + `MatchSimulatorV2Test` + `StartingElevenIT` | Match/Sim |
-| 5 | Extend `GameTestHarness` per [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) | Platform |
+| 1 | PO: [PM_LAYER_B_WRAP_UP_PLAN.md §6](PM_LAYER_B_WRAP_UP_PLAN.md) | PO |
+| 2 | B3a ratings engine | Match/Sim |
+| 3 | B3b match-day flow | Platform + Engine |
+| 4 | B4 Tactics UI | Platform |
 
 ---
 

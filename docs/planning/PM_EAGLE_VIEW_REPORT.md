@@ -1,26 +1,40 @@
 # Eagle View — PO / PM Brief
 
 **Date:** 2026-06-30 · **Branch:** `analyze-ai-branch`  
-**Direction lock:** [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md)
+**Direction:** [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md)  
+**Layer B plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) ← **read before deciding next steps**
 
 ---
 
 ## In one sentence
 
-We are **building locally, not shipping** — **Layer B** (management feel) is **now**, while the **long-term goal** remains the full **CM + FM** feature horizon.
+**Layer B is half done** — sim, XI engine, and crowds work in tests; **ratings, match preview flow, and Tactics UI** are still missing for the CM1 loop.
 
 ---
 
-## How we think about time
+## Layer B progress
+
+| Done | Remaining |
+|------|-----------|
+| ✅ Match uses your 11 (headless) | ❌ Manual pick 11 in UI |
+| ✅ Attendance model | ❌ 0–10 ratings |
+| ✅ Best XI button | ❌ Preview → kick off → result flow |
+| ✅ 100+ automated tests | ❌ Tactics screen + sidebar |
+
+**Estimate to finish:** 4–6 eng-weeks · **Decisions:** [PM_LAYER_B_WRAP_UP_PLAN.md §6](PM_LAYER_B_WRAP_UP_PLAN.md)
+
+---
+
+## Horizons
 
 | Horizon | Focus |
 |---------|--------|
-| **Short term** | Layer B — XI, tactics, match sim, attendance, ratings |
-| **Mid term** | 1892 world expansion, save evolution, deeper sim systems |
-| **Long term** | News, forks, multi-country DB, FM-grade depth |
-| **North star** | Everything CM and FM ever did — **light years ahead** |
+| **Now** | Finish Layer B (CM1 loop in UI) |
+| **Mid** | Layer C — 1892, world evolution |
+| **Long** | FM-depth systems, multi-country |
+| **North star** | Full CM + FM historical completeness |
 
-**No release date.** One season or fifty seasons of local work is fine until it feels right.
+**No release date.** Local development only.
 
 ---
 
@@ -28,46 +42,10 @@ We are **building locally, not shipping** — **Layer B** (management feel) is *
 
 | Area | Status |
 |------|--------|
-| **Season engine (Layer A headless)** | 🟢 League, cup, save/load, tests green |
-| **Layer B management loop** | 🟡 **Active work** — designed, coding starts now |
-| **Long soak (60 seasons)** | 🟡 Optional confidence run — preflight first |
-| **1892 / world / forks** | ⚪ Mid term — after Layer B core |
-| **Public release** | ⚪ **Not planned** — local development only |
-
----
-
-## Current priority (locked)
-
-**Start Layer B.** Execution: [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) · design: [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md)
-
-| Layer B deliverable | Player-visible outcome |
-|---------------------|------------------------|
-| MVP-1 Pick XI | Your 11 plays, not random squad average |
-| MVP-2 / MVP-9 Tactics | Formation presets affect match |
-| MVP-3 Sim v2 | Results reflect team strength, less RNG |
-| MVP-4 Attendance | Crowds follow table, form, derbies |
-| MVP-5 / MVP-7 Ratings | Post-match 0–10 ratings |
-
-Fix Layer A UI bugs (**C-1**, load/save, menu) **alongside** Layer B when they get in the way — not as a ship gate.
-
----
-
-## Critical path
-
-```
-NOW     Layer B — CM1-minimum loop
-MID     Layer C — 1892 + world evolution
-LONG    Historical world + FM-depth systems
-FAR     Full CM + FM historical completeness
-```
-
----
-
-## Engineering hygiene (unchanged)
-
-- PR test suite stays green (`mvn test -pl futtoboru-core`)  
-- Long soaks: **preflight first** — [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)  
-- Do not pipe soak output through filters  
+| Season engine | 🟢 |
+| Layer B engine (B1/B2) | 🟢 |
+| Layer B UI (B3/B4) | 🔴 |
+| Layer C / world | ⚪ Later |
 
 ---
 
@@ -75,10 +53,10 @@ FAR     Full CM + FM historical completeness
 
 | Topic | Document |
 |-------|----------|
-| PO direction (authoritative) | [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) |
-| Layer B execution | [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) |
-| Tests & soak | [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) |
-| Old release criteria (reference only) | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) |
+| **Wrap-up plan (PM)** | [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) |
+| Ratings + preview/result design | [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) |
+| Tactics + XI UI design | [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) |
+| Tests | [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) |
 
 ---
 
@@ -86,6 +64,6 @@ FAR     Full CM + FM historical completeness
 
 | Date | Change |
 |------|--------|
-| 2026-06-30 | PO lock: no release; Layer B now; CM+FM north star; short/mid before long |
-| 2026-06-30 | Simplified meeting brief (superseded by direction lock) |
+| 2026-06-30 | Layer B wrap-up plan linked; progress ~55% |
+| 2026-06-30 | PO lock: no release; Layer B focus |
 | 2026-06-27 | Initial eagle view |

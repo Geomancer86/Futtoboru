@@ -1,79 +1,73 @@
-# PM Report — Layer B Sprint Progress (B2)
+# PM Report — Layer B Sprint Progress
 
 **Document type:** PM sprint report  
 **Date:** 2026-06-30  
 **Branch:** `analyze-ai-branch`  
-**Phase:** **B2 complete** — crowds (MVP-4, H-1) + economy early-warning
+**Master plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)
 
 ---
 
 ## 1. Executive summary
 
-**B2 shipped on `analyze-ai-branch`.** Home attendance is driven by an FM-style `AttendanceCalculator` (table position, opponent rank, form, derby). Ticket sales in `MatchScheduler` target that fill rate; `MatchSimulator` no longer overwrites pre-sold attendance (H-1). Long-run harness scans Football League club balances and fails early if any go negative (bankruptcy feature deferred).
+| Phase | Status | Notes |
+|-------|--------|-------|
+| **B1 — Sim core** | ✅ **Engine done** | XI sim, registry, tests green |
+| **B1 — XI UI** | ⚠️ **Partial** | Best XI only; manual 11 pick pending |
+| **B2 — Crowds** | ✅ **Done** | MVP-4, H-1, ECON-B2 |
+| **B3 — Feedback** | 🔲 **Not started** | MVP-5/6/7 — design ready |
+| **B4 — Tactics UX** | 🔲 **Not started** | MVP-2/9 — design ready |
 
-| Track | Status |
-|-------|--------|
-| **B1 — Sim core** | ✅ Done |
-| **B2 — Crowds + economy watch** | ✅ **Done** |
-| **B3 — Feedback** | 🔲 Next — MVP-5/6/7 |
-| **B4 — Tactics UX** | 🔲 MVP-2/9 |
-
----
-
-## 2. B2 deliverables
-
-| ID | Deliverable | Status |
-|----|-------------|--------|
-| **MVP-4** | `AttendanceCalculator`, `DerbyRegistry`, `mods/derbies.txt` | ✅ |
-| **H-1** | Single attendance authority — sim keeps scheduler attendance | ✅ |
-| **ECON-B2** | `EconomyHealthMonitor` — negative balance scan (FL roster + report) | ✅ |
-| **Tests** | Unit + IT + long-run economy gate | ✅ |
+**Overall Layer B: ~55%** by deliverable count.
 
 ---
 
-## 3. Code touchpoints
+## 2. Completed (evidence)
 
-| Area | Files |
-|------|-------|
-| Attendance | `engine/simulation/AttendanceCalculator.java`, `DerbyRegistry.java` |
-| Mod data | `mods/derbies.txt` |
-| Scheduling | `MatchScheduler` — target fill from calculator; daily ticket sales |
-| Sim | `MatchSimulator.applyFinalAttendance()` — H-1 |
-| Economy watch | `engine/economy/EconomyHealthMonitor.java` |
-| Harness | `GameTestHarness.averageHomeAttendance`, `assertNoNegativePrimaryLeagueBalances`, `MultiSeasonSimulationReport.recordEconomyScan` |
-| Tests | `AttendanceCalculatorTest`, `AttendanceModelIT`, `AttendanceOverwriteIT`, `EconomyHealthMonitorTest`, `LongRunEconomySoakIT` |
+### B1 engine
 
----
+| ID | Evidence |
+|----|----------|
+| DATA-B1 | `ClubTacticsSetup`, `FormationRegistry`, `MatchLineup` |
+| MVP-1 | `BestElevenSelector`, `StartingElevenIT` |
+| MVP-3 | `MatchSimulator` v2, `MatchSimulatorV2Test` |
+| MVP-8 | `TenSeasonReportIT` |
 
-## 4. Test evidence
+### B2
 
-```bash
-mvn test -pl futtoboru-core
-mvn test -pl futtoboru-core -Psoak   # LongRunSoakIT (league + cup multi-season)
-```
-
-| Test | Proves |
-|------|--------|
-| `AttendanceCalculatorTest` | position/opponent/form/derby factors; clamp 0.08–0.98 |
-| `AttendanceModelIT` | Top-table avg home attendance > bottom after full season |
-| `AttendanceOverwriteIT` | Post-sim attendance equals pre-sold (not re-rolled) |
-| `EconomyHealthMonitorTest` | Negative balance detection; league-scoped scan |
-| `LongRunEconomySoakIT` | 3 seasons + champions; FL balances stay ≥ 0 |
-| `MultiSeasonSoakIT` | 3 procedural champions + FL economy gate |
-| `TenSeasonReportIT` | 10-season report + FL economy fields |
-
-**Economy scope:** Non–Football League clubs (id 13+) may have negative balances (no league income). Gates assert **primary league roster only** plus player club solvency. Report also tracks global minimum for diagnostics.
+| ID | Evidence |
+|----|----------|
+| MVP-4 | `AttendanceCalculator`, `AttendanceModelIT` |
+| H-1 | `AttendanceOverwriteIT` |
+| ECON-B2 | `EconomyHealthMonitor`, `LongRunEconomySoakIT` |
 
 ---
 
-## 5. Next steps
+## 3. Remaining work (ordered)
 
-1. **Fix CUP-B1** — `CupBracketGenerator` for 12 FL teams; enable `testCompleteBracketStructureFor12Teams`
-2. **B3** — Post-match 0–10 ratings + result/preview UI  
-3. **B4** — Formation picker + Tactics sidebar  
+See [PM_LAYER_B_WRAP_UP_PLAN.md §4](PM_LAYER_B_WRAP_UP_PLAN.md):
 
-**Test suite v2:** [SIMULATION_TEST_SUITE_V2.md](SIMULATION_TEST_SUITE_V2.md) — health gates, tiered profiles (`fast` / `-Pnightly` / `-Psoak`)
+1. **B3a** — `MatchRatingsCalculator` + `Match` fields + tests  
+2. **B3b** — Preview → kick off → result flow  
+3. **B3c** — Result scorers + ratings UI  
+4. **B4** — Tactics screen + sidebar + formation picker  
+5. **B1 UI** — Manual XI on Tactics screen  
 
 ---
 
-*Next PM update: after CUP-B1 or B3 MatchFeedbackIT green.*
+## 4. PO decisions needed
+
+| # | Question | Doc |
+|---|----------|-----|
+| D1 | Include B5 (condition) in Layer B? | [PM_LAYER_B_WRAP_UP_PLAN.md §6](PM_LAYER_B_WRAP_UP_PLAN.md) |
+| D2 | Manual XI required for complete? | Same |
+| D3 | Auto-sim other clubs on Continue? | Same |
+
+---
+
+## 5. Next PM update
+
+After **B3a** (`MatchRatingsTest` green) or PO locks §6 decisions.
+
+---
+
+*Supersedes 2026-06-30 B2-only report sections for forward planning.*

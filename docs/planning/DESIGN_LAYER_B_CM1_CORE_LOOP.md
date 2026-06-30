@@ -70,7 +70,7 @@ Formula: [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5.3](PM_V1_MVP_AND_1892_MASTER_PLA
 
 ---
 
-## 4. Gap analysis — current truth (2026-06-27)
+## 4. Gap analysis — current truth (2026-06-30)
 
 ### 4.1 Already ahead of or equal to CM1 (do not rebuild)
 
@@ -78,41 +78,22 @@ Formula: [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5.3](PM_V1_MVP_AND_1892_MASTER_PLA
 |------|--------|----------|
 | Season completes + champion | ✅🧪 | `SeasonPlaythroughIT`, `TenSeasonReportIT` |
 | Procedural rollover | ✅🧪 | `MultiSeasonSoakIT`, `LongRunSoakIT` |
-| 1888 competition rules loader | ✅🧪 | `CompetitionRulesLoaderTest`, mod `competition_rules.txt` |
+| Match sim uses XI | ✅🧪 | `MatchSimulator` v2, `StartingElevenIT` |
+| Attendance model | ✅🧪 | `AttendanceCalculator`, `AttendanceModelIT` |
 | FA Cup headless season | ✅🧪 | `LeagueAndCupIT` |
-| Real 1888 player/club names | ✅ | Mod 18 — **ahead of CM1 anonymous numbers** |
-| Inbox + mandatory draw | ✅ | `MandatoryGateIT` |
-| Job / unemployed path | ✅ | Beyond CM1 — not Layer B gate |
-| Save JSON + `HistoricalMode` | ✅🧪 | `SaveLoadIT` |
+| Save + tactics JSON fields | ✅🧪 | `ClubTacticsSetupSaveLoadIT` |
 
-> **Note:** [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md) §3.2 still lists season-end as unwired — **superseded** by automation (see [SYSTEMS_AND_FEATURES_REGISTRY.md §0](SYSTEMS_AND_FEATURES_REGISTRY.md)).
+### 4.2 Layer B gaps — **wrap-up remaining**
 
-### 4.2 Layer A gaps (before Layer B code)
-
-| ID | Gap | Status |
-|----|-----|--------|
-| A-1 | Manual QA checklist | **Open** |
-| A-2 | Continue double-click | **Coded** — QA |
-| A-3 | Load game + job init | **Coded** — QA |
-| A-4 | Match history → result | **Coded** — QA |
-| A-5 | 2-1-0 + goal average in league UI | ✅ **Automated** |
-| A-9 | PO Layer A sign-off | **Open** |
-
-### 4.3 Layer B gaps — **the management sim** (CM1 P1)
-
-| ID | CM1 / genre | Code today | Missing work |
-|----|-------------|------------|--------------|
-| **MVP-10** | Save lineup per club | **Deferred** — add JSON fields in B1; formal versioning later — [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) |
-| **MVP-1** | Pick XI | Sim ignores selection | ✅ `BestElevenSelector`, Squad Best XI, `ClubTacticsSetup` |
-| **MVP-3** | Match uses lineup | `MatchSimulator` squad avg | ✅ v2 reads `MatchLineup` only |
-| **MVP-8** | Plausible champions | Accrington 8/10 | Re-tune after MVP-3; `TenSeasonReportIT` |
-| **MVP-4** | Crowds react to context | Random 60–90% | `AttendanceCalculator` + `mods/derbies.txt` |
-| **H-1** | Finances ↔ attendance | Sim overwrites attendance | Single attendance authority |
-| **MVP-5** | 0–10 ratings | None | Post-match map on XI |
-| **MVP-6** | Result screen | Latest only; history fixed | Scorers, attendance, ratings snippet |
-| **MVP-7** | Preview | Stub | Editable XI + opponent auto XI |
-| **MVP-2** | Formation pick | Placeholder | `FormationRegistry` + 2–3 templates |
-| **MVP-9** | Tactics menu | Not in sidebar | Wire `TacticsScreenTable` |
+| ID | Status | Missing work |
+|----|--------|--------------|
+| **MVP-1 UI** | ⚠️ | Manual 11 pick — [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) |
+| **MVP-5** | ❌ | `MatchRatingsCalculator` — [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) |
+| **MVP-6** | ⚠️ | Scorers + ratings on result screen |
+| **MVP-7** | ❌ | Preview + kick off; fix Continue flow |
+| **MVP-2 / MVP-9** | ❌ | Formation picker + Tactics sidebar |
+| **MVP-4 / H-1** | ✅ | B2 complete |
+| **MVP-3 / DATA-B1** | ✅ | B1 engine complete |
 
 ### 4.4 Explicitly NOT Layer B (defer — CM/FM depth)
 
@@ -275,8 +256,9 @@ Does **not** require: transfers, training, fork UI, 1892, world news, Scotland p
 
 | Date | Change |
 |------|--------|
-| 2026-06-27 | Initial Layer B design from CM1 benchmark + critical path adoption |
-| 2026-06-25 | Roadmap + test plan — [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md), [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) |
+| 2026-06-30 | Wrap-up gaps — B1/B2 engine ✅; B3/B4 + MVP-1 UI documented |
+| 2026-06-30 | PO direction: no release; Layer B sequencing |
+| 2026-06-27 | Initial Layer B design from CM1 benchmark |
 
 ---
 

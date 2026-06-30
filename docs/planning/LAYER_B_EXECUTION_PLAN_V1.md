@@ -3,7 +3,7 @@
 **Document type:** PM / engineering execution plan  
 **Date:** 2026-06-25  
 **Branch:** `analyze-ai-branch`  
-**Status:** **Active** — **Layer B started** per [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) (2026-06-30)  
+**Status:** **Wrap-up** — B1/B2 ✅; B3/B4 pending — [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)  
 **Gap analysis:** [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md)  
 **Roadmap:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · **Tests:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) · **Condition (B5):** [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md)
 
@@ -55,42 +55,32 @@ Deliver the **CM1-minimum loop**: pick XI → formation → advance time → mat
 Formal save versioning (**MVP-10**) is **out of B1 entry**. Persist new objects via existing JSON roundtrip (`SaveLoadIT` must stay green). When MVP-10 lands later, it migrates the same fields — no throwaway prototype.
 
 ```
-Layer A close (A-5, A-9)
+B1/B2 engine ✅ (2026-06-30)
         │
         ▼
 ┌───────────────────────────────────────────────────────────┐
-│ B1 — Sim core (4–5 weeks)                                  │
-│   FormationRegistry + ClubTacticsSetup on Club             │
-│   MVP-1 Pick XI + auto Best XI                             │
-│   MVP-3 MatchSimulator v2 (MatchLineup input)              │
-│   MVP-8 Balance pass (TenSeasonReportIT)                   │
-│   Tests: MatchSimulatorV2Test, StartingElevenIT            │
-├───────────────────────────────────────────────────────────┤
-│ B2 — Crowds & money (2–3 weeks) — may overlap late B1      │
-│   MVP-4 AttendanceCalculator + mods/derbies.txt            │
-│   H-1 Single attendance authority (ticket sales + sim)     │
-│   Tests: AttendanceModelTest                               │
-├───────────────────────────────────────────────────────────┤
-│ B3 — Player feedback (2–3 weeks)                           │
-│   MVP-5 Post-match ratings 0–10                            │
-│   MVP-6 Result UI (score, scorers, attendance, ratings)    │
-│   MVP-7 Preview UI (editable XI, opponent auto XI)         │
-│   Manual: CM1 loop walkthrough                             │
+│ B3 — Feedback (3–4 weeks)                                  │
+│   B3a MatchRatingsCalculator + Match fields + tests        │
+│   B3b Preview → kick off → result flow                       │
+│   B3c Result UI scorers + ratings (MVP-5/6/7)              │
+│   Design: DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md       │
 ├───────────────────────────────────────────────────────────┤
 │ B4 — Tactics UX (1–2 weeks)                                │
-│   MVP-2 Formation picker (2–3 templates)                   │
-│   MVP-9 Wire Tactics in sidebar                            │
+│   MVP-2 Formation picker + MVP-9 sidebar                   │
+│   Design: DESIGN_TACTICS_UI_V1.md                           │
 ├───────────────────────────────────────────────────────────┤
-│ B5 — Player condition (3–4 weeks) — after B-9 only         │
-│   COND-1 fitness → COND-5 morale; injury generator         │
-│   Tests: FitnessSimModifierIT, InjuredPlayerLineupIT       │
+│ B1 UI — Manual XI on Tactics (overlap B4)                  │
+│   Slot assignment UI + squad XI indicator                  │
+├───────────────────────────────────────────────────────────┤
+│ B5 — Player condition — PO decision (post B-9 default)     │
+│   COND-1 → COND-5                                          │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-   Layer B PO sign-off → Layer C (WE-1 / 1892)
+   Layer B complete (B-9) → Layer C
 ```
 
-**Total estimate:** 6–10 eng-weeks (unchanged), starting after Layer A.
+**Remaining estimate:** 4–6 eng-weeks. Full plan: [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md).
 
 ---
 
@@ -203,9 +193,9 @@ Same as [DESIGN_LAYER_B_CM1_CORE_LOOP.md §7](DESIGN_LAYER_B_CM1_CORE_LOOP.md):
 
 | # | Action | Owner |
 |---|--------|-------|
-| 1 | **A-5** — 2-1-0 + goal average UI verify | QA |
-| 2 | **A-9** — Layer A PO sign-off | PO |
-| 3 | **B1** — follow [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) §9 | Match/Sim + Platform |
-| 4 | Tests per [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) with each MVP | All |
+| 1 | PO review [PM_LAYER_B_WRAP_UP_PLAN.md §6](PM_LAYER_B_WRAP_UP_PLAN.md) decisions D1–D3 | PO |
+| 2 | **B3a** — `MatchRatingsCalculator` + `Match` rating fields + `MatchRatingsTest` | Match/Sim |
+| 3 | **B3b** — Preview → kick off flow per [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) | Platform + Engine |
+| 4 | **B4** — Tactics UI per [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) | Platform |
 
 **Git:** all commits on **`analyze-ai-branch`** — [BRANCH_STRATEGY_ANALYZE_AI.md](BRANCH_STRATEGY_ANALYZE_AI.md)

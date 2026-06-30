@@ -18,7 +18,7 @@ Build toward **full parity with the combined feature set of Football Manager and
 |-----------|-----------|
 | **Release** | **No public release planned.** Work **locally** until the team feels ready — whether that is after 1 season of polish or 50 seasons of depth. |
 | **Sequencing** | **Short term and mid term first.** Nail the next playable layer before expanding world/history scope. |
-| **Current focus** | **Layer B** — pick XI, tactics, believable match sim, attendance, ratings ([LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md)). |
+| **Current focus** | **Layer B wrap-up** — [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) (~55% done; B3/B4 + XI UI remain) |
 | **Long soaks / 60 seasons** | **Engineering confidence**, not a ship gate. Run with preflight when useful ([SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)). |
 | **Layer A UI bugs** | Fix **when touched** or when they block Layer B work — not a release checklist blocker. |
 
@@ -47,4 +47,5 @@ FAR       Full CM + FM historical feature completeness
 
 | Date | Change |
 |------|--------|
+| 2026-06-30 | Layer B wrap-up plan published — B1/B2 engine done; B3/B4 remaining |
 | 2026-06-30 | PO lock: no release pressure; Layer B now; long-term CM+FM north star |
