@@ -35,7 +35,7 @@ Think of the product as **four stacked horizons** — not four releases you must
 │      (~90% auto · QA open) Manual sign-off · 3 UI fixes landed in code  │
 └─────────────────────────────────────────────────────────────────────────┘
          ▲
-         NOW — finish H1 QA, then H2 is the critical path
+         NOW — A-5 + A-9, then Layer B ([LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md))
 ```
 
 | Horizon | PO question it answers | Built? | Designed? |
@@ -52,8 +52,8 @@ Think of the product as **four stacked horizons** — not four releases you must
 | Area | % (honest) | Evidence |
 |------|------------|----------|
 | **Season loop (headless)** | **~95%** | 60-season soak, league+cup ITs, rollover |
-| **Layer A playable UI** | **~85%** | A-2/A-3/A-4 coded; **manual QA not done** |
-| **Layer B management feel** | **~25%** | Full-squad RNG sim; tactics placeholder |
+| **Layer A playable UI** | **~95%** | A-5 + A-9 open; PU-10 + shell layout ✅ |
+| **Layer B management feel** | **~25%** | **Planned** — [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) |
 | **Layer C 1892 expansion** | **~0%** | Design + PO briefs only |
 | **Historical world (news/forks/knowledge)** | **~5%** | Docs + `HistoricalMode` + latency stub |
 | **Automated tests** | **62/63 pass** | 1 legacy `PreferenceManagerTests` asset error |

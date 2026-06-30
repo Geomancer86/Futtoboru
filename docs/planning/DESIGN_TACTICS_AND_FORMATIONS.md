@@ -95,7 +95,7 @@ TeamInstructions {
 }
 ```
 
-Persist on **`Club`** (or nested object) inside `SaveGame`. Version field on save migration ([MVP-10](PM_V1_MVP_AND_1892_MASTER_PLAN.md)).
+Persist on **`Club`** (or nested object) inside `SaveGame`. Formal **`saveVersion`** migration deferred (**MVP-10**) — see [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md). Layer B adds fields via existing LibGDX JSON first.
 
 ### 3.4 Match lineup (per match snapshot)
 

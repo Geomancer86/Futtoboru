@@ -154,3 +154,18 @@ continueGame()
 - [ ] Friendlies do not increment league completion counter
 - [ ] Attendance not overwritten after ticket sales
 - [ ] No double simulation on same match
+
+---
+
+## 13. Layer B deliverables (next track)
+
+**Execution:** [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md)
+
+| Phase | IDs | This department owns |
+|-------|-----|-------------------|
+| B1 | DATA-B1, MVP-1, MVP-3, MVP-8 | `FormationRegistry`, `MatchLineup`, `MatchSimulator v2`, balance ITs |
+| B2 | MVP-4, H-1 | `AttendanceCalculator`, single attendance authority |
+| B3 | MVP-5 | Post-match ratings computation |
+| B4 | MVP-2 | Formation templates (sim weights) |
+
+**Deferred:** MVP-10 save versioning; future embedded DB — [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md)

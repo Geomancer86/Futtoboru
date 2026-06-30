@@ -52,6 +52,9 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1
 | MVP-5 | Post-match ratings 0–10 | ❌ |
 | MVP-6–7 | Match result / preview UI | ⚠️ Stubs |
 | MVP-8 | Sim balance (champion diversity) | ⚠️ Accrington 8/10 |
+| MVP-10 | Save schema versioning | ⏸ **Deferred** — [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) |
+
+**Execution:** [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md)
 
 ---
 

@@ -102,7 +102,7 @@ Formula: [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5.3](PM_V1_MVP_AND_1892_MASTER_PLA
 
 | ID | CM1 / genre | Code today | Missing work |
 |----|-------------|------------|--------------|
-| **MVP-10** | Save lineup per club | No schema | `ClubTacticsSetup` on `SaveGame` / `Club` |
+| **MVP-10** | Save lineup per club | **Deferred** — add JSON fields in B1; formal versioning later — [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) |
 | **MVP-1** | Pick XI | Sim ignores selection | Model + default best-XI + squad UI hooks |
 | **MVP-3** | Match uses lineup | `MatchSimulator` squad avg | Read `MatchLineup`; reduce RNG |
 | **MVP-8** | Plausible champions | Accrington 8/10 | Re-tune after MVP-3; `TenSeasonReportIT` |
@@ -148,13 +148,13 @@ CM1 main menu (manual): Continue · **Tactics** · Transfers · Tables · Cups �
 | Transfers | — | **Not Layer B** |
 | **Ratings** | On result + optional squad column | MVP-5 |
 
-### 5.1 Data model (implement first — MVP-10)
+### 5.1 Data model (B1 — no formal saveVersion yet)
 
 See [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md):
 
 ```
 FormationTemplate (registry)
-ClubTacticsSetup (per club, persisted)
+ClubTacticsSetup (per club, persisted in JSON)
 MatchLineup (snapshot at kickoff → MatchSimulator)
 ```
 
@@ -201,7 +201,7 @@ Store `lastMatchRatings` on club or match snapshot; show on MVP-6.
 | Phase | IDs | CM1 equivalent | Exit test |
 |-------|-----|----------------|-----------|
 | **B0** | A-1, A-5, A-9 | Playable Done + tables | Manual QA green |
-| **B1 — Sim core** | MVP-10, MVP-1, MVP-3, MVP-8 | Lineup affects matches | `MatchSimulatorV2Test`; 10-season diversity |
+| **B1 — Sim core** | DATA-B1, MVP-1, MVP-3, MVP-8 | Lineup affects matches | `MatchSimulatorV2Test`; 10-season diversity |
 | **B2 — Crowds** | MVP-4, H-1 | Crowds “feel” real | Attendance IT; finances avg |
 | **B3 — Feedback** | MVP-5, MVP-6, MVP-7 | Ratings + result/preview | Manual CM1 loop walkthrough |
 | **B4 — Tactics UX** | MVP-2, MVP-9 | Tactics menu | Sidebar + formation picker |
@@ -243,7 +243,8 @@ Does **not** require: transfers, training, fork UI, 1892, world news, Scotland p
 
 | ID | Task | Phase |
 |----|------|-------|
-| MVP-10 | Persist `ClubTacticsSetup` | B1 |
+| MVP-10 | Persist + migrate save schema | **Deferred** — see [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) |
+| DATA-B1 | `ClubTacticsSetup` + `FormationRegistry` on JSON save | B1 |
 | MVP-1 | Pick XI + best XI | B1 |
 | MVP-3 | `MatchSimulator` v2 | B1 |
 | MVP-8 | Balance pass | B1 |
@@ -260,6 +261,7 @@ Does **not** require: transfers, training, fork UI, 1892, world news, Scotland p
 
 | Doc | Role |
 |-----|------|
+| [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) | Execution plan + phasing |
 | [DESIGN_TACTICS_AND_FORMATIONS.md](DESIGN_TACTICS_AND_FORMATIONS.md) | Schema detail |
 | [ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md](ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md) | Ticket revenue |
 | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | Layer A criteria |

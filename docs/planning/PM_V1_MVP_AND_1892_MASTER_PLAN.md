@@ -137,7 +137,7 @@ scorers = random player from full squad
 
 **Goal:** A player **chooses a team**, **picks who plays**, sees **credible results and crowds**, gets **ratings** — CM1-minimum loop per [CM1_REFERENCE.md §11](CM1_REFERENCE.md).
 
-**Canonical design (CM/FM gap analysis + phasing):** [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md)
+**Execution plan:** [LAYER_B_EXECUTION_PLAN_V1.md](LAYER_B_EXECUTION_PLAN_V1.md) · **Branch:** [BRANCH_STRATEGY_ANALYZE_AI.md](BRANCH_STRATEGY_ANALYZE_AI.md)
 
 **PO locked:** Default critical path H1 → **H2** → H3 → H4; **fork UI deferred**.
 
@@ -154,7 +154,7 @@ scorers = random player from full squad
 | **MVP-7** | **Match preview UI** | CM1 preview | 🔲 Stub | Both XIs (yours editable), opponent auto, strength hint |
 | **MVP-8** | **Sim balance pass** | — | Accrington 8/10 | Re-run `TenSeasonReportIT`; champion diversity ± historical plausibility |
 | **MVP-9** | **Tactics in sidebar** | CM1 menu | ❌ | Wire `TacticsScreenTable` → `MainMenuManager` |
-| **MVP-10** | **Save schema for XI/tactics/ratings** | — | ❌ | `SaveGame` version field; persist selections per club |
+| **MVP-10** | **Save schema for XI/tactics/ratings** | — | ❌ | **Deferred** — JSON fields in B1; versioning + optional embedded DB later — [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) |
 
 ### 5.2 Match simulation v2 — design sketch
 
@@ -225,7 +225,7 @@ Store: `Map<Long, Float> lastMatchRatings` on club or player; display in result 
 
 | Phase | IDs | Exit |
 |-------|-----|------|
-| **B1 — Sim core** | MVP-1, MVP-3, MVP-8, MVP-10 | IT: XI affects outcome; 10-season diversity improves |
+| **B1 — Sim core** | DATA-B1, MVP-1, MVP-3, MVP-8 | IT: XI affects outcome; tactics fields in JSON roundtrip |
 | **B2 — Crowds & money** | MVP-4, H-1, H-2 | Attendance correlates with table; finances show avg |
 | **B3 — Player feedback** | MVP-5, MVP-6, MVP-7 | Result screen CM1-like |
 | **B4 — Tactics UX** | MVP-2, MVP-9 | Sidebar tactics; formation picker |
