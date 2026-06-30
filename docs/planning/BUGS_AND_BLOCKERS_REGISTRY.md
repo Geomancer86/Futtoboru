@@ -56,8 +56,8 @@ These prevent the stated goal: **play season under correct rules → complete �
 | **H-8** | 🟠 | Save file has no version field | `SaveLoadSystem.java` |
 | **H-9** | 🟠 | Top menu Load/Settings/Quit not implemented | `MainGameMenuTable.java` |
 | **H-10** | ✅ | Cup TBD matches hit ticket-sales path → CRITICAL log spam | `MatchScheduler.checkClubSheduledMatches()` — skip TBD (2026-06-30) |
-| **CUP-B1** | 🔴 | 12-team FA Cup bracket semi-finals may have ≠ 2 matches | `CupBracketGenerator.generateNextRound()` — `CupBracketGeneratorTest` |
-| **CUP-B2** | 🟠 | Cup fixtures not archived on season rollover | `SeasonManager` — stale schedules in multi-season cup |
+| **CUP-B1** | ✅ | FA Cup semi-finals ≠ 2 matches (duplicate draw / replay counted) | Fixed 2026-06-30: generic `CupBracketGenerator`, single edition path, skip legacy `advanceCupRound`, health monitor excludes replays |
+| **CUP-B2** | ✅ | Cup fixtures not archived on season rollover | `SeasonManager.archiveAndClearCupFixtures()` + deferred staging draw |
 | **TEST-1** | ✅ | Long-run soaks passed despite CRITICAL spam | Fixed: `SimulationHealthMonitor` + `HarnessCriticalLogCounter` |
 | **SCHED-1** | 🟠 | Duplicate match IDs on single club schedule lists | Tracked in health report; not a gate yet |
 | **UX-1** | ✅ | **UI scale / HiDPI** — PU-10 complete; default 200% | [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
@@ -179,7 +178,6 @@ public class CupBracketGeneratorTest {
     }
     
     @Test
-    @Disabled("CUP-B1: 12-team FA Cup produces broken bracket {R1=6,R2=3,R3=1,R4=1} — enable when CupBracketGenerator fixed")
     void testCompleteBracketStructureFor12Teams() {
         CupBracketGenerator generator = new CupBracketGenerator();
 
@@ -200,12 +198,12 @@ public class CupBracketGeneratorTest {
             }
         }
 
-        int maxRound = matchesByRound.keySet().stream().mapToInt(Integer::intValue).max().orElse(-1);
-        int semiRound = maxRound - 1;
-        assertEquals(2, matchesByRound.getOrDefault(semiRound, 0),
-                "12-team FA Cup semi-finals must have exactly 2 matches; rounds=" + matchesByRound);
-        assertEquals(1, matchesByRound.getOrDefault(maxRound, 0), "Final must have 1 match");
-        assertEquals(6, matchesByRound.getOrDefault(1, 0), "Round 1 should have 6 matches for 12 teams");
+        // 12 teams -> bracket size 16, 4 byes: R1=4, R2=4, R3=2 (semi), R4=1 (final)
+        assertEquals(4, matchesByRound.getOrDefault(1, 0), "Round 1: " + matchesByRound);
+        assertEquals(4, matchesByRound.getOrDefault(2, 0));
+        assertEquals(2, matchesByRound.getOrDefault(3, 0));
+        assertEquals(1, matchesByRound.getOrDefault(4, 0));
+        assertEquals(11, allMatches.size());
     }
 
     @Test
@@ -222,7 +220,6 @@ public class CupBracketGeneratorTest {
             teamIds, 1L, 1L, firstRoundDate, 2
         );
         
-        // Verify all matches have round numbers
         for (Match match : allMatches) {
             assertNotNull(match.getRound(), "All matches should have a round number");
             assertTrue(match.getRound() >= 1 && match.getRound() <= 5, 

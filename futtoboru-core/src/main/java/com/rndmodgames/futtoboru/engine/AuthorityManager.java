@@ -682,41 +682,54 @@ public class AuthorityManager {
     }
     
     /**
-     * Find an edition that hasn't started yet
+     * Find an edition loaded from mod data that has not been activated yet.
      */
     private CompetitionEdition findUpcomingEdition(Competition cup, LocalDateTime currentDate) {
-        if (cup.getEditions() == null) return null;
-        
+        if (cup.getEditions() == null) {
+            return null;
+        }
+        String seasonFragment = seasonNameFragment(currentDate);
         for (CompetitionEdition edition : cup.getEditions()) {
-            if (edition.getStartDate() == null) {
-                // If it's the 1888-89 edition and we are in 1888, this is the one
-                if (edition.getName() != null && edition.getName().contains("1888-89")) {
-                    return edition;
-                }
+            if (edition.getStartDate() == null && edition.getName() != null
+                    && edition.getName().contains(seasonFragment)) {
+                return edition;
             }
         }
         return null;
     }
+
+    private static String seasonNameFragment(LocalDateTime date) {
+        int year = date.getYear();
+        return year + "-" + ((year + 1) % 100);
+    }
     
     /**
-     * Get current cup edition that covers the current date
+     * Get current cup edition that covers the current date.
+     * Prefers the edition whose name matches the current season fragment.
      */
     private CompetitionEdition getCurrentCupEdition(Competition cup, LocalDateTime currentDate) {
         if (cup.getEditions() == null || cup.getEditions().isEmpty()) {
             return null;
         }
-        
-        // Find edition that covers current date
+
+        String seasonFragment = seasonNameFragment(currentDate);
+        CompetitionEdition fallback = null;
+
         for (CompetitionEdition edition : cup.getEditions()) {
             if (edition.getStartDate() != null && edition.getEndDate() != null) {
-                if (!currentDate.isBefore(edition.getStartDate()) && 
-                    !currentDate.isAfter(edition.getEndDate())) {
-                    return edition;
+                if (!currentDate.isBefore(edition.getStartDate())
+                        && !currentDate.isAfter(edition.getEndDate())) {
+                    if (edition.getName() != null && edition.getName().contains(seasonFragment)) {
+                        return edition;
+                    }
+                    if (fallback == null) {
+                        fallback = edition;
+                    }
                 }
             }
         }
-        
-        return null;
+
+        return fallback;
     }
     
     /**
@@ -729,8 +742,8 @@ public class AuthorityManager {
         edition.setStartDate(currentDate);
         edition.setEndDate(currentDate.plusMonths(6)); // Cup typically runs 6 months
         
-        // Get participant clubs (all clubs from leagues)
-        List<Long> participantIds = getCupParticipantClubs();
+        // Participant clubs: copy previous edition list, or fall back to league clubs for procedural cups
+        List<Long> participantIds = resolveCupParticipantIds(cup);
         edition.setParticipantClubsIds(participantIds);
         edition.setParticipantClubs(participantIds.size());
         
@@ -746,10 +759,22 @@ public class AuthorityManager {
     }
     
     /**
-     * Get list of club IDs that should participate in cups
-     * For now, uses all clubs from all leagues
+     * Resolves cup participants from the latest edition roster, or league clubs for procedural fallback.
      */
-    private List<Long> getCupParticipantClubs() {
+    private List<Long> resolveCupParticipantIds(Competition cup) {
+        if (cup != null && cup.getEditions() != null && !cup.getEditions().isEmpty()) {
+            CompetitionEdition latest = cup.getEditions().get(cup.getEditions().size() - 1);
+            if (latest.getParticipantClubsIds() != null && !latest.getParticipantClubsIds().isEmpty()) {
+                return new ArrayList<>(latest.getParticipantClubsIds());
+            }
+        }
+        return getCupParticipantClubsFromLeagues();
+    }
+
+    /**
+     * Procedural fallback when no edition roster exists (e.g. generated cup without mod list).
+     */
+    private List<Long> getCupParticipantClubsFromLeagues() {
         List<Long> clubIds = new ArrayList<>();
         
         if (mainAuthority != null && mainAuthority.getLeagues() != null) {
@@ -767,28 +792,41 @@ public class AuthorityManager {
         return clubIds;
     }
     
-    /**
-     * Check if cup needs an initial draw (no matches scheduled yet)
-     */
     private boolean needsCupDraw(CompetitionEdition edition) {
         if (edition.getParticipantClubsIds() == null || edition.getParticipantClubsIds().isEmpty()) {
             return false;
         }
-        
-        // Check if any matches exist for this edition
+        return !editionHasBracketMatches(edition);
+    }
+
+    private boolean editionHasBracketMatches(CompetitionEdition edition) {
+        if (edition == null || edition.getId() == null || currentGame.getAllClubs() == null) {
+            return false;
+        }
         for (Club club : currentGame.getAllClubs()) {
-            if (club == null || club.getScheduledMatches() == null) {
+            if (club == null) {
                 continue;
             }
-            for (Match match : club.getScheduledMatches()) {
-                if (match != null && match.getCompetitionEditionId() != null &&
-                    match.getCompetitionEditionId().equals(edition.getId())) {
-                    return false; // Matches already scheduled
-                }
+            if (clubHasEditionMatch(club.getScheduledMatches(), edition.getId())) {
+                return true;
+            }
+            if (clubHasEditionMatch(club.getPlayedMatches(), edition.getId())) {
+                return true;
             }
         }
-        
-        return true; // No matches found, need draw
+        return false;
+    }
+
+    private static boolean clubHasEditionMatch(List<Match> matches, Long editionId) {
+        if (matches == null) {
+            return false;
+        }
+        for (Match match : matches) {
+            if (match != null && editionId.equals(match.getCompetitionEditionId())) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -797,6 +835,12 @@ public class AuthorityManager {
     private void generateCupDraw(Competition cup, CompetitionEdition edition) {
         if (edition.getParticipantClubsIds() == null || edition.getParticipantClubsIds().isEmpty()) {
             Gdx.app.error("AuthorityManager", "Cannot generate cup draw: no participants");
+            return;
+        }
+
+        if (editionHasBracketMatches(edition)) {
+            Gdx.app.debug("AuthorityManager", "Skipping cup draw — bracket already exists for edition "
+                    + edition.getId());
             return;
         }
         
@@ -1029,6 +1073,10 @@ public class AuthorityManager {
                 if (edition == null) {
                     continue; // No active edition
                 }
+
+                if (editionUsesPreGeneratedBracket(edition)) {
+                    continue;
+                }
                 
                 // Check if current round is complete
                 if (isCupRoundComplete(edition)) {
@@ -1055,6 +1103,22 @@ public class AuthorityManager {
         }
     }
     
+    /**
+     * True when {@link CupBracketGenerator} created the bracket (parent links present).
+     * Progression is handled by {@link com.rndmodgames.futtoboru.engine.cup.CupBracketManager}.
+     */
+    private boolean editionUsesPreGeneratedBracket(CompetitionEdition edition) {
+        if (edition == null) {
+            return false;
+        }
+        for (Match match : getMatchesForEdition(edition)) {
+            if (match != null && match.getParentMatch1Id() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Check if a cup round is complete (all matches played)
      */
@@ -1461,7 +1525,11 @@ public class AuthorityManager {
                 if (edition == null) {
                     continue;
                 }
-                
+
+                if (editionUsesPreGeneratedBracket(edition)) {
+                    continue;
+                }
+
                 // Check all matches for this edition
                 List<Match> editionMatches = getMatchesForEdition(edition);
                 
@@ -1738,33 +1806,33 @@ public class AuthorityManager {
 
     private void generateNextCupStaging(Competition cup, LocalDateTime currentDate) {
         Gdx.app.log("AuthorityManager", "Generating next season staging for cup: " + cup.getName());
-        
+
+        seasonManager.archiveAndClearCupFixtures(currentGame, cup);
+
         CompetitionEdition nextEdition = new CompetitionEdition();
         nextEdition.setId(System.currentTimeMillis());
         int startYear = currentDate.getYear();
         nextEdition.setName(cup.getName() + " " + startYear + "-" + ((startYear + 1) % 100));
-        
-        // Set dates for cup staging
-        nextEdition.setStartDate(currentDate);
-        nextEdition.setEndDate(currentDate.plusMonths(6)); // Cup typically runs 6 months
-        
-        // Copy participants from previous edition if applicable
+
+        LocalDateTime cupStart = LocalDateTime.of(startYear, 5, 1, 10, 0);
+        if (currentDate.isBefore(cupStart)) {
+            nextEdition.setStartDate(cupStart);
+        } else {
+            nextEdition.setStartDate(currentDate);
+        }
+        nextEdition.setEndDate(nextEdition.getStartDate().plusMonths(9));
+
         if (!cup.getEditions().isEmpty()) {
             CompetitionEdition lastEdition = cup.getEditions().get(cup.getEditions().size() - 1);
             nextEdition.getParticipantClubsIds().addAll(lastEdition.getParticipantClubsIds());
             nextEdition.setParticipantClubs(lastEdition.getParticipantClubs());
         } else {
-            // Get participants from leagues (if first edition)
-            List<Long> participantIds = getCupParticipantClubs();
+            List<Long> participantIds = resolveCupParticipantIds(cup);
             nextEdition.setParticipantClubsIds(participantIds);
             nextEdition.setParticipantClubs(participantIds.size());
         }
-        
+
         cup.getEditions().add(nextEdition);
-        
-        // CRITICAL: Generate cup draw for the new staging
-        // This ensures the cup can be played immediately
-        generateCupDraw(cup, nextEdition);
-        Gdx.app.log("AuthorityManager", "Generated cup draw for new staging: " + nextEdition.getName());
+        Gdx.app.log("AuthorityManager", "Staged cup edition (draw deferred): " + nextEdition.getName());
     }
 }

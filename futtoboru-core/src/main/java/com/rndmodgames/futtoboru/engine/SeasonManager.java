@@ -92,8 +92,40 @@ public class SeasonManager {
     }
 
     /**
-     * Archive played league fixtures and remove all league fixtures from schedules before a new edition.
+     * Archive played cup fixtures and remove cup matches from schedules before a new edition.
      */
+    public void archiveAndClearCupFixtures(SaveGame save, Competition cup) {
+        if (save == null || cup == null || save.getAllClubs() == null) {
+            return;
+        }
+        Long cupId = cup.getId();
+        for (Club club : save.getAllClubs()) {
+            if (club == null || club.getScheduledMatches() == null) {
+                continue;
+            }
+            Iterator<Match> iterator = club.getScheduledMatches().iterator();
+            while (iterator.hasNext()) {
+                Match match = iterator.next();
+                if (match == null || match.getMatchType() == null
+                        || match.getMatchType() != Match.CUP_MATCH) {
+                    continue;
+                }
+                if (cupId != null && match.getCompetitionId() != null
+                        && !cupId.equals(match.getCompetitionId())) {
+                    continue;
+                }
+                if (Boolean.TRUE.equals(match.getIsPlayed())) {
+                    if (club.getPlayedMatches() == null) {
+                        club.setPlayedMatches(new ArrayList<>());
+                    }
+                    club.getPlayedMatches().add(match);
+                }
+                iterator.remove();
+            }
+        }
+        Gdx.app.log("SeasonManager", "Archived and cleared cup fixtures for " + cup.getName());
+    }
+
     public void archiveAndClearLeagueFixtures(League league) {
         if (league == null || league.getLeagueClubs() == null) {
             return;

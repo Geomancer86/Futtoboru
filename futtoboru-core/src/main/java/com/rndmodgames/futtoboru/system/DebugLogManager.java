@@ -396,12 +396,18 @@ public class DebugLogManager {
      * Load settings from preferences
      */
     private void loadSettings() {
-        System.out.println("DEBUG: loadSettings() called");
+        boolean verboseTestLogs = "verbose"
+                .equalsIgnoreCase(System.getProperty("futtoboru.test.logProfile", "quiet"));
+        if (verboseTestLogs) {
+            System.out.println("DEBUG: loadSettings() called");
+        }
         
         // Ensure we have a valid Preferences instance
         if (preferences == null) {
             preferences = Gdx.app.getPreferences(PreferencesManager.PREFERENCES_NAME);
-            System.out.println("DEBUG: Re-obtained Preferences instance");
+            if (verboseTestLogs) {
+                System.out.println("DEBUG: Re-obtained Preferences instance");
+            }
         }
         
         // Load master switch (default: enabled for backward compatibility)
@@ -411,35 +417,51 @@ public class DebugLogManager {
         } else {
             allEnabled = ENABLED.equals(allEnabledStr.trim());
         }
-        System.out.println("DEBUG: Master switch loaded: " + allEnabled);
+        if (verboseTestLogs) {
+            System.out.println("DEBUG: Master switch loaded: " + allEnabled);
+        }
         
         // Load category settings
         for (String category : getAllCategories()) {
             String key = PREF_PREFIX + category;
-            // Read directly from preferences with explicit default
             String value = preferences.getString(key, null);
             
-            System.out.println("DEBUG: Loading category " + category + " - key=" + key + ", raw value=" + value);
+            if (verboseTestLogs) {
+                System.out.println("DEBUG: Loading category " + category + " - key=" + key + ", raw value=" + value);
+            }
             
-            // Default: enabled (for backward compatibility)
-            // Explicitly check for "disabled" to handle null, empty string, and "disabled" cases
             boolean enabled;
             if (value == null || value.trim().isEmpty()) {
-                enabled = true; // Default: enabled (key doesn't exist or is empty)
-                System.out.println("DEBUG: Category " + category + " - no value found, defaulting to enabled");
+                enabled = true;
+                if (verboseTestLogs) {
+                    System.out.println("DEBUG: Category " + category + " - no value found, defaulting to enabled");
+                }
             } else {
                 String trimmedValue = value.trim();
                 if (DISABLED.equals(trimmedValue)) {
-                    enabled = false; // Explicitly disabled
-                    System.out.println("DEBUG: Category " + category + " - found DISABLED, setting to false");
+                    enabled = false;
+                    if (verboseTestLogs) {
+                        System.out.println("DEBUG: Category " + category + " - found DISABLED, setting to false");
+                    }
                 } else {
-                    enabled = true; // Explicitly enabled or default to enabled
-                    System.out.println("DEBUG: Category " + category + " - found " + trimmedValue + ", setting to true");
+                    enabled = true;
+                    if (verboseTestLogs) {
+                        System.out.println("DEBUG: Category " + category + " - found " + trimmedValue + ", setting to true");
+                    }
                 }
             }
             
             categoryStates.put(category, enabled);
-            System.out.println("DEBUG: Category " + category + " final state: " + enabled);
+            if (verboseTestLogs) {
+                System.out.println("DEBUG: Category " + category + " final state: " + enabled);
+            }
+        }
+
+        if (!verboseTestLogs) {
+            allEnabled = false;
+            for (String category : getAllCategories()) {
+                categoryStates.put(category, false);
+            }
         }
     }
     

@@ -72,6 +72,9 @@
                     <reportFormat>brief</reportFormat>
                     <useFile>false</useFile>
                     <excludedGroups>soak,nightly</excludedGroups>
+                    <systemPropertyVariables>
+                        <futtoboru.test.logProfile>quiet</futtoboru.test.logProfile>
+                    </systemPropertyVariables>
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
@@ -129,6 +132,9 @@
                             <reportFormat>brief</reportFormat>
                             <useFile>false</useFile>
                             <groups>nightly</groups>
+                            <systemPropertyVariables>
+                                <futtoboru.test.logProfile>verbose</futtoboru.test.logProfile>
+                            </systemPropertyVariables>
                             <forkedProcessTimeoutInSeconds>3600</forkedProcessTimeoutInSeconds>
                             <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
                             <includes>
@@ -155,6 +161,9 @@
                             <reportFormat>brief</reportFormat>
                             <useFile>false</useFile>
                             <groups>soak</groups>
+                            <systemPropertyVariables>
+                                <futtoboru.test.logProfile>verbose</futtoboru.test.logProfile>
+                            </systemPropertyVariables>
                             <forkedProcessTimeoutInSeconds>7200</forkedProcessTimeoutInSeconds>
                             <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
                             <includes>

@@ -33,7 +33,7 @@ Scans at season boundaries and end of harness runs:
 |-------|-----------|
 | TBD matches in 7-day ticket window | `homeClubId` or `awayClubId` null and match date within window |
 | Duplicate match IDs across clubs | Same `match.id` on multiple club schedules |
-| Cup semi-final round | Penultimate round has ≠ 2 matches (deduped cup fixtures) |
+| Cup semi-final round | Penultimate round has ≠ 2 matches (deduped cup fixtures, excludes replay suffix `R`, active editions only) |
 
 ### 2.2 `HarnessCriticalLogCounter` (log gate)
 

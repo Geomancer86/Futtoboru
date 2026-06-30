@@ -91,12 +91,13 @@ public class ScriptsLoader {
             theCupCreationScript.getScriptValues().put(CUP_COUNTRY, 1000L);
             
             Array<Long> cupClubsIds = new Array<>();
-            // 1888-89 FA Cup First Round had exactly 32 teams (16 matches)
-            // Historical participants: 12 League teams + 20 non-league teams = 32 teams
-            // Using IDs 1-32 (excluding IDs 33-35 which were not in the first round)
-            // Note: Some teams may have been eliminated in qualifying rounds
-            for (long i = 1; i <= 32; i++) {
-                cupClubsIds.add(i);
+            // 1888-89 FA Cup first round proper: 32 teams (matches competition_edition.txt)
+            long[] faCup188889Ids = {
+                    9, 13, 14, 16, 11, 15, 17, 18, 2, 19, 20, 1, 7, 4, 21, 22,
+                    23, 24, 25, 26, 3, 27, 10, 28, 29, 30, 31, 32, 33, 6, 34, 35
+            };
+            for (long id : faCup188889Ids) {
+                cupClubsIds.add(id);
             }
             theCupCreationScript.getScriptValues().put(CUP_PARTICIPANTS, cupClubsIds);
             

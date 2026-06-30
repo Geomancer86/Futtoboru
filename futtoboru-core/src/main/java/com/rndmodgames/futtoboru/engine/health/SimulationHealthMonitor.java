@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.Competition;
+import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
@@ -59,7 +61,11 @@ public final class SimulationHealthMonitor {
             collectCupRounds(club.getScheduledMatches(), seen, byEditionRound);
             collectCupRounds(club.getPlayedMatches(), seen, byEditionRound);
         }
+        Set<Long> editionsToValidate = cupEditionsWithActivity(save, byEditionRound);
         for (Map.Entry<Long, Map<Integer, Integer>> editionEntry : byEditionRound.entrySet()) {
+            if (!editionsToValidate.contains(editionEntry.getKey())) {
+                continue;
+            }
             Map<Integer, Integer> byRound = editionEntry.getValue();
             int maxRound = byRound.keySet().stream().mapToInt(Integer::intValue).max().orElse(0);
             if (maxRound >= 2) {
@@ -70,6 +76,44 @@ public final class SimulationHealthMonitor {
                 if (semiCount != 2 && semiCount > 0) {
                     issues.add("Cup semi-final round has " + semiCount + " matches (expected 2): " + label);
                 }
+            }
+        }
+    }
+
+    private static Set<Long> cupEditionsWithActivity(
+            SaveGame save, Map<Long, Map<Integer, Integer>> byEditionRound) {
+        Set<Long> active = new HashSet<>();
+        if (save.getAllCups() != null) {
+            for (Competition cup : save.getAllCups()) {
+                if (cup == null || cup.getEditions() == null) {
+                    continue;
+                }
+                for (CompetitionEdition edition : cup.getEditions()) {
+                    if (edition != null && edition.getChampionsId() != null && edition.getId() != null) {
+                        active.add(edition.getId());
+                    }
+                }
+            }
+        }
+        for (Club club : allClubs(save)) {
+            markPlayedCupEditions(club.getScheduledMatches(), active);
+            markPlayedCupEditions(club.getPlayedMatches(), active);
+        }
+        active.retainAll(byEditionRound.keySet());
+        return active;
+    }
+
+    private static void markPlayedCupEditions(List<Match> matches, Set<Long> active) {
+        if (matches == null) {
+            return;
+        }
+        for (Match match : matches) {
+            if (match == null || match.getCompetitionEditionId() == null) {
+                continue;
+            }
+            if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH
+                    && Boolean.TRUE.equals(match.getIsPlayed())) {
+                active.add(match.getCompetitionEditionId());
             }
         }
     }
@@ -86,6 +130,9 @@ public final class SimulationHealthMonitor {
                 continue;
             }
             if (match.getMatchType() == null || match.getMatchType() != Match.CUP_MATCH) {
+                continue;
+            }
+            if (isCupReplayMatch(match)) {
                 continue;
             }
             if (match.getCompetitionEditionId() == null || match.getRound() == null) {
@@ -116,6 +163,10 @@ public final class SimulationHealthMonitor {
             if (match.getHomeClubId() != null && match.getAwayClubId() != null) {
                 continue;
             }
+            // Cup bracket placeholders stay TBD until parent ties complete
+            if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH) {
+                continue;
+            }
             if (match.getMatchDateTime() == null) {
                 continue;
             }
@@ -125,6 +176,11 @@ public final class SimulationHealthMonitor {
             }
         }
         return count;
+    }
+
+    private static boolean isCupReplayMatch(Match match) {
+        String path = match.getBracketPath();
+        return path != null && path.endsWith("R");
     }
 
     private static int countDuplicateIdsWithinClub(Club club) {

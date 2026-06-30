@@ -612,24 +612,42 @@ public class ScriptsManager {
             return;
         }
         
-        // Create Edition
-        com.rndmodgames.futtoboru.data.CompetitionEdition edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
-        edition.setId(System.currentTimeMillis() + 1);
+        // Create or reuse edition for this season (mod data may already define it)
         java.time.LocalDateTime gameDate = currentGame.getGameDate();
         String seasonName = gameDate.getYear() + "-" + ((gameDate.getYear() + 1) % 100);
-        edition.setName(cupName + " " + seasonName);
+
+        com.rndmodgames.futtoboru.data.CompetitionEdition edition = findCupEditionForSeason(cup, seasonName);
+        if (edition == null) {
+            edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
+            edition.setId(System.currentTimeMillis() + 1);
+            edition.setName(cupName + " " + seasonName);
+            if (cup.getEditions() == null) {
+                cup.setEditions(new java.util.ArrayList<>());
+            }
+            cup.getEditions().add(edition);
+            System.out.println("Created cup edition: " + edition.getName());
+        } else {
+            System.out.println("Reusing existing cup edition: " + edition.getName());
+        }
+
         edition.setStartDate(gameDate);
         edition.setEndDate(gameDate.plusMonths(9));
-        
+
         if (currentGame.getAllClubs() == null) {
             currentGame.setAllClubs(new java.util.ArrayList<>());
         }
-        
-        for (int i = 0; i < participantIds.size; i++) {
-            Long id = participantIds.get(i);
-            edition.getParticipantClubsIds().add(id);
-            // Ensure club is in SaveGame
-            if (currentGame.getClubById(id) == null) {
+
+        if (edition.getParticipantClubsIds() == null || edition.getParticipantClubsIds().isEmpty()) {
+            for (int i = 0; i < participantIds.size; i++) {
+                edition.getParticipantClubsIds().add(participantIds.get(i));
+            }
+            edition.setParticipantClubs(participantIds.size);
+        } else {
+            edition.setParticipantClubs(edition.getParticipantClubsIds().size());
+        }
+
+        for (Long id : edition.getParticipantClubsIds()) {
+            if (id != null && currentGame.getClubById(id) == null) {
                 Club club = DatabaseLoader.getClubById(id);
                 if (club != null) {
                     System.out.println("ScriptsManager: Adding missing cup club " + club.getName() + " (ID: " + id + ") to SaveGame");
@@ -637,10 +655,9 @@ public class ScriptsManager {
                 }
             }
         }
-        edition.setParticipantClubs(participantIds.size);
-        cup.getEditions().add(edition);
-        
-        System.out.println("Created cup edition: " + edition.getName() + " with " + participantIds.size + " teams");
+
+        System.out.println("Cup edition ready: " + edition.getName() + " with "
+                + edition.getParticipantClubsIds().size() + " teams");
         
         // Deliver Message (Informing User)
         if (gameInstance != null && gameInstance.getGameEngine() != null) {
@@ -672,5 +689,18 @@ public class ScriptsManager {
         script.setIsExecuted(true);
         System.out.println("CUP CREATION SUCCESSFUL!");
         System.out.println("========================================");
+    }
+
+    private static com.rndmodgames.futtoboru.data.CompetitionEdition findCupEditionForSeason(
+            com.rndmodgames.futtoboru.data.Competition cup, String seasonName) {
+        if (cup == null || cup.getEditions() == null || seasonName == null) {
+            return null;
+        }
+        for (com.rndmodgames.futtoboru.data.CompetitionEdition edition : cup.getEditions()) {
+            if (edition != null && edition.getName() != null && edition.getName().contains(seasonName)) {
+                return edition;
+            }
+        }
+        return null;
     }
 }

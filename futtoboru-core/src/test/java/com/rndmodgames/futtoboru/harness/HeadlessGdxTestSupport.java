@@ -27,6 +27,10 @@ public final class HeadlessGdxTestSupport {
             return;
         }
 
+        if (System.getProperty(HarnessLogProfile.PROPERTY) == null) {
+            System.setProperty(HarnessLogProfile.PROPERTY, HarnessLogProfile.QUIET);
+        }
+
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         config.updatesPerSecond = 30;
 
@@ -41,6 +45,7 @@ public final class HeadlessGdxTestSupport {
         application.setGameEngine(gameEngine);
 
         new HeadlessApplication(application, config);
+        HarnessLogProfile.applyFromSystemProperty();
         initialized = true;
     }
 
