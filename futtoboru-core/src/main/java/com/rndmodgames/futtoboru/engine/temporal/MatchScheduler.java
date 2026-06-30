@@ -11,6 +11,7 @@ import java.util.List;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.MatchIncome;
+import com.rndmodgames.futtoboru.engine.simulation.AttendanceCalculator;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
@@ -209,73 +210,46 @@ public class MatchScheduler {
                 scheduled.setAttendance(0);
             }
             
-            int maxTickets = club.getStadium().getCapacity() - currentAttendance;
-            
-            // CRITICAL FIX: Add null checks to prevent NullPointerException
             Club homeClub = DatabaseLoader.getClubById(scheduled.getHomeClubId());
             Club awayClub = DatabaseLoader.getClubById(scheduled.getAwayClubId());
-            
+
             if (homeClub == null || awayClub == null) {
-                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler", 
-                    "CRITICAL: Cannot find club(s) for match. HomeClubId: " + scheduled.getHomeClubId() + 
-                    ", AwayClubId: " + scheduled.getAwayClubId() + ", Match ID: " + scheduled.getId());
-                continue; // Skip this match to prevent crash
+                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler",
+                        "CRITICAL: Cannot find club(s) for match. HomeClubId: " + scheduled.getHomeClubId()
+                                + ", AwayClubId: " + scheduled.getAwayClubId() + ", Match ID: " + scheduled.getId());
+                continue;
             }
-            
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH            : " + homeClub.getName() + " vs " + awayClub.getName());
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "STADIUM NAME     : " + club.getStadium().getName());
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "STADIUM CAPACITY : " + club.getStadium().getCapacity());
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "TICKETS SOLD     : " + currentAttendance);
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "TICKETS AVAILABLE: " + maxTickets);
-            
+
+            int stadiumCapacity = club.getStadium().getCapacity();
+            int targetAttendance = AttendanceCalculator.calculate(
+                    game.getCurrentGame(), scheduled, homeClub, awayClub);
+            targetAttendance = Math.min(targetAttendance, stadiumCapacity);
+            int maxTickets = Math.max(0, targetAttendance - currentAttendance);
+
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING,
+                    "MATCH            : " + homeClub.getName() + " vs " + awayClub.getName());
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING,
+                    "STADIUM CAPACITY : " + stadiumCapacity);
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING,
+                    "TICKETS SOLD     : " + currentAttendance);
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING,
+                    "TARGET ATTENDANCE: " + targetAttendance);
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING,
+                    "TICKETS AVAILABLE: " + maxTickets);
+
             if (maxTickets > 0) {
-                
-                /**
-                 * Calculate base ticket sales per day
-                 * Friendly matches have drastically reduced attendance (15% of league matches)
-                 * Based on historical research: 1888-89 friendlies had 500-700 vs much higher league attendance
-                 */
-                int baseMaxPerDay = club.getStadium().getCapacity() / 7; // sell out on 7 days
-                
-                // Apply match type modifier
-                double attendanceMultiplier = 1.0;
-                int baseMinPerDay = 20;
-                
-                if (scheduled.getMatchType() != null && scheduled.getMatchType() == Match.FRIENDLY_MATCH) {
-                    // Friendly matches: 15% of league match attendance (historical accuracy)
-                    attendanceMultiplier = 0.15;
-                    baseMinPerDay = 5; // Lower minimum for friendlies
-                }
-                // League and Cup matches use full multiplier (1.0)
-                
-                int maxPerDay = (int)(baseMaxPerDay * attendanceMultiplier);
-                
-                // Ensure maxPerDay is at least 1 for friendlies (even if capacity is small)
-                if (maxPerDay < 1) {
-                    maxPerDay = 1;
-                }
-                
-                // Cap it at max capacity just in case
-                if (maxPerDay > maxTickets) {
-                    maxPerDay = maxTickets;
-                }
-                
-                int minPerDay = Math.max((int)(baseMinPerDay * attendanceMultiplier), 1); // At least 1 ticket
-                
-                // Ensure minPerDay doesn't exceed maxPerDay
+                long daysLeft = Math.max(1, daysUntilMatch + 1);
+                int maxPerDay = (int) Math.ceil((double) maxTickets / daysLeft);
+                maxPerDay = Math.max(1, Math.min(maxPerDay, maxTickets));
+                int minPerDay = Math.max(1, maxPerDay / 2);
                 if (minPerDay > maxPerDay) {
                     minPerDay = maxPerDay;
                 }
-                
-                //
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH TYPE: " + (scheduled.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
-                                                   scheduled.getMatchType() == Match.LEAGUE_MATCH ? "LEAGUE" : "CUP"));
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "ATTENDANCE MULTIPLIER: " + attendanceMultiplier);
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "TICKETS TO SELL TODAY: min: " + minPerDay + ", max: " + maxPerDay);
+
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING,
+                        "TICKETS TO SELL TODAY: min: " + minPerDay + ", max: " + maxPerDay);
                 
                 int randomTickets;
-                
-                // Sell tickets: if range is valid, use random; otherwise sell what's available
                 if (minPerDay < maxPerDay) {
                     randomTickets = DatabaseLoader.RNG.nextInt(minPerDay, maxPerDay + 1); // +1 because nextInt is exclusive
                 } else {

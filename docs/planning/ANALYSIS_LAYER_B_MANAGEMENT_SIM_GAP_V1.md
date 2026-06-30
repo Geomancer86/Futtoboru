@@ -114,12 +114,13 @@ Sources: [CM1_REFERENCE.md](CM1_REFERENCE.md), [CM_MANUALS_DEEP_ANALYSIS_BY_RELE
 
 **Exit:** `MatchSimulator` never uses full squad for strength; `StartingElevenIT` green.
 
-### B2 — Crowds (~2–3 eng-weeks)
+### B2 — Crowds (~2–3 eng-weeks) ✅
 
 | ID | Deliverable | Tests |
 |----|-------------|-------|
-| MVP-4 | `AttendanceCalculator` (table position, opponent, **team form**, derby mod) | `AttendanceCalculatorTest`, `AttendanceModelIT` |
-| H-1 | Single attendance authority (fix sim overwrite) | `AttendanceOverwriteIT` |
+| MVP-4 | `AttendanceCalculator` (table position, opponent, **team form**, derby mod) | `AttendanceCalculatorTest`, `AttendanceModelIT` ✅ |
+| H-1 | Single attendance authority (fix sim overwrite) | `AttendanceOverwriteIT` ✅ |
+| ECON-B2 | `EconomyHealthMonitor` — negative balance early warning (FL roster in gates) | `EconomyHealthMonitorTest`, `LongRunEconomySoakIT` ✅ |
 
 **Team form** here = club last-5 W/D/L for **crowds** — not player sharpness.
 
@@ -211,7 +212,7 @@ Same as Layer A / season engine ([V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_
 |-------|-----------------|-------------|
 | A-5 | `HistoricalLeagueRulesIT`, formatter tests | ✅ **Done** |
 | B1 | 6 classes | ✅ Done |
-| B2 | 3 classes | ❌ Pending |
+| B2 | 6 classes | ✅ Done |
 | B3 | 3 classes | ❌ Pending |
 | B4 | 1 class + manual | ❌ Pending |
 | B5 | 5+ classes | ❌ Planned |
@@ -266,4 +267,4 @@ A-9 PO sign-off (Layer A)
 
 ---
 
-*Next update: after B2 AttendanceModelIT or PO reprioritises B5.*
+*Next update: after B3 MatchFeedbackIT or PO reprioritises B5.*

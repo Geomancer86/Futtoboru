@@ -65,13 +65,15 @@ mvn test -pl futtoboru-core -Psoak    # after B1 (TenSeasonReportIT sensitive)
 
 ---
 
-### B2 — Crowds
+### B2 — Crowds + economy watch
 
-| Class | Type | Proves | Depends on |
-|-------|------|--------|------------|
-| `AttendanceCalculatorTest` | Unit | positionFactor, opponentFactor, formFactor, derbyFactor, clamp | MVP-4 |
-| `AttendanceModelIT` | IT | 1st vs 18th at same stadium → 1st higher attendance | MVP-4, H-1 |
-| `AttendanceOverwriteIT` | IT | Post-sim attendance equals calculator (not random re-roll) | H-1 |
+| Class | Type | Proves | Depends on | Status |
+|-------|------|--------|------------|--------|
+| `AttendanceCalculatorTest` | Unit | positionFactor, opponentFactor, formFactor, derbyFactor, clamp | MVP-4 | ✅ |
+| `AttendanceModelIT` | IT | 1st vs 18th at same stadium → 1st higher attendance | MVP-4, H-1 | ✅ |
+| `AttendanceOverwriteIT` | IT | Post-sim attendance equals calculator (not random re-roll) | H-1 | ✅ |
+| `EconomyHealthMonitorTest` | Unit | Negative balance scan; league roster scope | ECON-B2 | ✅ |
+| `LongRunEconomySoakIT` | E2E | 3 seasons complete; FL clubs stay solvent | ECON-B2 | ✅ |
 
 ---
 
@@ -122,7 +124,10 @@ Implement in `futtoboru-core/src/test/.../harness/GameTestHarness.java`:
 | `MatchLineup getLineupUsedInLastSimulation(long clubId)` | B1 |
 | `Match simulateNextLeagueMatchForClub(long clubId)` | B1 |
 | `int simulateSameFixtureNTimes(int n)` | B1 |
-| `int getLastMatchAttendance()` | B2 |
+| `int getLastMatchAttendance()` | B2 ✅ |
+| `double averageHomeAttendance(Club club)` | B2 ✅ |
+| `void assertNoNegativePrimaryLeagueBalances()` | B2 ✅ |
+| `void assertPlayerClubSolvent()` | B2 ✅ |
 | `Map<Long, Float> getLastMatchRatings(long clubId)` | B3 |
 | `void confirmPreviewLineup()` | B3 |
 | `void setPlayerFitness(long playerId, int pct)` | B5 |
@@ -135,7 +140,7 @@ Implement in `futtoboru-core/src/test/.../harness/GameTestHarness.java`:
 | Profile | When to run | Layer B note |
 |---------|-------------|--------------|
 | Default `mvn test` | Every commit | All unit + IT except long soak |
-| `-Psoak` | Weekly / pre-B-9 | `TenSeasonReportIT`, `LongRunSoakIT` after sim v2 |
+| `-Psoak` | Weekly / pre-B-9 | `LongRunSoakIT` (league + cup); default profile includes `TenSeasonReportIT`, `MultiSeasonSoakIT`, `LongRunEconomySoakIT` |
 | PR gate | All new tests in default profile | StartingElevenIT may be slow — cap iterations |
 
 ---

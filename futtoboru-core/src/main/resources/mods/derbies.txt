@@ -1,0 +1,3 @@
+# Derby pairs (club id, club id) — attendance +18% when either club is home
+# 1888 Football League: no canonical derbies in MVP; add pairs for later seasons
+# Example: 1,2

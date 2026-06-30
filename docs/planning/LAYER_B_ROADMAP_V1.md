@@ -59,9 +59,9 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 │     DATA-B1 → MVP-1 → MVP-3 → MVP-8                                     │
 │     Exit: StartingElevenIT + MatchSimulatorV2Test green                  │
 ├─────────────────────────────────────────────────────────────────────────┤
-│ B2  Crowds (~2–3 wk)                                                    │
-│     MVP-4 + H-1                                                           │
-│     Exit: AttendanceModelIT green                                        │
+│ B2  Crowds (~2–3 wk)  ✅ DONE                                          │
+│     MVP-4 + H-1 + economy early-warning (ECON-B2)                        │
+│     Exit: AttendanceModelIT + LongRunEconomySoakIT green                 │
 ├─────────────────────────────────────────────────────────────────────────┤
 │ B3  Feedback (~2–3 wk)                                                  │
 │     MVP-5 → MVP-6 → MVP-7                                                 │
@@ -112,8 +112,9 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 
 | ID | Analyze | Design | Develop | Unit tests | IT / E2E |
 |----|---------|--------|---------|------------|----------|
-| **MVP-4** | [ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md](ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md); random 60–90% | Master plan §5.3 formula | `AttendanceCalculator`; `mods/derbies.txt` loader | `AttendanceCalculatorTest` | `AttendanceModelIT` |
-| **H-1** | Sim overwrites ticket attendance | Single authority in design | Remove overwrite in `MatchSimulator`; scheduler uses calculator | — | Finances avg in harness snapshot |
+| **MVP-4** | [ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md](ANALYSIS_MATCH_INCOME_ATTENDANCE_V1.md); random 60–90% | Master plan §5.3 formula | `AttendanceCalculator`; `mods/derbies.txt` loader | `AttendanceCalculatorTest` | `AttendanceModelIT` ✅ |
+| **H-1** | Sim overwrites ticket attendance | Single authority in design | Remove overwrite in `MatchSimulator`; scheduler uses calculator | — | `AttendanceOverwriteIT` ✅ |
+| **ECON-B2** | No bankruptcy sim yet; need early warning | Report-only for non-FL clubs | `EconomyHealthMonitor`; harness asserts on FL roster | `EconomyHealthMonitorTest` | `LongRunEconomySoakIT`, `MultiSeasonSoakIT`, `TenSeasonReportIT` |
 
 **B2 exit:** Top-table home attendance > bottom-table at same stadium (IT).
 

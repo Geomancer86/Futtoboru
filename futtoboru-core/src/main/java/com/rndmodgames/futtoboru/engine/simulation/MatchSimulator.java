@@ -97,16 +97,8 @@ public class MatchSimulator {
         // Generate scorers from starting XI (MVP-3)
         generateScorers(match, homeLineup, homeClub, awayLineup, awayClub, homeScore, awayScore);
         
-        // Calculate attendance (simple: based on stadium capacity if available)
-        if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
-            // 60-90% attendance for v1.0
-            int capacity = homeClub.getStadium().getCapacity();
-            int attendance = (int)(capacity * (0.6 + random.nextDouble() * 0.3));
-            match.setAttendance(attendance);
-        } else {
-            // Default attendance if no stadium data
-            match.setAttendance(1000 + random.nextInt(4000)); // 1000-5000
-        }
+        // H-1: keep ticket-sales attendance; only calculate if none sold yet (MVP-4)
+        applyFinalAttendance(match, homeClub, awayClub);
         
         System.out.println("MatchSimulator: " + homeClub.getName() + " " + homeScore + 
                           " - " + awayScore + " " + awayClub.getName());
@@ -154,6 +146,14 @@ public class MatchSimulator {
         }
         
         return true;
+    }
+
+    private void applyFinalAttendance(Match match, Club homeClub, Club awayClub) {
+        int existing = match.getAttendance() != null ? match.getAttendance() : 0;
+        if (existing > 0) {
+            return;
+        }
+        match.setAttendance(AttendanceCalculator.calculate(currentGame, match, homeClub, awayClub));
     }
 
     public MatchLineup getLastHomeLineup() {

@@ -36,6 +36,8 @@ class MultiSeasonSoakIT {
 
         List<Long> championIds = championClubIds(harness.primaryLeague());
         assertEquals(TARGET_CHAMPION_EDITIONS, championIds.size());
+        harness.assertNoNegativePrimaryLeagueBalances();
+        harness.assertPlayerClubSolvent();
     }
 
     private static List<Long> championClubIds(League league) {

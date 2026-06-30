@@ -25,6 +25,7 @@ import com.rndmodgames.futtoboru.data.tactics.FormationTemplate;
 import com.rndmodgames.futtoboru.data.tactics.MatchLineup;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.SeasonManager;
+import com.rndmodgames.futtoboru.engine.economy.EconomyHealthMonitor;
 import com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager;
 import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
 import com.rndmodgames.futtoboru.engine.tactics.BestElevenSelector;
@@ -340,6 +341,7 @@ public final class GameTestHarness {
                 int championCount = countEditionsWithChampions();
                 if (championCount > lastChampionCount) {
                     report.addSeason(snapshotLatestChampionEdition(championCount));
+                    report.recordEconomyScan(game());
                     lastChampionCount = championCount;
                 }
             }
@@ -370,7 +372,58 @@ public final class GameTestHarness {
                 inboxSize,
                 simIndex,
                 leagueOnly);
+        report.recordEconomyScan(save);
         return report;
+    }
+
+    public double averageHomeAttendance(Club club) {
+        if (club == null) {
+            return 0;
+        }
+        int total = 0;
+        int count = 0;
+        if (club.getScheduledMatches() != null) {
+            for (Match match : club.getScheduledMatches()) {
+                if (isPlayedHomeMatch(club, match)) {
+                    total += match.getAttendance() != null ? match.getAttendance() : 0;
+                    count++;
+                }
+            }
+        }
+        if (club.getPlayedMatches() != null) {
+            for (Match match : club.getPlayedMatches()) {
+                if (isPlayedHomeMatch(club, match)) {
+                    total += match.getAttendance() != null ? match.getAttendance() : 0;
+                    count++;
+                }
+            }
+        }
+        return count > 0 ? (double) total / count : 0;
+    }
+
+    public void assertNoNegativePrimaryLeagueBalances() {
+        League league = primaryLeague();
+        var alerts = EconomyHealthMonitor.findNegativeBalancesInLeague(league);
+        if (!alerts.isEmpty()) {
+            throw new AssertionError("Negative Football League club balances: " + alerts);
+        }
+    }
+
+    public void assertPlayerClubSolvent() {
+        Club player = game().getCurrentClub();
+        if (player != null && player.getClubBalance() != null
+                && player.getClubBalance().compareTo(java.math.BigDecimal.ZERO) < 0) {
+            throw new AssertionError("Player club balance negative: " + player.getClubBalance());
+        }
+    }
+
+    private static boolean isPlayedHomeMatch(Club club, Match match) {
+        return match != null
+                && Boolean.TRUE.equals(match.getIsPlayed())
+                && club.getId() != null
+                && club.getId().equals(match.getHomeClubId())
+                && match.getMatchType() != null
+                && match.getMatchType() == Match.LEAGUE_MATCH;
     }
 
     private SeasonEditionSummary snapshotLatestChampionEdition(int editionNumber) {

@@ -34,6 +34,9 @@ class TenSeasonReportIT {
         assertTrue(report.getElapsedMs() < 600_000L,
                 "10 league seasons should finish well under 10 minutes without stdout logging (was "
                         + report.getElapsedMs() + " ms)");
+        harness.assertNoNegativePrimaryLeagueBalances();
+        harness.assertPlayerClubSolvent();
+        assertTrue(report.getLowestLeagueClubBalance().compareTo(java.math.BigDecimal.ZERO) >= 0);
 
         Path reportPath = Path.of("target", "ten-season-report.md");
         report.writeTo(reportPath);

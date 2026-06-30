@@ -1,12 +1,15 @@
 package com.rndmodgames.futtoboru.harness;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.rndmodgames.futtoboru.engine.economy.EconomyHealthMonitor;
 
 /**
  * Structured output from a multi-season headless run (champions, finances, diagnostics).
@@ -25,6 +28,10 @@ public final class MultiSeasonSimulationReport {
     private int finalInboxMessages;
     private int finalSimulatedSeasonIndex;
     private boolean leagueOnly;
+    private BigDecimal lowestClubBalance = BigDecimal.ZERO;
+    private BigDecimal lowestLeagueClubBalance = BigDecimal.ZERO;
+    private final List<EconomyHealthMonitor.ClubBalanceAlert> negativeBalanceAlerts = new ArrayList<>();
+    private final List<EconomyHealthMonitor.ClubBalanceAlert> negativeLeagueBalanceAlerts = new ArrayList<>();
 
     MultiSeasonSimulationReport(long playerClubId, String playerClubName, LocalDateTime startDate) {
         this.playerClubId = playerClubId;
@@ -71,6 +78,58 @@ public final class MultiSeasonSimulationReport {
         return daysSimulated > 0 ? (double) elapsedMs / daysSimulated : 0;
     }
 
+    void recordEconomyScan(com.rndmodgames.futtoboru.system.SaveGame save) {
+        BigDecimal min = EconomyHealthMonitor.minimumBalance(save);
+        if (min != null && min.compareTo(lowestClubBalance) < 0) {
+            lowestClubBalance = min;
+        }
+        recordAlerts(EconomyHealthMonitor.findNegativeBalances(save), negativeBalanceAlerts);
+        com.rndmodgames.futtoboru.data.League league = null;
+        if (save.getMainAuthority() != null && save.getMainAuthority().getLeagues() != null
+                && !save.getMainAuthority().getLeagues().isEmpty()) {
+            league = save.getMainAuthority().getLeagues().get(0);
+        }
+        if (league != null) {
+            BigDecimal leagueMin = EconomyHealthMonitor.minimumBalanceInLeague(league);
+            if (leagueMin.compareTo(lowestLeagueClubBalance) < 0) {
+                lowestLeagueClubBalance = leagueMin;
+            }
+            recordAlerts(EconomyHealthMonitor.findNegativeBalancesInLeague(league), negativeLeagueBalanceAlerts);
+        }
+    }
+
+    private void recordAlerts(List<EconomyHealthMonitor.ClubBalanceAlert> alerts,
+            List<EconomyHealthMonitor.ClubBalanceAlert> target) {
+        for (EconomyHealthMonitor.ClubBalanceAlert alert : alerts) {
+            boolean seen = false;
+            for (EconomyHealthMonitor.ClubBalanceAlert existing : target) {
+                if (existing.getClubId().equals(alert.getClubId())) {
+                    seen = true;
+                    break;
+                }
+            }
+            if (!seen) {
+                target.add(alert);
+            }
+        }
+    }
+
+    public BigDecimal getLowestLeagueClubBalance() {
+        return lowestLeagueClubBalance;
+    }
+
+    public List<EconomyHealthMonitor.ClubBalanceAlert> getNegativeLeagueBalanceAlerts() {
+        return List.copyOf(negativeLeagueBalanceAlerts);
+    }
+
+    public BigDecimal getLowestClubBalance() {
+        return lowestClubBalance;
+    }
+
+    public List<EconomyHealthMonitor.ClubBalanceAlert> getNegativeBalanceAlerts() {
+        return List.copyOf(negativeBalanceAlerts);
+    }
+
     public double getSecondsPerSeason() {
         return seasons.isEmpty() ? 0 : elapsedMs / 1000.0 / seasons.size();
     }
@@ -96,7 +155,18 @@ public final class MultiSeasonSimulationReport {
         md.append("| s/season (avg) | ").append(String.format("%.2f", getSecondsPerSeason())).append(" |\n");
         md.append("| Projected 60 seasons | ").append(getProjectedSecondsForSeasons(60)).append(" s (~")
                 .append(String.format("%.1f min", getProjectedSecondsForSeasons(60) / 60.0)).append(") |\n");
-        md.append("| Inbox messages (final) | ").append(finalInboxMessages).append(" |\n\n");
+        md.append("| Inbox messages (final) | ").append(finalInboxMessages).append(" |\n");
+        md.append("| Lowest club balance (any club) | ").append(lowestClubBalance).append(" |\n");
+        md.append("| Lowest FL club balance | ").append(lowestLeagueClubBalance).append(" |\n");
+        md.append("| Negative balance alerts (all) | ").append(negativeBalanceAlerts.size()).append(" |\n");
+        md.append("| Negative balance alerts (FL clubs) | ").append(negativeLeagueBalanceAlerts.size()).append(" |\n");
+        if (!negativeLeagueBalanceAlerts.isEmpty()) {
+            md.append("\n### Football League economy alerts\n\n");
+            for (EconomyHealthMonitor.ClubBalanceAlert alert : negativeLeagueBalanceAlerts) {
+                md.append("- ").append(alert).append("\n");
+            }
+        }
+        md.append("\n");
 
         md.append("## League champions by edition\n\n");
         md.append("| # | Edition | Champion | Game date | PNE balance | Season income | Season spend | Sim index | Inbox |\n");

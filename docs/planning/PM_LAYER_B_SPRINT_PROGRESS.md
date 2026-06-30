@@ -1,33 +1,33 @@
-# PM Report — Layer B Sprint Progress (B1)
+# PM Report — Layer B Sprint Progress (B2)
 
 **Document type:** PM sprint report  
-**Date:** 2026-06-28  
+**Date:** 2026-06-30  
 **Branch:** `analyze-ai-branch`  
-**Phase:** **B1 complete** — sim core (DATA-B1, MVP-1, MVP-3)
+**Phase:** **B2 complete** — crowds (MVP-4, H-1) + economy early-warning
 
 ---
 
 ## 1. Executive summary
 
-**B1 shipped on `analyze-ai-branch`.** Match simulation now uses **starting XI lineups** with formation slot weights — never full-squad average. Automated gate tests green (`StartingElevenIT`, `MatchSimulatorV2Test`, etc.).
+**B2 shipped on `analyze-ai-branch`.** Home attendance is driven by an FM-style `AttendanceCalculator` (table position, opponent rank, form, derby). Ticket sales in `MatchScheduler` target that fill rate; `MatchSimulator` no longer overwrites pre-sold attendance (H-1). Long-run harness scans Football League club balances and fails early if any go negative (bankruptcy feature deferred).
 
 | Track | Status |
 |-------|--------|
-| **B1 — Sim core** | ✅ **Done** |
-| **B2 — Crowds** | 🔲 Next — MVP-4 + H-1 |
-| **B3 — Feedback** | 🔲 MVP-5/6/7 |
+| **B1 — Sim core** | ✅ Done |
+| **B2 — Crowds + economy watch** | ✅ **Done** |
+| **B3 — Feedback** | 🔲 Next — MVP-5/6/7 |
 | **B4 — Tactics UX** | 🔲 MVP-2/9 |
 
 ---
 
-## 2. B1 deliverables
+## 2. B2 deliverables
 
 | ID | Deliverable | Status |
 |----|-------------|--------|
-| **DATA-B1** | `FormationTemplate`, `FormationRegistry`, `ClubTacticsSetup`, `MatchLineup` on `Club` | ✅ |
-| **MVP-1** | `BestElevenSelector`, Squad **Best XI** button, persist on club | ✅ |
-| **MVP-3** | `MatchSimulator` v2 — lineup strength, scorers from XI, RNG 0.85–1.15 | ✅ |
-| **MVP-8** | `TenSeasonReportIT` regression | ✅ soak re-run pending / green |
+| **MVP-4** | `AttendanceCalculator`, `DerbyRegistry`, `mods/derbies.txt` | ✅ |
+| **H-1** | Single attendance authority — sim keeps scheduler attendance | ✅ |
+| **ECON-B2** | `EconomyHealthMonitor` — negative balance scan (FL roster + report) | ✅ |
+| **Tests** | Unit + IT + long-run economy gate | ✅ |
 
 ---
 
@@ -35,12 +35,13 @@
 
 | Area | Files |
 |------|-------|
-| Data model | `data/tactics/*`, `Club.tacticsSetup`, `Match.homeLineupPlayerIds` |
-| Engine | `engine/tactics/FormationRegistry`, `BestElevenSelector`, `MatchLineupBuilder`, `LineupStrengthCalculator` |
-| Sim | `MatchSimulator` v2 |
-| UI | `SquadScreenTable` — Best XI button |
-| Tests | `FormationRegistryTest`, `BestElevenSelectorTest`, `MatchSimulatorV2Test`, `ClubTacticsSetupSaveLoadIT`, `StartingElevenIT` |
-| Harness | `GameTestHarness.setClubLineup`, `countHomeWinsWithLineup`, … |
+| Attendance | `engine/simulation/AttendanceCalculator.java`, `DerbyRegistry.java` |
+| Mod data | `mods/derbies.txt` |
+| Scheduling | `MatchScheduler` — target fill from calculator; daily ticket sales |
+| Sim | `MatchSimulator.applyFinalAttendance()` — H-1 |
+| Economy watch | `engine/economy/EconomyHealthMonitor.java` |
+| Harness | `GameTestHarness.averageHomeAttendance`, `assertNoNegativePrimaryLeagueBalances`, `MultiSeasonSimulationReport.recordEconomyScan` |
+| Tests | `AttendanceCalculatorTest`, `AttendanceModelIT`, `AttendanceOverwriteIT`, `EconomyHealthMonitorTest`, `LongRunEconomySoakIT` |
 
 ---
 
@@ -48,25 +49,28 @@
 
 ```bash
 mvn test -pl futtoboru-core
-mvn test -pl futtoboru-core -Psoak   # TenSeasonReportIT regression after sim v2
+mvn test -pl futtoboru-core -Psoak   # LongRunSoakIT (league + cup multi-season)
 ```
 
 | Test | Proves |
 |------|--------|
-| `FormationRegistryTest` | 3 templates × 11 slots |
-| `BestElevenSelectorTest` | 11 distinct players; worst ≠ best |
-| `MatchSimulatorV2Test` | Strong XI → higher strength + more wins |
-| `ClubTacticsSetupSaveLoadIT` | JSON roundtrip |
-| `StartingElevenIT` | Sim records 11 lineup ids; weak XI loses more |
+| `AttendanceCalculatorTest` | position/opponent/form/derby factors; clamp 0.08–0.98 |
+| `AttendanceModelIT` | Top-table avg home attendance > bottom after full season |
+| `AttendanceOverwriteIT` | Post-sim attendance equals pre-sold (not re-rolled) |
+| `EconomyHealthMonitorTest` | Negative balance detection; league-scoped scan |
+| `LongRunEconomySoakIT` | 3 seasons + champions; FL balances stay ≥ 0 |
+| `MultiSeasonSoakIT` | 3 procedural champions + FL economy gate |
+| `TenSeasonReportIT` | 10-season report + FL economy fields |
+
+**Economy scope:** Non–Football League clubs (id 13+) may have negative balances (no league income). Gates assert **primary league roster only** plus player club solvency. Report also tracks global minimum for diagnostics.
 
 ---
 
 ## 5. Next steps
 
-1. **B2** — `AttendanceCalculator` + H-1 single attendance authority  
-2. **B3** — Post-match 0–10 ratings + result/preview UI  
-3. **B4** — Formation picker + Tactics sidebar  
+1. **B3** — Post-match 0–10 ratings + result/preview UI  
+2. **B4** — Formation picker + Tactics sidebar  
 
 ---
 
-*Next PM update: after B2 AttendanceModelIT green.*
+*Next PM update: after B3 MatchFeedbackIT green.*
