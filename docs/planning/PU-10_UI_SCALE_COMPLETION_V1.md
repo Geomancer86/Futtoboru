@@ -22,8 +22,9 @@ On HiDPI laptops (Samsung Galaxy Book3 Pro), Futtoboru UI was unreadably small a
 | **Scaling mechanism** | `UiScale` + `ScreenViewport.setUnitsPerPixel(1 / scale)` — layout, draw, and clicks stay aligned |
 | **Default for dev** | **200%** (`DEFAULT_UI_SCALE = 2.0f`; one-time migration `settings.ui_scale_migration_v5_hidpi`) |
 | **Clipping mitigation** | `UiScale.addOverflowScroll()` / `newOverflowScrollPane()` on wide standalone screens; Settings panels **stacked vertically** |
-| **In-game shell** | `MainGameScreen`: **fixed top menu** + scrollable body only (sidebar + content) — squad wide table no longer stretches Continue button |
-| **Excluded** | `MatchEngineScreen` overlay (per PO) |
+| **In-game shell** | `MainGameScreen`: **fixed top bar** + **fixed left nav** + `VisScrollPane` on **content panel only** (`mainTable`) |
+| **Match Engine Debug** | Hidden — `MatchEngineVersion.DEBUG_SCREEN_UI_ENABLED = false` (prototype NPE) |
+| **Excluded from UI scale** | `MatchEngineScreen` overlay (per PO) |
 
 **Key code:** `futtoboru-core/.../ui/UiScale.java`, `PreferencesManager.java`, `SettingsScreen.java`, `MainGameScreen.java`
 
@@ -36,7 +37,8 @@ On HiDPI laptops (Samsung Galaxy Book3 Pro), Futtoboru UI was unreadably small a
 | **PU-10 MVP** | `unitsPerPixel` + Settings select | ✅ Scales UI; ❌ clips wide layouts at 150%+ |
 | **PU-10-R2** | 1:1 viewport + `Actor.setScale` + root `VisScrollPane` | ❌ **Reverted** — no visual scale, broken clicks |
 | **PU-10-R3** | `unitsPerPixel` + overflow scroll **without** actor scale; default 200% | ✅ **QA passed** — readable, clickable |
-| **PU-10-R3b** | Main game: pin top menu, scroll body only | ✅ Squad screen Continue button stays on screen |
+| **PU-10-R3b** | Main game: pin top menu | ✅ Continue button stays on screen |
+| **PU-10-R3c** | Main game: pin left nav, scroll content only | ✅ Sidebar no longer scrolls away |
 
 ---
 
@@ -49,7 +51,8 @@ On HiDPI laptops (Samsung Galaxy Book3 Pro), Futtoboru UI was unreadably small a
 | Clicks register | ✅ |
 | Settings all panels reachable | ✅ |
 | In-game screens sampled | ✅ |
-| Squad screen top menu not pushed off-screen | ✅ (after R3b) |
+| Squad screen top menu not pushed off-screen | ✅ (R3b) |
+| Left sidebar stays visible when scrolling squad | ✅ (R3c) |
 
 ---
 
@@ -61,6 +64,7 @@ On HiDPI laptops (Samsung Galaxy Book3 Pro), Futtoboru UI was unreadably small a
 | **PU-10b** | Desktop launcher `HdpiMode.Pixels` for sharper text on Windows display scaling |
 | **PU-10-R4** | Optional `ExtendViewport` design resolution for window resize |
 | **Layout** | Audit fixed `.width(N)` on league/inbox tables at 200% |
+| **ME-D1** | Fix Match Engine Debug NPE; set `DEBUG_SCREEN_UI_ENABLED = true` |
 
 ---
 
