@@ -1,23 +1,24 @@
 # PM Report — Layer A Sprint Progress
 
 **Document type:** PM sprint report  
-**Date:** 2026-06-27  
+**Date:** 2026-06-25 (updated)  
 **Branch:** `analyze-ai-branch`  
-**Sequence:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) · [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md)
+**Sequence:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md) · [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)
 
 ---
 
 ## 1. Executive summary
 
-Work started on the **recommended order**: **Layer A (UI blockers)** first, with **foundational FLEX-1 / NEWS-8** stubs that do not block Layer B.
+**Layer A is nearly complete.** UI scale (PU-10), in-game shell layout (R3b/R3c), and code fixes A-2/A-3/A-4 are **done and QA-tested on Galaxy Book**. **Two Layer A gates remain:** league rules UI verify (A-5) and PO sign-off (A-9). **Layer B has not started** — that is the next major product track after sign-off.
 
-| Track | Status this sprint |
-|-------|-------------------|
-| **Layer A** | **A-2, A-3, A-4** implemented in code — manual QA pending |
-| **Layer B** | Not started (next after Layer A sign-off) |
-| **FLEX-1** | `HistoricalMode` on `SaveGame` — **done** |
-| **NEWS-8** | `NewsLatencyResolver` + mod table + `scheduleWorldMessage` — **stub done** |
-| **Tests** | **62/63** green PR suite; +2 new tests (`NewsLatencyResolverTest`, `SaveLoadIT` historical mode) |
+| Track | Status |
+|-------|--------|
+| **Layer A** | **~95%** — A-5 + A-9 open; A-6/A-7/A-8 optional P1 |
+| **Layer B (V1 MVP feel)** | **Not started** — XI, tactics, sim v2, attendance, ratings |
+| **Layer C (1892 / WE-1)** | **Design only** — blocked on Layer B + PO decisions |
+| **PU-10 HiDPI** | ✅ Complete — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
+| **FLEX-1 / NEWS-8** | ✅ Stubs on save / latency resolver |
+| **Per-screen UI polish** | **Deferred** — fix screens individually when touched |
 
 ---
 
@@ -25,9 +26,9 @@ Work started on the **recommended order**: **Layer A (UI blockers)** first, with
 
 | ID | Item | Result |
 |----|------|--------|
-| **A-2** | C-1 Continue double-click | **Fixed** — single `touchDown` action, 500 ms cooldown, stale-operation guard |
-| **A-3** | C-3 / H-9 load + job init | **Fixed** — `Futtoboru.activateSaveGame()`; `LoadGameDialog` + in-game **Load** menu option |
-| **A-4** | H-3 match history → result | **Fixed** — `MatchHistoryScreenTable` → `MainMenuManager.showMatchResult()` |
+| **A-2** | C-1 Continue double-click | ✅ Fixed + QA |
+| **A-3** | C-3 / H-9 load + job init | ✅ Fixed + QA |
+| **A-4** | H-3 match history → result | ✅ Fixed + QA |
 | **A-1** | Manual QA — UI scale / HiDPI | ✅ Done — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
 | **A-1b** | In-game shell scroll (top bar + left nav fixed) | ✅ R3b/R3c |
 | **A-5** | 2-1-0 UI verify | **Open** — next Layer A item |
@@ -84,4 +85,4 @@ Local commit on `analyze-ai-branch` — **no remote push** (PO policy).
 
 ---
 
-*Next PM update: after Layer A manual QA or Layer B MVP-1 start.*
+*Next PM update: after A-5 league UI verify or Layer B kickoff.*
