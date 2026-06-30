@@ -105,6 +105,11 @@ Skip cup TBD placeholders **before** ticket sales (align with `MatchSimulator` /
 |------|--------|
 | `LongRunSoakIT` | 60 league seasons; timing; health at end |
 
+**Mandatory before soak:** [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) — `scripts/preflight-before-soak.ps1` (~60–90s).  
+**Never** start `-Psoak` without preflight. **Never** pipe soak stdout through filters.
+
+Soak profile uses **quiet** logs by default (~5 min). Use `-Dfuttoboru.test.logProfile=verbose` only when debugging (expect 30–60+ min).
+
 ---
 
 ## 5. Known engine defects (tracked, not hidden)

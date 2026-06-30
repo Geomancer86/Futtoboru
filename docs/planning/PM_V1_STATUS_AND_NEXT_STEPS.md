@@ -55,20 +55,29 @@
 
 ## 4. Long-run soak — how to run safely
 
-```bash
-# PR gate (~60s) — quiet logs, CRITICAL fails tests
-mvn test -pl futtoboru-core
+**Read first:** [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) (post-mortem: 2026-06-30 aborted 41-min run).
 
-# Pre-merge / weekly — league+cup 2 seasons, verbose optional
-mvn test -pl futtoboru-core -Pnightly
+```powershell
+# 1) Preflight ONLY (~60–90s) — run this before any soak
+.\scripts\preflight-before-soak.ps1
 
-# North star — 60 league seasons, full DebugLogManager verbosity
-mvn test -pl futtoboru-core -Psoak
+# 2) Full north star (preflight + 60 seasons, quiet, ~5 min soak after preflight passes)
+.\scripts\run-soak-with-preflight.ps1
 ```
 
-**Logging:** Default profile suppresses engine spam; `-Psoak` enables full logs for overnight debugging. Override: `-Dfuttoboru.test.logProfile=verbose`.
+Manual:
 
-**Do not** run unbounded soaks without `-Psoak` only if you need quiet CI-like output; use soak profile when investigating regressions.
+```bash
+# Preflight (required)
+mvn test -pl futtoboru-core -Dtest=LeagueAndCupIT,MultiSeasonSoakIT -Dfuttoboru.test.logProfile=quiet
+mvn test -pl futtoboru-core -Pnightly -Dtest=MultiSeasonLeagueAndCupSoakIT -Dfuttoboru.test.logProfile=quiet
+
+# Soak (only if preflight green) — quiet ~5 min
+mvn test -pl futtoboru-core -Psoak -Dtest=LongRunSoakIT -Dfuttoboru.test.logProfile=quiet
+```
+
+**Do not** pipe soak output through `Select-String` or similar — logs are lost.  
+**Do not** use `-Psoak` with verbose logs for timing unless actively debugging (40+ min).
 
 ---
 
@@ -129,6 +138,9 @@ mvn test -pl futtoboru-core -Psoak
 
 | Risk | Mitigation |
 |------|------------|
+| Long soak started without green E2E | **Preflight script** — [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) |
+| Soak verbose logs → 40+ min wasted | `-Psoak` defaults **quiet**; verbose only for debug |
+| Soak stdout piped / no log artifact | Do not filter; see protocol §4 |
 | Shared `DatabaseLoader` clubs mutated across tests | ✅ Harness reset in `newGameEmployedAtClub` (2026-06-30) |
 | Cup replay counted as extra semi-final | ✅ Health monitor excludes `parentMatch1Id` replays |
 | 60-season soak hides cup bugs | Nightly `MultiSeasonLeagueAndCupSoakIT`; plan SOAK-CUP-1 |

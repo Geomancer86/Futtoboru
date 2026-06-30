@@ -162,7 +162,8 @@
                             <useFile>false</useFile>
                             <groups>soak</groups>
                             <systemPropertyVariables>
-                                <futtoboru.test.logProfile>verbose</futtoboru.test.logProfile>
+                                <!-- Quiet by default: verbose soak took 40+ min vs ~5 min (2026-06-30). Override for debug. -->
+                                <futtoboru.test.logProfile>quiet</futtoboru.test.logProfile>
                             </systemPropertyVariables>
                             <forkedProcessTimeoutInSeconds>7200</forkedProcessTimeoutInSeconds>
                             <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
