@@ -13,8 +13,8 @@
 
 | Track | Status |
 |-------|--------|
-| **Layer A** | **~98%** — A-9 PO sign-off only |
-| **Layer B (V1 MVP feel)** | **Planned** — B1–B4 CM1 loop; B5 player condition post sign-off |
+| **Layer A** | **Baseline done** — polish as needed, not blocking B |
+| **Layer B (V1 MVP feel)** | **Wrap-up ~55%** — [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) |
 | **Layer C (1892 / WE-1)** | **Design only** — blocked on Layer B + PO decisions |
 | **PU-10 HiDPI** | ✅ Complete — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
 
