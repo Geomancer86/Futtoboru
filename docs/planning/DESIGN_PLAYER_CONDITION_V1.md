@@ -1,11 +1,11 @@
 # Design — Player Condition (Fitness, Form, Injuries, Fatigue, Morale)
 
 **Document type:** Architecture / product design  
-**Date:** 2026-06-28  
-**Status:** **Planned** — **post–Layer B (B5)**; do not implement before **B-9** sign-off  
+**Date:** 2026-06-30  
+**Status:** **In Layer B scope** — implement after B3/B4 engine path; before human QA  
 **Audience:** PO, Match/Sim, World/Data, QA  
 
-**Parent:** [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) · [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) §4.4
+**Parent:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)
 
 ---
 
@@ -17,7 +17,9 @@
 | **Attribute delta “form”** | UI label for 14-day attribute change | **Exists** — `AttributeTrackingConstants`, not match sharpness |
 | **Player condition** | Fitness, sharpness, injury, fatigue, morale | **B5** — this doc |
 
-**PO lock:** CM1 had fitness/morale **tracked** but Layer B exit does **not** require condition sim. CM93+ injuries and FM jadedness belong here, after the CM1 loop ships.
+**PO lock (2026-06-30):** B5 is **part of whole Layer B** — CM1 tracked fitness/morale; CM93-style **basic** injuries. Full FM medical depth deferred.
+
+**Testing:** L1 unit tests per COND; L2 `FitnessSimModifierIT`, `InjuredPlayerLineupIT`; L3 `LayerBMultiSeasonSoakIT`; L4 squad columns in human checklist — see [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md).
 
 ---
 

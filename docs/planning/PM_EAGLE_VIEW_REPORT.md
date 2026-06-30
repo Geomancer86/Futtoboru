@@ -1,62 +1,57 @@
 # Eagle View — PO / PM Brief
 
 **Date:** 2026-06-30 · **Branch:** `analyze-ai-branch`  
-**Direction:** [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md)  
-**Layer B plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) ← **read before deciding next steps**
+**Layer B:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **~42% complete**
 
 ---
 
 ## In one sentence
 
-**Layer B is half done** — sim, XI engine, and crowds work in tests; **ratings, match preview flow, and Tactics UI** are still missing for the CM1 loop.
+**Layer B is less than half done** — engine and crowds work in tests, but **ratings, preview flow, Tactics UI, player condition**, and **most E2E/long tests** are still missing; **human testers come last**.
 
 ---
 
-## Layer B progress
+## Whole Layer B = what we owe
 
-| Done | Remaining |
-|------|-----------|
-| ✅ Match uses your 11 (headless) | ❌ Manual pick 11 in UI |
-| ✅ Attendance model | ❌ 0–10 ratings |
-| ✅ Best XI button | ❌ Preview → kick off → result flow |
-| ✅ 100+ automated tests | ❌ Tactics screen + sidebar |
-
-**Estimate to finish:** 4–6 eng-weeks · **Decisions:** [PM_LAYER_B_WRAP_UP_PLAN.md §6](PM_LAYER_B_WRAP_UP_PLAN.md)
+| Block | CM1 / early FM | Status |
+|-------|----------------|--------|
+| XI + sim + crowds | ✅ Engine tested | UI partial |
+| Ratings + preview + result | CM1 genre hook | ❌ |
+| Tactics menu + formations | CM1 main menu | ❌ |
+| Fitness, morale, injuries | CM1 / CM93 basic | ❌ |
 
 ---
 
-## Horizons
+## Testing order (locked)
 
-| Horizon | Focus |
-|---------|--------|
-| **Now** | Finish Layer B (CM1 loop in UI) |
-| **Mid** | Layer C — 1892, world evolution |
-| **Long** | FM-depth systems, multi-country |
-| **North star** | Full CM + FM historical completeness |
+```
+L1 Unit  →  L2 E2E  →  L3 Long soak  →  L4 Human testers
+```
 
-**No release date.** Local development only.
+Detail: [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md)
 
 ---
 
-## Traffic lights
+## Remaining work (~8–12 weeks)
 
-| Area | Status |
-|------|--------|
-| Season engine | 🟢 |
-| Layer B engine (B1/B2) | 🟢 |
-| Layer B UI (B3/B4) | 🔴 |
-| Layer C / world | ⚪ Later |
+1. B3 — ratings + match-day flow  
+2. B4 — Tactics UI  
+3. B5 — player condition  
+4. `Cm1ManagementLoopIT` + `LayerBMultiSeasonSoakIT`  
+5. Then invite human testers for B-9 checklist  
+
+Feature matrix: [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)
 
 ---
 
-## Detail docs
+## Horizons (unchanged)
 
-| Topic | Document |
-|-------|----------|
-| **Wrap-up plan (PM)** | [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) |
-| Ratings + preview/result design | [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) |
-| Tactics + XI UI design | [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) |
-| Tests | [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) |
+| Now | Finish **whole** Layer B |
+| Mid | Layer C — 1892 |
+| Long | FM-depth, world sim |
+| North star | Full CM + FM history |
+
+No public release. Local development only.
 
 ---
 
@@ -64,6 +59,5 @@
 
 | Date | Change |
 |------|--------|
-| 2026-06-30 | Layer B wrap-up plan linked; progress ~55% |
-| 2026-06-30 | PO lock: no release; Layer B focus |
-| 2026-06-27 | Initial eagle view |
+| 2026-06-30 | Whole Layer B + test pyramid + human QA last |
+| 2026-06-30 | ~55% wrap-up estimate — superseded by ~42% with B5 |

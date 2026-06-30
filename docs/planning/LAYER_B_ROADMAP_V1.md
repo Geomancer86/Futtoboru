@@ -147,13 +147,15 @@ Design: [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md)
 
 ---
 
-### B5 — Player condition (post B-9)
+### B5 — Player condition (in Layer B)
 
-| ID | Analyze | Design | Develop | Unit tests | IT / E2E |
-|----|---------|--------|---------|------------|----------|
-| **COND-1–5** | [ANALYSIS_LAYER_B §4](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) | [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) | `PlayerCondition`; daily tick; sim modifier | `PlayerFitnessTest`, `MoraleUpdateTest` | `FitnessSimModifierIT`, `InjuredPlayerLineupIT` |
+Design: [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md)
 
-**B5 exit:** Condition affects sim; injured excluded from XI; squad UI shows fit/injured.
+| ID | Analyze | Design | Develop | Unit tests | IT / E2E | Status |
+|----|---------|--------|---------|------------|----------|--------|
+| **COND-1–5** | CM1 fitness/morale | Condition doc | `PlayerCondition`, tick, sim hook | `PlayerFitnessTest`, etc. | `FitnessSimModifierIT`, `InjuredPlayerLineupIT` | ❌ |
+
+**B5 exit:** Condition affects sim; L3 `LayerBMultiSeasonSoakIT` green.
 
 ---
 

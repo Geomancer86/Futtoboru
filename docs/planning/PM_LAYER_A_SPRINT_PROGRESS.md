@@ -14,7 +14,7 @@
 | Track | Status |
 |-------|--------|
 | **Layer A** | **Baseline done** — polish as needed, not blocking B |
-| **Layer B (V1 MVP feel)** | **Wrap-up ~55%** — [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) |
+| **Layer B (V1 MVP feel)** | **Wrap-up ~42%** — [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) |
 | **Layer C (1892 / WE-1)** | **Design only** — blocked on Layer B + PO decisions |
 | **PU-10 HiDPI** | ✅ Complete — [PU-10_UI_SCALE_COMPLETION_V1.md](PU-10_UI_SCALE_COMPLETION_V1.md) |
 

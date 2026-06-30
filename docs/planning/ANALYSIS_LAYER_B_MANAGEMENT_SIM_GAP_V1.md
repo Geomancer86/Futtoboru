@@ -22,14 +22,14 @@
 | **Team form (last 5 W/D/L)** | ✅ **MVP-4** — attendance | — |
 | **Post-match ratings 0–10** | ❌ **MVP-5** — design ready | Feed morale later |
 | **Result / preview UI** | ⚠️ Score/attendance only; **flow + ratings** ❌ | — |
-| **Player fitness %** | 🔲 Display stub optional B3 | **B5 — COND-1** |
-| **Player form / sharpness** | 🔲 Attribute delta display only (today) | **B5 — COND-2** |
-| **Injuries** | ❌ Not Layer B | **B5 — COND-3** (CM93 depth) |
-| **Fatigue / match load** | ❌ Not Layer B | **B5 — COND-4** |
-| **Morale** | ❌ Not Layer B | **B5 — COND-5** |
+| **Player fitness %** | ❌ B5 COND-1 | — |
+| **Player form / sharpness** | ❌ B5 COND-2 | — |
+| **Injuries** | ❌ B5 COND-3 (CM93 basic) | — |
+| **Fatigue / match load** | ❌ B5 COND-4 | — |
+| **Morale** | ❌ B5 COND-5 | — |
 | **2D match engine** | ❌ Out of scope | Separate R&D track |
 
-**PO lock unchanged:** Layer B = **CM1 minimum loop** ([CM1_REFERENCE.md §4](CM1_REFERENCE.md)). FM borrow = **attendance only** for B2. Player condition depth = **CM93+/FM** → [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md).
+**PO lock (2026-06-30):** Whole Layer B = B1–B5 + full test pyramid; human QA last. Benchmark: [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md).
 
 ---
 
@@ -210,7 +210,7 @@ Same as Layer A / season engine ([V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_
 | B2 | 6 classes | ✅ Done |
 | B3 | 3 classes | ❌ Pending |
 | B4 | 1 class + manual | ❌ Pending |
-| B5 | 5+ classes | ❌ Planned |
+| B5 | 5+ classes | ❌ In Layer B scope |
 
 Full specs: [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md).
 
@@ -237,7 +237,9 @@ B3a MatchRatingsCalculator + tests
     → B4 Tactics screen + sidebar + formation picker
     → B1 UI manual XI on Tactics
     → B-9 local CM1 loop check
-    → B5 player condition (optional — PO decision D1)
+    → B5 player condition (fitness, morale, basic injuries)
+    → L3 LayerBMultiSeasonSoakIT + preflight LongRunSoakIT
+    → L4 human testers (B-9 checklist)
 ```
 
 **Do not parallel:** 2D engine, transfers, training, 1892 content, fork UI.

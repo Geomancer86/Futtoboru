@@ -1,73 +1,46 @@
 # PM Report — Layer B Sprint Progress
 
-**Document type:** PM sprint report  
 **Date:** 2026-06-30  
 **Branch:** `analyze-ai-branch`  
-**Master plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)
+**Plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)  
+**Benchmark:** [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)  
+**Tests:** [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md)
 
 ---
 
-## 1. Executive summary
+## Overall: ~42% of whole Layer B
 
-| Phase | Status | Notes |
-|-------|--------|-------|
-| **B1 — Sim core** | ✅ **Engine done** | XI sim, registry, tests green |
-| **B1 — XI UI** | ⚠️ **Partial** | Best XI only; manual 11 pick pending |
-| **B2 — Crowds** | ✅ **Done** | MVP-4, H-1, ECON-B2 |
-| **B3 — Feedback** | 🔲 **Not started** | MVP-5/6/7 — design ready |
-| **B4 — Tactics UX** | 🔲 **Not started** | MVP-2/9 — design ready |
-
-**Overall Layer B: ~55%** by deliverable count.
-
----
-
-## 2. Completed (evidence)
-
-### B1 engine
-
-| ID | Evidence |
-|----|----------|
-| DATA-B1 | `ClubTacticsSetup`, `FormationRegistry`, `MatchLineup` |
-| MVP-1 | `BestElevenSelector`, `StartingElevenIT` |
-| MVP-3 | `MatchSimulator` v2, `MatchSimulatorV2Test` |
-| MVP-8 | `TenSeasonReportIT` |
-
-### B2
-
-| ID | Evidence |
-|----|----------|
-| MVP-4 | `AttendanceCalculator`, `AttendanceModelIT` |
-| H-1 | `AttendanceOverwriteIT` |
-| ECON-B2 | `EconomyHealthMonitor`, `LongRunEconomySoakIT` |
+| Phase | Features | L1 Unit | L2 E2E | L3 Long |
+|-------|----------|---------|--------|---------|
+| B1 | ⚠️ 75% | ✅ | ✅ | ✅ |
+| B2 | ✅ 100% | ✅ | ✅ | ✅ |
+| B3 | ❌ 0% | ❌ | ❌ | — |
+| B4 | ❌ 15% | ❌ | ❌ | — |
+| B5 | ❌ 0% | ❌ | ❌ | ❌ |
+| **L4 Human** | — | **blocked** | | |
 
 ---
 
-## 3. Remaining work (ordered)
+## Done ✅
 
-See [PM_LAYER_B_WRAP_UP_PLAN.md §4](PM_LAYER_B_WRAP_UP_PLAN.md):
+- `MatchSimulator` v2, `BestElevenSelector`, 3 formations in registry  
+- `AttendanceCalculator`, economy health, H-1  
+- 11 automated tests for B1/B2 + season soaks  
 
-1. **B3a** — `MatchRatingsCalculator` + `Match` fields + tests  
-2. **B3b** — Preview → kick off → result flow  
-3. **B3c** — Result scorers + ratings UI  
-4. **B4** — Tactics screen + sidebar + formation picker  
-5. **B1 UI** — Manual XI on Tactics screen  
+## Missing ❌ (whole layer)
 
----
-
-## 4. PO decisions needed
-
-| # | Question | Doc |
-|---|----------|-----|
-| D1 | Include B5 (condition) in Layer B? | [PM_LAYER_B_WRAP_UP_PLAN.md §6](PM_LAYER_B_WRAP_UP_PLAN.md) |
-| D2 | Manual XI required for complete? | Same |
-| D3 | Auto-sim other clubs on Continue? | Same |
+- Ratings, preview flow, result scorers/ratings UI  
+- Tactics screen + sidebar + manual XI  
+- `PlayerCondition`, injuries, morale tick  
+- `MatchRatingsTest`, `Cm1ManagementLoopIT`, `LayerBMultiSeasonSoakIT`  
+- Human B-9 checklist (**after** automated green)
 
 ---
 
-## 5. Next PM update
+## Next engineering order
 
-After **B3a** (`MatchRatingsTest` green) or PO locks §6 decisions.
+See [PM_LAYER_B_WRAP_UP_PLAN.md §4](PM_LAYER_B_WRAP_UP_PLAN.md): B3a → B3b → B3c → B4 → B1 UI → B5 → L3 soak → L4 human.
 
 ---
 
-*Supersedes 2026-06-30 B2-only report sections for forward planning.*
+*Update when a phase or test tier completes.*

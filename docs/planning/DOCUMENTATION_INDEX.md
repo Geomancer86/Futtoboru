@@ -4,9 +4,11 @@
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
-> **Layer B wrap-up (PM):** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) — **~55% done; B3/B4 remaining**  
+**Last updated:** 2026-06-30 (whole Layer B + testing pyramid)
+
+> **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **~42%** · benchmark [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)  
+> **Testing:** [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) — unit → E2E → long → **human last**  
 > **PO direction:** [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md)  
-> **Eagle view:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)  
 > **CM legacy research is PAUSED** at Round 16. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
 
 ---
@@ -18,7 +20,9 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — no release, Layer B now, CM+FM north star |
 | [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, PM** | Eagle view — horizons, traffic lights, Layer B focus |
 | [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) | **PM, QA, Tech** | Test matrix, soak protocol, backlog detail |
-| [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) | **PO, PM, all eng** | **Layer B wrap-up** — status, gaps, sprints, PO decisions |
+| [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) | **PO, PM, all eng** | **Whole Layer B** — status, sprints, exit criteria |
+| [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md) | **PO, PM, QA** | CM1/FM feature matrix — done vs missing per tier |
+| [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) | **QA, PM** | Unit → E2E → long → human QA order |
 | [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) | **Match/Sim, UX** | B3 — ratings, preview flow, result UI |
 | [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) | **Platform/UX** | B4 + manual XI — Tactics screen, sidebar |
 | [PM_LAYER_B_SPRINT_PROGRESS.md](PM_LAYER_B_SPRINT_PROGRESS.md) | **PM, Match/Sim** | Sprint status snapshot |

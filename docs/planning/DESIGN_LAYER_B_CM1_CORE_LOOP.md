@@ -94,6 +94,7 @@ Formula: [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5.3](PM_V1_MVP_AND_1892_MASTER_PLA
 | **MVP-2 / MVP-9** | ❌ | Formation picker + Tactics sidebar |
 | **MVP-4 / H-1** | ✅ | B2 complete |
 | **MVP-3 / DATA-B1** | ✅ | B1 engine complete |
+| **COND-1–5** | ❌ | B5 — [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) |
 
 ### 4.4 Explicitly NOT Layer B (defer — CM/FM depth)
 
@@ -184,29 +185,31 @@ Store `lastMatchRatings` on club or match snapshot; show on MVP-6.
 | **B0** | A-1, A-5, A-9 | Playable Done + tables | A-5 ✅ automated; A-9 PO sign-off |
 | **B1 — Sim core** | DATA-B1, MVP-1, MVP-3, MVP-8 | Lineup affects matches | `MatchSimulatorV2Test`; 10-season diversity |
 | **B2 — Crowds** | MVP-4, H-1 | Crowds “feel” real | Attendance IT; finances avg |
-| **B3 — Feedback** | MVP-5, MVP-6, MVP-7 | Ratings + result/preview | Manual CM1 loop walkthrough |
-| **B4 — Tactics UX** | MVP-2, MVP-9 | Tactics menu | Sidebar + formation picker |
+| **B3 — Feedback** | MVP-5, MVP-6, MVP-7 | Ratings + result/preview | L2 ITs + pyramid |
+| **B4 — Tactics UX** | MVP-2, MVP-9, MVP-1 UI | Tactics menu + manual XI | `FormationSimWeightTest` |
+| **B5 — Condition** | COND-1–5 | CM1 fitness/morale + CM93 injuries | Condition ITs + `LayerBMultiSeasonSoakIT` |
 
-**Parallel allowed:** B2 after B1 starts; B3 after B1; **not** Layer C or fork UI in parallel unless PO adds capacity.
-
-**Estimated:** 6–10 eng-weeks after B0.
+**Estimated:** **8–12 eng-weeks** remaining (~42% done).
 
 ---
 
 ## 7. Acceptance — “Layer B complete”
 
-PO can call **V1 MVP** done when:
+Per [PM_LAYER_B_WRAP_UP_PLAN.md §6](PM_LAYER_B_WRAP_UP_PLAN.md) and [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md):
 
-- [ ] Player picks **11** and **formation** before league match  
-- [ ] **Stronger XI** measurably wins more in IT  
-- [ ] **Attendance** correlates with table/opponent (not random)  
-- [ ] **0–10 ratings** appear after every match for XI players  
-- [ ] **Result screen** shows score, scorers, attendance, rating snippet  
-- [ ] **Tactics** reachable from sidebar  
-- [ ] **TenSeasonReportIT** shows more plausible champion spread  
-- [ ] Layer A manual QA still green  
+**Automated (L1–L3) before human testers:**
 
-Does **not** require: transfers, training, fork UI, 1892, world news, Scotland pack.
+- [ ] All unit + E2E tests in pyramid **green**
+- [ ] `LayerBMultiSeasonSoakIT` + preflight `LongRunSoakIT` **green**
+- [ ] Pick **11** + **formation** (UI)
+- [ ] **0–10 ratings** + scorers on result
+- [ ] **Preview → kick off → result** flow
+- [ ] **Fitness / morale / injuries** affect squad + sim
+- [ ] **Tactics** in sidebar
+
+**Human (L4):** B-9 checklist M1–M9 after automated green.
+
+Does **not** require: transfers, training, 1892, world news, public release.
 
 ---
 
@@ -256,7 +259,7 @@ Does **not** require: transfers, training, fork UI, 1892, world news, Scotland p
 
 | Date | Change |
 |------|--------|
-| 2026-06-30 | Wrap-up gaps — B1/B2 engine ✅; B3/B4 + MVP-1 UI documented |
+| 2026-06-30 | Whole Layer B: B5 in scope; test pyramid; human QA last |
 | 2026-06-30 | PO direction: no release; Layer B sequencing |
 | 2026-06-27 | Initial Layer B design from CM1 benchmark |
 

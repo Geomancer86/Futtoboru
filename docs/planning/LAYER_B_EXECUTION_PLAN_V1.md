@@ -72,12 +72,16 @@ B1/B2 engine ✅ (2026-06-30)
 │ B1 UI — Manual XI on Tactics (overlap B4)                  │
 │   Slot assignment UI + squad XI indicator                  │
 ├───────────────────────────────────────────────────────────┤
-│ B5 — Player condition — PO decision (post B-9 default)     │
-│   COND-1 → COND-5                                          │
+│ B5 — Player condition — in Layer B scope                          │
+│   COND-1 → COND-5 + squad UI + L1/L2/L3 tests                     │
+│   Design: DESIGN_PLAYER_CONDITION_V1.md                           │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-   Layer B complete (B-9) → Layer C
+   L3 LayerBMultiSeasonSoakIT + preflight LongRunSoakIT
+        │
+        ▼
+   L4 Human testers (B-9) — after automated green
 ```
 
 **Remaining estimate:** 4–6 eng-weeks. Full plan: [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md).
@@ -121,17 +125,18 @@ B1/B2 engine ✅ (2026-06-30)
 | **MVP-2** | Formation dropdown; 2–3 templates (`2-3-5-1888`, …) | Changes sim weights |
 | **MVP-9** | `TacticsScreenTable` in `MainMenuManager` sidebar | CM1 menu parity |
 
-### B5 — Player condition (post B-9)
+### B5 — Player condition (CM1 / CM93 basic)
 
-Full spec: [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md).
+Design: [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) · Tests: pyramid L1–L3
 
 | ID | Work | Acceptance |
 |----|------|------------|
-| **COND-1** | `PlayerCondition` on `Player`; fitness tick; sim strength modifier | `FitnessSimModifierIT` |
-| **COND-2** | Sharpness (match form) tick | `PlayerFormTest` |
-| **COND-3** | `InjuryGenerator`; squad UI; exclude from XI | `InjuredPlayerLineupIT` |
+| **COND-1** | `PlayerCondition` on `Player`; fitness tick; sim modifier | `PlayerFitnessTest`, `FitnessSimModifierIT` |
+| **COND-2** | Sharpness tick | `PlayerFormTest` |
+| **COND-3** | `InjuryGenerator`; squad UI; exclude from XI | `InjuryGeneratorTest`, `InjuredPlayerLineupIT` |
 | **COND-4** | Fatigue from minutes; daily recovery | `FatigueRecoveryTest` |
 | **COND-5** | Morale from results + ratings | `MoraleUpdateTest` |
+| **UI** | Squad columns fit / morale / injury | Human M9 |
 
 ---
 
@@ -147,7 +152,8 @@ Full spec: [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md).
 | `AttendanceModelTest` | B2 | Table/form/derby affect attendance | Pending |
 | `MatchRatingsTest` | B3 | Rating rules | Pending |
 | `TenSeasonReportIT` (regression) | B1+ | No deadlock after sim v2 | ✅ (re-run after B1) |
-| `FitnessSimModifierIT` | B5 | Condition affects sim | Planned |
+| `LayerBMultiSeasonSoakIT` | B5+L3 | 5–10 season Layer B health | ❌ Planned |
+| `Cm1ManagementLoopIT` | B3 | Headless CM1 loop | ❌ Planned |
 
 ---
 

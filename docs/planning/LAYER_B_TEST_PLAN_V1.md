@@ -1,9 +1,9 @@
 # Layer B — Test Plan (Unit + Headless E2E)
 
 **Document type:** QA / engineering test plan  
-**Date:** 2026-06-28  
+**Date:** 2026-06-30  
 **Branch:** `analyze-ai-branch`  
-**Parent:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) · [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md)
+**Parent:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) · [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)
 
 ---
 
@@ -14,7 +14,7 @@
 | **No feature without tests** | Each MVP ships with unit test(s) and, where the loop is touched, a harness IT |
 | **Headless first** | Same pattern as `LeagueAndCupIT`, `SaveLoadIT` — `GameTestHarness` + `HeadlessApplication` |
 | **Regression** | Existing 62+ tests + soak profiles must stay green after each phase |
-| **Manual last** | Automated green → manual CM1 walkthrough → **B-9** PO sign-off |
+| **Manual last** | **L4 human QA only after L1–L3 green** — see pyramid |
 
 **Commands:**
 
@@ -74,35 +74,41 @@ Design: [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FE
 
 | Class | Type | Proves | Status |
 |-------|------|--------|--------|
-| `MatchRatingsTest` | Unit | Rating formula | ❌ |
-| `MatchFeedbackIT` | IT | Ratings after sim | ❌ |
-| `MatchLineupPreviewIT` | IT | Preview lineup = sim lineup | ❌ |
-
----
+| `MatchRatingsTest` | Unit L1 | Rating formula | ❌ |
+| `MatchFeedbackIT` | IT L2 | Ratings after sim | ❌ |
+| `MatchLineupPreviewIT` | IT L2 | Preview lineup = sim lineup | ❌ |
+| `Cm1ManagementLoopIT` | IT L2 | Full headless CM1 loop one match | ❌ |
 
 ### B4 — Tactics UX
 
-| Class | Type | Proves | Depends on |
-|-------|------|--------|------------|
-| `FormationSimWeightTest` | Unit | Different templates → different strength for same XI | MVP-2 |
-| Manual only | Manual | Tactics in sidebar; formation change persists | MVP-9 |
+| Class | Type | Proves | Status |
+|-------|------|--------|--------|
+| `FormationSimWeightTest` | Unit L1 | Template changes strength | ❌ |
 
----
+### B5 — Player condition (in Layer B)
 
-### B5 — Player condition (post B-9)
+Design: [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md)
 
-See [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md).
+| Class | Type | Proves | Status |
+|-------|------|--------|--------|
+| `PlayerConditionDefaultsTest` | Unit L1 | New players fit | ❌ |
+| `PlayerFitnessTest` | Unit L1 | Match −fitness | ❌ |
+| `PlayerFormTest` | Unit L1 | Sharpness tick | ❌ |
+| `InjuryGeneratorTest` | Unit L1 | Injury roll | ❌ |
+| `MoraleUpdateTest` | Unit L1 | Win/loss/rating | ❌ |
+| `FatigueRecoveryTest` | Unit L1 | Daily decay | ❌ |
+| `PlayerConditionSaveLoadIT` | IT L2 | Condition in JSON | ❌ |
+| `FitnessSimModifierIT` | IT L2 | Low fitness underperforms | ❌ |
+| `InjuredPlayerLineupIT` | IT L2 | Injured excluded from XI | ❌ |
 
-| Class | Type | Proves | Depends on |
-|-------|------|--------|------------|
-| `PlayerConditionDefaultsTest` | Unit | New players fit, fitness 100 | COND-1 |
-| `PlayerFitnessTest` | Unit | Match −fitness; rest +recovery | COND-1 |
-| `PlayerFormTest` | Unit | Sharpness up after match; decays when idle | COND-2 |
-| `InjuryGeneratorTest` | Unit | Injury roll; valid weeks/type | COND-3 |
-| `InjuredPlayerLineupIT` | IT | Injured player excluded from auto XI | COND-3, MVP-1 |
-| `FitnessSimModifierIT` | IT | Low fitness XI underperforms vs 100% | COND-1, MVP-3 |
-| `MoraleUpdateTest` | Unit | Win/loss/rating adjust morale | COND-5, MVP-5 |
-| `FatigueRecoveryTest` | Unit | Daily fatigue decay | COND-4 |
+### L3 — Long-term (Layer B)
+
+| Class | Type | Proves | Status |
+|-------|------|--------|--------|
+| `LayerBMultiSeasonSoakIT` | Soak L3 | 5–10 seasons: XI, ratings, condition, health | ❌ |
+| `TenSeasonReportIT` | Soak L3 | Balance regression | ✅ |
+| `LongRunSoakIT` | Soak L3 | 60 seasons | ✅ |
+| `MultiSeasonLeagueAndCupSoakIT` | Nightly L3 | Cup + league | ✅ |
 
 ---
 
@@ -138,9 +144,11 @@ Implement in `futtoboru-core/src/test/.../harness/GameTestHarness.java`:
 
 ---
 
-## 5. Manual QA checklist (B-9)
+## 5. Manual QA checklist (B-9) — **L4 human tier**
 
-Run at **200% UI scale** on Galaxy Book or 1920×1080 after automated suite green.
+**Start only when** [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) L1–L3 are green. PM invites human testers at that point.
+
+Run at **200% UI scale** on Galaxy Book or 1920×1080.
 
 | # | Step | Pass |
 |---|------|------|
@@ -152,8 +160,9 @@ Run at **200% UI scale** on Galaxy Book or 1920×1080 after automated suite gree
 | M6 | League table → 2-1-0 points (A-5 regression) | ✅ automated — `HistoricalLeagueRulesIT` |
 | M7 | Top club home match → attendance visibly higher than early-season low table | ☐ |
 | M8 | Continue once per click (A-2 regression) | ☐ |
+| M9 | Squad shows fitness / morale / injury; injured not selectable in XI | ☐ |
 
-**B-9 PO sign-off:** all M1–M8 checked.
+**B-9 sign-off:** M1–M9 checked **after automated pyramid green**.
 
 ---
 

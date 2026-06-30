@@ -15,7 +15,7 @@
 | Question | Answer |
 |----------|--------|
 | **Are we shipping v1?** | **No** — local development until the team is satisfied. |
-| **What are we building now?** | **Layer B wrap-up** — ratings, preview flow, Tactics UI ([PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)) |
+| **What are we building now?** | **Whole Layer B** (~42%) — B3/B4/B5 + test pyramid; human QA last ([PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)) |
 | **Is the season engine solid?** | **Yes** — league + cup E2E green; 100/100 PR suite (2026-06-30). |
 | **Long-term goal?** | Full **CM + FM** historical feature set — years of work ahead. |
 | **60-season soak?** | Optional confidence check — preflight first ([SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)). |
@@ -117,24 +117,16 @@ mvn test -pl futtoboru-core -Psoak -Dtest=LongRunSoakIT -Dfuttoboru.test.logProf
 
 ## 6. Recommended next steps (priority order)
 
-**Master plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) (~55% complete)
+**Master plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) (~42% — whole layer including B5)
 
-### Now — finish Layer B
+### Now — finish whole Layer B (automated first)
 
-1. **B3a** — `MatchRatingsCalculator` + persist on `Match` — [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md)  
-2. **B3b** — Preview → kick off → result (fix Continue bypassing preview)  
-3. **B3c** — Result UI: scorers + 0–10 ratings  
-4. **B4** — Tactics screen + sidebar + formation picker — [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md)  
-5. **B1 UI** — Manual XI slot assignment on Tactics  
-
-### PO decisions before B3b UI
-
-6. Review [PM_LAYER_B_WRAP_UP_PLAN.md §6](PM_LAYER_B_WRAP_UP_PLAN.md) — B5 in scope?, manual XI?, auto-sim others?
-
-### Parallel (optional)
-
-7. Preflight + soak when useful — not blocking Layer B  
-8. Fix Layer A UI bugs when they block B work
+1. **B3** — Ratings engine + preview flow + result UI  
+2. **B4 + B1 UI** — Tactics + manual XI  
+3. **B5** — Player condition (CM1 fitness/morale + CM93 basic injuries)  
+4. **L2** — `Cm1ManagementLoopIT`, `MatchFeedbackIT`, condition ITs  
+5. **L3** — `LayerBMultiSeasonSoakIT` + preflight `LongRunSoakIT`  
+6. **L4** — Human testers → B-9 checklist ([LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md))
 
 ---
 
