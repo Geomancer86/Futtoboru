@@ -40,14 +40,14 @@ mvn test -pl futtoboru-core -Psoak    # after B1 (TenSeasonReportIT sensitive)
 
 ### B1 — Sim core (to implement)
 
-| Class | Type | Proves | Depends on |
-|-------|------|--------|------------|
-| `FormationRegistryTest` | Unit | 3 templates load; 11 slots each; default `2-3-5-1888` | DATA-B1 |
-| `BestElevenSelectorTest` | Unit | Picks 11 by attribute sum; handles <11 squad edge | MVP-1 |
-| `ClubTacticsSetupSaveLoadIT` | IT | `ClubTacticsSetup` survives `SaveLoadSystem.copySaveGame` | DATA-B1 |
-| `MatchSimulatorV2Test` | Unit | Stronger `MatchLineup` → higher expected goals over N runs | MVP-3 |
-| `StartingElevenIT` | IT | Set weak XI vs strong XI on same club fixture → weak loses more | MVP-1, MVP-3 |
-| `TenSeasonReportIT` | E2E soak | No deadlock; champion count >1 club after MVP-8 tune | MVP-8 |
+| Class | Type | Proves | Depends on | Status |
+|-------|------|--------|------------|--------|
+| `FormationRegistryTest` | Unit | 3 templates load; 11 slots each; default `2-3-5-1888` | DATA-B1 | ✅ |
+| `BestElevenSelectorTest` | Unit | Picks 11 by attribute sum; handles <11 squad edge | MVP-1 | ✅ |
+| `ClubTacticsSetupSaveLoadIT` | IT | `ClubTacticsSetup` survives `SaveLoadSystem.copySaveGame` | DATA-B1 | ✅ |
+| `MatchSimulatorV2Test` | Unit | Stronger `MatchLineup` → higher expected goals over N runs | MVP-3 | ✅ |
+| `StartingElevenIT` | IT | Set weak XI vs strong XI on same club fixture → weak loses more | MVP-1, MVP-3 | ✅ |
+| `TenSeasonReportIT` | E2E soak | No deadlock; champion count >1 club after MVP-8 tune | MVP-8 | ✅ regression |
 
 **`StartingElevenIT` sketch:**
 

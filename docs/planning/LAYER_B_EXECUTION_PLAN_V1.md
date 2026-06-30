@@ -151,9 +151,9 @@ Full spec: [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md).
 |------|-------|--------|--------|
 | `HistoricalLeagueRulesIT` | B0/A-5 | 2-1-0 rules + points | ✅ |
 | `LeagueCompetitionRulesFormatterTest` | B0/A-5 | League UI rules text | ✅ |
-| `MatchSimulatorV2Test` | B1 | XI strength affects goals | Pending |
-| `StartingElevenIT` | B1 | Picked players used in sim | Pending |
-| `ClubTacticsSetupSaveLoadIT` | B1 | New fields survive JSON roundtrip | Pending |
+| `MatchSimulatorV2Test` | B1 | XI strength affects goals | ✅ |
+| `StartingElevenIT` | B1 | Picked players used in sim | ✅ |
+| `ClubTacticsSetupSaveLoadIT` | B1 | New fields survive JSON roundtrip | ✅ |
 | `AttendanceModelTest` | B2 | Table/form/derby affect attendance | Pending |
 | `MatchRatingsTest` | B3 | Rating rules | Pending |
 | `TenSeasonReportIT` (regression) | B1+ | No deadlock after sim v2 | ✅ (re-run after B1) |

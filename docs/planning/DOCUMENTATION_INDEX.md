@@ -28,7 +28,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [PO_DECISION_1892_LEAGUE_MEMBERSHIP.md](PO_DECISION_1892_LEAGUE_MEMBERSHIP.md) | **PO** | **Plain-language 1892 Div 1/Div 2 decision** |
 | [PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md](PO_DECISION_ARGENTINA_LEAGUE_HIATUS.md) | **PO** | **Argentina hiatus fork — vote & Historical Mode** |
 | [PM_REPORT_HISTORICAL_MODE_PO_LOCK.md](PM_REPORT_HISTORICAL_MODE_PO_LOCK.md) | **PO, PM, all leads** | **PO lock: Sandbox default, agency, news latency** |
-| [PM_LAYER_A_SPRINT_PROGRESS.md](PM_LAYER_A_SPRINT_PROGRESS.md) | **PM, QA, Platform** | **Layer A sprint — C-1/C-3/H-3 fixes + FLEX-1/NEWS-8** |
+| [PM_LAYER_B_SPRINT_PROGRESS.md](PM_LAYER_B_SPRINT_PROGRESS.md) | **PM, Match/Sim** | **Layer B B1 complete** — XI + sim v2 |
 | [RESEARCH_WORLD_FOOTBALL_1892_V2.md](RESEARCH_WORLD_FOOTBALL_1892_V2.md) | **PO, Research** | **Scotland, Ireland, Wales, NL, Americas circa 1892** |
 | [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) | **PO, all leads** | **Historical accuracy, inbox/news, player knowledge** |
 | [PM_HISTORICAL_DATA_EXPANSION_REPORT.md](PM_HISTORICAL_DATA_EXPANSION_REPORT.md) | **PO, World & Data** | **How many start mods / years; Wave 1–2 plan** |

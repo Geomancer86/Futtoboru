@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 
 import com.rndmodgames.futtoboru.data.Authority;
@@ -14,13 +15,21 @@ import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.League;
+import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
+import com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup;
+import com.rndmodgames.futtoboru.data.tactics.FormationTemplate;
+import com.rndmodgames.futtoboru.data.tactics.MatchLineup;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.SeasonManager;
 import com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager;
+import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
+import com.rndmodgames.futtoboru.engine.tactics.BestElevenSelector;
+import com.rndmodgames.futtoboru.engine.tactics.FormationRegistry;
+import com.rndmodgames.futtoboru.engine.tactics.MatchLineupBuilder;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -548,6 +557,86 @@ public final class GameTestHarness {
                 }
             }
         }
+    }
+
+    public void setClubLineup(long clubId, List<Long> playerIdsInSlotOrder) {
+        Club club = game().getClubById(clubId);
+        if (club == null) {
+            throw new IllegalArgumentException("Club not found: " + clubId);
+        }
+        ClubTacticsSetup setup = club.getTacticsSetupOrDefault();
+        setup.clearSlotAssignments();
+        FormationTemplate template = FormationRegistry.getRequiredTemplate(setup.getFormationTemplateId());
+        for (int i = 0; i < playerIdsInSlotOrder.size() && i < template.getSlots().size(); i++) {
+            setup.assignPlayer(template.getSlots().get(i).getSlotId(), playerIdsInSlotOrder.get(i));
+        }
+        club.setTacticsSetup(setup);
+    }
+
+    public List<Long> bestElevenPlayerIds(Club club) {
+        ClubTacticsSetup setup = BestElevenSelector.selectBestEleven(club);
+        return setup.orderedPlayerIds(FormationRegistry.getRequiredTemplate(setup.getFormationTemplateId()));
+    }
+
+    public List<Long> worstElevenPlayerIds(Club club) {
+        ClubTacticsSetup setup = BestElevenSelector.selectWorstEleven(club, FormationRegistry.DEFAULT_FORMATION_ID);
+        return setup.orderedPlayerIds(FormationRegistry.getRequiredTemplate(setup.getFormationTemplateId()));
+    }
+
+    public int countHomeWinsWithLineup(long homeClubId, long awayClubId, List<Long> homeLineupIds,
+            int iterations, long seed) {
+        Club home = game().getClubById(homeClubId);
+        Club away = game().getClubById(awayClubId);
+        MatchLineup homeLineup = MatchLineupBuilder.fromPlayerIds(home, homeLineupIds,
+                FormationRegistry.DEFAULT_FORMATION_ID);
+        MatchLineup awayLineup = MatchLineupBuilder.buildForClub(away, null);
+        int wins = 0;
+        for (int i = 0; i < iterations; i++) {
+            int[] score = MatchSimulator.simulateScore(homeLineup, home, awayLineup, away, new Random(seed + i));
+            if (score[0] > score[1]) {
+                wins++;
+            }
+        }
+        return wins;
+    }
+
+    public Match findNextLeagueMatchForClub(long clubId) {
+        Club club = game().getClubById(clubId);
+        if (club == null || club.getScheduledMatches() == null) {
+            return null;
+        }
+        for (Match match : club.getScheduledMatches()) {
+            if (match != null && !Boolean.TRUE.equals(match.getIsPlayed())
+                    && match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH) {
+                return match;
+            }
+        }
+        return null;
+    }
+
+    public Match findLastPlayedLeagueMatch(long clubId) {
+        Club club = game().getClubById(clubId);
+        if (club == null) {
+            return null;
+        }
+        Match latest = null;
+        if (club.getScheduledMatches() != null) {
+            for (Match match : club.getScheduledMatches()) {
+                if (match != null && Boolean.TRUE.equals(match.getIsPlayed())
+                        && match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH) {
+                    latest = match;
+                }
+            }
+        }
+        if (club.getPlayedMatches() != null) {
+            for (Match match : club.getPlayedMatches()) {
+                if (match != null && Boolean.TRUE.equals(match.getIsPlayed())
+                        && match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH) {
+                    latest = match;
+                }
+            }
+        }
+        return latest;
     }
 
     private static boolean containsCompetitionByName(List<Competition> competitions, String name) {

@@ -160,11 +160,11 @@ Adding these = **new fields + sim weights** — not new save format.
 
 | ID | Task | Acceptance |
 |----|------|------------|
-| **TAC-1** | `FormationTemplate` + `FormationRegistry` with 2–3 1888 templates | Loads in tests |
-| **TAC-2** | `ClubTacticsSetup` on `Club` + save/load | Roundtrip in `SaveLoadIT` |
-| **TAC-3** | `MatchLineupBuilder` — auto XI + manual override | `StartingElevenIT` |
-| **TAC-4** | `TacticsScreenTable` wired to registry | Pick formation + 11 |
-| **TAC-5** | `MatchSimulator` uses lineup not full squad | Stronger XI wins IT |
+| **TAC-1** | `FormationTemplate` + `FormationRegistry` with 2–3 1888 templates | ✅ `FormationRegistryTest` |
+| **TAC-2** | `ClubTacticsSetup` on `Club` + save/load | ✅ `ClubTacticsSetupSaveLoadIT` |
+| **TAC-3** | `MatchLineupBuilder` — auto XI + manual override | ✅ `StartingElevenIT` |
+| **TAC-4** | `TacticsScreenTable` wired to registry | 🔲 B4 — partial: Squad Best XI |
+| **TAC-5** | `MatchSimulator` uses lineup not full squad | ✅ `MatchSimulatorV2Test` |
 | **TAC-6** | Stub `mods/formations/` loader interface | Empty dir OK; CI schema test |
 
 ---

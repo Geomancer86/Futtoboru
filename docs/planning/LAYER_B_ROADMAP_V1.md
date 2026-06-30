@@ -55,7 +55,7 @@ Analyze  →  Design  →  Develop  →  Test (unit + headless IT/E2E)
 ┌─────────────────────────────────────────────────────────────────────────┐
 │ B0  Layer A close     A-5 ✅ automated  →  A-9 PO sign-off              │
 ├─────────────────────────────────────────────────────────────────────────┤
-│ B1  Sim core (~4–5 wk)                                                  │
+│ B1  Sim core (~4–5 wk)  ✅ DONE                                          │
 │     DATA-B1 → MVP-1 → MVP-3 → MVP-8                                     │
 │     Exit: StartingElevenIT + MatchSimulatorV2Test green                  │
 ├─────────────────────────────────────────────────────────────────────────┤

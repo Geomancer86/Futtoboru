@@ -16,9 +16,9 @@
 
 | User question | Layer B (B1–B4) | Post–Layer B (B5+) |
 |---------------|-----------------|---------------------|
-| **Initial XI / pick 11** | ✅ **MVP-1** — B1 | — |
-| **Tactics / formation** | ✅ **MVP-2, MVP-9** — B4 (+ default in B1) | Mentality, roles, set pieces |
-| **Match basic simulation** | ✅ **MVP-3, MVP-8** — B1 | Condition modifiers (B5) |
+| **Initial XI / pick 11** | ✅ **MVP-1 — B1 done** | — |
+| **Tactics / formation** | ✅ Default 2-3-5; B4 picker pending | Mentality, roles, set pieces |
+| **Match basic simulation** | ✅ **MVP-3 — B1 done** | Condition modifiers (B5) |
 | **Team form (last 5 W/D/L)** | ✅ **MVP-4** — B2 (attendance + light sim) | — |
 | **Post-match ratings 0–10** | ✅ **MVP-5** — B3 | Feed morale later |
 | **Result / preview UI** | ✅ **MVP-6, MVP-7** — B3 | — |
@@ -81,7 +81,7 @@ Sources: [CM1_REFERENCE.md](CM1_REFERENCE.md), [CM_MANUALS_DEEP_ANALYSIS_BY_RELE
 | **Ratings** | None | MVP-5 |
 | **Preview / result UI** | Minimal text | MVP-6, MVP-7 |
 | **Fitness / injury / fatigue** | Comments in `SquadScreenTable` TODO | No fields on `Player` |
-| **Layer B tests** | Only season/regression ITs | 15+ planned classes **not written** |
+| **Layer B tests** | B1 gate tests ✅; B2–B5 pending | See [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) |
 
 **Key files:**
 
@@ -210,7 +210,7 @@ Same as Layer A / season engine ([V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_
 | Phase | Planned classes | In codebase |
 |-------|-----------------|-------------|
 | A-5 | `HistoricalLeagueRulesIT`, formatter tests | ✅ **Done** |
-| B1 | 6 classes | ❌ Pending |
+| B1 | 6 classes | ✅ Done |
 | B2 | 3 classes | ❌ Pending |
 | B3 | 3 classes | ❌ Pending |
 | B4 | 1 class + manual | ❌ Pending |
@@ -266,4 +266,4 @@ A-9 PO sign-off (Layer A)
 
 ---
 
-*Next update: after B1 TAC-1 lands or PO reprioritises B5.*
+*Next update: after B2 AttendanceModelIT or PO reprioritises B5.*

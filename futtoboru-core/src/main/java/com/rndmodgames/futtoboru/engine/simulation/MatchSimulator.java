@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.engine.simulation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -8,37 +10,40 @@ import com.rndmodgames.futtoboru.data.CompetitionRules;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.tactics.MatchLineup;
+import com.rndmodgames.futtoboru.engine.tactics.LineupStrengthCalculator;
+import com.rndmodgames.futtoboru.engine.tactics.MatchLineupBuilder;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
- * Match Simulator v1.0
- * 
- * Simulates football matches and generates results.
- * 
- * Algorithm (v1.0 - Simple):
- * - Calculate team strength based on average player attributes
- * - Apply home advantage (15% boost)
- * - Add randomness (20-30%)
- * - Generate scores based on strength difference
- * 
- * @author Geomancer86
+ * Match Simulator v2.0
+ *
+ * Simulates football matches using starting XI lineups and formation slot weights (MVP-3).
+ * Never uses full-squad average for strength.
  */
 public class MatchSimulator {
-    
-    private static final double HOME_ADVANTAGE_MULTIPLIER = 1.15; // 15% home advantage
-    private static final double RANDOMNESS_MIN = 0.7;
-    private static final double RANDOMNESS_MAX = 1.3;
-    private static final int MAX_GOALS = 5; // Cap goals at 5 for v1.0
-    
+
+    public static final double HOME_ADVANTAGE_MULTIPLIER = 1.15;
+    public static final double V2_RANDOMNESS_MIN = 0.85;
+    public static final double V2_RANDOMNESS_MAX = 1.15;
+    private static final int MAX_GOALS = 5;
+
     private SaveGame currentGame;
     private Futtoboru gameInstance;
     private Random random;
-    
+
+    private MatchLineup lastHomeLineup;
+    private MatchLineup lastAwayLineup;
+
     public MatchSimulator(Futtoboru gameInstance) {
+        this(gameInstance, new Random());
+    }
+
+    public MatchSimulator(Futtoboru gameInstance, Random random) {
         this.currentGame = gameInstance.getCurrentGame();
         this.gameInstance = gameInstance;
-        this.random = new Random();
+        this.random = random != null ? random : new Random();
     }
     
     /**
@@ -70,32 +75,27 @@ public class MatchSimulator {
             System.err.println("MatchSimulator: Cannot simulate match - club not found");
             return false;
         }
-        
-        // Calculate team strengths
-        double homeStrength = calculateTeamStrength(homeClub);
-        double awayStrength = calculateTeamStrength(awayClub);
-        
-        // Apply home advantage
-        homeStrength *= HOME_ADVANTAGE_MULTIPLIER;
-        
-        // Add randomness
-        double homeRandom = RANDOMNESS_MIN + (random.nextDouble() * (RANDOMNESS_MAX - RANDOMNESS_MIN));
-        double awayRandom = RANDOMNESS_MIN + (random.nextDouble() * (RANDOMNESS_MAX - RANDOMNESS_MIN));
-        
-        double homeFinal = homeStrength * homeRandom;
-        double awayFinal = awayStrength * awayRandom;
-        
-        // Generate scores
-        int homeScore = generateScore(homeFinal, awayFinal, true);
-        int awayScore = generateScore(awayFinal, homeFinal, false);
+
+        MatchLineup homeLineup = MatchLineupBuilder.buildForClub(homeClub, match);
+        MatchLineup awayLineup = MatchLineupBuilder.buildForClub(awayClub, match);
+        lastHomeLineup = homeLineup;
+        lastAwayLineup = awayLineup;
+        recordLineupOnMatch(match, homeLineup, awayLineup);
+
+        double homeStrength = LineupStrengthCalculator.calculate(homeLineup, homeClub) * HOME_ADVANTAGE_MULTIPLIER;
+        double awayStrength = LineupStrengthCalculator.calculate(awayLineup, awayClub);
+        double homeRandom = V2_RANDOMNESS_MIN + (random.nextDouble() * (V2_RANDOMNESS_MAX - V2_RANDOMNESS_MIN));
+        double awayRandom = V2_RANDOMNESS_MIN + (random.nextDouble() * (V2_RANDOMNESS_MAX - V2_RANDOMNESS_MIN));
+        int homeScore = generateScore(homeStrength * homeRandom, awayStrength * awayRandom, random);
+        int awayScore = generateScore(awayStrength * awayRandom, homeStrength * homeRandom, random);
         
         // Update match with results
         match.setHomeGoals(homeScore);
         match.setAwayGoals(awayScore);
         match.setIsPlayed(true);
         
-        // Generate scorers (v1.0 - Awards System)
-        generateScorers(match, homeClub, awayClub, homeScore, awayScore);
+        // Generate scorers from starting XI (MVP-3)
+        generateScorers(match, homeLineup, homeClub, awayLineup, awayClub, homeScore, awayScore);
         
         // Calculate attendance (simple: based on stadium capacity if available)
         if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
@@ -155,47 +155,105 @@ public class MatchSimulator {
         
         return true;
     }
-    
+
+    public MatchLineup getLastHomeLineup() {
+        return lastHomeLineup;
+    }
+
+    public MatchLineup getLastAwayLineup() {
+        return lastAwayLineup;
+    }
+
     /**
-     * Generate goal scorers for a match
+     * Score-only simulation for tests (no club stat side effects).
      */
-    private void generateScorers(Match match, Club homeClub, Club awayClub, int homeScore, int awayScore) {
-        // Clear existing scorers
-        match.getHomeScorerIds().clear();
-        match.getAwayScorerIds().clear();
-        
-        // Generate home scorers
-        if (homeScore > 0 && homeClub.getPlayers() != null && !homeClub.getPlayers().isEmpty()) {
-            for (int i = 0; i < homeScore; i++) {
-                Player scorer = pickRandomScorer(homeClub.getPlayers());
-                if (scorer != null && scorer.getPerson() != null) {
-                    match.getHomeScorerIds().add(scorer.getPerson().getId());
-                }
-            }
+    public static int[] simulateScore(MatchLineup homeLineup, Club homeClub,
+            MatchLineup awayLineup, Club awayClub, Random random) {
+        Random rng = random != null ? random : new Random();
+        double homeStrength = LineupStrengthCalculator.calculate(homeLineup, homeClub) * HOME_ADVANTAGE_MULTIPLIER;
+        double awayStrength = LineupStrengthCalculator.calculate(awayLineup, awayClub);
+        double homeRandom = V2_RANDOMNESS_MIN + (rng.nextDouble() * (V2_RANDOMNESS_MAX - V2_RANDOMNESS_MIN));
+        double awayRandom = V2_RANDOMNESS_MIN + (rng.nextDouble() * (V2_RANDOMNESS_MAX - V2_RANDOMNESS_MIN));
+        int homeScore = generateScore(homeStrength * homeRandom, awayStrength * awayRandom, rng);
+        int awayScore = generateScore(awayStrength * awayRandom, homeStrength * homeRandom, rng);
+        return new int[] { homeScore, awayScore };
+    }
+
+    private static void recordLineupOnMatch(Match match, MatchLineup homeLineup, MatchLineup awayLineup) {
+        if (match == null) {
+            return;
         }
-        
-        // Generate away scorers
-        if (awayScore > 0 && awayClub.getPlayers() != null && !awayClub.getPlayers().isEmpty()) {
-            for (int i = 0; i < awayScore; i++) {
-                Player scorer = pickRandomScorer(awayClub.getPlayers());
-                if (scorer != null && scorer.getPerson() != null) {
-                    match.getAwayScorerIds().add(scorer.getPerson().getId());
-                }
-            }
+        if (homeLineup != null) {
+            match.setHomeLineupPlayerIds(homeLineup.getPlayerIdsInSlotOrder());
+            match.setHomeFormationTemplateId(homeLineup.getFormationTemplateId());
+        }
+        if (awayLineup != null) {
+            match.setAwayLineupPlayerIds(awayLineup.getPlayerIdsInSlotOrder());
+            match.setAwayFormationTemplateId(awayLineup.getFormationTemplateId());
         }
     }
     
     /**
-     * Pick a random player to score a goal
-     * Future: Weight by position and attributes
+     * Generate goal scorers from lineups (forwards weighted higher).
      */
-    private Player pickRandomScorer(java.util.List<Player> players) {
-        if (players == null || players.isEmpty()) return null;
-        
-        // Simple weight system: 
-        // Forwards (if we had positions) would have higher weight
-        // For now, just pick any random player
-        return players.get(random.nextInt(players.size()));
+    private void generateScorers(Match match, MatchLineup homeLineup, Club homeClub,
+            MatchLineup awayLineup, Club awayClub, int homeScore, int awayScore) {
+        match.getHomeScorerIds().clear();
+        match.getAwayScorerIds().clear();
+
+        for (int i = 0; i < homeScore; i++) {
+            Player scorer = pickWeightedScorer(homeLineup, homeClub);
+            if (scorer != null && scorer.getPerson() != null) {
+                match.getHomeScorerIds().add(scorer.getPerson().getId());
+            }
+        }
+        for (int i = 0; i < awayScore; i++) {
+            Player scorer = pickWeightedScorer(awayLineup, awayClub);
+            if (scorer != null && scorer.getPerson() != null) {
+                match.getAwayScorerIds().add(scorer.getPerson().getId());
+            }
+        }
+    }
+
+    private Player pickWeightedScorer(MatchLineup lineup, Club club) {
+        List<MatchLineupBuilder.PlayerRef> players = MatchLineupBuilder.playersInLineup(lineup, club);
+        if (players.isEmpty()) {
+            return null;
+        }
+        double totalWeight = 0.0;
+        for (MatchLineupBuilder.PlayerRef ref : players) {
+            totalWeight += scorerWeight(ref.role);
+        }
+        if (totalWeight <= 0) {
+            return players.get(random.nextInt(players.size())).player;
+        }
+        double roll = random.nextDouble() * totalWeight;
+        double cumulative = 0.0;
+        for (MatchLineupBuilder.PlayerRef ref : players) {
+            cumulative += scorerWeight(ref.role);
+            if (roll <= cumulative) {
+                return ref.player;
+            }
+        }
+        return players.get(players.size() - 1).player;
+    }
+
+    private static double scorerWeight(MatchLineupBuilder.SlotRoleRef role) {
+        if (role == null) {
+            return 1.0;
+        }
+        switch (role) {
+            case FWD:
+                return 3.0;
+            case MID:
+                return 1.5;
+            case DEF:
+                return 0.5;
+            case GK:
+                return 0.1;
+            default:
+                return 1.0;
+        }
     }
     
     /**
@@ -272,135 +330,40 @@ public class MatchSimulator {
     }
     
     /**
-     * Calculate team strength based on average player attributes
-     * 
-     * For v1.0: Simple average of key attributes
-     * Future: More sophisticated calculation with position weights
+     * Generate score for a team based on strength.
      */
-    private double calculateTeamStrength(Club club) {
-        if (club == null || club.getPlayers() == null || club.getPlayers().isEmpty()) {
-            // Default strength if no players
-            return 50.0;
-        }
-        
-        double totalStrength = 0.0;
-        int playerCount = 0;
-        
-        for (Player player : club.getPlayers()) {
-            if (player == null) continue;
-            
-            // Calculate player strength from key attributes
-            // Using average of physical, mental, and technical attributes
-            double playerStrength = 0.0;
-            int attributeCount = 0;
-            
-            // Physical attributes
-            if (player.getAcceleration() != null) {
-                playerStrength += player.getAcceleration();
-                attributeCount++;
-            }
-            if (player.getSpeed() != null) {
-                playerStrength += player.getSpeed();
-                attributeCount++;
-            }
-            if (player.getStrength() != null) {
-                playerStrength += player.getStrength();
-                attributeCount++;
-            }
-            if (player.getStamina() != null) {
-                playerStrength += player.getStamina();
-                attributeCount++;
-            }
-            
-            // Mental attributes
-            if (player.getDetermination() != null) {
-                playerStrength += player.getDetermination();
-                attributeCount++;
-            }
-            if (player.getPositioning() != null) {
-                playerStrength += player.getPositioning();
-                attributeCount++;
-            }
-            if (player.getTeamwork() != null) {
-                playerStrength += player.getTeamwork();
-                attributeCount++;
-            }
-            
-            // Technical attributes
-            if (player.getPassing() != null) {
-                playerStrength += player.getPassing();
-                attributeCount++;
-            }
-            if (player.getKicking() != null) {
-                playerStrength += player.getKicking();
-                attributeCount++;
-            }
-            if (player.getTackling() != null) {
-                playerStrength += player.getTackling();
-                attributeCount++;
-            }
-            
-            if (attributeCount > 0) {
-                totalStrength += (playerStrength / attributeCount);
-                playerCount++;
-            }
-        }
-        
-        if (playerCount == 0) {
-            return 50.0; // Default strength
-        }
-        
-        return totalStrength / playerCount;
-    }
-    
-    /**
-     * Generate score for a team based on strength
-     * 
-     * Score distribution (v1.0):
-     * - 30% chance: 0 goals
-     * - 30% chance: 1 goal
-     * - 25% chance: 2 goals
-     * - 10% chance: 3 goals
-     * - 5% chance: 4-5 goals
-     * 
-     * Adjusted by team strength vs opponent
-     */
-    private int generateScore(double teamStrength, double opponentStrength, boolean isHome) {
+    private static int generateScore(double teamStrength, double opponentStrength, Random random) {
+        Random rng = random != null ? random : new Random();
         // Calculate strength ratio
         double totalStrength = teamStrength + opponentStrength;
         double strengthRatio = totalStrength > 0 ? teamStrength / totalStrength : 0.5;
         
         // Base goal distribution
-        double random = this.random.nextDouble();
+        double randomValue = rng.nextDouble();
         int baseGoals = 0;
         
-        if (random < 0.3) {
-            baseGoals = 0;      // 30% chance: 0 goals
-        } else if (random < 0.6) {
-            baseGoals = 1;      // 30% chance: 1 goal
-        } else if (random < 0.85) {
-            baseGoals = 2;      // 25% chance: 2 goals
-        } else if (random < 0.95) {
-            baseGoals = 3;      // 10% chance: 3 goals
+        if (randomValue < 0.3) {
+            baseGoals = 0;
+        } else if (randomValue < 0.6) {
+            baseGoals = 1;
+        } else if (randomValue < 0.85) {
+            baseGoals = 2;
+        } else if (randomValue < 0.95) {
+            baseGoals = 3;
         } else {
-            baseGoals = 4 + this.random.nextInt(2); // 5% chance: 4-5 goals
+            baseGoals = 4 + rng.nextInt(2);
         }
-        
-        // Adjust based on strength ratio
+
         if (strengthRatio > 0.6) {
-            // Strong team: +1 goal bonus
             baseGoals += 1;
         } else if (strengthRatio > 0.55) {
-            // Slightly stronger: +0.5 goal (round up 50% of the time)
-            if (this.random.nextDouble() < 0.5) {
+            if (rng.nextDouble() < 0.5) {
                 baseGoals += 1;
             }
         } else if (strengthRatio < 0.4) {
-            // Weak team: -1 goal penalty
             baseGoals = Math.max(0, baseGoals - 1);
         } else if (strengthRatio < 0.45) {
-            // Slightly weaker: -0.5 goal (round down 50% of the time)
-            if (this.random.nextDouble() < 0.5) {
+            if (rng.nextDouble() < 0.5) {
                 baseGoals = Math.max(0, baseGoals - 1);
             }
         }

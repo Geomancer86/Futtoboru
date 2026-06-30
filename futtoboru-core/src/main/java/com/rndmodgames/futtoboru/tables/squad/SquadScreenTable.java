@@ -7,8 +7,13 @@ import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup;
+import com.rndmodgames.futtoboru.data.tactics.FormationTemplate;
+import com.rndmodgames.futtoboru.engine.tactics.BestElevenSelector;
+import com.rndmodgames.futtoboru.engine.tactics.FormationRegistry;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -99,6 +104,14 @@ public class SquadScreenTable extends VisTable{
         VisLabel nameLabel = new VisLabel(LanguageModLoader.getValue("main_squad"));
         VisLabel playersAtClubLabel = new VisLabel(LanguageModLoader.getValue("players_at_club"));
         VisLabel averageAgeLabel = new VisLabel(LanguageModLoader.getValue("average_player_age"));
+        VisTextButton bestElevenButton = new VisTextButton("Best XI");
+        bestElevenButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
+            @Override
+            public void changed(com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent event,
+                    com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                applyBestEleven();
+            }
+        });
         
         // Name
         this.add(nameLabel);
@@ -113,6 +126,9 @@ public class SquadScreenTable extends VisTable{
         // Average Players Age
         this.add(averageAgeLabel);
         this.add(averagePlayerAgeValueLabel);
+        this.row();
+
+        this.add(bestElevenButton).colspan(2).pad(4);
         this.row();
         
         // Players List Component (wrapped in scroll pane for horizontal scrolling)
@@ -176,5 +192,19 @@ public class SquadScreenTable extends VisTable{
 
     public void setCurrentClub(Club currentClub) {
         this.displayedClub = currentClub;
+    }
+
+    private void applyBestEleven() {
+        if (displayedClub == null || currentGame == null || currentGame.getOwner() == null) {
+            return;
+        }
+        if (!displayedClub.getId().equals(currentGame.getOwner().getCurrentClubId())) {
+            return;
+        }
+        ClubTacticsSetup setup = BestElevenSelector.selectBestEleven(displayedClub);
+        displayedClub.setTacticsSetup(setup);
+        FormationTemplate template = FormationRegistry.getRequiredTemplate(setup.getFormationTemplateId());
+        clubNameValueLabel.setText(displayedClub.getName() + " — XI: "
+                + setup.orderedPlayerIds(template).size() + "/11");
     }
 }

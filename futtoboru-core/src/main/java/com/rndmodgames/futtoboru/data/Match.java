@@ -67,7 +67,13 @@ public class Match implements Serializable {
     
     // Match revenue (ticket sales for home club) (v1.0)
     private BigDecimal matchRevenue;
-    
+
+    /** Lineup snapshot used in simulation (Layer B — MVP-3). */
+    private java.util.List<Long> homeLineupPlayerIds = new java.util.ArrayList<>();
+    private java.util.List<Long> awayLineupPlayerIds = new java.util.ArrayList<>();
+    private String homeFormationTemplateId;
+    private String awayFormationTemplateId;
+
     // Match Type Constants
     public static final int FRIENDLY_MATCH = 1;
     public static final int LEAGUE_MATCH = 2;
@@ -263,5 +269,39 @@ public class Match implements Serializable {
     
     public void setBracketPath(String bracketPath) {
         this.bracketPath = bracketPath;
+    }
+
+    public java.util.List<Long> getHomeLineupPlayerIds() {
+        return homeLineupPlayerIds;
+    }
+
+    public void setHomeLineupPlayerIds(java.util.List<Long> homeLineupPlayerIds) {
+        this.homeLineupPlayerIds = homeLineupPlayerIds != null
+                ? new java.util.ArrayList<>(homeLineupPlayerIds) : new java.util.ArrayList<>();
+    }
+
+    public java.util.List<Long> getAwayLineupPlayerIds() {
+        return awayLineupPlayerIds;
+    }
+
+    public void setAwayLineupPlayerIds(java.util.List<Long> awayLineupPlayerIds) {
+        this.awayLineupPlayerIds = awayLineupPlayerIds != null
+                ? new java.util.ArrayList<>(awayLineupPlayerIds) : new java.util.ArrayList<>();
+    }
+
+    public String getHomeFormationTemplateId() {
+        return homeFormationTemplateId;
+    }
+
+    public void setHomeFormationTemplateId(String homeFormationTemplateId) {
+        this.homeFormationTemplateId = homeFormationTemplateId;
+    }
+
+    public String getAwayFormationTemplateId() {
+        return awayFormationTemplateId;
+    }
+
+    public void setAwayFormationTemplateId(String awayFormationTemplateId) {
+        this.awayFormationTemplateId = awayFormationTemplateId;
     }
 }

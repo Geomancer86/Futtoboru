@@ -140,6 +140,11 @@ public class Club implements Serializable {
     private Integer goalsScored = 0;
     private Integer goalsConceded = 0;
     private Integer points = 0; // For league competitions (3 for win, 1 for draw, 0 for loss)
+
+    /**
+     * Tactics / starting XI (Layer B — DATA-B1).
+     */
+    private com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup tacticsSetup;
     
     public Club() {
         
@@ -603,6 +608,21 @@ public class Club implements Serializable {
 
     public void setMonthExpenditure(BigDecimal monthExpenditure) {
         this.monthExpenditure = monthExpenditure != null ? monthExpenditure : BigDecimal.ZERO;
+    }
+
+    public com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup getTacticsSetup() {
+        return tacticsSetup;
+    }
+
+    public void setTacticsSetup(com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup tacticsSetup) {
+        this.tacticsSetup = tacticsSetup;
+    }
+
+    public com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup getTacticsSetupOrDefault() {
+        if (tacticsSetup == null) {
+            tacticsSetup = com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup.createDefault();
+        }
+        return tacticsSetup;
     }
 
     @Override

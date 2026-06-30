@@ -103,8 +103,8 @@ Formula: [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5.3](PM_V1_MVP_AND_1892_MASTER_PLA
 | ID | CM1 / genre | Code today | Missing work |
 |----|-------------|------------|--------------|
 | **MVP-10** | Save lineup per club | **Deferred** — add JSON fields in B1; formal versioning later — [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) |
-| **MVP-1** | Pick XI | Sim ignores selection | Model + default best-XI + squad UI hooks |
-| **MVP-3** | Match uses lineup | `MatchSimulator` squad avg | Read `MatchLineup`; reduce RNG |
+| **MVP-1** | Pick XI | Sim ignores selection | ✅ `BestElevenSelector`, Squad Best XI, `ClubTacticsSetup` |
+| **MVP-3** | Match uses lineup | `MatchSimulator` squad avg | ✅ v2 reads `MatchLineup` only |
 | **MVP-8** | Plausible champions | Accrington 8/10 | Re-tune after MVP-3; `TenSeasonReportIT` |
 | **MVP-4** | Crowds react to context | Random 60–90% | `AttendanceCalculator` + `mods/derbies.txt` |
 | **H-1** | Finances ↔ attendance | Sim overwrites attendance | Single attendance authority |
