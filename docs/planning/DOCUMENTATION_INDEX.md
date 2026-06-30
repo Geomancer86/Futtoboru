@@ -1,10 +1,11 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-06-28 (Layer B gap analysis + A-5 tests)
+**Last updated:** 2026-06-30 (PO eagle view simplified)
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
-> **PO eagle view:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) — horizons, progress, decisions, critical path  
+> **PO / PM meeting:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) — **3 decisions, traffic lights, one critical path**  
+> **PM detail:** [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md)  
 > **Execution detail:** [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)  
 > **CM legacy research is PAUSED** at Round 16. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
 
@@ -14,7 +15,8 @@ Use this index to navigate project documentation. **Start here** after cloning.
 
 | Document | Audience | Purpose |
 |----------|----------|---------|
-| [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, Sponsor, all leads** | **Eagle view** — horizons, progress, decisions, risks |
+| [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, PM** | **Meeting brief** — traffic lights, **3 decisions**, critical path |
+| [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) | **PM, QA, Tech** | Test matrix, soak protocol, backlog detail |
 | [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) | **PO, Match/Sim, UX** | **Layer B CM1 loop — gaps, design, phasing** |
 | [ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md](ANALYSIS_LAYER_B_MANAGEMENT_SIM_GAP_V1.md) | **PO, Match/Sim, QA** | **What's missing** — XI, tactics, match sim, condition; CM/FM map |
 | [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) | **Match/Sim** | **B5** — fitness, form, injuries, fatigue, morale (post–Layer B) |

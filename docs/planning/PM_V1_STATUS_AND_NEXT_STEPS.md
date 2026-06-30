@@ -3,7 +3,8 @@
 **Document type:** PM status report  
 **Date:** 2026-06-30  
 **Branch:** `analyze-ai-branch`  
-**Audience:** PO, PM, Tech lead, QA
+**Audience:** PO, PM, Tech lead, QA  
+**PO meeting brief:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) — **start there** (3 decisions, traffic lights)
 
 ---
 
@@ -14,7 +15,7 @@
 | **Is anything missing for 1888–89 FA Cup first round?** | **No** — all 32 historical first-round teams are in mod data ([ANALYSIS_FA_CUP_1888_89_PARTICIPANTS_V1.md](ANALYSIS_FA_CUP_1888_89_PARTICIPANTS_V1.md)). |
 | **Is the main E2E test working?** | **Yes** — `LeagueAndCupIT` completes league + cup with health gates (~3–5s). |
 | **Is the PR test suite green?** | **Yes** — `mvn test -pl futtoboru-core` → **100/100** (2026-06-30). |
-| **Ready to restart long soaks?** | **Yes, with tiered commands** — see §4. Cup scheduling blockers are fixed; use `-Psoak` for verbose logs. |
+| **Ready to restart long soaks?** | **Yes, with preflight** — see [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) and [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md). |
 | **Is v1 shippable?** | **Not yet** — automation green for core loop; manual QA + UI blockers remain. |
 
 ---
