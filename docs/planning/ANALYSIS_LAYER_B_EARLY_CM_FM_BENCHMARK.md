@@ -5,7 +5,8 @@
 **Status:** **Active** — defines **whole Layer B** scope vs genre  
 **Sources:** [CM1_REFERENCE.md](CM1_REFERENCE.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) · [FM_COMPETITIVE_BIBLE.md](FM_COMPETITIVE_BIBLE.md) (attendance only for B2)
 
-**Master plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)
+**Master plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)  
+**Depth audit (feature × level):** [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md) — use for “what is missing” and stub vs Core questions (e.g. injuries = **Minimal**, not CM93 Core)
 
 ---
 
@@ -24,28 +25,30 @@
 
 ## 2. Feature matrix — CM1 / early FM vs Futtoboru
 
-| # | CM1 / genre feature | CM1 | Early FM (attendance) | Futtoboru ID | Code | Unit | E2E | Long | Human |
-|---|---------------------|-----|----------------------|--------------|------|------|-----|------|-------|
-| 1 | Pick starting XI (11) | ✅ | ✅ | MVP-1 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 2 | Formation presets | ✅ | ✅ | MVP-2 | ✅ | ✅ | ✅ | — | ❌ |
-| 3 | Tactics menu | ✅ | ✅ | MVP-9 | ✅ | — | ✅ | — | ❌ |
-| 4 | Match uses your XI | ✅ | ✅ | MVP-3 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 5 | Match preview before kick-off | ✅ | ✅ | MVP-7 | ✅ | — | ✅ | — | ❌ |
-| 6 | Text/abstract result + score | ✅ | ✅ | MVP-6 | ✅ | — | ✅ | — | ❌ |
-| 7 | Named scorers on result | ✅ | ✅ | MVP-6 | ✅ | — | ✅ | — | ❌ |
-| 8 | **0–10 ratings** (genre first) | ✅ | ✅ | MVP-5 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 9 | Crowds react to context | ⚠️ implicit | ✅ | MVP-4 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 10 | Continue / advance time | ✅ | ✅ | A-2 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 11 | Fitness tracked | ✅ | ✅ | COND-1 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 12 | Morale tracked | ✅ | ✅ | COND-5 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 13 | Basic injuries | ⚠️ | CM93+ | COND-3 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 14 | Match fatigue / sharpness | ⚠️ | ✅ | COND-2,4 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 15 | Condition affects sim | ✅ | ✅ | COND-1+sim | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 16 | Squad shows fit / injured | ✅ | ✅ | COND UI | ✅ | — | — | — | ❌ |
-| 17 | Tactics + XI persist in save | ✅ | ✅ | DATA-B1 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 18 | Multi-season stability | ✅ | ✅ | MVP-8 | ✅ | — | ✅ | ✅ | ❌ |
+**Depth column:** None · Stub · Minimal · Partial · Core · Beyond — see [depth doc §2](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md#2-depth-scale).
 
-**Legend:** Code = implemented · Unit/E2E/Long/Human = test tier green
+| # | CM1 / genre feature | CM1 | Early FM (attendance) | Futtoboru ID | Depth | Code | Unit | E2E | Long | Human |
+|---|---------------------|-----|----------------------|--------------|-------|------|------|-----|------|-------|
+| 1 | Pick starting XI (11) | ✅ | ✅ | MVP-1 | **Core** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 2 | Formation presets | ✅ | ✅ | MVP-2 | **Partial** | ✅ | ✅ | ✅ | — | ❌ |
+| 3 | Tactics menu | ✅ | ✅ | MVP-9 | **Partial** | ✅ | — | ✅ | — | ❌ |
+| 4 | Match uses your XI | ✅ | ✅ | MVP-3 | **Core** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 5 | Match preview before kick-off | ✅ | ✅ | MVP-7 | **Partial** | ✅ | — | ✅ | — | ❌ |
+| 6 | Text/abstract result + score | ✅ | ✅ | MVP-6 | **Partial** | ✅ | — | ✅ | — | ❌ |
+| 7 | Named scorers on result | ✅ | ✅ | MVP-6 | **Core** | ✅ | — | ✅ | — | ❌ |
+| 8 | **0–10 ratings** (genre first) | ✅ | ✅ | MVP-5 | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 9 | Crowds react to context | ⚠️ implicit | ✅ | MVP-4 | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 10 | Continue / advance time | ✅ | ✅ | A-2 | **Core** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 11 | Fitness tracked | ✅ | ✅ | COND-1 | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 12 | Morale tracked | ✅ | ✅ | COND-5 | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 13 | Basic injuries | ⚠️ IJ icon | CM93 subsystem | COND-3 | **Minimal** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 14 | Match fatigue / sharpness | ⚠️ implicit | ✅ | COND-2,4 | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 15 | Condition affects sim | ✅ | ✅ | COND-1+sim | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 16 | Squad shows fit / injured | ✅ | ✅ | COND UI | **Partial** | ✅ | — | — | — | ❌ |
+| 17 | Tactics + XI persist in save | ✅ | ✅ | DATA-B1 | **Core** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 18 | Multi-season stability | ✅ | ✅ | MVP-8 | **Core** | ✅ | — | ✅ | ✅ | ❌ |
+
+**Legend:** Depth = implementation richness vs CM · Code = wired in build · Unit/E2E/Long/Human = test tier green
 
 ---
 
@@ -84,6 +87,7 @@
 |-----|------|
 | Preflight 60-season soak | L3 gate |
 | Human B-9 checklist | L4 |
+| Injury depth uplift (types, physio, result line) — see [depth doc §4.1](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md#41-injuries-the-example-feature) | Post B-9 |
 | Optional polish: tactics injury grey-out, result injury line | Post B-9 |
 
 ---
@@ -121,6 +125,7 @@
 | Date | Change |
 |------|--------|
 | 2026-06-30 | Whole-layer benchmark; B5 in scope; test tiers per feature |
+| 2026-06-30 | Depth column + link to ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md; injuries corrected to Minimal |
 
 ---
 

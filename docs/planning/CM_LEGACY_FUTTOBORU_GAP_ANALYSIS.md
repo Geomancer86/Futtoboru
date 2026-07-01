@@ -3,10 +3,12 @@
 **Document type:** Competitive gap / roadmap reference  
 **Branch audited:** `analyze-ai-branch` (v0.4.0-SNAPSHOT)  
 **Baseline:** Legacy CM feature set through **CM4** · **v1 target:** [CM1_REFERENCE.md](CM1_REFERENCE.md)  
-**Date:** 2025-06-25 · **Automation refresh:** 2026-06-27  
+**Date:** 2025-06-25 · **Automation refresh:** 2026-06-27 · **Layer B depth refresh:** 2026-06-30  
 **Overall legacy parity (CM4-equivalent systems):** **~12%** · **Core season-loop parity (CM1-level):** **~85% automated** · **CM1 management feel:** **~25%**
 
 > **⚠️ Superseded for season loop:** §3.2 rows on unwired `isLeagueComplete` / no rollover are **fixed** — see [SYSTEMS_AND_FEATURES_REGISTRY.md §0](SYSTEMS_AND_FEATURES_REGISTRY.md). **Active gap work:** [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) (Layer B — XI, sim, ratings, attendance).
+
+> **⚠️ Superseded for Layer B depth (2026-06-30):** §3.2–3.4 still describe pre–Layer B stubs (no XI, stub tactics, no injuries). **Authoritative feature × depth matrix:** [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md). Binary Layer B checklist: [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md).
 
 ---
 
@@ -18,9 +20,9 @@ Futtoboru on the feature branch is a **historical league prototype** with strong
 
 | Gap | CM era | Futtoboru today |
 |-----|--------|-----------------|
-| **Management loop thin** | CM1: lineup → match → **ratings** | Sim uses **full squad + RNG**; no XI, no 0–10 ratings |
-| **Tactics / pick XI** | CM1 formations menu | **Stub**; not in sidebar |
-| **Crowds not credible** | FM-style table context | **Random** attendance; H-1 overwrite |
+| **Management loop thin** | CM1: lineup → match → **ratings** | ✅ Layer B — XI + ratings + preview/kick-off (**Partial** depth on ratings/injuries) |
+| **Tactics / pick XI** | CM1 formations menu | ✅ **Partial** — 3 formations + manual XI; no team instructions |
+| **Crowds not credible** | FM-style table context | ✅ **Partial** — `AttendanceCalculator` (FM-inspired model) |
 
 **Season loop (was P0):** ✅ Proven — completion, rollover, 60-season soak. See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md).
 

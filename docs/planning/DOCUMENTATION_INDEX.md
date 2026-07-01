@@ -22,6 +22,7 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) | **PM, QA, Tech** | Test matrix, soak protocol, backlog detail |
 | [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) | **PO, PM, all eng** | **Whole Layer B** — status, sprints, exit criteria |
 | [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md) | **PO, PM, QA** | CM1/FM feature matrix — done vs missing per tier |
+| [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md) | **PO, PM, all leads** | **Feature depth audit** — stub vs Core; 52-row CM1/CM93 gap table; injury deep dive |
 | [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) | **QA, PM** | Unit → E2E → long → human QA order |
 | [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) | **Match/Sim, UX** | B3 — ratings, preview flow, result UI |
 | [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) | **Platform/UX** | B4 + manual XI — Tactics screen, sidebar |
