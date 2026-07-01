@@ -180,6 +180,11 @@ public class SquadScreenTable extends VisTable{
         }
         
         // Update Players List Component
+        java.util.Set<Long> xiIds = new java.util.HashSet<>();
+        ClubTacticsSetup setup = displayedClub.getTacticsSetupOrDefault();
+        FormationTemplate template = FormationRegistry.getRequiredTemplate(setup.getFormationTemplateId());
+        xiIds.addAll(setup.orderedPlayerIds(template));
+        playersList.setStartingXiPlayerIds(xiIds);
         playersList.setCurrentPlayers(displayedClub.getPlayers());
         
         //
@@ -201,10 +206,12 @@ public class SquadScreenTable extends VisTable{
         if (!displayedClub.getId().equals(currentGame.getOwner().getCurrentClubId())) {
             return;
         }
-        ClubTacticsSetup setup = BestElevenSelector.selectBestEleven(displayedClub);
+        ClubTacticsSetup setup = BestElevenSelector.selectBestEleven(displayedClub,
+                game.getCurrentGame().getGameDate().toLocalDate());
         displayedClub.setTacticsSetup(setup);
         FormationTemplate template = FormationRegistry.getRequiredTemplate(setup.getFormationTemplateId());
         clubNameValueLabel.setText(displayedClub.getName() + " — XI: "
                 + setup.orderedPlayerIds(template).size() + "/11");
+        updateDynamicComponents();
     }
 }

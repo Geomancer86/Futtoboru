@@ -96,6 +96,8 @@ public class MatchSimulator {
         
         // Generate scorers from starting XI (MVP-3)
         generateScorers(match, homeLineup, homeClub, awayLineup, awayClub, homeScore, awayScore);
+
+        applyMatchRatings(match, homeLineup, homeClub, awayLineup, awayClub, homeScore, awayScore);
         
         // H-1: keep ticket-sales attendance; only calculate if none sold yet (MVP-4)
         applyFinalAttendance(match, homeClub, awayClub);
@@ -203,16 +205,23 @@ public class MatchSimulator {
 
         for (int i = 0; i < homeScore; i++) {
             Player scorer = pickWeightedScorer(homeLineup, homeClub);
-            if (scorer != null && scorer.getPerson() != null) {
-                match.getHomeScorerIds().add(scorer.getPerson().getId());
+            if (scorer != null && scorer.getId() != null) {
+                match.getHomeScorerIds().add(scorer.getId());
             }
         }
         for (int i = 0; i < awayScore; i++) {
             Player scorer = pickWeightedScorer(awayLineup, awayClub);
-            if (scorer != null && scorer.getPerson() != null) {
-                match.getAwayScorerIds().add(scorer.getPerson().getId());
+            if (scorer != null && scorer.getId() != null) {
+                match.getAwayScorerIds().add(scorer.getId());
             }
         }
+    }
+
+    private void applyMatchRatings(Match match, MatchLineup homeLineup, Club homeClub,
+            MatchLineup awayLineup, Club awayClub, int homeScore, int awayScore) {
+        match.setHomePlayerRatings(MatchRatingsCalculator.rateLineup(match, homeLineup, homeClub, true));
+        match.setAwayPlayerRatings(MatchRatingsCalculator.rateLineup(match, awayLineup, awayClub, false));
+        PlayerConditionService.applyPostMatchEffects(match, homeLineup, homeClub, awayLineup, awayClub);
     }
 
     private Player pickWeightedScorer(MatchLineup lineup, Club club) {

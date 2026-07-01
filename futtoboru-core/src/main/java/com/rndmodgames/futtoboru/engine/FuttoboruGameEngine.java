@@ -21,6 +21,7 @@ import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.engine.finances.ExpenseCalculator;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
+import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -195,120 +196,111 @@ public class FuttoboruGameEngine {
     }
     
     /**
-     * Process match result - simulate match and update game state
-     * 
-     * v1.0: Uses MatchSimulator to generate actual match results
+     * Simulates the user's next playable match (preview kick-off flow).
+     *
+     * @return the simulated match, or null if none playable
+     */
+    public Match kickOffCurrentClubMatch() {
+        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
+        Match nextMatch = findNextPlayableMatchForClub(currentClub);
+        if (nextMatch == null) {
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine",
+                    "No playable match to kick off for club: "
+                            + (currentClub != null ? currentClub.getName() : "null"));
+            return null;
+        }
+        return kickOffMatch(nextMatch);
+    }
+
+    /**
+     * @deprecated use {@link #kickOffCurrentClubMatch()}
      */
     public void getMatchResult() {
-        
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "MATCH RESULT - SIMULATING MATCH");
-        
-        // Get Current Club
-        Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
-        
-        // Null check: unemployed players don't have a club
-        if (currentClub == null || currentClub.getScheduledMatches() == null) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Cannot process match result: player is unemployed (no club)");
-            return;
-        }
-        
-        // Sort matches chronologically
-        Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
-                                                             .compareTo(match2.getMatchDateTime());
-        Collections.sort(currentClub.getScheduledMatches(), comparatorChronological);
-        
-        // Check we have at least one match
-        if (currentClub.getScheduledMatches().isEmpty()) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "No scheduled matches to simulate");
-            return;
-        }
-        
-        // Find the next playable match (both teams determined, not played, date is today or past)
-        Match nextMatch = null;
-        LocalDateTime currentDate = gameInstance.getCurrentGame().getGameDate();
-        
-        for (Match match : currentClub.getScheduledMatches()) {
-            // Skip if teams not determined
-            if (match.getHomeClubId() == null || match.getAwayClubId() == null) {
-                continue;
-            }
-            
-            // Skip if already played
-            if (match.getIsPlayed() != null && match.getIsPlayed()) {
-                continue;
-            }
-            
-            // Skip if match date is in the future
-            if (match.getMatchDateTime() != null && match.getMatchDateTime().isAfter(currentDate)) {
-                continue;
-            }
-            
-            // This match is playable
-            nextMatch = match;
-            break;
-        }
-        
+        kickOffCurrentClubMatch();
+    }
+
+    public Match kickOffMatch(Match nextMatch) {
         if (nextMatch == null) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "No playable matches found for club: " + currentClub.getName());
-            return;
+            return null;
         }
-        
-        // Create match simulator
+
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "MATCH KICK OFF - SIMULATING MATCH");
+
         MatchSimulator simulator = new MatchSimulator(gameInstance);
-        
-        // Simulate the match
         boolean simulated = simulator.simulateMatch(nextMatch);
-        
         if (!simulated) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Failed to simulate match");
-            return;
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine",
+                    "Failed to simulate match");
+            return null;
         }
-        
-        // Get both clubs (home and away) to update their match lists
+
+        finalizePlayedMatch(nextMatch);
+
+        if (messageManager != null) {
+            Club homeClub = gameInstance.getCurrentGame().getClubById(nextMatch.getHomeClubId());
+            Club awayClub = gameInstance.getCurrentGame().getClubById(nextMatch.getAwayClubId());
+            if (homeClub != null && awayClub != null) {
+                com.rndmodgames.futtoboru.data.Message matchResultMessage =
+                        messageManager.createMatchResultMessage(nextMatch, homeClub, awayClub);
+                if (matchResultMessage != null) {
+                    messageManager.deliverMessage(matchResultMessage);
+                }
+            }
+        }
+
+        if (mainMenuManager != null) {
+            mainMenuManager.updateDynamicComponents();
+        }
+        return nextMatch;
+    }
+
+    private void finalizePlayedMatch(Match nextMatch) {
         Club homeClub = gameInstance.getCurrentGame().getClubById(nextMatch.getHomeClubId());
         Club awayClub = gameInstance.getCurrentGame().getClubById(nextMatch.getAwayClubId());
-        
-        // Update home club's match lists
+
         if (homeClub != null) {
             homeClub.getScheduledMatches().remove(nextMatch);
             if (!homeClub.getPlayedMatches().contains(nextMatch)) {
                 homeClub.getPlayedMatches().add(nextMatch);
             }
         }
-        
-        // Update away club's match lists
         if (awayClub != null) {
             awayClub.getScheduledMatches().remove(nextMatch);
             if (!awayClub.getPlayedMatches().contains(nextMatch)) {
                 awayClub.getPlayedMatches().add(nextMatch);
             }
         }
-        
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "Match simulated: " + (homeClub != null ? homeClub.getName() : "Unknown") + 
-                          " " + nextMatch.getHomeGoals() + " - " + nextMatch.getAwayGoals() + 
-                          " " + (awayClub != null ? awayClub.getName() : "Unknown"));
-        
-        // Create match result message for both clubs
-        if (messageManager != null && homeClub != null && awayClub != null) {
-            com.rndmodgames.futtoboru.data.Message matchResultMessage = 
-                messageManager.createMatchResultMessage(nextMatch, homeClub, awayClub);
-            
-            if (matchResultMessage != null) {
-                // Deliver immediately to both clubs' inboxes
-                // For now, we'll send to current club if they're involved
-                // TODO: In future, each club should have their own inbox or we filter by club
-                messageManager.deliverMessage(matchResultMessage);
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Created match result message for " + 
-                           homeClub.getName() + " vs " + awayClub.getName());
-            }
-        }
-        
-        // Update UI
-        if (mainMenuManager != null) {
-            mainMenuManager.updateDynamicComponents();
-        }
+
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "Match simulated: "
+                + (homeClub != null ? homeClub.getName() : "Unknown") + " " + nextMatch.getHomeGoals() + " - "
+                + nextMatch.getAwayGoals() + " " + (awayClub != null ? awayClub.getName() : "Unknown"));
     }
-    
+
+    public Match findNextPlayableMatchForClub(Club club) {
+        if (club == null || club.getScheduledMatches() == null) {
+            return null;
+        }
+        Comparator<Match> comparatorChronological = (match1, match2) -> match1.getMatchDateTime()
+                .compareTo(match2.getMatchDateTime());
+        Collections.sort(club.getScheduledMatches(), comparatorChronological);
+
+        LocalDateTime currentDate = gameInstance.getCurrentGame().getGameDate();
+        for (Match match : club.getScheduledMatches()) {
+            if (match.getHomeClubId() == null || match.getAwayClubId() == null) {
+                continue;
+            }
+            if (match.getIsPlayed() != null && match.getIsPlayed()) {
+                continue;
+            }
+            if (match.getMatchDateTime() != null
+                    && match.getMatchDateTime().toLocalDate().isAfter(currentDate.toLocalDate())) {
+                continue;
+            }
+            return match;
+        }
+        return null;
+    }
+
     /**
      * TODO: Continue Game should be fully automatic, the Engine will take care of how long the game has to move forward
      *  
@@ -408,6 +400,8 @@ public class FuttoboruGameEngine {
          * TODO: Replace with proper training system in Phase 3
          */
         updatePlayerAttributesDaily();
+
+        PlayerConditionService.tickDaily(gameInstance.getCurrentGame());
         
         /**
          * Create Weekly Attribute Snapshots (v1.0)
@@ -840,6 +834,14 @@ public class FuttoboruGameEngine {
                     }
                     
                     if (shouldSimulate) {
+                        // Defer player club matches to preview / kick-off (MVP-7)
+                        Club playerClub = game.getCurrentClub();
+                        if (playerClub != null && involvesClub(match, playerClub.getId())
+                                && match.getMatchDateTime() != null
+                                && match.getMatchDateTime().toLocalDate().equals(targetDate)) {
+                            continue;
+                        }
+
                         // CRITICAL: Skip LEAGUE matches if there's a mandatory unread LEAGUE_DRAW message
                         // Draws must ALWAYS be performed from the draw screen, never automatically
                         if (match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH) {
@@ -962,5 +964,12 @@ public class FuttoboruGameEngine {
         if (matchesSimulated > 0) {
             DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Simulated " + matchesSimulated + " matches for " + targetDate);
         }
+    }
+
+    private static boolean involvesClub(Match match, Long clubId) {
+        if (match == null || clubId == null) {
+            return false;
+        }
+        return clubId.equals(match.getHomeClubId()) || clubId.equals(match.getAwayClubId());
     }
 }

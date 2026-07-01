@@ -368,4 +368,28 @@ public class Player implements Serializable {
     public void setPlayerProfession(PlayerProfession playerProfession) {
         this.playerProfession = playerProfession;
     }
+
+    /** Layer B5 — fitness, morale, injury. */
+    private PlayerCondition condition;
+
+    public PlayerCondition getCondition() {
+        return condition;
+    }
+
+    public void setCondition(PlayerCondition condition) {
+        this.condition = condition;
+    }
+
+    @Override
+    public String toString() {
+        if (person != null) {
+            String first = person.getName() != null ? person.getName() : "";
+            String last = person.getLastname() != null ? person.getLastname() : "";
+            String label = (first + " " + last).trim();
+            if (!label.isEmpty()) {
+                return label;
+            }
+        }
+        return id != null ? "Player#" + id : "Player";
+    }
 }

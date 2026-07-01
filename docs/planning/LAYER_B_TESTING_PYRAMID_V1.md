@@ -69,13 +69,13 @@ Preflight: [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)
 | `AttendanceCalculatorTest` | MVP-4 | ✅ |
 | `EconomyHealthMonitorTest` | ECON-B2 | ✅ |
 | `LeagueStandingsManagerTest` | A-5 | ✅ |
-| `MatchRatingsTest` | MVP-5 | ❌ |
-| `FormationSimWeightTest` | MVP-2 | ❌ |
-| `PlayerFitnessTest` | COND-1 | ❌ |
-| `PlayerFormTest` | COND-2 | ❌ |
-| `InjuryGeneratorTest` | COND-3 | ❌ |
-| `MoraleUpdateTest` | COND-5 | ❌ |
-| `FatigueRecoveryTest` | COND-4 | ❌ |
+| `MatchRatingsTest` | MVP-5 | ✅ |
+| `FormationSimWeightTest` | MVP-2 | ✅ |
+| `PlayerFitnessTest` | COND-1 | ✅ |
+| `PlayerFormTest` | COND-2 | ❌ (deferred — sharpness UI) |
+| `InjuryGeneratorTest` | COND-3 | ✅ |
+| `MoraleUpdateTest` | COND-5 | ✅ |
+| `FatigueRecoveryTest` | COND-4 | ❌ (covered indirectly by tick + soak) |
 
 ### L2 — E2E / IT ✅ / ❌
 
@@ -86,12 +86,12 @@ Preflight: [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)
 | `AttendanceModelIT` | MVP-4 | ✅ |
 | `AttendanceOverwriteIT` | H-1 | ✅ |
 | `LongRunEconomySoakIT` | ECON-B2 | ✅ |
-| `MatchFeedbackIT` | MVP-5, MVP-6 | ❌ |
-| `MatchLineupPreviewIT` | MVP-7 | ❌ |
-| `Cm1ManagementLoopIT` | B1–B4 loop | ❌ **new** |
-| `PlayerConditionSaveLoadIT` | COND | ❌ **new** |
-| `FitnessSimModifierIT` | COND-1 | ❌ |
-| `InjuredPlayerLineupIT` | COND-3 | ❌ |
+| `MatchFeedbackIT` | MVP-5, MVP-6 | ✅ |
+| `MatchLineupPreviewIT` | MVP-7 | ✅ |
+| `Cm1ManagementLoopIT` | B1–B4 loop | ✅ |
+| `PlayerConditionSaveLoadIT` | COND | ✅ |
+| `FitnessSimModifierIT` | COND-1 | ✅ |
+| `InjuredPlayerLineupIT` | COND-3 | ✅ |
 
 #### `Cm1ManagementLoopIT` (spec)
 
@@ -117,7 +117,7 @@ Headless employed career, one match:
 | `MultiSeasonLeagueAndCupSoakIT` | Cup + league | ✅ nightly |
 | `LongRunSoakIT` | 60 seasons league | ✅ soak profile |
 | `LongRunEconomySoakIT` | FL solvency | ✅ |
-| **`LayerBMultiSeasonSoakIT`** | **5–10 seasons: XI persist, ratings every match, no condition NaN, health clean** | ❌ **new** |
+| **`LayerBMultiSeasonSoakIT`** | **5–10 seasons: XI persist, ratings every match, no condition NaN, health clean** | ✅ nightly (5 seasons) |
 
 Run `LayerBMultiSeasonSoakIT` in **`-Pnightly`** until stable; optional **`-Psoak`** extension later.
 

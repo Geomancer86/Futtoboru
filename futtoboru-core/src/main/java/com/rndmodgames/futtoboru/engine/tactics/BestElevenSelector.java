@@ -9,6 +9,7 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup;
 import com.rndmodgames.futtoboru.data.tactics.FormationSlot;
 import com.rndmodgames.futtoboru.data.tactics.FormationTemplate;
+import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
 
 /**
  * Picks starting XI by slot-weighted attribute scores (MVP-1).
@@ -22,15 +23,28 @@ public final class BestElevenSelector {
         return selectBestEleven(club, FormationRegistry.DEFAULT_FORMATION_ID);
     }
 
+    public static ClubTacticsSetup selectBestEleven(Club club, java.time.LocalDate asOf) {
+        return selectBestEleven(club, FormationRegistry.DEFAULT_FORMATION_ID, asOf);
+    }
+
     public static ClubTacticsSetup selectBestEleven(Club club, String formationId) {
-        return fillLineup(club, formationId, true);
+        return selectBestEleven(club, formationId, java.time.LocalDate.now());
+    }
+
+    public static ClubTacticsSetup selectBestEleven(Club club, String formationId, java.time.LocalDate asOf) {
+        return fillLineup(club, formationId, true, asOf);
     }
 
     public static ClubTacticsSetup selectWorstEleven(Club club, String formationId) {
-        return fillLineup(club, formationId, false);
+        return selectWorstEleven(club, formationId, java.time.LocalDate.now());
     }
 
-    private static ClubTacticsSetup fillLineup(Club club, String formationId, boolean pickBest) {
+    public static ClubTacticsSetup selectWorstEleven(Club club, String formationId, java.time.LocalDate asOf) {
+        return fillLineup(club, formationId, false, asOf);
+    }
+
+    private static ClubTacticsSetup fillLineup(Club club, String formationId, boolean pickBest,
+            java.time.LocalDate asOf) {
         FormationTemplate template = FormationRegistry.getRequiredTemplate(formationId);
         ClubTacticsSetup setup = new ClubTacticsSetup();
         setup.setFormationTemplateId(formationId);
@@ -47,6 +61,9 @@ public final class BestElevenSelector {
 
             for (Player player : club.getPlayers()) {
                 if (player == null || player.getId() == null || used.contains(player.getId())) {
+                    continue;
+                }
+                if (!PlayerConditionService.isAvailableForLineup(player, asOf)) {
                     continue;
                 }
                 double score = FormationRegistry.scorePlayerForSlot(player, slot);

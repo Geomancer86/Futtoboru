@@ -26,7 +26,10 @@ public final class MatchLineupBuilder {
         FormationTemplate template = FormationRegistry.getRequiredTemplate(setup.getFormationTemplateId());
 
         if (!setup.hasCompleteValidLineup(club, template)) {
-            setup = BestElevenSelector.selectBestEleven(club, setup.getFormationTemplateId());
+            java.time.LocalDate asOf = match != null && match.getMatchDateTime() != null
+                    ? match.getMatchDateTime().toLocalDate()
+                    : java.time.LocalDate.now();
+            setup = BestElevenSelector.selectBestEleven(club, setup.getFormationTemplateId(), asOf);
             club.setTacticsSetup(setup);
         }
 

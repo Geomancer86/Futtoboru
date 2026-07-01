@@ -23,7 +23,7 @@ Pick XI + formation (UI)
     → THEN human CM1 walkthrough (B-9)
 ```
 
-**Overall progress: ~42%** — see benchmark doc for per-feature matrix.
+**Overall progress: ~88%** — see benchmark doc for per-feature matrix.
 
 **Out of Layer B:** transfers, training menus, 2D engine, 1892, world news, public release.
 
@@ -33,19 +33,19 @@ Pick XI + formation (UI)
 
 | Phase | Feature scope | Status |
 |-------|---------------|--------|
-| **B1** | XI + sim v2 + save | Engine ✅ · UI ⚠️ Best XI only |
+| **B1** | XI + sim v2 + save | Engine ✅ · Tactics XI UI ✅ |
 | **B2** | Attendance + economy | ✅ Complete + tested |
-| **B3** | Ratings + preview/result flow | ❌ Not started — design ready |
-| **B4** | Tactics menu + formation picker | ❌ Registry ✅ · UI ❌ |
-| **B5** | Fitness, morale, injuries (CM1/CM93) | ❌ Design ready — **in Layer B scope** |
+| **B3** | Ratings + preview/result flow | ✅ Engine + UI · L1/L2 green |
+| **B4** | Tactics menu + formation picker | ✅ UI + sidebar · L1 green |
+| **B5** | Fitness, morale, injuries (CM1/CM93) | ✅ Engine + partial UI · L1/L2 green |
 
 ### Testing tiers
 
 | Tier | Status |
 |------|--------|
-| **L1 Unit** | B1/B2 ✅ · B3/B4/B5 ❌ |
-| **L2 E2E** | Partial ✅ · loop/preview/condition ❌ |
-| **L3 Long-term** | Season soaks ✅ · **`LayerBMultiSeasonSoakIT`** ❌ |
+| **L1 Unit** | B1–B5 ✅ (PR gate 112 tests) |
+| **L2 E2E** | Loop/preview/condition ✅ |
+| **L3 Long-term** | `LayerBMultiSeasonSoakIT` ✅ nightly · preflight soak pending PM sign-off |
 | **L4 Human** | **Blocked** until L1–L3 green |
 
 ---

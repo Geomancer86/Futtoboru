@@ -1,6 +1,8 @@
 package com.rndmodgames.futtoboru.tables.match.result;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -8,6 +10,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 
 /**
@@ -168,6 +171,87 @@ public class MatchResultScreenTable extends VisTable {
             this.add("Capacity:").padRight(10);
             this.add(String.valueOf(homeClub.getStadium().getCapacity())).left();
         }
+
+        appendScorers(homeClub, awayClub, match);
+        appendRatings(currentClub, match);
+    }
+
+    private void appendScorers(Club homeClub, Club awayClub, Match match) {
+        List<Long> homeScorers = match.getHomeScorerIds();
+        List<Long> awayScorers = match.getAwayScorerIds();
+        if ((homeScorers == null || homeScorers.isEmpty()) && (awayScorers == null || awayScorers.isEmpty())) {
+            return;
+        }
+
+        this.row().padTop(15).padBottom(10);
+        this.addSeparator().colspan(3);
+        this.row().padTop(10);
+        VisLabel scorersHeader = new VisLabel("SCORERS");
+        scorersHeader.setFontScale(1.1f);
+        this.add(scorersHeader).colspan(3).padBottom(8);
+
+        if (homeScorers != null && !homeScorers.isEmpty()) {
+            this.row();
+            this.add(homeClub.getName() + ":").padRight(10);
+            this.add(formatScorerList(homeClub, homeScorers)).colspan(2).left();
+        }
+        if (awayScorers != null && !awayScorers.isEmpty()) {
+            this.row().padTop(4);
+            this.add(awayClub.getName() + ":").padRight(10);
+            this.add(formatScorerList(awayClub, awayScorers)).colspan(2).left();
+        }
+    }
+
+    private void appendRatings(Club currentClub, Match match) {
+        if (currentClub == null || match == null) {
+            return;
+        }
+        Map<Long, Float> ratings = null;
+        Club ratedClub = currentClub;
+        if (currentClub.getId().equals(match.getHomeClubId())) {
+            ratings = match.getHomePlayerRatings();
+        } else if (currentClub.getId().equals(match.getAwayClubId())) {
+            ratings = match.getAwayPlayerRatings();
+        }
+        if (ratings == null || ratings.isEmpty()) {
+            return;
+        }
+
+        this.row().padTop(15).padBottom(10);
+        this.addSeparator().colspan(3);
+        this.row().padTop(10);
+        VisLabel ratingsHeader = new VisLabel("PLAYER RATINGS");
+        ratingsHeader.setFontScale(1.1f);
+        this.add(ratingsHeader).colspan(3).padBottom(8);
+
+        for (Map.Entry<Long, Float> entry : ratings.entrySet()) {
+            this.row().padTop(2);
+            this.add(playerName(ratedClub, entry.getKey())).padRight(10);
+            this.add(String.format("%.1f", entry.getValue())).left();
+        }
+    }
+
+    private String formatScorerList(Club club, List<Long> scorerIds) {
+        StringBuilder builder = new StringBuilder();
+        for (Long scorerId : scorerIds) {
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            builder.append(playerName(club, scorerId));
+        }
+        return builder.toString();
+    }
+
+    private String playerName(Club club, Long playerId) {
+        if (club == null || playerId == null || club.getPlayers() == null) {
+            return "?";
+        }
+        for (Player player : club.getPlayers()) {
+            if (player != null && playerId.equals(player.getId()) && player.getPerson() != null) {
+                return player.getPerson().getName() + " " + player.getPerson().getLastname();
+            }
+        }
+        return "Player#" + playerId;
     }
 
     private Match resolveDisplayMatch(Club currentClub) {

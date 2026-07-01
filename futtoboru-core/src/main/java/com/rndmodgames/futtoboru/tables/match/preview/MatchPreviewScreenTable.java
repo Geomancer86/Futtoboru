@@ -1,136 +1,140 @@
 package com.rndmodgames.futtoboru.tables.match.preview;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import com.badlogic.gdx.Game;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup;
+import com.rndmodgames.futtoboru.data.tactics.FormationTemplate;
+import com.rndmodgames.futtoboru.data.tactics.MatchLineup;
+import com.rndmodgames.futtoboru.engine.tactics.FormationRegistry;
+import com.rndmodgames.futtoboru.engine.tactics.MatchLineupBuilder;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * Match Preview Screen Table v1
- * 
- *  - basic:
- *      - home and away clubs TBD
- *      - venue TBD
- *      - tickets/attendance/money TBD
- *      - basic players/squads/lineups/etc TBD
- *      
- *      - estimated odds TBD
- *      - league position TBD
- *      - recent form TBD
- *      
- *      - prefered formation TBD
- *      
- *      - previous meetings TBD
- *      
- *      - team news TBD 
- *          - injuries TBD 
- *          - red cards TBD
- *          
- *      - opponent report component TBD
- *      
- *      - match information TBD
- *          - kick off time at stadium TBD
- *          - tickets sold out of / ticket capacity TBD
- *          - pitch status / etc TBD
- *          
- *          - weather TBD
- *          
- *          - referee TBD
- *          
- *      - fixtures component per team TBD
- *      
- *      - todays fixtures component TBD
- *      
- *      
- *      
- *      getting into this screen will change the button to MATCH RESULT
- *          
- *      after match result screen gets back to CONTINUE GAME
- * 
- * Sources:
- * 
- *  - https://2.bp.blogspot.com/-WhZ0gY2RBG0/WeoXOMZDBgI/AAAAAAAAYrg/xmfeVwfNXHcrHaJKmlGwOb8-IV3xebDlACLcBGAs/s1600/Match%2BPreview.png
- *  - https://content.invisioncic.com/Msigames/monthly_2020_12/A1FB6613-5699-42A5-96C5-7C88795EBF61.png.7a77a8b94d1f3590ae38c7d64c248d3d.png
- *  - https://assets2.ignimgs.com/2007/10/12/worldwide-soccer-manager-2008-20071012055657770-2159799.jpg
- * 
- * @author Geomancer86
+ * Match preview — fixture, lineups, kick off (Layer B3).
  */
 public class MatchPreviewScreenTable extends VisTable {
 
-    //
-    Futtoboru game;
-    
-    // Dynamic Components
-    VisTable mainTable = new VisTable(true);
-    
+    private final Futtoboru game;
+    private Match pendingMatch;
+
     public MatchPreviewScreenTable(Game parent) {
-        
-        //
         super(true);
-        
         this.game = (Futtoboru) parent;
     }
-    
-    // 
+
     public void updateDynamicComponents() {
-        
         this.clear();
-        
-        // Find the next playable match (both teams determined, not played, date is today or past)
-        Match match = null;
-        Club currentClub = game.getCurrentGame().getCurrentClub();
-        java.time.LocalDateTime today = game.getCurrentGame().getGameDate();
-        
-        if (currentClub.getScheduledMatches() != null) {
-            for (Match m : currentClub.getScheduledMatches()) {
-                if (m == null) continue;
-                
-                // Skip matches where teams are not yet determined (future round cup matches)
-                if (m.getHomeClubId() == null || m.getAwayClubId() == null) {
-                    continue;
-                }
-                
-                // Skip matches already played
-                if (m.getIsPlayed() != null && m.getIsPlayed()) {
-                    continue;
-                }
-                
-                // Check if match date is today or in the past
-                if (m.getMatchDateTime() != null && 
-                    (m.getMatchDateTime().toLocalDate().isBefore(today.toLocalDate()) ||
-                     m.getMatchDateTime().toLocalDate().isEqual(today.toLocalDate()))) {
-                    match = m;
-                    break; // Use first playable match found
-                }
-            }
-        }
-        
-        if (match == null) {
+        pendingMatch = resolvePlayableMatch();
+        if (pendingMatch == null) {
             this.row();
             this.add("No upcoming match available");
             return;
         }
-        
-        // Get clubs with null checks
-        Club homeClub = match.getHomeClubId() != null ? 
-            DatabaseLoader.getClubById(match.getHomeClubId()) : null;
-        Club awayClub = match.getAwayClubId() != null ? 
-            DatabaseLoader.getClubById(match.getAwayClubId()) : null;
-        
+
+        Club homeClub = DatabaseLoader.getClubById(pendingMatch.getHomeClubId());
+        Club awayClub = DatabaseLoader.getClubById(pendingMatch.getAwayClubId());
         if (homeClub == null || awayClub == null) {
             this.row();
             this.add("Match teams not yet determined");
-            if (match.getBracketPath() != null) {
-                this.row();
-                this.add("Match: " + match.getBracketPath());
-            }
             return;
         }
 
-        //
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
+        String matchDate = pendingMatch.getMatchDateTime() != null
+                ? pendingMatch.getMatchDateTime().format(dateFormatter)
+                : "Unknown";
+
         this.row();
-        this.add(homeClub.getName() + " vs " + awayClub.getName());
+        VisLabel header = new VisLabel("MATCH PREVIEW");
+        header.setFontScale(1.3f);
+        this.add(header).colspan(2).padBottom(12);
+        this.row();
+        this.add(homeClub.getName() + " vs " + awayClub.getName()).colspan(2);
+        this.row().padTop(4);
+        this.add("Date: " + matchDate).colspan(2).left();
+
+        Club currentClub = game.getCurrentGame().getCurrentClub();
+        appendLineupSection("Your XI", currentClub, MatchLineupBuilder.buildForClub(currentClub, pendingMatch));
+        Club opponent = currentClub.getId().equals(homeClub.getId()) ? awayClub : homeClub;
+        appendLineupSection("Opponent XI", opponent, MatchLineupBuilder.buildForClub(opponent, pendingMatch));
+
+        VisTextButton kickOffButton = new VisTextButton(LanguageModLoader.getValue("kick_off"));
+        kickOffButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
+            @Override
+            public void changed(com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent event,
+                    com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                kickOffMatch();
+            }
+        });
+        this.row().padTop(16);
+        this.add(kickOffButton).colspan(2);
+    }
+
+    private void appendLineupSection(String title, Club club, MatchLineup lineup) {
+        if (club == null || lineup == null) {
+            return;
+        }
+        FormationTemplate template = FormationRegistry.getRequiredTemplate(lineup.getFormationTemplateId());
+
+        this.row().padTop(12);
+        this.add(title + " (" + template.getDisplayName() + ")").colspan(2).left();
+        this.row().padTop(4);
+
+        VisTable lineupTable = new VisTable(true);
+        for (int i = 0; i < template.getSlots().size(); i++) {
+            String slotId = template.getSlots().get(i).getSlotId();
+            Long playerId = null;
+            if (lineup.getPlayerIdsInSlotOrder() != null && i < lineup.getPlayerIdsInSlotOrder().size()) {
+                playerId = lineup.getPlayerIdsInSlotOrder().get(i);
+            }
+            lineupTable.add(slotId).width(60);
+            lineupTable.add(resolvePlayerName(club, playerId)).growX().left();
+            lineupTable.row();
+        }
+        this.add(lineupTable).colspan(2).growX().fillX();
+    }
+
+    private void kickOffMatch() {
+        if (pendingMatch == null) {
+            return;
+        }
+        Match played = game.getGameEngine().kickOffMatch(pendingMatch);
+        if (played == null) {
+            return;
+        }
+        MainMenuManager menuManager = game.getGameEngine().getMainMenuManager();
+        if (menuManager != null) {
+            menuManager.showMatchResult(played);
+        }
+    }
+
+    private Match resolvePlayableMatch() {
+        Club currentClub = game.getCurrentGame().getCurrentClub();
+        if (currentClub == null) {
+            return null;
+        }
+        return game.getGameEngine().findNextPlayableMatchForClub(currentClub);
+    }
+
+    private String resolvePlayerName(Club club, Long playerId) {
+        if (club == null || playerId == null || club.getPlayers() == null) {
+            return "-";
+        }
+        for (com.rndmodgames.futtoboru.data.Player player : club.getPlayers()) {
+            if (player != null && playerId.equals(player.getId()) && player.getPerson() != null) {
+                return player.getPerson().getName() + " " + player.getPerson().getLastname();
+            }
+        }
+        return "Player#" + playerId;
     }
 }

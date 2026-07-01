@@ -5,6 +5,7 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.tactics.FormationSlot;
 import com.rndmodgames.futtoboru.data.tactics.FormationTemplate;
 import com.rndmodgames.futtoboru.data.tactics.MatchLineup;
+import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
 
 /**
  * Computes team strength from a {@link MatchLineup} and formation slot weights (MVP-3).
@@ -36,7 +37,8 @@ public final class LineupStrengthCalculator {
             if (player == null) {
                 continue;
             }
-            total += FormationRegistry.scorePlayerForSlot(player, slot);
+            total += FormationRegistry.scorePlayerForSlot(player, slot)
+                    * PlayerConditionService.fitnessStrengthFactor(player);
             counted++;
         }
         if (counted == 0) {

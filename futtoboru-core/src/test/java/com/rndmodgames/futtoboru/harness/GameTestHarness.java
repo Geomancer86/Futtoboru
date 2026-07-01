@@ -18,7 +18,10 @@ import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerCondition;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup;
 import com.rndmodgames.futtoboru.data.tactics.FormationTemplate;
@@ -190,8 +193,8 @@ public final class GameTestHarness {
                     "Mandatory draw gate active — call acknowledgeMandatoryDraws() first");
         }
         if (action == FuttoboruGameEngine.MATCH_PREVIEW_ACTION) {
-            throw new SimulationDeadlockException(
-                    "Match preview gate active — not handled in Phase 0 harness (action=MATCH_PREVIEW)");
+            kickOffNextMatchForCurrentClub();
+            return;
         }
         continueOneDay();
     }
@@ -211,6 +214,9 @@ public final class GameTestHarness {
             if (acknowledged == 0) {
                 break;
             }
+        }
+        if (getNextGameAction() == FuttoboruGameEngine.MATCH_PREVIEW_ACTION) {
+            kickOffNextMatchForCurrentClub();
         }
         continueOneDay();
     }
@@ -681,7 +687,8 @@ public final class GameTestHarness {
     }
 
     public List<Long> bestElevenPlayerIds(Club club) {
-        ClubTacticsSetup setup = BestElevenSelector.selectBestEleven(club);
+        java.time.LocalDate asOf = game().getGameDate().toLocalDate();
+        ClubTacticsSetup setup = BestElevenSelector.selectBestEleven(club, asOf);
         return setup.orderedPlayerIds(FormationRegistry.getRequiredTemplate(setup.getFormationTemplateId()));
     }
 
@@ -705,6 +712,18 @@ public final class GameTestHarness {
             }
         }
         return wins;
+    }
+
+    public Match findNextPlayableMatchForClub(long clubId) {
+        Club club = game().getClubById(clubId);
+        if (club == null) {
+            return null;
+        }
+        return engine().findNextPlayableMatchForClub(club);
+    }
+
+    public LocalDateTime advanceUntilMatchPlayableForClub(long clubId, int maxDays) {
+        return advanceUntil(save -> findNextPlayableMatchForClub(clubId) != null, maxDays);
     }
 
     public Match findNextLeagueMatchForClub(long clubId) {
@@ -744,6 +763,61 @@ public final class GameTestHarness {
             }
         }
         return latest;
+    }
+
+    public Match kickOffNextMatchForCurrentClub() {
+        return engine().kickOffCurrentClubMatch();
+    }
+
+    public java.util.Map<Long, Float> getLastMatchRatings(long clubId) {
+        Match match = findLastPlayedLeagueMatch(clubId);
+        if (match == null) {
+            return java.util.Collections.emptyMap();
+        }
+        if (clubId == match.getHomeClubId()) {
+            return match.getHomePlayerRatings();
+        }
+        if (clubId == match.getAwayClubId()) {
+            return match.getAwayPlayerRatings();
+        }
+        return java.util.Collections.emptyMap();
+    }
+
+    public void setClubFormation(long clubId, String formationId) {
+        Club club = game().getClubById(clubId);
+        if (club == null) {
+            throw new IllegalArgumentException("Club not found: " + clubId);
+        }
+        ClubTacticsSetup setup = club.getTacticsSetupOrDefault();
+        setup.setFormationTemplateId(formationId);
+        club.setTacticsSetup(setup);
+    }
+
+    public void setPlayerFitness(long playerId, int fitnessPct) {
+        Player player = findPlayerById(playerId);
+        PlayerConditionService.conditionOf(player).setFitnessPct(fitnessPct);
+    }
+
+    public void setPlayerInjured(long playerId, int weeksOut) {
+        Player player = findPlayerById(playerId);
+        PlayerCondition condition = PlayerConditionService.conditionOf(player);
+        condition.setInjuryTypeId("strain");
+        condition.setInjuryDisplayName("Strain");
+        condition.setInjuryReturnDate(game().getGameDate().toLocalDate().plusWeeks(weeksOut));
+    }
+
+    private Player findPlayerById(long playerId) {
+        for (Club club : game().getAllClubs()) {
+            if (club == null || club.getPlayers() == null) {
+                continue;
+            }
+            for (Player player : club.getPlayers()) {
+                if (player != null && playerId == player.getId()) {
+                    return player;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Player not found: " + playerId);
     }
 
     private static boolean containsCompetitionByName(List<Competition> competitions, String name) {

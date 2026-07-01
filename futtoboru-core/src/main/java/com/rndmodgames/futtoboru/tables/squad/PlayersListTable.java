@@ -42,6 +42,7 @@ public class PlayersListTable extends VisTable {
     //
     private List<Player> currentPlayers;
     private List<Player> sortedPlayers; // Sorted copy for display
+    private java.util.Set<Long> startingXiPlayerIds = java.util.Collections.emptySet();
     
     // Sorting state
     private String currentSortColumn = null;
@@ -123,6 +124,7 @@ public class PlayersListTable extends VisTable {
         this.add(createSortableHeader("Name", "name")).width(150);
         this.add(createSortableHeader("Age", "age")).width(80);
         this.add(createSortableHeader("Country", "country")).width(100);
+        this.add(createSortableHeader(LanguageModLoader.getValue("in_starting_xi"), "xi")).width(40);
         
         // Physical attribute columns
         if (showAcceleration) {
@@ -205,6 +207,9 @@ public class PlayersListTable extends VisTable {
             String countryName = player.getPerson().getCountry() != null ? 
                 player.getPerson().getCountry().getCommonName() : "N/A";
             this.add(new VisLabel(countryName)).width(100);
+
+            String xiMarker = player.getId() != null && startingXiPlayerIds.contains(player.getId()) ? "XI" : "";
+            this.add(new VisLabel(xiMarker)).width(40);
             
             // Physical attributes (with change indicators)
             if (showAcceleration) {
@@ -361,7 +366,7 @@ public class PlayersListTable extends VisTable {
      * Calculates the total number of columns currently displayed.
      */
     private int getColumnCount() {
-        int count = 3; // Name, Age, Country (always shown)
+        int count = 4; // Name, Age, Country, XI (always shown)
         
         // Physical
         if (showAcceleration) count++;
@@ -423,5 +428,11 @@ public class PlayersListTable extends VisTable {
         // Reset sort when players change
         currentSortColumn = null;
         sortAscending = true;
+    }
+
+    public void setStartingXiPlayerIds(java.util.Set<Long> startingXiPlayerIds) {
+        this.startingXiPlayerIds = startingXiPlayerIds != null
+                ? startingXiPlayerIds
+                : java.util.Collections.emptySet();
     }
 }

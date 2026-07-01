@@ -17,6 +17,7 @@ import com.rndmodgames.futtoboru.menu.buttons.MatchHistoryButton;
 import com.rndmodgames.futtoboru.menu.buttons.PersonalDetailsButton;
 import com.rndmodgames.futtoboru.menu.buttons.ScheduleButton;
 import com.rndmodgames.futtoboru.menu.buttons.SquadButton;
+import com.rndmodgames.futtoboru.menu.buttons.TacticsButton;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
 import com.rndmodgames.futtoboru.tables.club.ClubInfoScreenTable;
@@ -34,6 +35,7 @@ import com.rndmodgames.futtoboru.tables.match.preview.MatchPreviewScreenTable;
 import com.rndmodgames.futtoboru.tables.match.result.MatchResultScreenTable;
 import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
 import com.rndmodgames.futtoboru.tables.schedule.ScheduleScreenTable;
+import com.rndmodgames.futtoboru.tables.main.TacticsScreenTable;
 import com.rndmodgames.futtoboru.tables.squad.SquadScreenTable;
 
 /**
@@ -75,6 +77,7 @@ public class MainMenuManager {
     
     //
     public static final int MAIN_SQUAD_SCREEN   = 1000;
+    public static final int TACTICS_SCREEN      = 1500;
     public static final int SCHEDULE_SCREEN     = 2000;
     public static final int CLUB_INFO_SCREEN    = 3000;
     public static final int FINANCES_SCREEN     = 4000;
@@ -117,6 +120,7 @@ public class MainMenuManager {
     private VisTextButton authorityButton = null;
     private VisTextButton inboxButton = null;
     private VisTextButton squadButton = null;
+    private VisTextButton tacticsButton = null;
     private VisTextButton scheduleButton = null;
     private VisTextButton matchHistoryButton = null;
     private VisTextButton clubInfoButton = null;
@@ -135,6 +139,7 @@ public class MainMenuManager {
     private AuthorityScreenTable authorityScreenTable = null;
     private InboxScreenTable inboxScreenTable = null;
     private SquadScreenTable squadScreenTable = null;
+    private TacticsScreenTable tacticsScreenTable = null;
     private ScheduleScreenTable scheduleScreenTable = null;
     private MatchPreviewScreenTable matchPreviewScreenTable = null;
     private MatchResultScreenTable matchResultScreenTable = null;
@@ -195,6 +200,7 @@ public class MainMenuManager {
         inboxScreenTable = new InboxScreenTable(game);
         inboxScreenTable.setMenuManager(this);
         squadScreenTable = new SquadScreenTable(game);
+        tacticsScreenTable = new TacticsScreenTable(game);
         scheduleScreenTable = new ScheduleScreenTable(game);
         matchPreviewScreenTable = new MatchPreviewScreenTable(game);
         matchResultScreenTable = new MatchResultScreenTable(game);
@@ -246,6 +252,7 @@ public class MainMenuManager {
         authorityButton = new AuthorityButton(this);
         inboxButton = new InboxButton(this);
         squadButton = new SquadButton(this);
+        tacticsButton = new TacticsButton(this);
         scheduleButton = new ScheduleButton(this);
         matchHistoryButton = new MatchHistoryButton(this);
         clubInfoButton = new ClubInfoButton(this);
@@ -329,6 +336,10 @@ public class MainMenuManager {
             
             // Squad
             buttonsMenu.add(squadButton).fill();
+            buttonsMenu.row();
+
+            // Tactics
+            buttonsMenu.add(tacticsButton).fill();
             buttonsMenu.row();
             
             // Matches Area Separator
@@ -640,7 +651,18 @@ public class MainMenuManager {
             // Set as main content
             parentTable.add(squadScreenTable).grow();
 
-            break;            
+            break;
+
+        case TACTICS_SCREEN:
+            if (currentClub == null) {
+                Gdx.app.log("MainMenuManager", "Cannot access Tactics screen: player is unemployed (no club)");
+                setActiveMainScreen(HOME_SCREEN);
+                return;
+            }
+            tacticsScreenTable.setCurrentClub(currentClub);
+            tacticsScreenTable.updateDynamicComponents();
+            parentTable.add(tacticsScreenTable).grow();
+            break;
             
         case SCHEDULE_SCREEN:
 
@@ -920,6 +942,10 @@ public class MainMenuManager {
         
         case MAIN_SQUAD_SCREEN:
             squadScreenTable.updateDynamicComponents();
+            break;
+
+        case TACTICS_SCREEN:
+            tacticsScreenTable.updateDynamicComponents();
             break;
         
         case AUTHORITY_SCREEN:

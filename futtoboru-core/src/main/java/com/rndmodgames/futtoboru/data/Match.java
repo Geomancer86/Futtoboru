@@ -74,6 +74,10 @@ public class Match implements Serializable {
     private String homeFormationTemplateId;
     private String awayFormationTemplateId;
 
+    /** Post-match 0–10 ratings for XI (MVP-5). Keys are {@link Player#getId()}. */
+    private java.util.Map<Long, Float> homePlayerRatings = new java.util.LinkedHashMap<>();
+    private java.util.Map<Long, Float> awayPlayerRatings = new java.util.LinkedHashMap<>();
+
     // Match Type Constants
     public static final int FRIENDLY_MATCH = 1;
     public static final int LEAGUE_MATCH = 2;
@@ -303,5 +307,23 @@ public class Match implements Serializable {
 
     public void setAwayFormationTemplateId(String awayFormationTemplateId) {
         this.awayFormationTemplateId = awayFormationTemplateId;
+    }
+
+    public java.util.Map<Long, Float> getHomePlayerRatings() {
+        return homePlayerRatings;
+    }
+
+    public void setHomePlayerRatings(java.util.Map<Long, Float> homePlayerRatings) {
+        this.homePlayerRatings = homePlayerRatings != null
+                ? new java.util.LinkedHashMap<>(homePlayerRatings) : new java.util.LinkedHashMap<>();
+    }
+
+    public java.util.Map<Long, Float> getAwayPlayerRatings() {
+        return awayPlayerRatings;
+    }
+
+    public void setAwayPlayerRatings(java.util.Map<Long, Float> awayPlayerRatings) {
+        this.awayPlayerRatings = awayPlayerRatings != null
+                ? new java.util.LinkedHashMap<>(awayPlayerRatings) : new java.util.LinkedHashMap<>();
     }
 }

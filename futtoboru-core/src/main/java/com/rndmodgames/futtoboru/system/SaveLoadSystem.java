@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.system;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.utils.Json;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.system.serializers.BigDecimalSerializer;
 import com.rndmodgames.futtoboru.system.serializers.JsonDateSerializer;
+import com.rndmodgames.futtoboru.system.serializers.JsonLocalDateSerializer;
 
 /**
  * Saving & Loading Game Systems
@@ -35,6 +37,7 @@ public class SaveLoadSystem {
     private static Json configuredJson() {
         Json json = new Json();
         json.setSerializer(LocalDateTime.class, new JsonDateSerializer());
+        json.setSerializer(LocalDate.class, new JsonLocalDateSerializer());
         json.setSerializer(BigDecimal.class, new BigDecimalSerializer());
         return json;
     }
