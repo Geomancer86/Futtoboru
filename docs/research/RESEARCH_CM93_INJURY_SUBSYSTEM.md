@@ -127,19 +127,21 @@ Manual describes **management** more than generation formula. Inferred from §5 
 
 ---
 
-## 4. CM1 vs CM93 vs Futtoboru
+## 4. CM1 vs CM93 vs Futtoboru (2026-07-01)
 
-| Capability | CM1 | CM93 | Futtoboru B5.1 | M-B5.2 target |
-|------------|-----|------|----------------|---------------|
-| Injured state | ✅ IJ | ✅ IJ | ✅ | ✅ |
-| Text condition | ⚠️ | ✅ | ✅ types | ✅ |
-| Physio weeks estimate | ❌ | ✅ | ⚠️ date only | ✅ estimate |
-| INJURY PRONE | ❌ | ✅ hidden | ❌ | ✅ |
-| Physio staff effect | ❌ | ✅ | ❌ | ✅ |
-| Rehabilitate | ❌ | ✅ | ❌ | ✅ Core |
-| Insurance | ❌ | ✅ | ❌ | ✅ Complete |
-| Lilleshall / surgeon | ❌ | ✅ | ❌ | ✅ Complete |
-| Inbox injury | ❌ | ✅ | ❌ | ✅ Core (recommended) |
+| Capability | CM1 | CM93 | Futtoboru B5.2 | Gap |
+|------------|-----|------|----------------|-----|
+| Injured state | ✅ IJ | ✅ IJ | ✅ | `[IJ]` icon cosmetic |
+| Text condition | ⚠️ | ✅ | ✅ types | — |
+| Physio weeks estimate | ❌ | ✅ | ✅ estimate | — |
+| INJURY PRONE | ❌ | ✅ hidden | ✅ | — |
+| Physio staff effect (injury) | ❌ | ✅ | ✅ | Match-fitness boost ❌ |
+| Rehabilitate | ❌ | ✅ | ✅ | — |
+| Insurance | ❌ | ✅ | ✅ | Forced retirement ❌ |
+| Lilleshall / surgeon | ❌ | ✅ | ✅ | — |
+| Inbox injury | ❌ | ✅ | ✅ | — |
+
+**Full scorecard:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](../planning/ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md)
 
 ---
 
@@ -155,11 +157,11 @@ Manual describes **management** more than generation formula. Inferred from §5 
 
 ---
 
-## 6. Futtoboru implementation status (2026-06-30)
+## 6. Futtoboru implementation status (2026-07-01)
 
-See [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md).
+See [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9–§10.
 
-**B5.1 closed Tier 1.** Tier 2–3 open until M-B5.2.
+**B5.1 closed Tier 1. B5.2 Complete closed Tier 2–3** (except deferred forced-retirement payout). Parity audit: [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](../planning/ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md).
 
 ---
 
@@ -175,6 +177,7 @@ See [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER
 
 | Date | Change |
 |------|--------|
+| 2026-07-01 | §4–§6 updated post-B5.2 Complete |
 | 2026-06-30 | Full CM93 injury subsystem ledger for M-B5.2 |
 
 ---

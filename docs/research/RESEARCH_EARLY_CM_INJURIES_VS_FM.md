@@ -49,13 +49,14 @@ Later Football Manager titles added richer injury **types**, **body areas**, reh
 
 ---
 
-## Futtoboru implementation (2026-06-30)
+## Futtoboru implementation (2026-07-01)
 
 | Build | Depth | Doc |
 |-------|-------|-----|
 | B5 | Minimal stub | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) |
-| B5.1 | Partial — Tier 1 existence | Same §9 |
-| **M-B5.2** (planned) | **CM93 parity target** | [PM_MILESTONE_CM93_INJURY_PARITY.md](../planning/PM_MILESTONE_CM93_INJURY_PARITY.md) |
+| B5.1 | Partial — Tier 1 | Same §9 |
+| B5.2 Complete | **Core+** — ~95% CM93 injury parity | Same §10 |
+| **Fitness (non-injury)** | **Partial+** — ~70% CM93 | [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](../planning/ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) §3 |
 
 **Full CM93 ledger:** [RESEARCH_CM93_INJURY_SUBSYSTEM.md](RESEARCH_CM93_INJURY_SUBSYSTEM.md)
 

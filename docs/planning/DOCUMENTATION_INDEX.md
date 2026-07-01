@@ -1,13 +1,9 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-06-30 (Layer B wrap-up plan)
+**Last updated:** 2026-07-01 (B5.2 Complete + parity audit)
 
-Use this index to navigate project documentation. **Start here** after cloning.
-
-**Last updated:** 2026-06-30 (documentation pipeline + B5.1 proposal)
-
-> **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **~95% automated** · benchmark [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)  
-> **CM93 injury parity milestone:** [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) — PO decision pack (~39% parity today)  
+> **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **131 tests green** · benchmark [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)  
+> **CM93 injury + fitness parity:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) — injury ~95%, fitness ~70%  
 > **Release manual readiness:** [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md) · scaffold [../manual/README.md](../manual/README.md)  
 > **Feature traceability:** [FEATURE_TRACEABILITY_MATRIX.md](FEATURE_TRACEABILITY_MATRIX.md)
 
@@ -22,14 +18,15 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) | **PM, QA, Tech** | Test matrix, soak protocol, backlog detail |
 | [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) | **PO, PM, all eng** | **Whole Layer B** — status, sprints, exit criteria |
 | [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md) | **PO, PM, QA** | CM1/FM feature matrix — done vs missing per tier |
-| [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md) | **PO, PM, all leads** | **Feature depth audit** — stub vs Core; 52-row CM1/CM93 gap table; injury deep dive |
+| [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) | **PO, PM, all leads** | **Post-B5.2 parity audit** — injury ~95%, fitness ~70%, CM/FM field map |
+| [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md) | **PO, PM, all leads** | **Feature depth audit** — 52-row table (injury §1 refreshed 2026-07-01) |
 | [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md) | **PO, PM, UX** | **Wiki/manual readiness** — what docs exist vs what release needs |
 | [ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md](ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md) | **Match/Sim, PO** | **B5 research + as-built audit** — fitness/injury gaps |
 | [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md) | **PO, Match/Sim** | **B5.1 Option A** — shipped; parity label corrected |
 | [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) | **PO, PM, Sponsor** | **M-B5.2 milestone** — Option B Complete shipped (2026-07-01) |
 | [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) | **Match/Sim, PO** | B5.2 engineering design — **shipped** |
 | [../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md](../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md) | **Research, PO** | CM93 injury primary-source ledger |
-| [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) | **Match/Sim, manual authors** | **B5 + B5.1 as-built** |
+| [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) | **Match/Sim, manual authors** | **B5 + B5.1 + B5.2 as-built** |
 | [IMPLEMENTATION_TACTICS_B4_V1.md](IMPLEMENTATION_TACTICS_B4_V1.md) | **Match/Sim** | Tactics & XI as-built |
 | [IMPLEMENTATION_MATCH_RATINGS_B3_V1.md](IMPLEMENTATION_MATCH_RATINGS_B3_V1.md) | **Match/Sim** | Post-match ratings as-built |
 | [FEATURE_TRACEABILITY_MATRIX.md](FEATURE_TRACEABILITY_MATRIX.md) | **PM, all leads** | Research → code → tests → manual links |

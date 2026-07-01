@@ -226,7 +226,9 @@ PO (or delegate) runs this **once** on a build where M-B5.2 scope is marked done
 | **Overall CM93 injury parity** | 18 | 18 | **~100%** |
 
 **Honest one-liner for Sponsor:**  
-*“CM93-style injury management is in — physio estimates, treatment choices, insurance, and specialist options — without FM body-part simulation.”*
+*“CM93-style injury management is in — physio estimates, treatment choices, insurance, and specialist options — without FM body-part simulation. Squad fitness/morale still Partial vs CM93 (no training hook, morale not in sim).”*
+
+**Parity detail:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md)
 
 **PO decision (locked):** **Option B — M-B5.2 Complete** (2026-07-01). Implementation: [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §10.
 

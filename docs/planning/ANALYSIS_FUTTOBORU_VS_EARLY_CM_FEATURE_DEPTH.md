@@ -1,11 +1,13 @@
 # Futtoboru vs Early CM — Feature Depth Analysis
 
 **Document type:** Competitive gap / depth audit  
-**Date:** 2026-06-30  
-**Branch:** `analyze-ai-branch` (Layer B complete — automated gate green)  
+**Date:** 2026-06-30 (depth rows) · **status refresh:** 2026-07-01  
+**Branch:** `analyze-ai-branch` (B5.2 Complete — 131 tests green)  
 **Audience:** PO, PM, Match/Sim, QA, stakeholders  
 
-**Sources:** [CM1_REFERENCE.md](CM1_REFERENCE.md) · [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) · [CM93 manual extract](../research/manuals/cm93-94/CM93_Manual_LemonAmiga_Extract.md) · [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) · codebase audit 2026-06-30  
+> **⚠️ Status refresh (2026-07-01):** Injury rows in §1 and §4.1 reflect **pre-B5.2** audit. Current CM93 injury parity: **~95%** — see [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md). Fitness/condition (non-injury): **~70%** CM93.
+
+**Sources:** [CM1_REFERENCE.md](CM1_REFERENCE.md) · [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) · [CM93 manual extract](../research/manuals/cm93-94/CM93_Manual_LemonAmiga_Extract.md) · [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) · codebase audit 2026-06-30 · [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §10  
 
 **Companion:** Binary Layer B checklist → [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md) (now includes depth column)
 
@@ -13,26 +15,38 @@
 
 ## 1. Executive summary
 
-Layer B closed the **CM1 management loop** (pick XI → preview → kick-off → abstract result → 0–10 ratings → condition tick). That is real, tested work — not placeholders. But **depth within each feature** varies from **Core** (ratings, XI in sim) to **Minimal** (injuries) to **Stub** (training, transfers, board).
+Layer B closed the **CM1 management loop** (pick XI → preview → kick-off → abstract result → 0–10 ratings → condition tick). That is real, tested work — not placeholders. **Injuries** reached **CM93 Core+** after B5.2 Complete (2026-07-01). **Fitness/condition** (training, morale sim, physio match-fitness) remains **Partial+**.
 
-### Direct answer: “We have injuries — what does that mean?”
+### Direct answer: “We have injuries — what does that mean?” (updated 2026-07-01)
 
-**No — injuries are not fully designed, fleshed, or at CM93 parity.** What exists today is a **Minimal floor stub**:
+**Yes — for the CM93 injury *management* loop.** Futtoboru ships weighted injury types, physio estimates, INJURY PRONE, Rehabilitate, inbox, insurance, Lilleshall, and surgeon abroad. See [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) §2.
 
-| What CM93 had | What Futtoboru has today |
-|---------------|--------------------------|
+| What CM93 had | Futtoboru B5.2 | Remaining gap |
+|---------------|----------------|---------------|
+| Injury **description** on squad | ✅ 5 mod types + severity | — |
+| Physio **recovery estimate** | ✅ `~N wk (OK physio)` | — |
+| **INJURY PRONE** | ✅ hidden 1–20 | — |
+| **Insurance** + wages while injured | ✅ | Forced-retirement payout deferred |
+| **Lilleshall** / **surgeon abroad** | ✅ | — |
+| **Rehabilitate** | ✅ | — |
+| Inbox injury news | ✅ MODERATE+ | — |
+| In-match **IJ** + commentary | ❌ | Presentation milestone |
+| Physio **match fitness** (not injury) | ❌ | M-B5.3 candidate |
+
+<details>
+<summary>Pre-B5.2 stub audit (2026-06-30 — historical)</summary>
+
+**No — injuries were not at CM93 parity.** What existed was a **Minimal floor stub**:
+
+| What CM93 had | What Futtoboru had (pre-B5.2) |
+|---------------|-------------------------------|
 | Injury **description** on squad screen | Always `"Strain"` (hardcoded) |
-| Physio **recovery estimate** | Random `injuryReturnDate` (1–5 weeks); no physio staff effect |
-| Multiple injury types / severity | Single type `"strain"` only |
-| **INJURY PRONE** hidden attribute | Not modeled |
-| **Insurance** (wages + treatment covered) | Not modeled |
-| **Lilleshall** rehab centre | Not modeled |
-| **Surgeon abroad** for serious injuries | Not modeled |
-| In-match **IJ** flag + commentary “taken off injured” | Post-match roll only; no result-screen injury line |
-| News / inbox injury messages | Not wired |
-| Tactics screen grey-out injured | Engine excludes from XI; UI does not grey out |
+| Physio **recovery estimate** | Random return date only |
+| Multiple injury types / severity | Single type only |
+| **INJURY PRONE** | Not modeled |
+| **Insurance** / Lilleshall / surgeon | Not modeled |
 
-**Code:** `InjuryGenerator.java` — 2–4% post-match roll per XI player; fitness/fatigue modifiers; always sets type `strain` and a return date. Data model (`PlayerCondition`) supports richer fields; design doc (`DESIGN_PLAYER_CONDITION_V1.md`) describes CM93 floor — **implementation ≈ 15% of that design**.
+</details>
 
 ### Early CM vs modern FM — body parts?
 
@@ -318,6 +332,7 @@ Body-part medical model · 2D match engine · custom training schedules · press
 
 | Date | Change |
 |------|--------|
+| 2026-07-01 | Post-B5.2 status banner; injury §1 rewritten; link to ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1 |
 | 2026-06-30 | Initial depth audit — 52 features, injury deep dive, CM vs FM clarification |
 
 ---

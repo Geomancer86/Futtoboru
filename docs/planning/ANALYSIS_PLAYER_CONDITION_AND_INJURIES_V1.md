@@ -2,7 +2,7 @@
 
 **Document type:** Research synthesis + codebase audit  
 **Date:** 2026-06-30  
-**Status:** **Active** — input to B5.1 design decision  
+**Status:** **Historical as-built (pre-B5.2)** — see [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) for current parity  
 **Audience:** PO, Match/Sim, QA, manual authors  
 
 **Chain:** [RESEARCH_EARLY_CM_INJURIES_VS_FM.md](../research/RESEARCH_EARLY_CM_INJURIES_VS_FM.md) → this doc → [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md) → [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md)
@@ -219,17 +219,17 @@ Rises after wins and good ratings; falls after losses and poor ratings. **Does n
 
 ---
 
-## 10. CM93 parity milestone (M-B5.2)
+## 10. CM93 parity milestone (M-B5.2) — superseded
 
-| Tier | % complete | PO claim |
-|------|------------|----------|
-| Tier 1 — existence | **100%** (B5.1) | “We have injuries” |
-| Tier 2 — management | **~17%** | “CM93-style management” after M-B5.2 Core |
-| Tier 3 — economy | **0%** | “Full CM93 injury economy” after M-B5.2 Complete |
+| Tier | Status (2026-07-01) | PO claim |
+|------|---------------------|----------|
+| Tier 1 — existence | **100%** ✅ | “We have injuries” |
+| Tier 2 — management | **100%** ✅ | “CM93-style management” |
+| Tier 3 — economy | **83%** (5/6; T3-6 deferred) | “Full CM93 injury economy” |
 
-**Overall parity progress: ~39%** — [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) §7
+**Overall injury parity: ~95%** — [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) · [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) §7
 
-**PO decision:** Core (A) vs Complete (B) vs Defer (C) — design in [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md).
+**PO decision:** Option **B Complete** shipped — [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §10.
 
 ---
 
@@ -237,9 +237,10 @@ Rises after wins and good ratings; falls after losses and poor ratings. **Does n
 
 | Date | Change |
 |------|--------|
+| 2026-07-01 | §10 superseded by B5.2 Complete; link to parity status analysis |
 | 2026-06-30 | Initial analysis — research + as-built + gap matrix |
 | 2026-06-30 | M-B5.2 parity milestone cross-link |
 
 ---
 
-*Next: PO reviews [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md).*
+*Current truth: [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md). §4–§7 here describe pre-B5.2 as-built only.*
