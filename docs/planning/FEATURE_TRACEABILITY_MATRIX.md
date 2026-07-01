@@ -20,8 +20,8 @@
 | **Code** | `InjuryGenerator.java`, `InjuryTreatmentService.java`, `PhysioService.java`, `InjuryEconomyRegistry.java`, `PlayerDetailScreenTable.java`, `ExpenseCalculator.java`, `MessageManager.createInjuryNewsMessage()` |
 | **Tests** | B5.1 suite + `InjuryEconomyB52Test` (8) · **131 tests green** |
 | **Manual §** | [06-squad-and-condition.md](../manual/06-squad-and-condition.md), [07-player-actions-insurance.md](../manual/07-player-actions-insurance.md) |
-| **Shipped depth** | Injuries **Core+** · **~100% CM93 Tier 2+3** — [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) |
-| **Next** | Human B-9 regression · forced retirement tribunal (deferred PO) |
+| **Shipped depth** | Injuries **Core+** (~95% CM93) · Fitness **Partial+** (~70% CM93) |
+| **Next** | M-B5.3 fitness polish · in-match injury presentation · forced retirement (deferred) |
 
 ---
 
