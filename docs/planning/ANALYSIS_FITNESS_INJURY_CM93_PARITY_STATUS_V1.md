@@ -1,7 +1,7 @@
 # Analysis — Fitness & Injury Module: CM93 Parity Status + CM/FM Field Map
 
 **Document type:** Research synthesis / parity audit  
-**Date:** 2026-07-01  
+**Date:** 2026-07-01 (§9 historical era 2026-06-25)  
 **Status:** **Active** — post B5.2 Complete (`7056902`)  
 **Audience:** PO, PM, manual authors, QA  
 
@@ -24,6 +24,8 @@
 **What is still not CM93:** in-match “taken off injured” commentary, `[IJ]` icon parity, physio **match-fitness** improvement (manual §Staff ii), forced-retirement insurance payout, reserve-squad auto-fill when many injured, morale **bands** vs numeric UI, morale in match sim.
 
 **What is correctly out of scope:** FM body-part map, medical centre, rehab % scans, sickness outbreaks, jadedness — see §4.
+
+**Critical distinction (1888 start mod):** CM93 parity ≠ **historical medical accuracy**. B5.2 exposes Lilleshall, insurance, and “Physio” in a career beginning **1888–89** — anachronistic until **M-B5.3-HIST** era gating ships. See §9.
 
 ---
 
@@ -173,6 +175,7 @@ CM93 documents **squad condition** as fitness + morale + injury text on one scre
 | Priority | Item | Rationale |
 |----------|------|-----------|
 | P0 | Stop citing **~39%** parity anywhere | Superseded by B5.2 |
+| **P0-HIST** | Sign **M-B5.3-HIST** era gates before claiming “1888-accurate injuries” | CM93 menus ≠ Victorian medicine — see §9 |
 | P1 | Split marketing: **injury economy** vs **fitness/condition** | Avoid overclaim on training/morale |
 | P2 | Optional **M-B5.3** micro-milestone | Physio match-fitness tick; morale sim hook — CM93 §Staff ii |
 | P3 | Defer **M-B5.4 presentation** | In-match injury line + `[IJ]` styling |
@@ -180,13 +183,66 @@ CM93 documents **squad condition** as fitness + morale + injury text on one scre
 
 ---
 
+## 9. Historical accuracy vs CM93 parity (1888 start mod)
+
+**Problem:** Futtoboru’s default start is the **1888–89 Football League** with **1888 wages** ([ANALYSIS_ECONOMIC_SYSTEM_1888_V1.md](ANALYSIS_ECONOMIC_SYSTEM_1888_V1.md)), but B5.2 implements **1993 CM93 injury management** verbatim.
+
+### 9.1 Anachronism scorecard (game start year)
+
+| B5.2 surface | CM93 (1993) | ~1888 reality | Severity |
+|--------------|-------------|---------------|----------|
+| **Lilleshall** rehab | ✅ | NSC **1951**; FA rehab branding **~1986** | **Blocker** for historical claim |
+| **Insure / Uninsure** (weekly premium) | ✅ | No product; **Workmen’s Comp. Act 1906** later | **Blocker** |
+| **Surgeon abroad** | ✅ | Rare / absent | **Major** |
+| **Physio** staff + estimate | ✅ | **Trainer** + folk medicine | **Major** (labels + expectations) |
+| **Rehabilitate** £25–75 | ✅ CM93 scale | Should be **shillings** vs £0.50–2.50/wk wages | **Blocker** (economy) |
+| Recovery weeks baseline | ✅ | Longer layoffs (harsher conditions) | **Moderate** |
+| Post-match injury roll | ✅ | Reasonable abstraction | OK |
+| INJURY PRONE hidden attr | ✅ | Unverifiable — acceptable game abstraction | OK |
+
+**Economic proof:** MINOR rehab **£25** ≈ **33×** an average 1888 weekly wage (£0.75) — mod files comment “1888 money” but magnitudes are **CM93 pounds**.
+
+### 9.2 Recommended framing (two claims)
+
+| Claim | Valid today? | After M-B5.3-HIST |
+|-------|--------------|-------------------|
+| “**CM93-style injury management**” | ✅ Yes (with §1 footnotes) | ✅ ME-6 profile matches B5.2 |
+| “**Historically accurate 1888 injuries**” | ❌ **No** | ✅ When era gates + ME-1 costs ship |
+
+### 9.3 Medical era model (summary)
+
+Full research: [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md).  
+Implementation design: [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md).
+
+| Era | Years | Unlocks (high level) |
+|-----|-------|----------------------|
+| **ME-1** | 1885–1905 | Trainer, rest, cheap rehab — **1888 start** |
+| **ME-2** | 1906–1914 | Compensation framing; club doctor norm at big clubs |
+| **ME-4** | 1945–1970 | NSC / early national rehab (**1951**) |
+| **ME-6** | 1993–1999 | Full CM93 menu (current B5.2) |
+
+**Not the same as `HistoricalMode`:** fork/news sandbox is unrelated; era resolves from **in-game calendar**.
+
+### 9.4 Gap summary
+
+| Layer | CM93 parity | 1888 historical |
+|-------|-------------|-----------------|
+| Injury mechanics engine | ~95% | ~95% (reuse) |
+| Era-appropriate availability | 0% | Target 100% post-HIST |
+| Era-appropriate economy | 0% | Target ME-1 table |
+| Era-appropriate copy | 0% | Target string tables |
+
+---
+
 ## 7. Document chain update
 
 ```
+RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md
 RESEARCH_CM93_INJURY_SUBSYSTEM.md
 RESEARCH_EARLY_CM_INJURIES_VS_FM.md
-    → ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md (this doc)
-    → IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md §9–§10
+    → ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md (this doc) §9 historical
+    → DESIGN_INJURY_HISTORICAL_ERA_GATING.md (M-B5.3-HIST proposed)
+    → IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md §9–§11
     → PM_MILESTONE_CM93_INJURY_PARITY.md
     → manual 06 + 07
 ```
@@ -197,8 +253,9 @@ RESEARCH_EARLY_CM_INJURIES_VS_FM.md
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | §9 historical accuracy vs CM93; P0-HIST PO action; medical era doc chain |
 | 2026-07-01 | Initial post-B5.2 parity audit + CM/FM condensed field map |
 
 ---
 
-*Refresh after M-B5.3 fitness polish or presentation milestone.*
+*Refresh after M-B5.3-HIST era gating, M-B5.3 fitness polish, or presentation milestone.*

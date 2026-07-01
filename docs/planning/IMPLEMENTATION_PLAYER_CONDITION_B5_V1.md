@@ -225,8 +225,28 @@ See [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROP
 
 **Depth after B5.2 Complete:** Injuries **Core+** (~100% CM93 Tier 2+3 parity per [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md))
 
+---
+
+## 11. Historical accuracy gap (M-B5.3-HIST — not shipped)
+
+B5.2 reproduces **CM93 (1993)** treatment menus against an **1888–89** start mod. That is **correct for CM parity** and **incorrect for period simulation** until era gating lands.
+
+| Issue | As-built | Target (proposed) |
+|-------|----------|-------------------|
+| Lilleshall / insurance / surgeon abroad visible from day one | Always on | Hidden until medical era ≥ ME-4/ME-6 |
+| Staff labelled “Physio” | CM93 string | “Trainer” in ME-1 |
+| Rehab costs £25–75 | CM93 magnitudes in “1888” mod files | ME-1 table ~£0.25–0.75 |
+| Recovery harshness | CM93 baseline | ME-1 ×1.20 base weeks |
+
+**Research:** [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md)  
+**Design:** [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md)  
+**Audit:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) §9  
+
+**PO framing:** Claim **CM93 injury economy** today; do **not** claim **1888-historical injury simulation** until §11 closed.
+
 ### Changelog
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | §11 historical accuracy gap + M-B5.3-HIST links |
 | 2026-07-01 | B5.2 Complete shipped (Option B) |

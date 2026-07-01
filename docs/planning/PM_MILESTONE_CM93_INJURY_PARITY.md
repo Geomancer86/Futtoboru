@@ -272,13 +272,32 @@ PO (or delegate) runs this **once** on a build where M-B5.2 scope is marked done
 ## 10. Document chain (for audit)
 
 ```
+RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md
 RESEARCH_CM93_INJURY_SUBSYSTEM.md
     → PM_MILESTONE_CM93_INJURY_PARITY.md (this doc — PO decision)
+    → DESIGN_INJURY_HISTORICAL_ERA_GATING.md (M-B5.3-HIST proposed)
     → DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md (engineering spec)
-    → IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md §10 (after ship)
+    → IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md §10–§11
     → docs/manual/06-squad-and-condition.md
     → FEATURE_TRACEABILITY_MATRIX.md
 ```
+
+---
+
+## 12. Follow-on — M-B5.3-HIST (1888 historical accuracy)
+
+**M-B5.2 is complete for CM93 parity.** It is **not** complete for **1888-period injury simulation**.
+
+| Claim | After M-B5.2 | After M-B5.3-HIST (proposed) |
+|-------|--------------|------------------------------|
+| CM93-style injury management | ✅ | ✅ (ME-6 calendar profile) |
+| Historically accurate 1888 injuries | ❌ | ✅ target |
+
+**Research:** [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) — medical eras ME-0→ME-7  
+**Design:** [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md)  
+**Audit:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) §9  
+
+**PO action:** Sign era boundary defaults (insurance from ME-2 vs ME-6; Lilleshall from 1951 vs 1986) before eng schedules HIST-a.
 
 ---
 
@@ -286,9 +305,10 @@ RESEARCH_CM93_INJURY_SUBSYSTEM.md
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | §12 M-B5.3-HIST follow-on; 1888 vs CM93 framing |
 | 2026-07-01 | Option B shipped — parity ~100% |
 | 2026-06-30 | Initial PO/PM milestone pack; clarifies B5.1 ≠ parity |
 
 ---
 
-*PO: reply with Option A/B/C + secondary calls → PM schedules B5.2 phases.*
+*PO: M-B5.2 closed. Next optional lock: M-B5.3-HIST era gates (§12).*

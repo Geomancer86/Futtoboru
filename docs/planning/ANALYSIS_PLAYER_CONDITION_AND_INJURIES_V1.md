@@ -243,4 +243,4 @@ Rises after wins and good ratings; falls after losses and poor ratings. **Does n
 
 ---
 
-*Current truth: [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md). §4–§7 here describe pre-B5.2 as-built only.*
+*Current truth: [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) §1–§9. §4–§7 here describe pre-B5.2 as-built only. **1888 historical accuracy:** [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md).*

@@ -163,6 +163,8 @@ See [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER
 
 **B5.1 closed Tier 1. B5.2 Complete closed Tier 2–3** (except deferred forced-retirement payout). Parity audit: [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](../planning/ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md).
 
+**1888 historical accuracy:** CM93 parity does **not** imply period-accurate medicine at game start. See [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) and proposed [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](../planning/DESIGN_INJURY_HISTORICAL_ERA_GATING.md) (M-B5.3-HIST).
+
 ---
 
 ## 7. External references
@@ -177,6 +179,7 @@ See [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | §6 1888 historical gap pointer |
 | 2026-07-01 | §4–§6 updated post-B5.2 Complete |
 | 2026-06-30 | Full CM93 injury subsystem ledger for M-B5.2 |
 

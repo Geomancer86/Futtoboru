@@ -1,7 +1,7 @@
 # Feature Traceability Matrix (starter)
 
 **Document type:** Registry — links research → design → code → tests → manual  
-**Date:** 2026-07-01 (updated post B5.2 Complete)  
+**Date:** 2026-06-25 (M-B5.3-HIST traceability)  
 **Status:** Layer B core rows complete  
 
 **How to use:** Manual § must point to `IMPLEMENTATION_*` not `DESIGN_*`.
@@ -13,15 +13,15 @@
 | Field | Value |
 |-------|-------|
 | **Feature ID** | COND / B5 / B5.1 / B5.2 |
-| **Research** | [RESEARCH_CM93_INJURY_SUBSYSTEM.md](../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md) |
-| **Analysis** | [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) · historical: [ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md](ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md) |
-| **Design** | [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) |
+| **Research** | [RESEARCH_CM93_INJURY_SUBSYSTEM.md](../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md) · [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) |
+| **Analysis** | [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) §9 historical · [ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md](ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md) |
+| **Design** | [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) · [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md) (proposed) |
 | **Implementation** | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9–§10 |
 | **Code** | `InjuryGenerator.java`, `InjuryTreatmentService.java`, `PhysioService.java`, `InjuryEconomyRegistry.java`, `PlayerDetailScreenTable.java`, `ExpenseCalculator.java`, `MessageManager.createInjuryNewsMessage()` |
 | **Tests** | B5.1 suite + `InjuryEconomyB52Test` (8) · **131 tests green** |
 | **Manual §** | [06-squad-and-condition.md](../manual/06-squad-and-condition.md), [07-player-actions-insurance.md](../manual/07-player-actions-insurance.md) |
-| **Shipped depth** | Injuries **Core+** (~95% CM93) · Fitness **Partial+** (~70% CM93) |
-| **Next** | M-B5.3 fitness polish · in-match injury presentation · forced retirement (deferred) |
+| **Shipped depth** | Injuries **Core+** (~95% CM93) · Fitness **Partial+** (~70% CM93) · **1888 historical 0%** until M-B5.3-HIST |
+| **Next** | **M-B5.3-HIST** era gating · M-B5.3 fitness polish · in-match injury presentation · forced retirement (deferred) |
 
 ---
 
@@ -51,5 +51,6 @@
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | M-B5.3-HIST research/design linked; 1888 historical gap noted |
 | 2026-06-30 | Player condition row + template |
 | 2026-06-30 | B5.1 shipped; B3/B4 implementation docs linked |
