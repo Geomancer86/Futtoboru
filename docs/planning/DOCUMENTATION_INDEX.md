@@ -4,12 +4,11 @@
 
 Use this index to navigate project documentation. **Start here** after cloning.
 
-**Last updated:** 2026-06-30 (whole Layer B + testing pyramid)
+**Last updated:** 2026-06-30 (documentation pipeline + B5.1 proposal)
 
-> **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **~42%** · benchmark [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)  
-> **Testing:** [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) — unit → E2E → long → **human last**  
-> **PO direction:** [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md)  
-> **CM legacy research is PAUSED** at Round 16. See [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md).
+> **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **~95% automated** · benchmark [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)  
+> **Release manual readiness:** [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md) · scaffold [../manual/README.md](../manual/README.md)  
+> **Feature traceability:** [FEATURE_TRACEABILITY_MATRIX.md](FEATURE_TRACEABILITY_MATRIX.md)
 
 ---
 
@@ -23,6 +22,12 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) | **PO, PM, all eng** | **Whole Layer B** — status, sprints, exit criteria |
 | [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md) | **PO, PM, QA** | CM1/FM feature matrix — done vs missing per tier |
 | [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md) | **PO, PM, all leads** | **Feature depth audit** — stub vs Core; 52-row CM1/CM93 gap table; injury deep dive |
+| [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md) | **PO, PM, UX** | **Wiki/manual readiness** — what docs exist vs what release needs |
+| [ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md](ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md) | **Match/Sim, PO** | **B5 research + as-built audit** — fitness/injury gaps |
+| [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md) | **PO, Match/Sim** | **B5.1 proposal** — awaiting PO option A/B/C |
+| [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) | **Match/Sim, manual authors** | **B5 as-built** — authoritative behaviour |
+| [FEATURE_TRACEABILITY_MATRIX.md](FEATURE_TRACEABILITY_MATRIX.md) | **PM, all leads** | Research → code → tests → manual links |
+| [../manual/README.md](../manual/README.md) | **PO, UX** | **Player manual scaffold** (not public yet) |
 | [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) | **QA, PM** | Unit → E2E → long → human QA order |
 | [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) | **Match/Sim, UX** | B3 — ratings, preview flow, result UI |
 | [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) | **Platform/UX** | B4 + manual XI — Tactics screen, sidebar |

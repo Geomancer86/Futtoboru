@@ -200,4 +200,19 @@ Empty files OK — hardcoded defaults in Java for first ship.
 
 ---
 
-*Next update: when PO schedules B5 or CM93 research expands injury types.*
+## 11. Documentation chain (2026-06-30)
+
+| Stage | Document |
+|-------|----------|
+| Research | [RESEARCH_EARLY_CM_INJURIES_VS_FM.md](../research/RESEARCH_EARLY_CM_INJURIES_VS_FM.md) |
+| Analysis | [ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md](ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md) |
+| As-built | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) |
+| Proposal (pending PO) | [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md) |
+| Manual scaffold | [docs/manual/README.md](../manual/README.md) §6 |
+| Traceability | [FEATURE_TRACEABILITY_MATRIX.md](FEATURE_TRACEABILITY_MATRIX.md) |
+
+**Implementation status:** B5 engine + partial UI shipped on `analyze-ai-branch`. Injuries = **Minimal**. See implementation doc for authoritative behaviour.
+
+---
+
+*Next update: when PO approves B5.1 option and implementation begins.*
