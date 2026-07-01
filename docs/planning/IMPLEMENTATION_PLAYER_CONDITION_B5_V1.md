@@ -176,4 +176,4 @@ See [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROP
 
 **Depth after B5.1:** Injuries **Partial** (was Minimal); fitness/sharpness **Partial+**
 
-**Still missing for CM93 Core:** physio, insurance, Lilleshall → Option B / B5.2
+**Still missing for CM93 Core:** physio estimate, INJURY PRONE, Rehabilitate, insurance, Lilleshall → **[M-B5.2](PM_MILESTONE_CM93_INJURY_PARITY.md)** (not “Option B” alone)

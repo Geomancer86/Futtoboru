@@ -51,7 +51,13 @@ Later Football Manager titles added richer injury **types**, **body areas**, reh
 
 ## Futtoboru implementation (2026-06-30)
 
-See `futtoboru-core/.../InjuryGenerator.java` — **Minimal** stub (single type, post-match roll). Design target: [DESIGN_PLAYER_CONDITION_V1.md](../planning/DESIGN_PLAYER_CONDITION_V1.md).
+| Build | Depth | Doc |
+|-------|-------|-----|
+| B5 | Minimal stub | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) |
+| B5.1 | Partial — Tier 1 existence | Same §9 |
+| **M-B5.2** (planned) | **CM93 parity target** | [PM_MILESTONE_CM93_INJURY_PARITY.md](../planning/PM_MILESTONE_CM93_INJURY_PARITY.md) |
+
+**Full CM93 ledger:** [RESEARCH_CM93_INJURY_SUBSYSTEM.md](RESEARCH_CM93_INJURY_SUBSYSTEM.md)
 
 ---
 

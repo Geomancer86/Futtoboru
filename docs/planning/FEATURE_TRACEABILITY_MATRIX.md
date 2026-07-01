@@ -21,7 +21,8 @@
 | **Tests** | L1: `PlayerConditionDefaultsTest`, `PlayerFitnessTest`, `PlayerFormTest`, `FatigueRecoveryTest`, `FatigueSlowsRecoveryTest`, `MoraleUpdateTest`, `MoraleGoalBonusTest`, `InjuryGeneratorTest`, `InjuryTypesRegistryTest`, `PlayerSharpnessFactorTest`, `MatchInjuryTrackingTest` · L2: `InjuredPlayerLineupIT`, `FitnessSimModifierIT`, `PlayerConditionSaveLoadIT` |
 | **Manual §** | [06-squad-and-condition.md](../manual/06-squad-and-condition.md) ⚠️ draft |
 | **i18n keys** | `fitness_pct`, `sharpness_pct`, `morale`, `injury_status`, `injury_return`, `condition_fit`, `condition_fit_warning`, `injured_until`, `slot_status` |
-| **Shipped depth** | Injuries **Partial** · fitness/sharpness **Partial+** |
+| **Shipped depth** | Injuries **Partial** (Tier 1) · **~39% CM93 parity** — [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) |
+| **Next** | PO lock M-B5.2 Core vs Complete → [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) |
 
 ---
 

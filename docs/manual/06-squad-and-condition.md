@@ -74,10 +74,20 @@ Injuries include knocks such as **Strain**, **Bruise**, **Twisted ankle**, **Kne
 - If a player was already assigned before getting injured, the slot shows **Injured until** with a date.  
 - The **match result** screen lists anyone injured in that game with an approximate week count.
 
-### What is not in the game yet
+### What is not in the game yet (M-B5.2 — CM93 parity milestone)
 
-- Insurance, Lilleshall rehab, or surgery abroad (planned for a later layer)  
-- Physio staff affecting recovery speed (Option B — not shipped in B5.1)
+The following are **designed but not implemented**. See [PM_MILESTONE_CM93_INJURY_PARITY.md](../planning/PM_MILESTONE_CM93_INJURY_PARITY.md).
+
+| Feature | Tier | Status |
+|---------|------|--------|
+| Physio recovery **estimate** (not just calendar date) | Core | Planned B5.2a |
+| INJURY PRONE hidden attribute | Core | Planned B5.2a |
+| **Rehabilitate** (pay for treatment) | Core | Planned B5.2b |
+| Injury **inbox** message | Core | Planned B5.2c |
+| **Insurance** / wages while injured | Complete | Planned B5.2d |
+| **Lilleshall** / surgeon abroad | Complete | Planned B5.2e |
+
+Until M-B5.2 Core is PO-approved and shipped, do **not** describe Futtoboru as “CM93 injury parity.”
 
 ---
 

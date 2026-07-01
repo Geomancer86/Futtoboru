@@ -39,7 +39,7 @@ Elevate player condition from **Minimal/Partial** to **CM93 Core floor** for inj
 | Sharpness in `LineupStrengthCalculator` | |
 | Goal-scored morale +2 (design debt) | |
 
-### Option B — **B5.1 + physio** (CM93 parity claim)
+### Option B — **B5.2a only** (was mislabelled “CM93 parity”)
 
 Everything in **A**, plus:
 
@@ -48,6 +48,8 @@ Everything in **A**, plus:
 | `injuryProne` 1–20 on player (hidden in 1888 UI; visible in debug) |
 | Club physio `ability` → recovery week multiplier (0.85–1.15) |
 | Squad shows physio estimate text: “~N weeks (physio)” |
+
+> **PM correction (2026-06-30):** This is **not** full CM93 parity — only physio layer. Full parity = milestone **[M-B5.2](PM_MILESTONE_CM93_INJURY_PARITY.md)** (Rehabilitate, insurance, Lilleshall, etc.). See [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md).
 
 ### Option C — **B5.1 + comms**
 

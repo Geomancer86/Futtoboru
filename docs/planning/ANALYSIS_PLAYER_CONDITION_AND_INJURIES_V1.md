@@ -215,15 +215,30 @@ Rises after wins and good ratings; falls after losses and poor ratings. **Does n
 | **C — B5.1 + inbox only** | A + mandatory injury inbox message | ⚠️ | +1 day |
 | **D — defer** | Keep minimal stub | ❌ manual must warn “early access” | 0 |
 
-**Recommendation:** **Option A** minimum before calling injuries “documented for release”; **Option B** if CM93 parity is the marketing claim.
+**Recommendation:** **Option A** minimum before calling injuries “documented for release”; **M-B5.2 Core** before any **“CM93 parity”** claim — see [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md).
 
 ---
 
-## 9. Changelog
+## 10. CM93 parity milestone (M-B5.2)
+
+| Tier | % complete | PO claim |
+|------|------------|----------|
+| Tier 1 — existence | **100%** (B5.1) | “We have injuries” |
+| Tier 2 — management | **~17%** | “CM93-style management” after M-B5.2 Core |
+| Tier 3 — economy | **0%** | “Full CM93 injury economy” after M-B5.2 Complete |
+
+**Overall parity progress: ~39%** — [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) §7
+
+**PO decision:** Core (A) vs Complete (B) vs Defer (C) — design in [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md).
+
+---
+
+## 11. Changelog
 
 | Date | Change |
 |------|--------|
 | 2026-06-30 | Initial analysis — research + as-built + gap matrix |
+| 2026-06-30 | M-B5.2 parity milestone cross-link |
 
 ---
 
