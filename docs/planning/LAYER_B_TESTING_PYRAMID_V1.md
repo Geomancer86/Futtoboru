@@ -72,10 +72,11 @@ Preflight: [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)
 | `MatchRatingsTest` | MVP-5 | ✅ |
 | `FormationSimWeightTest` | MVP-2 | ✅ |
 | `PlayerFitnessTest` | COND-1 | ✅ |
-| `PlayerFormTest` | COND-2 | ❌ (deferred — sharpness UI) |
+| `PlayerFormTest` | COND-2 | ✅ |
 | `InjuryGeneratorTest` | COND-3 | ✅ |
 | `MoraleUpdateTest` | COND-5 | ✅ |
-| `FatigueRecoveryTest` | COND-4 | ❌ (covered indirectly by tick + soak) |
+| `FatigueRecoveryTest` | COND-4 | ✅ |
+| `PlayerConditionDefaultsTest` | COND | ✅ |
 
 ### L2 — E2E / IT ✅ / ❌
 
@@ -92,6 +93,7 @@ Preflight: [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)
 | `PlayerConditionSaveLoadIT` | COND | ✅ |
 | `FitnessSimModifierIT` | COND-1 | ✅ |
 | `InjuredPlayerLineupIT` | COND-3 | ✅ |
+| `MatchRatingsSaveLoadIT` | MVP-5 | ✅ |
 
 #### `Cm1ManagementLoopIT` (spec)
 

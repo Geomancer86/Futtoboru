@@ -17,6 +17,8 @@ import com.kotcrab.vis.ui.widget.LinkLabel.LinkLabelListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerCondition;
+import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -67,6 +69,9 @@ public class PlayersListTable extends VisTable {
     private boolean showDetermination = true;
     private boolean showPositioning = true;
     private boolean showTeamwork = true;
+
+    // Layer B5 — player condition (CM1 squad columns)
+    private boolean showConditionColumns = true;
     
     // Dynamic Components
     VisTable mainTable;
@@ -125,6 +130,12 @@ public class PlayersListTable extends VisTable {
         this.add(createSortableHeader("Age", "age")).width(80);
         this.add(createSortableHeader("Country", "country")).width(100);
         this.add(createSortableHeader(LanguageModLoader.getValue("in_starting_xi"), "xi")).width(40);
+
+        if (showConditionColumns) {
+            this.add(createSortableHeader(LanguageModLoader.getValue("fitness_pct"), "fitness")).width(50);
+            this.add(createSortableHeader(LanguageModLoader.getValue("morale"), "morale")).width(50);
+            this.add(createSortableHeader(LanguageModLoader.getValue("injury_status"), "injury")).width(90);
+        }
         
         // Physical attribute columns
         if (showAcceleration) {
@@ -210,6 +221,17 @@ public class PlayersListTable extends VisTable {
 
             String xiMarker = player.getId() != null && startingXiPlayerIds.contains(player.getId()) ? "XI" : "";
             this.add(new VisLabel(xiMarker)).width(40);
+
+            if (showConditionColumns) {
+                java.time.LocalDate asOf = game.getCurrentGame().getGameDate().toLocalDate();
+                PlayerCondition condition = PlayerConditionService.conditionOf(player);
+                this.add(new VisLabel(String.valueOf(condition.getFitnessPct()))).width(50);
+                this.add(new VisLabel(String.valueOf(condition.getMorale()))).width(50);
+                String injuryLabel = condition.isInjured(asOf)
+                        ? (condition.getInjuryDisplayName() != null ? condition.getInjuryDisplayName() : "Inj")
+                        : "";
+                this.add(new VisLabel(injuryLabel)).width(90);
+            }
             
             // Physical attributes (with change indicators)
             if (showAcceleration) {
@@ -367,6 +389,10 @@ public class PlayersListTable extends VisTable {
      */
     private int getColumnCount() {
         int count = 4; // Name, Age, Country, XI (always shown)
+
+        if (showConditionColumns) {
+            count += 3; // Fit, Morale, Injury
+        }
         
         // Physical
         if (showAcceleration) count++;

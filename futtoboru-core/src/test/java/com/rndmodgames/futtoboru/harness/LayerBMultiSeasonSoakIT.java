@@ -38,11 +38,13 @@ class LayerBMultiSeasonSoakIT {
         harness.assertSimulationHealthy(false);
 
         int ratedMatches = 0;
+        int playedCount = 0;
         if (club.getPlayedMatches() != null) {
             for (Match match : club.getPlayedMatches()) {
                 if (match == null || !Boolean.TRUE.equals(match.getIsPlayed())) {
                     continue;
                 }
+                playedCount++;
                 var ratings = match.getHomeClubId().equals(club.getId())
                         ? match.getHomePlayerRatings()
                         : match.getAwayPlayerRatings();
@@ -51,7 +53,8 @@ class LayerBMultiSeasonSoakIT {
                 }
             }
         }
-        assertTrue(ratedMatches > 0, "player club should have rated league matches");
+        assertTrue(playedCount > 0, "player club should have played matches");
+        assertEquals(playedCount, ratedMatches, "every played match should have 11 player ratings");
 
         for (Player player : club.getPlayers()) {
             if (player == null) {

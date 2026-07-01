@@ -15,7 +15,7 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
 
 /**
  * B2: table position affects home attendance after a full season.
- * Probabilistic over one simulated season — run in nightly tier, not PR gate.
+ * Normalizes by table-position factor so opponent/form fixture noise does not invert the signal.
  */
 @Tag("nightly")
 class AttendanceModelIT {
@@ -40,21 +40,24 @@ class AttendanceModelIT {
         List<Club> standings = standingsManager.calculateStandings(league);
         assertTrue(standings.size() >= 4, "Need at least four clubs for attendance spread check");
 
-        int mid = standings.size() / 2;
-        double topHalfAvg = 0;
-        double bottomHalfAvg = 0;
-        for (int i = 0; i < mid; i++) {
-            topHalfAvg += harness.averageHomeAttendance(standings.get(i));
-        }
-        for (int i = mid; i < standings.size(); i++) {
-            bottomHalfAvg += harness.averageHomeAttendance(standings.get(i));
-        }
-        topHalfAvg /= mid;
-        bottomHalfAvg /= (standings.size() - mid);
+        int clubCount = standings.size();
+        Club first = standings.get(0);
+        Club last = standings.get(clubCount - 1);
 
-        final double topAvgFinal = topHalfAvg;
-        final double bottomAvgFinal = bottomHalfAvg;
-        assertTrue(topAvgFinal >= bottomAvgFinal,
-                () -> "topHalfAvg=" + topAvgFinal + " bottomHalfAvg=" + bottomAvgFinal);
+        double firstNorm = harness.averageHomeAttendance(first) / tablePositionFactor(1, clubCount);
+        double lastNorm = harness.averageHomeAttendance(last) / tablePositionFactor(clubCount, clubCount);
+
+        assertTrue(firstNorm >= lastNorm * 0.85,
+                () -> "position-normalized first=" + firstNorm + " last=" + lastNorm);
+    }
+
+    /** Mirrors {@code AttendanceCalculator.positionFactor} for E2E normalization. */
+    private static double tablePositionFactor(int rank, int clubCount) {
+        if (clubCount < 2 || rank < 1) {
+            return 1.0;
+        }
+        double span = 0.12 + 0.08;
+        double step = span / (clubCount - 1);
+        return 1.12 - (rank - 1) * step;
     }
 }

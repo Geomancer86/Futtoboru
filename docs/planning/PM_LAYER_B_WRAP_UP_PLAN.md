@@ -23,7 +23,7 @@ Pick XI + formation (UI)
     → THEN human CM1 walkthrough (B-9)
 ```
 
-**Overall progress: ~88%** — see benchmark doc for per-feature matrix.
+**Overall progress: ~95% automated** — human B-9 after preflight soak.
 
 **Out of Layer B:** transfers, training menus, 2D engine, 1892, world news, public release.
 
@@ -46,7 +46,7 @@ Pick XI + formation (UI)
 | **L1 Unit** | B1–B5 ✅ (PR gate 112 tests) |
 | **L2 E2E** | Loop/preview/condition ✅ |
 | **L3 Long-term** | `LayerBMultiSeasonSoakIT` ✅ nightly · preflight soak pending PM sign-off |
-| **L4 Human** | **Blocked** until L1–L3 green |
+| **L4 Human** | **Ready** — after preflight soak sign-off |
 
 ---
 

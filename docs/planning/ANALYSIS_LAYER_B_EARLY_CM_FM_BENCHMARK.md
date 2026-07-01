@@ -26,22 +26,22 @@
 
 | # | CM1 / genre feature | CM1 | Early FM (attendance) | Futtoboru ID | Code | Unit | E2E | Long | Human |
 |---|---------------------|-----|----------------------|--------------|------|------|-----|------|-------|
-| 1 | Pick starting XI (11) | ✅ | ✅ | MVP-1 | ⚠️ engine ✅ UI ❌ | ✅ | ✅ | — | ❌ |
-| 2 | Formation presets | ✅ | ✅ | MVP-2 | ⚠️ registry ✅ UI ❌ | ✅ | ❌ | — | ❌ |
-| 3 | Tactics menu | ✅ | ✅ | MVP-9 | ❌ | — | ❌ | — | ❌ |
+| 1 | Pick starting XI (11) | ✅ | ✅ | MVP-1 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 2 | Formation presets | ✅ | ✅ | MVP-2 | ✅ | ✅ | ✅ | — | ❌ |
+| 3 | Tactics menu | ✅ | ✅ | MVP-9 | ✅ | — | ✅ | — | ❌ |
 | 4 | Match uses your XI | ✅ | ✅ | MVP-3 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 5 | Match preview before kick-off | ✅ | ✅ | MVP-7 | ❌ | — | ❌ | — | ❌ |
-| 6 | Text/abstract result + score | ✅ | ✅ | MVP-6 | ⚠️ partial | — | ❌ | — | ❌ |
-| 7 | Named scorers on result | ✅ | ✅ | MVP-6 | ⚠️ engine ✅ UI ❌ | — | ❌ | — | ❌ |
-| 8 | **0–10 ratings** (genre first) | ✅ | ✅ | MVP-5 | ❌ | ❌ | ❌ | — | ❌ |
+| 5 | Match preview before kick-off | ✅ | ✅ | MVP-7 | ✅ | — | ✅ | — | ❌ |
+| 6 | Text/abstract result + score | ✅ | ✅ | MVP-6 | ✅ | — | ✅ | — | ❌ |
+| 7 | Named scorers on result | ✅ | ✅ | MVP-6 | ✅ | — | ✅ | — | ❌ |
+| 8 | **0–10 ratings** (genre first) | ✅ | ✅ | MVP-5 | ✅ | ✅ | ✅ | ✅ | ❌ |
 | 9 | Crowds react to context | ⚠️ implicit | ✅ | MVP-4 | ✅ | ✅ | ✅ | ✅ | ❌ |
 | 10 | Continue / advance time | ✅ | ✅ | A-2 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 11 | Fitness tracked | ✅ | ✅ | COND-1 | ❌ | ❌ | ❌ | — | ❌ |
-| 12 | Morale tracked | ✅ | ✅ | COND-5 | ❌ | ❌ | ❌ | — | ❌ |
-| 13 | Basic injuries | ⚠️ | CM93+ | COND-3 | ❌ | ❌ | ❌ | — | ❌ |
-| 14 | Match fatigue / sharpness | ⚠️ | ✅ | COND-2,4 | ❌ | ❌ | ❌ | — | ❌ |
-| 15 | Condition affects sim | ✅ | ✅ | COND-1+sim | ❌ | ❌ | ❌ | ❌ | ❌ |
-| 16 | Squad shows fit / injured | ✅ | ✅ | COND UI | ❌ | — | ❌ | — | ❌ |
+| 11 | Fitness tracked | ✅ | ✅ | COND-1 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 12 | Morale tracked | ✅ | ✅ | COND-5 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 13 | Basic injuries | ⚠️ | CM93+ | COND-3 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 14 | Match fatigue / sharpness | ⚠️ | ✅ | COND-2,4 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 15 | Condition affects sim | ✅ | ✅ | COND-1+sim | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 16 | Squad shows fit / injured | ✅ | ✅ | COND UI | ✅ | — | — | — | ❌ |
 | 17 | Tactics + XI persist in save | ✅ | ✅ | DATA-B1 | ✅ | ✅ | ✅ | ✅ | ❌ |
 | 18 | Multi-season stability | ✅ | ✅ | MVP-8 | ✅ | — | ✅ | ✅ | ❌ |
 
@@ -57,76 +57,34 @@
 |-----------|----------|
 | `ClubTacticsSetup`, `MatchLineup`, 3 formations | `data/tactics/*`, `FormationRegistry` |
 | `BestElevenSelector`, `MatchLineupBuilder` | `engine/tactics/*` |
-| `MatchSimulator` v2 (XI only, scorers from XI) | `engine/simulation/MatchSimulator.java` |
+| `MatchSimulator` v2 + ratings + condition hooks | `engine/simulation/*` |
+| `MatchRatingsCalculator` | `engine/simulation/MatchRatingsCalculator.java` |
+| `PlayerCondition`, `PlayerConditionService`, `InjuryGenerator` | `data/PlayerCondition.java`, `engine/simulation/*` |
 | `AttendanceCalculator`, `DerbyRegistry` | `engine/simulation/*` |
-| `EconomyHealthMonitor` | `engine/economy/*` |
-| Scorers + lineup ids on `Match` | `data/Match.java` |
+| Preview → kick-off flow | `FuttoboruGameEngine.kickOffMatch` |
 
-### Automated tests ✅ (Layers 1–2 partial)
-
-| Test | Proves |
-|------|--------|
-| `FormationRegistryTest`, `BestElevenSelectorTest` | DATA-B1, MVP-1 |
-| `MatchSimulatorV2Test`, `StartingElevenIT` | MVP-3 |
-| `ClubTacticsSetupSaveLoadIT` | Persist tactics |
-| `AttendanceCalculatorTest`, `AttendanceModelIT`, `AttendanceOverwriteIT` | MVP-4, H-1 |
-| `EconomyHealthMonitorTest`, `LongRunEconomySoakIT` | ECON-B2 |
-| `TenSeasonReportIT`, `MultiSeasonSoakIT` | Long-run sim stability |
-
-### UI partial ⚠️
+### UI ✅
 
 | Screen | State |
 |--------|-------|
-| Squad | Best XI button; no manual slots |
-| Result | Score, attendance; no scorers/ratings |
-| Preview | Fixture title only |
-| Tactics | Placeholder; not in sidebar |
+| Squad | Best XI + XI marker + Fit/Mor/Injury columns |
+| Tactics | Formation + manual XI + sidebar |
+| Preview | Lineups + Kick off |
+| Result | Score, scorers, ratings, attendance |
+
+### Automated tests ✅ (L1–L3)
+
+**117 PR-gate tests + 5 nightly tests — all green.** See [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md).
 
 ---
 
-## 4. What is missing (whole Layer B)
+## 4. What remains before human QA
 
-### B3 — Feedback (CM1 ratings + result loop)
-
-| Gap | Design |
-|-----|--------|
-| `MatchRatingsCalculator` | [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) |
-| Preview → kick off → result flow | Same §2 |
-| Result scorers + ratings UI | Same §2.4 |
-
-### B4 — Tactics UX (CM1 tactics menu)
-
-| Gap | Design |
-|-----|--------|
-| Manual XI slot UI | [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) |
-| Formation dropdown (3 templates exist) | Same |
-| Sidebar Tactics button | Same |
-
-### B5 — Player condition (CM1 fitness/morale + CM93 injury floor)
-
-| Gap | Design |
-|-----|--------|
-| `PlayerCondition` on `Player` | [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) |
-| Daily tick + sim modifier | Same §4 |
-| `InjuryGenerator` + squad columns | Same §5 |
-| Exclude injured from XI | `BestElevenSelector` + IT |
-
-**CM1 evidence:** squad tracked fitness and morale; CM93 adds injury types — B5 uses **small injury table**, not FM detail.
-
-### Testing gaps (Layers 2–4)
-
-| Missing test | Tier | Proves |
-|--------------|------|--------|
-| `MatchRatingsTest` | Unit | MVP-5 formula |
-| `MatchFeedbackIT` | E2E | Ratings after sim |
-| `MatchLineupPreviewIT` | E2E | Preview flow |
-| `FormationSimWeightTest` | Unit | MVP-2 |
-| `Cm1ManagementLoopIT` | E2E | Full headless CM1 loop |
-| `LayerBMultiSeasonSoakIT` | Long | XI + ratings + condition over 5–10 seasons |
-| `FitnessSimModifierIT`, `InjuredPlayerLineupIT` | E2E | B5 |
-| Human checklist B-9 | Human | **After** L1–L3 green |
-
-Pyramid: [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md)
+| Gap | Tier |
+|-----|------|
+| Preflight 60-season soak | L3 gate |
+| Human B-9 checklist | L4 |
+| Optional polish: tactics injury grey-out, result injury line | Post B-9 |
 
 ---
 
@@ -147,14 +105,14 @@ Pyramid: [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md)
 | Phase | Weight | Done |
 |-------|--------|------|
 | B1 engine | 15% | **100%** |
-| B1 UI | 10% | **25%** |
+| B1 UI | 10% | **100%** |
 | B2 | 15% | **100%** |
-| B3 | 20% | **0%** |
-| B4 | 15% | **15%** |
-| B5 | 15% | **0%** |
-| Test pyramid L2–L3 | 10% | **40%** (B1/B2 only) |
+| B3 | 20% | **100%** |
+| B4 | 15% | **100%** |
+| B5 | 15% | **95%** |
+| Test pyramid L2–L3 | 10% | **100%** (L4 human pending) |
 
-**Overall Layer B: ~42%** (features + tests weighted).
+**Overall Layer B: ~95% automated** — human B-9 + preflight soak remain.
 
 ---
 

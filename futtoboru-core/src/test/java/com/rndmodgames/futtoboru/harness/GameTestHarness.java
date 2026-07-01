@@ -366,7 +366,7 @@ public final class GameTestHarness {
                 acknowledgeMandatoryDraws();
             }
             for (int day = 0; day < maxDays; day++) {
-                if (countEditionsWithChampions() >= targetChampionEditions) {
+                if (reachedSimulationTarget(targetChampionEditions, leagueOnly)) {
                     break;
                 }
                 continueOneDayAcknowledgingDraws();
@@ -388,10 +388,11 @@ public final class GameTestHarness {
 
         long elapsedMs = (System.nanoTime() - startNs) / 1_000_000L;
         int finalChampions = countEditionsWithChampions();
-        if (finalChampions < targetChampionEditions) {
+        if (!reachedSimulationTarget(targetChampionEditions, leagueOnly)) {
             throw new SimulationDeadlockException(
                     "simulateWithReport: wanted " + targetChampionEditions
-                            + " champion editions but got " + finalChampions
+                            + " league champion editions but got " + finalChampions
+                            + (leagueOnly ? "" : ", cup champions=" + countCupEditionsWithChampions())
                             + " within " + maxDays + " days (date=" + game().getGameDate() + ")");
         }
 
@@ -411,6 +412,16 @@ public final class GameTestHarness {
         report.recordHealthScan(scanSimulationHealth(!leagueOnly));
         assertSimulationHealthy(!leagueOnly);
         return report;
+    }
+
+    private boolean reachedSimulationTarget(int targetChampionEditions, boolean leagueOnly) {
+        if (countEditionsWithChampions() < targetChampionEditions) {
+            return false;
+        }
+        if (!leagueOnly && countCupEditionsWithChampions() < targetChampionEditions) {
+            return false;
+        }
+        return true;
     }
 
     public SimulationHealthMonitor.HealthReport scanSimulationHealth(boolean includeCupChecks) {
