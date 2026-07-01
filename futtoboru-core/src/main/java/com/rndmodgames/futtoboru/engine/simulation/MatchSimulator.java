@@ -221,7 +221,17 @@ public class MatchSimulator {
             MatchLineup awayLineup, Club awayClub, int homeScore, int awayScore) {
         match.setHomePlayerRatings(MatchRatingsCalculator.rateLineup(match, homeLineup, homeClub, true));
         match.setAwayPlayerRatings(MatchRatingsCalculator.rateLineup(match, awayLineup, awayClub, false));
-        PlayerConditionService.applyPostMatchEffects(match, homeLineup, homeClub, awayLineup, awayClub);
+        com.rndmodgames.futtoboru.engine.jobs.ClubStaffManager staffManager =
+                gameInstance != null ? gameInstance.getClubStaffManager() : null;
+        com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager =
+                gameInstance != null && gameInstance.getGameEngine() != null
+                        ? gameInstance.getGameEngine().getMessageManager() : null;
+        Long humanClubId = null;
+        if (currentGame != null && currentGame.getOwner() != null) {
+            humanClubId = currentGame.getOwner().getCurrentClubId();
+        }
+        PlayerConditionService.applyPostMatchEffects(match, homeLineup, homeClub, awayLineup, awayClub,
+                staffManager, messageManager, humanClubId);
     }
 
     private Player pickWeightedScorer(MatchLineup lineup, Club club) {

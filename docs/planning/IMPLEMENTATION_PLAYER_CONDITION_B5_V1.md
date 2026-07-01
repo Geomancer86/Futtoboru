@@ -176,4 +176,57 @@ See [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROP
 
 **Depth after B5.1:** Injuries **Partial** (was Minimal); fitness/sharpness **Partial+**
 
-**Still missing for CM93 Core:** physio estimate, INJURY PRONE, Rehabilitate, insurance, Lilleshall → **[M-B5.2](PM_MILESTONE_CM93_INJURY_PARITY.md)** (not “Option B” alone)
+**Still missing for CM93 Core:** ~~physio estimate, INJURY PRONE, Rehabilitate, insurance, Lilleshall~~ → shipped in **§10 B5.2 Complete**
+
+---
+
+## 10. B5.2 delta (Option B Complete — M-B5.2 — 2026-07-01)
+
+**PO decision:** Option **B — M-B5.2 Complete** (Tier 1–3): full CM93 injury economy.
+
+| Phase | Shipped |
+|-------|---------|
+| **B5.2a** INJURY PRONE + physio multiplier + estimate UI | ✅ |
+| **B5.2b** Rehabilitate (MINOR/MODERATE) | ✅ |
+| **B5.2c** Inbox MODERATE+ (`MessageCategory.SQUAD`) | ✅ |
+| **B5.2d** Insure/Uninsure + weekly premium + insured wage cover | ✅ |
+| **B5.2e** Lilleshall + surgeon abroad (rich-club gate) | ✅ |
+
+### Code map (B5.2 additions)
+
+| Component | Path |
+|-----------|------|
+| Economy mods | `mods/injuries/rehab_costs.txt`, `treatment_costs.txt`, `insurance.txt` |
+| Registry | `system/loaders/InjuryEconomyRegistry.java` |
+| Physio | `engine/simulation/PhysioService.java`, `Person.staffAbility`, profession `Physio` (id 9) |
+| Injury roll | `InjuryGenerator.applyInjury()` — proneness + physio weeks |
+| Treatments | `InjuryTreatmentService.java` |
+| Finances | `ExpenseCalculator` — insurance premiums in other expenses; skip insured injured wages |
+| Inbox | `MessageManager.createInjuryNewsMessage()` |
+| UI | `PlayerDetailScreenTable` (Rehabilitate, Insure, Lilleshall, Surgeon), squad Return estimate, club physio row |
+
+### Behaviour (authoritative)
+
+- **INJURY PRONE:** hidden 1–20 on `Player`; default rolled at attribute gen; modifier `(prone − 10) × 0.001` on roll.  
+- **Physio:** ability 1–5 (Fair→Superb); multiplier `1.20 − (ability × 0.07)` on base weeks; estimate shown as `~N wk (OK physio)`.  
+- **Rehabilitate:** MINOR −1 wk / MODERATE −2 wk; costs from mod; free if insured.  
+- **Insurance:** 5% of weekly wage premium; weekly tick; wages not charged while injured if insured.  
+- **Lilleshall:** SERIOUS only; remaining weeks × 0.6; cost £300 mod default.  
+- **Surgeon abroad:** SERIOUS + balance ≥ £500; remaining weeks × 0.5 (10% fail roll); cost £500.  
+- **Inbox:** MODERATE+ injuries on human manager club after match.
+
+### Tests (131 green)
+
+**New:** `InjuryEconomyB52Test` (8 cases — proneness, physio, rehab, insurance, wages, Lilleshall, surgeon, inbox)
+
+**Test isolation note:** `GameTestHarness` reuses `DatabaseLoader` club objects across runs. B5.2 ITs reset squad injury/insurance state in `@BeforeEach` — see `resetSquadForTests()`. Without this, earlier tests in the full suite left players injured/insured and caused order-dependent failures (`NOT_FIT_FOR_INSURANCE`).
+
+**Manual:** [06-squad-and-condition.md](../manual/06-squad-and-condition.md), [07-player-actions-insurance.md](../manual/07-player-actions-insurance.md)
+
+**Depth after B5.2 Complete:** Injuries **Core+** (~100% CM93 Tier 2+3 parity per [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md))
+
+### Changelog
+
+| Date | Change |
+|------|--------|
+| 2026-07-01 | B5.2 Complete shipped (Option B) |

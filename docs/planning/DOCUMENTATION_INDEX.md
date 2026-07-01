@@ -26,8 +26,8 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md) | **PO, PM, UX** | **Wiki/manual readiness** — what docs exist vs what release needs |
 | [ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md](ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md) | **Match/Sim, PO** | **B5 research + as-built audit** — fitness/injury gaps |
 | [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md) | **PO, Match/Sim** | **B5.1 Option A** — shipped; parity label corrected |
-| [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) | **PO, PM, Sponsor** | **M-B5.2 milestone** — CM93 injury parity definition, tiers, PO decision |
-| [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) | **Match/Sim, PO** | B5.2 engineering design (post PO lock) |
+| [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) | **PO, PM, Sponsor** | **M-B5.2 milestone** — Option B Complete shipped (2026-07-01) |
+| [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) | **Match/Sim, PO** | B5.2 engineering design — **shipped** |
 | [../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md](../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md) | **Research, PO** | CM93 injury primary-source ledger |
 | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) | **Match/Sim, manual authors** | **B5 + B5.1 as-built** |
 | [IMPLEMENTATION_TACTICS_B4_V1.md](IMPLEMENTATION_TACTICS_B4_V1.md) | **Match/Sim** | Tactics & XI as-built |

@@ -78,8 +78,9 @@ public class PlayerAttributeGenerator {
         // Apply profession bonuses (for amateur/semi-pro players)
         // Profession bonuses are applied directly (no conversion needed with 3-18 system)
         applyProfessionBonuses(player);
+        assignInjuryProneness(player, person);
         
-        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerAttributeGenerator", "Generated attributes for: " + person.getName() + 
+        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerAttributeGenerator", "Generated attributes for: " + person.getName() +
                      " (Age: " + age + ", Age Adj: " + ageAdjustment + ")");
     }
     
@@ -540,6 +541,16 @@ public class PlayerAttributeGenerator {
         if (player.getHandToHand() != null) player.setHandToHand(clampAttribute3d6((int)(player.getHandToHand() - declineSteps)));
         if (player.getRushingOut() != null) player.setRushingOut(clampAttribute3d6((int)(player.getRushingOut() - declineSteps)));
         if (player.getAreaPositioning() != null) player.setAreaPositioning(clampAttribute3d6((int)(player.getAreaPositioning() - declineSteps)));
+    }
+
+    /** Hidden CM93-style injury proneness (1–20, default roll if unset). */
+    private void assignInjuryProneness(Player player, Person person) {
+        if (player == null || player.getInjuryProneness() != null) {
+            return;
+        }
+        long seed = person != null && person.getId() != null ? person.getId() : System.nanoTime();
+        int prone = (int) ((seed * 17 + 11) % 20) + 1;
+        player.setInjuryProneness(prone);
     }
 }
 

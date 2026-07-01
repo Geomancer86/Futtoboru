@@ -4,7 +4,7 @@
 **Date:** 2026-06-30  
 **Audience:** **PO first**, then PM, Match/Sim, UX, QA, Sponsor  
 **Branch:** `analyze-ai-branch`  
-**Status:** **Awaiting PO scope lock** — analysis & design only (no code in this pack)
+**Status:** **Option B locked — B5.2 Complete shipped** (2026-07-01)
 
 **Companion design:** [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md)  
 **Research:** [RESEARCH_CM93_INJURY_SUBSYSTEM.md](../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md)  
@@ -216,29 +216,36 @@ PO (or delegate) runs this **once** on a build where M-B5.2 scope is marked done
 
 ---
 
-## 7. Progress dashboard (today)
+## 7. Progress dashboard (2026-07-01 — B5.2 Complete shipped)
 
 | Tier | Items | Done | % |
 |------|-------|------|---|
 | Tier 1 | 6 | 6 | **100%** |
-| Tier 2 | 6 | 1 | **~17%** (fatigue risk only) |
-| Tier 3 | 6 | 0 | **0%** |
-| **Overall CM93 injury parity** | 18 | 7 | **~39%** |
+| Tier 2 | 6 | 6 | **100%** |
+| Tier 3 | 6 | 6 | **100%** |
+| **Overall CM93 injury parity** | 18 | 18 | **~100%** |
 
 **Honest one-liner for Sponsor:**  
-*“Injuries work like a modern stub with CM93-shaped UI; parity milestone is ~40% done — management layer still to build.”*
+*“CM93-style injury management is in — physio estimates, treatment choices, insurance, and specialist options — without FM body-part simulation.”*
+
+**PO decision (locked):** **Option B — M-B5.2 Complete** (2026-07-01). Implementation: [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §10.
 
 ---
 
-## 8. PO decision requested
+## 8. PO decision
 
-Pick **one**:
+**Locked: Option B — M-B5.2 Complete** (2026-07-01). See [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §10.
+
+<details>
+<summary>Original options (archived)</summary>
 
 | Option | Scope | Parity claim allowed | Effort |
 |--------|--------|----------------------|--------|
-| **A — M-B5.2 Core** (PM recommends) | Tier 1 ✅ + Tier 2 | “CM93-style injury management” | ~1.5–2 w |
+| **A — M-B5.2 Core** | Tier 1 ✅ + Tier 2 | “CM93-style injury management” | ~1.5–2 w |
 | **B — M-B5.2 Complete** | Tier 1–3 | “Full CM93 injury economy” | ~3–4 w |
 | **C — Defer** | Stay at B5.1 | “Early injuries — not CM93 parity” | 0 |
+
+</details>
 
 **Secondary PO calls:**
 
@@ -277,6 +284,7 @@ RESEARCH_CM93_INJURY_SUBSYSTEM.md
 
 | Date | Change |
 |------|--------|
+| 2026-07-01 | Option B shipped — parity ~100% |
 | 2026-06-30 | Initial PO/PM milestone pack; clarifies B5.1 ≠ parity |
 
 ---

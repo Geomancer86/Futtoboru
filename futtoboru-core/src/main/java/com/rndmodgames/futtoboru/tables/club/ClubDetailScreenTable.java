@@ -245,6 +245,25 @@ public class ClubDetailScreenTable extends VisTable {
             this.row();
         }
         
+        // Physio staff (B5.2 — not a selectable job position)
+        this.addSeparator();
+        this.row();
+        this.add(new VisLabel("Physio:")).left();
+        com.rndmodgames.futtoboru.data.Profession physioProfession =
+                DatabaseLoader.getProfessionById(com.rndmodgames.futtoboru.system.loaders.InjuryEconomyRegistry.PHYSIO_PROFESSION_ID);
+        if (clubStaffManager != null && physioProfession != null) {
+            Person physio = clubStaffManager.getClubStaff(club, physioProfession);
+            int ability = com.rndmodgames.futtoboru.engine.simulation.PhysioService.resolvePhysioAbility(club, clubStaffManager);
+            String physioLabel = physio != null
+                    ? physio.getName() + " " + physio.getLastname()
+                    : "Club physio (default)";
+            this.add(new VisLabel(physioLabel + " — Ability: "
+                    + com.rndmodgames.futtoboru.engine.simulation.PhysioService.abilityLabel(ability))).left().expandX();
+        } else {
+            this.add(new VisLabel("N/A")).left().expandX();
+        }
+        this.row();
+
         // Staff Positions
         this.addSeparator();
         this.row();

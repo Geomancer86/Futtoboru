@@ -8,21 +8,20 @@
 
 ---
 
-## Layer B — player condition (B5 / B5.1)
+## Layer B — player condition (B5 / B5.1 / B5.2)
 
 | Field | Value |
 |-------|-------|
-| **Feature ID** | COND / B5 / B5.1 |
-| **Research** | [RESEARCH_EARLY_CM_INJURIES_VS_FM.md](../research/RESEARCH_EARLY_CM_INJURIES_VS_FM.md) |
+| **Feature ID** | COND / B5 / B5.1 / B5.2 |
+| **Research** | [RESEARCH_CM93_INJURY_SUBSYSTEM.md](../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md) |
 | **Analysis** | [ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md](ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md) |
-| **Design** | [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) · [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md) |
-| **Implementation** | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9 |
-| **Code** | `PlayerCondition.java`, `PlayerConditionService.java`, `InjuryGenerator.java`, `InjuryTypesRegistry.java`, `PlayersListTable.java`, `TacticsScreenTable.java`, `MatchResultScreenTable.java` |
-| **Tests** | L1: `PlayerConditionDefaultsTest`, `PlayerFitnessTest`, `PlayerFormTest`, `FatigueRecoveryTest`, `FatigueSlowsRecoveryTest`, `MoraleUpdateTest`, `MoraleGoalBonusTest`, `InjuryGeneratorTest`, `InjuryTypesRegistryTest`, `PlayerSharpnessFactorTest`, `MatchInjuryTrackingTest` · L2: `InjuredPlayerLineupIT`, `FitnessSimModifierIT`, `PlayerConditionSaveLoadIT` |
-| **Manual §** | [06-squad-and-condition.md](../manual/06-squad-and-condition.md) ⚠️ draft |
-| **i18n keys** | `fitness_pct`, `sharpness_pct`, `morale`, `injury_status`, `injury_return`, `condition_fit`, `condition_fit_warning`, `injured_until`, `slot_status` |
-| **Shipped depth** | Injuries **Partial** (Tier 1) · **~39% CM93 parity** — [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) |
-| **Next** | PO lock M-B5.2 Core vs Complete → [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) |
+| **Design** | [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) |
+| **Implementation** | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9–§10 |
+| **Code** | `InjuryGenerator.java`, `InjuryTreatmentService.java`, `PhysioService.java`, `InjuryEconomyRegistry.java`, `PlayerDetailScreenTable.java`, `ExpenseCalculator.java`, `MessageManager.createInjuryNewsMessage()` |
+| **Tests** | B5.1 suite + `InjuryEconomyB52Test` (8) · **131 tests green** |
+| **Manual §** | [06-squad-and-condition.md](../manual/06-squad-and-condition.md), [07-player-actions-insurance.md](../manual/07-player-actions-insurance.md) |
+| **Shipped depth** | Injuries **Core+** · **~100% CM93 Tier 2+3** — [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) |
+| **Next** | Human B-9 regression · forced retirement tribunal (deferred PO) |
 
 ---
 

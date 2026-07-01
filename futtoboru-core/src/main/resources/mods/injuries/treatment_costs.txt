@@ -1,0 +1,4 @@
+# Specialist treatment costs (1888 money)
+# treatment|cost|recovery_multiplier
+LILLESHALL|300|0.6
+SURGEON_ABROAD|500|0.5

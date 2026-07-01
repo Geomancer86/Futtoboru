@@ -10,6 +10,8 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerCondition;
 import com.rndmodgames.futtoboru.data.tactics.MatchLineup;
+import com.rndmodgames.futtoboru.engine.jobs.ClubStaffManager;
+import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.tactics.MatchLineupBuilder;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
@@ -101,17 +103,26 @@ public final class PlayerConditionService {
 
     public static void applyPostMatchEffects(Match match, MatchLineup homeLineup, Club homeClub,
             MatchLineup awayLineup, Club awayClub) {
+        applyPostMatchEffects(match, homeLineup, homeClub, awayLineup, awayClub, null, null, null);
+    }
+
+    public static void applyPostMatchEffects(Match match, MatchLineup homeLineup, Club homeClub,
+            MatchLineup awayLineup, Club awayClub, ClubStaffManager staffManager,
+            MessageManager messageManager, Long humanManagedClubId) {
         if (match == null) {
             return;
         }
         match.setHomeInjuredPlayerIds(new java.util.ArrayList<>());
         match.setAwayInjuredPlayerIds(new java.util.ArrayList<>());
-        applyForSide(match, homeLineup, homeClub, match.getHomePlayerRatings(), true);
-        applyForSide(match, awayLineup, awayClub, match.getAwayPlayerRatings(), false);
+        applyForSide(match, homeLineup, homeClub, match.getHomePlayerRatings(), true,
+                staffManager, messageManager, humanManagedClubId);
+        applyForSide(match, awayLineup, awayClub, match.getAwayPlayerRatings(), false,
+                staffManager, messageManager, humanManagedClubId);
     }
 
     private static void applyForSide(Match match, MatchLineup lineup, Club club,
-            Map<Long, Float> ratings, boolean isHome) {
+            Map<Long, Float> ratings, boolean isHome, ClubStaffManager staffManager,
+            MessageManager messageManager, Long humanManagedClubId) {
         if (lineup == null || club == null) {
             return;
         }
@@ -152,15 +163,31 @@ public final class PlayerConditionService {
             }
             condition.setMorale(clampPct(morale));
 
-            if (InjuryGenerator.maybeInjure(ref.player, condition, injuryRng, today)
+            if (InjuryGenerator.applyInjury(ref.player, condition, club, staffManager, injuryRng, today).isApplied()
                     && ref.player.getId() != null) {
                 if (isHome) {
                     match.getHomeInjuredPlayerIds().add(ref.player.getId());
                 } else {
                     match.getAwayInjuredPlayerIds().add(ref.player.getId());
                 }
+                notifyInjuryInbox(club, ref.player, condition, messageManager, humanManagedClubId);
             }
         }
+    }
+
+    private static void notifyInjuryInbox(Club club, Player player, PlayerCondition condition,
+            MessageManager messageManager, Long humanManagedClubId) {
+        if (messageManager == null || club == null || player == null || condition == null) {
+            return;
+        }
+        if (humanManagedClubId == null || !humanManagedClubId.equals(club.getId())) {
+            return;
+        }
+        if (condition.getInjurySeverityEnum() == null
+                || condition.getInjurySeverityEnum() == com.rndmodgames.futtoboru.data.InjurySeverity.MINOR) {
+            return;
+        }
+        messageManager.createInjuryNewsMessage(player, condition);
     }
 
     private static boolean clubHadMatchOnDate(Club club, LocalDate date) {

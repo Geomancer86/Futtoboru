@@ -1,10 +1,10 @@
 # Squad, Fitness & Injuries
 
 **Futtoboru player guide — draft**  
-**Status:** Draft (synced with B5.1 implementation)  
-**Build:** `analyze-ai-branch` · 2026-06-30  
+**Status:** Draft (synced with B5.2 Complete)  
+**Build:** `analyze-ai-branch` · 2026-07-01  
 
-**Authoritative behaviour:** [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9 (B5.1)
+**Authoritative behaviour:** [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9–§10
 
 ---
 
@@ -13,6 +13,8 @@
 Your squad screen tracks how ready each player is to play. **Fitness**, **sharpness**, and **morale** change after matches and rest days. **Injuries** can occur after a match and keep a player out until the return date shown.
 
 This is a **text injury system** (like Championship Manager 93) — not a modern body-part medical simulation.
+
+For **treatment and insurance** actions, see [07-player-actions-insurance.md](07-player-actions-insurance.md).
 
 ---
 
@@ -25,7 +27,7 @@ This is a **text injury system** (like Championship Manager 93) — not a modern
 | **Sharp** | Match sharpness 0–100. Rises when you play; falls when idle |
 | **Mor** | Morale 0–100. Affected by results, goals, and ratings |
 | **Injury** | Injury name, or **Fit** if available |
-| **Return** | Expected return date (e.g. `15 Oct`), or **—** |
+| **Return** | Physio estimate, e.g. `~3 wk (OK physio)`, or **—** |
 
 Sort any column by clicking its header.
 
@@ -62,32 +64,22 @@ Morale is shown on the squad screen; it does not yet change transfer or board be
 
 ### When they happen
 
-Injuries are rolled **after a match** for players who were in your starting eleven. Risk increases if fitness is low or fatigue is high.
+Injuries are rolled **after a match** for players who were in your starting eleven. Risk increases if fitness is low, fatigue is high, or the player is **injury prone** (hidden attribute — you will not see it on the squad screen, as in CM93).
 
-### Types
+### Types and physio estimate
 
-Injuries include knocks such as **Strain**, **Bruise**, **Twisted ankle**, **Knee injury**, and **Serious injury**. More serious injuries keep players out longer.
+Injuries include knocks such as **Strain**, **Bruise**, **Twisted ankle**, **Knee injury**, and **Serious injury**. Your club **physio’s ability** affects how many weeks out the physio estimates.
 
 ### What you must do
 
 - **Injured players cannot be picked** on the Tactics screen (they do not appear in the player list).  
 - If a player was already assigned before getting injured, the slot shows **Injured until** with a date.  
-- The **match result** screen lists anyone injured in that game with an approximate week count.
+- The **match result** screen lists anyone injured in that game with an approximate week count and physio quality.  
+- **Moderate or serious** injuries on your squad trigger an **inbox** message after the match.
 
-### What is not in the game yet (M-B5.2 — CM93 parity milestone)
+### Treatment and insurance
 
-The following are **designed but not implemented**. See [PM_MILESTONE_CM93_INJURY_PARITY.md](../planning/PM_MILESTONE_CM93_INJURY_PARITY.md).
-
-| Feature | Tier | Status |
-|---------|------|--------|
-| Physio recovery **estimate** (not just calendar date) | Core | Planned B5.2a |
-| INJURY PRONE hidden attribute | Core | Planned B5.2a |
-| **Rehabilitate** (pay for treatment) | Core | Planned B5.2b |
-| Injury **inbox** message | Core | Planned B5.2c |
-| **Insurance** / wages while injured | Complete | Planned B5.2d |
-| **Lilleshall** / surgeon abroad | Complete | Planned B5.2e |
-
-Until M-B5.2 Core is PO-approved and shipped, do **not** describe Futtoboru as “CM93 injury parity.”
+Open a player from the squad to **Rehabilitate**, **Insure**, send to **Lilleshall**, or arrange a **surgeon abroad** — see [07-player-actions-insurance.md](07-player-actions-insurance.md).
 
 ---
 
@@ -103,8 +95,9 @@ Until M-B5.2 Core is PO-approved and shipped, do **not** describe Futtoboru as �
 ## Tips
 
 1. Rotate the squad if fitness drops below 60% before a big match.  
-2. Check **Return** dates when planning your next fixture.  
-3. After a heavy defeat, watch morale — it recovers with better results.
+2. Check **Return** estimates when planning your next fixture.  
+3. Insure key earners before a congested run of fixtures.  
+4. After a heavy defeat, watch morale — it recovers with better results.
 
 ---
 

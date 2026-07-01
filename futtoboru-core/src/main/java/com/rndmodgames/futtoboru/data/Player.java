@@ -76,11 +76,14 @@ public class Player implements Serializable {
     private Float areaPositioning;
     
     /**
-     * Hidden Attributes
-     * 
-     * TODO
+     * Hidden Attributes (B5.2 — CM93 injury proneness, not shown on squad UI)
      */
-    
+    private Integer injuryProneness;
+
+    /** B5.2 Complete — weekly injury insurance policy. */
+    private Boolean injuryInsured;
+    private java.math.BigDecimal injuryInsuranceWeekly;
+
     //
     public Player() {
         
@@ -378,6 +381,30 @@ public class Player implements Serializable {
 
     public void setCondition(PlayerCondition condition) {
         this.condition = condition;
+    }
+
+    public Integer getInjuryProneness() {
+        return injuryProneness;
+    }
+
+    public void setInjuryProneness(Integer injuryProneness) {
+        this.injuryProneness = injuryProneness;
+    }
+
+    public Boolean getInjuryInsured() {
+        return injuryInsured;
+    }
+
+    public void setInjuryInsured(Boolean injuryInsured) {
+        this.injuryInsured = injuryInsured;
+    }
+
+    public java.math.BigDecimal getInjuryInsuranceWeekly() {
+        return injuryInsuranceWeekly;
+    }
+
+    public void setInjuryInsuranceWeekly(java.math.BigDecimal injuryInsuranceWeekly) {
+        this.injuryInsuranceWeekly = injuryInsuranceWeekly;
     }
 
     @Override

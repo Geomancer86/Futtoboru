@@ -7,8 +7,13 @@ import java.util.Random;
 
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ClubExpenses;
+import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerCondition;
 import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.engine.simulation.InjuryGenerator;
+import com.rndmodgames.futtoboru.engine.simulation.InjuryTreatmentService;
+import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
 
 /**
  * Expense Calculator v1.0
@@ -95,9 +100,10 @@ public class ExpenseCalculator {
         expenses.setStaffWages(calculateStaffWages(stadiumCapacity, monthlyRandom));
         expenses.setAdministrativeExpenses(calculateAdministrativeExpenses(rosterSize, monthlyRandom));
         expenses.setStadiumRent(calculateStadiumRent(stadium));
-        expenses.setOtherExpenses(calculateOtherExpenses(monthlyRandom));
+        expenses.setOtherExpenses(calculateOtherExpenses(monthlyRandom)
+                .add(InjuryTreatmentService.sumWeeklyInsurancePremiums(club)));
         
-        // Player wages (v1.0: from PlayerContract system)
+        // Player wages (v1.0: from PlayerContract system; B5.2: skip insured injured wages)
         expenses.setPlayerWages(calculatePlayerWages(club, gameDate));
         
         // Travel expenses (calculated per match, not weekly)
@@ -332,13 +338,40 @@ public class ExpenseCalculator {
                 }
             }
             
-            // Add weekly wage to total
+            // Add weekly wage to total (B5.2: insured injured players — wages covered by policy)
             BigDecimal weeklyWage = contract.getWeeklyWage();
             if (weeklyWage != null && weeklyWage.compareTo(BigDecimal.ZERO) > 0) {
-                totalWages = totalWages.add(weeklyWage);
+                if (!isInsuredInjuredWageSkipped(club, contract, gameDate)) {
+                    totalWages = totalWages.add(weeklyWage);
+                }
             }
         }
         
         return totalWages.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private boolean isInsuredInjuredWageSkipped(Club club, PlayerContract contract, LocalDateTime gameDate) {
+        if (club == null || contract == null || contract.getPlayerId() == null) {
+            return false;
+        }
+        Player player = findPlayer(club, contract.getPlayerId());
+        if (player == null || !InjuryGenerator.isPlayerInsured(player)) {
+            return false;
+        }
+        PlayerCondition condition = PlayerConditionService.conditionOf(player);
+        java.time.LocalDate today = gameDate != null ? gameDate.toLocalDate() : java.time.LocalDate.now();
+        return condition.isInjured(today);
+    }
+
+    private Player findPlayer(Club club, Long playerId) {
+        if (club.getPlayers() == null || playerId == null) {
+            return null;
+        }
+        for (Player player : club.getPlayers()) {
+            if (player != null && playerId.equals(player.getId())) {
+                return player;
+            }
+        }
+        return null;
     }
 }

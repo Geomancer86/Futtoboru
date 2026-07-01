@@ -51,6 +51,11 @@ public enum MessageCategory {
      * - Contract negotiations
      */
     JOB,
+
+    /**
+     * Squad / player condition messages (injuries, fitness).
+     */
+    SQUAD,
     
     /**
      * System messages

@@ -1,7 +1,7 @@
 # Futtoboru — Systems & Features Registry
 
 **Document type:** Feature inventory  
-**Last verified:** 2026-06-30 (123-test suite; all pass)  
+**Last verified:** 2026-07-01 (131-test suite; all pass)  
 **Branch:** `analyze-ai-branch`  
 **Layer B truth:** [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) · [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md)
 
@@ -19,12 +19,12 @@
 | Match sim uses XI + condition | ✅🧪 | `FitnessSimModifierIT`, `FormationSimWeightTest` |
 | Post-match 0–10 ratings | ✅🧪 | `MatchRatingsTest`, `MatchFeedbackIT` — [IMPLEMENTATION_MATCH_RATINGS_B3_V1.md](IMPLEMENTATION_MATCH_RATINGS_B3_V1.md) |
 | Attendance (table/form/derby) | ✅🧪 | `AttendanceCalculatorTest`, `AttendanceModelIT` |
-| Player condition B5.1 | ⚠️ Partial | Injuries **Partial** (5 types, UI) — [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9 |
+| Player condition B5.2 Complete | ✅🧪 | CM93 injury economy — [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §10 |
 | Match preview / kick-off / result | ✅🧪 | `MatchLineupPreviewIT`, `MatchFeedbackIT` |
 | Training / transfers UI | 🔲 | Placeholder screens only |
 | Inbox / world news (hiatus, restart) | ❌ | **NEWS-2** |
 | Save JSON roundtrip | ✅🧪 | `SaveLoadIT`, `PlayerConditionSaveLoadIT`, `MatchRatingsSaveLoadIT` |
-| `GameTestHarness` | ✅🧪 | **123 tests** all green |
+| `GameTestHarness` | ✅🧪 | **131 tests** all green |
 
 ---
 
@@ -42,7 +42,7 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · depth 
 | MVP-6–7 | Match preview / result UI | ⚠️ Partial |
 | MVP-8 | Multi-season stability | ✅🧪 `LayerBMultiSeasonSoakIT` |
 | MVP-9 | Tactics screen | ⚠️ Partial |
-| B5 / B5.1 | Fitness, morale, injuries | ⚠️ Partial (B5.1 Option A shipped) |
+| B5 / B5.2 | Fitness, morale, CM93 injuries | ✅ Core+ (B5.2 Complete) |
 | MVP-10 | Save schema versioning | ⏸ Deferred |
 
 **Execution:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · **Tests:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md)

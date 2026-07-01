@@ -243,6 +243,37 @@ public class MessageManager {
         Gdx.app.log("MessageManager", "Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
         System.out.println("MessageManager: Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
     }
+
+    /**
+     * Squad inbox notification for MODERATE+ injuries (B5.2c).
+     */
+    public void createInjuryNewsMessage(com.rndmodgames.futtoboru.data.Player player,
+            com.rndmodgames.futtoboru.data.PlayerCondition condition) {
+        if (player == null || condition == null) {
+            return;
+        }
+        Message message = new Message();
+        message.setCategory(MessageCategory.SQUAD);
+        message.setMessageType("INJURY_NEWS");
+        message.setPriority(MessagePriority.NORMAL);
+        message.setTitle("Injury news");
+        String name = player.toString();
+        String injuryName = condition.getInjuryDisplayName() != null
+                ? condition.getInjuryDisplayName() : "Injury";
+        int weeks = condition.getInjuryEstimateWeeks() != null
+                ? condition.getInjuryEstimateWeeks() : condition.estimateWeeksOut(
+                        getCurrentGame() != null && getCurrentGame().getGameDate() != null
+                                ? getCurrentGame().getGameDate().toLocalDate() : java.time.LocalDate.now());
+        StringBuilder body = new StringBuilder();
+        body.append(name).append(" injured — ").append(injuryName)
+                .append(". Physio estimates ~").append(weeks).append(" weeks.");
+        if (condition.getInjurySeverityEnum()
+                == com.rndmodgames.futtoboru.data.InjurySeverity.SERIOUS) {
+            body.append(" Consider specialist treatment.");
+        }
+        message.setPlainTextMessage(body.toString());
+        deliverMessage(message);
+    }
     
     // ========================================
     // WELCOME MESSAGE CREATION METHODS

@@ -11,3 +11,4 @@
 6,Agent,true
 7,Investor,true
 8,Club Owner,true
+9,Physio,false

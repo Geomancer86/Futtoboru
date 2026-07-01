@@ -68,6 +68,11 @@ public class Person implements Serializable {
     private LocalDateTime lastJobApplicationDate;
     private Integer applicationsThisWeek = 0;
 
+    /**
+     * Staff ability rating (1=Fair .. 5=Superb) for physio and other staff (B5.2).
+     */
+    private Integer staffAbility;
+
     //
     public Person() {
         
@@ -263,5 +268,13 @@ public class Person implements Serializable {
     @Deprecated
     public void incrementApplicationCount() {
         incrementApplicationCount(LocalDateTime.now());
+    }
+
+    public Integer getStaffAbility() {
+        return staffAbility;
+    }
+
+    public void setStaffAbility(Integer staffAbility) {
+        this.staffAbility = staffAbility;
     }
 }

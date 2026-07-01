@@ -234,8 +234,8 @@ public class PlayersListTable extends VisTable {
                         ? (condition.getInjuryDisplayName() != null ? condition.getInjuryDisplayName() : "Inj")
                         : LanguageModLoader.getValue("condition_fit");
                 this.add(new VisLabel(injuryLabel)).width(90);
-                String returnLabel = condition.isInjured(asOf) && condition.getInjuryReturnDate() != null
-                        ? condition.getInjuryReturnDate().format(DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH))
+                String returnLabel = condition.isInjured(asOf)
+                        ? condition.formatReturnEstimate(asOf)
                         : "—";
                 this.add(new VisLabel(returnLabel)).width(70);
             }

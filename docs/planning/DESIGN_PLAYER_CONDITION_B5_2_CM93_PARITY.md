@@ -2,7 +2,7 @@
 
 **Document type:** Architecture / product design  
 **Date:** 2026-06-30  
-**Status:** **Awaiting PO scope lock** — analysis & design only  
+**Status:** **Shipped** — B5.2 Complete (Option B, 2026-07-01)  
 **Audience:** Match/Sim, UX, World/Data, QA, PM  
 
 **PO milestone:** [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md)  

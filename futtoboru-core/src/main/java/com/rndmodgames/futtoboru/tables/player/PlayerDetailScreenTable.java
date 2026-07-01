@@ -8,14 +8,26 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.InjurySeverity;
 import com.rndmodgames.futtoboru.data.NationalityModifier;
+import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerCondition;
+import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.data.PlayerProfession;
 import com.rndmodgames.futtoboru.data.RegionModifier;
+import com.rndmodgames.futtoboru.engine.simulation.InjuryGenerator;
+import com.rndmodgames.futtoboru.engine.simulation.InjuryTreatmentService;
+import com.rndmodgames.futtoboru.engine.simulation.InjuryTreatmentService.TreatmentResult;
+import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
+import com.rndmodgames.futtoboru.engine.simulation.PhysioService;
+import com.rndmodgames.futtoboru.system.loaders.InjuryEconomyRegistry;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
@@ -138,6 +150,12 @@ public class PlayerDetailScreenTable extends VisTable {
         
         // Contract Details Section (v1.0)
         buildContractSection();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.row();
+
+        // Condition & injury actions (B5.2)
+        buildConditionSection();
         contentTable.row();
         contentTable.addSeparator().colspan(2).pad(10);
         contentTable.row();
@@ -369,6 +387,153 @@ public class PlayerDetailScreenTable extends VisTable {
         }
         
         contentTable.add(contractTable).left().pad(10);
+    }
+
+    private void buildConditionSection() {
+        VisTable conditionTable = new VisTable(true);
+        conditionTable.row();
+        conditionTable.add(new VisLabel("Condition & Treatment")).colspan(2).left().padBottom(5);
+        conditionTable.row();
+
+        java.time.LocalDate asOf = futtoboru.getCurrentGame().getGameDate().toLocalDate();
+        PlayerCondition condition = PlayerConditionService.conditionOf(currentPlayer);
+        Club playerClub = resolvePlayerClub();
+
+        if (condition.isInjured(asOf)) {
+            conditionTable.add(new VisLabel("Status:")).left().width(150);
+            String injuryText = condition.getInjuryDisplayName() != null
+                    ? condition.getInjuryDisplayName() : "Injured";
+            conditionTable.add(new VisLabel(injuryText + " — " + condition.formatReturnEstimate(asOf))).left();
+            conditionTable.row();
+            if (condition.getInjuryReturnDate() != null) {
+                conditionTable.add(new VisLabel("Return date:")).left().width(150);
+                conditionTable.add(new VisLabel(dateFormatter.format(condition.getInjuryReturnDate()))).left();
+                conditionTable.row();
+            }
+        } else {
+            conditionTable.add(new VisLabel("Status:")).left().width(150);
+            conditionTable.add(new VisLabel("Fit — Fitness " + condition.getFitnessPct() + "%")).left();
+            conditionTable.row();
+        }
+
+        if (InjuryGenerator.isPlayerInsured(currentPlayer)) {
+            conditionTable.add(new VisLabel("Insurance:")).left().width(150);
+            String premium = currentPlayer.getInjuryInsuranceWeekly() != null
+                    ? "£" + currentPlayer.getInjuryInsuranceWeekly().setScale(2, java.math.RoundingMode.HALF_UP) + "/week"
+                    : "Active";
+            conditionTable.add(new VisLabel(premium)).left();
+            conditionTable.row();
+        }
+
+        if (playerClub != null && isHumanManagedClub(playerClub)) {
+            buildTreatmentButtons(conditionTable, playerClub, condition, asOf);
+        }
+
+        contentTable.add(conditionTable).left().pad(10);
+    }
+
+    private void buildTreatmentButtons(VisTable table, Club club, PlayerCondition condition,
+            java.time.LocalDate asOf) {
+        VisTable buttons = new VisTable(true);
+        table.row();
+        table.add(new VisLabel("Actions:")).left().width(150).top();
+        table.add(buttons).left();
+
+        if (condition.isInjured(asOf)) {
+            InjurySeverity severity = condition.getInjurySeverityEnum();
+            if (severity == InjurySeverity.MINOR || severity == InjurySeverity.MODERATE) {
+                buttons.row();
+                buttons.add(actionButton("Rehabilitate", () -> {
+                    TreatmentResult result = InjuryTreatmentService.rehabilitate(club, currentPlayer, asOf);
+                    showTreatmentResult(result, "Treatment arranged.");
+                }));
+            }
+            if (severity == InjurySeverity.SERIOUS && condition.getLilleshallEndDate() == null) {
+                buttons.row();
+                buttons.add(actionButton("Send to Lilleshall", () -> {
+                    TreatmentResult result = InjuryTreatmentService.sendToLilleshall(club, currentPlayer, asOf);
+                    showTreatmentResult(result, "Sent to Lilleshall National Rehabilitation Centre.");
+                }));
+            }
+            if (severity == InjurySeverity.SERIOUS && !Boolean.TRUE.equals(condition.getSurgeonAbroadUsed())) {
+                java.math.BigDecimal balance = club.getClubBalance() != null ? club.getClubBalance() : java.math.BigDecimal.ZERO;
+                if (balance.compareTo(InjuryEconomyRegistry.getSurgeonMinBalance()) >= 0) {
+                    buttons.row();
+                    buttons.add(actionButton("Surgeon abroad", () -> {
+                        TreatmentResult result = InjuryTreatmentService.surgeonAbroad(
+                                club, currentPlayer, asOf, new java.util.Random());
+                        showTreatmentResult(result, "Specialist surgeon arranged abroad.");
+                    }));
+                }
+            }
+        } else {
+            if (!InjuryGenerator.isPlayerInsured(currentPlayer)) {
+                buttons.row();
+                buttons.add(actionButton("Insure player", () -> {
+                    TreatmentResult result = InjuryTreatmentService.insure(club, currentPlayer, asOf);
+                    showTreatmentResult(result, "Injury insurance policy started.");
+                }));
+            } else {
+                buttons.row();
+                buttons.add(actionButton("Cancel insurance", () -> {
+                    TreatmentResult result = InjuryTreatmentService.uninsure(currentPlayer);
+                    showTreatmentResult(result, "Insurance policy cancelled.");
+                }));
+            }
+        }
+    }
+
+    private VisTextButton actionButton(String label, Runnable action) {
+        VisTextButton button = new VisTextButton(label);
+        button.addCaptureListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (event.getButton() == 0) {
+                    action.run();
+                    updateDynamicComponents(currentPlayer);
+                }
+            }
+        });
+        return button;
+    }
+
+    private void showTreatmentResult(TreatmentResult result, String successMessage) {
+        String message = switch (result) {
+            case SUCCESS -> successMessage;
+            case NOT_INJURED -> "Player is not injured.";
+            case WRONG_SEVERITY -> "Treatment not available for this injury.";
+            case ALREADY_USED -> "Treatment already used for this injury.";
+            case INSUFFICIENT_FUNDS -> "Insufficient club funds.";
+            case ALREADY_INSURED -> "Player is already insured.";
+            case NOT_INSURED -> "Player has no active insurance.";
+            case NOT_FIT_FOR_INSURANCE -> "Cannot insure while injured or without a wage.";
+        };
+        VisDialog dialog = new VisDialog("Treatment");
+        dialog.text(message);
+        dialog.button("OK");
+        dialog.show(getStage());
+    }
+
+    private Club resolvePlayerClub() {
+        if (currentPlayer == null || currentPlayer.getPerson() == null
+                || currentPlayer.getPerson().getCurrentClubId() == null
+                || futtoboru.getCurrentGame() == null) {
+            return null;
+        }
+        return futtoboru.getCurrentGame().getClubById(currentPlayer.getPerson().getCurrentClubId());
+    }
+
+    private boolean isHumanManagedClub(Club club) {
+        if (futtoboru.getCurrentGame() == null || futtoboru.getCurrentGame().getOwner() == null) {
+            return false;
+        }
+        Long ownerClubId = futtoboru.getCurrentGame().getOwner().getCurrentClubId();
+        return ownerClubId != null && ownerClubId.equals(club.getId());
     }
     
     /**

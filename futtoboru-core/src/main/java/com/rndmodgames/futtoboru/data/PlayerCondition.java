@@ -23,6 +23,12 @@ public class PlayerCondition implements Serializable {
     private String injuryDisplayName;
     private String injurySeverity;
     private LocalDate injuryReturnDate;
+    private Integer baseWeeksBeforePhysio;
+    private Integer injuryEstimateWeeks;
+    private Integer physioAbilityAtInjury;
+    private Boolean rehabTreatmentActive;
+    private LocalDate lilleshallEndDate;
+    private Boolean surgeonAbroadUsed;
 
     public static PlayerCondition createFitDefault() {
         return new PlayerCondition();
@@ -47,14 +53,40 @@ public class PlayerCondition implements Serializable {
         injuryDisplayName = null;
         injurySeverity = null;
         injuryReturnDate = null;
+        clearTreatmentState();
+    }
+
+    public void clearTreatmentState() {
+        baseWeeksBeforePhysio = null;
+        injuryEstimateWeeks = null;
+        physioAbilityAtInjury = null;
+        rehabTreatmentActive = false;
+        lilleshallEndDate = null;
+        surgeonAbroadUsed = false;
     }
 
     public int estimateWeeksOut(LocalDate asOf) {
-        if (!isInjured(asOf) || injuryReturnDate == null || asOf == null) {
+        if (!isInjured(asOf)) {
             return 0;
+        }
+        if (injuryEstimateWeeks != null && injuryEstimateWeeks > 0) {
+            return injuryEstimateWeeks;
+        }
+        if (injuryReturnDate == null || asOf == null) {
+            return 1;
         }
         long days = ChronoUnit.DAYS.between(asOf, injuryReturnDate);
         return Math.max(1, (int) Math.ceil(days / 7.0));
+    }
+
+    public String formatReturnEstimate(LocalDate asOf) {
+        if (!isInjured(asOf)) {
+            return "";
+        }
+        int weeks = estimateWeeksOut(asOf);
+        int ability = physioAbilityAtInjury != null
+                ? physioAbilityAtInjury : com.rndmodgames.futtoboru.system.loaders.InjuryEconomyRegistry.DEFAULT_PHYSIO_ABILITY;
+        return com.rndmodgames.futtoboru.engine.simulation.PhysioService.formatEstimate(weeks, ability);
     }
 
     public Integer getFitnessPct() {
@@ -134,5 +166,53 @@ public class PlayerCondition implements Serializable {
 
     public void setInjuryReturnDate(LocalDate injuryReturnDate) {
         this.injuryReturnDate = injuryReturnDate;
+    }
+
+    public Integer getBaseWeeksBeforePhysio() {
+        return baseWeeksBeforePhysio;
+    }
+
+    public void setBaseWeeksBeforePhysio(Integer baseWeeksBeforePhysio) {
+        this.baseWeeksBeforePhysio = baseWeeksBeforePhysio;
+    }
+
+    public Integer getInjuryEstimateWeeks() {
+        return injuryEstimateWeeks;
+    }
+
+    public void setInjuryEstimateWeeks(Integer injuryEstimateWeeks) {
+        this.injuryEstimateWeeks = injuryEstimateWeeks;
+    }
+
+    public Integer getPhysioAbilityAtInjury() {
+        return physioAbilityAtInjury;
+    }
+
+    public void setPhysioAbilityAtInjury(Integer physioAbilityAtInjury) {
+        this.physioAbilityAtInjury = physioAbilityAtInjury;
+    }
+
+    public Boolean getRehabTreatmentActive() {
+        return rehabTreatmentActive;
+    }
+
+    public void setRehabTreatmentActive(Boolean rehabTreatmentActive) {
+        this.rehabTreatmentActive = rehabTreatmentActive;
+    }
+
+    public LocalDate getLilleshallEndDate() {
+        return lilleshallEndDate;
+    }
+
+    public void setLilleshallEndDate(LocalDate lilleshallEndDate) {
+        this.lilleshallEndDate = lilleshallEndDate;
+    }
+
+    public Boolean getSurgeonAbroadUsed() {
+        return surgeonAbroadUsed;
+    }
+
+    public void setSurgeonAbroadUsed(Boolean surgeonAbroadUsed) {
+        this.surgeonAbroadUsed = surgeonAbroadUsed;
     }
 }
