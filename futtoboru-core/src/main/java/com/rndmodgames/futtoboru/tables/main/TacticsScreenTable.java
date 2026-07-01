@@ -12,7 +12,9 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerCondition;
 import com.rndmodgames.futtoboru.data.tactics.ClubTacticsSetup;
+import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
 import com.rndmodgames.futtoboru.data.tactics.FormationSlot;
 import com.rndmodgames.futtoboru.data.tactics.FormationTemplate;
 import com.rndmodgames.futtoboru.engine.tactics.BestElevenSelector;
@@ -135,8 +137,9 @@ public class TacticsScreenTable extends VisTable {
         slotTable.add("Slot").width(80);
         slotTable.add("Role").width(60);
         slotTable.add(LanguageModLoader.getValue("slot_player")).growX();
+        slotTable.add(LanguageModLoader.getValue("slot_status")).width(140);
         slotTable.row();
-        slotTable.addSeparator().colspan(3);
+        slotTable.addSeparator().colspan(4);
         slotTable.row();
 
         Array<Player> squadItems = buildSquadItems();
@@ -165,11 +168,33 @@ public class TacticsScreenTable extends VisTable {
             });
 
             slotSelectBoxes.add(playerBox);
+            Player assignedPlayer = playerBox.getSelected();
             slotTable.add(slot.getSlotId()).width(80);
             slotTable.add(slot.getRole() != null ? slot.getRole().name() : "").width(60);
             slotTable.add(playerBox).growX().fillX();
+            slotTable.add(new VisLabel(buildSlotStatus(assignedPlayer, asOf))).width(140);
             slotTable.row();
         }
+    }
+
+    private String buildSlotStatus(Player player, java.time.LocalDate asOf) {
+        if (player == null) {
+            return "";
+        }
+        PlayerCondition condition = PlayerConditionService.conditionOf(player);
+        if (condition.isInjured(asOf)) {
+            if (condition.getInjuryReturnDate() != null) {
+                return LanguageModLoader.getValue("injured_until") + " "
+                        + condition.getInjuryReturnDate().format(
+                                java.time.format.DateTimeFormatter.ofPattern("dd MMM"));
+            }
+            return LanguageModLoader.getValue("injury_status");
+        }
+        if (PlayerConditionService.isLowFitness(player)) {
+            return LanguageModLoader.getValue("condition_fit_warning") + " ("
+                    + condition.getFitnessPct() + "%)";
+        }
+        return "";
     }
 
     private void assignPlayerToSlot(String slotId, Player selected, ClubTacticsSetup setup,
@@ -178,6 +203,10 @@ public class TacticsScreenTable extends VisTable {
             return;
         }
         if (selected != null && selected.getId() != null) {
+            if (!PlayerConditionService.isAvailableForLineup(selected, asOf)) {
+                rebuildSlotRows(setup, template);
+                return;
+            }
             for (FormationSlot slot : template.getSlots()) {
                 Long otherId = setup.getSlotAssignments().get(slot.getSlotId());
                 if (selected.getId().equals(otherId) && !slotId.equals(slot.getSlotId())) {
@@ -195,9 +224,12 @@ public class TacticsScreenTable extends VisTable {
     private Array<Player> buildSquadItems() {
         Array<Player> items = new Array<>();
         items.add(null);
+        java.time.LocalDate asOf = game.getCurrentGame() != null
+                ? game.getCurrentGame().getGameDate().toLocalDate()
+                : java.time.LocalDate.now();
         if (displayedClub != null && displayedClub.getPlayers() != null) {
             for (Player player : displayedClub.getPlayers()) {
-                if (player != null) {
+                if (player != null && PlayerConditionService.isAvailableForLineup(player, asOf)) {
                     items.add(player);
                 }
             }

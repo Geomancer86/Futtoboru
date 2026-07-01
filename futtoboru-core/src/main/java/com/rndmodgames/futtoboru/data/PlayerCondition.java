@@ -2,6 +2,7 @@ package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Fitness, morale, and injury state (Layer B5 — CM1/CM93 basic).
@@ -20,6 +21,7 @@ public class PlayerCondition implements Serializable {
     private Integer morale = DEFAULT_MORALE;
     private String injuryTypeId;
     private String injuryDisplayName;
+    private String injurySeverity;
     private LocalDate injuryReturnDate;
 
     public static PlayerCondition createFitDefault() {
@@ -43,7 +45,16 @@ public class PlayerCondition implements Serializable {
     public void clearInjury() {
         injuryTypeId = null;
         injuryDisplayName = null;
+        injurySeverity = null;
         injuryReturnDate = null;
+    }
+
+    public int estimateWeeksOut(LocalDate asOf) {
+        if (!isInjured(asOf) || injuryReturnDate == null || asOf == null) {
+            return 0;
+        }
+        long days = ChronoUnit.DAYS.between(asOf, injuryReturnDate);
+        return Math.max(1, (int) Math.ceil(days / 7.0));
     }
 
     public Integer getFitnessPct() {
@@ -92,6 +103,29 @@ public class PlayerCondition implements Serializable {
 
     public void setInjuryDisplayName(String injuryDisplayName) {
         this.injuryDisplayName = injuryDisplayName;
+    }
+
+    public String getInjurySeverity() {
+        return injurySeverity;
+    }
+
+    public void setInjurySeverity(String injurySeverity) {
+        this.injurySeverity = injurySeverity;
+    }
+
+    public InjurySeverity getInjurySeverityEnum() {
+        if (injurySeverity == null || injurySeverity.isEmpty()) {
+            return null;
+        }
+        try {
+            return InjurySeverity.valueOf(injurySeverity);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    public void setInjurySeverityEnum(InjurySeverity severity) {
+        this.injurySeverity = severity != null ? severity.name() : null;
     }
 
     public LocalDate getInjuryReturnDate() {

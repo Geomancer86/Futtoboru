@@ -1,8 +1,8 @@
 # Design Proposal — Player Condition B5.1 (Injuries & Fitness uplift)
 
-**Document type:** Design proposal — **not approved for implementation**  
+**Document type:** Design proposal — **Option A approved & implemented**  
 **Date:** 2026-06-30  
-**Status:** **Awaiting PO decision**  
+**Status:** **Shipped (B5.1 Option A)** — 2026-06-30  
 **Audience:** PO, Match/Sim, UX, QA  
 
 **Inputs:** [ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md](ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md) · [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) · [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md)
@@ -265,8 +265,8 @@ Only players injured **this match** (track `injuredThisMatch` set in post-match 
 | Date | Decision | By |
 |------|----------|-----|
 | 2026-06-30 | Proposal drafted | Agent |
-| | Option A / B / C chosen | PO — **pending** |
-| | Implementation start | — |
+| 2026-06-30 | **Option A approved** (recommended next steps) | PO implicit via execution request |
+| 2026-06-30 | B5.1 Option A implemented — 123 tests green | Match/Sim |
 
 ---
 

@@ -29,9 +29,10 @@ See [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](../planning/ANALYSIS_DOCUM
 | 1 | `01-getting-started.md` | 🔲 | Save/load, new game — TBD |
 | 2 | `02-main-menu-and-calendar.md` | 🔲 | Continue, schedule — TBD |
 | 3 | `03-competitions-and-season.md` | 🔲 | `IMPLEMENTATION_PLAN_SEASON_CUP_V1.md` (partial) |
-| 4 | `04-tactics-and-team-selection.md` | ⚠️ Partial | TBD — `TacticsScreenTable` |
-| 5 | `05-match-day.md` | ⚠️ Partial | Preview, kick-off, result — TBD |
-| 6 | `06-squad-and-condition.md` | ⚠️ Partial | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) |
+| 4 | `04-tactics-and-team-selection.md` | ⚠️ Partial | [IMPLEMENTATION_TACTICS_B4_V1.md](../planning/IMPLEMENTATION_TACTICS_B4_V1.md) |
+| 5 | `05-match-day.md` | ⚠️ Partial | [IMPLEMENTATION_MATCH_RATINGS_B3_V1.md](../planning/IMPLEMENTATION_MATCH_RATINGS_B3_V1.md) |
+| 6 | `06-squad-and-condition.md` | ⚠️ Draft | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9 |
+| A | `appendix-glossary.md` | ⚠️ Draft | Condition terms |
 | 7 | `07-finances.md` | ⚠️ Partial | Expenses analysis docs |
 | 8 | `08-inbox-and-news.md` | 🔲 | Message system — TBD |
 | 9 | `09-manager-career-and-jobs.md` | ⚠️ Partial | Job system design |

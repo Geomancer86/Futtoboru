@@ -11,6 +11,8 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.PlayerCondition;
+import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 
 /**
@@ -173,6 +175,7 @@ public class MatchResultScreenTable extends VisTable {
         }
 
         appendScorers(homeClub, awayClub, match);
+        appendInjuries(currentClub, match);
         appendRatings(currentClub, match);
     }
 
@@ -200,6 +203,58 @@ public class MatchResultScreenTable extends VisTable {
             this.add(awayClub.getName() + ":").padRight(10);
             this.add(formatScorerList(awayClub, awayScorers)).colspan(2).left();
         }
+    }
+
+    private void appendInjuries(Club currentClub, Match match) {
+        if (currentClub == null || match == null || currentClub.getId() == null) {
+            return;
+        }
+        java.util.List<Long> injuredIds;
+        if (currentClub.getId().equals(match.getHomeClubId())) {
+            injuredIds = match.getHomeInjuredPlayerIds();
+        } else if (currentClub.getId().equals(match.getAwayClubId())) {
+            injuredIds = match.getAwayInjuredPlayerIds();
+        } else {
+            return;
+        }
+        if (injuredIds == null || injuredIds.isEmpty()) {
+            return;
+        }
+        java.time.LocalDate asOf = match.getMatchDateTime() != null
+                ? match.getMatchDateTime().toLocalDate() : java.time.LocalDate.now();
+
+        this.row().padTop(15).padBottom(10);
+        this.addSeparator().colspan(3);
+        this.row().padTop(10);
+        VisLabel header = new VisLabel("INJURIES");
+        header.setFontScale(1.1f);
+        this.add(header).colspan(3).padBottom(8);
+
+        for (Long playerId : injuredIds) {
+            Player player = findPlayer(currentClub, playerId);
+            if (player == null) {
+                continue;
+            }
+            PlayerCondition condition = PlayerConditionService.conditionOf(player);
+            String label = condition.getInjuryDisplayName() != null
+                    ? condition.getInjuryDisplayName() : "Injury";
+            int weeks = condition.estimateWeeksOut(asOf);
+            this.row().padTop(2);
+            this.add(playerName(currentClub, playerId)).padRight(10);
+            this.add(label + " (~" + weeks + " wk)").colspan(2).left();
+        }
+    }
+
+    private Player findPlayer(Club club, Long playerId) {
+        if (club == null || playerId == null || club.getPlayers() == null) {
+            return null;
+        }
+        for (Player player : club.getPlayers()) {
+            if (player != null && playerId.equals(player.getId())) {
+                return player;
+            }
+        }
+        return null;
     }
 
     private void appendRatings(Club currentClub, Match match) {

@@ -24,8 +24,10 @@ Use this index to navigate project documentation. **Start here** after cloning.
 | [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md) | **PO, PM, all leads** | **Feature depth audit** — stub vs Core; 52-row CM1/CM93 gap table; injury deep dive |
 | [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md) | **PO, PM, UX** | **Wiki/manual readiness** — what docs exist vs what release needs |
 | [ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md](ANALYSIS_PLAYER_CONDITION_AND_INJURIES_V1.md) | **Match/Sim, PO** | **B5 research + as-built audit** — fitness/injury gaps |
-| [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md) | **PO, Match/Sim** | **B5.1 proposal** — awaiting PO option A/B/C |
-| [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) | **Match/Sim, manual authors** | **B5 as-built** — authoritative behaviour |
+| [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md) | **PO, Match/Sim** | **B5.1 Option A** — shipped 2026-06-30 |
+| [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) | **Match/Sim, manual authors** | **B5 + B5.1 as-built** |
+| [IMPLEMENTATION_TACTICS_B4_V1.md](IMPLEMENTATION_TACTICS_B4_V1.md) | **Match/Sim** | Tactics & XI as-built |
+| [IMPLEMENTATION_MATCH_RATINGS_B3_V1.md](IMPLEMENTATION_MATCH_RATINGS_B3_V1.md) | **Match/Sim** | Post-match ratings as-built |
 | [FEATURE_TRACEABILITY_MATRIX.md](FEATURE_TRACEABILITY_MATRIX.md) | **PM, all leads** | Research → code → tests → manual links |
 | [../manual/README.md](../manual/README.md) | **PO, UX** | **Player manual scaffold** (not public yet) |
 | [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) | **QA, PM** | Unit → E2E → long → human QA order |

@@ -1,58 +1,49 @@
 # Futtoboru — Systems & Features Registry
 
 **Document type:** Feature inventory  
-**Last verified:** 2026-06-27 (63-test suite; 62 pass)  
+**Last verified:** 2026-06-30 (123-test suite; all pass)  
 **Branch:** `analyze-ai-branch`  
-**Roadmap:** [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) · [PM_V1_MVP_AND_1892_MASTER_PLAN.md](PM_V1_MVP_AND_1892_MASTER_PLAN.md)  
-**Status legend:** ✅ Complete | ⚠️ Partial | 🔲 Stub | ❌ Missing | 🐛 Broken | ✅🧪 Proven by automated IT
+**Layer B truth:** [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) · [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md)
 
-> **Note:** Rows below mix code audit (2025-06-25) with **automation overrides** in §0. Prefer §0 + [PM_ROADMAP_AND_FEATURES_REPORT.md](PM_ROADMAP_AND_FEATURES_REPORT.md) for current truth.
+> **Note:** §1–§6 rows below may still reflect 2025 audit. Prefer **§0** and implementation docs for current truth.
 
 ---
 
-## 0. Automation-verified status (2026-06-27)
+## 0. Automation-verified status (2026-06-30)
 
 | System / feature | Status | Test / evidence |
 |------------------|--------|-----------------|
-| Procedural season loop + rollover | ✅🧪 | `SeasonPlaythroughIT`, `MultiSeasonSoakIT`, `TenSeasonReportIT` |
-| 60-season north star | ✅🧪 | `LongRunSoakIT` (~5 min quiet) |
-| League completion (league-only) | ✅🧪 | RB-7 + `LeagueStandingsManagerTest` |
-| Champion editions | ✅🧪 | 10-season report |
-| FA Cup headless season | ✅🧪 | `LeagueAndCupIT` |
-| Mandatory draw gates | ✅🧪 | `MandatoryGateIT` |
-| Inbox / world news (hiatus, restart) | ❌ | **NEWS-2** — [DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md](DESIGN_HISTORICAL_ACCURACY_NEWS_AND_KNOWLEDGE.md) |
-| Historical Mode on save (`SANDBOX_FIRST` default) | ✅🧪 | `SaveLoadIT.roundTripPreservesHistoricalMode` — UI + forks **FLEX-1** open |
-| New-game Historical Mode UI | ❌ | **FLEX-1** |
-| Fork events + agency tiers (all leagues) | ❌ | **FLEX-2–4**, **AGENCY-1** |
-| News latency (era + distance) | ✅🧪 | `NewsLatencyResolverTest` — wire to inbox **NEWS-8** |
-| Player/club knowledge (fog) | ❌ | **KNOW-1** planned |
-| Save JSON roundtrip | ✅🧪 | `SaveLoadIT` |
-| `competition_rules.txt` on start mod | ✅🧪 | `CompetitionRulesLoaderTest` |
-| `SeasonManager` + save season fields | ✅🧪 | Multi-season ITs |
-| `GameTestHarness` | ✅🧪 | 63 tests (62 pass) |
-| Weekly finances / wages (backend) | ✅🧪 | 10-season PNE income/spend |
-| Production load-game UI | ⚠️ | `activateSaveGame` — **manual QA** (A-3) |
-| Continue double-click (C-1) | ⚠️ | **Fixed in code** — **manual QA** (A-2) |
-| Match history → result (H-3) | ⚠️ | **Fixed in code** — **manual QA** (A-4) |
-| Tactics / training / transfers UI | 🔲 | Stubs — **Layer B MVP** |
-| CM1 post-match ratings | ❌ | **MVP-5** in master plan |
+| Procedural season loop + rollover | ✅🧪 | `SeasonPlaythroughIT`, `MultiSeasonSoakIT`, `LayerBMultiSeasonSoakIT` |
+| 60-season north star | ✅🧪 | `LongRunSoakIT` |
+| Pick starting XI + tactics UI | ✅🧪 | `Cm1ManagementLoopIT`, `InjuredPlayerLineupIT` — [IMPLEMENTATION_TACTICS_B4_V1.md](IMPLEMENTATION_TACTICS_B4_V1.md) |
+| Match sim uses XI + condition | ✅🧪 | `FitnessSimModifierIT`, `FormationSimWeightTest` |
+| Post-match 0–10 ratings | ✅🧪 | `MatchRatingsTest`, `MatchFeedbackIT` — [IMPLEMENTATION_MATCH_RATINGS_B3_V1.md](IMPLEMENTATION_MATCH_RATINGS_B3_V1.md) |
+| Attendance (table/form/derby) | ✅🧪 | `AttendanceCalculatorTest`, `AttendanceModelIT` |
+| Player condition B5.1 | ⚠️ Partial | Injuries **Partial** (5 types, UI) — [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9 |
+| Match preview / kick-off / result | ✅🧪 | `MatchLineupPreviewIT`, `MatchFeedbackIT` |
+| Training / transfers UI | 🔲 | Placeholder screens only |
+| Inbox / world news (hiatus, restart) | ❌ | **NEWS-2** |
+| Save JSON roundtrip | ✅🧪 | `SaveLoadIT`, `PlayerConditionSaveLoadIT`, `MatchRatingsSaveLoadIT` |
+| `GameTestHarness` | ✅🧪 | **123 tests** all green |
 
 ---
 
-## 0.1 Layer B MVP gaps (planned — not in V1.0 tag)
+## 0.1 Layer B MVP — shipped on `analyze-ai-branch`
 
-See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · [PM_V1_MVP_AND_1892_MASTER_PLAN.md §5](PM_V1_MVP_AND_1892_MASTER_PLAN.md).
+See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · depth [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md).
 
 | ID | Feature | Status |
 |----|---------|--------|
-| MVP-1 | Pick starting XI (11) | ❌ Sim uses full squad |
-| MVP-2 | Basic formation / tactics UI | 🔲 Placeholder unwired |
-| MVP-3 | Match sim v2 (XI, form, opponent) | ❌ RNG + squad avg today |
-| MVP-4 | Fan / attendance (table + opponent + form + derbies) | ⚠️ Random 60–90% capacity |
-| MVP-5 | Post-match ratings 0–10 | ❌ |
-| MVP-6–7 | Match result / preview UI | ⚠️ Stubs |
-| MVP-8 | Sim balance (champion diversity) | ⚠️ Accrington 8/10 |
-| MVP-10 | Save schema versioning | ⏸ **Deferred** — [ANALYSIS_SAVE_STORAGE_FUTURE_V1.md](ANALYSIS_SAVE_STORAGE_FUTURE_V1.md) |
+| MVP-1 | Pick starting XI (11) | ✅ Core |
+| MVP-2 | Formation presets (3× 1888) | ⚠️ Partial |
+| MVP-3 | Match sim v2 (XI + condition) | ✅ Core |
+| MVP-4 | Fan / attendance | ⚠️ Partial (FM-inspired model) |
+| MVP-5 | Post-match ratings 0–10 | ⚠️ Partial |
+| MVP-6–7 | Match preview / result UI | ⚠️ Partial |
+| MVP-8 | Multi-season stability | ✅🧪 `LayerBMultiSeasonSoakIT` |
+| MVP-9 | Tactics screen | ⚠️ Partial |
+| B5 / B5.1 | Fitness, morale, injuries | ⚠️ Partial (B5.1 Option A shipped) |
+| MVP-10 | Save schema versioning | ⏸ Deferred |
 
 **Execution:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · **Tests:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md)
 

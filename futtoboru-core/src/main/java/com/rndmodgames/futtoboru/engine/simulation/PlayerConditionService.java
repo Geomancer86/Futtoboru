@@ -14,15 +14,20 @@ import com.rndmodgames.futtoboru.engine.tactics.MatchLineupBuilder;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
- * Daily ticks and post-match updates for player condition (B5).
+ * Daily ticks and post-match updates for player condition (B5 / B5.1).
  */
 public final class PlayerConditionService {
 
+    public static final int LOW_FITNESS_WARNING_THRESHOLD = 60;
+    public static final int HIGH_FATIGUE_THRESHOLD = 50;
+
     private static final int MATCH_FITNESS_COST = 5;
     private static final int REST_FITNESS_GAIN = 2;
+    private static final int REST_FITNESS_GAIN_TIRED = 1;
     private static final int MATCH_SHARPNESS_GAIN = 5;
     private static final int MATCH_FATIGUE_GAIN = 8;
     private static final int DAILY_FATIGUE_RECOVERY = 3;
+    private static final int GOAL_MORALE_BONUS = 2;
 
     private PlayerConditionService() {
     }
@@ -49,9 +54,18 @@ public final class PlayerConditionService {
         return true;
     }
 
+    public static boolean isLowFitness(Player player) {
+        return conditionOf(player).getFitnessPct() < LOW_FITNESS_WARNING_THRESHOLD;
+    }
+
     public static double fitnessStrengthFactor(Player player) {
         int fitness = conditionOf(player).getFitnessPct();
         return 0.5 + (fitness / 200.0);
+    }
+
+    public static double sharpnessStrengthFactor(Player player) {
+        int sharpness = conditionOf(player).getSharpnessPct();
+        return 0.7 + (sharpness / 333.0);
     }
 
     public static void tickDaily(SaveGame game) {
@@ -74,7 +88,9 @@ public final class PlayerConditionService {
                     condition.clearInjury();
                 }
                 if (!playedYesterday) {
-                    condition.setFitnessPct(clampPct(condition.getFitnessPct() + REST_FITNESS_GAIN));
+                    int gain = condition.getFatiguePct() > HIGH_FATIGUE_THRESHOLD
+                            ? REST_FITNESS_GAIN_TIRED : REST_FITNESS_GAIN;
+                    condition.setFitnessPct(clampPct(condition.getFitnessPct() + gain));
                     int sharpness = condition.getSharpnessPct() - 1;
                     condition.setSharpnessPct(Math.max(40, sharpness));
                 }
@@ -88,6 +104,8 @@ public final class PlayerConditionService {
         if (match == null) {
             return;
         }
+        match.setHomeInjuredPlayerIds(new java.util.ArrayList<>());
+        match.setAwayInjuredPlayerIds(new java.util.ArrayList<>());
         applyForSide(match, homeLineup, homeClub, match.getHomePlayerRatings(), true);
         applyForSide(match, awayLineup, awayClub, match.getAwayPlayerRatings(), false);
     }
@@ -104,6 +122,7 @@ public final class PlayerConditionService {
         LocalDate today = match.getMatchDateTime() != null
                 ? match.getMatchDateTime().toLocalDate() : LocalDate.now();
         Random injuryRng = new Random(match.getId() != null ? match.getId() * 31L : 42L);
+        List<Long> scorers = isHome ? match.getHomeScorerIds() : match.getAwayScorerIds();
 
         for (MatchLineupBuilder.PlayerRef ref : MatchLineupBuilder.playersInLineup(lineup, club)) {
             if (ref.player == null) {
@@ -123,6 +142,9 @@ public final class PlayerConditionService {
             } else if (lost) {
                 morale -= 2;
             }
+            if (scorers != null && ref.player.getId() != null && scorers.contains(ref.player.getId())) {
+                morale += GOAL_MORALE_BONUS;
+            }
             if (rating >= 8.0f) {
                 morale += 1;
             } else if (rating < 5.0f) {
@@ -130,7 +152,14 @@ public final class PlayerConditionService {
             }
             condition.setMorale(clampPct(morale));
 
-            InjuryGenerator.maybeInjure(ref.player, condition, injuryRng, today);
+            if (InjuryGenerator.maybeInjure(ref.player, condition, injuryRng, today)
+                    && ref.player.getId() != null) {
+                if (isHome) {
+                    match.getHomeInjuredPlayerIds().add(ref.player.getId());
+                } else {
+                    match.getAwayInjuredPlayerIds().add(ref.player.getId());
+                }
+            }
         }
     }
 

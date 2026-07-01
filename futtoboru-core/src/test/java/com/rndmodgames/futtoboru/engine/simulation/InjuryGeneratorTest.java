@@ -28,7 +28,8 @@ class InjuryGeneratorTest {
         InjuryGenerator.maybeInjure(player, condition, alwaysInjure, LocalDate.of(1888, 9, 1));
 
         assertTrue(condition.isInjured(LocalDate.of(1888, 9, 1)));
-        assertEquals("strain", condition.getInjuryTypeId());
+        assertTrue(condition.getInjuryTypeId() != null && !condition.getInjuryTypeId().isEmpty());
         assertTrue(condition.getInjuryReturnDate().isAfter(LocalDate.of(1888, 9, 1)));
+        assertTrue(condition.getInjurySeverityEnum() != null);
     }
 }

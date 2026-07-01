@@ -38,7 +38,8 @@ public final class LineupStrengthCalculator {
                 continue;
             }
             total += FormationRegistry.scorePlayerForSlot(player, slot)
-                    * PlayerConditionService.fitnessStrengthFactor(player);
+                    * PlayerConditionService.fitnessStrengthFactor(player)
+                    * PlayerConditionService.sharpnessStrengthFactor(player);
             counted++;
         }
         if (counted == 0) {

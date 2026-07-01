@@ -78,6 +78,10 @@ public class Match implements Serializable {
     private java.util.Map<Long, Float> homePlayerRatings = new java.util.LinkedHashMap<>();
     private java.util.Map<Long, Float> awayPlayerRatings = new java.util.LinkedHashMap<>();
 
+    /** Players injured during this match (B5.1 — result screen). */
+    private java.util.List<Long> homeInjuredPlayerIds = new java.util.ArrayList<>();
+    private java.util.List<Long> awayInjuredPlayerIds = new java.util.ArrayList<>();
+
     // Match Type Constants
     public static final int FRIENDLY_MATCH = 1;
     public static final int LEAGUE_MATCH = 2;
@@ -325,5 +329,23 @@ public class Match implements Serializable {
     public void setAwayPlayerRatings(java.util.Map<Long, Float> awayPlayerRatings) {
         this.awayPlayerRatings = awayPlayerRatings != null
                 ? new java.util.LinkedHashMap<>(awayPlayerRatings) : new java.util.LinkedHashMap<>();
+    }
+
+    public java.util.List<Long> getHomeInjuredPlayerIds() {
+        return homeInjuredPlayerIds;
+    }
+
+    public void setHomeInjuredPlayerIds(java.util.List<Long> homeInjuredPlayerIds) {
+        this.homeInjuredPlayerIds = homeInjuredPlayerIds != null
+                ? new java.util.ArrayList<>(homeInjuredPlayerIds) : new java.util.ArrayList<>();
+    }
+
+    public java.util.List<Long> getAwayInjuredPlayerIds() {
+        return awayInjuredPlayerIds;
+    }
+
+    public void setAwayInjuredPlayerIds(java.util.List<Long> awayInjuredPlayerIds) {
+        this.awayInjuredPlayerIds = awayInjuredPlayerIds != null
+                ? new java.util.ArrayList<>(awayInjuredPlayerIds) : new java.util.ArrayList<>();
     }
 }

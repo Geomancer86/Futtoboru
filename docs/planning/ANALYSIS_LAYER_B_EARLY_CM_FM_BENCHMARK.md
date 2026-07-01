@@ -41,7 +41,7 @@
 | 10 | Continue / advance time | ✅ | ✅ | A-2 | **Core** | ✅ | ✅ | ✅ | ✅ | ❌ |
 | 11 | Fitness tracked | ✅ | ✅ | COND-1 | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
 | 12 | Morale tracked | ✅ | ✅ | COND-5 | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 13 | Basic injuries | ⚠️ IJ icon | CM93 subsystem | COND-3 | **Minimal** | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 13 | Basic injuries | ⚠️ IJ icon | CM93 subsystem | COND-3 | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
 | 14 | Match fatigue / sharpness | ⚠️ implicit | ✅ | COND-2,4 | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
 | 15 | Condition affects sim | ✅ | ✅ | COND-1+sim | **Partial** | ✅ | ✅ | ✅ | ✅ | ❌ |
 | 16 | Squad shows fit / injured | ✅ | ✅ | COND UI | **Partial** | ✅ | — | — | — | ❌ |

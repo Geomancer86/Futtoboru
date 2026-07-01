@@ -150,4 +150,30 @@ See [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROP
 
 ---
 
-*Update this file when B5.1 ships — add §9 B5.1 delta or separate IMPLEMENTATION_B5_1 doc.*
+*Update this file when B5.2 (insurance/physio) ships — add §10.*
+
+---
+
+## 9. B5.1 delta (Option A — 2026-06-30)
+
+**PO decision:** Option A (floor) — no physio multiplier, no inbox.
+
+| B5.1 item | Shipped |
+|-----------|---------|
+| `mods/injuries/types.txt` + `InjuryTypesRegistry` | ✅ |
+| 5 weighted injury types + severity | ✅ |
+| Squad Sharp + Return columns | ✅ |
+| Tactics injured exclude + low-fitness warn | ✅ |
+| Result INJURIES block | ✅ |
+| Sharpness sim factor | ✅ |
+| Goal → morale +2 | ✅ |
+| High fatigue → slower fitness recovery | ✅ |
+| `Match.homeInjuredPlayerIds` / away | ✅ |
+
+**New tests:** `InjuryTypesRegistryTest`, `MoraleGoalBonusTest`, `FatigueSlowsRecoveryTest`, `PlayerSharpnessFactorTest`, `MatchInjuryTrackingTest`
+
+**Manual:** [docs/manual/06-squad-and-condition.md](../manual/06-squad-and-condition.md) (draft)
+
+**Depth after B5.1:** Injuries **Partial** (was Minimal); fitness/sharpness **Partial+**
+
+**Still missing for CM93 Core:** physio, insurance, Lilleshall → Option B / B5.2

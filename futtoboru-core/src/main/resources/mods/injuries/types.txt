@@ -1,0 +1,6 @@
+# id | display_name | min_weeks | max_weeks | severity | base_weight
+strain | Strain | 1 | 2 | MINOR | 40
+bruise | Bruise | 1 | 3 | MINOR | 25
+twisted_ankle | Twisted ankle | 2 | 4 | MODERATE | 20
+knee | Knee injury | 3 | 6 | MODERATE | 10
+serious | Serious injury | 6 | 12 | SERIOUS | 5

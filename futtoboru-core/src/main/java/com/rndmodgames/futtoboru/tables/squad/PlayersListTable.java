@@ -133,8 +133,10 @@ public class PlayersListTable extends VisTable {
 
         if (showConditionColumns) {
             this.add(createSortableHeader(LanguageModLoader.getValue("fitness_pct"), "fitness")).width(50);
+            this.add(createSortableHeader(LanguageModLoader.getValue("sharpness_pct"), "sharpness")).width(50);
             this.add(createSortableHeader(LanguageModLoader.getValue("morale"), "morale")).width(50);
             this.add(createSortableHeader(LanguageModLoader.getValue("injury_status"), "injury")).width(90);
+            this.add(createSortableHeader(LanguageModLoader.getValue("injury_return"), "return")).width(70);
         }
         
         // Physical attribute columns
@@ -226,11 +228,16 @@ public class PlayersListTable extends VisTable {
                 java.time.LocalDate asOf = game.getCurrentGame().getGameDate().toLocalDate();
                 PlayerCondition condition = PlayerConditionService.conditionOf(player);
                 this.add(new VisLabel(String.valueOf(condition.getFitnessPct()))).width(50);
+                this.add(new VisLabel(String.valueOf(condition.getSharpnessPct()))).width(50);
                 this.add(new VisLabel(String.valueOf(condition.getMorale()))).width(50);
                 String injuryLabel = condition.isInjured(asOf)
                         ? (condition.getInjuryDisplayName() != null ? condition.getInjuryDisplayName() : "Inj")
-                        : "";
+                        : LanguageModLoader.getValue("condition_fit");
                 this.add(new VisLabel(injuryLabel)).width(90);
+                String returnLabel = condition.isInjured(asOf) && condition.getInjuryReturnDate() != null
+                        ? condition.getInjuryReturnDate().format(DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH))
+                        : "—";
+                this.add(new VisLabel(returnLabel)).width(70);
             }
             
             // Physical attributes (with change indicators)
@@ -374,6 +381,27 @@ public class PlayersListTable extends VisTable {
             case "teamwork":
                 comparator = Comparator.comparing(p -> p.getTeamwork() != null ? p.getTeamwork() : 0.0f);
                 break;
+            case "fitness":
+                comparator = Comparator.comparing(p -> PlayerConditionService.conditionOf(p).getFitnessPct());
+                break;
+            case "sharpness":
+                comparator = Comparator.comparing(p -> PlayerConditionService.conditionOf(p).getSharpnessPct());
+                break;
+            case "morale":
+                comparator = Comparator.comparing(p -> PlayerConditionService.conditionOf(p).getMorale());
+                break;
+            case "injury":
+                comparator = Comparator.comparing(p -> {
+                    PlayerCondition c = PlayerConditionService.conditionOf(p);
+                    return c.getInjuryDisplayName() != null ? c.getInjuryDisplayName() : "";
+                });
+                break;
+            case "return":
+                comparator = Comparator.comparing(p -> {
+                    PlayerCondition c = PlayerConditionService.conditionOf(p);
+                    return c.getInjuryReturnDate() != null ? c.getInjuryReturnDate() : java.time.LocalDate.MAX;
+                });
+                break;
         }
         
         if (comparator != null) {
@@ -391,7 +419,7 @@ public class PlayersListTable extends VisTable {
         int count = 4; // Name, Age, Country, XI (always shown)
 
         if (showConditionColumns) {
-            count += 3; // Fit, Morale, Injury
+            count += 5; // Fit, Sharp, Morale, Injury, Return
         }
         
         // Physical
