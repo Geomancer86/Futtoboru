@@ -144,4 +144,4 @@ max_implemented_rules_year=1888
 
 ---
 
-*Extend §4.2 as each domain gains a release owner. Next PM slice: [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md).*
+*Extend §4.2 as each domain gains a release owner. **R-1888 wrap-up:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md).*

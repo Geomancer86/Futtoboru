@@ -1,11 +1,11 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-07-03 (yearly release scope R-YYYY)
+**Last updated:** 2026-07-03 (R-1888 first release wrap-up)
 
-> **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **131 tests green** · benchmark [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)  
-> **Active release tranche:** **R-1888** — [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md) · PM [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md)  
-> **CM93 injury + fitness parity:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) — injury ~95%, fitness ~70% · **R-1888 = ME-1 skin only**  
-> **Historical injury eras:** [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) · [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md)  
+> **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **131 + 5 nightly tests green**  
+> **R-1888 first release:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) · [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md)  
+> **Active release tranche:** **R-1888** — [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md)  
+> **CM93 injury + fitness parity:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) · **R-1888 = ME-1 skin only**  
 > **Release manual readiness:** [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md) · scaffold [../manual/README.md](../manual/README.md)  
 > **Feature traceability:** [FEATURE_TRACEABILITY_MATRIX.md](FEATURE_TRACEABILITY_MATRIX.md)
 
@@ -16,8 +16,12 @@
 | Document | Audience | Purpose |
 |----------|----------|---------|
 | [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — no release, Layer B now, CM+FM north star, **R-YYYY naming** |
+| [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) | **PO, PM, all leads** | **R-1888 wrap-up** — four-stage gate, blockers, sprint plan |
+| [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md) | **PO, PM, QA** | **Four-stage readiness** — analysis/design/dev/tests |
+| [DESIGN_R1888_RELEASE_WRAP_UP_V1.md](DESIGN_R1888_RELEASE_WRAP_UP_V1.md) | **PO, all leads** | **Design sign-off matrix** R-D1–R-D22 |
+| [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) | **PO, QA** | **Acceptance criteria** — tag `1888.0.0` |
 | [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md) | **PO, PM, all** | **Release naming** `Futtoboru {YYYY}` · document-all / ship-by-year |
-| [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md) | **PO, PM, all leads** | **Active PM report** — R-1888 next steps, injury scope |
+| [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md) | **PO, PM** | Injury + yearly scope (2026-07-03) |
 | [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, PM** | Eagle view — horizons, traffic lights, Layer B focus |
 | [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) | **PM, QA, Tech** | Test matrix, soak protocol, backlog detail |
 | [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) | **PO, PM, all eng** | **Whole Layer B** — status, sprints, exit criteria |

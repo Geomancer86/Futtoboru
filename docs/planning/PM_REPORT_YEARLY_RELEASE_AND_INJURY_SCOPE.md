@@ -7,7 +7,7 @@
 
 **Triggers:** PO clarification — research ledger ≠ release scope; **yearly named releases**; first release **1888 only** (no 1906 insurance in dev now).
 
-**Authoritative design:** [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md)
+**Authoritative wrap-up:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md)
 
 ---
 

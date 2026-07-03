@@ -5,7 +5,7 @@
 **Branch:** `analyze-ai-branch` (B5.2 Complete — 131 tests green)  
 **Audience:** PO, PM, Match/Sim, QA, stakeholders  
 
-> **⚠️ Status refresh (2026-07-01):** Injury rows in §1 and §4.1 reflect **pre-B5.2** audit. Current CM93 injury parity: **~95%** — see [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md). Fitness/condition (non-injury): **~70%** CM93.
+> **⚠️ Status refresh (2026-07-03):** **R-1888** player-facing injuries = **ME-1 Victorian** (not CM93 menus). CM93 engine ~95% — see [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) · [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md). Fitness non-injury: **~70%** CM93.
 
 **Sources:** [CM1_REFERENCE.md](CM1_REFERENCE.md) · [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) · [CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md](CM_MANUALS_DEEP_ANALYSIS_BY_RELEASE.md) · [CM93 manual extract](../research/manuals/cm93-94/CM93_Manual_LemonAmiga_Extract.md) · [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) · codebase audit 2026-06-30 · [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §10  
 

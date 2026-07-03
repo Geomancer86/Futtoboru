@@ -1,8 +1,8 @@
 # Feature Traceability Matrix (starter)
 
 **Document type:** Registry — links research → design → code → tests → manual  
-**Date:** 2026-07-03 (R-YYYY release column)  
-**Status:** Layer B core rows complete  
+**Date:** 2026-07-03 (R-1888 release row)  
+**Status:** Layer B core + R-1888 gate docs complete  
 
 **How to use:** Manual § must point to `IMPLEMENTATION_*` not `DESIGN_*`.
 
@@ -48,10 +48,27 @@
 
 ---
 
+---
+
+## R-1888 first release
+
+| Field | Value |
+|-------|-------|
+| **Release id** | R-1888 / `1888.0.0` |
+| **Analysis** | [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md) |
+| **Design** | [DESIGN_R1888_RELEASE_WRAP_UP_V1.md](DESIGN_R1888_RELEASE_WRAP_UP_V1.md) |
+| **PM** | [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) |
+| **Acceptance** | [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) |
+| **Tests** | 131 PR + 5 nightly green · ME-1 tests pending · soak PM unsigned |
+| **Human QA** | ⏸ Blocked — [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) §5 |
+
+---
+
 ## Changelog
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | R-1888 release traceability row |
 | 2026-07-03 | R-YYYY release column; R-1888 ME-1 scope |
 | 2026-06-25 | M-B5.3-HIST research/design linked; 1888 historical gap noted |
 | 2026-06-30 | Player condition row + template |

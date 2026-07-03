@@ -1,57 +1,55 @@
 # Eagle View — PO / PM Brief
 
-**Date:** 2026-06-30 · **Branch:** `analyze-ai-branch`  
-**Layer B:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **~42% complete**
+**Date:** 2026-07-03 · **Branch:** `analyze-ai-branch`  
+**First release:** **R-1888** (`Futtoboru 1888`)  
+**Detail:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md)
 
 ---
 
 ## In one sentence
 
-**Layer B is less than half done** — engine and crowds work in tests, but **ratings, preview flow, Tactics UI, player condition**, and **most E2E/long tests** are still missing; **human testers come last**.
+**R-1888 is ~92% ready for human testers** — Layer B CM1 loop and **136 automated tests** are green, but **Victorian injury UX (ME-1)**, **three UI bugs**, and **soak sign-off** must finish first; **human QA has correctly not started**.
 
 ---
 
-## Whole Layer B = what we owe
+## Four stages (pre-human)
 
-| Block | CM1 / early FM | Status |
-|-------|----------------|--------|
-| XI + sim + crowds | ✅ Engine tested | UI partial |
-| Ratings + preview + result | CM1 genre hook | ❌ |
-| Tactics menu + formations | CM1 main menu | ❌ |
-| Fitness, morale, injuries | CM1 / CM93 basic | ❌ |
-
----
-
-## Testing order (locked)
-
-```
-L1 Unit  →  L2 E2E  →  L3 Long soak  →  L4 Human testers
-```
-
-Detail: [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md)
+| Stage | Status |
+|-------|--------|
+| Analysis | ~95% ✅ |
+| Design | ~92% ✅ |
+| Development | ~88% — ME-1 + UI |
+| Automated L1–L3 | ~93% — soak unsigned |
+| **Human L4** | **0% — blocked** |
 
 ---
 
-## Remaining work (~8–12 weeks)
+## What works (proven)
 
-1. B3 — ratings + match-day flow  
-2. B4 — Tactics UI  
-3. B5 — player condition  
-4. `Cm1ManagementLoopIT` + `LayerBMultiSeasonSoakIT`  
-5. Then invite human testers for B-9 checklist  
-
-Feature matrix: [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)
+| Block | Evidence |
+|-------|----------|
+| Season loop + cup | `LeagueAndCupIT`, 60-season soak path |
+| XI + sim + crowds | `Cm1ManagementLoopIT`, `AttendanceModelIT` |
+| Ratings + preview | `MatchFeedbackIT`, `MatchLineupPreviewIT` |
+| Condition + B5.2 engine | `InjuryEconomyB52Test`, `LayerBMultiSeasonSoakIT` |
+| **131 + 5 tests** | `mvn test` + `-Pnightly` green 2026-07-03 |
 
 ---
 
-## Horizons (unchanged)
+## What blocks human QA
 
-| Now | Finish **whole** Layer B |
-| Mid | Layer C — 1892 |
-| Long | FM-depth, world sim |
-| North star | Full CM + FM history |
+1. **M-B5.3-HIST ME-1** — hide CM93 insurance/Lilleshall; Trainer labels  
+2. **C-1** double-click · **PL-5** history · **PL-7** save UI  
+3. **60-season soak** PM sign-off  
+4. Manual ch.6–7 R-1888 wording  
 
-No public release. Local development only.
+---
+
+## Horizons
+
+| Now | Close R-1888 blockers → B-9 human QA |
+| Next | **R-1889** / optional scripts · **R-1892** Div 2 |
+| Long | CM+FM north star per [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) |
 
 ---
 
@@ -59,5 +57,9 @@ No public release. Local development only.
 
 | Date | Change |
 |------|--------|
-| 2026-06-30 | Whole Layer B + test pyramid + human QA last |
-| 2026-06-30 | ~55% wrap-up estimate — superseded by ~42% with B5 |
+| 2026-07-03 | R-1888 four-stage status; supersede stale ~42% Layer B |
+| 2026-06-30 | Initial eagle view |
+
+---
+
+*Full matrix: [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md).*

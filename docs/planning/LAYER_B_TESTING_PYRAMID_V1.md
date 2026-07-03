@@ -1,9 +1,9 @@
 # Layer B — Testing Pyramid (Unit → E2E → Long → Human)
 
 **Document type:** QA strategy  
-**Date:** 2026-06-30  
-**Status:** **Active** — **no human testers until L1–L3 green**  
-**Parent:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) · [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)
+**Date:** 2026-07-03 (R-1888 counts verified)  
+**Status:** **Active** — **no human testers until L1–L3 green + R-1888 dev blockers**  
+**Parent:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) · [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md)
 
 ---
 
@@ -13,7 +13,7 @@
 L1 Unit          → every class / formula
 L2 E2E (IT)      → GameTestHarness headless loop
 L3 Long-term     → multi-season + soak profiles
-L4 Human QA      → ONLY after L1–L3 green on analyze-ai-branch
+L4 Human QA      → ONLY after L1–L3 green + ME-1 injury + UI blockers (R-1888)
 ```
 
 **No public release implied.** Human testing validates the CM1 loop feels right locally before Layer C.
@@ -47,11 +47,11 @@ L4 Human QA      → ONLY after L1–L3 green on analyze-ai-branch
 
 | Tier | Command | When |
 |------|---------|------|
-| **L1 + L2** | `mvn test -pl futtoboru-core` | Every commit |
-| **L2 nightly** | `mvn test -pl futtoboru-core -Pnightly` | Pre-merge / weekly |
-| **L3 soak** | `.\scripts\run-soak-with-preflight.ps1` | After Layer B feature batch |
-| **L3 Layer B** | `mvn test -pl futtoboru-core -Dtest=LayerBMultiSeasonSoakIT` | When added |
-| **L4 human** | [LAYER_B_TEST_PLAN_V1.md §5](LAYER_B_TEST_PLAN_V1.md) | After PM signs L3 |
+| **L1 + L2** | `mvn test -pl futtoboru-core` | Every commit — **131 tests** |
+| **L2 nightly** | `mvn test -pl futtoboru-core -Pnightly` | Before human QA — **+5 tests** |
+| **L3 soak** | `.\scripts\run-soak-with-preflight.ps1` | PM sign-off once |
+| **L3 Layer B** | Included in `-Pnightly` | `LayerBMultiSeasonSoakIT` |
+| **L4 human** | [LAYER_B_TEST_PLAN_V1.md §5](LAYER_B_TEST_PLAN_V1.md) | [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) §4 |
 
 Preflight: [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)
 
@@ -77,6 +77,14 @@ Preflight: [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)
 | `MoraleUpdateTest` | COND-5 | ✅ |
 | `FatigueRecoveryTest` | COND-4 | ✅ |
 | `PlayerConditionDefaultsTest` | COND | ✅ |
+| `InjuryEconomyB52Test` | B5.2 CM93 | ✅ (tag `cm93` recommended) |
+| `InjuryTypesRegistryTest` | B5.2 | ✅ |
+| `MoraleGoalBonusTest` | B5.1 | ✅ |
+| `FatigueSlowsRecoveryTest` | B5.1 | ✅ |
+| `PlayerSharpnessFactorTest` | B5.1 | ✅ |
+| `MatchInjuryTrackingTest` | B5.1 | ✅ |
+| `MedicalEraR1888GateTest` | R-1888 ME-1 | ❌ **pending HIST-a** |
+| `MedicalEraR1888CostTest` | R-1888 ME-1 | ❌ **pending HIST-b** |
 
 ### L2 — E2E / IT ✅ / ❌
 
@@ -94,6 +102,7 @@ Preflight: [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)
 | `FitnessSimModifierIT` | COND-1 | ✅ |
 | `InjuredPlayerLineupIT` | COND-3 | ✅ |
 | `MatchRatingsSaveLoadIT` | MVP-5 | ✅ |
+| `AttendanceModelIT` | MVP-4 | ✅ nightly |
 
 #### `Cm1ManagementLoopIT` (spec)
 
@@ -134,18 +143,30 @@ Run `LayerBMultiSeasonSoakIT` in **`-Pnightly`** until stable; optional **`-Psoa
 
 ---
 
-## 5. Layer B complete — test gate summary
+## 5. R-1888 automated gate summary
+
+| Tier | Count | Status | Required before L4? |
+|------|-------|--------|---------------------|
+| L1 + L2 (PR) | **131** | ✅ green 2026-07-03 | Yes |
+| L3 nightly | **+5** | ✅ green 2026-07-03 | Yes |
+| L3 soak | **1** (`LongRunSoakIT`) | ☐ PM unsigned | Yes |
+| R-1888 ME-1 | **+3** (proposed) | ❌ | Yes |
+| **Total target** | **~139** | **136/139** | — |
+
+---
+
+## 6. Layer B complete — test gate summary
 
 | Tier | Required for “Layer B complete” |
 |------|----------------------------------|
 | L1 | All rows in §4 L1 **green** |
 | L2 | All rows in §4 L2 **green** |
-| L3 | `TenSeasonReportIT` + `LayerBMultiSeasonSoakIT` + preflight soak **green** |
-| L4 | B-9 checklist signed (human) |
+| L3 | Nightly + preflight + soak **PM-signed** | ⚠️ nightly ✅ · soak ☐ |
+| L4 | B-9 checklist signed (human) | After §5 gate |
 
 ---
 
-## 6. Traceability
+## 7. Traceability
 
 | CM1 loop step | L1 | L2 | L3 | L4 |
 |---------------|----|----|-----|-----|
@@ -158,10 +179,11 @@ Run `LayerBMultiSeasonSoakIT` in **`-Pnightly`** until stable; optional **`-Psoa
 
 ---
 
-## 7. Changelog
+## 8. Changelog
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | R-1888 counts 131+5; ME-1 pending tests; gate §5 |
 | 2026-06-30 | Four-tier pyramid; human QA last; new long/E2E specs |
 
 ---

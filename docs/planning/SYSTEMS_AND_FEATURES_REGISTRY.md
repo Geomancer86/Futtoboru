@@ -1,30 +1,31 @@
 # Futtoboru — Systems & Features Registry
 
 **Document type:** Feature inventory  
-**Last verified:** 2026-07-01 (131-test suite; all pass)  
-**Branch:** `analyze-ai-branch`  
-**Layer B truth:** [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) · [ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md)
+**Last updated:** 2026-07-03 (R-1888 wrap-up · 131+5 tests verified)  
+**Layer B truth:** [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) · [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md)
 
 > **Note:** §1–§6 rows below may still reflect 2025 audit. Prefer **§0** and implementation docs for current truth.
 
 ---
 
-## 0. Automation-verified status (2026-06-30)
+## 0. Automation-verified status (2026-07-03)
 
 | System / feature | Status | Test / evidence |
 |------------------|--------|-----------------|
 | Procedural season loop + rollover | ✅🧪 | `SeasonPlaythroughIT`, `MultiSeasonSoakIT`, `LayerBMultiSeasonSoakIT` |
-| 60-season north star | ✅🧪 | `LongRunSoakIT` |
-| Pick starting XI + tactics UI | ✅🧪 | `Cm1ManagementLoopIT`, `InjuredPlayerLineupIT` — [IMPLEMENTATION_TACTICS_B4_V1.md](IMPLEMENTATION_TACTICS_B4_V1.md) |
+| 60-season north star | ✅🧪 | `LongRunSoakIT` (soak profile · PM sign-off pending) |
+| Pick starting XI + tactics UI | ✅🧪 | `Cm1ManagementLoopIT`, `InjuredPlayerLineupIT` |
 | Match sim uses XI + condition | ✅🧪 | `FitnessSimModifierIT`, `FormationSimWeightTest` |
-| Post-match 0–10 ratings | ✅🧪 | `MatchRatingsTest`, `MatchFeedbackIT` — [IMPLEMENTATION_MATCH_RATINGS_B3_V1.md](IMPLEMENTATION_MATCH_RATINGS_B3_V1.md) |
-| Attendance (table/form/derby) | ✅🧪 | `AttendanceCalculatorTest`, `AttendanceModelIT` |
-| Player condition B5.2 Complete | ✅🧪 | CM93 injury economy — [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §10 |
+| Post-match 0–10 ratings | ✅🧪 | `MatchRatingsTest`, `MatchFeedbackIT` |
+| Attendance (table/form/derby) | ✅🧪 | `AttendanceCalculatorTest`, `AttendanceModelIT` (nightly) |
+| Player condition B5.2 engine | ✅🧪 | `InjuryEconomyB52Test` — CM93 profile |
+| **R-1888 ME-1 injury UX** | ❌ | M-B5.3-HIST — blocks human QA |
 | Match preview / kick-off / result | ✅🧪 | `MatchLineupPreviewIT`, `MatchFeedbackIT` |
 | Training / transfers UI | 🔲 | Placeholder screens only |
-| Inbox / world news (hiatus, restart) | ❌ | **NEWS-2** |
+| Inbox / world news (hiatus, restart) | ❌ | **NEWS-2** — R-1889+ |
 | Save JSON roundtrip | ✅🧪 | `SaveLoadIT`, `PlayerConditionSaveLoadIT`, `MatchRatingsSaveLoadIT` |
-| `GameTestHarness` | ✅🧪 | **131 tests** all green |
+| `GameTestHarness` | ✅🧪 | **131 PR + 5 nightly** green |
+| **Human QA B-9** | ⏸ | Not started — correct per policy |
 
 ---
 
@@ -42,7 +43,7 @@ See [DESIGN_LAYER_B_CM1_CORE_LOOP.md](DESIGN_LAYER_B_CM1_CORE_LOOP.md) · depth 
 | MVP-6–7 | Match preview / result UI | ⚠️ Partial |
 | MVP-8 | Multi-season stability | ✅🧪 `LayerBMultiSeasonSoakIT` |
 | MVP-9 | Tactics screen | ⚠️ Partial |
-| B5 / B5.2 | Fitness, morale, CM93 injuries | ✅ Core+ (B5.2 Complete) |
+| B5 / B5.2 | Fitness, morale, CM93 injury **engine** | ✅ Core+ engine · ❌ R-1888 ME-1 UX |
 | MVP-10 | Save schema versioning | ⏸ Deferred |
 
 **Execution:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · **Tests:** [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md)

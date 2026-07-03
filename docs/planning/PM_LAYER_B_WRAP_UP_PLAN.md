@@ -1,9 +1,10 @@
 # PM Plan — Layer B Complete (Whole Feature Set)
 
 **Document type:** PM master plan  
-**Date:** 2026-06-30  
+**Date:** 2026-06-30 (R-1888 wrap-up 2026-07-03)  
 **Branch:** `analyze-ai-branch`  
 **Direction:** [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md)  
+**First release:** **R-1888** — [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md)  
 **Benchmark:** [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)  
 **Testing:** [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) — **human QA last**
 
@@ -23,9 +24,9 @@ Pick XI + formation (UI)
     → THEN human CM1 walkthrough (B-9)
 ```
 
-**Overall progress: ~95% automated** — human B-9 after preflight soak.
+**Overall progress: ~88% development · ~93% automated · ~92% pre-human (R-1888)** — see [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md).
 
-**Out of Layer B:** transfers, training menus, 2D engine, 1892, world news, public release.
+**Out of R-1888:** transfers, training menus, 2D engine, 1892, world news, CM93 injury UI, public release.
 
 ---
 
@@ -33,155 +34,82 @@ Pick XI + formation (UI)
 
 | Phase | Feature scope | Status |
 |-------|---------------|--------|
-| **B1** | XI + sim v2 + save | Engine ✅ · Tactics XI UI ✅ |
+| **B1** | XI + sim v2 + save | ✅ Engine + Tactics XI UI |
 | **B2** | Attendance + economy | ✅ Complete + tested |
 | **B3** | Ratings + preview/result flow | ✅ Engine + UI · L1/L2 green |
 | **B4** | Tactics menu + formation picker | ✅ UI + sidebar · L1 green |
-| **B5** | Fitness, morale, injuries (CM1/CM93) | ✅ Engine + partial UI · L1/L2 green |
+| **B5** | Fitness, morale, injuries | ✅ B5.2 engine · **ME-1 R-1888 skin pending** |
 
 ### Testing tiers
 
 | Tier | Status |
 |------|--------|
-| **L1 Unit** | B1–B5 ✅ (PR gate 112 tests) |
-| **L2 E2E** | Loop/preview/condition ✅ |
-| **L3 Long-term** | `LayerBMultiSeasonSoakIT` ✅ nightly · preflight soak pending PM sign-off |
-| **L4 Human** | **Ready** — after preflight soak sign-off |
+| **L1 Unit** | ✅ B1–B5 (131 PR tests) |
+| **L2 E2E** | ✅ Loop/preview/condition |
+| **L3 Long-term** | ✅ nightly 5 green · ☐ soak PM sign-off |
+| **L4 Human** | ⏸ **Blocked** — ME-1 + UI fixes + soak |
 
 ---
 
-## 3. Gap analysis (designs for all missing work)
+## 3. R-1888 blockers (before human QA)
 
-| Gap | CM/FM basis | Design doc |
-|-----|-------------|------------|
-| Ratings 0–10 | CM1 **genre first** | [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) |
-| Preview → kick off | CM1 match week | Same |
-| Result scorers + ratings | CM1 result screen | Same |
-| Manual XI + Tactics menu | CM1 main menu | [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) |
-| Formation picker | CM1 pyramid variants | Same + 3 templates in `FormationRegistry` |
-| Player fitness | CM1 squad energy | [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) |
-| Morale | CM1 tracked | Same COND-5 |
-| Basic injuries | CM93 floor | Same COND-3 |
-| Condition → sim | CM1 implicit | Same §4.1 + `FitnessSimModifierIT` |
+| Blocker | Owner | Doc |
+|---------|-------|-----|
+| M-B5.3-HIST ME-1 injury skin | Match/Sim | [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md) |
+| C-1 Continue double-click | Platform | [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) |
+| PL-5 history click / PL-7 save UI | Platform | Same |
+| Soak preflight sign-off | QA/PM | [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) |
+| Manual ch.6–7 R-1888 | Manual | [DESIGN_R1888_RELEASE_WRAP_UP_V1.md](DESIGN_R1888_RELEASE_WRAP_UP_V1.md) R-D22 |
 
 ---
 
-## 4. Execution order (whole layer)
-
-```
-B3a  MatchRatingsCalculator + Match fields + L1 tests
-B3b  Preview → kick off → result engine flow + L2 ITs
-B3c  Result/preview UI (scorers, ratings)
-B4   Tactics screen + sidebar + formation picker + L1 FormationSimWeightTest
-B1UI Manual XI slots on Tactics + squad XI marker
-B5   PlayerCondition + daily tick + injury gen + squad UI + L1/L2 tests
-INT  Cm1ManagementLoopIT + LayerBMultiSeasonSoakIT (L3)
-     mvn test + nightly + preflight soak — all green
-L4   Human testers → B-9 checklist
-```
-
-**Estimate:** **8–12 eng-weeks** (one developer) for remaining **~58%**.
-
----
-
-## 5. Sprint detail
-
-### B3 — Feedback ([design](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md))
-
-| Deliverable | L1 | L2 |
-|-------------|----|----|
-| `MatchRatingsCalculator` + `Match` rating maps | `MatchRatingsTest` | `MatchFeedbackIT` |
-| Continue → preview on match day | — | `MatchLineupPreviewIT` |
-| Kick off → result navigation | — | `Cm1ManagementLoopIT` (partial) |
-| Result UI scorers + ratings | — | manual prep for L4 |
-
-### B4 + B1 UI ([design](DESIGN_TACTICS_UI_V1.md))
-
-| Deliverable | L1 | L2 |
-|-------------|----|----|
-| `TacticsScreenTable` + sidebar | `FormationSimWeightTest` | `Cm1ManagementLoopIT` |
-| Manual 11 slot assignment | — | `ClubTacticsSetupSaveLoadIT` regression |
-
-### B5 — Condition ([design](DESIGN_PLAYER_CONDITION_V1.md))
-
-| Deliverable | L1 | L2 | L3 |
-|-------------|----|----|-----|
-| `PlayerCondition` on `Player` | `PlayerFitnessTest`, `MoraleUpdateTest` | `PlayerConditionSaveLoadIT` | — |
-| Daily tick in engine | `FatigueRecoveryTest`, `PlayerFormTest` | — | — |
-| `InjuryGenerator` | `InjuryGeneratorTest` | `InjuredPlayerLineupIT` | — |
-| Sim modifier | — | `FitnessSimModifierIT` | `LayerBMultiSeasonSoakIT` |
-| Squad UI columns (fit, morale, injury) | — | — | L4 M9 |
-
-**B5 scope (CM1-aligned):** fitness + morale + **simple** injuries (2–3 types, 1–4 weeks) — not FM medical centre.
-
-### Integration — long-term
-
-| Test | Proves |
-|------|--------|
-| `Cm1ManagementLoopIT` | Full headless CM1 loop one match |
-| `LayerBMultiSeasonSoakIT` | 5–10 seasons: tactics persist, ratings every match, condition bounded, health gates clean |
-| `LongRunSoakIT` + preflight | No regression at 60 seasons after Layer B |
-| `MultiSeasonLeagueAndCupSoakIT` | Cup path with Layer B features |
-
-Tag `LayerBMultiSeasonSoakIT` as `@Tag("nightly")` initially.
-
----
-
-## 6. Layer B exit criteria
+## 4. Layer B exit criteria
 
 ### Automated (L1–L3) — required before human testers
 
-- [ ] All L1 tests in [LAYER_B_TESTING_PYRAMID_V1.md §4](LAYER_B_TESTING_PYRAMID_V1.md) **green**
-- [ ] All L2 tests **green**
-- [ ] `TenSeasonReportIT` + `LayerBMultiSeasonSoakIT` + preflight **`LongRunSoakIT`** **green**
-- [ ] `mvn test -pl futtoboru-core` **100%** PR suite
+- [x] All L1 tests in [LAYER_B_TESTING_PYRAMID_V1.md §4](LAYER_B_TESTING_PYRAMID_V1.md) **green**
+- [x] All L2 tests **green**
+- [x] Nightly profile **green** (5 tests)
+- [ ] ME-1 injury tests green (with HIST-a/b)
+- [ ] Preflight **`LongRunSoakIT`** PM sign-off
+- [x] `mvn test -pl futtoboru-core` **131/131**
 
 ### Feature (from CM1 benchmark)
 
-- [ ] Manual XI + Best XI + 3 formations  
-- [ ] Tactics in sidebar  
-- [ ] Preview → kick off → result with scorers + ratings  
-- [ ] Fitness/morale visible; injured excluded from XI  
-- [ ] Condition affects sim (`FitnessSimModifierIT`)
+- [x] Manual XI + Best XI + 3 formations  
+- [x] Tactics in sidebar  
+- [x] Preview → kick off → result with scorers + ratings  
+- [x] Fitness/morale visible; injured excluded from XI  
+- [x] Condition affects sim (`FitnessSimModifierIT`)
+- [ ] **ME-1** injury UX (Trainer, no CM93 menus)
 
-### Human (L4) — after automated green
+### Human (L4) — after automated + dev blockers
 
 - [ ] [LAYER_B_TEST_PLAN_V1.md §5](LAYER_B_TEST_PLAN_V1.md) M1–M9 signed  
-- [ ] PM notes issues for Layer C backlog — **not a release gate**
+- [ ] PM notes issues for R-1889 / Layer C backlog
 
 ---
 
-## 7. PO decisions (updated)
-
-| # | Decision | Locked answer |
-|---|----------|---------------|
-| D1 | B5 in Layer B? | **Yes** — CM1 tracked fitness/morale |
-| D2 | Manual XI required? | **Yes** |
-| D3 | Human testers when? | **After L1–L3 automated green** |
-| D4 | Auto-sim other clubs on Continue? | **Yes** — preview only for user match |
-
----
-
-## 8. Document map
+## 5. Document map
 
 | Doc | Role |
 |-----|------|
-| [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md) | Per-feature done/missing + CM1 reference |
+| [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) | **Active PM status** |
+| [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md) | Four-stage gate |
+| [DESIGN_R1888_RELEASE_WRAP_UP_V1.md](DESIGN_R1888_RELEASE_WRAP_UP_V1.md) | Design sign-off |
+| [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) | Acceptance criteria |
 | [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) | Unit → E2E → long → human |
-| [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md) | B3 |
-| [DESIGN_TACTICS_UI_V1.md](DESIGN_TACTICS_UI_V1.md) | B4 + B1 UI |
-| [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) | B5 |
-| [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) | Detailed test specs + human checklist |
 
 ---
 
-## 9. Changelog
+## 6. Changelog
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | R-1888 wrap-up; accurate %; blockers; 131+nightly tests |
 | 2026-06-30 | Whole Layer B scope: B5 + test pyramid + human QA last |
 | 2026-06-30 | Initial wrap-up (~55%, B5 deferred) — superseded |
 
 ---
 
-*Update benchmark matrix when features or test tiers turn green.*
+*Human testers: see [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) §4.*

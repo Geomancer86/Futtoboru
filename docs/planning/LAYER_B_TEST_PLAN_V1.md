@@ -1,9 +1,10 @@
 # Layer B — Test Plan (Unit + Headless E2E)
 
 **Document type:** QA / engineering test plan  
-**Date:** 2026-06-30  
+**Date:** 2026-07-03 (R-1888 inventory refresh)  
 **Branch:** `analyze-ai-branch`  
-**Parent:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) · [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md)
+**Release:** **R-1888** — [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md)  
+**Parent:** [LAYER_B_ROADMAP_V1.md](LAYER_B_ROADMAP_V1.md) · [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) · [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md)
 
 ---
 
@@ -14,14 +15,14 @@
 | **No feature without tests** | Each MVP ships with unit test(s) and, where the loop is touched, a harness IT |
 | **Headless first** | Same pattern as `LeagueAndCupIT`, `SaveLoadIT` — `GameTestHarness` + `HeadlessApplication` |
 | **Regression** | Existing 62+ tests + soak profiles must stay green after each phase |
-| **Manual last** | **L4 human QA only after L1–L3 green** — see pyramid |
+| **Manual last** | **L4 human QA only after L1–L3 green + R-1888 dev blockers** — see [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) |
 
 **Commands:**
 
 ```bash
-mvn test -pl futtoboru-core                    # fast PR gate (~2 min)
-mvn test -pl futtoboru-core -Pnightly          # 10-season + league+cup multi-season
-mvn test -pl futtoboru-core -Psoak             # 60-season north star
+mvn test -pl futtoboru-core                    # L1+L2 PR gate — 131 tests (~2 min)
+mvn test -pl futtoboru-core -Pnightly          # L3 — 5 nightly tests (~90s)
+mvn test -pl futtoboru-core -Psoak             # L3 — 60-season LongRunSoakIT (~5 min quiet)
 ```
 
 See [SIMULATION_TEST_SUITE_V2.md](SIMULATION_TEST_SUITE_V2.md) for health gates and tier design.
@@ -68,47 +69,67 @@ See [SIMULATION_TEST_SUITE_V2.md](SIMULATION_TEST_SUITE_V2.md) for health gates 
 
 ---
 
-### B3 — Feedback (to implement)
+### B3 — Feedback ✅
 
 Design: [DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md](DESIGN_MATCH_RATINGS_AND_FEEDBACK_UI_V1.md)
 
 | Class | Type | Proves | Status |
 |-------|------|--------|--------|
-| `MatchRatingsTest` | Unit L1 | Rating formula | ❌ |
-| `MatchFeedbackIT` | IT L2 | Ratings after sim | ❌ |
-| `MatchLineupPreviewIT` | IT L2 | Preview lineup = sim lineup | ❌ |
-| `Cm1ManagementLoopIT` | IT L2 | Full headless CM1 loop one match | ❌ |
+| `MatchRatingsTest` | Unit L1 | Rating formula | ✅ |
+| `MatchFeedbackIT` | IT L2 | Ratings after sim | ✅ |
+| `MatchLineupPreviewIT` | IT L2 | Preview lineup = sim lineup | ✅ |
+| `Cm1ManagementLoopIT` | IT L2 | Full headless CM1 loop one match | ✅ |
+| `MatchRatingsSaveLoadIT` | IT L2 | Ratings persist in save | ✅ |
 
-### B4 — Tactics UX
-
-| Class | Type | Proves | Status |
-|-------|------|--------|--------|
-| `FormationSimWeightTest` | Unit L1 | Template changes strength | ❌ |
-
-### B5 — Player condition (in Layer B)
-
-Design: [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md)
+### B4 — Tactics UX ✅
 
 | Class | Type | Proves | Status |
 |-------|------|--------|--------|
-| `PlayerConditionDefaultsTest` | Unit L1 | New players fit | ❌ |
-| `PlayerFitnessTest` | Unit L1 | Match −fitness | ❌ |
-| `PlayerFormTest` | Unit L1 | Sharpness tick | ❌ |
-| `InjuryGeneratorTest` | Unit L1 | Injury roll | ❌ |
-| `MoraleUpdateTest` | Unit L1 | Win/loss/rating | ❌ |
-| `FatigueRecoveryTest` | Unit L1 | Daily decay | ❌ |
-| `PlayerConditionSaveLoadIT` | IT L2 | Condition in JSON | ❌ |
-| `FitnessSimModifierIT` | IT L2 | Low fitness underperforms | ❌ |
-| `InjuredPlayerLineupIT` | IT L2 | Injured excluded from XI | ❌ |
+| `FormationSimWeightTest` | Unit L1 | Template changes strength | ✅ |
 
-### L3 — Long-term (Layer B)
+### B5 — Player condition ✅ (+ R-1888 gap)
+
+Design: [DESIGN_PLAYER_CONDITION_V1.md](DESIGN_PLAYER_CONDITION_V1.md) · B5.2 [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §10
 
 | Class | Type | Proves | Status |
 |-------|------|--------|--------|
-| `LayerBMultiSeasonSoakIT` | Soak L3 | 5–10 seasons: XI, ratings, condition, health | ❌ |
-| `TenSeasonReportIT` | Soak L3 | Balance regression | ✅ |
-| `LongRunSoakIT` | Soak L3 | 60 seasons | ✅ |
-| `MultiSeasonLeagueAndCupSoakIT` | Nightly L3 | Cup + league | ✅ |
+| `PlayerConditionDefaultsTest` | Unit L1 | New players fit | ✅ |
+| `PlayerFitnessTest` | Unit L1 | Match −fitness | ✅ |
+| `PlayerFormTest` | Unit L1 | Sharpness tick | ✅ |
+| `InjuryGeneratorTest` | Unit L1 | Injury roll | ✅ |
+| `MoraleUpdateTest` | Unit L1 | Win/loss/rating | ✅ |
+| `FatigueRecoveryTest` | Unit L1 | Daily decay | ✅ |
+| `InjuryEconomyB52Test` | Unit L1 | CM93 injury economy (8 cases) | ✅ `@Tag("cm93")` **recommended** |
+| `InjuryTypesRegistryTest` | Unit L1 | Mod types load | ✅ |
+| `MoraleGoalBonusTest` | Unit L1 | Goal morale | ✅ |
+| `FatigueSlowsRecoveryTest` | Unit L1 | Fatigue recovery | ✅ |
+| `PlayerSharpnessFactorTest` | Unit L1 | Sharpness sim | ✅ |
+| `MatchInjuryTrackingTest` | Unit L1 | Match injury ids | ✅ |
+| `PlayerConditionSaveLoadIT` | IT L2 | Condition in JSON | ✅ |
+| `FitnessSimModifierIT` | IT L2 | Low fitness underperforms | ✅ |
+| `InjuredPlayerLineupIT` | IT L2 | Injured excluded from XI | ✅ |
+
+### B5-R1888 — ME-1 injury profile ❌ (required before human QA)
+
+Design: [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md) HIST-a/b
+
+| Class | Type | Proves | Status |
+|-------|------|--------|--------|
+| `MedicalEraRegistryTest` | Unit L1 | 1888 → ME-1 | ❌ |
+| `MedicalEraR1888GateTest` | Unit L1 | No insure/Lilleshall/surgeon | ❌ |
+| `MedicalEraR1888CostTest` | Unit L1 | Rehab ≤ 1 week avg wage | ❌ |
+
+### L3 — Long-term ✅ / ☐
+
+| Class | Type | Proves | Status |
+|-------|------|--------|--------|
+| `LayerBMultiSeasonSoakIT` | Soak L3 | 5 seasons: XI, ratings, condition, health | ✅ nightly |
+| `TenSeasonReportIT` | Soak L3 | Balance regression | ✅ nightly |
+| `LongRunSoakIT` | Soak L3 | 60 seasons | ✅ soak profile · ☐ **PM sign-off** |
+| `MultiSeasonLeagueAndCupSoakIT` | Nightly L3 | Cup + league | ✅ nightly |
+| `LongRunEconomySoakIT` | Nightly L3 | FL solvency 3 seasons | ✅ nightly |
+| `MultiSeasonSoakIT` | E2E L3 | 3 procedural seasons | ✅ PR |
+| `LeagueAndCupIT` | E2E L3 | Full 1888 league + cup | ✅ PR |
 
 ---
 
@@ -138,15 +159,15 @@ Implement in `futtoboru-core/src/test/.../harness/GameTestHarness.java`:
 
 | Profile | When to run | Layer B note |
 |---------|-------------|--------------|
-| Default `mvn test` | Every commit | All unit + IT except long soak |
-| `-Psoak` | Weekly / pre-B-9 | `LongRunSoakIT` (league + cup); default profile includes `TenSeasonReportIT`, `MultiSeasonSoakIT`, `LongRunEconomySoakIT` |
-| PR gate | All new tests in default profile | StartingElevenIT may be slow — cap iterations |
+| Default `mvn test` | Every commit | **131** tests — excludes `@Tag(nightly|soak)` |
+| `-Pnightly` | Before human QA | **5** additional nightly tests |
+| `-Psoak` | PM sign-off once | `LongRunSoakIT` — use [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) |
 
 ---
 
 ## 5. Manual QA checklist (B-9) — **L4 human tier**
 
-**Start only when** [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) L1–L3 are green. PM invites human testers at that point.
+**Start only when** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) §4 checklist is complete.
 
 Run at **200% UI scale** on Galaxy Book or 1920×1080.
 
@@ -182,4 +203,7 @@ Run at **200% UI scale** on Galaxy Book or 1920×1080.
 
 ---
 
-*Implement tests in the same PR/commit series as each MVP — no untested Layer B code on `analyze-ai-branch`.*
+| Date | Change |
+|------|--------|
+| 2026-07-03 | B3–B5 marked green; B5-R1888 ME-1 tests; 131+nightly counts |
+| 2026-06-30 | Initial Layer B test plan |

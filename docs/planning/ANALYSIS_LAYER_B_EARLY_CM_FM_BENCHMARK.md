@@ -77,18 +77,21 @@
 
 ### Automated tests ✅ (L1–L3)
 
-**117 PR-gate tests + 5 nightly tests — all green.** See [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md).
+**131 PR + 5 nightly — all green (2026-07-03).** See [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md). Soak PM sign-off pending.
 
 ---
 
-## 4. What remains before human QA
+## 4. What remains before human QA (R-1888)
 
-| Gap | Tier |
-|-----|------|
-| Preflight 60-season soak | L3 gate |
-| Human B-9 checklist | L4 |
-| Injury depth uplift (types, physio, result line) — see [depth doc §4.1](ANALYSIS_FUTTOBORU_VS_EARLY_CM_FEATURE_DEPTH.md#41-injuries-the-example-feature) | Post B-9 |
-| Optional polish: tactics injury grey-out, result injury line | Post B-9 |
+| Gap | Tier | Owner |
+|-----|------|-------|
+| M-B5.3-HIST ME-1 injury UX | Dev | Match/Sim |
+| ME-1 automated tests | L1 | Match/Sim |
+| Preflight 60-season soak PM sign-off | L3 | QA/PM |
+| C-1 double-click, PL-5 history, PL-7 save UI | L4 prep | Platform |
+| Human B-9 checklist | L4 | QA |
+
+Optional polish (post-R-1888 or during B-9): tactics injury grey-out, in-match injury line.
 
 ---
 
