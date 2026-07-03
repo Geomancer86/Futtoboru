@@ -14,7 +14,8 @@
 | Question | Answer |
 |----------|--------|
 | **Bibles per game?** | **Yes for major releases** — one dedicated ref doc each for CM1, CM93/94, CM2, CM97/98, CM3, CM4; plus master [CM_LEGACY_REFERENCE.md](CM_LEGACY_REFERENCE.md) and FM [FM_COMPETITIVE_BIBLE.md](FM_COMPETITIVE_BIBLE.md) (2003+ partial). |
-| **Full feature documentation?** | **No** — release bibles + manual extracts cover **menus and headline systems**, but there is **no subsystem bible** (like [RESEARCH_CM93_INJURY_SUBSYSTEM.md](../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md)) for **transfers, staff, board/stadium, training**, except injuries. |
+| **Full CM93 feature list with Futtoboru status?** | **Yes (2026-07-03)** — [RESEARCH_CM93_FEATURE_CATALOGUE_V1.md](../research/RESEARCH_CM93_FEATURE_CATALOGUE_V1.md) — **106 IDs** |
+| **Full feature documentation (all subsystems ledgered)?** | **Partial** — catalogue + injury ledger; transfers/staff still no separate ID ledgers |
 | **CM93 transfers / market documented?** | **Partial** — primary manual text + [CM93_Manual_Menu_Extract.md](../research/manuals/cm93-94/CM93_Manual_Menu_Extract.md) §Transfers; **not** a standalone design ledger with IDs. |
 | **Free agents / OOC?** | **CM1 manual** (tribunal); **CM93 manual** (list/loan/buy flow) — in extracts, not Futtoboru subsystem doc. |
 | **Assistant managers?** | **Not CM93** — **CM4** delegation ([CM4_COMPLETE_REFERENCE.md](CM4_COMPLETE_REFERENCE.md)); FM2016+ assistant role in FM bible. Early CM has **Coach / Physio / Scouts**, not “assistant manager”. |
