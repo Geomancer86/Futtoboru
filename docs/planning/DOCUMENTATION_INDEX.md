@@ -33,6 +33,7 @@
 | [DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md](DESIGN_PLAYER_CONDITION_B5_1_PROPOSAL.md) | **PO, Match/Sim** | **B5.1 Option A** — shipped; parity label corrected |
 | [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) | **PO, PM, Sponsor** | **M-B5.2 milestone** — Option B Complete shipped (2026-07-01) |
 | [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) | **Match/Sim, PO** | B5.2 engineering design — **shipped** |
+| [../research/RESEARCH_CM93_FEATURE_CATALOGUE_V1.md](../research/RESEARCH_CM93_FEATURE_CATALOGUE_V1.md) | **Research, PO, all leads** | **CM93 complete feature list** — 106 IDs, gap scorecard |
 | [../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md](../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md) | **Research, PO** | CM93 injury primary-source ledger |
 | [../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) | **Research, PO** | Medical eras ME-0→ME-7 |
 | [ANALYSIS_CM_LEGACY_SUBSYSTEM_COVERAGE_V1.md](ANALYSIS_CM_LEGACY_SUBSYSTEM_COVERAGE_V1.md) | **PO, Research** | **Transfers/staff/stadium** — doc gaps vs CM bibles |
