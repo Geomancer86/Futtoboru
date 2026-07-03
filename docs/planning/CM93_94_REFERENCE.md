@@ -56,6 +56,8 @@ Continue Season · View Tables · Fixture Info · Club Details · **Arrange Frie
 | **Reserve squad** | `[RSRV]` on squad screen |
 | **Tactics `[TCT]`** | Position icons DEF/MID/ATT + L/R |
 | **European seeding** | Fixture Info screen |
+| **Transfers / market** | Find Player: search, shortlist, list/loan, foreign pool, scout [RECS], fee negotiation — see [menu extract §Transfers](../research/manuals/cm93-94/CM93_Manual_Menu_Extract.md#transfers-find-player) · subsystem gap [ANALYSIS_CM_LEGACY_SUBSYSTEM_COVERAGE_V1.md](ANALYSIS_CM_LEGACY_SUBSYSTEM_COVERAGE_V1.md) |
+| **Backroom staff** | Coach, Physio, 3× league scouts, youth scout — **no assistant manager** |
 | **Scouts** | Transfers section guidance |
 | **Discipline** | 5 pts booking · 10 sending off · 20 pts = 2-match ban |
 | **Copy protection** | Manual score lookup at boot |

@@ -34,7 +34,8 @@
 | [PM_MILESTONE_CM93_INJURY_PARITY.md](PM_MILESTONE_CM93_INJURY_PARITY.md) | **PO, PM, Sponsor** | **M-B5.2 milestone** — Option B Complete shipped (2026-07-01) |
 | [DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md](DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md) | **Match/Sim, PO** | B5.2 engineering design — **shipped** |
 | [../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md](../research/RESEARCH_CM93_INJURY_SUBSYSTEM.md) | **Research, PO** | CM93 injury primary-source ledger |
-| [../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) | **Research, PO, Match/Sim** | **Medical eras ME-0→ME-7** — Victorian to CM93 |
+| [../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) | **Research, PO** | Medical eras ME-0→ME-7 |
+| [ANALYSIS_CM_LEGACY_SUBSYSTEM_COVERAGE_V1.md](ANALYSIS_CM_LEGACY_SUBSYSTEM_COVERAGE_V1.md) | **PO, Research** | **Transfers/staff/stadium** — doc gaps vs CM bibles |
 | [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md) | **Match/Sim, PO** | **M-B5.3-HIST proposed** — era gates, costs, labels |
 | [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) | **Match/Sim, manual authors** | **B5 + B5.1 + B5.2 as-built** |
 | [IMPLEMENTATION_TACTICS_B4_V1.md](IMPLEMENTATION_TACTICS_B4_V1.md) | **Match/Sim** | Tactics & XI as-built |
@@ -122,6 +123,9 @@
 | Document | Purpose |
 |----------|---------|
 | [CM_LEGACY_RESEARCH_PAUSE.md](CM_LEGACY_RESEARCH_PAUSE.md) | **Round 16** — official research stop |
+| [ANALYSIS_CM_LEGACY_SUBSYSTEM_COVERAGE_V1.md](ANALYSIS_CM_LEGACY_SUBSYSTEM_COVERAGE_V1.md) | **Transfers, staff, stadium** — what is / isn't ledgered |
+| [CM93_94_REFERENCE.md](CM93_94_REFERENCE.md) | CM93/94 release bible |
+| [CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md](CM_LEGACY_RESEARCH_COVERAGE_AUDIT.md) | Honest coverage matrix |
 | [CM1_REFERENCE.md](CM1_REFERENCE.md) | CM1 benchmark |
 | [CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md](CM_LEGACY_FUTTOBORU_GAP_ANALYSIS.md) | Legacy target vs codebase |
 | [FM_COMPETITIVE_BIBLE.md](FM_COMPETITIVE_BIBLE.md) | FM2005+ master index |
