@@ -1,9 +1,10 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-07-03 (R-1888 first release wrap-up)
+**Last updated:** 2026-07-03 (R-1888 gap analysis + release roadmap)
 
 > **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **131 + 5 nightly tests green**  
 > **R-1888 first release:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) · [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md)  
+> **R-1888 gap + roadmap:** [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md) · [PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md](PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md) · [PO_DECISION_R1888_RELEASE_ROADMAP.md](PO_DECISION_R1888_RELEASE_ROADMAP.md)  
 > **Active release tranche:** **R-1888** — [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md)  
 > **CM93 injury + fitness parity:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) · **R-1888 = ME-1 skin only**  
 > **Release manual readiness:** [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md) · scaffold [../manual/README.md](../manual/README.md)  
@@ -17,12 +18,15 @@
 |----------|----------|---------|
 | [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — no release, Layer B now, CM+FM north star, **R-YYYY naming** |
 | [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) | **PO, PM, all leads** | **R-1888 wrap-up** — four-stage gate, blockers, sprint plan |
+| [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md) | **PO, PM, all leads** | **What's missing** — Tier A/B/C + when to add (CM93-F mapped) |
+| [PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md](PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md) | **PO, PM, all leads** | **Gap PM report** — blockers, deferral schedule, stakeholder messaging |
+| [PO_DECISION_R1888_RELEASE_ROADMAP.md](PO_DECISION_R1888_RELEASE_ROADMAP.md) | **PO (sign), PM** | **Scope lock** — R-1888 in/out, milestone roadmap, claims matrix |
 | [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md) | **PO, PM, QA** | **Four-stage readiness** — analysis/design/dev/tests |
 | [DESIGN_R1888_RELEASE_WRAP_UP_V1.md](DESIGN_R1888_RELEASE_WRAP_UP_V1.md) | **PO, all leads** | **Design sign-off matrix** R-D1–R-D22 |
 | [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) | **PO, QA** | **Acceptance criteria** — tag `1888.0.0` |
 | [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md) | **PO, PM, all** | **Release naming** `Futtoboru {YYYY}` · document-all / ship-by-year |
 | [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md) | **PO, PM** | Injury + yearly scope (2026-07-03) |
-| [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, PM** | Eagle view — horizons, traffic lights, Layer B focus |
+| [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, PM** | Eagle view — R-1888 gap tiers, roadmap horizons, traffic lights |
 | [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) | **PM, QA, Tech** | Test matrix, soak protocol, backlog detail |
 | [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) | **PO, PM, all eng** | **Whole Layer B** — status, sprints, exit criteria |
 | [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md) | **PO, PM, QA** | CM1/FM feature matrix — done vs missing per tier |

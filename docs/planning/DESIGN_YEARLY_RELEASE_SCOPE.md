@@ -84,15 +84,46 @@ Full era catalog: [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARC
 
 **R-1888 injury deliverable:** M-B5.3-HIST **HIST-a + HIST-b for ME-1 only** — hide CM93 anachronisms; ME-1 costs and Trainer labels; **no** `Insure`, Lilleshall, or surgeon code paths in UI or economy.
 
-### 4.2 Other domains (sketch — extend per release)
+### 4.2 Other domains (full roadmap — CM93-F cross-ref)
 
-| Domain | R-1888 | Documented ahead | Implement when |
-|--------|--------|------------------|----------------|
-| League rules (2-1-0, goal avg) | 🔧 | 📚 Nov 1888 points change | R-1889 or script milestone |
-| Division Two | — | 📚 1892 | **R-1892** |
-| Substitutes | — | 📚 1965 | **R-1965** or bundled milestone |
-| Player insurance (injury) | — | 📚 1906 Act | **R-1906** |
-| Unemployed career | — | 📚 CM2+ | Post **R-1888** polish |
+| Domain | CM93-F | R-1888 | Documented ahead | Implement when |
+|--------|--------|--------|------------------|----------------|
+| **Transfers & market** | F100–F114 | — | 📚 CM1 floor | **R-1892+** design · ship Layer C |
+| **Transfer flags (U/R/SU/C/L)** | F031–F035 | — | 📚 | **R-1892+** with transfers |
+| **Reserve squad** | F044, F062, F175 | — | 📚 | **R-1892** with Div 2 |
+| **Coach / scouts** | F120–F126 | — | 📚 | Coach **R-1892** stub · scouts **R-1999** |
+| **Discipline / bookings** | F130–F133 | — | 📚 | **R-1919** bundle |
+| **Board / sacking** | F160, F162 | message | 📚 | **R-1889** message · **R-1892** Core |
+| **Tactics depth (style, push/pull)** | F064–F068 | partial | 📚 | **R-1892** partial |
+| **In-match substitutes** | F069 | — | 📚 1965 rule | **R-1965** |
+| **Match commentary** | F080–F083 | — | 📚 | **R-1888.1** polish · depth **R-1993** |
+| **League rules (2-1-0, goal avg)** | — | 🔧 | 📚 Nov 1888 points | **R-1889** script (optional) |
+| **Division Two** | — | — | 📚 1892 | **R-1892** |
+| **Player insurance (injury)** | F144–F147 | hidden | 📚 1906 Act | **R-1906** ME-2 |
+| **Lilleshall / surgeon abroad** | F145–F147 | hidden | 📚 | **R-1951** ME-4 · **R-1993** ME-6 |
+| **Unemployed career** | F022 | backend | 📚 CM2+ | **R-1889** polish |
+| **National / European** | F012, F023–F024, F173 | — | 📚 | Multi-country mod (TBD) |
+| **Hotseat / Quick Start** | F003, F005 | — | 📚 | **P3** — no release year |
+| **Assistant manager** | — (CM4) | — | 📚 CM4 | **R-2003+** tranche |
+| **Stadium expansion** | — (CM99) | — | 📚 | **R-1999+** tranche |
+
+**Gap analysis:** [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md) · **PO lock:** [PO_DECISION_R1888_RELEASE_ROADMAP.md](PO_DECISION_R1888_RELEASE_ROADMAP.md).
+
+### 4.3 Milestone release sequence (PO-approved)
+
+| Release | Theme | Minimum ship |
+|---------|-------|--------------|
+| **R-1888** | Victorian FL + CM1 loop | ME-1 injury, Tier A blockers, B-9 |
+| **R-1888.1** | Post–human-QA polish | F030, F028, UX fixes |
+| **R-1889** | Rules / jobs | Nov 1888 points script (optional) |
+| **R-1892** | World expansion | Div 2, reserves, transfers Core |
+| **R-1906** | Legal / medical | ME-2 insurance UI |
+| **R-1919** | Interwar bundle | Discipline + coach |
+| **R-1951** | ME-4 | Lilleshall |
+| **R-1965** | Match rules | In-match subs |
+| **R-1993** | CM93 skin | ME-6 full injury menus |
+
+**Cadence:** Milestone releases over literal every calendar year — PO may skip thin years.
 
 ---
 
@@ -141,7 +172,8 @@ max_implemented_rules_year=1888
 | Date | Change |
 |------|--------|
 | 2026-07-03 | Initial yearly release naming + document-all / ship-by-year principle |
+| 2026-07-03 | §4.2 full domain roadmap + §4.3 milestone sequence (PO lock) |
 
 ---
 
-*Extend §4.2 as each domain gains a release owner. **R-1888 wrap-up:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md).*
+*Gap analysis: [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md). **R-1888 wrap-up:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md).*

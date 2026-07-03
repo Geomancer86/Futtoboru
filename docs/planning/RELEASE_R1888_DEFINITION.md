@@ -7,7 +7,8 @@
 
 **Supersedes for active work:** [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) (same criteria, legacy `v1.0` label)  
 **Readiness analysis:** [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md)  
-**PM wrap-up:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md)  
+**Gap analysis:** [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md) · **PO lock:** [PO_DECISION_R1888_RELEASE_ROADMAP.md](PO_DECISION_R1888_RELEASE_ROADMAP.md)  
+**PM wrap-up:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · **Gap PM:** [PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md](PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md)  
 
 ---
 
@@ -79,7 +80,8 @@ mvn test -pl futtoboru-core -Pnightly
 | Date | Change |
 |------|--------|
 | 2026-07-03 | Initial R-1888 release definition |
+| 2026-07-03 | Cross-links to gap analysis + PO roadmap decision |
 
 ---
 
-*Human B-9 is the final gate — not a substitute for automated L1–L3.*
+*Out-of-scope features and release timing: [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md) §3. Human B-9 is the final gate — not a substitute for automated L1–L3.*

@@ -55,9 +55,10 @@
 | Field | Value |
 |-------|-------|
 | **Release id** | R-1888 / `1888.0.0` |
-| **Analysis** | [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md) |
+| **Analysis** | [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md) · [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md) |
 | **Design** | [DESIGN_R1888_RELEASE_WRAP_UP_V1.md](DESIGN_R1888_RELEASE_WRAP_UP_V1.md) |
-| **PM** | [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) |
+| **PM** | [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · [PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md](PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md) |
+| **PO** | [PO_DECISION_R1888_RELEASE_ROADMAP.md](PO_DECISION_R1888_RELEASE_ROADMAP.md) |
 | **Acceptance** | [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) |
 | **Tests** | 131 PR + 5 nightly green · ME-1 tests pending · soak PM unsigned |
 | **Human QA** | ⏸ Blocked — [LAYER_B_TEST_PLAN_V1.md](LAYER_B_TEST_PLAN_V1.md) §5 |
@@ -69,6 +70,7 @@
 | Date | Change |
 |------|--------|
 | 2026-07-03 | R-1888 release traceability row |
+| 2026-07-03 | Gap analysis + PO roadmap decision linked |
 | 2026-07-03 | R-YYYY release column; R-1888 ME-1 scope |
 | 2026-06-25 | M-B5.3-HIST research/design linked; 1888 historical gap noted |
 | 2026-06-30 | Player condition row + template |
