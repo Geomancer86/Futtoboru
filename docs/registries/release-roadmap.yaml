@@ -1,0 +1,105 @@
+# Futtoboru release roadmap — machine-readable
+# PO-facing plain language: docs/planning/PO_BRIEF.md
+# Do not duplicate CM93-F IDs in PO docs; map here for agents/dev.
+
+releases:
+  - id: R-1888
+    name: Futtoboru 1888
+    tag: "1888.0.0"
+    status: in_progress
+    theme: Victorian FL management + Trainer injury care
+    po_summary: "First playable 1888–89 season. CM1 loop. No transfers."
+    ships:
+      - league_and_cup
+      - pick_xi_tactics_preview
+      - match_ratings
+      - victorian_injuries_me1
+      - procedural_seasons
+    not_in_release:
+      - transfers
+      - cm93_insurance_ui
+      - lilleshall
+      - discipline
+      - reserves
+      - scouts
+
+  - id: R-1888.1
+    status: planned
+    theme: Post human-QA polish
+    po_summary: "Small fixes from tester feedback — icons, result text."
+    ships:
+      - injury_icon_polish
+      - result_injury_line
+      - ux_fixes_from_b9
+
+  - id: R-1892
+    status: planned
+    theme: World expansion
+    po_summary: "Second division, reserve squads, basic player transfers."
+    ships:
+      - division_two
+      - reserve_squad
+      - transfers_core
+    cm93_features: [F044, F062, F100, F101, F102]
+
+  - id: R-1906
+    status: planned
+    theme: Legal and medical era
+    po_summary: "Injury insurance appears — matches 1906 compensation era."
+    ships:
+      - injury_insurance_me2
+    cm93_features: [F144, F145, F146, F147]
+    medical_era: ME-2
+
+  - id: R-1919
+    status: planned
+    theme: Interwar bundle
+    po_summary: "Bookings, discipline, basic coaching."
+    ships:
+      - discipline
+      - coach_stub
+    cm93_features: [F120, F130, F131, F132, F133]
+
+  - id: R-1951
+    status: planned
+    theme: National rehab
+    po_summary: "Lilleshhall-style national rehab option."
+    ships:
+      - lilleshall_me4
+    medical_era: ME-4
+
+  - id: R-1965
+    status: planned
+    theme: Match rules
+    po_summary: "Substitutes during matches."
+    ships:
+      - in_match_subs
+    cm93_features: [F069]
+
+  - id: R-1993
+    status: planned
+    theme: CM93 injury menus
+    po_summary: "Full CM93-style injury economy in player UI."
+    ships:
+      - cm93_injury_menus_me6
+    medical_era: ME-6
+
+# R-1888 Tier A blockers — also in blockers.yaml
+r1888_blockers:
+  - id: A-1
+    title: Victorian injury UX (ME-1)
+    plain: Hide modern insurance menus; Trainer labels; shilling costs
+  - id: A-2
+    title: ME-1 automated tests
+  - id: A-3
+    title: Continue double-click fix
+  - id: A-4
+    title: Match history click
+  - id: A-5
+    title: Save/load UI paths
+  - id: A-6
+    title: 60-season soak PM sign-off
+  - id: A-7
+    title: Manual chapters 6–7
+  - id: A-8
+    title: Production mod load verification

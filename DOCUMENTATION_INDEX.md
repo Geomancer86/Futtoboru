@@ -4,6 +4,8 @@ Project planning, design, PM, and analysis docs live in **`docs/planning/`** so 
 
 **Start here:** [docs/planning/DOCUMENTATION_INDEX.md](docs/planning/DOCUMENTATION_INDEX.md)
 
+**PO:** [docs/planning/PO_BRIEF.md](docs/planning/PO_BRIEF.md) (one page) · **AI agents:** [AGENTS.md](AGENTS.md)
+
 ## Root entry points (dev & clone)
 
 | Document | Purpose |

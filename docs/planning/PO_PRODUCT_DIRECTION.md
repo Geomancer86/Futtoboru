@@ -1,8 +1,10 @@
 # PO Product Direction (Locked)
 
-**Date:** 2026-06-30  
+**Date:** 2026-06-30 (updated 2026-07-03)  
 **Status:** **Active** — overrides release-first wording in older docs until those docs are updated  
-**Audience:** PO, PM, all contributors
+**Audience:** PO, PM, all contributors  
+
+> **PO routine reading:** [PO_BRIEF.md](PO_BRIEF.md) only. This doc = north star + principles.
 
 ---
 
@@ -19,7 +21,7 @@ Build toward **full parity with the combined feature set of Football Manager and
 | **Release** | **No public release planned.** Work **locally** until the team feels ready — whether that is after 1 season of polish or 50 seasons of depth. |
 | **Release naming** | When milestones ship, use **`Futtoboru {YYYY}`** / tag **`{YYYY}.0.0`** per [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md). First tranche: **R-1888**. |
 | **Sequencing** | **Short term and mid term first.** Nail the next playable layer before expanding world/history scope. |
-| **Current focus** | **Whole Layer B** (~42%) — [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md); human testers **after** L1–L3 automated green |
+| **Current focus** | **R-1888** — Futtoboru 1888; ~92% pre-human QA. See [PO_BRIEF.md](PO_BRIEF.md) |
 | **Long soaks / 60 seasons** | **Engineering confidence**, not a ship gate. Run with preflight when useful ([SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)). |
 | **Layer A UI bugs** | Fix **when touched** or when they block Layer B work — not a release checklist blocker. |
 
@@ -48,6 +50,7 @@ FAR       Full CM + FM historical feature completeness
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | PO_BRIEF as routine PO surface; R-1888 focus replaces stale ~42% Layer B row |
 | 2026-07-03 | R-YYYY release naming row |
 | 2026-06-30 | Whole Layer B scope: B5 + four-tier testing; human QA last |
 | 2026-06-30 | PO lock: no release pressure; Layer B now; long-term CM+FM north star |

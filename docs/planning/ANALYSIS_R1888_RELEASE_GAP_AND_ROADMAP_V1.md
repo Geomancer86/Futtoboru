@@ -1,5 +1,7 @@
 # Analysis — R-1888 Release Gap & Feature Roadmap
 
+> **Superseded for PO routine reading → [PO_BRIEF.md](PO_BRIEF.md).** This doc remains for dev/PM traceability (CM93-F IDs).
+
 **Document type:** Release gap analysis / scheduling  
 **Date:** 2026-07-03  
 **Status:** **Active**  

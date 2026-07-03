@@ -1,7 +1,9 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-07-03 (R-1888 gap analysis + release roadmap)
+**Last updated:** 2026-07-03 (progressive governance — PO_BRIEF)
 
+> **PO reads one file:** [PO_BRIEF.md](PO_BRIEF.md)  
+> **Agents read:** [AGENTS.md](../AGENTS.md) · **Registries:** [docs/registries/](../registries/)  
 > **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **131 + 5 nightly tests green**  
 > **R-1888 first release:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) · [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md)  
 > **R-1888 gap + roadmap:** [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md) · [PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md](PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md) · [PO_DECISION_R1888_RELEASE_ROADMAP.md](PO_DECISION_R1888_RELEASE_ROADMAP.md)  
@@ -16,7 +18,13 @@
 
 | Document | Audience | Purpose |
 |----------|----------|---------|
-| [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — no release, Layer B now, CM+FM north star, **R-YYYY naming** |
+| [PO_BRIEF.md](PO_BRIEF.md) | **PO** | **Single-page dashboard** — status, blockers, decisions (plain English) |
+| [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — north star, principles, R-YYYY naming |
+| [GOVERNANCE_MODEL_V1.md](GOVERNANCE_MODEL_V1.md) | **PO, PM, agents** | **Progressive disclosure** — doc layers, spec workflow, stop essay sprawl |
+| [ANALYSIS_AI_DEV_GOVERNANCE_V1.md](ANALYSIS_AI_DEV_GOVERNANCE_V1.md) | **PO, PM, Sponsor** | **AI dev strategy** — research synthesis, five courses of action |
+| [PM_REPORT_AI_GOVERNANCE_ITERATION.md](PM_REPORT_AI_GOVERNANCE_ITERATION.md) | **PO, PM** | Governance iteration PM report |
+| [AGENTS.md](../AGENTS.md) | **AI agents, devs** | Agent constitution — build, boundaries, doc layers |
+| [../registries/README.md](../registries/README.md) | **PM, agents** | Machine registries — features, blockers, roadmap YAML |
 | [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) | **PO, PM, all leads** | **R-1888 wrap-up** — four-stage gate, blockers, sprint plan |
 | [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md) | **PO, PM, all leads** | **What's missing** — Tier A/B/C + when to add (CM93-F mapped) |
 | [PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md](PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md) | **PO, PM, all leads** | **Gap PM report** — blockers, deferral schedule, stakeholder messaging |

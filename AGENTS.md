@@ -1,0 +1,106 @@
+# AGENTS.md — Futtoboru
+
+Machine-readable project context for AI coding agents. Humans: start at [docs/planning/PO_BRIEF.md](docs/planning/PO_BRIEF.md).
+
+## Project
+
+- **What:** Historical football management sim. Active tranche: **Futtoboru 1888** (1888–89 Football League start).
+- **Stack:** Java 17, Maven, LibGDX 1.12, VisUI. Modules: `futtoboru-core`, `futtoboru-desktop`.
+- **Branch truth:** `analyze-ai-branch` = current code + docs. `main` is stale (0.2.0 era).
+- **Package root:** `com.rndmodgames.futtoboru`
+
+## Build & test
+
+```powershell
+# L1+L2 — run before every commit (131 tests)
+mvn test -pl futtoboru-core
+
+# L3 nightly (+5)
+mvn test -pl futtoboru-core -Pnightly
+
+# L3 soak (60 seasons, slow)
+mvn test -pl futtoboru-core -Psoak
+# or: .\scripts\run-soak-with-preflight.ps1
+
+# Build (prefer test-first workflow)
+mvn clean install -pl futtoboru-core,futtoboru-desktop -am
+```
+
+Default `build.bat` skips tests — **always run Maven tests separately** before committing.
+
+## Code conventions
+
+- **Money:** `BigDecimal` only — never `double` for finances.
+- **Mod data:** Text files under `futtoboru-core/src/main/resources/mods/`.
+- **UI:** VisUI tables in `tables/`, screens in `screens/`.
+- **Tests:** JUnit 5. Integration tests use `GameTestHarness`. Tag profiles: `@Tag("nightly")`, `@Tag("soak")`, `@Tag("cm93")`, `@Tag("r1888")`.
+- **Style:** Match surrounding code. Minimal diff. No drive-by refactors.
+
+## Documentation layers (progressive disclosure)
+
+| Layer | File | Who reads | When |
+|-------|------|-----------|------|
+| **0 — PO** | `docs/planning/PO_BRIEF.md` | PO | Every week / before decisions |
+| **1 — Agent** | `AGENTS.md` (this file) | AI agents | Every session |
+| **2 — Feature spec** | `docs/specs/{feature-id}/` | Dev + agent | **Only while building** that feature |
+| **3 — Registries** | `docs/registries/` | PM, agents on demand | Lookup / traceability |
+| **4 — Research archive** | `docs/research/`, `docs/planning/ANALYSIS_*` | Agents on demand | Never bulk-load into context |
+
+**Do not create new top-level planning essays.** Update registries + PO_BRIEF + a feature spec folder instead.
+
+## Release scope (R-1888)
+
+**In scope:** CM1 loop (XI, tactics, preview, result, ratings), Victorian injuries (Trainer, ME-1), league + cup, procedural seasons.
+
+**Out of scope (later releases):** Transfers, scouts, discipline, reserves, CM93 insurance menus, national teams.
+
+**R-1888 blockers before human QA:** ME-1 injury UX, C-1 Continue fix, PL-5/PL-7 UI, soak sign-off, manual ch.6–7.
+
+Full IDs: `docs/registries/release-roadmap.yaml` · PO plain language: `PO_BRIEF.md`.
+
+## Boundaries
+
+### Always
+
+- Run `mvn test -pl futtoboru-core` after code changes.
+- Update `PO_BRIEF.md` when PO-visible status changes.
+- Update `docs/registries/` when features/bugs/releases change.
+- Use human labels in PO-facing text; keep CM93-F / ME-* IDs in registries and specs only.
+
+### Ask first
+
+- Expand R-1888 scope (transfers, insurance UI, new subsystems).
+- Add new permanent planning markdown outside `docs/specs/` or `docs/registries/`.
+- Push to remote git.
+- Merge `analyze-ai-branch` to `main`.
+
+### Never
+
+- Push to remote unless the user explicitly requests it.
+- Implement ME-2+ injury insurance UI in R-1888 binary.
+- Use `double` for money.
+- Force-push `main` or `develop`.
+- Skip hooks (`--no-verify`) unless explicitly requested.
+
+## Feature workflow (spec-driven)
+
+When implementing a feature:
+
+1. Create or update `docs/specs/{id}/spec.md` (what/why, acceptance criteria — **not** implementation).
+2. Add row to `docs/registries/features.yaml`.
+3. Implement + tests.
+4. Update `docs/registries/` and `PO_BRIEF.md` if PO-visible.
+5. Archive or delete the spec folder when shipped (keep summary in registry).
+
+See [docs/planning/GOVERNANCE_MODEL_V1.md](docs/planning/GOVERNANCE_MODEL_V1.md).
+
+## Key paths
+
+| Path | Purpose |
+|------|---------|
+| `docs/planning/PO_BRIEF.md` | PO single-page dashboard |
+| `docs/registries/features.yaml` | Feature inventory (machine) |
+| `docs/registries/blockers.yaml` | Active blockers only |
+| `docs/registries/release-roadmap.yaml` | When features ship (machine) |
+| `docs/planning/GOVERNANCE_MODEL_V1.md` | Governance model |
+| `futtoboru-core/src/test/.../GameTestHarness.java` | Headless E2E harness |

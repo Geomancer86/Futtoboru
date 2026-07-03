@@ -1,0 +1,85 @@
+# Feature registry — machine-readable subset
+# Full CM93 catalogue (106 IDs): docs/research/RESEARCH_CM93_FEATURE_CATALOGUE_V1.md
+# Legacy markdown registry (may be stale): docs/planning/SYSTEMS_AND_FEATURES_REGISTRY.md
+
+schema_version: 1
+updated: "2026-07-03"
+
+# Status: shipped | partial | stub | none
+# release_min: earliest release that ships this to players
+
+features:
+  - id: league_procedural
+    name: Procedural league seasons
+    status: shipped
+    release_min: R-1888
+    tests: [SeasonRolloverIT]
+
+  - id: fa_cup
+    name: FA Cup
+    status: shipped
+    release_min: R-1888
+
+  - id: pick_xi
+    name: Pick XI and formations
+    status: shipped
+    release_min: R-1888
+    cm93_features: [F060, F061]
+
+  - id: match_preview_result
+    name: Match preview and result
+    status: shipped
+    release_min: R-1888
+    cm93_features: [F084, F085, F088]
+
+  - id: match_ratings
+    name: Post-match ratings
+    status: shipped
+    release_min: R-1888
+    cm93_features: [F090]
+
+  - id: fitness_morale
+    name: Fitness and morale columns
+    status: partial
+    release_min: R-1888
+    cm93_features: [F036, F037]
+
+  - id: injury_engine_b52
+    name: CM93 injury engine (dev)
+    status: shipped
+    release_min: dev
+    note: Full B5.2 engine exists; R-1888 uses ME-1 skin only
+    cm93_features: [F140, F141, F142]
+
+  - id: injury_me1_r1888
+    name: Victorian Trainer injury care
+    status: partial
+    release_min: R-1888
+    blocker: A-1
+    cm93_features: [F040, F143]
+
+  - id: injury_insurance_ui
+    name: CM93 injury insurance menus
+    status: none
+    release_min: R-1906
+    plain: Injury insurance — 1906 release
+    cm93_features: [F144, F145, F146, F147]
+
+  - id: transfers
+    name: Transfer market
+    status: none
+    release_min: R-1892
+    plain: Buying and selling players — 1892+ release
+    cm93_features: [F100, F101, F102, F103, F104, F105, F106, F107, F108, F109, F110, F111, F112, F113, F114]
+
+  - id: discipline
+    name: Bookings and discipline
+    status: none
+    release_min: R-1919
+    cm93_features: [F130, F131, F132, F133]
+
+  - id: reserves
+    name: Reserve squad
+    status: none
+    release_min: R-1892
+    cm93_features: [F044, F062, F175]

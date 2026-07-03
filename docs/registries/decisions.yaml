@@ -1,0 +1,15 @@
+# PO decisions — signed items only
+# Open queue lives in docs/planning/PO_BRIEF.md § Decisions
+
+decisions:
+  - id: D-R1888-SCOPE
+    date: "2026-07-03"
+    status: pending_po_sign
+    summary: R-1888 scope lock — no transfers, ME-1 only, human QA after 8 blockers
+    source: PO_DECISION_R1888_RELEASE_ROADMAP.md
+
+  - id: G-GOVERNANCE
+    date: "2026-07-03"
+    status: pending_po_sign
+    summary: Adopt PO_BRIEF + registries; plain English to PO; IDs in YAML for dev/AI
+    source: ANALYSIS_AI_DEV_GOVERNANCE_V1.md

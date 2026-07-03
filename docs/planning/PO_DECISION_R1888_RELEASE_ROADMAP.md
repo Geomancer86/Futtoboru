@@ -1,5 +1,7 @@
 # PO Decision — R-1888 Release Scope & Feature Roadmap
 
+> **Superseded for PO routine reading → [PO_BRIEF.md](PO_BRIEF.md).** Machine roadmap: [docs/registries/release-roadmap.yaml](../registries/release-roadmap.yaml).
+
 **Document type:** PO decision / lock  
 **Date:** 2026-07-03  
 **Status:** **Active** — pending PO initials on §6  
