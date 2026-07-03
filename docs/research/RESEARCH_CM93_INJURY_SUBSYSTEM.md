@@ -163,7 +163,7 @@ See [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER
 
 **B5.1 closed Tier 1. B5.2 Complete closed Tier 2–3** (except deferred forced-retirement payout). Parity audit: [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](../planning/ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md).
 
-**1888 historical accuracy:** CM93 parity does **not** imply period-accurate medicine at game start. See [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) and proposed [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](../planning/DESIGN_INJURY_HISTORICAL_ERA_GATING.md) (M-B5.3-HIST).
+**1888 historical accuracy:** CM93 parity does **not** imply period-accurate medicine at game start. Full ledger: [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md). **R-1888 ships ME-1 only** — [DESIGN_YEARLY_RELEASE_SCOPE.md](../planning/DESIGN_YEARLY_RELEASE_SCOPE.md). Design: [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](../planning/DESIGN_INJURY_HISTORICAL_ERA_GATING.md) (M-B5.3-HIST).
 
 ---
 

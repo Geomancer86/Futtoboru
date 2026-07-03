@@ -175,7 +175,7 @@ CM93 documents **squad condition** as fitness + morale + injury text on one scre
 | Priority | Item | Rationale |
 |----------|------|-----------|
 | P0 | Stop citing **~39%** parity anywhere | Superseded by B5.2 |
-| **P0-HIST** | Sign **M-B5.3-HIST** era gates before claiming “1888-accurate injuries” | CM93 menus ≠ Victorian medicine — see §9 |
+| **P0-HIST** | Ship **M-B5.3-HIST ME-1 only** for **R-1888**; defer ME-2+ to **R-1906** et al. | CM93 menus ≠ Victorian medicine — see §9 |
 | P1 | Split marketing: **injury economy** vs **fitness/condition** | Avoid overclaim on training/morale |
 | P2 | Optional **M-B5.3** micro-milestone | Physio match-fitness tick; morale sim hook — CM93 §Staff ii |
 | P3 | Defer **M-B5.4 presentation** | In-match injury line + `[IJ]` styling |
@@ -212,16 +212,19 @@ CM93 documents **squad condition** as fitness + morale + injury text on one scre
 ### 9.3 Medical era model (summary)
 
 Full research: [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md).  
-Implementation design: [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md).
+Implementation design: [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md).  
+**Release scope:** [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md) — **document all eras; ship by `R-YYYY`**.
 
-| Era | Years | Unlocks (high level) |
-|-----|-------|----------------------|
-| **ME-1** | 1885–1905 | Trainer, rest, cheap rehab — **1888 start** |
-| **ME-2** | 1906–1914 | Compensation framing; club doctor norm at big clubs |
-| **ME-4** | 1945–1970 | NSC / early national rehab (**1951**) |
-| **ME-6** | 1993–1999 | Full CM93 menu (current B5.2) |
+| Era | Years | Unlocks (high level) | **Ship in release** |
+|-----|-------|----------------------|---------------------|
+| **ME-1** | 1885–1905 | Trainer, rest, cheap rehab — **1888 start** | **R-1888** |
+| **ME-2** | 1906–1914 | Compensation framing; insurance UI | **R-1906** (not R-1888) |
+| **ME-4** | 1945–1970 | NSC / early national rehab (**1951**) | **R-1951** |
+| **ME-6** | 1993–1999 | Full CM93 menu (B5.2 reference) | **R-1993** |
 
-**Not the same as `HistoricalMode`:** fork/news sandbox is unrelated; era resolves from **in-game calendar**.
+**PO lock (2026-07-03):** Do **not** implement 1906 insurance while **R-1888** is the active dev/release tranche — ledger only.
+
+**Not the same as `HistoricalMode`:** fork/news sandbox is unrelated; era **implementation ceiling** follows **release year**, not save calendar alone (see PM report).
 
 ### 9.4 Gap summary
 
@@ -253,6 +256,7 @@ RESEARCH_EARLY_CM_INJURIES_VS_FM.md
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | §9 release-year ship matrix; PO lock defer 1906 to R-1906 |
 | 2026-06-25 | §9 historical accuracy vs CM93; P0-HIST PO action; medical era doc chain |
 | 2026-07-01 | Initial post-B5.2 parity audit + CM/FM condensed field map |
 

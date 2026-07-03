@@ -238,15 +238,17 @@ B5.2 reproduces **CM93 (1993)** treatment menus against an **1888–89** start m
 | Rehab costs £25–75 | CM93 magnitudes in “1888” mod files | ME-1 table ~£0.25–0.75 |
 | Recovery harshness | CM93 baseline | ME-1 ×1.20 base weeks |
 
-**Research:** [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md)  
 **Design:** [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md)  
+**Release scope:** [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md) — **R-1888 = ME-1 only**  
 **Audit:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) §9  
+**PM:** [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md)
 
-**PO framing:** Claim **CM93 injury economy** today; do **not** claim **1888-historical injury simulation** until §11 closed.
+**PO framing:** Claim **CM93 injury economy** in dev/B5.2 tests; for **R-1888** claim **Victorian (ME-1) injury care** only. **1906 insurance:** documented, **not built** until **R-1906**.
 
 ### Changelog
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | §11 R-1888 / R-YYYY release scope links |
 | 2026-06-25 | §11 historical accuracy gap + M-B5.3-HIST links |
 | 2026-07-01 | B5.2 Complete shipped (Option B) |

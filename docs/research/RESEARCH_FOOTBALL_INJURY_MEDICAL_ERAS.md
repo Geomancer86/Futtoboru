@@ -29,7 +29,7 @@ Futtoboru’s default career begins in **1888–89** (Football League inaugural 
 | Victorian pitches, boots, and ball weight increased **severity and duration** vs modern estimates | Era **recovery multiplier** > 1.0 for ME-1 |
 | Top 1888 wage ≈ **£2.50/week**; average pro **£0.50–1.00** | B5.2 rehab **£25–75** and Lilleshall **£300** are **50–600×** weekly wage — economically broken for 1888 |
 
-**Bottom line:** CM93 parity and **1888 historical accuracy are orthogonal claims**. B5.2 satisfies the former; **M-B5.3-HIST** (era gating) is required for the latter.
+**Bottom line:** CM93 parity and **1888 historical accuracy are orthogonal claims**. B5.2 satisfies the former; **M-B5.3-HIST (ME-1 only)** is required for **R-1888**. Later eras (1906 insurance, etc.) ship with **yearly releases** — documented in research, **not built** until that **R-YYYY** tranche ([DESIGN_YEARLY_RELEASE_SCOPE.md](../planning/DESIGN_YEARLY_RELEASE_SCOPE.md)).
 
 ---
 
@@ -48,16 +48,18 @@ Eras are defined by **when a treatment, role, or legal framework became plausibl
 
 ## 4. Medical era timeline (ME-0 → ME-7)
 
-| Era ID | Years (inclusive start – end) | Label | Football injury context |
-|--------|-------------------------------|-------|-------------------------|
-| **ME-0** | pre-1885 | Amateur & pre-League | No legal professionalism; “trainer” often volunteer; no club doctor norm |
-| **ME-1** | 1885–1905 | **Early League / Victorian pro** | **1888–89 start lives here.** Trainers (often ex-athletes); embrocation, massage, rest; rare honorary doctors; play hurt / 10 men; fatalities reported in press |
-| **ME-2** | 1906–1914 | Compensation & club doctor | **Workmen’s Compensation Act 1906** — employer liability; big clubs employ or retain **club doctor**; still no insurance menu as CM93 models it |
-| **ME-3** | 1919–1939 | Interwar trainer tradition | Trainer + doctor at wealthy clubs; **“magic sponge”** cultural trope grows; no national rehab centre |
-| **ME-4** | 1945–1970 | Post-war NSC & early physio profession | **Lilleshall NSC 1951**; physiotherapy professionalises; still **no subs** until 1965 |
-| **ME-5** | 1971–1992 | Sports medicine institutional | Subs routine; fitness science; **FA Lilleshall rehab centre ~1986**; richer treatment options |
-| **ME-6** | 1993–1999 | **CM93 pop layer** | Insurance + Lilleshall + physio estimate as shipped in CM93 — Futtoboru B5.2 clone target |
-| **ME-7** | 2000+ | Modern FM medical depth | Body areas, scans, medical centre, sickness — out of Layer B per PO direction |
+| Era ID | Years (inclusive start – end) | Label | Football injury context | **Min. release (ship)** |
+|--------|-------------------------------|-------|-------------------------|-------------------------|
+| **ME-0** | pre-1885 | Amateur & pre-League | No legal professionalism; “trainer” often volunteer; no club doctor norm | 📚 ledger only |
+| **ME-1** | 1885–1905 | **Early League / Victorian pro** | **1888–89 start lives here.** Trainers (often ex-athletes); embrocation, massage, rest; rare honorary doctors; play hurt / 10 men; fatalities reported in press | **R-1888** |
+| **ME-2** | 1906–1914 | Compensation & club doctor | **Workmen’s Compensation Act 1906** — employer liability; big clubs employ or retain **club doctor**; still no insurance menu as CM93 models it | **R-1906** |
+| **ME-3** | 1919–1939 | Interwar trainer tradition | Trainer + doctor at wealthy clubs; **“magic sponge”** cultural trope grows; no national rehab centre | **R-1906+** (bundle TBD) |
+| **ME-4** | 1945–1970 | Post-war NSC & early physio profession | **Lilleshall NSC 1951**; physiotherapy professionalises; still **no subs** until 1965 | **R-1951** |
+| **ME-5** | 1971–1992 | Sports medicine institutional | Subs routine; fitness science; **FA Lilleshall rehab centre ~1986**; richer treatment options | **R-1986** (TBD) |
+| **ME-6** | 1993–1999 | **CM93 pop layer** | Insurance + Lilleshall + physio estimate as shipped in CM93 — Futtoboru B5.2 clone target | **R-1993** |
+| **ME-7** | 2000+ | Modern FM medical depth | Body areas, scans, medical centre, sickness — out of Layer B per PO direction | 📚 ledger only |
+
+📚 = documented in this ledger · **R-YYYY** = minimum **implementation** release per [DESIGN_YEARLY_RELEASE_SCOPE.md](../planning/DESIGN_YEARLY_RELEASE_SCOPE.md).
 
 **Boundary notes (PO decisions captured in design doc):**
 
@@ -187,6 +189,7 @@ Injury **types** (bruise, strain, etc.) can stay the five CM93 flavour strings; 
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | §4 min. release column; ship-by-R-YYYY cross-link |
 | 2026-06-25 | Initial medical-era research — ME-0→ME-7, 1888 profile, cost mismatch analysis |
 
 ---

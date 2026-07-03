@@ -17,6 +17,7 @@ Build toward **full parity with the combined feature set of Football Manager and
 | Principle | Direction |
 |-----------|-----------|
 | **Release** | **No public release planned.** Work **locally** until the team feels ready — whether that is after 1 season of polish or 50 seasons of depth. |
+| **Release naming** | When milestones ship, use **`Futtoboru {YYYY}`** / tag **`{YYYY}.0.0`** per [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md). First tranche: **R-1888**. |
 | **Sequencing** | **Short term and mid term first.** Nail the next playable layer before expanding world/history scope. |
 | **Current focus** | **Whole Layer B** (~42%) — [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md); human testers **after** L1–L3 automated green |
 | **Long soaks / 60 seasons** | **Engineering confidence**, not a ship gate. Run with preflight when useful ([SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md)). |
@@ -47,5 +48,6 @@ FAR       Full CM + FM historical feature completeness
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | R-YYYY release naming row |
 | 2026-06-30 | Whole Layer B scope: B5 + four-tier testing; human QA last |
 | 2026-06-30 | PO lock: no release pressure; Layer B now; long-term CM+FM north star |

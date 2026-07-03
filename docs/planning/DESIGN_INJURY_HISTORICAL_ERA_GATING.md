@@ -23,17 +23,18 @@ B5.2 delivers **honest CM93 injury parity** (~95% management loop). The **1888�
 | Period-accurate **costs** | ❌ CM93 £ in “1888” files | Era cost tables |
 | Period-accurate **recovery harshness** | ❌ CM93 baseline | Era multipliers |
 
-**Design goal:** One injury engine; **medical era overlay** driven by in-game calendar so a 60-season save naturally unlocks ME-2 → ME-6 features without a second codebase.
+**Design goal:** One injury engine; **medical era overlay** with a **per-release implementation ceiling** (`max_implemented_medical_era`). Calendar may advance past 1905 in a save, but **R-1888** never exposes ME-2+ until **R-1906** ships.
 
 ---
 
 ## 2. Design principles
 
 1. **Eras, not years** — eight bands ME-0…ME-7 ([research §4](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md#4-medical-era-timeline-me-0--me-7)).
-2. **Mechanics vs presentation** — `InjuryTreatmentService` logic unchanged; gates + labels + costs resolved at runtime.
-3. **Mod-first** — era tables in `mods/injuries/`; no hard-coded 1906 in Java except default fallback.
-4. **Fail visible** — disabled actions hidden or greyed with era tooltip (“Injury insurance becomes common after 1906”).
-5. **Do not break CM93 claim** — when `medicalEraId == ME-6`, behaviour matches B5.2 regression tests (or explicit ME-6 test profile).
+2. **Document all, ship by release year** — full era ledger in research; **implement only eras for the active `R-YYYY` release** ([DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md)). **R-1888 ships ME-1 only** — no 1906 insurance in this tranche.
+3. **Mechanics vs presentation** — `InjuryTreatmentService` logic unchanged; gates + labels + costs resolved at runtime.
+4. **Mod-first** — era tables in `mods/injuries/`; release ceiling via `max_implemented_medical_era` in manifest.
+5. **Fail visible** — disabled actions hidden or greyed with tooltip (“Injury insurance — Futtoboru 1906 release”).
+6. **Do not break CM93 claim** — when `medicalEraId == ME-6`, behaviour matches B5.2 regression tests (dev/`@Tag("cm93")` — not R-1888 player-facing).
 
 ---
 
@@ -192,33 +193,51 @@ Harness: add `GameTestHarness.setGameDate(LocalDate)` for era tests.
 
 ## 9. Phased delivery
 
-| Phase | Deliverable | Exit criteria |
-|-------|-------------|---------------|
-| **HIST-a** | `MedicalEraRegistry` + ME-1/ME-6 only | 1888 save hides insurance/Lilleshall/surgeon |
-| **HIST-b** | ME-1 cost tables + recovery multiplier | Costs ≤ 1 week wage for MINOR rehab |
-| **HIST-c** | Full ME-2…ME-5 gates + strings | Calendar advance unlocks features in soak test |
-| **HIST-d** | Manual + regression ME-6 profile | 131+ tests green; CM93 claim footnoted |
+| Phase | Deliverable | Exit criteria | Release |
+|-------|-------------|---------------|---------|
+| **HIST-a** | Registry + **ME-1 ceiling** + hide CM93 UI | 1888 save: no insurance/Lilleshall/surgeon | **R-1888** |
+| **HIST-b** | ME-1 costs + recovery multiplier + Trainer strings | Rehab ≤ 1 week avg wage | **R-1888** |
+| **HIST-c** | ME-2 insurance + economy | 1906 start or ceiling raised | **R-1906** |
+| **HIST-d** | ME-4 national rehab | Lilleshall / NSC | **R-1951** |
+| **HIST-e** | ME-6 CM93 player-facing profile | Full B5.2 menus at CM93 costs | **R-1993** |
+| **HIST-f** | Manual + regression per release | Suite green per R-YYYY | Each tranche |
 
-**Estimate:** HIST-a+b ≈ 1 sprint; full timeline ≈ 2 sprints with QA soak.
+**Estimate:** HIST-a+b ≈ **1 sprint** (R-1888 only). ME-2+ tied to **yearly release tranches**, not one Layer B sprint.
 
 ---
 
 ## 10. PO sign-off checklist
 
-- [ ] Confirm insurance first season (**ME-2 vs ME-4 vs ME-6**)
-- [ ] Confirm Lilleshall gate year (**1951 vs 1986**)
+- [x] **Do not build 1906 insurance in R-1888** — PO 2026-07-03
+- [x] **Yearly release naming** `Futtoboru {YYYY}` — see [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md)
+- [ ] Confirm **hard release ceiling** vs calendar unlock within one binary (PM recommends **hard ceiling**)
 - [ ] Confirm ME-1 rehab week deltas (0/1 vs CM93 1/2)
+- [ ] Confirm Lilleshall gate year for **R-1951** vs **R-1986** (when that release is scoped)
 - [ ] Confirm fatality / career-ending injury narrative (**out of scope** recommended)
 - [ ] Confirm 10-men-no-subs match rule deferred to match engine milestone
 
 ---
 
-## 11. Changelog
+## 11. Release slice vs full ledger (2026-07-03)
+
+| Document | Contains |
+|----------|----------|
+| [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) | **Full ledger** — all eras, all dates |
+| [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md) | **Naming + ship matrix** per R-YYYY |
+| This doc §9 | **Engine design** — what each release implements |
+| [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md) | **Active next steps** |
+
+**R-1888 injury scope:** ME-1 profile only. B5.2 CM93 code may remain for dev regression but **must not** appear in R-1888 player UI or economy.
+
+---
+
+## 12. Changelog
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | §2 release-year principle; §9 phased by R-YYYY; §11 ledger vs slice; PO 1906 defer |
 | 2026-06-25 | Initial design — dual-layer engine + era overlay |
 
 ---
 
-*Implement after PO signs §10. Until then, treat B5.2 as CM93 reference implementation, not 1888 historical simulation.*
+*Implement HIST-a+b for **R-1888** first. ME-2+ when PO schedules **R-1906** et al.*

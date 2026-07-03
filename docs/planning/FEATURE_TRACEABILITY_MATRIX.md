@@ -1,7 +1,7 @@
 # Feature Traceability Matrix (starter)
 
 **Document type:** Registry — links research → design → code → tests → manual  
-**Date:** 2026-06-25 (M-B5.3-HIST traceability)  
+**Date:** 2026-07-03 (R-YYYY release column)  
 **Status:** Layer B core rows complete  
 
 **How to use:** Manual § must point to `IMPLEMENTATION_*` not `DESIGN_*`.
@@ -20,8 +20,9 @@
 | **Code** | `InjuryGenerator.java`, `InjuryTreatmentService.java`, `PhysioService.java`, `InjuryEconomyRegistry.java`, `PlayerDetailScreenTable.java`, `ExpenseCalculator.java`, `MessageManager.createInjuryNewsMessage()` |
 | **Tests** | B5.1 suite + `InjuryEconomyB52Test` (8) · **131 tests green** |
 | **Manual §** | [06-squad-and-condition.md](../manual/06-squad-and-condition.md), [07-player-actions-insurance.md](../manual/07-player-actions-insurance.md) |
-| **Shipped depth** | Injuries **Core+** (~95% CM93) · Fitness **Partial+** (~70% CM93) · **1888 historical 0%** until M-B5.3-HIST |
-| **Next** | **M-B5.3-HIST** era gating · M-B5.3 fitness polish · in-match injury presentation · forced retirement (deferred) |
+| **Release** | **R-1888** (ME-1 injury target) · ME-2+ → **R-1906**+ |
+| **Shipped depth** | Injuries **Core+** CM93 engine · **R-1888 historical 0%** until M-B5.3-HIST ME-1 |
+| **Next** | **M-B5.3-HIST a+b (ME-1)** · M-B5.3 fitness polish · in-match injury · forced retirement (deferred) |
 
 ---
 
@@ -51,6 +52,7 @@
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | R-YYYY release column; R-1888 ME-1 scope |
 | 2026-06-25 | M-B5.3-HIST research/design linked; 1888 historical gap noted |
 | 2026-06-30 | Player condition row + template |
 | 2026-06-30 | B5.1 shipped; B3/B4 implementation docs linked |

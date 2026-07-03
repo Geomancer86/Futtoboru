@@ -28,6 +28,8 @@ This is **not** shipping 138 mod folders for 138 Football League seasons. It is:
 **Adding 10 years of forward play from 1888 costs zero extra content files.**  
 **Adding the ability to start in 1905 costs one new start-mod package** (not 17 incremental year mods).
 
+**Release tranches:** Product milestones use **`Futtoboru {YYYY}`** ([DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md)). **R-1888** = season 18 only + systems implemented for that year (e.g. injury **ME-1**). Research may document 1906 rules; **implementation waits for R-1906**.
+
 ---
 
 ## 3. What one start-season mod contains

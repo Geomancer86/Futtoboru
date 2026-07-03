@@ -1,9 +1,10 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-06-25 (M-B5.3-HIST research + design)
+**Last updated:** 2026-07-03 (yearly release scope R-YYYY)
 
 > **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **131 tests green** · benchmark [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md)  
-> **CM93 injury + fitness parity:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) — injury ~95%, fitness ~70% · **1888 historical gap §9**  
+> **Active release tranche:** **R-1888** — [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md) · PM [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md)  
+> **CM93 injury + fitness parity:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) — injury ~95%, fitness ~70% · **R-1888 = ME-1 skin only**  
 > **Historical injury eras:** [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) · [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md)  
 > **Release manual readiness:** [ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md](ANALYSIS_DOCUMENTATION_PIPELINE_READINESS_V1.md) · scaffold [../manual/README.md](../manual/README.md)  
 > **Feature traceability:** [FEATURE_TRACEABILITY_MATRIX.md](FEATURE_TRACEABILITY_MATRIX.md)
@@ -14,7 +15,9 @@
 
 | Document | Audience | Purpose |
 |----------|----------|---------|
-| [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — no release, Layer B now, CM+FM north star |
+| [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — no release, Layer B now, CM+FM north star, **R-YYYY naming** |
+| [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md) | **PO, PM, all** | **Release naming** `Futtoboru {YYYY}` · document-all / ship-by-year |
+| [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md) | **PO, PM, all leads** | **Active PM report** — R-1888 next steps, injury scope |
 | [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, PM** | Eagle view — horizons, traffic lights, Layer B focus |
 | [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) | **PM, QA, Tech** | Test matrix, soak protocol, backlog detail |
 | [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) | **PO, PM, all eng** | **Whole Layer B** — status, sprints, exit criteria |

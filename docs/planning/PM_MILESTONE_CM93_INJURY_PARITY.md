@@ -273,31 +273,33 @@ PO (or delegate) runs this **once** on a build where M-B5.2 scope is marked done
 
 ```
 RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md
+DESIGN_YEARLY_RELEASE_SCOPE.md
 RESEARCH_CM93_INJURY_SUBSYSTEM.md
     → PM_MILESTONE_CM93_INJURY_PARITY.md (this doc — PO decision)
+    → PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md
     → DESIGN_INJURY_HISTORICAL_ERA_GATING.md (M-B5.3-HIST proposed)
-    → DESIGN_PLAYER_CONDITION_B5_2_CM93_PARITY.md (engineering spec)
-    → IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md §10–§11
-    → docs/manual/06-squad-and-condition.md
-    → FEATURE_TRACEABILITY_MATRIX.md
 ```
 
 ---
 
-## 12. Follow-on — M-B5.3-HIST (1888 historical accuracy)
+## 12. Follow-on — M-B5.3-HIST (R-1888 ME-1 only)
 
-**M-B5.2 is complete for CM93 parity.** It is **not** complete for **1888-period injury simulation**.
+**M-B5.2 is complete for CM93 parity.** It is **not** complete for **R-1888 player-facing injury simulation**.
 
-| Claim | After M-B5.2 | After M-B5.3-HIST (proposed) |
-|-------|--------------|------------------------------|
-| CM93-style injury management | ✅ | ✅ (ME-6 calendar profile) |
-| Historically accurate 1888 injuries | ❌ | ✅ target |
+| Claim | After M-B5.2 | After M-B5.3-HIST **R-1888** | After **R-1906**+ |
+|-------|--------------|------------------------------|-------------------|
+| CM93-style injury management | ✅ dev reference | ❌ not marketed in R-1888 | ME-6 in R-1993 |
+| R-1888 Victorian injury care | ❌ | ✅ target (ME-1) | — |
+| 1906 insurance | ❌ | ❌ **by design** | ✅ ME-2 |
 
-**Research:** [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) — medical eras ME-0→ME-7  
+**Research:** [RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md](../research/RESEARCH_FOOTBALL_INJURY_MEDICAL_ERAS.md) — full ledger  
+**Release naming:** [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md)  
 **Design:** [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](DESIGN_INJURY_HISTORICAL_ERA_GATING.md)  
-**Audit:** [ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md](ANALYSIS_FITNESS_INJURY_CM93_PARITY_STATUS_V1.md) §9  
+**PM next steps:** [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md)
 
-**PO action:** Sign era boundary defaults (insurance from ME-2 vs ME-6; Lilleshall from 1951 vs 1986) before eng schedules HIST-a.
+**PO lock (2026-07-03):** Document 1906+ in research; **do not implement** until that **R-YYYY** release is in scope.
+
+**PO action:** Acknowledge **R-1888** ME-1 scope; schedule HIST-a+b (~1 sprint).
 
 ---
 
@@ -305,6 +307,7 @@ RESEARCH_CM93_INJURY_SUBSYSTEM.md
 
 | Date | Change |
 |------|--------|
+| 2026-07-03 | §12 R-1888 ME-1 scope; yearly release; defer 1906 to R-1906 |
 | 2026-06-25 | §12 M-B5.3-HIST follow-on; 1888 vs CM93 framing |
 | 2026-07-01 | Option B shipped — parity ~100% |
 | 2026-06-30 | Initial PO/PM milestone pack; clarifies B5.1 ≠ parity |
