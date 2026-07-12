@@ -1,0 +1,41 @@
+# Resolved blockers — archive for traceability
+# Active blockers: blockers.yaml
+
+release: R-1888
+updated: "2026-07-12"
+
+resolved:
+  - id: A-1
+    resolved: "2026-07-12"
+    title: Victorian injury UX (ME-1)
+    note: ReleaseScopeRegistry ME-1 ceiling; Trainer labels; CM93 menus hidden
+
+  - id: A-2
+    resolved: "2026-07-12"
+    title: ME-1 automated tests
+    note: MedicalEraRegistryTest, MedicalEraR1888GateTest, MedicalEraR1888CostTest
+
+  - id: A-3
+    resolved: "2026-07-12"
+    title: Continue double-click (C-1)
+    note: MainGameMenuTable touchDown-only + cooldown; ContinueDayAdvanceIT
+
+  - id: A-4
+    resolved: "2026-07-12"
+    title: Match history click (PL-5)
+    note: MatchHistoryScreenTable touchUp button check; MatchHistoryNavigationIT
+
+  - id: A-5
+    resolved: "2026-07-12"
+    title: Save/load UI (PL-7)
+    note: SaveLoadSystem paths + SaveGameDialog/LoadGameDialog rewrite; SaveLoadSystemPathsTest
+
+  - id: A-7
+    resolved: "2026-07-12"
+    title: Manual ch.6–7 R-1888 slice
+    note: Victorian Trainer ME-1; no insurance/Lilleshall in player manual
+
+  - id: A-8
+    resolved: "2026-07-12"
+    title: Production mod load happy-path
+    note: ProductionModLoadIT

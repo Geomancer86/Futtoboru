@@ -53,9 +53,8 @@ features:
 
   - id: injury_me1_r1888
     name: Victorian Trainer injury care
-    status: partial
+    status: shipped
     release_min: R-1888
-    blocker: A-1
     cm93_features: [F040, F143]
 
   - id: injury_insurance_ui

@@ -31,7 +31,36 @@ public class SaveLoadSystem {
     private static final String SAVEGAMES_FOLDER = "/savegames/";
     
     private static final String SAVE_EXTENSION = ".json";
-    
+
+    private static String saveGamesDirectoryPath() {
+        return System.getProperty(USER_HOME) + GAME_FOLDER + SAVEGAMES_FOLDER;
+    }
+
+    public static String normalizeSaveBasename(String filename) {
+        if (filename == null || filename.isBlank()) {
+            return "savegame";
+        }
+        String base = filename.trim();
+        if (base.endsWith(SAVE_EXTENSION)) {
+            base = base.substring(0, base.length() - SAVE_EXTENSION.length());
+        }
+        int slash = Math.max(base.lastIndexOf('/'), base.lastIndexOf('\\'));
+        if (slash >= 0 && slash < base.length() - 1) {
+            base = base.substring(slash + 1);
+        }
+        return base.isEmpty() ? "savegame" : base;
+    }
+
+    public static void ensureSaveGamesDirectory() {
+        if (Gdx.files == null) {
+            return;
+        }
+        FileHandle dir = Gdx.files.absolute(saveGamesDirectoryPath());
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+    }
+
     private static final boolean PRODUCTION_MODE_ENCRYPT = false;
 
     private static Json configuredJson() {
@@ -56,81 +85,55 @@ public class SaveLoadSystem {
     }
     
     public static void saveGame(SaveGame saveGame, String filename) {
-        
-        String userHomePath = System.getProperty(USER_HOME);
-        
-        System.out.println("Saving Game File on USER HOME PATH: " + userHomePath);
-        
+        ensureSaveGamesDirectory();
+        String baseName = normalizeSaveBasename(filename);
         Json json = configuredJson();
-
-        FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + SAVEGAMES_FOLDER + filename + SAVE_EXTENSION);
-        
-        // Encode only for Releases
+        FileHandle fileHandle = Gdx.files.absolute(saveGamesDirectoryPath() + baseName + SAVE_EXTENSION);
         if (PRODUCTION_MODE_ENCRYPT) {
-            
             fileHandle.writeString(Base64Coder.encodeString(json.prettyPrint(saveGame)), false);
         } else {
-            
-//            System.out.println(json.prettyPrint(saveGame));
-            
-            // Save as Plain Text JSON
             fileHandle.writeString(json.prettyPrint(saveGame), false);
         }
-        
-        System.out.println("GAME SAVED!");
     }
     
     /**
      * TODO: fix integer keys on hashmaps deserialized as strings
      */
     public static SaveGame loadGame(String saveGameName) {
-
+        ensureSaveGamesDirectory();
+        String baseName = normalizeSaveBasename(saveGameName);
         Json json = configuredJson();
-        
-        String userHomePath = System.getProperty(USER_HOME);
-        FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + SAVEGAMES_FOLDER + saveGameName);
-
-        SaveGame saveGame = null;
-        
-        // Encode only for Releases
-        if (PRODUCTION_MODE_ENCRYPT) {
-            
-            saveGame = json.fromJson(SaveGame.class, Base64Coder.decodeString(fileHandle.readString()));
-        } else {
-            
-            saveGame = json.fromJson(SaveGame.class, fileHandle.readString());
+        FileHandle fileHandle = Gdx.files.absolute(saveGamesDirectoryPath() + baseName + SAVE_EXTENSION);
+        if (!fileHandle.exists()) {
+            return null;
         }
-
-        return saveGame;
+        if (PRODUCTION_MODE_ENCRYPT) {
+            return json.fromJson(SaveGame.class, Base64Coder.decodeString(fileHandle.readString()));
+        }
+        return json.fromJson(SaveGame.class, fileHandle.readString());
     }
     
     /**
      * This will return a List of Saved Game Names, so the we can show on a list and the user can pick
      */
-    public static List<String> getSavedGames(){
-        
+    public static List<String> getSavedGames() {
+        ensureSaveGamesDirectory();
         List<String> savedGames = new ArrayList<>();
-        
-        String userHomePath = System.getProperty(USER_HOME);
-        
-        System.out.println("Listing Saved Games on USER HOME PATH: " + userHomePath);
-        
-        FileHandle dirHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + SAVEGAMES_FOLDER);
-
-        System.out.println("Found " + dirHandle.list().length + " Saved Games");
-        
-        for (FileHandle entry: dirHandle.list()) {
-            
-            // TODO: also validate if save game is right format
-            if (entry.toString().contains(SAVE_EXTENSION)) {
-                
-                System.out.println("Saved Game: " + entry.toString());
-                
-                // 
-                savedGames.add(entry.toString());
+        if (Gdx.files == null) {
+            return savedGames;
+        }
+        FileHandle dirHandle = Gdx.files.absolute(saveGamesDirectoryPath());
+        if (!dirHandle.exists()) {
+            return savedGames;
+        }
+        for (FileHandle entry : dirHandle.list()) {
+            if (entry.isDirectory()) {
+                continue;
+            }
+            if (SAVE_EXTENSION.equals("." + entry.extension())) {
+                savedGames.add(entry.nameWithoutExtension());
             }
         }
-        
         return savedGames;
     }
     

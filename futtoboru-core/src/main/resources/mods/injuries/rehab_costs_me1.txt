@@ -1,0 +1,4 @@
+# Victorian ME-1 rehab costs (shillings / pounds)
+# severity|cost
+MINOR|0.25
+MODERATE|0.75

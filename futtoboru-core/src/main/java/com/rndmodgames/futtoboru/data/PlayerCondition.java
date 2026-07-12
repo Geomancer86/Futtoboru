@@ -86,7 +86,7 @@ public class PlayerCondition implements Serializable {
         int weeks = estimateWeeksOut(asOf);
         int ability = physioAbilityAtInjury != null
                 ? physioAbilityAtInjury : com.rndmodgames.futtoboru.system.loaders.InjuryEconomyRegistry.DEFAULT_PHYSIO_ABILITY;
-        return com.rndmodgames.futtoboru.engine.simulation.PhysioService.formatEstimate(weeks, ability);
+        return com.rndmodgames.futtoboru.system.loaders.MedicalEraStrings.formatEstimate(weeks, ability, asOf);
     }
 
     public Integer getFitnessPct() {

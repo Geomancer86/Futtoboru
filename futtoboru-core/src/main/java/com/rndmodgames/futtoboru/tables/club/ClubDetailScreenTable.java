@@ -245,10 +245,13 @@ public class ClubDetailScreenTable extends VisTable {
             this.row();
         }
         
-        // Physio staff (B5.2 — not a selectable job position)
+        // Trainer / physio staff (B5.2 — not a selectable job position)
         this.addSeparator();
         this.row();
-        this.add(new VisLabel("Physio:")).left();
+        java.time.LocalDate careDate = currentGame != null && currentGame.getGameDate() != null
+                ? currentGame.getGameDate().toLocalDate() : java.time.LocalDate.of(1888, 9, 1);
+        String staffLabel = com.rndmodgames.futtoboru.system.loaders.MedicalEraStrings.staffRole(careDate) + ":";
+        this.add(new VisLabel(staffLabel)).left();
         com.rndmodgames.futtoboru.data.Profession physioProfession =
                 DatabaseLoader.getProfessionById(com.rndmodgames.futtoboru.system.loaders.InjuryEconomyRegistry.PHYSIO_PROFESSION_ID);
         if (clubStaffManager != null && physioProfession != null) {
@@ -256,7 +259,8 @@ public class ClubDetailScreenTable extends VisTable {
             int ability = com.rndmodgames.futtoboru.engine.simulation.PhysioService.resolvePhysioAbility(club, clubStaffManager);
             String physioLabel = physio != null
                     ? physio.getName() + " " + physio.getLastname()
-                    : "Club physio (default)";
+                    : "Club " + com.rndmodgames.futtoboru.system.loaders.MedicalEraStrings.staffRole(careDate).toLowerCase()
+                            + " (default)";
             this.add(new VisLabel(physioLabel + " — Ability: "
                     + com.rndmodgames.futtoboru.engine.simulation.PhysioService.abilityLabel(ability))).left().expandX();
         } else {

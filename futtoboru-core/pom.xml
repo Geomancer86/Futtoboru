@@ -71,7 +71,7 @@
                     <printSummary>true</printSummary>
                     <reportFormat>brief</reportFormat>
                     <useFile>false</useFile>
-                    <excludedGroups>soak,nightly</excludedGroups>
+                    <excludedGroups>soak,nightly,cm93</excludedGroups>
                     <systemPropertyVariables>
                         <futtoboru.test.logProfile>quiet</futtoboru.test.logProfile>
                     </systemPropertyVariables>
@@ -169,6 +169,34 @@
                             <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
                             <includes>
                                 <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>cm93</id>
+            <properties>
+                <jacoco.skip>true</jacoco.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration combine.self="override">
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                            <printSummary>true</printSummary>
+                            <reportFormat>brief</reportFormat>
+                            <useFile>false</useFile>
+                            <groups>cm93</groups>
+                            <systemPropertyVariables>
+                                <futtoboru.test.logProfile>quiet</futtoboru.test.logProfile>
+                            </systemPropertyVariables>
+                            <includes>
+                                <include>**/*Test.java</include>
+                                <include>**/*Tests.java</include>
                             </includes>
                         </configuration>
                     </plugin>

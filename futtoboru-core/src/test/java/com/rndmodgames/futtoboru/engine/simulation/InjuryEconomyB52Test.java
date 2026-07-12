@@ -8,7 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Random;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.rndmodgames.futtoboru.data.Club;
@@ -21,7 +23,9 @@ import com.rndmodgames.futtoboru.engine.finances.ExpenseCalculator;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.simulation.InjuryTreatmentService.TreatmentResult;
 import com.rndmodgames.futtoboru.harness.GameTestHarness;
+import com.rndmodgames.futtoboru.system.ReleaseScopeRegistry;
 
+@Tag("cm93")
 class InjuryEconomyB52Test {
 
     private GameTestHarness harness;
@@ -29,10 +33,17 @@ class InjuryEconomyB52Test {
 
     @BeforeEach
     void setUp() {
+        ReleaseScopeRegistry.setMaxImplementedMedicalEraForTests("ME-6");
         harness = new GameTestHarness();
         harness.newGameEmployedAtClub(GameTestHarness.PRESTON_NORTH_END_CLUB_ID, GameTestHarness.SEASON_1888_89_ID);
+        harness.setGameDate(java.time.LocalDateTime.of(1993, 8, 1, 12, 0));
         today = harness.game().getGameDate().toLocalDate();
         resetSquadForTests(harness.game().getClubById(GameTestHarness.PRESTON_NORTH_END_CLUB_ID));
+    }
+
+    @AfterEach
+    void tearDown() {
+        ReleaseScopeRegistry.resetForTests();
     }
 
     /** DatabaseLoader clubs are shared across harness runs — reset squad state each test. */

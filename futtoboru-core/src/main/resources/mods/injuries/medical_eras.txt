@@ -1,0 +1,4 @@
+# era_id|start_year|end_year|rehab_costs_file|strings_key|weeks_mult|rehab_minor_wk|rehab_mod_wk|insure|lilleshall|surgeon
+ME-1|1885|1905|rehab_costs_me1.txt|ME-1|1.20|0|1|false|false|false
+ME-2|1906|1914|rehab_costs.txt|ME-2|1.10|1|2|true|false|false
+ME-6|1993|1999|rehab_costs.txt|ME-6|1.00|1|2|true|true|true

@@ -1,57 +1,14 @@
-# Active blockers only — resolved items move to blockers-resolved.yaml or git history
+# Active blockers only — resolved items in blockers-resolved.yaml
 # PO plain language: docs/planning/PO_BRIEF.md § Blockers
 
 release: R-1888
 updated: "2026-07-12"
 
 blockers:
-  - id: A-1
-    priority: P0
-    title: Victorian injury UX (ME-1)
-    plain: Hide CM93 insurance/Lilleshall/surgeon; Trainer labels; shilling costs
-    owner: match_sim
-    release_gate: R-1888
-    cm93_features: [F040, F141, F143]
-    status: open
-
-  - id: A-2
-    priority: P0
-    title: ME-1 automated tests
-    owner: match_sim
-    status: open
-
-  - id: A-3
-    priority: P0
-    title: Continue double-click (C-1)
-    owner: platform
-    status: open
-
-  - id: A-4
-    priority: P1
-    title: Match history click (PL-5)
-    owner: platform
-    status: open
-
-  - id: A-5
-    priority: P1
-    title: Save/load UI (PL-7)
-    owner: platform
-    status: open
-
   - id: A-6
     priority: P1
     title: 60-season soak PM sign-off
+    plain: Automated soak must pass; PM signs off before human QA
     owner: qa
     status: open
-
-  - id: A-7
-    priority: P2
-    title: Manual ch.6–7 R-1888 slice
-    owner: manual
-    status: open
-
-  - id: A-8
-    priority: P2
-    title: Production mod load happy-path
-    owner: qa
-    status: open
+    note: Soak run in progress 2026-07-12; awaiting PM sign-off after green

@@ -161,6 +161,14 @@ public final class GameTestHarness {
         return copy;
     }
 
+    public void setGameDate(LocalDateTime date) {
+        game().setGameDate(date);
+    }
+
+    public LocalDateTime gameDate() {
+        return game().getGameDate();
+    }
+
     public int getNextGameAction() {
         return engine.getNextGameAction();
     }

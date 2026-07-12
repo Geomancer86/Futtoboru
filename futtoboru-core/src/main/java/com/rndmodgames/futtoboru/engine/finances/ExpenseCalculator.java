@@ -358,8 +358,11 @@ public class ExpenseCalculator {
         if (player == null || !InjuryGenerator.isPlayerInsured(player)) {
             return false;
         }
-        PlayerCondition condition = PlayerConditionService.conditionOf(player);
         java.time.LocalDate today = gameDate != null ? gameDate.toLocalDate() : java.time.LocalDate.now();
+        if (!com.rndmodgames.futtoboru.system.loaders.MedicalEraFeatureGate.canInsure(today)) {
+            return false;
+        }
+        PlayerCondition condition = PlayerConditionService.conditionOf(player);
         return condition.isInjured(today);
     }
 

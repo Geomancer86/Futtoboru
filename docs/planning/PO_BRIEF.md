@@ -13,8 +13,9 @@
 | | |
 |-|-|
 | 🟢 | Game loop works: league, cup, pick team, play matches, ratings, saves |
-| 🟢 | Automated tests: **131 + 5** green on every CI run |
-| 🟡 | **8 items** still to finish before human playtesters |
+| 🟢 | Automated tests: **135 + 5** green on every CI run |
+| 🟡 | **1 item** left before human playtesters (soak PM sign-off) |
+| 🟢 | Tier A engineering blockers **7/8 closed** — ME-1, C-1, PL-5, PL-7, manual, mod load |
 | 🔴 | Human QA not started — **correct**; we finish blockers first |
 | ⚪ | No public release — local dev only |
 
@@ -33,7 +34,7 @@ A **Victorian Football League manager** starting **1888–89**. You pick your te
 | # | Question | PM recommendation | Your call |
 |---|----------|-------------------|-----------|
 | 1 | Approve R-1888 scope as locked? (no transfers, no modern injury insurance in this release) | **Yes** | ☐ |
-| 2 | Human testers after the 8 blockers below? | **Yes** | ☐ |
+| 2 | Human testers after soak sign-off? | **Yes** | ☐ |
 | 3 | Next big tranche after 1888: **1892 expansion** (second division, reserves, basic transfers)? | **Yes** | ☐ |
 
 Reply in chat or initials here — PM updates the decision log. You do **not** need to open other files.
@@ -42,18 +43,13 @@ Reply in chat or initials here — PM updates the decision log. You do **not** n
 
 ## Blockers before human playtest (plain English)
 
-| # | What | Why it matters |
-|---|------|----------------|
-| 1 | **Victorian injury screens** — hide modern insurance / rehab menus; show Trainer + old-fashioned costs | 1888 authenticity |
-| 2 | **Tests for Victorian injury rules** | So we don't break it silently |
-| 3 | **Continue button** — fix double-click bug | Can't start a saved game reliably |
-| 4 | **Match history** — click to open past results | Basic navigation |
-| 5 | **Save/load UI** — clear save and load paths | Players lose progress |
-| 6 | **Long-run stability check** — 60-season automated run signed off | Crashes in year 40 |
-| 7 | **Player manual** — chapters 6–7 match what the game actually does | Testers know what to expect |
-| 8 | **Load production data** — verify real mod files load | Empty or broken squads |
+| # | What | Status |
+|---|------|--------|
+| 1 | **Long-run stability** — 60-season automated run + PM sign-off | 🟡 In progress |
 
-**Estimate:** ~2 weeks engineering, then invite testers.
+**Closed this sprint (2026-07-12):** Victorian injury screens (ME-1), injury tests, Continue button, match history click, save/load UI, player manual ch.6–7, production mod load check.
+
+**Estimate:** Soak green + your sign-off → invite testers.
 
 ---
 
@@ -89,6 +85,7 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 
 | Date | Change |
 |------|--------|
+| 2026-07-12 | ME-1 Victorian injury UX shipped; 7/8 Tier A blockers closed; 135+5 tests green |
 | 2026-07-12 | Linked full PM status report; status unchanged (8 blockers still open) |
 | 2026-07-12 | Note: automated E2E ≠ screen clicks — see ANALYSIS_AGENT_PLAYER_E2E_V1 (post-1888) |
 | 2026-07-03 | Created — single PO dashboard; replaces multi-doc PO reading |

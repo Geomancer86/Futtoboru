@@ -27,6 +27,8 @@ import com.rndmodgames.futtoboru.engine.simulation.InjuryTreatmentService;
 import com.rndmodgames.futtoboru.engine.simulation.InjuryTreatmentService.TreatmentResult;
 import com.rndmodgames.futtoboru.engine.simulation.PlayerConditionService;
 import com.rndmodgames.futtoboru.engine.simulation.PhysioService;
+import com.rndmodgames.futtoboru.system.loaders.MedicalEraFeatureGate;
+import com.rndmodgames.futtoboru.system.loaders.MedicalEraStrings;
 import com.rndmodgames.futtoboru.system.loaders.InjuryEconomyRegistry;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
@@ -391,11 +393,11 @@ public class PlayerDetailScreenTable extends VisTable {
 
     private void buildConditionSection() {
         VisTable conditionTable = new VisTable(true);
+        java.time.LocalDate asOf = futtoboru.getCurrentGame().getGameDate().toLocalDate();
         conditionTable.row();
-        conditionTable.add(new VisLabel("Condition & Treatment")).colspan(2).left().padBottom(5);
+        conditionTable.add(new VisLabel(MedicalEraStrings.conditionSectionTitle(asOf))).colspan(2).left().padBottom(5);
         conditionTable.row();
 
-        java.time.LocalDate asOf = futtoboru.getCurrentGame().getGameDate().toLocalDate();
         PlayerCondition condition = PlayerConditionService.conditionOf(currentPlayer);
         Club playerClub = resolvePlayerClub();
 
@@ -416,7 +418,7 @@ public class PlayerDetailScreenTable extends VisTable {
             conditionTable.row();
         }
 
-        if (InjuryGenerator.isPlayerInsured(currentPlayer)) {
+        if (InjuryGenerator.isPlayerInsured(currentPlayer) && MedicalEraFeatureGate.canInsure(asOf)) {
             conditionTable.add(new VisLabel("Insurance:")).left().width(150);
             String premium = currentPlayer.getInjuryInsuranceWeekly() != null
                     ? "£" + currentPlayer.getInjuryInsuranceWeekly().setScale(2, java.math.RoundingMode.HALF_UP) + "/week"
@@ -443,41 +445,43 @@ public class PlayerDetailScreenTable extends VisTable {
             InjurySeverity severity = condition.getInjurySeverityEnum();
             if (severity == InjurySeverity.MINOR || severity == InjurySeverity.MODERATE) {
                 buttons.row();
-                buttons.add(actionButton("Rehabilitate", () -> {
+                buttons.add(actionButton(MedicalEraStrings.actionRehabilitate(asOf), () -> {
                     TreatmentResult result = InjuryTreatmentService.rehabilitate(club, currentPlayer, asOf);
-                    showTreatmentResult(result, "Treatment arranged.");
+                    showTreatmentResult(result, "Treatment arranged.", asOf);
                 }));
             }
-            if (severity == InjurySeverity.SERIOUS && condition.getLilleshallEndDate() == null) {
+            if (MedicalEraFeatureGate.canLilleshall(asOf)
+                    && severity == InjurySeverity.SERIOUS && condition.getLilleshallEndDate() == null) {
                 buttons.row();
                 buttons.add(actionButton("Send to Lilleshall", () -> {
                     TreatmentResult result = InjuryTreatmentService.sendToLilleshall(club, currentPlayer, asOf);
-                    showTreatmentResult(result, "Sent to Lilleshall National Rehabilitation Centre.");
+                    showTreatmentResult(result, "Sent to Lilleshall National Rehabilitation Centre.", asOf);
                 }));
             }
-            if (severity == InjurySeverity.SERIOUS && !Boolean.TRUE.equals(condition.getSurgeonAbroadUsed())) {
+            if (MedicalEraFeatureGate.canSurgeonAbroad(asOf)
+                    && severity == InjurySeverity.SERIOUS && !Boolean.TRUE.equals(condition.getSurgeonAbroadUsed())) {
                 java.math.BigDecimal balance = club.getClubBalance() != null ? club.getClubBalance() : java.math.BigDecimal.ZERO;
                 if (balance.compareTo(InjuryEconomyRegistry.getSurgeonMinBalance()) >= 0) {
                     buttons.row();
                     buttons.add(actionButton("Surgeon abroad", () -> {
                         TreatmentResult result = InjuryTreatmentService.surgeonAbroad(
                                 club, currentPlayer, asOf, new java.util.Random());
-                        showTreatmentResult(result, "Specialist surgeon arranged abroad.");
+                        showTreatmentResult(result, "Specialist surgeon arranged abroad.", asOf);
                     }));
                 }
             }
-        } else {
+        } else if (MedicalEraFeatureGate.canInsure(asOf)) {
             if (!InjuryGenerator.isPlayerInsured(currentPlayer)) {
                 buttons.row();
                 buttons.add(actionButton("Insure player", () -> {
                     TreatmentResult result = InjuryTreatmentService.insure(club, currentPlayer, asOf);
-                    showTreatmentResult(result, "Injury insurance policy started.");
+                    showTreatmentResult(result, "Injury insurance policy started.", asOf);
                 }));
             } else {
                 buttons.row();
                 buttons.add(actionButton("Cancel insurance", () -> {
                     TreatmentResult result = InjuryTreatmentService.uninsure(currentPlayer);
-                    showTreatmentResult(result, "Insurance policy cancelled.");
+                    showTreatmentResult(result, "Insurance policy cancelled.", asOf);
                 }));
             }
         }
@@ -502,7 +506,7 @@ public class PlayerDetailScreenTable extends VisTable {
         return button;
     }
 
-    private void showTreatmentResult(TreatmentResult result, String successMessage) {
+    private void showTreatmentResult(TreatmentResult result, String successMessage, java.time.LocalDate asOf) {
         String message = switch (result) {
             case SUCCESS -> successMessage;
             case NOT_INJURED -> "Player is not injured.";
@@ -512,6 +516,8 @@ public class PlayerDetailScreenTable extends VisTable {
             case ALREADY_INSURED -> "Player is already insured.";
             case NOT_INSURED -> "Player has no active insurance.";
             case NOT_FIT_FOR_INSURANCE -> "Cannot insure while injured or without a wage.";
+            case NOT_AVAILABLE_IN_ERA -> "Not available in " + MedicalEraStrings.staffRole(asOf).toLowerCase()
+                    + " era care (later release).";
         };
         VisDialog dialog = new VisDialog("Treatment");
         dialog.text(message);

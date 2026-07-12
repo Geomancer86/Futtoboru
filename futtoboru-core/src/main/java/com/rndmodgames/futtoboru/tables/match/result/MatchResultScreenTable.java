@@ -239,13 +239,13 @@ public class MatchResultScreenTable extends VisTable {
             String label = condition.getInjuryDisplayName() != null
                     ? condition.getInjuryDisplayName() : "Injury";
             int weeks = condition.estimateWeeksOut(asOf);
-            String physioSuffix = condition.getPhysioAbilityAtInjury() != null
-                    ? ", " + com.rndmodgames.futtoboru.engine.simulation.PhysioService
-                            .abilityLabel(condition.getPhysioAbilityAtInjury()) + " physio"
+            String staffSuffix = condition.getPhysioAbilityAtInjury() != null
+                    ? com.rndmodgames.futtoboru.system.loaders.MedicalEraStrings.abilitySuffix(
+                            condition.getPhysioAbilityAtInjury(), asOf)
                     : "";
             this.row().padTop(2);
             this.add(playerName(currentClub, playerId)).padRight(10);
-            this.add(label + " (~" + weeks + " wk" + physioSuffix + ")").colspan(2).left();
+            this.add(label + " (~" + weeks + " wk" + staffSuffix + ")").colspan(2).left();
         }
     }
 

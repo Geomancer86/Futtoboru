@@ -8,6 +8,9 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.InjurySeverity;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerCondition;
+import com.rndmodgames.futtoboru.system.loaders.MedicalEraFeatureGate;
+import com.rndmodgames.futtoboru.system.loaders.MedicalEraRegistry;
+import com.rndmodgames.futtoboru.data.MedicalEra;
 import com.rndmodgames.futtoboru.system.loaders.InjuryEconomyRegistry;
 
 /**
@@ -23,7 +26,8 @@ public final class InjuryTreatmentService {
         INSUFFICIENT_FUNDS,
         ALREADY_INSURED,
         NOT_INSURED,
-        NOT_FIT_FOR_INSURANCE
+        NOT_FIT_FOR_INSURANCE,
+        NOT_AVAILABLE_IN_ERA
     }
 
     private InjuryTreatmentService() {
@@ -34,21 +38,32 @@ public final class InjuryTreatmentService {
         if (!condition.isInjured(today)) {
             return TreatmentResult.NOT_INJURED;
         }
+        if (!MedicalEraFeatureGate.canRehabilitate(today)) {
+            return TreatmentResult.NOT_AVAILABLE_IN_ERA;
+        }
         InjurySeverity severity = condition.getInjurySeverityEnum();
         if (severity != InjurySeverity.MINOR && severity != InjurySeverity.MODERATE) {
             return TreatmentResult.WRONG_SEVERITY;
         }
-        BigDecimal cost = InjuryEconomyRegistry.getRehabCost(severity);
+        MedicalEra era = MedicalEraRegistry.resolve(today);
+        BigDecimal cost = era.getRehabCost(severity);
         if (!InjuryGenerator.isPlayerInsured(player) && !deductCost(club, cost)) {
             return TreatmentResult.INSUFFICIENT_FUNDS;
         }
-        int weeksOff = severity == InjurySeverity.MINOR ? 1 : 2;
-        InjuryGenerator.shortenInjuryByWeeks(condition, today, weeksOff);
+        int weeksOff = severity == InjurySeverity.MINOR
+                ? era.getRehabMinorWeeksReduction()
+                : era.getRehabModerWeeksReduction();
+        if (weeksOff > 0) {
+            InjuryGenerator.shortenInjuryByWeeks(condition, today, weeksOff);
+        }
         condition.setRehabTreatmentActive(true);
         return TreatmentResult.SUCCESS;
     }
 
     public static TreatmentResult insure(Club club, Player player, LocalDate today) {
+        if (!MedicalEraFeatureGate.canInsure(today)) {
+            return TreatmentResult.NOT_AVAILABLE_IN_ERA;
+        }
         PlayerCondition condition = PlayerConditionService.conditionOf(player);
         if (condition.isInjured(today)) {
             return TreatmentResult.NOT_FIT_FOR_INSURANCE;
@@ -75,6 +90,9 @@ public final class InjuryTreatmentService {
     }
 
     public static TreatmentResult sendToLilleshall(Club club, Player player, LocalDate today) {
+        if (!MedicalEraFeatureGate.canLilleshall(today)) {
+            return TreatmentResult.NOT_AVAILABLE_IN_ERA;
+        }
         PlayerCondition condition = PlayerConditionService.conditionOf(player);
         if (!condition.isInjured(today)) {
             return TreatmentResult.NOT_INJURED;
@@ -96,6 +114,9 @@ public final class InjuryTreatmentService {
     }
 
     public static TreatmentResult surgeonAbroad(Club club, Player player, LocalDate today, Random random) {
+        if (!MedicalEraFeatureGate.canSurgeonAbroad(today)) {
+            return TreatmentResult.NOT_AVAILABLE_IN_ERA;
+        }
         PlayerCondition condition = PlayerConditionService.conditionOf(player);
         if (!condition.isInjured(today)) {
             return TreatmentResult.NOT_INJURED;

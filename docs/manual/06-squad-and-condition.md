@@ -1,10 +1,10 @@
 # Squad, Fitness & Injuries
 
-**Futtoboru player guide — draft**  
-**Status:** Draft (synced with B5.2 Complete)  
-**Build:** `analyze-ai-branch` · 2026-07-01  
+**Futtoboru player guide — R-1888 slice**  
+**Status:** Draft (Victorian ME-1)  
+**Build:** `analyze-ai-branch` · 2026-07-12  
 
-**Authoritative behaviour:** [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9–§10
+**Authoritative behaviour:** [DESIGN_INJURY_HISTORICAL_ERA_GATING.md](../planning/DESIGN_INJURY_HISTORICAL_ERA_GATING.md) · [IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md](../planning/IMPLEMENTATION_PLAYER_CONDITION_B5_V1.md) §9–§10
 
 ---
 
@@ -12,9 +12,9 @@
 
 Your squad screen tracks how ready each player is to play. **Fitness**, **sharpness**, and **morale** change after matches and rest days. **Injuries** can occur after a match and keep a player out until the return date shown.
 
-This is a **text injury system** (like Championship Manager 93) — not a modern body-part medical simulation.
+In **Futtoboru 1888**, injury care is **Victorian-era only**: your club **Trainer** gives estimates and you can pay small shilling amounts for basic rehabilitation. Modern insurance and specialist hospitals are **not** available in this release.
 
-For **treatment and insurance** actions, see [07-player-actions-insurance.md](07-player-actions-insurance.md).
+For **Trainer treatment** actions, see [07-player-actions-insurance.md](07-player-actions-insurance.md).
 
 ---
 
@@ -27,7 +27,7 @@ For **treatment and insurance** actions, see [07-player-actions-insurance.md](07
 | **Sharp** | Match sharpness 0–100. Rises when you play; falls when idle |
 | **Mor** | Morale 0–100. Affected by results, goals, and ratings |
 | **Injury** | Injury name, or **Fit** if available |
-| **Return** | Physio estimate, e.g. `~3 wk (OK physio)`, or **—** |
+| **Return** | Trainer estimate, e.g. `~3 wk`, or **—** |
 
 Sort any column by clicking its header.
 
@@ -64,22 +64,22 @@ Morale is shown on the squad screen; it does not yet change transfer or board be
 
 ### When they happen
 
-Injuries are rolled **after a match** for players who were in your starting eleven. Risk increases if fitness is low, fatigue is high, or the player is **injury prone** (hidden attribute — you will not see it on the squad screen, as in CM93).
+Injuries are rolled **after a match** for players who were in your starting eleven. Risk increases if fitness is low, fatigue is high, or the player is **injury prone** (hidden attribute — you will not see it on the squad screen).
 
-### Types and physio estimate
+### Types and Trainer estimate
 
-Injuries include knocks such as **Strain**, **Bruise**, **Twisted ankle**, **Knee injury**, and **Serious injury**. Your club **physio’s ability** affects how many weeks out the physio estimates.
+Injuries include knocks such as **Strain**, **Bruise**, **Twisted ankle**, **Knee injury**, and **Serious injury**. Your club **Trainer** affects how many weeks out the estimate shows.
 
 ### What you must do
 
 - **Injured players cannot be picked** on the Tactics screen (they do not appear in the player list).  
 - If a player was already assigned before getting injured, the slot shows **Injured until** with a date.  
-- The **match result** screen lists anyone injured in that game with an approximate week count and physio quality.  
+- The **match result** screen lists anyone injured in that game with an approximate week count.  
 - **Moderate or serious** injuries on your squad trigger an **inbox** message after the match.
 
-### Treatment and insurance
+### Treatment (1888)
 
-Open a player from the squad to **Rehabilitate**, **Insure**, send to **Lilleshall**, or arrange a **surgeon abroad** — see [07-player-actions-insurance.md](07-player-actions-insurance.md).
+Open a player from the squad to **Rehabilitate** minor or moderate injuries — see [07-player-actions-insurance.md](07-player-actions-insurance.md). Serious injuries must run their course; there is no Lilleshall or surgeon abroad in this release.
 
 ---
 
@@ -96,7 +96,7 @@ Open a player from the squad to **Rehabilitate**, **Insure**, send to **Lillesha
 
 1. Rotate the squad if fitness drops below 60% before a big match.  
 2. Check **Return** estimates when planning your next fixture.  
-3. Insure key earners before a congested run of fixtures.  
+3. Keep a small reserve in club balance for Trainer rehabilitation fees.  
 4. After a heavy defeat, watch morale — it recovers with better results.
 
 ---

@@ -140,7 +140,9 @@ public class MatchHistoryScreenTable extends VisTable {
                 
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    viewMatchDetails(match);
+                    if (event.getButton() == 0) {
+                        viewMatchDetails(match);
+                    }
                 }
             });
             this.add(homeTeamLink).expandX().left();
@@ -158,7 +160,9 @@ public class MatchHistoryScreenTable extends VisTable {
                 
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    viewMatchDetails(match);
+                    if (event.getButton() == 0) {
+                        viewMatchDetails(match);
+                    }
                 }
             });
             this.add(scoreLink).width(80);
@@ -174,7 +178,9 @@ public class MatchHistoryScreenTable extends VisTable {
                 
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    viewMatchDetails(match);
+                    if (event.getButton() == 0) {
+                        viewMatchDetails(match);
+                    }
                 }
             });
             this.add(awayTeamLink).expandX().left();

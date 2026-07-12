@@ -12,7 +12,7 @@ Machine-readable project context for AI coding agents. Humans: start at [docs/pl
 ## Build & test
 
 ```powershell
-# L1+L2 — run before every commit (131 tests)
+# L1+L2 — run before every commit (135 tests)
 mvn test -pl futtoboru-core
 
 # L3 nightly (+5)
