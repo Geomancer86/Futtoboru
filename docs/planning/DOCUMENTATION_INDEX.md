@@ -1,9 +1,10 @@
 # Futtoboru — Documentation Index
 
-**Last updated:** 2026-07-03 (progressive governance — PO_BRIEF)
+**Last updated:** 2026-07-12 (full project PM status)
 
 > **PO reads one file:** [PO_BRIEF.md](PO_BRIEF.md)  
-> **Agents read:** [AGENTS.md](../AGENTS.md) · **Registries:** [docs/registries/](../registries/)  
+> **Full PM status (all stakeholders):** [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md)  
+> **Agents read:** [AGENTS.md](../AGENTS.md) · **Registries:** [../registries/](../registries/)  
 > **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **131 + 5 nightly tests green**  
 > **R-1888 first release:** [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) · [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) · [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md)  
 > **R-1888 gap + roadmap:** [ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md](ANALYSIS_R1888_RELEASE_GAP_AND_ROADMAP_V1.md) · [PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md](PM_REPORT_R1888_GAP_AND_RELEASE_ROADMAP.md) · [PO_DECISION_R1888_RELEASE_ROADMAP.md](PO_DECISION_R1888_RELEASE_ROADMAP.md)  
@@ -19,6 +20,8 @@
 | Document | Audience | Purpose |
 |----------|----------|---------|
 | [PO_BRIEF.md](PO_BRIEF.md) | **PO** | **Single-page dashboard** — status, blockers, decisions (plain English) |
+| [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md) | **PO, Sponsor, PM, all leads** | **Full project status** — where we are, critical path, four phases |
+| [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, Sponsor** | Eagle view — one-page status + critical path |
 | [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — north star, principles, R-YYYY naming |
 | [GOVERNANCE_MODEL_V1.md](GOVERNANCE_MODEL_V1.md) | **PO, PM, agents** | **Progressive disclosure** — doc layers, spec workflow, stop essay sprawl |
 | [ANALYSIS_AI_DEV_GOVERNANCE_V1.md](ANALYSIS_AI_DEV_GOVERNANCE_V1.md) | **PO, PM, Sponsor** | **AI dev strategy** — research synthesis, five courses of action |
@@ -34,7 +37,6 @@
 | [RELEASE_R1888_DEFINITION.md](RELEASE_R1888_DEFINITION.md) | **PO, QA** | **Acceptance criteria** — tag `1888.0.0` |
 | [DESIGN_YEARLY_RELEASE_SCOPE.md](DESIGN_YEARLY_RELEASE_SCOPE.md) | **PO, PM, all** | **Release naming** `Futtoboru {YYYY}` · document-all / ship-by-year |
 | [PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md](PM_REPORT_YEARLY_RELEASE_AND_INJURY_SCOPE.md) | **PO, PM** | Injury + yearly scope (2026-07-03) |
-| [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, PM** | Eagle view — R-1888 gap tiers, roadmap horizons, traffic lights |
 | [PM_V1_STATUS_AND_NEXT_STEPS.md](PM_V1_STATUS_AND_NEXT_STEPS.md) | **PM, QA, Tech** | Test matrix, soak protocol, backlog detail |
 | [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) | **PO, PM, all eng** | **Whole Layer B** — status, sprints, exit criteria |
 | [ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md](ANALYSIS_LAYER_B_EARLY_CM_FM_BENCHMARK.md) | **PO, PM, QA** | CM1/FM feature matrix — done vs missing per tier |

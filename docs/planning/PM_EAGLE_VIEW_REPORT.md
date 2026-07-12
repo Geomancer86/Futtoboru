@@ -1,62 +1,77 @@
-# Eagle View — PO Brief (Governance Iteration)
+# Eagle View — Project Status (All Stakeholders)
 
-**Date:** 2026-07-03 · **Audience:** PO (primary)
+**Date:** 2026-07-12 · **Audience:** PO (primary) · Sponsor · PM  
 
----
-
-## Read this instead of other docs
-
-**[PO_BRIEF.md](PO_BRIEF.md)** — one page, plain English, decisions + blockers.
-
-This eagle view is **optional** PM colour. You do not need CM93-F IDs, registry paths, or gap tiers unless you want depth.
+**PO reads:** [PO_BRIEF.md](PO_BRIEF.md)  
+**Full PM report:** [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md)
 
 ---
 
-## What changed (2026-07-03)
+## One sentence
 
-| Before | After |
-|--------|-------|
-| PO hunts 175+ markdown files | PO reads **PO_BRIEF** only |
-| `F144–F147 R-1906 ME-2` in your face | “Injury insurance — 1906 release” |
-| Every question → new ANALYSIS/PM doc | Feature **spec folder** while building; YAML registry when shipped |
-| AI loads random planning essays | **AGENTS.md** + registries on demand |
-
-Full strategy: [ANALYSIS_AI_DEV_GOVERNANCE_V1.md](ANALYSIS_AI_DEV_GOVERNANCE_V1.md)
+**Futtoboru 1888 is ~92% ready for human playtesters** — the game loop works and automated tests are green; **eight blockers** (Victorian injury screens + UI + soak + manual) stand between us and inviting people to play.
 
 ---
 
-## Status (unchanged substance)
+## Where we are
 
-| | |
-|-|-|
-| 🟢 | CM1 loop + 131+5 tests |
-| 🟡 | 8 blockers before human playtest |
-| 🔴 | ME-1 Victorian injury UX not shipped |
-| ⚪ | No public release |
+```
+████████████████████████████░░░░  ~92% pre-human QA
+│ analysis ✓ │ design ✓ │ code ⚠ │ tests ⚠ │ humans ⏸
+```
 
-Blockers in plain English: **PO_BRIEF § Blockers**.
-
----
-
-## Your decisions
-
-1. **Governance:** PO_BRIEF + registries — yes/no? (PM: **yes**)  
-2. **R-1888 scope lock** — no transfers, no modern insurance — yes/no? (PM: **yes**)  
-3. **Human testers after 8 blockers** — yes/no? (PM: **yes**)  
-
-Answer in chat or initials on PO_BRIEF.
+| Done | Not done yet |
+|------|----------------|
+| League, cup, seasons forever | Victorian injury screens (hide modern insurance) |
+| Pick team, tactics, match, ratings | Continue / history / save UI fixes |
+| 131 + 5 automated tests green | 60-season soak signed by PM |
+| Roadmap & governance for PO | Human playtest (B-9) |
+| CM93 injury **engine** (hidden for 1888) | Player manual chapters for 1888 |
 
 ---
 
-## Horizons (plain)
+## Critical path (next ~2 weeks)
+
+1. **Sprint A** — Victorian injuries + Continue fix + tests  
+2. **Sprint B** — History / save UI + soak + manual + load check  
+3. **Invite human testers**  
+4. Polish → then **1892** (second division, reserves, transfers)
+
+---
+
+## Decisions needed (PO)
+
+| # | Question | Rec |
+|---|----------|-----|
+| 1 | Lock 1888 scope (no transfers, no modern insurance)? | Yes |
+| 2 | Testers only after the 8 blockers? | Yes |
+| 3 | Next big release = **1892**? | Yes |
+
+→ Answer on [PO_BRIEF.md](PO_BRIEF.md) or in chat.
+
+---
+
+## Horizons
 
 | When | What |
 |------|------|
-| **Now** | Futtoboru 1888 — Victorian manager |
-| **Next** | 1892 — second division, reserves, transfers |
-| **Later** | 1906 insurance, 1993 CM93 menus |
-| **Far** | Full CM + FM depth |
+| **Now** | Finish R-1888 blockers → human QA |
+| **Next** | R-1888.1 polish |
+| **Mid** | R-1892 expansion + transfers |
+| **Later** | 1906 insurance → 1993 CM93 menus |
+| **Far** | Full CM + FM history |
 
 ---
 
-*PM report: [PM_REPORT_AI_GOVERNANCE_ITERATION.md](PM_REPORT_AI_GOVERNANCE_ITERATION.md)*
+## Traffic lights
+
+| | |
+|-|-|
+| 🟢 | Loop, league/cup, automated tests, governance |
+| 🟡 | Soak unsigned · PO decisions unsigned · branch not on `main` |
+| 🔴 | ME-1 injury UX · Continue / history / save UI |
+| ⚪ | Human QA · public release |
+
+---
+
+*Detail for PM/Sponsor: [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md)*

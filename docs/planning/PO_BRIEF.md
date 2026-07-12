@@ -2,7 +2,7 @@
 
 **One page. Read this.** Everything else is detail for PM, dev, or AI.
 
-**Updated:** 2026-07-03 · **Release:** Futtoboru 1888 · **Branch:** `analyze-ai-branch`
+**Updated:** 2026-07-12 · **Release:** Futtoboru 1888 · **Branch:** `analyze-ai-branch`
 
 ---
 
@@ -87,8 +87,9 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 
 | Date | Change |
 |------|--------|
+| 2026-07-12 | Linked full PM status report; status unchanged (8 blockers still open) |
 | 2026-07-03 | Created — single PO dashboard; replaces multi-doc PO reading |
 
 ---
 
-*PM detail: [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) · Strategy: [ANALYSIS_AI_DEV_GOVERNANCE_V1.md](ANALYSIS_AI_DEV_GOVERNANCE_V1.md)*
+*PM full status: [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md) · Eagle: [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)*
