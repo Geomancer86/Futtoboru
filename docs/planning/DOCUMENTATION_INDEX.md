@@ -3,6 +3,7 @@
 **Last updated:** 2026-07-12 (full project PM status)
 
 > **PO reads one file:** [PO_BRIEF.md](PO_BRIEF.md)  
+> **PO 3-point report (redirect effort):** [PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md](PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md)  
 > **Full PM status (all stakeholders):** [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md)  
 > **Agents read:** [AGENTS.md](../AGENTS.md) · **Registries:** [../registries/](../registries/)  
 > **Layer B complete plan:** [PM_LAYER_B_WRAP_UP_PLAN.md](PM_LAYER_B_WRAP_UP_PLAN.md) · **131 + 5 nightly tests green**  
@@ -20,6 +21,7 @@
 | Document | Audience | Purpose |
 |----------|----------|---------|
 | [PO_BRIEF.md](PO_BRIEF.md) | **PO** | **Single-page dashboard** — status, blockers, decisions (plain English) |
+| [PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md](PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md) | **PO** | **3-point redirect** — done / missing / next for first-release testing |
 | [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md) | **PO, Sponsor, PM, all leads** | **Full project status** — where we are, critical path, four phases |
 | [ANALYSIS_AGENT_PLAYER_E2E_V1.md](ANALYSIS_AGENT_PLAYER_E2E_V1.md) | **PO, PM, QA, Platform** | **Agent-as-player E2E** — harness ≠ GUI; L2.5/L5 design options |
 | [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, Sponsor** | Eagle view — one-page status + critical path |

@@ -4,6 +4,8 @@
 
 **Updated:** 2026-07-12 · **Release:** Futtoboru 1888 · **Branch:** `analyze-ai-branch`
 
+> **PO redirect report (3 points):** [PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md](PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md) — done / missing / next for first release.
+
 ---
 
 ## Status
