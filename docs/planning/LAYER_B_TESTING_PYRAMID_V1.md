@@ -24,8 +24,18 @@ L4 Human QA      → ONLY after L1–L3 green + ME-1 injury + UI blockers (R-188
 
 ```
                     ┌─────────────────────┐
+                    │  L5 Agent vision    │  PROPOSED — optional exploratory
+                    │  (screenshot CU)    │  NEVER merge gate
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────┐
                     │  L4 Human (B-9)     │  CM1 walkthrough checklist
                     │  after L1–L3 green  │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │  L2.5 Scene2D UI    │  PROPOSED post–R-1888
+                    │  player (clicks)    │  see ANALYSIS_AGENT_PLAYER_E2E_V1
                     └──────────┬──────────┘
                                │
                     ┌──────────▼──────────┐
@@ -33,13 +43,15 @@ L4 Human QA      → ONLY after L1–L3 green + ME-1 injury + UI blockers (R-188
                     └──────────┬──────────┘
                                │
                     ┌──────────▼──────────┐
-                    │  L2 E2E / IT        │  Loop, preview, condition
+                    │  L2 E2E / IT        │  Engine harness — NOT real UI clicks
                     └──────────┬──────────┘
                                │
                     ┌──────────▼──────────┐
                     │  L1 Unit            │  Calculators, selectors, registry
                     └─────────────────────┘
 ```
+
+**Important:** L2 “E2E” = career/engine loop via `GameTestHarness`. It does **not** open VisUI or click buttons. GUI click automation is **L2.5 (proposed)** or **L4 human**. Full analysis: [ANALYSIS_AGENT_PLAYER_E2E_V1.md](ANALYSIS_AGENT_PLAYER_E2E_V1.md).
 
 ---
 
@@ -183,6 +195,7 @@ Run `LayerBMultiSeasonSoakIT` in **`-Pnightly`** until stable; optional **`-Psoa
 
 | Date | Change |
 |------|--------|
+| 2026-07-12 | Clarified L2 ≠ GUI; proposed L2.5 Scene2D + L5 vision — [ANALYSIS_AGENT_PLAYER_E2E_V1.md](ANALYSIS_AGENT_PLAYER_E2E_V1.md) |
 | 2026-07-03 | R-1888 counts 131+5; ME-1 pending tests; gate §5 |
 | 2026-06-30 | Four-tier pyramid; human QA last; new long/E2E specs |
 

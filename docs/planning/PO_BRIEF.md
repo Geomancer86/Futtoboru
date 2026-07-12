@@ -88,8 +88,9 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 | Date | Change |
 |------|--------|
 | 2026-07-12 | Linked full PM status report; status unchanged (8 blockers still open) |
+| 2026-07-12 | Note: automated E2E ≠ screen clicks — see ANALYSIS_AGENT_PLAYER_E2E_V1 (post-1888) |
 | 2026-07-03 | Created — single PO dashboard; replaces multi-doc PO reading |
 
 ---
 
-*PM full status: [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md) · Eagle: [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md)*
+*PM full status: [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md) · Eagle: [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) · Agent E2E analysis: [ANALYSIS_AGENT_PLAYER_E2E_V1.md](ANALYSIS_AGENT_PLAYER_E2E_V1.md)*

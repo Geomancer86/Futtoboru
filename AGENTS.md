@@ -28,6 +28,8 @@ mvn clean install -pl futtoboru-core,futtoboru-desktop -am
 
 Default `build.bat` skips tests — **always run Maven tests separately** before committing.
 
+**E2E note:** `GameTestHarness` is **engine** E2E (no VisUI clicks). Opening the real window and clicking is **human L4** today; proposed L2.5 Scene2D player + optional L5 vision agents are documented in `docs/planning/ANALYSIS_AGENT_PLAYER_E2E_V1.md` — do not implement for R-1888 unless PO schedules it.
+
 ## Code conventions
 
 - **Money:** `BigDecimal` only — never `double` for finances.

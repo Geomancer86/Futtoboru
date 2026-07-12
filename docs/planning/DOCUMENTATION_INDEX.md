@@ -21,6 +21,7 @@
 |----------|----------|---------|
 | [PO_BRIEF.md](PO_BRIEF.md) | **PO** | **Single-page dashboard** — status, blockers, decisions (plain English) |
 | [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md) | **PO, Sponsor, PM, all leads** | **Full project status** — where we are, critical path, four phases |
+| [ANALYSIS_AGENT_PLAYER_E2E_V1.md](ANALYSIS_AGENT_PLAYER_E2E_V1.md) | **PO, PM, QA, Platform** | **Agent-as-player E2E** — harness ≠ GUI; L2.5/L5 design options |
 | [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) | **PO, Sponsor** | Eagle view — one-page status + critical path |
 | [PO_PRODUCT_DIRECTION.md](PO_PRODUCT_DIRECTION.md) | **PO, all** | **Direction lock** — north star, principles, R-YYYY naming |
 | [GOVERNANCE_MODEL_V1.md](GOVERNANCE_MODEL_V1.md) | **PO, PM, agents** | **Progressive disclosure** — doc layers, spec workflow, stop essay sprawl |
