@@ -84,9 +84,10 @@ mvn test -pl futtoboru-core -Psoak -Dtest=LongRunSoakIT -Dfuttoboru.test.logProf
 mvn test -pl futtoboru-core -Psoak -Dtest=LongRunSoakIT -Dfuttoboru.test.logProfile=verbose
 ```
 
-**Do not** filter stdout. Watch for:
+**Do not** filter stdout/stderr. Watch for:
 
 ```
+PROGRESS|soak-league|done=12/60|pct=20.0|elapsed=17m|eta=1h8m|last=87.2s|...
 LongRunSoakIT timing: ... ms, ... s/season
 ```
 

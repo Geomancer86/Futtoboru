@@ -1,10 +1,10 @@
 # Design — Long-run soak progress meter & live reporting
 
-**Document type:** Analysis + design (no implementation in this follow-up)  
+**Document type:** Analysis + design  
 **Date:** 2026-07-12  
-**Status:** Proposal — implement in a later sprint  
+**Status:** P0 started — `HarnessProgress` always prints `%` + ETA on long harness runs (stderr)  
 **Audience:** QA, platform, agents  
-**Related:** [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) · [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) · `GameTestHarness.simulateWithReport` · `MultiSeasonSimulationReport`
+**Related:** [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) · [LAYER_B_TESTING_PYRAMID_V1.md](LAYER_B_TESTING_PYRAMID_V1.md) · `HarnessProgress` · `GameTestHarness.simulateWithReport` · `MultiSeasonSimulationReport`
 
 ---
 

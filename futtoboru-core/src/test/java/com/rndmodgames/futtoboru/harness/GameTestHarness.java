@@ -291,16 +291,23 @@ public final class GameTestHarness {
      */
     public void simulateUntilPrimaryLeagueComplete() {
         HarnessCriticalLogCounter.start();
+        HarnessProgress progress = new HarnessProgress("league-season", SEASON_SIMULATION_MAX_DAYS);
         try {
             advanceUntil(save -> primaryLeague() != null, 30);
             for (int day = 0; day < SEASON_SIMULATION_MAX_DAYS; day++) {
                 HarnessCriticalLogCounter.assertNoCriticalLogs();
                 if (isPrimaryLeagueComplete()) {
+                    progress.tick(day + 1, "date=" + game().getGameDate() + "|status=complete");
+                    progress.finish("PASS");
                     assertSimulationHealthy(false);
                     return;
                 }
                 continueOneDayAcknowledgingDraws();
+                if (day == 0 || (day + 1) % 50 == 0) {
+                    progress.tick(day + 1, "date=" + game().getGameDate());
+                }
             }
+            progress.finish("FAIL");
             throw new SimulationDeadlockException(
                     "simulateUntilPrimaryLeagueComplete: league not complete within "
                             + SEASON_SIMULATION_MAX_DAYS + " days (date=" + game().getGameDate() + ")");
@@ -318,6 +325,7 @@ public final class GameTestHarness {
 
     public void simulateUntilLeagueAndCupComplete(int maxDays) {
         HarnessCriticalLogCounter.start();
+        HarnessProgress progress = new HarnessProgress("league+cup", maxDays);
         try {
             advanceUntil(save -> primaryLeague() != null, 30);
             simulateDays(5);
@@ -327,11 +335,20 @@ public final class GameTestHarness {
             for (int day = 0; day < maxDays; day++) {
                 HarnessCriticalLogCounter.assertNoCriticalLogs();
                 if (isPrimaryLeagueComplete() && isPrimaryCupComplete()) {
+                    progress.tick(day + 1, "date=" + game().getGameDate() + "|status=complete");
+                    progress.finish("PASS");
                     assertSimulationHealthy();
                     return;
                 }
                 continueOneDayAcknowledgingDraws();
+                if (day == 0 || (day + 1) % 50 == 0) {
+                    progress.tick(day + 1,
+                            "date=" + game().getGameDate()
+                                    + "|league=" + isPrimaryLeagueComplete()
+                                    + "|cup=" + isPrimaryCupComplete());
+                }
             }
+            progress.finish("FAIL");
             throw new SimulationDeadlockException(
                     "simulateUntilLeagueAndCupComplete: league complete=" + isPrimaryLeagueComplete()
                             + ", cup complete=" + isPrimaryCupComplete()
@@ -389,6 +406,10 @@ public final class GameTestHarness {
         long startNs = System.nanoTime();
         int daysSimulated = 0;
         int lastChampionCount = 0;
+        HarnessProgress progress = new HarnessProgress(
+                leagueOnly ? "soak-league" : "soak-league+cup",
+                targetChampionEditions,
+                System.err);
         HarnessCriticalLogCounter.start();
         try {
             advanceUntil(save -> primaryLeague() != null, 30);
@@ -421,14 +442,14 @@ public final class GameTestHarness {
                     HarnessCriticalLogCounter.assertNoCriticalLogs();
                     lastChampionCount = championCount;
                     daysSinceChampion = 0;
-                    // Always show season progress on the real console (even when sim stdout is quiet).
-                    originalOut.println("SOAK|season=" + championCount + "/" + targetChampionEditions
-                            + "|date=" + game().getGameDate()
-                            + "|s_last=" + String.format(java.util.Locale.US, "%.1f", seasonSeconds)
-                            + "|played_avg=" + averagePlayedMatchesPerLeagueClub()
-                            + "|inbox=" + inboxSize()
-                            + "|status=ok");
+                    progress.tick(championCount,
+                            "date=" + game().getGameDate()
+                                    + "|s_last=" + String.format(java.util.Locale.US, "%.1f", seasonSeconds)
+                                    + "|played_avg=" + averagePlayedMatchesPerLeagueClub()
+                                    + "|inbox=" + inboxSize()
+                                    + "|status=ok");
                 } else if (daysSinceChampion >= stallLimitDays) {
+                    progress.finish("STALL");
                     throw new SimulationDeadlockException(
                             "simulateWithReport: stalled "
                                     + daysSinceChampion + " days without a new champion "
@@ -447,12 +468,15 @@ public final class GameTestHarness {
         long elapsedMs = (System.nanoTime() - startNs) / 1_000_000L;
         int finalChampions = countEditionsWithChampions();
         if (!reachedSimulationTarget(targetChampionEditions, leagueOnly)) {
+            progress.finish("FAIL");
             throw new SimulationDeadlockException(
                     "simulateWithReport: wanted " + targetChampionEditions
                             + " league champion editions but got " + finalChampions
                             + (leagueOnly ? "" : ", cup champions=" + countCupEditionsWithChampions())
                             + " within " + maxDays + " days (date=" + game().getGameDate() + ")");
         }
+        progress.tick(finalChampions, "date=" + game().getGameDate() + "|status=complete");
+        progress.finish("PASS");
 
         SaveGame save = game();
         int inboxSize = save.getAllMessages() != null ? save.getAllMessages().size() : 0;

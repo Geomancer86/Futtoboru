@@ -9,7 +9,7 @@ When code changes are **internal only** (refactor, test, no scope change), note 
 
 | Date | Change | Docs updated |
 |------|--------|--------------|
-| 2026-07-12 | Debug: late soak season slowdown (isLeagueComplete history scan) | Yes — ANALYSIS_SOAK_LATE_SEASON_SLOWDOWN_V1, harness progress metrics |
+| 2026-07-12 | HarnessProgress: always-on % done + ETA for long harness/soak tests | Yes — HarnessProgress, GameTestHarness, design status |
 | 2026-07-12 | Agent-as-player E2E analysis (L2.5/L5 proposed) | Yes — analysis + pyramid + index |
 | 2026-07-12 | Full project PM status report for all stakeholders | Yes — PM report, eagle, PO_BRIEF, index |
 | 2026-07-03 | Governance iteration — PO_BRIEF, registries, AGENTS.md | Yes — full doc set |
