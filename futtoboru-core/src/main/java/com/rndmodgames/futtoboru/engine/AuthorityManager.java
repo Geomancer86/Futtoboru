@@ -22,6 +22,7 @@ import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
@@ -183,8 +184,8 @@ public class AuthorityManager {
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkLeagueCompletion()", e);
-            e.printStackTrace();
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_AUTHORITY,
+                    "AuthorityManager", "CRITICAL ERROR in checkLeagueCompletion()", e);
         }
     }
     
@@ -567,8 +568,8 @@ public class AuthorityManager {
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkAndScheduleLeagueFixtures()", e);
-            e.printStackTrace();
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_AUTHORITY,
+                    "AuthorityManager", "CRITICAL ERROR in checkAndScheduleLeagueFixtures()", e);
         }
     }
     
@@ -676,8 +677,8 @@ public class AuthorityManager {
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkAndScheduleCupDraws()", e);
-            e.printStackTrace();
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_AUTHORITY,
+                    "AuthorityManager", "CRITICAL ERROR in checkAndScheduleCupDraws()", e);
         }
     }
     
@@ -1098,8 +1099,8 @@ public class AuthorityManager {
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkCupRoundProgression()", e);
-            e.printStackTrace();
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_AUTHORITY,
+                    "AuthorityManager", "CRITICAL ERROR in checkCupRoundProgression()", e);
         }
     }
     
@@ -1547,8 +1548,8 @@ public class AuthorityManager {
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkCupReplays()", e);
-            e.printStackTrace();
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_AUTHORITY,
+                    "AuthorityManager", "CRITICAL ERROR in checkCupReplays()", e);
         }
     }
     

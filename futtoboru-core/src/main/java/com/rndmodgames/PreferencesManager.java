@@ -297,19 +297,20 @@ public class PreferencesManager {
 		
 		Locale locale = null;
 
+		String saved = prefs.getString(SETTINGS_LANGUAGE_BUNDLE_PREF);
 		// NOT NULL - NOT EMPTY
-		if (prefs.getString(SETTINGS_LANGUAGE_BUNDLE_PREF) != null && !"".equals(prefs.getString(SETTINGS_LANGUAGE_BUNDLE_PREF))) {
+		if (saved != null && !saved.isEmpty()) {
 			
-			locale = new Locale(prefs.getString(SETTINGS_LANGUAGE_BUNDLE_PREF));
+			locale = parseLocaleTag(saved);
 			
-			System.out.println("LOCALE RESTORED: " + locale.getLanguage());
+			System.out.println("LOCALE RESTORED: " + toLocaleTag(locale));
 			
 		} else {
 			
-			locale = new Locale(DEFAULT_LOCALE);
+			locale = parseLocaleTag(DEFAULT_LOCALE);
 			prefs.putString(SETTINGS_LANGUAGE_BUNDLE_PREF, DEFAULT_LOCALE);
 			
-			System.out.println("LOCALE NOT FOUND - DEFAULT IS : " + locale.getLanguage());
+			System.out.println("LOCALE NOT FOUND - DEFAULT IS : " + toLocaleTag(locale));
 			
 			// Save after each change
 			saveUserPreferences();
@@ -320,12 +321,40 @@ public class PreferencesManager {
 	
 	public void saveLocale(Locale locale) {
 		
-		System.out.println("SAVING SELECTED LOCALE: " + locale.getLanguage());
+		String tag = toLocaleTag(locale);
+		System.out.println("SAVING SELECTED LOCALE: " + tag);
 		
-		prefs.putString(SETTINGS_LANGUAGE_BUNDLE_PREF, locale.getLanguage());
+		prefs.putString(SETTINGS_LANGUAGE_BUNDLE_PREF, tag);
 		
 		// Save after each change
 		saveUserPreferences();
+	}
+
+	/**
+	 * Parses tags like {@code en_US}, {@code en-US}, or legacy {@code en_us}.
+	 */
+	public static Locale parseLocaleTag(String tag) {
+		if (tag == null || tag.isBlank()) {
+			return Locale.US;
+		}
+		String normalized = tag.trim().replace('-', '_');
+		String[] parts = normalized.split("_", 3);
+		if (parts.length >= 2 && !parts[1].isEmpty()) {
+			return new Locale(parts[0], parts[1]);
+		}
+		return new Locale(parts[0]);
+	}
+
+	public static String toLocaleTag(Locale locale) {
+		if (locale == null) {
+			return DEFAULT_LOCALE;
+		}
+		String language = locale.getLanguage();
+		String country = locale.getCountry();
+		if (country != null && !country.isEmpty()) {
+			return language + "_" + country;
+		}
+		return language;
 	}
 	
 	/**

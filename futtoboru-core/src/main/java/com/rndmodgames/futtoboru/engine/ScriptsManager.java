@@ -10,6 +10,7 @@ import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 
@@ -390,12 +391,8 @@ public class ScriptsManager {
             com.badlogic.gdx.Gdx.app.log("ScriptsManager", "Successfully generated " + fixtures.size() + " fixtures for league " + league.getName());
             
         } catch (Exception e) {
-            System.out.println("========================================");
-            System.out.println("ERROR GENERATING FIXTURES!");
-            System.out.println("Exception: " + e.getMessage());
-            System.out.println("========================================");
-            e.printStackTrace();
-            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "Failed to generate fixtures for league " + league.getName(), e);
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_SCRIPTS,
+                    "ScriptsManager", "CRITICAL ERROR generating fixtures for league " + league.getName(), e);
         }
         
         /**
@@ -556,9 +553,8 @@ public class ScriptsManager {
                         System.out.println("========================================");
                     }
         } catch (Exception e) {
-            System.out.println("ERROR scheduling league messages: " + e.getMessage());
-            e.printStackTrace();
-            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "Error creating messages", e);
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_SCRIPTS,
+                    "ScriptsManager", "CRITICAL ERROR scheduling league messages", e);
         }
     }
 

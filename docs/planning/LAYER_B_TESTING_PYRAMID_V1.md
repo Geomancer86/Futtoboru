@@ -59,7 +59,7 @@ L4 Human QA      → ONLY after L1–L3 green + ME-1 injury + UI blockers (R-188
 
 | Tier | Command | When |
 |------|---------|------|
-| **L1 + L2** | `mvn test -pl futtoboru-core` | Every commit — **135 tests** |
+| **L1 + L2** | `mvn test -pl futtoboru-core` | Every commit — **138 tests** |
 | **L2 nightly** | `mvn test -pl futtoboru-core -Pnightly` | Before human QA — **+5 tests** |
 | **L3 soak** | `.\scripts\run-soak-with-preflight.ps1` | PM sign-off once |
 | **L3 Layer B** | Included in `-Pnightly` | `LayerBMultiSeasonSoakIT` |

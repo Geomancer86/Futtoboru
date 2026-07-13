@@ -11,4 +11,4 @@ blockers:
     plain: Automated soak must pass; PM signs off before human QA
     owner: qa
     status: open
-    note: Soak run in progress 2026-07-12; awaiting PM sign-off after green
+    note: Automated soak green 2026-07-12 (~87 min); PM sign-off still required

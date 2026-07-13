@@ -133,3 +133,6 @@ Thumbs.db
 
 ## Manual research temp downloads (large 7z/ISO probes — not archived)
 docs/research/manuals/_tmp/
+
+## Local soak run logs
+soak-output.log

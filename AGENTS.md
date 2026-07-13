@@ -12,14 +12,14 @@ Machine-readable project context for AI coding agents. Humans: start at [docs/pl
 ## Build & test
 
 ```powershell
-# L1+L2 — run before every commit (135 tests)
+# L1+L2 — run before every commit (138 tests)
 mvn test -pl futtoboru-core
 
 # L3 nightly (+5)
 mvn test -pl futtoboru-core -Pnightly
 
-# L3 soak (60 seasons, slow)
-mvn test -pl futtoboru-core -Psoak
+# L3 soak (60 seasons, quiet logs, fail-fast on first ERROR/CRITICAL)
+mvn test -pl futtoboru-core -Psoak -Dtest=LongRunSoakIT
 # or: .\scripts\run-soak-with-preflight.ps1
 
 # Build (prefer test-first workflow)

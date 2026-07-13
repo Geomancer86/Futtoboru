@@ -35,7 +35,7 @@ class LongRunSoakIT {
     @Test
     void sixtyProceduralSeasonsProduceSixtyLeagueChampions() {
         MultiSeasonSimulationReport report =
-                harness.simulateWithReport(TARGET_CHAMPION_EDITIONS, MAX_DAYS, true, true);
+                harness.simulateWithReport(TARGET_CHAMPION_EDITIONS, MAX_DAYS, true, true, false);
 
         assertEquals(TARGET_CHAMPION_EDITIONS, harness.countEditionsWithChampions());
         assertTrue(harness.getSimulatedSeasonIndex() >= TARGET_CHAMPION_EDITIONS - 1);

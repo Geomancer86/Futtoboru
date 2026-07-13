@@ -282,6 +282,7 @@ public final class GameTestHarness {
         try {
             advanceUntil(save -> primaryLeague() != null, 30);
             for (int day = 0; day < SEASON_SIMULATION_MAX_DAYS; day++) {
+                HarnessCriticalLogCounter.assertNoCriticalLogs();
                 if (isPrimaryLeagueComplete()) {
                     assertSimulationHealthy(false);
                     return;
@@ -312,6 +313,7 @@ public final class GameTestHarness {
                 acknowledgeMandatoryDraws();
             }
             for (int day = 0; day < maxDays; day++) {
+                HarnessCriticalLogCounter.assertNoCriticalLogs();
                 if (isPrimaryLeagueComplete() && isPrimaryCupComplete()) {
                     assertSimulationHealthy();
                     return;
@@ -348,6 +350,16 @@ public final class GameTestHarness {
             int maxDays,
             boolean leagueOnly,
             boolean suppressStdout) {
+        // Long quiet soaks skip per-season health scans (O(n) over all club matches) — fail-fast still runs daily.
+        return simulateWithReport(targetChampionEditions, maxDays, leagueOnly, suppressStdout, !suppressStdout);
+    }
+
+    public MultiSeasonSimulationReport simulateWithReport(
+            int targetChampionEditions,
+            int maxDays,
+            boolean leagueOnly,
+            boolean suppressStdout,
+            boolean periodicHealthScans) {
         if (leagueOnly) {
             game().setAllCups(new ArrayList<>());
         }
@@ -373,18 +385,36 @@ public final class GameTestHarness {
             while (getNextGameAction() == FuttoboruGameEngine.DRAW_ACTION) {
                 acknowledgeMandatoryDraws();
             }
+            int daysSinceChampion = 0;
+            final int stallLimitDays = 800;
             for (int day = 0; day < maxDays; day++) {
+                HarnessCriticalLogCounter.assertNoCriticalLogs();
                 if (reachedSimulationTarget(targetChampionEditions, leagueOnly)) {
                     break;
                 }
                 continueOneDayAcknowledgingDraws();
                 daysSimulated++;
+                daysSinceChampion++;
                 int championCount = countEditionsWithChampions();
                 if (championCount > lastChampionCount) {
                     report.addSeason(snapshotLatestChampionEdition(championCount));
                     report.recordEconomyScan(game());
-                    report.recordHealthScan(scanSimulationHealth(!leagueOnly));
+                    if (periodicHealthScans) {
+                        report.recordHealthScan(scanSimulationHealth(!leagueOnly));
+                    }
+                    HarnessCriticalLogCounter.assertNoCriticalLogs();
                     lastChampionCount = championCount;
+                    daysSinceChampion = 0;
+                    // Always show season progress on the real console (even when sim stdout is quiet).
+                    originalOut.println("Soak progress: season " + championCount + "/"
+                            + targetChampionEditions + " @ " + game().getGameDate());
+                } else if (daysSinceChampion >= stallLimitDays) {
+                    throw new SimulationDeadlockException(
+                            "simulateWithReport: stalled "
+                                    + daysSinceChampion + " days without a new champion "
+                                    + "(have " + championCount + "/" + targetChampionEditions
+                                    + ", date=" + game().getGameDate() + "). "
+                                    + "First log failure=" + HarnessCriticalLogCounter.firstFailure());
                 }
             }
         } finally {

@@ -254,9 +254,15 @@ public class DebugLogManager {
      * @param exception The exception to log
      */
     public void error(String category, String message, Throwable exception) {
+        String detail = message + (exception != null
+                ? " | " + exception.getClass().getSimpleName() + ": " + exception.getMessage()
+                : "");
+        notifyTestListener(detail);
         Gdx.app.error("ERROR", "[" + category + "] " + message, exception);
         System.err.println("[ERROR][" + category + "] " + message);
-        exception.printStackTrace();
+        if (exception != null) {
+            exception.printStackTrace();
+        }
     }
     
     /**
@@ -268,9 +274,15 @@ public class DebugLogManager {
      * @param exception The exception to log
      */
     public void error(String category, String tag, String message, Throwable exception) {
+        String detail = message + (exception != null
+                ? " | " + exception.getClass().getSimpleName() + ": " + exception.getMessage()
+                : "");
+        notifyTestListener(detail);
         Gdx.app.error(tag, "[" + category + "] " + message, exception);
         System.err.println("[ERROR][" + category + "][" + tag + "] " + message);
-        exception.printStackTrace();
+        if (exception != null) {
+            exception.printStackTrace();
+        }
     }
     
     // ============================================
