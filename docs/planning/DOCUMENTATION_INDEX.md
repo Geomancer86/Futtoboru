@@ -99,6 +99,8 @@
 | [DESIGN_IN_PLAY_WORLD_EVOLUTION.md](DESIGN_IN_PLAY_WORLD_EVOLUTION.md) | **PO, World & Data, Seasons** | **New history merges into live save** |
 | [HISTORICAL_DATA_SOURCE_LEDGER.md](HISTORICAL_DATA_SOURCE_LEDGER.md) | **Research, contributors** | **Source IDs per mod row (R-H1 stub)** |
 | [TEN_SEASON_V1_ANALYSIS.md](TEN_SEASON_V1_ANALYSIS.md) | **QA, PO, Designer** | **10-season sim** — champions, finances, v1 gap |
+| [DESIGN_SOAK_PROGRESS_REPORTING_V1.md](DESIGN_SOAK_PROGRESS_REPORTING_V1.md) | **QA, Platform** | **Design** — progress meter + live report for 10/60/1000 soaks |
+| [SOAK_PREFLIGHT_PROTOCOL.md](SOAK_PREFLIGHT_PROTOCOL.md) | **QA, Platform** | Preflight before long soak; quiet vs verbose |
 | [STAKEHOLDERS_AND_DEPARTMENTS.md](STAKEHOLDERS_AND_DEPARTMENTS.md) | PM, PO | Who owns what; core vs broader; sign-off gates |
 | [RELEASE_V1_DEFINITION.md](RELEASE_V1_DEFINITION.md) | PO | v1 acceptance criteria — **PO decisions locked** |
 | [V1_TESTING_AND_SIMULATION_PLAN.md](V1_TESTING_AND_SIMULATION_PLAN.md) | PO, QA, Platform | E2E harness, soak tests, FA Cup + static player policy |

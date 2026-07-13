@@ -61,7 +61,7 @@ L4 Human QA      → ONLY after L1–L3 green + ME-1 injury + UI blockers (R-188
 |------|---------|------|
 | **L1 + L2** | `mvn test -pl futtoboru-core` | Every commit — **138 tests** |
 | **L2 nightly** | `mvn test -pl futtoboru-core -Pnightly` | Before human QA — **+5 tests** |
-| **L3 soak** | `.\scripts\run-soak-with-preflight.ps1` | PM sign-off once |
+| **L3 soak** | `.\scripts\run-soak-with-preflight.ps1` | PM sign-off once — progress/ETA design: [DESIGN_SOAK_PROGRESS_REPORTING_V1.md](DESIGN_SOAK_PROGRESS_REPORTING_V1.md) |
 | **L3 Layer B** | Included in `-Pnightly` | `LayerBMultiSeasonSoakIT` |
 | **L4 human** | [LAYER_B_TEST_PLAN_V1.md §5](LAYER_B_TEST_PLAN_V1.md) | [PM_REPORT_R1888_RELEASE_WRAP_UP.md](PM_REPORT_R1888_RELEASE_WRAP_UP.md) §4 |
 

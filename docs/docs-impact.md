@@ -9,7 +9,7 @@ When code changes are **internal only** (refactor, test, no scope change), note 
 
 | Date | Change | Docs updated |
 |------|--------|--------------|
-| 2026-07-12 | Soak fail-fast on logged ERROR/CRITICAL; locale bundle fix; 138 tests; soak green | Yes — harness, LanguageModLoader, PreferencesManager, AGENTS.md, blockers |
+| 2026-07-12 | Design: soak progress meter + live reporting (10/60/1000) — analysis only | Yes — DESIGN_SOAK_PROGRESS_REPORTING_V1, index, pyramid |
 | 2026-07-12 | Agent-as-player E2E analysis (L2.5/L5 proposed) | Yes — analysis + pyramid + index |
 | 2026-07-12 | Full project PM status report for all stakeholders | Yes — PM report, eagle, PO_BRIEF, index |
 | 2026-07-03 | Governance iteration — PO_BRIEF, registries, AGENTS.md | Yes — full doc set |
