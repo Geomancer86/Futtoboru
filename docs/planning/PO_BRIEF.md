@@ -13,7 +13,7 @@
 | | |
 |-|-|
 | 🟢 | Game loop works: league, cup, pick team, play matches, ratings, saves |
-| 🟢 | Automated tests: **138 + 5** green on every CI run |
+| 🟢 | Automated tests: **139 + 5** green on every CI run |
 | 🟡 | **1 item** left before human playtesters (soak PM sign-off) |
 | 🟢 | Tier A engineering blockers **7/8 closed** — ME-1, C-1, PL-5, PL-7, manual, mod load |
 | 🔴 | Human QA not started — **correct**; we finish blockers first |

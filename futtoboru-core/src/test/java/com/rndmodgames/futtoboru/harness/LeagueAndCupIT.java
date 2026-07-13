@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.League;
-import com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager;
 
 /**
  * Headless E2E: 1888–89 league and FA Cup complete in the same save.
@@ -32,9 +31,8 @@ class LeagueAndCupIT {
 
         League league = harness.primaryLeague();
         assertNotNull(league);
-        LeagueStandingsManager standingsManager = new LeagueStandingsManager();
-        assertTrue(standingsManager.isLeagueComplete(league));
-        assertNotNull(standingsManager.getChampion(league));
+        assertTrue(harness.countEditionsWithChampions() >= 1,
+                "Expected at least one finalized league edition with a champion");
 
         assertTrue(harness.countCupEditionsWithChampions() >= 1,
                 "Expected at least one FA Cup edition with a champion");

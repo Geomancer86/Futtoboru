@@ -76,6 +76,11 @@ public class Club implements Serializable {
     private List<Match> proposedMatches = new ArrayList<>();
     private List<Match> scheduledMatches = new ArrayList<>();
     private List<Match> playedMatches = new ArrayList<>();
+    /**
+     * Index into {@link #playedMatches} where the current league season starts.
+     * Keeps daily completion checks O(current season) instead of O(all history).
+     */
+    private int playedMatchesSeasonStartIndex = 0;
     
     /**
      * Club Finances
@@ -296,6 +301,21 @@ public class Club implements Serializable {
 
     public void setPlayedMatches(List<Match> playedMatches) {
         this.playedMatches = playedMatches;
+    }
+
+    public int getPlayedMatchesSeasonStartIndex() {
+        return playedMatchesSeasonStartIndex;
+    }
+
+    public void setPlayedMatchesSeasonStartIndex(int playedMatchesSeasonStartIndex) {
+        this.playedMatchesSeasonStartIndex = Math.max(0, playedMatchesSeasonStartIndex);
+    }
+
+    /**
+     * Mark the current end of {@link #playedMatches} as the start of a new league season.
+     */
+    public void markPlayedMatchesSeasonBoundary() {
+        setPlayedMatchesSeasonStartIndex(playedMatches != null ? playedMatches.size() : 0);
     }
 
     public void setPlayers(List<Player> players) {

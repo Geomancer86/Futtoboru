@@ -158,11 +158,12 @@ public class LeagueStandingsManager {
             expectedMatchesPerClub = numberOfClubs - 1;
         }
         
-        // Count completed league fixtures (robust against friendlies — RB-7)
+        // Current-season only: matches move to playedMatches when simulated; rollover advances
+        // playedMatchesSeasonStartIndex so we do not rescan prior seasons every day.
         for (Club club : league.getLeagueClubs()) {
             if (club == null) continue;
 
-            int completed = countCompletedLeagueMatches(club);
+            int completed = countCompletedLeagueMatchesCurrentSeason(club);
             if (completed < expectedMatchesPerClub) {
                 return false;
             }
@@ -172,7 +173,40 @@ public class LeagueStandingsManager {
     }
 
     /**
-     * Count played league fixtures for a club (scheduled + archived lists).
+     * Count played league fixtures for the active season only (see Club.playedMatchesSeasonStartIndex).
+     */
+    public int countCompletedLeagueMatchesCurrentSeason(Club club) {
+        if (club == null) {
+            return 0;
+        }
+        int count = 0;
+        if (club.getScheduledMatches() != null) {
+            for (Match match : club.getScheduledMatches()) {
+                if (isCompletedLeagueMatch(match)) {
+                    count++;
+                }
+            }
+        }
+        if (club.getPlayedMatches() != null) {
+            List<Match> played = club.getPlayedMatches();
+            int start = club.getPlayedMatchesSeasonStartIndex();
+            if (start < 0) {
+                start = 0;
+            }
+            if (start > played.size()) {
+                start = played.size();
+            }
+            for (int i = start; i < played.size(); i++) {
+                if (isCompletedLeagueMatch(played.get(i))) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Count played league fixtures for a club (scheduled + full archived lists).
      */
     public int countCompletedLeagueMatches(Club club) {
         if (club == null) {

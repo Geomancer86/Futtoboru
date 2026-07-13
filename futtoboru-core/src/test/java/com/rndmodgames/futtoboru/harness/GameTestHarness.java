@@ -255,7 +255,19 @@ public final class GameTestHarness {
         if (league == null) {
             return false;
         }
-        return new LeagueStandingsManager().isLeagueComplete(league);
+        if (new LeagueStandingsManager().isLeagueComplete(league)) {
+            return true;
+        }
+        // After rollover the current-season window is empty; a recorded champion still means
+        // "primary league season finished" for harness waits.
+        if (league.getEditions() != null) {
+            for (CompetitionEdition e : league.getEditions()) {
+                if (e != null && e.getChampionsId() != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean isPrimaryCupComplete() {
@@ -387,6 +399,7 @@ public final class GameTestHarness {
             }
             int daysSinceChampion = 0;
             final int stallLimitDays = 800;
+            long lastSeasonNs = System.nanoTime();
             for (int day = 0; day < maxDays; day++) {
                 HarnessCriticalLogCounter.assertNoCriticalLogs();
                 if (reachedSimulationTarget(targetChampionEditions, leagueOnly)) {
@@ -397,6 +410,9 @@ public final class GameTestHarness {
                 daysSinceChampion++;
                 int championCount = countEditionsWithChampions();
                 if (championCount > lastChampionCount) {
+                    long nowNs = System.nanoTime();
+                    double seasonSeconds = (nowNs - lastSeasonNs) / 1_000_000_000.0;
+                    lastSeasonNs = nowNs;
                     report.addSeason(snapshotLatestChampionEdition(championCount));
                     report.recordEconomyScan(game());
                     if (periodicHealthScans) {
@@ -406,8 +422,12 @@ public final class GameTestHarness {
                     lastChampionCount = championCount;
                     daysSinceChampion = 0;
                     // Always show season progress on the real console (even when sim stdout is quiet).
-                    originalOut.println("Soak progress: season " + championCount + "/"
-                            + targetChampionEditions + " @ " + game().getGameDate());
+                    originalOut.println("SOAK|season=" + championCount + "/" + targetChampionEditions
+                            + "|date=" + game().getGameDate()
+                            + "|s_last=" + String.format(java.util.Locale.US, "%.1f", seasonSeconds)
+                            + "|played_avg=" + averagePlayedMatchesPerLeagueClub()
+                            + "|inbox=" + inboxSize()
+                            + "|status=ok");
                 } else if (daysSinceChampion >= stallLimitDays) {
                     throw new SimulationDeadlockException(
                             "simulateWithReport: stalled "
@@ -450,6 +470,27 @@ public final class GameTestHarness {
         report.recordHealthScan(scanSimulationHealth(!leagueOnly));
         assertSimulationHealthy(!leagueOnly);
         return report;
+    }
+
+    private int inboxSize() {
+        return game().getAllMessages() != null ? game().getAllMessages().size() : 0;
+    }
+
+    private int averagePlayedMatchesPerLeagueClub() {
+        League league = primaryLeague();
+        if (league == null || league.getLeagueClubs() == null || league.getLeagueClubs().isEmpty()) {
+            return 0;
+        }
+        int total = 0;
+        int clubs = 0;
+        for (Club club : league.getLeagueClubs()) {
+            if (club == null) {
+                continue;
+            }
+            clubs++;
+            total += club.getPlayedMatches() != null ? club.getPlayedMatches().size() : 0;
+        }
+        return clubs == 0 ? 0 : total / clubs;
     }
 
     private boolean reachedSimulationTarget(int targetChampionEditions, boolean leagueOnly) {

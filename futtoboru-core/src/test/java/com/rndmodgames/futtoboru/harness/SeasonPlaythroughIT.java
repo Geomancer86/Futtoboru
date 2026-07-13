@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.League;
-import com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager;
 
 /**
  * Headless E2E: one full league season completes and records a champion edition.
@@ -30,10 +29,6 @@ class SeasonPlaythroughIT {
 
         League league = harness.primaryLeague();
         assertNotNull(league);
-
-        LeagueStandingsManager standingsManager = new LeagueStandingsManager();
-        assertTrue(standingsManager.isLeagueComplete(league));
-        assertNotNull(standingsManager.getChampion(league));
 
         assertTrue(harness.countEditionsWithChampions() >= 1,
                 "Expected at least one finalized league edition with a champion");

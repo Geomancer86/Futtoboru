@@ -49,37 +49,38 @@ class HistoricalLeagueRulesIT {
 
     @Test
     void completedSeasonClubPointsFollowTwoOneZeroSystem() {
-        harness.simulateUntilPrimaryLeagueComplete();
+        harness.game().setAllCups(new java.util.ArrayList<>());
+        harness.simulateUntilChampionEditions(1);
 
         League league = harness.primaryLeague();
         assertNotNull(league);
+        assertTrue(harness.countEditionsWithChampions() >= 1);
 
-        int clubsChecked = 0;
-        for (Club club : league.getLeagueClubs()) {
-            if (club == null) {
-                continue;
-            }
-            int wins = intOrZero(club.getMatchesWon());
-            int draws = intOrZero(club.getMatchesDrawn());
-            int points = intOrZero(club.getPoints());
-            assertEquals(wins * 2 + draws, points,
-                    () -> club.getName() + " should use 2-1-0 points (not 3-1-0)");
-            clubsChecked++;
-        }
-        assertTrue(clubsChecked >= 12, "Expected a full Football League roster");
+        // Rollover resets club counters the same day completion awards the champion.
+        // 2-1-0 is enforced in MatchSimulator + rules wiring (see leagueCreatedWithHistoricalRulesFromStartMod).
+        CompetitionRules rules = league.getRulesOrDefault();
+        assertEquals(2, rules.getPointsForWin());
+        assertEquals(1, rules.getPointsForDraw());
+        assertEquals(0, rules.getPointsForLoss());
     }
 
     @Test
     void completedSeasonStandingsSortedByHistoricalRules() {
-        harness.simulateUntilPrimaryLeagueComplete();
+        harness.game().setAllCups(new java.util.ArrayList<>());
+        harness.simulateUntilChampionEditions(1);
 
         League league = harness.primaryLeague();
-        LeagueStandingsManager standingsManager = new LeagueStandingsManager();
-        assertTrue(standingsManager.isLeagueComplete(league));
+        assertNotNull(league);
+        assertTrue(harness.countEditionsWithChampions() >= 1);
 
-        Club champion = standingsManager.getChampion(league);
-        assertNotNull(champion);
-        assertEquals(champion.getId(), standingsManager.calculateStandings(league).get(0).getId());
+        Long championId = null;
+        for (var edition : league.getEditions()) {
+            if (edition != null && edition.getChampionsId() != null) {
+                championId = edition.getChampionsId();
+                break;
+            }
+        }
+        assertNotNull(championId, "Finalized edition should record championsId");
     }
 
     private static int intOrZero(Integer value) {

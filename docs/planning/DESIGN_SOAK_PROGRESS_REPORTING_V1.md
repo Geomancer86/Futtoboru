@@ -42,8 +42,8 @@ Long-run soaks (10 / 60 / **1000** seasons) must **never look idle** and must **
 | Seasons | Rough wall time |
 |---------|-----------------|
 | 10 | ~15 min |
-| 60 | ~1.5 h |
-| 1000 | **~24 h** |
+| 60 | ~1.5 h (pre-fix avg; late seasons slower — see [ANALYSIS_SOAK_LATE_SEASON_SLOWDOWN_V1.md](ANALYSIS_SOAK_LATE_SEASON_SLOWDOWN_V1.md)) |
+| 1000 | **~24 h** (until archive prune) |
 
 Any 1000-season run without live progress + ETA + early abort is an invitation to waste a full day of CPU.
 

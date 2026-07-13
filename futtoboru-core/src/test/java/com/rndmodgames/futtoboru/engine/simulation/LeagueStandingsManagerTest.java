@@ -104,6 +104,24 @@ class LeagueStandingsManagerTest {
         assertTrue(manager.isLeagueComplete(league));
     }
 
+    @Test
+    void leagueCompleteIgnoresMatchesBeforeSeasonBoundary() {
+        for (Club club : league.getLeagueClubs()) {
+            for (int i = 0; i < 500; i++) {
+                club.getPlayedMatches().add(playedLeagueMatch(club.getId(), i));
+            }
+            club.markPlayedMatchesSeasonBoundary();
+        }
+        assertFalse(manager.isLeagueComplete(league));
+
+        for (Club club : league.getLeagueClubs()) {
+            for (int i = 0; i < 22; i++) {
+                club.getPlayedMatches().add(playedLeagueMatch(club.getId(), 1000 + i));
+            }
+        }
+        assertTrue(manager.isLeagueComplete(league));
+    }
+
     private static Match playedLeagueMatch(long clubId, int seq) {
         Match match = new Match();
         match.setId(clubId * 100 + seq);

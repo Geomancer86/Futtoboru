@@ -1727,6 +1727,14 @@ public class AuthorityManager {
     }
 
     private boolean needsNextSeasonGeneration(League league, LocalDateTime currentDate) {
+        // Never wipe/replace fixtures while the active edition has no champion — that used to
+        // run daily from January (year fragment mismatch) and made season-scoped completion
+        // impossible once playedMatchesSeasonStartIndex advanced (soak late-season fix).
+        CompetitionEdition active = getCurrentLeagueEdition(league);
+        if (active != null && active.getChampionsId() == null) {
+            return false;
+        }
+
         // Find if an edition for the upcoming year already exists
         int nextYear = currentDate.getYear();
         String nextSeasonNameFragment = nextYear + "-" + ((nextYear + 1) % 100);

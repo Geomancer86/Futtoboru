@@ -131,24 +131,27 @@ public class SeasonManager {
             return;
         }
         for (Club club : league.getLeagueClubs()) {
-            if (club == null || club.getScheduledMatches() == null) {
+            if (club == null) {
                 continue;
             }
-            Iterator<Match> iterator = club.getScheduledMatches().iterator();
-            while (iterator.hasNext()) {
-                Match match = iterator.next();
-                if (match == null || match.getMatchType() == null
-                        || match.getMatchType() != Match.LEAGUE_MATCH) {
-                    continue;
-                }
-                if (Boolean.TRUE.equals(match.getIsPlayed())) {
-                    if (club.getPlayedMatches() == null) {
-                        club.setPlayedMatches(new ArrayList<>());
+            if (club.getScheduledMatches() != null) {
+                Iterator<Match> iterator = club.getScheduledMatches().iterator();
+                while (iterator.hasNext()) {
+                    Match match = iterator.next();
+                    if (match == null || match.getMatchType() == null
+                            || match.getMatchType() != Match.LEAGUE_MATCH) {
+                        continue;
                     }
-                    club.getPlayedMatches().add(match);
+                    if (Boolean.TRUE.equals(match.getIsPlayed())) {
+                        if (club.getPlayedMatches() == null) {
+                            club.setPlayedMatches(new ArrayList<>());
+                        }
+                        club.getPlayedMatches().add(match);
+                    }
+                    iterator.remove();
                 }
-                iterator.remove();
             }
+            club.markPlayedMatchesSeasonBoundary();
         }
     }
 
