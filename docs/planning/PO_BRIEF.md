@@ -2,7 +2,7 @@
 
 **One page. Read this.** Everything else is detail for PM, dev, or AI.
 
-**Updated:** 2026-07-12 · **Release:** Futtoboru 1888 · **Branch:** `analyze-ai-branch`
+**Updated:** 2026-07-15 · **Release:** Futtoboru 1888 · **Branch:** `analyze-ai-branch`
 
 > **PO redirect report (3 points):** [PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md](PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md) — done / missing / next for first release.
 
@@ -14,9 +14,9 @@
 |-|-|
 | 🟢 | Game loop works: league, cup, pick team, play matches, ratings, saves |
 | 🟢 | Automated tests: **141 + 5** green on every CI run |
-| 🟡 | **1 item** left before human playtesters (soak PM sign-off) |
-| 🟢 | Tier A engineering blockers **7/8 closed** — ME-1, C-1, PL-5, PL-7, manual, mod load |
-| 🔴 | Human QA not started — **correct**; we finish blockers first |
+| 🟢 | Tier A engineering blockers **8/8 closed** — ME-1, C-1, PL-5, PL-7, manual, mod load, soak |
+| 🟡 | **1 decision** left before human playtesters: your sign-off on the soak evidence below |
+| 🔴 | Human QA not started — **correct**; we finish sign-off first |
 | ⚪ | No public release — local dev only |
 
 ---
@@ -45,11 +45,14 @@ Reply in chat or initials here — PM updates the decision log. You do **not** n
 
 | # | What | Status |
 |---|------|--------|
-| 1 | **Long-run stability** — 60-season automated run + PM sign-off | 🟡 In progress |
+| 1 | **Long-run stability** — 60-season automated run | 🟢 Green (fixed a real slowdown, now ~20% faster, zero errors, re-verified 2026-07-15) |
+
+**All engineering blockers are closed.** The only thing left before inviting human testers is **your sign-off** on the soak evidence — see [PM_REPORT_PROJECT_STATUS_2026_07_15.md](PM_REPORT_PROJECT_STATUS_2026_07_15.md) §2–3 for the numbers.
 
 **Closed this sprint (2026-07-12):** Victorian injury screens (ME-1), injury tests, Continue button, match history click, save/load UI, player manual ch.6–7, production mod load check.
+**Closed this sprint (2026-07-15):** 60-season soak — root-caused and fixed a late-season slowdown, soak now runs clean and faster, long tests always show progress + ETA.
 
-**Estimate:** Soak green + your sign-off → invite testers.
+**Estimate:** Your sign-off → invite testers. No more code work is required to reach that gate.
 
 ---
 
@@ -85,6 +88,7 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 
 | Date | Change |
 |------|--------|
+| 2026-07-15 | Soak blocker closed (fixed slowdown, faster, zero errors); **8/8** Tier A blockers closed; 141+5 tests green; only your sign-off remains |
 | 2026-07-12 | ME-1 Victorian injury UX shipped; 7/8 Tier A blockers closed; 135+5 tests green |
 | 2026-07-12 | Linked full PM status report; status unchanged (8 blockers still open) |
 | 2026-07-12 | Note: automated E2E ≠ screen clicks — see ANALYSIS_AGENT_PLAYER_E2E_V1 (post-1888) |
@@ -92,4 +96,4 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 
 ---
 
-*PM full status: [PM_REPORT_PROJECT_STATUS_2026_07_12.md](PM_REPORT_PROJECT_STATUS_2026_07_12.md) · Eagle: [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) · Agent E2E analysis: [ANALYSIS_AGENT_PLAYER_E2E_V1.md](ANALYSIS_AGENT_PLAYER_E2E_V1.md)*
+*PM full status: [PM_REPORT_PROJECT_STATUS_2026_07_15.md](PM_REPORT_PROJECT_STATUS_2026_07_15.md) · Eagle: [PM_EAGLE_VIEW_REPORT.md](PM_EAGLE_VIEW_REPORT.md) · Agent E2E analysis: [ANALYSIS_AGENT_PLAYER_E2E_V1.md](ANALYSIS_AGENT_PLAYER_E2E_V1.md)*

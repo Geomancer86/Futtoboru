@@ -56,7 +56,7 @@ Default `build.bat` skips tests — **always run Maven tests separately** before
 
 **Out of scope (later releases):** Transfers, scouts, discipline, reserves, CM93 insurance menus, national teams.
 
-**R-1888 blockers before human QA:** ME-1 injury UX, C-1 Continue fix, PL-5/PL-7 UI, soak sign-off, manual ch.6–7.
+**R-1888 blockers before human QA:** all 8 engineering blockers closed (ME-1 injury UX, C-1 Continue fix, PL-5/PL-7 UI, soak, manual ch.6–7). Only remaining step is PM/PO sign-off on soak evidence — see `docs/registries/blockers.yaml` (A-6).
 
 Full IDs: `docs/registries/release-roadmap.yaml` · PO plain language: `PO_BRIEF.md`.
 

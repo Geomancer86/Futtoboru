@@ -2,13 +2,20 @@
 # PO plain language: docs/planning/PO_BRIEF.md § Blockers
 
 release: R-1888
-updated: "2026-07-12"
+updated: "2026-07-15"
 
 blockers:
   - id: A-6
     priority: P1
     title: 60-season soak PM sign-off
-    plain: Automated soak must pass; PM signs off before human QA
+    plain: Automated soak passes and is fast; PM/PO sign-off is the only remaining step before human QA
     owner: qa
-    status: open
-    note: Automated soak green 2026-07-12 (~87 min); PM sign-off still required
+    status: ready_for_signoff
+    note: >
+      Root-caused and fixed a late-season slowdown (seasons 50-60 were re-scanning full
+      match history every day). Re-ran full 60-season soak on 2026-07-15 (same commit,
+      fd8e742): 0 errors, 69.96 s/season (was 87.23 s/season pre-fix, ~20% faster),
+      ~70 min total. Long tests now self-report % done + ETA (HarnessProgress) and
+      fail fast on the first critical log instead of running to completion.
+      See docs/planning/PM_REPORT_PROJECT_STATUS_2026_07_15.md §2-3.
+      No engineering work remains on this item; only a PM/PO sign-off decision.
