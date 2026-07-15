@@ -12,7 +12,7 @@ Machine-readable project context for AI coding agents. Humans: start at [docs/pl
 ## Build & test
 
 ```powershell
-# L1+L2 — run before every commit (141 tests)
+# L1+L2 — run before every commit (152 tests)
 mvn test -pl futtoboru-core
 
 # L3 nightly (+5)
@@ -37,6 +37,7 @@ Default `build.bat` skips tests — **always run Maven tests separately** before
 - **UI:** VisUI tables in `tables/`, screens in `screens/`.
 - **Tests:** JUnit 5. Integration tests use `GameTestHarness`. Tag profiles: `@Tag("nightly")`, `@Tag("soak")`, `@Tag("cm93")`, `@Tag("r1888")`.
 - **Style:** Match surrounding code. Minimal diff. No drive-by refactors.
+- **Perf:** Never scan an unbounded "every X that ever existed in the save" list (all matches, all messages, all seasons) inside a per-day/per-match hot path — the game runs forever, so that cost grows every season. Use a season-scoped watermark/index instead (see `Club.playedMatchesSeasonStartIndex`). Two real late-soak slowdowns were caused by this pattern; see `docs/planning/ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md`.
 
 ## Documentation layers (progressive disclosure)
 

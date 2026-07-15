@@ -27,7 +27,7 @@
 | **Analysis** | [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md) published |
 | **Design** | [DESIGN_R1888_RELEASE_WRAP_UP_V1.md](DESIGN_R1888_RELEASE_WRAP_UP_V1.md) §5 signed |
 | **Development** | ME-1 injury + Layer B UI blockers closed |
-| **Automated tests** | 131 PR + 5 nightly green; soak PM-signed |
+| **Automated tests** | 152 PR + 5 nightly green; soak PM-signed |
 | **Human QA** | [LAYER_B_TEST_PLAN_V1.md §5](LAYER_B_TEST_PLAN_V1.md) B-9 — **after** above |
 
 ---
@@ -71,7 +71,7 @@ mvn test -pl futtoboru-core -Pnightly
 .\scripts\run-soak-with-preflight.ps1
 ```
 
-**Expected:** 131 + 5 = **136** automated methods green before L4.
+**Expected:** 152 + 5 = **157** automated methods green before L4.
 
 ---
 
@@ -81,6 +81,7 @@ mvn test -pl futtoboru-core -Pnightly
 |------|--------|
 | 2026-07-03 | Initial R-1888 release definition |
 | 2026-07-03 | Cross-links to gap analysis + PO roadmap decision |
+| 2026-07-15 | Test count 131+5 → 152+5 after QA hardening pass (cup-replay tests, save-corruption tests, soak fail-fast/progress, player-ID persistence assertion) |
 
 ---
 

@@ -13,7 +13,7 @@
 | | |
 |-|-|
 | 🟢 | Game loop works: league, cup, pick team, play matches, ratings, saves |
-| 🟢 | Automated tests: **141 + 5** green on every CI run |
+| 🟢 | Automated tests: **152 + 5** green on every CI run |
 | 🟢 | Tier A engineering blockers **8/8 closed** — ME-1, C-1, PL-5, PL-7, manual, mod load, soak |
 | 🟡 | **1 decision** left before human playtesters: your sign-off on the soak evidence below |
 | 🔴 | Human QA not started — **correct**; we finish sign-off first |
@@ -88,6 +88,7 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 
 | Date | Change |
 |------|--------|
+| 2026-07-15 | QA hardening pass: fixed a second slowdown source (inbox scan), added cup-replay tests, hardened save/load against corrupt files, extended cup soak 2→15 seasons (found non-blocking A-9 for R-1892). Tests **152+5**, all green |
 | 2026-07-15 | Soak blocker closed (fixed slowdown, faster, zero errors); **8/8** Tier A blockers closed; 141+5 tests green; only your sign-off remains |
 | 2026-07-12 | ME-1 Victorian injury UX shipped; 7/8 Tier A blockers closed; 135+5 tests green |
 | 2026-07-12 | Linked full PM status report; status unchanged (8 blockers still open) |

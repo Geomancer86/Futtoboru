@@ -40,6 +40,7 @@ releases:
       - division_two
       - reserve_squad
       - transfers_core
+      - club_insolvency_correction
     cm93_features: [F044, F062, F100, F101, F102]
 
   - id: R-1906

@@ -156,8 +156,46 @@ This is the direct answer to "what's the best way to finish": there is no more T
 
 | Date | Change |
 |------|--------|
+| 2026-07-15 (later) | QA hardening pass — see §10 addendum. Tests **141+5 → 152+5**, all green. No change to the bottom line: still a sign-off decision, not engineering. |
 | 2026-07-15 | All 8 Tier A blockers technically closed; soak re-verified faster and clean; recommended 4-step path to finish R-1888 |
 | 2026-07-12 | Full-project PM report — all stakeholders, critical path, four phases |
+
+---
+
+## 10. Addendum — same-day QA hardening pass (2026-07-15, later)
+
+A professional-tester-style pass over the codebase (not just the docs) found and closed a few real
+gaps that automated evidence alone had missed. None of these change the bottom line in §1 — R-1888
+is still gated on a **sign-off decision**, not more engineering — but they materially raise confidence
+in the evidence PM/PO are signing off on.
+
+| # | Finding | Fix |
+|---|---------|-----|
+| 1 | `CupBracketManager` — the **actual production** cup-replay implementation wired from `MatchSimulator` — had **zero direct unit tests**. A parallel, effectively dead legacy replay path in `AuthorityManager.checkCupReplays()` did have age, but wasn't what runs in-game. | Added `CupBracketManagerTest` (6 tests): replay creation + venue swap + parent link, both clubs' schedules updated, idempotent on repeat calls, winner advances to correct next-round slot (home and away), replay-of-a-replay draw still resolves. |
+| 2 | `SaveLoadSystem.loadGame()` threw an unhandled `SerializationException` on a corrupt/truncated/malformed save file, which would crash the load-game UI instead of failing gracefully. | Wrapped the deserialize call in try/catch, log via `DebugLogManager`, return `null` on failure. Added `SaveLoadCorruptionTest` (4 tests: truncated JSON, empty file, wrong-shape JSON, valid save still loads). |
+| 3 | A second O(n) hotspot beyond the already-fixed league-completion scan: `MessageManager` checked for duplicate messages by scanning the *entire* inbox history (all seasons) on every delivery. This also contributed to late-season slowdown, just less dominantly than the league-completion scan fixed earlier in the day. | Added O(1) dedup caches (`deliveredMessageIds`, `deliveredTypeTitleKeys`) rebuilt lazily when the underlying message list reference changes (e.g. after a load). |
+| 4 | The only multi-season **cup** soak (`MultiSeasonLeagueAndCupSoakIT`) ran just 2 seasons — not enough to catch cup-specific issues that only appear over time, and not aligned with the "cup subsystem stays healthy over many seasons" claim in `RELEASE_V1_DEFINITION.md` Cup-8. | Extended to 15 seasons. This surfaced a real, **non-blocking** finding: AI clubs can drift into unrecovered debt over many seasons (no bankruptcy/wage-cut mechanic exists yet — `EconomyHealthMonitor` documents this limitation itself). Tracked as **A-9** / `club_insolvency_correction` in `features.yaml`, targeted at R-1892; explicitly **not** an R-1888 regression (only 3-season non-negative balances were ever an R-1888 commitment). |
+| 5 | `RELEASE_V1_DEFINITION.md` had drifted — several ⚠️/❌ markers described bugs already fixed weeks ago, and several ✅ claims (PL-8, PL-13, PL-14, SC-1–SC-5) were true in code but had no test directly asserting them. | Full marker-by-marker QA pass; added `SeasonPlaythroughIT#sameClubsAndPlayerIdsPersistAcrossRollover` to directly assert player-ID and squad-size stability across rollover (previously only inferred from soak not crashing). |
+| 6 | `AttendanceModelIT` (nightly) depended on a strict "pre-rollover league complete" harness state that could deadlock, because `LeagueStandingsManager.isLeagueComplete()` is not reliably true right up to the rollover boundary. | Rewrote the test to use the standard lenient completion check, then recompute standings/attendance from raw match data filtered by `CompetitionEdition` id — avoids relying on live club counters that get reset at rollover. |
+
+**Net result:** 152 default-profile tests (was 141) + 5 nightly (unchanged) = **157**, all green, verified this
+session. `git status` at time of writing shows this work committed locally (not pushed, per `AGENTS.md`).
+
+**What this does *not* change:** the four-step path in §5 is unchanged. Sign-off can proceed on the existing
+soak evidence; these fixes make that evidence more trustworthy, they do not require a new soak run to be valid.
+
+---
+
+## 11. Open, tracked-but-not-blocking follow-up
+
+A separate, still-informal request from the PO ("why do later seasons take longer, and give us progress
+reporting for any long test") was turned into formal requirements and root-cause analysis in
+[ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md](ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md).
+It covers: the two O(n) hotspots above (both now fixed), a coding guideline against unbounded full-history
+scans in hot paths, an automated performance-regression gate (already added to `LongRunSoakIT`, not yet
+added to any short/PR-gate test), and four tooling gaps around running/monitoring long test jobs reliably
+in this environment. None of it blocks R-1888 sign-off; it is prioritization input for whoever picks up
+the next sprint.
 
 ---
 

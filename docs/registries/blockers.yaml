@@ -18,4 +18,16 @@ blockers:
       ~70 min total. Long tests now self-report % done + ETA (HarnessProgress) and
       fail fast on the first critical log instead of running to completion.
       See docs/planning/PM_REPORT_PROJECT_STATUS_2026_07_15.md §2-3.
+      Same day, later: fixed a second O(n) hotspot (MessageManager duplicate-message
+      scan against the full inbox history) that also contributed to late-season cost;
+      added CupBracketManagerTest (6 tests) covering the actual production cup-replay
+      path, which had zero direct test coverage before; hardened SaveLoadSystem against
+      corrupt/truncated save files instead of crashing (SaveLoadCorruptionTest, 4 tests);
+      extended MultiSeasonLeagueAndCupSoakIT from 2 to 15 seasons (surfaced A-9, a
+      non-blocking known gap, tracked in features.yaml `club_insolvency_correction`).
+      L1+L2 now 152 tests (was 141); nightly still 5; all green.
       No engineering work remains on this item; only a PM/PO sign-off decision.
+      Full soak re-run repeatedly failed to complete this session only because the
+      background process kept getting killed by the environment/tooling, not because
+      of a test failure — treat the 2026-07-15 morning full run as still current
+      evidence; do not block sign-off on a same-day re-confirmation run.

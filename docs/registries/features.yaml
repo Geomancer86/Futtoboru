@@ -3,7 +3,7 @@
 # Legacy markdown registry (may be stale): docs/planning/SYSTEMS_AND_FEATURES_REGISTRY.md
 
 schema_version: 1
-updated: "2026-07-03"
+updated: "2026-07-15"
 
 # Status: shipped | partial | stub | none
 # release_min: earliest release that ships this to players
@@ -82,3 +82,15 @@ features:
     status: none
     release_min: R-1892
     cm93_features: [F044, F062, F175]
+
+  - id: club_insolvency_correction
+    name: AI club bankruptcy / wage-cut correction
+    status: none
+    release_min: R-1892
+    plain: >
+      AI-controlled clubs can drift into unrecovered debt over many seasons because
+      there is no bankruptcy or automatic wage-cut mechanic yet (EconomyHealthMonitor
+      only monitors and warns). Found 2026-07-15 by extending cup soak coverage from
+      2 to 15 seasons; not a R-1888 regression (only 3-season non-negative balances
+      were ever an R-1888 commitment). Tracked as A-9 in release history; see
+      RELEASE_V1_DEFINITION.md TR-2 and section 9.1.

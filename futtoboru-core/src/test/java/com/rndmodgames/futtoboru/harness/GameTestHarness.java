@@ -250,6 +250,26 @@ public final class GameTestHarness {
         return game().getAllCups().get(0);
     }
 
+    /**
+     * True once the primary league's season is complete <em>or</em> any edition has ever
+     * recorded a champion. Deliberately lenient (the second half) so long soaks don't deadlock
+     * right after rollover.
+     *
+     * <p>Note (QA finding, 2026-07-15): there is intentionally no "strict, pre-rollover" variant
+     * of this method. Champion assignment ({@code AuthorityManager.completeLeagueSeason}) and the
+     * following season's stat reset ({@code SeasonManager} zeroing points/goals) run
+     * synchronously inside the <em>same</em> daily {@code checkCompetitionsSchedule()} tick.
+     * Because this harness only observes state at day boundaries, the moment where
+     * {@code LeagueStandingsManager.isLeagueComplete()} is true but stats have not yet been reset
+     * for the next season is not observable from outside the engine — a polling loop for it will
+     * run to the day cap and throw {@link SimulationDeadlockException}. (An earlier revision of
+     * this fix tried exactly that and it deadlocked at day 700 in practice.) Tests that need
+     * final-season standings/attendance after {@link #simulateUntilPrimaryLeagueComplete()}
+     * returns must recompute them from raw {@code Match} results filtered to the completed
+     * edition's ID (see {@code AttendanceModelIT}), not from live {@code Club} counters or
+     * {@code LeagueStandingsManager.calculateStandings()}, both of which read the already-reset
+     * live season state.
+     */
     public boolean isPrimaryLeagueComplete() {
         League league = primaryLeague();
         if (league == null) {

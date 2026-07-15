@@ -98,6 +98,12 @@ public class SaveLoadSystem {
     
     /**
      * TODO: fix integer keys on hashmaps deserialized as strings
+     *
+     * <p>Returns {@code null} both when the save file is missing <b>and</b> when it exists but
+     * cannot be parsed (truncated, hand-edited, or corrupted JSON). Callers ({@code LoadGameDialog})
+     * already treat {@code null} as "could not load" — before this fix, a corrupt file threw an
+     * unhandled {@code SerializationException} straight out of a UI input listener. Found by QA
+     * review 2026-07-15; see {@code SaveLoadCorruptionTest}.
      */
     public static SaveGame loadGame(String saveGameName) {
         ensureSaveGamesDirectory();
@@ -107,10 +113,16 @@ public class SaveLoadSystem {
         if (!fileHandle.exists()) {
             return null;
         }
-        if (PRODUCTION_MODE_ENCRYPT) {
-            return json.fromJson(SaveGame.class, Base64Coder.decodeString(fileHandle.readString()));
+        try {
+            if (PRODUCTION_MODE_ENCRYPT) {
+                return json.fromJson(SaveGame.class, Base64Coder.decodeString(fileHandle.readString()));
+            }
+            return json.fromJson(SaveGame.class, fileHandle.readString());
+        } catch (RuntimeException e) {
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING,
+                    "SaveLoadSystem", "Could not load save '" + baseName + "': file exists but is not valid save data", e);
+            return null;
         }
-        return json.fromJson(SaveGame.class, fileHandle.readString());
     }
     
     /**

@@ -2,7 +2,9 @@ package com.rndmodgames.futtoboru.engine.messages;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.badlogic.gdx.Gdx;
@@ -32,7 +34,17 @@ public class MessageManager {
     private Futtoboru gameInstance;
     private long nextMessageId = 1L;
     private final NewsLatencyResolver newsLatencyResolver = new NewsLatencyResolver();
-    
+
+    // Dedup caches for deliverMessage()/deliverScheduledMessages(), keyed off the live
+    // allMessages list identity. Without these, both methods re-scanned the entire (never
+    // trimmed) all-time message history on every single delivery — found 2026-07-15 via soak
+    // profiling as the dominant remaining per-season slowdown after the LeagueStandingsManager
+    // fix: inbox grows ~85 messages/season forever, so cost climbed with total game age
+    // (~60s/season at season 20 -> ~128s/season at season 45 in a 60-season soak).
+    private List<Message> dedupCacheBackingList;
+    private final Set<Long> deliveredMessageIds = new HashSet<>();
+    private final Set<String> deliveredTypeTitleKeys = new HashSet<>();
+
     public MessageManager(Futtoboru game) {
         this.gameInstance = game;
     }
@@ -46,6 +58,35 @@ public class MessageManager {
             return null;
         }
         return gameInstance.getCurrentGame();
+    }
+
+    /**
+     * Rebuilds the dedup caches from scratch whenever {@code allMessages} is a different list
+     * instance than last time (new game, or a save was loaded) — O(n) once, not on every call.
+     * Otherwise a no-op, so steady-state delivery stays O(1) regardless of inbox size.
+     */
+    private void ensureDedupCacheFresh(List<Message> allMessages) {
+        if (allMessages == dedupCacheBackingList) {
+            return;
+        }
+        deliveredMessageIds.clear();
+        deliveredTypeTitleKeys.clear();
+        for (Message existing : allMessages) {
+            if (existing == null) {
+                continue;
+            }
+            if (existing.getId() != null) {
+                deliveredMessageIds.add(existing.getId());
+            }
+            addTypeTitleKey(existing);
+        }
+        dedupCacheBackingList = allMessages;
+    }
+
+    private void addTypeTitleKey(Message message) {
+        if (message.getMessageType() != null && message.getTitle() != null) {
+            deliveredTypeTitleKeys.add(message.getMessageType() + "\u0000" + message.getTitle());
+        }
     }
     
     /**
@@ -85,18 +126,18 @@ public class MessageManager {
             if (currentGame.getAllMessages() == null) {
                 currentGame.setAllMessages(new ArrayList<>());
             }
-            
+
+            ensureDedupCacheFresh(currentGame.getAllMessages());
+
             // Check if already delivered (by ID)
-            boolean alreadyDelivered = false;
-            for (Message existing : currentGame.getAllMessages()) {
-                if (existing != null && existing.getId() != null && existing.getId().equals(message.getId())) {
-                    alreadyDelivered = true;
-                    break;
-                }
-            }
+            boolean alreadyDelivered = message.getId() != null && deliveredMessageIds.contains(message.getId());
             
             if (!alreadyDelivered) {
                 currentGame.getAllMessages().add(message);
+                if (message.getId() != null) {
+                    deliveredMessageIds.add(message.getId());
+                }
+                addTypeTitleKey(message);
                 Gdx.app.log("MessageManager", "Delivered scheduled message ID " + message.getId() + ": " + message.getTitle());
                 System.out.println("MessageManager: Delivered scheduled message ID " + message.getId() + ": " + message.getTitle() + 
                                  " (Type: " + message.getMessageType() + ", Mandatory: " + message.getIsMandatory() + ")");
@@ -191,30 +232,23 @@ public class MessageManager {
             Gdx.app.log("MessageManager", "Initialized allMessages list");
             System.out.println("MessageManager: Initialized allMessages list");
         }
-        
+
+        ensureDedupCacheFresh(currentGame.getAllMessages());
+
         // Check if message with same ID already exists (more reliable than contains())
-        if (message.getId() != null) {
-            for (Message existing : currentGame.getAllMessages()) {
-                if (existing != null && existing.getId() != null && existing.getId().equals(message.getId())) {
-                    Gdx.app.log("MessageManager", "Message with ID " + message.getId() + " already delivered: " + message.getTitle());
-                    System.out.println("MessageManager: Message with ID " + message.getId() + " already delivered: " + message.getTitle());
-                    return;
-                }
-            }
+        if (message.getId() != null && deliveredMessageIds.contains(message.getId())) {
+            Gdx.app.log("MessageManager", "Message with ID " + message.getId() + " already delivered: " + message.getTitle());
+            System.out.println("MessageManager: Message with ID " + message.getId() + " already delivered: " + message.getTitle());
+            return;
         }
-        
+
         // Also check for duplicate messages by type and title (for welcome messages, etc.)
         // This prevents creating multiple welcome messages if updateDynamicComponents is called multiple times
-        if (message.getMessageType() != null && message.getTitle() != null) {
-            for (Message existing : currentGame.getAllMessages()) {
-                if (existing != null && 
-                    existing.getMessageType() != null && existing.getMessageType().equals(message.getMessageType()) &&
-                    existing.getTitle() != null && existing.getTitle().equals(message.getTitle())) {
-                    Gdx.app.log("MessageManager", "Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
-                    System.out.println("MessageManager: Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
-                    return;
-                }
-            }
+        if (message.getMessageType() != null && message.getTitle() != null
+                && deliveredTypeTitleKeys.contains(message.getMessageType() + "\u0000" + message.getTitle())) {
+            Gdx.app.log("MessageManager", "Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
+            System.out.println("MessageManager: Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
+            return;
         }
         
         // Remove from scheduled if it exists there (by ID if available, otherwise by reference)
@@ -238,6 +272,8 @@ public class MessageManager {
         
         // Add to allMessages
         currentGame.getAllMessages().add(message);
+        deliveredMessageIds.add(message.getId());
+        addTypeTitleKey(message);
         
         int totalMessages = currentGame.getAllMessages().size();
         Gdx.app.log("MessageManager", "Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");

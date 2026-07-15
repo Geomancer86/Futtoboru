@@ -22,6 +22,14 @@ class LongRunSoakIT {
     private static final int TARGET_CHAMPION_EDITIONS = 60;
     private static final int MAX_DAYS = 700 * TARGET_CHAMPION_EDITIONS;
 
+    /**
+     * Performance regression gate. Baseline on 2026-07-15 (after fixing the O(history) late-season
+     * slowdown — see ANALYSIS_SOAK_LATE_SEASON_SLOWDOWN_V1.md) was 69.96 s/season; the pre-fix
+     * regression this guard is meant to catch ran at 87.23 s/season. Set with headroom above normal
+     * machine-to-machine variance so this only trips on a real reintroduced slowdown, not noise.
+     */
+    private static final double MAX_SECONDS_PER_SEASON = 150.0;
+
     private GameTestHarness harness;
 
     @BeforeEach
@@ -45,6 +53,13 @@ class LongRunSoakIT {
 
         System.out.println("LongRunSoakIT timing: " + report.getElapsedMs() + " ms, "
                 + String.format("%.2f s/season", report.getSecondsPerSeason()));
+
+        assertTrue(report.getSecondsPerSeason() < MAX_SECONDS_PER_SEASON,
+                String.format(
+                        "Soak performance regression: %.2f s/season exceeds the %.0f s/season gate "
+                                + "(baseline 69.96 s/season on 2026-07-15). "
+                                + "Look for a reintroduced O(history) scan over unbounded per-club match lists.",
+                        report.getSecondsPerSeason(), MAX_SECONDS_PER_SEASON));
     }
 
     private static List<Long> championClubIds(League league) {

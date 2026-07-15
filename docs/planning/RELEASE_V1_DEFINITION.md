@@ -68,33 +68,33 @@ with that season's configured rules — repeating indefinitely.
 
 | ID | Criterion | Current state |
 |----|-----------|---------------|
-| PL-1 | Continue advances exactly one day per action | ⚠️ Double-click bug |
+| PL-1 | Continue advances exactly one day per action | ✅ Fixed 2026-07-12 (A-3) — `ContinueDayAdvanceIT` |
 | PL-2 | All league matches on a date auto-simulate | ✅ Works |
-| PL-3 | Standings update correctly from results | ✅ Works (wrong rules) |
-| PL-4 | Player can view squad, schedule, league table, finances | ⚠️ Partial |
-| PL-5 | Match results appear in inbox / history | ⚠️ History click broken |
+| PL-3 | Standings update correctly from results | ✅ Correct 2-1-0 rules — `HistoricalLeagueRulesIT` |
+| PL-4 | Player can view squad, schedule, league table, finances | ⚠️ Partial (screens exist; not click-tested — see L2.5/L4 gap) |
+| PL-5 | Match results appear in inbox / history | ✅ Fixed 2026-07-12 (A-4) — `MatchHistoryNavigationIT` |
 | PL-6 | Weekly club expenses deduct including player wages | ✅ Works |
-| PL-7 | Save and load restores identical game state | ⚠️ Job system broken on load |
-| PL-8 | Friendly matches do not count toward league completion | ❌ `matchesPlayed` mixed |
+| PL-7 | Save and load restores identical game state | ✅ Fixed 2026-07-12 (A-5); hardened against corrupt files 2026-07-15 — `SaveLoadSystemPathsTest`, `SaveLoadCorruptionTest` |
+| PL-8 | Friendly matches do not count toward league completion | ✅ `LeagueStandingsManager` filters on `Match.LEAGUE_MATCH`; verified in code 2026-07-15 |
 
 ### 4.3 Season completion
 
 | ID | Criterion | Current state |
 |----|-----------|---------------|
-| SC-1 | Engine detects when all league fixtures are played | ⚠️ Wired in `AuthorityManager`; friendlies may break signal (RB-7) |
-| SC-2 | Final standings frozen; champion determined | ⚠️ Wired; needs E2E proof |
-| SC-3 | `CompetitionEdition` records champion, end date | ⚠️ Partial |
-| SC-4 | Inbox/notification announces season end and champion | ⚠️ Partial |
-| SC-5 | No duplicate fixtures generated after season ends | ❌ Latent bug |
-| SC-6 | 1888 re-election (bottom 4) applied or scripted | ❌ Not implemented |
-| SC-7 | Optional: mid-season rule change (Nov 1888 points) | ❌ Not implemented |
+| SC-1 | Engine detects when all league fixtures are played | ✅ `isLeagueComplete()`; season-scoped since 2026-07-12 fix — `LeagueStandingsManagerTest` |
+| SC-2 | Final standings frozen; champion determined | ✅ `HistoricalLeagueRulesIT`, `SeasonPlaythroughIT` |
+| SC-3 | `CompetitionEdition` records champion, end date | ✅ `LongRunSoakIT` asserts 60/60 editions with recorded champions |
+| SC-4 | Inbox/notification announces season end and champion | ✅ Works (not click-tested — see PL-4) |
+| SC-5 | No duplicate fixtures generated after season ends | ✅ `SimulationHealthMonitor` duplicate-match-ID scan + `LeagueFixtureGenerator` club dedup guard; verified in code 2026-07-15 |
+| SC-6 | 1888 re-election (bottom 4) applied or scripted | ❌ **Deliberately deferred** (PO decision §10.4) — not implemented, not even message-only |
+| SC-7 | Optional: mid-season rule change (Nov 1888 points) | ❌ **Deliberately deferred** (PO decision §10.3) |
 
 ### 4.4 Season transition (season N → N+1)
 
 | ID | Criterion | Current state |
 |----|-----------|---------------|
 | TR-1 | Club league stats reset (points, W/D/L, goals, league matches) | ✅🧪 SeasonManager |
-| TR-2 | Season income/expenditure rolled or archived | ⚠️ Partial |
+| TR-2 | Season income/expenditure rolled or archived | ⚠️ Partial — rolls forward, but there is no bankruptcy/wage-cut correction; AI clubs can drift into unrecoverable debt over many seasons (tracked as **A-9**, found 2026-07-15 by extending soak coverage past 3 seasons; not an R-1888 regression, `EconomyHealthMonitor` has always documented itself as "no bankruptcy simulation yet") |
 | TR-3 | Played matches archived; new fixture list generated | ✅🧪 |
 | TR-4 | `gameStartDate` / season window advances to next season | ⚠️ Procedural dates differ from historical |
 | TR-5 | Next season rules from edition snapshot / in-save scripts (not new mod folder) | ✅🧪 Rules snapshot |
@@ -110,7 +110,7 @@ with that season's configured rules — repeating indefinitely.
 | LP-3 | Script system supports in-season timeline events + rollover hooks | ⚠️ League/cup creation only |
 | LP-4 | Rules can differ per season (points, tie-breakers, format) | ✅🧪 Snapshot; amendments defer |
 | LP-5 | Save game survives 3+ season transitions | ✅🧪 |
-| LP-6 | No memory/state leak across seasons (IDs, messages, scripts) | ✅🧪 Short soak; monitor inbox |
+| LP-6 | No memory/state leak across seasons (IDs, messages, scripts) | ✅🧪 60-season `LongRunSoakIT` proves no *scan-cost* blowup (fixed 2026-07-12); per-club match-history lists still grow unbounded in memory across seasons — not a leak that crashes in any tested horizon, but not trimmed/archived either |
 
 ### 4.6 FA Cup (in v1.0)
 
@@ -122,6 +122,8 @@ with that season's configured rules — repeating indefinitely.
 | Cup-4 | Cup results do not break league completion signal | ✅🧪 RB-7 |
 | Cup-5 | Cup winner on `CompetitionEdition` | ✅🧪 |
 | Cup-6 | League + cup completable same season | ✅🧪 `LeagueAndCupIT` |
+| Cup-7 | Drawn cup matches get a replay, and the replay advances the bracket | ✅🧪 `CupBracketManager` (the active implementation, wired from `MatchSimulator`) — was **zero test coverage** until `CupBracketManagerTest` added 2026-07-15. Note: a second, legacy replay path in `AuthorityManager.checkCupReplays()` is effectively dead code once brackets use parent-match links — worth deleting in a follow-up to avoid two competing implementations. |
+| Cup-8 | Cup subsystem stays healthy over many seasons, not just 2 | ✅🧪 `MultiSeasonLeagueAndCupSoakIT` extended from 2→15 seasons 2026-07-15 (previously the *only* multi-season cup coverage; the 60-season north-star soak deliberately disables cups for speed) |
 
 ### 4.7 Player lifecycle (v1.0 — static world)
 
@@ -131,8 +133,8 @@ with that season's configured rules — repeating indefinitely.
 | PL-10 | No player retirement | ✅ None implemented |
 | PL-11 | No player death / mortality | ✅ None implemented |
 | PL-12 | `birthDate` fixed; age display may increase with calendar | ⚠️ Implicit only |
-| PL-13 | Same player IDs persist across season rollovers | ❌ Rollover not implemented |
-| PL-14 | Squad size stable unless season mod replaces players | ❌ Untested |
+| PL-13 | Same player IDs persist across season rollovers | ✅ Explicit assertion added 2026-07-15 — `SeasonPlaythroughIT#sameClubsAndPlayerIdsPersistAcrossRollover` (previously only inferred from soak not crashing) |
+| PL-14 | Squad size stable unless season mod replaces players | ✅ Same test as PL-13, 2026-07-15 |
 
 Policy detail: [V1_TESTING_AND_SIMULATION_PLAN.md §7](V1_TESTING_AND_SIMULATION_PLAN.md#7-player-lifecycle--static-world-v1-policy).
 
@@ -244,6 +246,20 @@ Scripts fire on `executionTime` during the save; they are **not** “load next y
 - [ ] Play through 3 seasons without new game
 - [ ] FA Cup knockout completes; does not block league completion
 - [ ] No soft-lock on mandatory draw (league or cup)
+
+---
+
+## 9.1 QA accuracy pass (2026-07-15)
+
+This document had drifted: several ⚠️/❌ markers above described bugs that were already fixed
+(PL-1, PL-5, PL-7) or behavior that was already correct in code but never asserted directly
+(PL-8, PL-13, PL-14, SC-1–SC-5). A professional-tester review cross-checked every marker against
+current source and tests and updated them in place; see each row for the specific test class now
+backing it. One new, non-blocking finding surfaced by that review is tracked as **A-9** (TR-2) —
+AI-controlled clubs can drift into unrecovered debt over many seasons because there is no
+bankruptcy/wage-cut mechanic; this is a pre-existing, documented limitation
+(`EconomyHealthMonitor` says so in its own class comment), not a regression, and was never part
+of the R-1888 commitment (only 3-season non-negative balances were ever asserted).
 
 ---
 
