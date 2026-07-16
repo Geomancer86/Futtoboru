@@ -30,6 +30,16 @@ class LongRunSoakIT {
      */
     private static final double MAX_SECONDS_PER_SEASON = 150.0;
 
+    /**
+     * Slowest-single-season gate. The run-wide average above can hide the fact that per-season
+     * cost still grows noticeably from season 1 to season 60 (roughly 1s -&gt; ~145-165s observed
+     * on 2026-07-15, run after both known O(history) scans were fixed) — this catches a *worse*
+     * blow-up even if the average would otherwise pass. Set with headroom above the ~165s worst
+     * season observed on that run so this only trips on a real further regression, not noise.
+     * See docs/planning/ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md.
+     */
+    private static final double MAX_SECONDS_FOR_SLOWEST_SEASON = 260.0;
+
     private GameTestHarness harness;
 
     @BeforeEach
@@ -60,6 +70,19 @@ class LongRunSoakIT {
                                 + "(baseline 69.96 s/season on 2026-07-15). "
                                 + "Look for a reintroduced O(history) scan over unbounded per-club match lists.",
                         report.getSecondsPerSeason(), MAX_SECONDS_PER_SEASON));
+
+        System.out.println("LongRunSoakIT slowest season: "
+                + String.format("%.2f s", report.getMaxSecondsPerSeason()));
+
+        assertTrue(report.getMaxSecondsPerSeason() < MAX_SECONDS_FOR_SLOWEST_SEASON,
+                String.format(
+                        "Soak performance regression: the single slowest season took %.2f s, "
+                                + "exceeding the %.0f s per-season gate (baseline worst season was "
+                                + "~165 s on 2026-07-15). The run-wide average can pass even when "
+                                + "this fails, because late seasons are the slow ones and early "
+                                + "seasons pull the average down — this gate exists specifically "
+                                + "to catch that case.",
+                        report.getMaxSecondsPerSeason(), MAX_SECONDS_FOR_SLOWEST_SEASON));
     }
 
     private static List<Long> championClubIds(League league) {

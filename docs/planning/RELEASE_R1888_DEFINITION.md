@@ -67,11 +67,16 @@ mvn test -pl futtoboru-core
 # L3 nightly (required before human QA)
 mvn test -pl futtoboru-core -Pnightly
 
-# L3 soak (PM sign-off once)
+# L3 soak (engineering-only, once — produces evidence for PM/PO sign-off, not a human-tester task)
 .\scripts\run-soak-with-preflight.ps1
 ```
 
 **Expected:** 152 + 5 = **157** automated methods green before L4.
+
+**Note:** L4 human testers run/verify **only** the L1+L2 command above (~1 min) plus normal manual play.
+They never run the nightly (L3) or soak commands — those are engineering/CI artifacts that generate the
+evidence PM/PO use to sign off, produced before testers are ever invited. See
+[ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md](ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md) §4.
 
 ---
 

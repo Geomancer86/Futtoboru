@@ -2,6 +2,7 @@ package com.rndmodgames.futtoboru.data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +82,17 @@ public class Club implements Serializable {
      * Keeps daily completion checks O(current season) instead of O(all history).
      */
     private int playedMatchesSeasonStartIndex = 0;
+
+    /**
+     * Date of this club's most recently finalized match (any competition). Maintained
+     * incrementally whenever a match is moved into {@link #playedMatches} so daily fitness/fatigue
+     * ticks can check "did this club play yesterday?" in O(1) instead of linear-scanning the
+     * entire (never-trimmed) match history every single day — found 2026-07-15 as the dominant
+     * remaining late-soak slowdown after the isLeagueComplete and MessageManager fixes, because
+     * unlike those two, this scan ran unconditionally every day, not just at season-completion
+     * checks or message delivery. See PlayerConditionService#tickDaily.
+     */
+    private LocalDate lastMatchDate;
     
     /**
      * Club Finances
@@ -316,6 +328,27 @@ public class Club implements Serializable {
      */
     public void markPlayedMatchesSeasonBoundary() {
         setPlayedMatchesSeasonStartIndex(playedMatches != null ? playedMatches.size() : 0);
+    }
+
+    public LocalDate getLastMatchDate() {
+        return lastMatchDate;
+    }
+
+    public void setLastMatchDate(LocalDate lastMatchDate) {
+        this.lastMatchDate = lastMatchDate;
+    }
+
+    /**
+     * Record {@code matchDate} as this club's most recent match date, if later than what is
+     * already stored. Safe to call multiple times / out of order.
+     */
+    public void recordMatchPlayedOn(LocalDate matchDate) {
+        if (matchDate == null) {
+            return;
+        }
+        if (lastMatchDate == null || matchDate.isAfter(lastMatchDate)) {
+            lastMatchDate = matchDate;
+        }
     }
 
     public void setPlayers(List<Player> players) {

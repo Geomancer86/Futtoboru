@@ -101,13 +101,33 @@ public final class AttendanceCalculator {
         return 1.0;
     }
 
+    /**
+     * How many of the most-recently-played matches to look at when hunting for the last 5
+     * non-friendly results. Generous enough to skip past the occasional friendly without missing
+     * a real result, while staying a small constant regardless of career length.
+     */
+    private static final int RECENT_FORM_SCAN_WINDOW = 20;
+
     static double computeFormRate(Club club) {
         if (club == null) {
             return 0.5;
         }
+        // playedMatches is appended to in the order matches are finalized (chronological), and
+        // is never trimmed across a career, so it can hold thousands of entries by late seasons.
+        // The old code copied the *entire* list plus scheduledMatches into a new ArrayList and
+        // sorted it by date on every single call (once per match simulated) just to read the
+        // last 5 results — found 2026-07-15 as the dominant remaining late-soak slowdown (worse
+        // than a plain scan because of the O(n log n) sort). Since the list is already in
+        // chronological order, we only need its tail — no copy of old history, no sort of it.
         List<Match> recent = new ArrayList<>();
-        collectRecentResults(club.getPlayedMatches(), recent);
         collectRecentResults(club.getScheduledMatches(), recent);
+        List<Match> played = club.getPlayedMatches();
+        if (played != null) {
+            int tailStart = Math.max(0, played.size() - RECENT_FORM_SCAN_WINDOW);
+            for (int i = tailStart; i < played.size(); i++) {
+                recent.add(played.get(i));
+            }
+        }
         recent.removeIf(m -> m == null || !Boolean.TRUE.equals(m.getIsPlayed()));
         recent.sort(Comparator.comparing(Match::getMatchDateTime, Comparator.nullsLast(Comparator.reverseOrder())));
 

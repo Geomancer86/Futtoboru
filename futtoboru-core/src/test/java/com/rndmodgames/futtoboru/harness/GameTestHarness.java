@@ -454,7 +454,7 @@ public final class GameTestHarness {
                     long nowNs = System.nanoTime();
                     double seasonSeconds = (nowNs - lastSeasonNs) / 1_000_000_000.0;
                     lastSeasonNs = nowNs;
-                    report.addSeason(snapshotLatestChampionEdition(championCount));
+                    report.addSeason(snapshotLatestChampionEdition(championCount, seasonSeconds));
                     report.recordEconomyScan(game());
                     if (periodicHealthScans) {
                         report.recordHealthScan(scanSimulationHealth(!leagueOnly));
@@ -620,7 +620,7 @@ public final class GameTestHarness {
                 && match.getMatchType() == Match.LEAGUE_MATCH;
     }
 
-    private SeasonEditionSummary snapshotLatestChampionEdition(int editionNumber) {
+    private SeasonEditionSummary snapshotLatestChampionEdition(int editionNumber, double wallSeconds) {
         SaveGame save = game();
         League league = primaryLeague();
         CompetitionEdition edition = null;
@@ -653,7 +653,8 @@ public final class GameTestHarness {
                 income,
                 spend,
                 simIndex,
-                inbox);
+                inbox,
+                wallSeconds);
     }
 
     private static String resolveClubName(Long clubId) {

@@ -163,6 +163,21 @@ public final class MultiSeasonSimulationReport {
         return seasons.isEmpty() ? 0 : elapsedMs / 1000.0 / seasons.size();
     }
 
+    /**
+     * Slowest single season in this run. A run-wide average (see {@link #getSecondsPerSeason()})
+     * can stay well within a regression gate even while individual late-run seasons quietly get
+     * much slower than early ones — this exposes that worst case so a test can gate on it too.
+     */
+    public double getMaxSecondsPerSeason() {
+        double max = 0;
+        for (SeasonEditionSummary season : seasons) {
+            if (season.getWallSeconds() > max) {
+                max = season.getWallSeconds();
+            }
+        }
+        return max;
+    }
+
     public long getProjectedSecondsForSeasons(int count) {
         return Math.round(getSecondsPerSeason() * count);
     }

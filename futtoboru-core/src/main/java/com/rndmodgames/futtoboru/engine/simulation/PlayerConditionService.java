@@ -190,17 +190,19 @@ public final class PlayerConditionService {
         messageManager.createInjuryNewsMessage(player, condition);
     }
 
+    /**
+     * O(1) via {@link Club#getLastMatchDate()} (maintained incrementally as matches are
+     * finalized), not a scan of {@link Club#getPlayedMatches()}. That scan used to run for
+     * every club, every single day (via {@link #tickDaily}), over a list that never shrinks
+     * and grows every season — found 2026-07-15 as the dominant remaining cause of late-soak
+     * slowdown (a per-day cost, unlike the once-per-season-completion-check and
+     * once-per-message-delivery hotspots fixed earlier the same day).
+     */
     private static boolean clubHadMatchOnDate(Club club, LocalDate date) {
-        if (club.getPlayedMatches() == null || date == null) {
+        if (date == null) {
             return false;
         }
-        for (Match match : club.getPlayedMatches()) {
-            if (match != null && match.getMatchDateTime() != null
-                    && match.getMatchDateTime().toLocalDate().equals(date)) {
-                return true;
-            }
-        }
-        return false;
+        return date.equals(club.getLastMatchDate());
     }
 
     static int clampPct(int value) {

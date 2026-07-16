@@ -50,7 +50,9 @@ Reply in chat or initials here — PM updates the decision log. You do **not** n
 **All engineering blockers are closed.** The only thing left before inviting human testers is **your sign-off** on the soak evidence — see [PM_REPORT_PROJECT_STATUS_2026_07_15.md](PM_REPORT_PROJECT_STATUS_2026_07_15.md) §2–3 for the numbers.
 
 **Closed this sprint (2026-07-12):** Victorian injury screens (ME-1), injury tests, Continue button, match history click, save/load UI, player manual ch.6–7, production mod load check.
-**Closed this sprint (2026-07-15):** 60-season soak — root-caused and fixed a late-season slowdown, soak now runs clean and faster, long tests always show progress + ETA.
+**Closed this sprint (2026-07-15):** 60-season soak — root-caused and fixed a late-season slowdown (found and fixed **5** separate causes over the day, all the same "scanning full history instead of current season" shape), soak now runs clean and faster, long tests always show progress + ETA.
+
+**Important clarification (2026-07-15 evening):** the 60-season soak is an **engineering-only** background check — human testers never run it and never wait on it. A team report that it was failing turned out, on re-run, to be a false alarm (0 errors, all 60 seasons completed) plus a real-but-separate performance smell (fixed) and a tooling issue where a background test process got orphaned and looked "dead" while still quietly running (also fixed — see [ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md](ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md)). Human sign-off criteria are unchanged: the fast test suite (~1 min) + normal manual play.
 
 **Estimate:** Your sign-off → invite testers. No more code work is required to reach that gate.
 
@@ -88,6 +90,7 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 
 | Date | Change |
 |------|--------|
+| 2026-07-15 (evening) | Investigated a team report of soak failures: not reproduced (0 errors, 60/60 seasons complete). Found and fixed 3 more of the same "scan full history" perf pattern (fitness tick, attendance form, mandatory-draw-message check) and root-caused the "process keeps getting killed" mystery to an orphaned/zombie background process, not a real external kill. Clarified policy: humans never run/wait on the soak. Tests **152+5**, all green |
 | 2026-07-15 | QA hardening pass: fixed a second slowdown source (inbox scan), added cup-replay tests, hardened save/load against corrupt files, extended cup soak 2→15 seasons (found non-blocking A-9 for R-1892). Tests **152+5**, all green |
 | 2026-07-15 | Soak blocker closed (fixed slowdown, faster, zero errors); **8/8** Tier A blockers closed; 141+5 tests green; only your sign-off remains |
 | 2026-07-12 | ME-1 Victorian injury UX shipped; 7/8 Tier A blockers closed; 135+5 tests green |

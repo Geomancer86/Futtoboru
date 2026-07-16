@@ -18,6 +18,7 @@ public final class SeasonEditionSummary {
     private final BigDecimal playerSeasonExpenditure;
     private final int simulatedSeasonIndex;
     private final int inboxMessageCount;
+    private final double wallSeconds;
 
     SeasonEditionSummary(
             int editionNumber,
@@ -29,7 +30,8 @@ public final class SeasonEditionSummary {
             BigDecimal playerSeasonIncome,
             BigDecimal playerSeasonExpenditure,
             int simulatedSeasonIndex,
-            int inboxMessageCount) {
+            int inboxMessageCount,
+            double wallSeconds) {
         this.editionNumber = editionNumber;
         this.editionName = editionName;
         this.championClubId = championClubId;
@@ -40,6 +42,7 @@ public final class SeasonEditionSummary {
         this.playerSeasonExpenditure = playerSeasonExpenditure;
         this.simulatedSeasonIndex = simulatedSeasonIndex;
         this.inboxMessageCount = inboxMessageCount;
+        this.wallSeconds = wallSeconds;
     }
 
     public int getEditionNumber() {
@@ -80,5 +83,14 @@ public final class SeasonEditionSummary {
 
     public int getInboxMessageCount() {
         return inboxMessageCount;
+    }
+
+    /**
+     * Wall-clock seconds this single season took to simulate (time since the previous season's
+     * champion was recorded). Used to catch late-run performance regressions that a run-wide
+     * average can hide — see {@code LongRunSoakIT#MAX_SECONDS_FOR_SLOWEST_SEASON}.
+     */
+    public double getWallSeconds() {
+        return wallSeconds;
     }
 }

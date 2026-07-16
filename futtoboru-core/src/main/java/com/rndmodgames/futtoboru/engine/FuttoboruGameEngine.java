@@ -16,6 +16,7 @@ import com.rndmodgames.futtoboru.data.AttributeTrackingConstants;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ClubExpenses;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.engine.finances.ExpenseCalculator;
@@ -65,6 +66,17 @@ public class FuttoboruGameEngine {
     
     // Message Manager (v2.0)
     private MessageManager messageManager;
+
+    // Incremental cache for hasMandatoryUnreadDrawMessages(): mandatory draw messages are rare
+    // (roughly 1-2 per season) but that method used to linear-scan the *entire* all-time inbox
+    // (thousands of messages by late career) up to 3x per day, every day, forever. Instead, scan
+    // only the messages appended since the last check (cheap, usually zero) to keep this small
+    // candidate list current, then check read/deleted status on just those few candidates. Found
+    // 2026-07-15 as a dominant remaining late-soak slowdown alongside the AttendanceCalculator
+    // and PlayerConditionService fixes from the same investigation.
+    private List<Message> mandatoryDrawScanBackingList;
+    private int mandatoryDrawScanIndex = 0;
+    private final List<Message> mandatoryDrawCandidates = new ArrayList<>();
     
     //
     public static final int CONTINUE_GAME_ACTION = 1;
@@ -121,57 +133,33 @@ public class FuttoboruGameEngine {
          * (e.g., draw screens that must be viewed)
          */
         if (currentGame != null && currentGame.getAllMessages() != null) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Checking for mandatory messages. Total messages: " + currentGame.getAllMessages().size());
-            
-            for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
-                if (message != null) {
-                    boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
-                    boolean isUnread = message.getIsRead() == null || !message.getIsRead();
-                    boolean isNotDeleted = message.getIsDeleted() == null || !message.getIsDeleted();
-                    String messageType = message.getMessageType();
-                    
-                    if (isMandatory && isUnread && isNotDeleted) {
-                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Found mandatory message - Type: " + messageType + 
-                                         ", Title: " + message.getTitle() + ", IsMandatory: " + isMandatory + 
-                                         ", IsRead: " + message.getIsRead());
-                        
-                        // Check if it's a draw-related message
-                        if (messageType != null && 
-                            (messageType.equals("LEAGUE_DRAW") || 
-                             messageType.equals("CUP_DRAW") ||
-                             messageType.equals("FIXTURE_DRAW"))) {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Mandatory draw message found, blocking time advancement");
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: BLOCKING TIME ADVANCEMENT - Mandatory draw message: " + message.getTitle());
-                            return DRAW_ACTION;
-                        }
-                    }
+            // Uses the same small incremental candidate cache as hasMandatoryUnreadDrawMessages()
+            // instead of its own full scan of the ever-growing allMessages list — this method is
+            // called on essentially every UI/harness tick, so it used to be an even hotter path
+            // for the same O(all-time inbox) cost. See mandatoryDrawCandidates field javadoc.
+            refreshMandatoryDrawCandidates(currentGame.getAllMessages());
+            for (Message message : mandatoryDrawCandidates) {
+                boolean isUnread = message.getIsRead() == null || !message.getIsRead();
+                boolean isNotDeleted = message.getIsDeleted() == null || !message.getIsDeleted();
+                if (isUnread && isNotDeleted) {
+                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Mandatory draw message found, blocking time advancement");
+                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: BLOCKING TIME ADVANCEMENT - Mandatory draw message: " + message.getTitle());
+                    return DRAW_ACTION;
                 }
             }
             
             // CRITICAL: Also check scheduledMessages for ANY mandatory draw messages
             // This matches the blocking logic in hasMandatoryUnreadDrawMessages() which blocks on ANY scheduled mandatory draw message
             // The button should show DRAW_ACTION if there's ANY mandatory draw message scheduled, regardless of when it's due
+            // scheduledMessages is always small (current season's pending draws only), so a plain scan is fine here.
             if (currentGame.getScheduledMessages() != null) {
                 LocalDateTime currentDate = currentGame.getGameDate();
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Checking scheduled messages for mandatory draws. Total scheduled: " + currentGame.getScheduledMessages().size());
-                for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
-                    if (message != null) {
-                        boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
-                        String messageType = message.getMessageType();
-                        
-                        // Return DRAW_ACTION if it's a mandatory draw message, regardless of scheduled date
-                        // This ensures the button shows correctly when hasMandatoryUnreadDrawMessages() blocks continueGame()
-                        if (isMandatory) {
-                            if (messageType != null && 
-                                (messageType.equals("LEAGUE_DRAW") || 
-                                 messageType.equals("CUP_DRAW") ||
-                                 messageType.equals("FIXTURE_DRAW"))) {
-                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Found scheduled mandatory draw message: " + message.getTitle() + 
-                                             " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + 
-                                             ") - returning DRAW_ACTION");
-                                return DRAW_ACTION;
-                            }
-                        }
+                for (Message message : currentGame.getScheduledMessages()) {
+                    if (message != null && isMandatoryDrawType(message)) {
+                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Found scheduled mandatory draw message: " + message.getTitle() + 
+                                     " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + 
+                                     ") - returning DRAW_ACTION");
+                        return DRAW_ACTION;
                     }
                 }
             }
@@ -258,17 +246,22 @@ public class FuttoboruGameEngine {
         Club homeClub = gameInstance.getCurrentGame().getClubById(nextMatch.getHomeClubId());
         Club awayClub = gameInstance.getCurrentGame().getClubById(nextMatch.getAwayClubId());
 
+        java.time.LocalDate matchDate = nextMatch.getMatchDateTime() != null
+                ? nextMatch.getMatchDateTime().toLocalDate() : null;
+
         if (homeClub != null) {
             homeClub.getScheduledMatches().remove(nextMatch);
             if (!homeClub.getPlayedMatches().contains(nextMatch)) {
                 homeClub.getPlayedMatches().add(nextMatch);
             }
+            homeClub.recordMatchPlayedOn(matchDate);
         }
         if (awayClub != null) {
             awayClub.getScheduledMatches().remove(nextMatch);
             if (!awayClub.getPlayedMatches().contains(nextMatch)) {
                 awayClub.getPlayedMatches().add(nextMatch);
             }
+            awayClub.recordMatchPlayedOn(matchDate);
         }
 
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "Match simulated: "
@@ -692,58 +685,74 @@ public class FuttoboruGameEngine {
         if (currentGame == null) {
             return false;
         }
-        
+
         LocalDateTime currentDate = currentGame.getGameDate();
-        
-        // Check delivered messages first
-        if (currentGame.getAllMessages() != null) {
-            for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
-                if (message != null) {
-                    boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
-                    boolean isUnread = message.getIsRead() == null || !message.getIsRead();
-                    boolean isNotDeleted = message.getIsDeleted() == null || !message.getIsDeleted();
-                    String messageType = message.getMessageType();
-                    
-                    if (isMandatory && isUnread && isNotDeleted) {
-                        if (messageType != null && 
-                            (messageType.equals("LEAGUE_DRAW") || 
-                             messageType.equals("CUP_DRAW") ||
-                             messageType.equals("FIXTURE_DRAW"))) {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Found mandatory unread draw message in getAllMessages: " + message.getTitle());
-                            return true;
-                        }
-                    }
-                }
+
+        // Check delivered messages first — via the small incremental candidate cache, not a
+        // full scan of the ever-growing allMessages list (see field javadoc above).
+        refreshMandatoryDrawCandidates(currentGame.getAllMessages());
+        for (Message message : mandatoryDrawCandidates) {
+            boolean isUnread = message.getIsRead() == null || !message.getIsRead();
+            boolean isNotDeleted = message.getIsDeleted() == null || !message.getIsDeleted();
+            if (isUnread && isNotDeleted) {
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Found mandatory unread draw message in getAllMessages: " + message.getTitle());
+                return true;
             }
         }
-        
+
         // CRITICAL: Also check scheduled messages for ANY mandatory draw messages
         // This ensures league matches are NEVER simulated if there's ANY mandatory draw message scheduled,
         // regardless of when it's scheduled. The draw must be completed before ANY league matches can be played.
+        // scheduledMessages is always small (bounded by the current season's pending draws), so a plain
+        // scan here is fine and does not need the same treatment as allMessages above.
         if (currentGame.getScheduledMessages() != null) {
-            for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
-                if (message != null) {
-                    boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
-                    String messageType = message.getMessageType();
-                    
-                    // Block if it's a mandatory draw message, regardless of scheduled date
-                    // This ensures league matches are NEVER simulated before the draw is completed
-                    if (isMandatory) {
-                        if (messageType != null && 
-                            (messageType.equals("LEAGUE_DRAW") || 
-                             messageType.equals("CUP_DRAW") ||
-                             messageType.equals("FIXTURE_DRAW"))) {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Found mandatory draw message in scheduledMessages: " + message.getTitle() + 
-                                         " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + 
-                                         ") - blocking ALL league match simulation until draw is completed");
-                            return true;
-                        }
-                    }
+            for (Message message : currentGame.getScheduledMessages()) {
+                if (message != null && isMandatoryDrawType(message)) {
+                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Found mandatory draw message in scheduledMessages: " + message.getTitle() + 
+                                 " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + 
+                                 ") - blocking ALL league match simulation until draw is completed");
+                    return true;
                 }
             }
         }
-        
+
         return false;
+    }
+
+    /**
+     * Rebuilds {@link #mandatoryDrawCandidates} incrementally: only scans the slice of
+     * {@code allMessages} appended since the last call (usually zero new messages), and only
+     * fully resets (rescans everything once) if the list is a different instance than last time
+     * (new game, or a save was loaded).
+     */
+    private void refreshMandatoryDrawCandidates(List<Message> allMessages) {
+        if (allMessages != mandatoryDrawScanBackingList) {
+            mandatoryDrawCandidates.clear();
+            mandatoryDrawScanIndex = 0;
+            mandatoryDrawScanBackingList = allMessages;
+        }
+        if (allMessages == null) {
+            return;
+        }
+        for (int i = mandatoryDrawScanIndex; i < allMessages.size(); i++) {
+            Message message = allMessages.get(i);
+            if (message != null && isMandatoryDrawType(message)) {
+                mandatoryDrawCandidates.add(message);
+            }
+        }
+        mandatoryDrawScanIndex = allMessages.size();
+    }
+
+    private static boolean isMandatoryDrawType(Message message) {
+        boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
+        if (!isMandatory) {
+            return false;
+        }
+        String messageType = message.getMessageType();
+        return messageType != null
+                && (messageType.equals("LEAGUE_DRAW")
+                        || messageType.equals("CUP_DRAW")
+                        || messageType.equals("FIXTURE_DRAW"));
     }
     
     /**
@@ -906,6 +915,7 @@ public class FuttoboruGameEngine {
                     if (!homeClub.getPlayedMatches().contains(match)) {
                         homeClub.getPlayedMatches().add(match);
                     }
+                    homeClub.recordMatchPlayedOn(targetDate);
                 }
                 
                 if (awayClub != null) {
@@ -913,6 +923,7 @@ public class FuttoboruGameEngine {
                     if (!awayClub.getPlayedMatches().contains(match)) {
                         awayClub.getPlayedMatches().add(match);
                     }
+                    awayClub.recordMatchPlayedOn(targetDate);
                 }
                 
                 // Create match result message
