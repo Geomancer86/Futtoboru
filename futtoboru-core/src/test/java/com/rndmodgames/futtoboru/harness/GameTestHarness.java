@@ -325,6 +325,8 @@ public final class GameTestHarness {
                 continueOneDayAcknowledgingDraws();
                 if (day == 0 || (day + 1) % 50 == 0) {
                     progress.tick(day + 1, "date=" + game().getGameDate());
+                } else {
+                    progress.heartbeat("date=" + game().getGameDate());
                 }
             }
             progress.finish("FAIL");
@@ -366,6 +368,8 @@ public final class GameTestHarness {
                             "date=" + game().getGameDate()
                                     + "|league=" + isPrimaryLeagueComplete()
                                     + "|cup=" + isPrimaryCupComplete());
+                } else {
+                    progress.heartbeat("date=" + game().getGameDate());
                 }
             }
             progress.finish("FAIL");
@@ -450,6 +454,12 @@ public final class GameTestHarness {
                 daysSimulated++;
                 daysSinceChampion++;
                 int championCount = countEditionsWithChampions();
+                if (championCount <= lastChampionCount) {
+                    // Mid-season heartbeat: a single season can take well over a minute even after
+                    // perf fixes, and progress.tick() below only fires on season completion — without
+                    // this, the console goes silent for that whole stretch and looks hung.
+                    progress.heartbeat("date=" + game().getGameDate() + "|day=" + daysSimulated);
+                }
                 if (championCount > lastChampionCount) {
                     long nowNs = System.nanoTime();
                     double seasonSeconds = (nowNs - lastSeasonNs) / 1_000_000_000.0;

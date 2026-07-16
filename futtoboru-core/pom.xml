@@ -133,7 +133,14 @@
                             <useFile>false</useFile>
                             <groups>nightly</groups>
                             <systemPropertyVariables>
-                                <futtoboru.test.logProfile>verbose</futtoboru.test.logProfile>
+                                <!-- Quiet by default: verbose logging alone was measured to make a
+                                     comparable soak run ~8x slower (see the soak profile below, and
+                                     ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md), almost entirely
+                                     from log I/O, not simulation cost. Nightly includes multi-season
+                                     soak-style ITs, so this was silently making every nightly run far
+                                     slower than necessary. Pass -Dfuttoboru.test.logProfile=verbose on
+                                     the command line when actually debugging a specific failure. -->
+                                <futtoboru.test.logProfile>quiet</futtoboru.test.logProfile>
                             </systemPropertyVariables>
                             <forkedProcessTimeoutInSeconds>3600</forkedProcessTimeoutInSeconds>
                             <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>

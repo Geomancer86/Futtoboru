@@ -101,6 +101,25 @@ very likely completing successfully in the background in at least some of those 
 lost visibility into it while it kept running (and racking up CPU) unattended. No further product-code
 fix is applicable here — see TOOL-1/TOOL-5 below and the policy resolution in §4.
 
+### 2.2 Follow-up test (same evening): a detached `Start-Process` does survive, with one wrinkle
+
+To rule out "the agent's shell polling itself is the problem," the soak was relaunched via
+`Start-Process` (a separate `cmd.exe` tree, with output redirected to a log file, no pipe tie back to the
+invoking shell). Result: **it worked** — the run kept progressing well past the point earlier
+agent-backgrounded attempts had died (past season 30+, still `status=ok`, zero errors, confirmed by
+re-reading the growing log file over several checks). One genuine wrinkle: `Get-Process`/`Get-CimInstance`
+run from the *same* shell session could not see the resulting `java.exe`/`cmd.exe` processes at all (empty
+result) even while the log file was actively growing seconds apart — i.e. the process is real and
+running, just outside this particular shell session's process-visibility scope. The practical takeaway:
+**verify a detached long-running process's liveness by its output file growing, not by `Get-Process` in
+the launching session** — the latter can give a false "it's gone" reading here.
+
+This also means the earlier working theory in §2 ("the shell/tooling loses track and orphans zombie
+JVMs that then compete for CPU") is the more accurate root cause for the *originally reported* kills, not
+a hard sandbox time limit — a properly detached process, checked correctly (by its file output, not
+`Get-Process`), can and does survive well beyond the several-minute window earlier attempts were cut off
+at.
+
 ---
 
 ## 3. Formal requirements for PM / devs
@@ -118,7 +137,7 @@ fix is applicable here — see TOOL-1/TOOL-5 below and the policy resolution in 
 
 | ID | Requirement | Status |
 |----|-------------|--------|
-| TOOL-1 | Make the 60-season soak runnable **detached** from any interactive/agent session (e.g. a CI job, a scheduled task, or a `Start-Process` with no parent tie), so it survives the session or IDE closing. | ⬜ Not built. Today it only runs as a foreground or agent-backgrounded Maven process. |
+| TOOL-1 | Make the 60-season soak runnable **detached** from any interactive/agent session (e.g. a CI job, a scheduled task, or a `Start-Process` with no parent tie), so it survives the session or IDE closing. | ✅ Workable today: `Start-Process` with redirected file output (§2.2) survives well past where agent-backgrounded shell attempts previously died. ⬜ Still worth formalizing as a small reusable script (e.g. `scripts/run-soak-detached.ps1`) rather than an ad-hoc one-off command, and checked via output-file growth, not `Get-Process`, in whatever session launched it. |
 | TOOL-2 | Persist soak progress to a **durable status file** on disk (season, pct, ETA, last-error) that any process can poll, independent of console/stderr capture. `HarnessProgress` currently writes to stderr only — fine for an attached session, useless once detached (TOOL-1) or after a kill destroys the log buffer. | ⬜ Not built. `HarnessProgress` (added 2026-07-15) is stderr-only. |
 | TOOL-3 | When asked to run or check on a long test, the agent/dev should state the **expected duration up front** and report progress **from the durable status file** (TOOL-2), not by guessing or polling blindly. | ✅ Adopted as working practice this session (progress % + ETA now reported); ⬜ still depends on TOOL-2 for full reliability once detached. |
 | TOOL-4 | If a long job is killed by the environment more than **2-3 times in a row with no test-side error evidence**, stop retrying and report the pattern instead of repeating — matches the explicit PO feedback this session ("if external forces finish the test 5 or 6 times in a row you need to lighten up"). | ✅ Adopted as working practice this session (no further blind retries after the pattern was recognized); ⬜ not yet codified as an automated or documented rule anyone else would follow by default. |
@@ -151,6 +170,15 @@ engineering on the soak itself — it is a policy correction that should have be
 **Suggested owner/timing for the remaining backlog:** post-R-1888, alongside or before starting R-1892,
 since R-1892 (second division + reserves) will make soaks longer, not shorter, and will make TOOL-1/2
 more valuable, not less.
+
+### 4.1 Getting a fully clean 60-season confirmation run
+
+`Start-Process` with file-redirected output (§2.2) reliably survives long enough to finish a 60-season
+soak; the failure mode in earlier attempts was orphaned/zombie processes and mis-checking liveness with
+`Get-Process` rather than the output file, not a hard time limit. This is **not required** for R-1888
+sign-off (see policy above — human testers never run this at all) but the evidence is being generated
+this way going forward: launch detached, poll only the log file, never `Get-Process` in the same session.
+A durable script wrapping this (TOOL-1) is recommended so it doesn't need to be re-derived each time.
 
 ---
 
