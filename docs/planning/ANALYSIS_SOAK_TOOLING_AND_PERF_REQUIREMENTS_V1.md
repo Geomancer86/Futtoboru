@@ -171,6 +171,21 @@ engineering on the soak itself — it is a policy correction that should have be
 since R-1892 (second division + reserves) will make soaks longer, not shorter, and will make TOOL-1/2
 more valuable, not less.
 
+### 3.1 Live finding (in progress as of this writing): growth is not fully flat yet
+
+A detached confirmation run (§2.2) reached season 34/60 with 0 errors, but per-season time is *still*
+climbing past where it was before today's three fixes: 69.7s (season 30) → 82.4s → 91.4s → 128.6s →
+190.3s (season 34), i.e. still compounding, not flat. This is a genuine open finding, not resolved by
+PERF-1b — recorded here rather than swept under the rug. Two live hypotheses, neither confirmed yet:
+(a) a sixth O(history) scan not yet found, or (b) GC/heap pressure from long-lived objects that are never
+freed across a run this long (no `-Xmx`/`argLine` is configured for the Surefire fork — see PERF-4 below).
+Deliberately **not** chasing this with more blind soak re-runs right now (that pattern itself was part of
+the complaint this session) — tracked as a follow-up, not re-opening PERF-1b.
+
+| ID | Requirement | Status |
+|----|-------------|--------|
+| PERF-4 | Investigate whether the still-climbing per-season cost past season ~30 (§3.1) is a further O(history) scan or GC/heap pressure (try `-verbose:gc` on the Surefire fork, or an explicit `-Xmx` bump, before assuming it's more application code). | ⬜ Not started — recorded as a specific, scoped follow-up rather than more ad-hoc soak retries. |
+
 ### 4.1 Getting a fully clean 60-season confirmation run
 
 `Start-Process` with file-redirected output (§2.2) reliably survives long enough to finish a 60-season
