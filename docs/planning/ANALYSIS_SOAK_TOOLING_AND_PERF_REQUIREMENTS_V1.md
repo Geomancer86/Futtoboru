@@ -4,11 +4,14 @@
 **Date:** 2026-07-15
 **Requested by:** PO, in two follow-ups: "why do later seasons take so much longer to simulate" and
 "why does the soak process keep getting killed, and we need progress reporting for any long test"
-**Status:** Updated 2026-07-15 evening after a third pass triggered by a team report of soak errors.
-All five identified performance hotspots are now fixed (PERF-1/1b/2 done); the root cause of the process
-kills is now understood precisely (§2.1, orphaned JVMs — not a hostile external actor); the tooling items
-remain backlog (not blocking), and a policy fix that directly resolves the human-tester frustration is
-recorded in §4.
+**Status:** Updated 2026-07-19 after profiling the still-unexplained PERF-4 residual growth with JFR
+(Java Flight Recorder) instead of more manual code reading. Result: found and fixed a **sixth**
+O(all-time-history) hotspot (`JobManager.getAvailableJobs()`) that turned out to be the dominant one all
+along — `java.time.LocalTime.compareTo` alone accounted for ~85% of all sampled CPU time in a profiled
+60-season run. Fixing it took the full 60-season soak from ~74-93 s/season (~80-90 minutes total) to
+**1.24 s/season (~74 seconds total)** — a ~60-75x speedup. See §3.2. All known performance hotspots are
+now fixed; the tooling items remain backlog (not blocking); the policy fix that resolves the human-tester
+frustration is recorded in §4.
 
 ---
 
@@ -171,20 +174,72 @@ engineering on the soak itself — it is a policy correction that should have be
 since R-1892 (second division + reserves) will make soaks longer, not shorter, and will make TOOL-1/2
 more valuable, not less.
 
-### 3.1 Live finding (in progress as of this writing): growth is not fully flat yet
+### 3.1 Live finding (2026-07-15 night): growth was not fully flat yet
 
-A detached confirmation run (§2.2) reached season 34/60 with 0 errors, but per-season time is *still*
-climbing past where it was before today's three fixes: 69.7s (season 30) → 82.4s → 91.4s → 128.6s →
-190.3s (season 34), i.e. still compounding, not flat. This is a genuine open finding, not resolved by
-PERF-1b — recorded here rather than swept under the rug. Two live hypotheses, neither confirmed yet:
-(a) a sixth O(history) scan not yet found, or (b) GC/heap pressure from long-lived objects that are never
-freed across a run this long (no `-Xmx`/`argLine` is configured for the Surefire fork — see PERF-4 below).
-Deliberately **not** chasing this with more blind soak re-runs right now (that pattern itself was part of
-the complaint this session) — tracked as a follow-up, not re-opening PERF-1b.
+A detached confirmation run (§2.2) reached season 34/60 with 0 errors, but per-season time was *still*
+climbing past where it was after that day's three fixes: 69.7s (season 30) → 82.4s → 91.4s → 128.6s →
+190.3s (season 34), i.e. still compounding, not flat. Recorded as PERF-4 rather than swept under the rug,
+with two hypotheses: (a) a sixth O(history) scan not yet found, or (b) GC/heap pressure. Resolved below.
+
+### 3.2 PERF-4 resolved (2026-07-19): JFR profiling found a sixth hotspot, the dominant one
+
+Rather than keep guessing from code reading, ran the 60-season soak with Java Flight Recorder attached
+(`-XX:StartFlightRecording=...settings=profile`, built into the JDK, no extra dependency) and analyzed
+the resulting `.jfr` file with `jfr summary`/`jfr print --stack-depth 1`. Result was unambiguous:
+
+```
+391683 jdk.ExecutionSample events total
+334727 (85.5%) -> java.time.LocalTime.compareTo(LocalTime)
+```
+
+The full stack trace for those samples:
+
+```
+java.time.LocalTime.compareTo(LocalTime)
+java.time.LocalDateTime.compareTo0(LocalDateTime)
+java.time.LocalDateTime.isAfter(ChronoLocalDateTime)
+com.rndmodgames.futtoboru.data.jobs.JobOpening.isAcceptingApplications(LocalDateTime)
+com.rndmodgames.futtoboru.engine.jobs.JobManager.lambda$getAvailableJobs$0(LocalDateTime, JobOpening)
+... stream machinery ...
+com.rndmodgames.futtoboru.engine.jobs.JobManager.getAvailableJobs()
+```
+
+**Root cause:** the exact same bug shape as PERF-1/1b, in a subsystem nobody had looked at yet.
+`SaveGame.getActiveJobOpenings()` is actually *every job opening ever created* — when an opening expires
+or is filled, `JobManager` only calls `opening.setStatus(...)`; nothing ever removes it from the list
+(other screens, e.g. `MyApplicationsScreenTable`, need it for by-id history lookups). `getAvailableJobs()`
+re-filtered that entire all-time list with a date comparison on every call, and `updateJobOpenings()`
+(called once per simulated day) called it once per club, and separately copied and re-scanned the same
+all-time list again for its own expiry check.
+
+**Fix** (`JobManager.java`): added an incremental cache (`openJobOpeningsCache`) holding only openings
+currently in `JobStatus.OPEN` — new openings are picked up by scanning only the tail appended since the
+last check (openings are only ever appended), and openings that leave `OPEN` (the only two call sites:
+expiry, fill) are dropped via a `removeIf` over the much smaller cache, not the all-time list. The
+all-time list itself is untouched, so by-id history lookups still work. Added `JobManagerTest` (6 tests,
+this class had zero prior coverage) covering: new openings appear immediately, expired/filled openings
+disappear from `getAvailableJobs()` but stay in the all-time list, multi-call cache growth, per-club
+filtering after mixed status changes, and cache rebuild after a simulated save load.
+
+**Result, isolated 60-season re-run, same machine, right after the fix:**
+
+| Metric | Before (2026-07-15/2026-07-19 morning) | After (2026-07-19) |
+|---|---|---|
+| Average | 74-93 s/season | **1.24 s/season** |
+| Slowest season | 180-214 s | **1.93 s** |
+| Total wall time | ~74-93 minutes | **~74 seconds** |
+| Errors | 0 | 0 |
+
+A ~60-75x speedup. This resolves PERF-4 conclusively as hypothesis (a) (a missed O(history) scan), not
+GC/heap pressure — GC event counts in the JFR recording were unremarkable (only 5 old-gen collections in
+the whole 80-minute pre-fix run, mostly cheap young-gen G1 pauses), consistent with an algorithmic cause.
+`LongRunSoakIT`'s regression gates were tightened accordingly (`MAX_SECONDS_PER_SEASON` 150→10,
+`MAX_SECONDS_FOR_SLOWEST_SEASON` 260→20) so a future reintroduction of this exact bug shape fails loudly
+instead of hiding inside generous old headroom.
 
 | ID | Requirement | Status |
 |----|-------------|--------|
-| PERF-4 | Investigate whether the still-climbing per-season cost past season ~30 (§3.1) is a further O(history) scan or GC/heap pressure (try `-verbose:gc` on the Surefire fork, or an explicit `-Xmx` bump, before assuming it's more application code). | ⬜ Not started — recorded as a specific, scoped follow-up rather than more ad-hoc soak retries. |
+| PERF-4 | Investigate whether the still-climbing per-season cost past season ~30 (§3.1) is a further O(history) scan or GC/heap pressure. | ✅ Resolved 2026-07-19 — sixth hotspot found via JFR and fixed (§3.2). |
 
 ### 4.1 Getting a fully clean 60-season confirmation run
 
@@ -194,6 +249,11 @@ soak; the failure mode in earlier attempts was orphaned/zombie processes and mis
 sign-off (see policy above — human testers never run this at all) but the evidence is being generated
 this way going forward: launch detached, poll only the log file, never `Get-Process` in the same session.
 A durable script wrapping this (TOOL-1) is recommended so it doesn't need to be re-derived each time.
+
+**Largely moot after §3.2:** at ~74 seconds total, the 60-season soak is no longer a "long-running
+background job" in any meaningful sense — it now runs faster than the nightly suite used to. TOOL-1/2's
+main remaining value is for whatever comes after R-1892 (second division, reserves) makes a season more
+expensive to simulate again.
 
 ---
 

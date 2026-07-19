@@ -38,6 +38,22 @@ public class JobManager {
     private ClubStaffManager clubStaffManager;
     private static long nextId = 1L; // Simple ID generation (v1.0)
 
+    // Incremental cache for getAvailableJobs(): SaveGame.getActiveJobOpenings() is actually
+    // "every job opening ever created" (expired/filled openings are only flagged via setStatus,
+    // never removed, because other screens/lookups need them for history by id). Before this fix,
+    // getAvailableJobs() re-filtered that entire all-time list with a LocalDateTime comparison on
+    // every single opening, once per call, and it was called once per club per day from
+    // updateJobOpenings() -- found 2026-07-19 via JFR profiling as the single dominant hotspot in a
+    // 60-season soak (java.time.LocalTime.compareTo alone was ~85% of all sampled CPU time). This
+    // cache holds only openings currently in JobStatus.OPEN status; new openings are picked up by
+    // scanning only the tail of the backing list appended since the last check (openings are only
+    // ever appended, never inserted mid-list), and openings that transitioned away from OPEN
+    // (expired or filled -- the only two places JobOpening.setStatus() is called) are dropped via a
+    // removeIf over this much smaller cache, not the all-time list.
+    private final List<JobOpening> openJobOpeningsCache = new ArrayList<>();
+    private List<JobOpening> openJobOpeningsCacheBackingList;
+    private int openJobOpeningsCacheScanIndex = 0;
+
     public JobManager(Futtoboru gameInstance, ClubStaffManager clubStaffManager) {
         this.gameInstance = gameInstance;
         this.currentGame = gameInstance.getCurrentGame();
@@ -55,11 +71,35 @@ public class JobManager {
         if (currentGame == null || currentGame.getActiveJobOpenings() == null) {
             return new ArrayList<>();
         }
-        
+
+        refreshOpenJobOpeningsCache();
         LocalDateTime gameDate = currentGame.getGameDate();
-        return currentGame.getActiveJobOpenings().stream()
+        return openJobOpeningsCache.stream()
             .filter(job -> job.isAcceptingApplications(gameDate))
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Keep {@link #openJobOpeningsCache} current: pick up newly-appended openings (cheap, usually a
+     * handful per day at most) and drop any that have since left {@link JobStatus#OPEN}. See the
+     * field javadoc above for why this exists.
+     */
+    private void refreshOpenJobOpeningsCache() {
+        List<JobOpening> backing = currentGame.getActiveJobOpenings();
+        if (backing != openJobOpeningsCacheBackingList) {
+            // Backing list identity changed (e.g. a save was just loaded) -- rebuild from scratch.
+            openJobOpeningsCache.clear();
+            openJobOpeningsCacheScanIndex = 0;
+            openJobOpeningsCacheBackingList = backing;
+        }
+        for (int i = openJobOpeningsCacheScanIndex; i < backing.size(); i++) {
+            JobOpening opening = backing.get(i);
+            if (opening != null && opening.getStatus() == JobStatus.OPEN) {
+                openJobOpeningsCache.add(opening);
+            }
+        }
+        openJobOpeningsCacheScanIndex = backing.size();
+        openJobOpeningsCache.removeIf(opening -> opening == null || opening.getStatus() != JobStatus.OPEN);
     }
 
     /**
@@ -337,13 +377,17 @@ public class JobManager {
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "=== updateJobOpenings START ===");
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Daily update: " + gameDate);
         
-        // Expire old openings
-        for (JobOpening opening : new ArrayList<>(currentGame.getActiveJobOpenings())) {
+        // Expire old openings. Only currently-OPEN openings can expire, so check the small
+        // openJobOpeningsCache (refreshed here) instead of copying and scanning every opening ever
+        // created -- see the cache's field javadoc for why the full list can never shrink.
+        refreshOpenJobOpeningsCache();
+        for (JobOpening opening : new ArrayList<>(openJobOpeningsCache)) {
             if (opening.isExpired(gameDate)) {
                 opening.setStatus(JobStatus.EXPIRED);
                 DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Expired job opening: " + opening.getId());
             }
         }
+        refreshOpenJobOpeningsCache();
         
         // Process pending applications (v1.0: instant processing, but check daily for any missed)
         if (currentGame.getAllApplications() != null) {

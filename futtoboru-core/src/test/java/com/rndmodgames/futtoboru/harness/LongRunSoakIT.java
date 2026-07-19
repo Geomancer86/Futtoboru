@@ -23,22 +23,25 @@ class LongRunSoakIT {
     private static final int MAX_DAYS = 700 * TARGET_CHAMPION_EDITIONS;
 
     /**
-     * Performance regression gate. Baseline on 2026-07-15 (after fixing the O(history) late-season
-     * slowdown — see ANALYSIS_SOAK_LATE_SEASON_SLOWDOWN_V1.md) was 69.96 s/season; the pre-fix
-     * regression this guard is meant to catch ran at 87.23 s/season. Set with headroom above normal
-     * machine-to-machine variance so this only trips on a real reintroduced slowdown, not noise.
+     * Performance regression gate. Baseline on 2026-07-19, after fixing a sixth O(all-time-history)
+     * hotspot ({@code JobManager.getAvailableJobs()} re-filtering every job opening ever created,
+     * found via JFR profiling — see docs/planning/ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md
+     * PERF-4): the full 60-season run dropped from ~74-93 s/season to **1.24 s/season** (a ~60-75x
+     * speedup; total run time from ~80-90 minutes to ~74 seconds). Earlier same-week baselines
+     * (69.96, then 74.26, then 80-93 s/season) were all still paying this cost without realizing it.
+     * Set with generous headroom above the new baseline so this only trips on a real reintroduced
+     * O(history) scan, not normal machine-to-machine variance — but tight enough that a regression
+     * anywhere near the old ~70-90 s/season baseline still fails loudly instead of silently passing.
      */
-    private static final double MAX_SECONDS_PER_SEASON = 150.0;
+    private static final double MAX_SECONDS_PER_SEASON = 10.0;
 
     /**
-     * Slowest-single-season gate. The run-wide average above can hide the fact that per-season
-     * cost still grows noticeably from season 1 to season 60 (roughly 1s -&gt; ~145-165s observed
-     * on 2026-07-15, run after both known O(history) scans were fixed) — this catches a *worse*
-     * blow-up even if the average would otherwise pass. Set with headroom above the ~165s worst
-     * season observed on that run so this only trips on a real further regression, not noise.
+     * Slowest-single-season gate. The run-wide average above can hide a late-season-only blowup —
+     * this catches that even if the average would otherwise pass. Baseline on 2026-07-19 (same run
+     * as above): slowest season was **1.93 s** (previously ~165-214 s before the JobManager fix).
      * See docs/planning/ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md.
      */
-    private static final double MAX_SECONDS_FOR_SLOWEST_SEASON = 260.0;
+    private static final double MAX_SECONDS_FOR_SLOWEST_SEASON = 20.0;
 
     private GameTestHarness harness;
 
@@ -67,8 +70,9 @@ class LongRunSoakIT {
         assertTrue(report.getSecondsPerSeason() < MAX_SECONDS_PER_SEASON,
                 String.format(
                         "Soak performance regression: %.2f s/season exceeds the %.0f s/season gate "
-                                + "(baseline 69.96 s/season on 2026-07-15). "
-                                + "Look for a reintroduced O(history) scan over unbounded per-club match lists.",
+                                + "(baseline 1.24 s/season on 2026-07-19, after fixing JobManager's "
+                                + "all-time job-openings scan). Look for a reintroduced O(history) "
+                                + "scan over an unbounded list (matches, messages, job openings, ...).",
                         report.getSecondsPerSeason(), MAX_SECONDS_PER_SEASON));
 
         System.out.println("LongRunSoakIT slowest season: "
@@ -78,7 +82,7 @@ class LongRunSoakIT {
                 String.format(
                         "Soak performance regression: the single slowest season took %.2f s, "
                                 + "exceeding the %.0f s per-season gate (baseline worst season was "
-                                + "~165 s on 2026-07-15). The run-wide average can pass even when "
+                                + "1.93 s on 2026-07-19). The run-wide average can pass even when "
                                 + "this fails, because late seasons are the slow ones and early "
                                 + "seasons pull the average down — this gate exists specifically "
                                 + "to catch that case.",

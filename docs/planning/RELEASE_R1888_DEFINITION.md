@@ -27,7 +27,7 @@
 | **Analysis** | [ANALYSIS_R1888_RELEASE_READINESS_V1.md](ANALYSIS_R1888_RELEASE_READINESS_V1.md) published |
 | **Design** | [DESIGN_R1888_RELEASE_WRAP_UP_V1.md](DESIGN_R1888_RELEASE_WRAP_UP_V1.md) §5 signed |
 | **Development** | ME-1 injury + Layer B UI blockers closed |
-| **Automated tests** | 152 PR + 5 nightly green; soak PM-signed |
+| **Automated tests** | 158 PR + 5 nightly green; soak PM-signed |
 | **Human QA** | [LAYER_B_TEST_PLAN_V1.md §5](LAYER_B_TEST_PLAN_V1.md) B-9 — **after** above |
 
 ---
@@ -71,7 +71,7 @@ mvn test -pl futtoboru-core -Pnightly
 .\scripts\run-soak-with-preflight.ps1
 ```
 
-**Expected:** 152 + 5 = **157** automated methods green before L4.
+**Expected:** 158 + 5 = **163** automated methods green before L4.
 
 **Note:** L4 human testers run/verify **only** the L1+L2 command above (~1 min) plus normal manual play.
 They never run the nightly (L3) or soak commands — those are engineering/CI artifacts that generate the
@@ -87,6 +87,7 @@ evidence PM/PO use to sign off, produced before testers are ever invited. See
 | 2026-07-03 | Initial R-1888 release definition |
 | 2026-07-03 | Cross-links to gap analysis + PO roadmap decision |
 | 2026-07-15 | Test count 131+5 → 152+5 after QA hardening pass (cup-replay tests, save-corruption tests, soak fail-fast/progress, player-ID persistence assertion) |
+| 2026-07-19 | Test count 152+5 → 158+5 after JFR-profiling-driven fix of a sixth soak perf hotspot (JobManagerTest); 60-season soak now ~74s (was ~80-90 min) |
 
 ---
 

@@ -2,7 +2,7 @@
 
 **One page. Read this.** Everything else is detail for PM, dev, or AI.
 
-**Updated:** 2026-07-15 · **Release:** Futtoboru 1888 · **Branch:** `analyze-ai-branch`
+**Updated:** 2026-07-19 · **Release:** Futtoboru 1888 · **Branch:** `analyze-ai-branch`
 
 > **PO redirect report (3 points):** [PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md](PM_REPORT_PO_FIRST_RELEASE_TESTING_V1.md) — done / missing / next for first release.
 
@@ -13,7 +13,7 @@
 | | |
 |-|-|
 | 🟢 | Game loop works: league, cup, pick team, play matches, ratings, saves |
-| 🟢 | Automated tests: **152 + 5** green on every CI run |
+| 🟢 | Automated tests: **158 + 5** green on every CI run |
 | 🟢 | Tier A engineering blockers **8/8 closed** — ME-1, C-1, PL-5, PL-7, manual, mod load, soak |
 | 🟡 | **1 decision** left before human playtesters: your sign-off on the soak evidence below |
 | 🔴 | Human QA not started — **correct**; we finish sign-off first |
@@ -54,6 +54,8 @@ Reply in chat or initials here — PM updates the decision log. You do **not** n
 
 **Important clarification (2026-07-15 evening):** the 60-season soak is an **engineering-only** background check — human testers never run it and never wait on it. A team report that it was failing turned out, on re-run, to be a false alarm (0 errors, all 60 seasons completed) plus a real-but-separate performance smell (fixed) and a tooling issue where a background test process got orphaned and looked "dead" while still quietly running (also fixed — see [ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md](ANALYSIS_SOAK_TOOLING_AND_PERF_REQUIREMENTS_V1.md)). Human sign-off criteria are unchanged: the fast test suite (~1 min) + normal manual play.
 
+**Update (2026-07-19):** actually profiled the run (Java Flight Recorder, not just log reading) and found a sixth slowdown cause — a "job openings" list that quietly kept every job posting ever created and re-checked all of them every day. Fixing it took the full 60-season run from ~80-90 minutes to **~74 seconds**. This was the dominant cause all along; the soak is no longer a "long test" by any definition. Tests **158+5**, all green.
+
 **Estimate:** Your sign-off → invite testers. No more code work is required to reach that gate.
 
 ---
@@ -90,6 +92,7 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 
 | Date | Change |
 |------|--------|
+| 2026-07-19 | Profiled the soak with JFR and found a sixth, dominant slowdown cause (JobManager re-scanning every job opening ever created, ~85% of sampled CPU time). Fixed; 60-season soak now ~74 seconds total (was ~80-90 minutes). Tests **158+5**, all green |
 | 2026-07-15 (evening) | Investigated a team report of soak failures: not reproduced (0 errors, 60/60 seasons complete). Found and fixed 3 more of the same "scan full history" perf pattern (fitness tick, attendance form, mandatory-draw-message check) and root-caused the "process keeps getting killed" mystery to an orphaned/zombie background process, not a real external kill. Clarified policy: humans never run/wait on the soak. Tests **152+5**, all green |
 | 2026-07-15 | QA hardening pass: fixed a second slowdown source (inbox scan), added cup-replay tests, hardened save/load against corrupt files, extended cup soak 2→15 seasons (found non-blocking A-9 for R-1892). Tests **152+5**, all green |
 | 2026-07-15 | Soak blocker closed (fixed slowdown, faster, zero errors); **8/8** Tier A blockers closed; 141+5 tests green; only your sign-off remains |
