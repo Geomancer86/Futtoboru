@@ -3,7 +3,7 @@
 # Legacy markdown registry (may be stale): docs/planning/SYSTEMS_AND_FEATURES_REGISTRY.md
 
 schema_version: 1
-updated: "2026-07-15"
+updated: "2026-07-19"
 
 # Status: shipped | partial | stub | none
 # release_min: earliest release that ships this to players
@@ -94,3 +94,28 @@ features:
       2 to 15 seasons; not a R-1888 regression (only 3-season non-negative balances
       were ever an R-1888 commitment). Tracked as A-9 in release history; see
       RELEASE_V1_DEFINITION.md TR-2 and section 9.1.
+
+  - id: pregame_menus_polish
+    name: Pre-game menu screens (main menu, settings, new game wizard, manager creation, save/load)
+    status: partial
+    release_min: R-1888
+    plain: >
+      Full audit 2026-07-19 of every screen between launch and Start Game found several
+      P0-severity gaps: New Game Start allows a null manager through; Create Manager
+      silently swallows an invalid birth date into null with no feedback and still
+      saves; manager creation silently overwrites an existing file with the same last
+      name; the Countries step allows proceeding with zero countries selected; Start
+      Game failures are completely silent to the player (console/log only); Quit (main
+      menu and in-game) has no confirmation; in-game "Quit to Menu"/"Quit to Desktop"
+      are both no-ops. Also found P1/P2 issues: most of the Settings screen's
+      graphics/sound panels are dead DarkBlade-game leftovers (no audio system exists
+      anywhere in the codebase); the language dropdown doesn't persist; Load Game shows
+      no save metadata and no delete option and fails silently on a corrupted save; no
+      step-of-3 indicator in the New Game wizard; scattered unlocalized strings.
+      Full per-screen breakdown, code citations, and proposed redesign for each screen:
+      docs/planning/ANALYSIS_PREGAME_MENUS_UX_AUDIT_V1.md. PO decision 2026-07-19:
+      proceed on everything except the Settings screen (deferred separately); turned
+      into a per-screen acceptance-criteria/task spec at
+      docs/specs/pregame_menus_polish/spec.md (7 independently-orderable units: Main
+      Menu, New Game x3 steps, Create Manager, Load/Save + in-game Quit stubs).
+      Implementation not started; dev order to be decided by PO.

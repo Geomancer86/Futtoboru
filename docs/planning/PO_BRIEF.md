@@ -92,6 +92,7 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 
 | Date | Change |
 |------|--------|
+| 2026-07-19 (later) | Audited all 7 pre-game menu screens (main menu, new game wizard, create manager, save/load) for stubs/dead controls/missing validation — found several silent-failure and silent-data-loss issues. Turned into a per-screen fix spec, Settings screen deferred separately. Analysis + planning only so far, no code changed; dev order TBD |
 | 2026-07-19 | Profiled the soak with JFR and found a sixth, dominant slowdown cause (JobManager re-scanning every job opening ever created, ~85% of sampled CPU time). Fixed; 60-season soak now ~74 seconds total (was ~80-90 minutes). Tests **158+5**, all green |
 | 2026-07-15 (evening) | Investigated a team report of soak failures: not reproduced (0 errors, 60/60 seasons complete). Found and fixed 3 more of the same "scan full history" perf pattern (fitness tick, attendance form, mandatory-draw-message check) and root-caused the "process keeps getting killed" mystery to an orphaned/zombie background process, not a real external kill. Clarified policy: humans never run/wait on the soak. Tests **152+5**, all green |
 | 2026-07-15 | QA hardening pass: fixed a second slowdown source (inbox scan), added cup-replay tests, hardened save/load against corrupt files, extended cup soak 2→15 seasons (found non-blocking A-9 for R-1892). Tests **152+5**, all green |
