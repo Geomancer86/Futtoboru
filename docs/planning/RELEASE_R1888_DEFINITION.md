@@ -71,7 +71,7 @@ mvn test -pl futtoboru-core -Pnightly
 .\scripts\run-soak-with-preflight.ps1
 ```
 
-**Expected:** 165 + 5 = **170** automated methods green before L4.
+**Expected:** 166 + 5 = **171** automated methods green before L4.
 
 **Note:** L4 human testers run/verify **only** the L1+L2 command above (~1 min) plus normal manual play.
 They never run the nightly (L3) or soak commands — those are engineering/CI artifacts that generate the
@@ -88,7 +88,8 @@ evidence PM/PO use to sign off, produced before testers are ever invited. See
 | 2026-07-03 | Cross-links to gap analysis + PO roadmap decision |
 | 2026-07-15 | Test count 131+5 → 152+5 after QA hardening pass (cup-replay tests, save-corruption tests, soak fail-fast/progress, player-ID persistence assertion) |
 | 2026-07-19 | Test count 152+5 → 158+5 after JFR-profiling-driven fix of a sixth soak perf hotspot (JobManagerTest); 60-season soak now ~74s (was ~80-90 min) |
-| 2026-07-19 (latest) | Test count 158+5 → 165+5 after implementing all 7 pre-game menu fix units (`ManagerBirthDateValidatorTest` +7); see `docs/specs/pregame_menus_polish/spec.md` |
+| 2026-07-19 | Test count 158+5 → 165+5 after implementing all 7 pre-game menu fix units (`ManagerBirthDateValidatorTest` +7); see `docs/specs/pregame_menus_polish/spec.md` |
+| 2026-07-19 (latest) | Test count 165+5 → 166+5 after fixing a real launch-blocking crash: packaged desktop jar failed to start (`build-and-run.bat`) because a language bundle filename's case didn't match what `I18NBundle` requests — a class of bug invisible to `mvn test` since it runs off loose `target/classes`, not the packaged jar, on a case-insensitive filesystem. Confirmed pre-existing (not a regression), fixed the filenames, added `LanguageBundleFileNamingTest` as a permanent regression guard, and verified by actually launching the built jar. See A-10 in `docs/registries/blockers-resolved.yaml` |
 
 ---
 

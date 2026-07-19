@@ -2,7 +2,7 @@
 # Active blockers: blockers.yaml
 
 release: R-1888
-updated: "2026-07-12"
+updated: "2026-07-19"
 
 resolved:
   - id: A-1
@@ -39,3 +39,31 @@ resolved:
     resolved: "2026-07-12"
     title: Production mod load happy-path
     note: ProductionModLoadIT
+
+  - id: A-10
+    resolved: "2026-07-19"
+    title: Desktop jar crashed on startup for every human tester (build-and-run.bat)
+    note: >
+      Reported by the user running build-and-run.bat: the packaged desktop jar crashed
+      immediately on launch with GdxRuntimeException / MissingResourceException "Can't
+      find bundle for base file handle mods/language/BaseBundle, locale en_US", before
+      the main menu ever rendered. Root cause: the language bundle files on disk were
+      named with lowercase country codes (BaseBundle_en_us.properties, _en_uk, _sp_la,
+      _sp_sp) but com.badlogic.gdx.utils.I18NBundle requests them by Locale-derived,
+      uppercase-country filenames (BaseBundle_en_US.properties, etc); zip/jar resource
+      lookups are always case-sensitive regardless of host OS, so this was a hard crash
+      in the packaged jar even though it worked from an IDE/loose-classpath run on
+      case-insensitive filesystems (Windows/NTFS) -- which is exactly why 165 green
+      `mvn test` tests, including several that boot a headless Futtoboru instance and
+      exercise the same asset-loading code, never caught it. Confirmed pre-existing (not
+      a regression from the same-day menu-polish commit) by rebuilding and running the
+      prior commit (8406e0d) in an isolated git worktree, which crashed identically.
+      Fix: renamed the four bundle files to the exact case I18NBundle expects (git mv,
+      history preserved); verified by rebuilding, listing the packaged jar's zip entries,
+      and actually launching the produced jar-with-dependencies (stayed up, no crash,
+      confirmed via game_verify.log). Added a permanent regression test,
+      LanguageBundleFileNamingTest, that does a case-sensitive `File.list()` comparison
+      (deliberately bypassing Gdx.files so it fails the same way on any OS) against every
+      Language known to LanguageModLoader. L1+L2 now 166 tests (was 165), all green.
+      AGENTS.md updated with a "packaged-jar smoke check" note: after touching packaged
+      resources, actually run build.bat and launch the produced jar, not just `mvn test`.

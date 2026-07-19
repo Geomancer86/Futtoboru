@@ -28,6 +28,17 @@ mvn clean install -pl futtoboru-core,futtoboru-desktop -am
 
 Default `build.bat` skips tests — **always run Maven tests separately** before committing.
 
+**Packaged-jar smoke check:** `mvn test` runs entirely off loose `target/classes`, never the packaged
+jar. On case-insensitive filesystems (Windows/NTFS) this hides real jar-only bugs — e.g. a resource
+filename whose case doesn't match what the loader requests resolves fine off a loose classpath but is a
+hard crash inside a zip-backed jar, where lookups are always case-sensitive regardless of host OS. This
+caused a real launch-blocking crash (`I18NBundle` / `mods/language/BaseBundle_en_us.properties` vs.
+requested `..._en_US.properties`) that 165 green tests did not catch — see A-10 in
+`docs/registries/blockers-resolved.yaml`. After touching packaged resources (mods/, language bundles,
+build scripts), actually run `build.bat` then launch the produced jar
+(`java -jar futtoboru-desktop\target\futtoboru-desktop-*-jar-with-dependencies.jar`) and confirm it
+reaches the main menu before calling a change done — don't rely on `mvn test` alone for that class of bug.
+
 **E2E note:** `GameTestHarness` is **engine** E2E (no VisUI clicks). Opening the real window and clicking is **human L4** today; proposed L2.5 Scene2D player + optional L5 vision agents are documented in `docs/planning/ANALYSIS_AGENT_PLAYER_E2E_V1.md` — do not implement for R-1888 unless PO schedules it.
 
 ## Code conventions
