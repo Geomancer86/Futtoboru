@@ -13,7 +13,7 @@
 | | |
 |-|-|
 | 🟢 | Game loop works: league, cup, pick team, play matches, ratings, saves |
-| 🟢 | Automated tests: **158 + 5** green on every CI run |
+| 🟢 | Automated tests: **165 + 5** green on every CI run |
 | 🟢 | Tier A engineering blockers **8/8 closed** — ME-1, C-1, PL-5, PL-7, manual, mod load, soak |
 | 🟡 | **1 decision** left before human playtesters: your sign-off on the soak evidence below |
 | 🔴 | Human QA not started — **correct**; we finish sign-off first |
@@ -92,6 +92,7 @@ We **document** all of this for the long roadmap. We **ship** only what fits 188
 
 | Date | Change |
 |------|--------|
+| 2026-07-19 (latest) | Implemented all 7 pre-game menu fix units from the audit below: Main Menu (Continue, Quit confirm, branding), New Game wizard steps 1–3 (null-guards, manager UX, country validation + live counter, filtered cups/leagues counts, busy indicator + error dialog on Start failure), Create Manager (rejects garbage/implausible birth dates instead of silently corrupting data, overwrite confirm, Back button), Load/Save dialogs (real save metadata, delete, overwrite confirm, most-recent-first), and in-game Quit to Menu/Desktop (previously both no-ops). ~60 new translated strings added. Tests **165 + 5**, all green. Settings screen still deferred |
 | 2026-07-19 (later) | Audited all 7 pre-game menu screens (main menu, new game wizard, create manager, save/load) for stubs/dead controls/missing validation — found several silent-failure and silent-data-loss issues. Turned into a per-screen fix spec, Settings screen deferred separately. Analysis + planning only so far, no code changed; dev order TBD |
 | 2026-07-19 | Profiled the soak with JFR and found a sixth, dominant slowdown cause (JobManager re-scanning every job opening ever created, ~85% of sampled CPU time). Fixed; 60-season soak now ~74 seconds total (was ~80-90 minutes). Tests **158+5**, all green |
 | 2026-07-15 (evening) | Investigated a team report of soak failures: not reproduced (0 errors, 60/60 seasons complete). Found and fixed 3 more of the same "scan full history" perf pattern (fitness tick, attendance form, mandatory-draw-message check) and root-caused the "process keeps getting killed" mystery to an orphaned/zombie background process, not a real external kill. Clarified policy: humans never run/wait on the soak. Tests **152+5**, all green |

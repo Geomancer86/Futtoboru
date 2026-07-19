@@ -15,10 +15,13 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.rndmodgames.futtoboru.ui.UiScale;
+import com.rndmodgames.futtoboru.ui.WizardStepLabel;
+import com.kotcrab.vis.ui.widget.Tooltip;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Continent;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Season;
@@ -27,12 +30,21 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * New Game Setup Screen v1
- * 
- * - Choose Starting Season
- *      - Alpha 1888-89 Season      [WIP]
- * 
- * - Choose Nations
+ * New Game Step 2 — Choose Countries Screen.
+ *
+ * <p>Fixed 2026-07-19 per the pre-game menus UX audit
+ * ({@code docs/planning/ANALYSIS_PREGAME_MENUS_UX_AUDIT_V1.md}):
+ * <ul>
+ *   <li>Next is now disabled (with a tooltip) whenever zero countries are selected (P0 — previously
+ *       reachable, sending an empty countries list one screen further where it would eventually throw).</li>
+ *   <li>Removed the hardcoded {@code countryCheckBox.setChecked(true)} override that fought the
+ *       checkbox's own listener on every checkbox. The deliberate default is now: pre-check every
+ *       active country only on first entry (empty incoming selection); once the player has made any
+ *       selection at all (including via Back from Overview), their exact choices are respected.</li>
+ *   <li>Added a live "N countries / M clubs selected" counter and Select All / Select None actions.</li>
+ * </ul>
+ *
+ * <p>Country flags/icons per row are tracked as separate, genuinely-new scope — not added here.
  * 
  * @author Geomancer86
  *
@@ -47,6 +59,10 @@ public class NewGameSetupScreen implements Screen {
     //
     List<Country> selectedCountries = new ArrayList<>();
     Season startingSeason = null;
+
+    VisLabel selectionCounterLabel = new VisLabel("");
+    VisTextButton nextButton;
+    Tooltip nextButtonTooltip;
     
     //
     public NewGameSetupScreen(Game parent, Season startingSeason, List<Country> selectedCountries) {
@@ -55,6 +71,12 @@ public class NewGameSetupScreen implements Screen {
         
         // Keep track of selected Countries
         this.selectedCountries = selectedCountries;
+
+        // Deliberate default (replaces the old forced-checked override): on first entry the incoming
+        // selection is empty, so we default to "every active country selected" — the common case for a
+        // new game. Any subsequent visit (Back from Overview) already has a non-empty list and that
+        // exact selection is respected instead.
+        boolean isFirstVisit = this.selectedCountries.isEmpty();
         
         // Keep track of starting season
         this.startingSeason = startingSeason;
@@ -83,35 +105,23 @@ public class NewGameSetupScreen implements Screen {
          * Active Countries Label
          */
         final VisTable activeCountriesTable = new VisTable(true);
+
+        final List<VisCheckBox> allCountryCheckBoxes = new ArrayList<>();
         
         /**
          * Show only the Continents with Active Countries
          */
         for (Continent continent : DatabaseLoader.getInstance().getContinents()) {
 
-//          System.out.println("Continent Details: " + continent.getName());
-            
             // An active Continent will have Countries with active Clubs
             boolean activeContinent = false;
-            boolean activeCountry = false;
 
             /**
              * Show only the Countries with Active Clubs
              */
             for (final Country country : DatabaseLoader.getInstance().getCountriesByContinent(continent)) {
                 
-                //
-                if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
-                    
-                    // System.out.println("Country don't have active Clubs!");
-                    
-                } else {
-                    
-                    // ADD COMPONENTS
-                    System.out.println("Continent Details: " + continent.getName());
-                    System.out.println("Country Details: " + country.getCommonName());
-                    System.out.println("Adding " + DatabaseLoader.getInstance().getClubsByCountry(country).size() + " Country Clubs!");
-                 
+                if (!DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
                     // Set Continent as active
                     activeContinent = true;
                 }
@@ -131,7 +141,7 @@ public class NewGameSetupScreen implements Screen {
                 
                 if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
                     
-                    // System.out.println("Country don't have active Clubs!");
+                    // Country doesn't have active Clubs — not selectable
                     
                 } else {
                     
@@ -139,10 +149,12 @@ public class NewGameSetupScreen implements Screen {
                     VisLabel countryLabel = new VisLabel(country.getCommonName());
                     final VisCheckBox countryCheckBox = new VisCheckBox("");
                     
-                    // SET DEFAULT CHECKED COUNTRIES
-                    if (this.selectedCountries.contains(country)) {
-                  
-                        countryCheckBox.setChecked(true);
+                    // Deliberate default checked state (see isFirstVisit comment above) — set once,
+                    // not fought over on every subsequent listener callback.
+                    boolean shouldBeChecked = isFirstVisit || this.selectedCountries.contains(country);
+                    countryCheckBox.setChecked(shouldBeChecked);
+                    if (isFirstVisit && !this.selectedCountries.contains(country)) {
+                        this.selectedCountries.add(country);
                     }
                     
                     countryCheckBox.addListener(new ChangeListener() {
@@ -155,20 +167,22 @@ public class NewGameSetupScreen implements Screen {
                              */
                             if (countryCheckBox.isChecked()) {
 
-                                if (!selectedCountries.contains(country)) {
+                                if (!NewGameSetupScreen.this.selectedCountries.contains(country)) {
 
-                                    selectedCountries.add(country);
+                                    NewGameSetupScreen.this.selectedCountries.add(country);
                                 }
 
                             } else {
 
-                                selectedCountries.remove(country);
+                                NewGameSetupScreen.this.selectedCountries.remove(country);
                             }
+
+                            updateSelectionCounter();
+                            updateNextButtonState();
                         }
                     });
                     
-                    // TODO: unhardcode this default selection
-                    countryCheckBox.setChecked(true);
+                    allCountryCheckBoxes.add(countryCheckBox);
                     
                     activeCountriesTable.row();
                     activeCountriesTable.add(countryCheckBox);
@@ -188,9 +202,50 @@ public class NewGameSetupScreen implements Screen {
         }
 
         /**
+         * Select All / Select None quick actions
+         */
+        final VisTextButton selectAllButton = new VisTextButton(LanguageModLoader.getValue("select_all"));
+        selectAllButton.addCaptureListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                for (VisCheckBox checkBox : allCountryCheckBoxes) {
+                    checkBox.setChecked(true);
+                }
+            }
+        });
+
+        final VisTextButton selectNoneButton = new VisTextButton(LanguageModLoader.getValue("select_none"));
+        selectNoneButton.addCaptureListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                for (VisCheckBox checkBox : allCountryCheckBoxes) {
+                    checkBox.setChecked(false);
+                }
+            }
+        });
+
+        VisTable quickActionsTable = new VisTable(true);
+        quickActionsTable.add(selectAllButton);
+        quickActionsTable.add(selectNoneButton);
+        
+        /**
          * Next Screen
          */
-        final VisTextButton nextButton = new VisTextButton(LanguageModLoader.getValue("next"));
+        nextButton = new VisTextButton(LanguageModLoader.getValue("next"));
+
+        nextButtonTooltip = new Tooltip(LanguageModLoader.getValue("choose_countries_none_selected_tooltip"));
+        nextButtonTooltip.setTarget(nextButton);
+        nextButtonTooltip.attach();
         
         nextButton.addCaptureListener(new InputListener() {
             @Override
@@ -200,19 +255,33 @@ public class NewGameSetupScreen implements Screen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                if (nextButton.isDisabled()) {
+                    return;
+                }
  
-                System.out.println("SELECTED COUNTRIES SIZE: " + selectedCountries.size());
-                
                 /**
                  * Move to New Game Overview Screen
                  */
-                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_OVERVIEW_SCREEN, startingSeason, selectedCountries);
+                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_OVERVIEW_SCREEN, startingSeason, NewGameSetupScreen.this.selectedCountries);
             }
         });
-        
+
+        // Step indicator
+        mainContainer.row();
+        mainContainer.add(WizardStepLabel.of(2, 3)).left();
+
         // active nations label
         mainContainer.row();
         mainContainer.add(chooseCountriesLabel);
+
+        // quick actions
+        mainContainer.row();
+        mainContainer.add(quickActionsTable);
+
+        // live selection counter
+        mainContainer.row();
+        mainContainer.add(selectionCounterLabel);
         
         // active nations by continent table
         mainContainer.row();
@@ -233,8 +302,8 @@ public class NewGameSetupScreen implements Screen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                // Go back to New Game Season Screen
-                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SCREEN);
+                // Go back to New Game Season Screen, preserving the season selection.
+                ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SCREEN, startingSeason);
             }
         });
         
@@ -245,9 +314,33 @@ public class NewGameSetupScreen implements Screen {
 
         // 
         mainContainer.add(table);
+
+        updateSelectionCounter();
+        updateNextButtonState();
         
         // Add Settings Screen Main Container to Stage
         UiScale.addOverflowScroll(stage, mainContainer);
+    }
+
+    private void updateNextButtonState() {
+        boolean disabled = selectedCountries.isEmpty();
+        nextButton.setDisabled(disabled);
+        if (nextButtonTooltip != null) {
+            nextButtonTooltip.setTarget(disabled ? nextButton : null);
+        }
+    }
+
+    private void updateSelectionCounter() {
+        int clubCount = 0;
+        for (Country country : selectedCountries) {
+            List<Club> clubs = DatabaseLoader.getInstance().getClubsByCountry(country);
+            if (clubs != null) {
+                clubCount += clubs.size();
+            }
+        }
+        selectionCounterLabel.setText(LanguageModLoader.getValue("countries_clubs_selected_summary")
+                .replace("{countries}", String.valueOf(selectedCountries.size()))
+                .replace("{clubs}", String.valueOf(clubCount)));
     }
     
     @Override
@@ -290,8 +383,6 @@ public class NewGameSetupScreen implements Screen {
 
     @Override
     public void hide() {
-        
-        System.out.println("HIDE WAS CALLED ON NEW GAME SETUP SCREEN - DISPOSE");
         
         // Hide will be called after switching to a separate screen
         dispose();

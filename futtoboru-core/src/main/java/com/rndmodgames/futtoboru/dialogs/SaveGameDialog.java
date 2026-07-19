@@ -14,6 +14,16 @@ import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Save Game Dialog — named save with confirmation (PL-7).
+ *
+ * <p>Fixed 2026-07-19 per the pre-game menus UX audit
+ * ({@code docs/planning/ANALYSIS_PREGAME_MENUS_UX_AUDIT_V1.md}):
+ * <ul>
+ *   <li>Saving over an existing filename now asks to overwrite via {@link ConfirmDialog} first
+ *       (P0 — previously silent).</li>
+ *   <li>After a successful save the dialog switches to a clear "Close" state instead of staying open
+ *       indefinitely with a Cancel button that implies the save didn't happen.</li>
+ *   <li>Localized the remaining hardcoded strings ("Save name:", "Saved as...").</li>
+ * </ul>
  */
 public class SaveGameDialog extends VisDialog {
 
@@ -37,11 +47,15 @@ public class SaveGameDialog extends VisDialog {
                     return;
                 }
                 String name = SaveLoadSystem.normalizeSaveBasename(nameField.getText());
-                SaveLoadSystem.saveGame(saveGame, name);
-                saveGame.setIsSaved(true);
-                statusLabel.setText("Saved as " + name + ".json");
-                if (continueGameButton != null) {
-                    continueGameButton.setDisabled(false);
+
+                if (SaveLoadSystem.getSavedGames().contains(name)) {
+                    new ConfirmDialog(
+                            LanguageModLoader.getValue("save_game"),
+                            LanguageModLoader.getValue("save_overwrite_confirm_message"),
+                            () -> performSave(name, saveGame, statusLabel, cancelButton, continueGameButton)
+                    ).show(getStage());
+                } else {
+                    performSave(name, saveGame, statusLabel, cancelButton, continueGameButton);
                 }
             }
         });
@@ -59,7 +73,7 @@ public class SaveGameDialog extends VisDialog {
         });
 
         row();
-        add(new VisLabel("Save name:")).pad(5);
+        add(new VisLabel(LanguageModLoader.getValue("save_name_label"))).pad(5);
         row();
         add(nameField).width(280).pad(5);
         row();
@@ -67,6 +81,25 @@ public class SaveGameDialog extends VisDialog {
         row();
         add(cancelButton).pad(5);
         add(saveGameButton).pad(5);
+    }
+
+    private static void performSave(String name, SaveGame saveGame, VisLabel statusLabel,
+            VisTextButton cancelButton, VisTextButton continueGameButton) {
+
+        SaveLoadSystem.saveGame(saveGame, name);
+        saveGame.setIsSaved(true);
+
+        statusLabel.setText(LanguageModLoader.getValue("saved_as_message").replace("{name}", name));
+
+        // Relabel to a clear "Close" affordance after a successful save instead of leaving a Cancel
+        // button that implies the save didn't happen (P1 fix, pre-game menus audit 2026-07-19). Save
+        // stays enabled since this dialog instance is cached and reused across opens by callers, and
+        // the player may legitimately want to save again under a different name later.
+        cancelButton.setText(LanguageModLoader.getValue("close"));
+
+        if (continueGameButton != null) {
+            continueGameButton.setDisabled(false);
+        }
     }
 
     private static String defaultSaveName(SaveGame saveGame) {

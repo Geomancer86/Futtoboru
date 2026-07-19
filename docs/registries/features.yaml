@@ -118,4 +118,16 @@ features:
       into a per-screen acceptance-criteria/task spec at
       docs/specs/pregame_menus_polish/spec.md (7 independently-orderable units: Main
       Menu, New Game x3 steps, Create Manager, Load/Save + in-game Quit stubs).
-      Implementation not started; dev order to be decided by PO.
+      All 7 units implemented 2026-07-19 in one pass: shared ConfirmDialog/ErrorDialog/
+      WizardStepLabel widgets; Main Menu Continue + Quit-confirm + branding; New Game
+      wizard null-guards, manager UX, country validation+counter, filtered
+      cups/leagues counts, busy indicator and error dialog on Start failure; Create
+      Manager birth-date validation (rejects calendar-invalid/implausible dates,
+      no more silent-null corruption), overwrite confirm, direct in-memory ownership
+      wiring, Back button; Load/Save dialogs now show real save metadata, support
+      delete and overwrite-confirm, sort most-recent-first, and show error dialogs on
+      corrupt-load instead of failing silently; in-game "Quit to Menu"/"Quit to Desktop"
+      now functional behind ConfirmDialog. ~60 new i18n keys added to all 3 language
+      bundles. Full default suite (165 tests) + nightly profile green. Status remains
+      `partial` only because the Settings screen (explicitly deferred by PO) is still
+      untouched — see analysis doc §2 for that follow-up.

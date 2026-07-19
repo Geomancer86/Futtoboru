@@ -16,7 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Timer;
 import com.rndmodgames.futtoboru.ui.UiScale;
+import com.rndmodgames.futtoboru.ui.WizardStepLabel;
+import com.kotcrab.vis.ui.widget.BusyBar;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -28,6 +31,7 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
+import com.rndmodgames.futtoboru.dialogs.ErrorDialog;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -36,13 +40,26 @@ import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * New Game Overview Screen v1
+ * New Game Step 3 — Overview & Start Screen.
  * 
  *  - List the Selected Active Countries
  *  - Game Start Date
  *  - Starting Country
  *  - Selected Profession
  *      - Selected Club
+ *
+ * <p>Fixed 2026-07-19 per the pre-game menus UX audit
+ * ({@code docs/planning/ANALYSIS_PREGAME_MENUS_UX_AUDIT_V1.md}):
+ * <ul>
+ *   <li>The Start Game failure path now shows an {@link ErrorDialog} instead of only logging to
+ *       console and silently returning (P0 — this was the single highest-value finding of the whole
+ *       audit: the player was left staring at an unresponsive screen with zero explanation).</li>
+ *   <li>Cups/Leagues counts are now filtered to the selected countries, matching how Teams/Players
+ *       were already correctly filtered.</li>
+ *   <li>The starting country select box's "hacky" double-{@code setSelectedIndex} workaround is gone.</li>
+ *   <li>Start Game is now proactively disabled while required selections are incomplete.</li>
+ *   <li>A busy indicator now shows while the 14-step startup runs.</li>
+ * </ul>
  * 
  * @author Geomancer86
  */
@@ -69,6 +86,8 @@ public class NewGameOverviewScreen implements Screen {
     // Globally available components
     final VisLabel estimatedPlayerCountValueLabel = new VisLabel();
     final VisSelectBox<Club> startingClubSelectBox = new VisSelectBox<>();
+    final BusyBar startGameBusyBar = new BusyBar();
+    VisTextButton startGameButton;
     
     // 
     public NewGameOverviewScreen(Game parent, Season startingSeason, List<Country> selectedCountries) {
@@ -115,8 +134,15 @@ public class NewGameOverviewScreen implements Screen {
         int activePlayers = 0;
         
         List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
-        
+
+        // Filtered to the selected countries (P1 fix, pre-game menus audit 2026-07-19): this used to
+        // count every competition in the whole database regardless of what the player picked on Step 2,
+        // even though Teams/Players a few lines below were always correctly filtered.
         for (Competition competition : allCompetitions) {
+
+            if (!isCompetitionInSelectedCountries(competition, selectedCountries)) {
+                continue;
+            }
             
             switch(competition.getCompetitionType()) {
             
@@ -175,8 +201,10 @@ public class NewGameOverviewScreen implements Screen {
          */
         activePlayers = (int) (activePlayers * 1.5f);
         
-        // Update active player label
-        estimatedPlayerCountValueLabel.setText(activePlayers + " Players");
+        // Update active player label — explicitly labeled as an estimate (P2 fix, pre-game menus audit
+        // 2026-07-19): the figure includes free-agent-pool padding and generated-player placeholders,
+        // it is never the exact roster size.
+        estimatedPlayerCountValueLabel.setText(activePlayers + " " + LanguageModLoader.getValue("players_estimated_suffix"));
 
         /**
          * New Game Details Table
@@ -253,13 +281,12 @@ public class NewGameOverviewScreen implements Screen {
                 }
             }
         });
-        
-        // hacky
-        if (startingCountrySelectBox.getItems().size > 1) {
-            startingCountrySelectBox.setSelectedIndex(1);
-            startingCountrySelectBox.setSelectedIndex(0);
-        } else {
-            
+
+        // Initialize directly instead of faking a selection-changed event by toggling the index twice
+        // (P1 fix, pre-game menus audit 2026-07-19). VisSelectBox already defaults to the first item
+        // after setItems(), so reading getSelected() gives the same result the old "hack" produced.
+        startingCountry = startingCountrySelectBox.getSelected();
+        if (startingCountry == null && !selectedCountries.isEmpty()) {
             startingCountry = selectedCountries.get(0);
         }
         
@@ -283,6 +310,7 @@ public class NewGameOverviewScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 
                 startingClub = startingClubSelectBox.getSelected();
+                updateStartGameButtonState();
             }
         });
         
@@ -301,6 +329,7 @@ public class NewGameOverviewScreen implements Screen {
                     // update the selectable countries
                     updateSelectableTeamsByLeagueAndCountry();
                 }
+                updateStartGameButtonState();
             }
         });
         
@@ -355,8 +384,13 @@ public class NewGameOverviewScreen implements Screen {
         
         /**
          * Start Game Button
+         *
+         * Proactively disabled while required selections are incomplete (P1 fix, pre-game menus audit
+         * 2026-07-19) — previously always clickable, relying entirely on the reactive exception path
+         * below to catch a missing profession/club.
          */
-        final VisTextButton startGameButton = new VisTextButton(LanguageModLoader.getValue("start_game"));
+        startGameButton = new VisTextButton(LanguageModLoader.getValue("start_game"));
+        updateStartGameButtonState();
         
         startGameButton.addCaptureListener(new InputListener() {
             @Override
@@ -366,456 +400,32 @@ public class NewGameOverviewScreen implements Screen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                if (startGameButton.isDisabled()) {
+                    return;
+                }
  
                 Gdx.app.log("NewGameOverviewScreen", "=== START GAME BUTTON CLICKED ===");
-                
-                try {
-                    /**
-                     * NEW_GAME_SETUP IS PERFORMED HERE!
-                     * 
-                     * Set the Selected Countries and Redirect to Main Game Screen:
-                     * 
-                     *      - Selected Countries        [DONE]
-                     *      - Selected Profession       [DONE]
-                     *      - Starting Country          [DONE]
-                     *      - Starting Club             [DONE]
-                     *      - Starting Scripts          [WIP]
-                     */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 1: Getting current game...");
-                    SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
-                    
-                    if (currentGame == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: currentGame is NULL!");
-                        throw new IllegalStateException("SaveGame is null. Cannot start game without a SaveGame instance.");
-                    }
-                    Gdx.app.log("NewGameOverviewScreen", "Step 1: OK - currentGame obtained");
-                    
-                    // Game Authority
-                    Gdx.app.log("NewGameOverviewScreen", "Step 2: Setting main authority...");
-                    if (DatabaseLoader.getMainAuthority() == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: MainAuthority is NULL!");
-                        throw new IllegalStateException("MainAuthority is null. Database may not be loaded correctly.");
-                    }
-                    currentGame.setMainAuthority(DatabaseLoader.getMainAuthority());
-                    Gdx.app.log("NewGameOverviewScreen", "Step 2: OK - main authority set");
-                    
-                    //
-                    Gdx.app.log("NewGameOverviewScreen", "Step 3: Setting selected countries...");
-                    if (selectedCountries == null || selectedCountries.isEmpty()) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: selectedCountries is NULL or EMPTY!");
-                        throw new IllegalStateException("Selected countries list is null or empty.");
-                    }
-                    currentGame.setSelectedCountries(selectedCountries);
-                    Gdx.app.log("NewGameOverviewScreen", "Step 3: OK - selected countries set: " + selectedCountries.size());
-                    
-                    Gdx.app.log("NewGameOverviewScreen", "Step 4: Setting owner profession and country...");
-                    if (currentGame.getOwner() == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: currentGame.getOwner() is NULL!");
-                        throw new IllegalStateException("Game owner is null. Manager must be created before starting game.");
-                    }
-                    
-                    // CRITICAL: Ensure owner has an ID for job system to work
-                    if (currentGame.getOwner().getId() == null) {
-                        Gdx.app.log("NewGameOverviewScreen", "Step 4a: Owner has no ID, assigning unique ID...");
-                        // Generate a unique ID (use negative range to avoid conflicts with database-loaded persons)
-                        // Find the highest existing person ID, or use -1 as starting point
-                        Long maxId = -1L;
-                        if (currentGame.getAllPersons() != null && !currentGame.getAllPersons().isEmpty()) {
-                            for (com.rndmodgames.futtoboru.data.Person p : currentGame.getAllPersons()) {
-                                if (p != null && p.getId() != null && p.getId() < 0 && p.getId() < maxId) {
-                                    maxId = p.getId();
-                                }
-                            }
-                        }
-                        // Assign ID (decrement from maxId, so -1, -2, -3, etc.)
-                        Long newOwnerId = maxId - 1;
-                        currentGame.getOwner().setId(newOwnerId);
-                        Gdx.app.log("NewGameOverviewScreen", "Step 4a: Assigned owner ID: " + newOwnerId);
-                        System.out.println("[NewGameOverviewScreen] Assigned owner ID: " + newOwnerId);
-                        
-                        // Add owner to allPersons list if not already there
-                        if (currentGame.getAllPersons() == null) {
-                            currentGame.setAllPersons(new ArrayList<>());
-                        }
-                        boolean ownerInList = false;
-                        for (com.rndmodgames.futtoboru.data.Person p : currentGame.getAllPersons()) {
-                            if (p != null && p.getId() != null && p.getId().equals(newOwnerId)) {
-                                ownerInList = true;
-                                break;
-                            }
-                        }
-                        if (!ownerInList) {
-                            currentGame.getAllPersons().add(currentGame.getOwner());
-                            Gdx.app.log("NewGameOverviewScreen", "Step 4a: Added owner to allPersons list");
-                        }
-                    } else {
-                        Gdx.app.log("NewGameOverviewScreen", "Step 4a: Owner already has ID: " + currentGame.getOwner().getId());
-                    }
-                    
-                    if (primaryProfession == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: primaryProfession is NULL!");
-                        throw new IllegalStateException("Primary profession is null.");
-                    }
-                    if (startingCountry == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: startingCountry is NULL!");
-                        throw new IllegalStateException("Starting country is null.");
-                    }
-                    currentGame.getOwner().setPrimaryProfession(primaryProfession);
-                    currentGame.getOwner().setCurrentCountry(startingCountry);
-                    Gdx.app.log("NewGameOverviewScreen", "Step 4: OK - owner profession and country set");
-                    
-                    // Starting Season
-                    Gdx.app.log("NewGameOverviewScreen", "Step 5: Setting game dates...");
-                    if (startingSeason != null) {
-                        if (startingSeason.getStartDate() == null) {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR: startingSeason.getStartDate() is NULL!");
-                            throw new IllegalStateException("Season start date is null.");
-                        }
-                        currentGame.setGameStartDate(startingSeason.getStartDate());
-                        currentGame.setGameDate(startingSeason.getStartDate());
-                        Gdx.app.log("NewGameOverviewScreen", "Step 5: OK - game dates set: " + startingSeason.getStartDate());
-                    } else {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: startingSeason is NULL!");
-                        throw new IllegalStateException("Starting season is null.");
-                    }
-                    
-                    /**
-                     * Clubs Database
-                     * 
-                     * TODO: this should be loaded in a more automatic way, so we don't need to do that much setup on unit tests
-                     */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 6: Loading clubs database...");
-                    currentGame.setAllClubs(new ArrayList<>());
-                    
-                    if (DatabaseLoader.getClubsByCountry() == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: DatabaseLoader.getClubsByCountry() is NULL!");
-                        throw new IllegalStateException("Clubs by country map is null. Database may not be loaded correctly.");
-                    }
-                    
-                    /**
-                     * Competitions
-                     * 
-                     * CRITICAL: Ensure all cups and leagues from DatabaseLoader are added to SaveGame.
-                     * Also ensure ALL participant clubs for those competitions are added to SaveGame,
-                     * even if their country wasn't selected (e.g., Linfield in FA Cup).
-                     * This ensures AuthorityManager can find and process them correctly.
-                     */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 6a: Adding competitions and participant clubs to SaveGame...");
-                    List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
-                    if (allCompetitions != null) {
-                        for (Competition comp : allCompetitions) {
-                            if (comp == null) continue;
-                            
-                            // Add competition to SaveGame lists
-                            if (Competition.COMPETITION_CUP.equals(comp.getCompetitionType())) {
-                                if (!currentGame.getAllCups().contains(comp)) {
-                                    currentGame.getAllCups().add(comp);
-                                }
-                            } else if (Competition.COMPETITION_LEAGUE.equals(comp.getCompetitionType())) {
-                                if (!currentGame.getAllLeagues().contains(comp)) {
-                                    currentGame.getAllLeagues().add(comp);
-                                }
-                            }
-                            
-                            // Ensure all participant clubs from all editions are in SaveGame.allClubs
-                            if (comp.getEditions() != null) {
-                                for (com.rndmodgames.futtoboru.data.CompetitionEdition edition : comp.getEditions()) {
-                                    if (edition != null && edition.getParticipantClubsIds() != null) {
-                                        for (Long clubId : edition.getParticipantClubsIds()) {
-                                            if (clubId != null && currentGame.getClubById(clubId) == null) {
-                                                Club club = DatabaseLoader.getClubById(clubId);
-                                                if (club != null) {
-                                                    Gdx.app.log("NewGameOverviewScreen", "Adding participant club " + club.getName() + " (ID: " + clubId + ") to SaveGame for competition: " + comp.getName());
-                                                    currentGame.getAllClubs().add(club);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        Gdx.app.log("NewGameOverviewScreen", "Step 6a: OK - Total cups: " + currentGame.getAllCups().size() + ", leagues: " + currentGame.getAllLeagues().size() + ", total clubs: " + currentGame.getAllClubs().size());
-                    }
-                    
-                    for (Country country : selectedCountries) {
-                        if (country == null) {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR: country in selectedCountries is NULL!");
-                            continue;
-                        }
-                        if (country.getId() == null) {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR: country.getId() is NULL for country: " + country.getCommonName());
-                            continue;
-                        }
-                        
-                        List<Club> clubsForCountry = DatabaseLoader.getClubsByCountry().get(country.getId());
-                        if (clubsForCountry == null) {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR: No clubs found for country ID: " + country.getId() + " (" + country.getCommonName() + ")");
-                            continue;
-                        }
-                        
-                        // Add all Clubs for the selected countries to be simulated
-                        currentGame.getAllClubs().addAll(clubsForCountry);
-                        Gdx.app.log("NewGameOverviewScreen", "Step 6: Added " + clubsForCountry.size() + " clubs for country: " + country.getCommonName());
-                    }
-                    Gdx.app.log("NewGameOverviewScreen", "Step 6: OK - Total clubs loaded: " + currentGame.getAllClubs().size());
 
-                    /**
-                     * Starting Club
-                     * 
-                     * TODO: we also need to set the Person as working at Club level (owner, staff, etc.)
-                     * 
-                     * NOTE: starting club cannot be null because we insert a ghost UNAVAILABLE Club
-                     */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 7: Setting starting club...");
-                    Gdx.app.log("NewGameOverviewScreen", "Step 7: startingClub = " + (startingClub != null ? startingClub.getName() : "NULL"));
-                    Gdx.app.log("NewGameOverviewScreen", "Step 7: startingClub.getId() = " + (startingClub != null && startingClub.getId() != null ? startingClub.getId() : "NULL"));
-                    Gdx.app.log("NewGameOverviewScreen", "Step 7: primaryProfession = " + (primaryProfession != null ? primaryProfession.getName() + " (ID: " + primaryProfession.getId() + ")" : "NULL"));
-                    
-                    // Check if this is a profession that doesn't have a club (Player, Retired Player, Agent, Investor)
-                    boolean professionRequiresNoClub = (primaryProfession != null && 
-                        (primaryProfession.getId().equals(1L) ||  // Player
-                         primaryProfession.getId().equals(2L) ||  // Retired Player
-                         primaryProfession.getId().equals(6L) ||  // Agent
-                         primaryProfession.getId().equals(7L)));  // Investor
-                    
-                    if (startingClub != null && startingClub.getId() != null && !professionRequiresNoClub) {
-                        boolean clubFound = false;
-                        /**
-                         * Make sure current club is a club instance on currentGame.currentclubs to avoid split instances
-                         */
-                        for (Club club : currentGame.getAllClubs()) {
-                            if (club == null) {
-                                continue;
-                            }
-                            if (startingClub.getId().equals(club.getId())) {
-                                // We only save the current club ID to avoid saving repeated times on JSON file
-                                currentGame.getOwner().setCurrentClubId(club.getId());
-                                clubFound = true;
-                                Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - Starting club set: " + club.getName() + " (ID: " + club.getId() + ")");
-                                break;
-                            }
-                        }
-                        if (!clubFound) {
-                            Gdx.app.error("NewGameOverviewScreen", "WARNING: Starting club ID " + startingClub.getId() + " not found in loaded clubs!");
-                        }
-                    } else {
-                        if (professionRequiresNoClub) {
-                            Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - Profession " + primaryProfession.getName() + " does not require a starting club");
-                        } else if (startingClub == null) {
-                            Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - No starting club selected (unemployed start)");
-                        } else {
-                            Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - Starting club is UNAVAILABLE placeholder (no club ID)");
-                        }
-                        // Explicitly set currentClubId to null for professions that don't have clubs
-                        currentGame.getOwner().setCurrentClubId(null);
+                // Disable + show a busy indicator while the (synchronous, potentially slow) 14-step
+                // startup runs (P2 fix, pre-game menus audit 2026-07-19). Deferred one tick via Timer
+                // so the busy bar actually gets a chance to render before the heavy work blocks the
+                // render thread — same pattern as MainGameMenuTable.continueGame().
+                startGameButton.setDisabled(true);
+                startGameBusyBar.setVisible(true);
+
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        runStartGame();
                     }
-                    
-                    /**
-                     * Starting Scripts
-                     * 
-                     *  WIP:
-                     *  
-                     *      - add some basic scripted messages to appear on the inbox screen listing as the game starts
-                     *      
-                     *  - Basic way to do:
-                     *      - Add a date to scripted messages
-                     *      - If date is in the future, the message "is not sent" isSent = false
-                     *      - Inbox Screen rendering ignores those directly
-                     *      - 
-                     *     
-                     *  - UNEMPLOYED:
-                     *      - Welcome Message, button to JOBS SCREEN
-                     *      
-                     *  - MANAGER:
-                     *      - Welcome Message, buttons to SQUAD, LINEUP, TACTICS, TRAINING, ETC
-                     *      
-                     *  - GENERIC:
-                     *      - The League will be formed on X_DATE
-                     *      
-                     *  TBD: audit save game stuff
-                     *      - game real starting date
-                     *      - game real last saved game date
-                     *      - number of saves
-                     *      - play time
-                     *      - number of clicks
-                     *      - number of key strokes
-                     *      - most visited screens data
-                     *      
-                     *      
-                     * -------------------------------------------------------------
-                     * 
-                     */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 8: Loading season scripts...");
-                    if (startingSeason.getSeasonScripts() == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: startingSeason.getSeasonScripts() is NULL!");
-                        throw new IllegalStateException("Season scripts list is null.");
-                    }
-                    
-                    if (Futtoboru.DEBUG_MODE) {
-                        Gdx.app.log("NewGameOverviewScreen", "--------------------------");
-                        Gdx.app.log("NewGameOverviewScreen", "ITERATING SEASON SCRIPTS: ");
-                        
-                        for (BasicScript script : startingSeason.getSeasonScripts()) {
-                            if (script == null) {
-                                Gdx.app.error("NewGameOverviewScreen", "WARNING: Found null script in season scripts!");
-                                continue;
-                            }
-                            Gdx.app.log("NewGameOverviewScreen", "SEASON SCRIPT: " + script.getName());
-                            Gdx.app.log("NewGameOverviewScreen", "DESCRIPTION  : " + script.getDescription());
-                            
-                            /**
-                             * TEXT / SERIALIZED SCRIPT VERSION
-                             */
-                            if (script.getScriptValues() != null) {
-                                Gdx.app.log("NewGameOverviewScreen", "SCRIPT VALUES: " + script.getScriptValues().size());
-                                
-                                for (Map.Entry<String, Object> entry : script.getScriptValues().entrySet()) {
-                                    Gdx.app.log("NewGameOverviewScreen", "Script Key = " + entry.getKey() + ", Script Value = " + entry.getValue());
-                                }
-                            } else {
-                                Gdx.app.error("NewGameOverviewScreen", "WARNING: Script values are null for script: " + script.getName());
-                            }
-                            
-                            Gdx.app.log("NewGameOverviewScreen", "--------------------------");
-                        }
-                    }
-                    
-                    /**
-                     * Add Season Scripts to SaveGame
-                     */
-                    currentGame.getGameScripts().addAll(startingSeason.getSeasonScripts());
-                    Gdx.app.log("NewGameOverviewScreen", "Step 8: OK - Added " + startingSeason.getSeasonScripts().size() + " season scripts");
-                    
-                    Gdx.app.log("NewGameOverviewScreen", "Step 9: Initializing job system...");
-                    try {
-                        ((Futtoboru) game).initializeJobSystem();
-                        Gdx.app.log("NewGameOverviewScreen", "Step 9: OK - Job system initialized");
-                    } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 9 (initializeJobSystem):", e);
-                        e.printStackTrace();
-                        throw e; // Re-throw to be caught by outer catch
-                    }
-                    
-                    Gdx.app.log("NewGameOverviewScreen", "Step 10: Creating initial job openings...");
-                    try {
-                        if (((Futtoboru) game).getJobManager() != null) {
-                            ((Futtoboru) game).getJobManager().initializeJobOpenings();
-                            Gdx.app.log("NewGameOverviewScreen", "Step 10: OK - Initial job openings created");
-                        } else {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 10: JobManager is NULL!");
-                            throw new IllegalStateException("JobManager is null after initialization");
-                        }
-                    } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 10 (initializeJobOpenings):", e);
-                        e.printStackTrace();
-                        throw e; // Re-throw to be caught by outer catch
-                    }
-                    
-                    // Generate attributes for all players (v1.0)
-                    try {
-                        Gdx.app.log("NewGameOverviewScreen", "Step 11: Generating player attributes...");
-                        generateAttributesForAllPlayers(currentGame);
-                        Gdx.app.log("NewGameOverviewScreen", "Step 11: OK - Player attributes generated");
-                    } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 11 (generateAttributesForAllPlayers):", e);
-                        e.printStackTrace();
-                        // Don't throw - attributes can be generated later if needed
-                    }
-                    
-                    // Create initial attribute snapshots for change tracking (v1.0)
-                    try {
-                        Gdx.app.log("NewGameOverviewScreen", "Step 12: Creating initial attribute snapshots...");
-                        createInitialAttributeSnapshots(currentGame);
-                        Gdx.app.log("NewGameOverviewScreen", "Step 12: OK - Initial snapshots created");
-                    } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 12 (createInitialAttributeSnapshots):", e);
-                        e.printStackTrace();
-                        // Don't throw - snapshots can be created later
-                    }
-                    
-                    // Create Welcome message (v2.0)
-                    try {
-                        Gdx.app.log("NewGameOverviewScreen", "Step 13: Creating welcome message...");
-                        Futtoboru futtoboru = (Futtoboru) game;
-                        if (futtoboru.getGameEngine() != null && futtoboru.getGameEngine().getMessageManager() != null) {
-                            com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
-                                futtoboru.getGameEngine().getMessageManager();
-                            
-                            com.rndmodgames.futtoboru.data.Message welcomeMessage = 
-                                messageManager.createWelcomeMessage(
-                                    currentGame.getOwner(),
-                                    primaryProfession,
-                                    startingCountry,
-                                    startingClub,
-                                    currentGame.getGameStartDate()
-                                );
-                            
-                            if (welcomeMessage != null) {
-                                // Deliver immediately
-                                messageManager.deliverMessage(welcomeMessage);
-                                Gdx.app.log("NewGameOverviewScreen", "Step 13: OK - Welcome message created and delivered");
-                                System.out.println("NewGameOverviewScreen: Created and delivered welcome message ID " + welcomeMessage.getId());
-                                
-                                // Verify message was added
-                                int messageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
-                                System.out.println("NewGameOverviewScreen: Total messages after welcome: " + messageCount);
-                            } else {
-                                Gdx.app.error("NewGameOverviewScreen", "Step 13: WARNING - Welcome message is null");
-                            }
-                        } else {
-                            Gdx.app.error("NewGameOverviewScreen", "Step 13: ERROR - MessageManager not available");
-                        }
-                    } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 13 (createWelcomeMessage):", e);
-                        e.printStackTrace();
-                        // Don't throw - welcome message is nice to have but not critical
-                    }
-                    
-                    Gdx.app.log("NewGameOverviewScreen", "Step 14: Changing to GAME_SCREEN...");
-                    ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
-                    Gdx.app.log("NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
-                    
-                } catch (Exception e) {
-                    // Print to console (System.out) so it shows in debug window
-                    System.err.println("========================================");
-                    System.err.println("CRITICAL ERROR DURING GAME STARTUP!");
-                    System.err.println("========================================");
-                    System.err.println("Exception type: " + e.getClass().getName());
-                    System.err.println("Exception message: " + e.getMessage());
-                    if (e.getCause() != null) {
-                        System.err.println("Caused by: " + e.getCause().getClass().getName() + " - " + e.getCause().getMessage());
-                    }
-                    System.err.println("----------------------------------------");
-                    e.printStackTrace(System.err);
-                    System.err.println("========================================");
-                    
-                    // Also log via Gdx for consistency
-                    Gdx.app.error("NewGameOverviewScreen", "CRITICAL ERROR during game startup!", e);
-                    Gdx.app.error("NewGameOverviewScreen", "Exception type: " + e.getClass().getName());
-                    Gdx.app.error("NewGameOverviewScreen", "Exception message: " + e.getMessage());
-                    if (e.getCause() != null) {
-                        Gdx.app.error("NewGameOverviewScreen", "Caused by: " + e.getCause().getClass().getName() + " - " + e.getCause().getMessage());
-                    }
-                    e.printStackTrace();
-                    
-                    // Print full stack trace to console
-                    StackTraceElement[] stackTrace = e.getStackTrace();
-                    System.err.println("Full stack trace:");
-                    Gdx.app.error("NewGameOverviewScreen", "Stack trace:");
-                    for (int i = 0; i < Math.min(30, stackTrace.length); i++) {
-                        System.err.println("  at " + stackTrace[i].toString());
-                        Gdx.app.error("NewGameOverviewScreen", "  at " + stackTrace[i].toString());
-                    }
-                    System.err.println("========================================");
-                    
-                    // Don't throw - show error dialog instead to prevent window from closing
-                    // TODO: Show error dialog to user
-                    Gdx.app.error("NewGameOverviewScreen", "Game startup failed. Window will remain open for debugging.");
-                    System.err.println("Game startup failed. Window will remain open for debugging.");
-                    return; // Exit the button handler without changing screens
-                }
+                }, 0.05f);
             }
         });
+
+        // Step indicator
+        mainContainer.row();
+        mainContainer.add(WizardStepLabel.of(3, 3)).left();
 
         // selected countries label
         mainContainer.row();
@@ -840,14 +450,474 @@ public class NewGameOverviewScreen implements Screen {
         mainContainer.row();
         mainContainer.add(backButton);
         
-        // start game button
-        mainContainer.add(startGameButton);
+        // start game button + busy bar directly underneath it
+        VisTable startGameButtonContainer = new VisTable(true);
+        startGameButtonContainer.add(startGameButton);
+        startGameButtonContainer.row();
+        startGameBusyBar.setVisible(false);
+        startGameButtonContainer.add(startGameBusyBar).height(4).growX();
+        mainContainer.add(startGameButtonContainer);
         
         // 
         mainContainer.add(table);
         
         // Add Settings Screen Main Container to Stage
         UiScale.addOverflowScroll(stage, mainContainer);
+    }
+
+    /**
+     * The former Start Game click-handler body, unchanged except for the failure path (P0 fix,
+     * pre-game menus audit 2026-07-19): a silent {@code return} that left the player staring at an
+     * unresponsive screen is now a visible {@link ErrorDialog}, and the busy indicator/button are
+     * always re-enabled afterwards regardless of outcome.
+     */
+    private void runStartGame() {
+        try {
+            /**
+             * NEW_GAME_SETUP IS PERFORMED HERE!
+             * 
+             * Set the Selected Countries and Redirect to Main Game Screen:
+             * 
+             *      - Selected Countries        [DONE]
+             *      - Selected Profession       [DONE]
+             *      - Starting Country          [DONE]
+             *      - Starting Club             [DONE]
+             *      - Starting Scripts          [WIP]
+             */
+            Gdx.app.log("NewGameOverviewScreen", "Step 1: Getting current game...");
+            SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
+            
+            if (currentGame == null) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR: currentGame is NULL!");
+                throw new IllegalStateException("SaveGame is null. Cannot start game without a SaveGame instance.");
+            }
+            Gdx.app.log("NewGameOverviewScreen", "Step 1: OK - currentGame obtained");
+            
+            // Game Authority
+            Gdx.app.log("NewGameOverviewScreen", "Step 2: Setting main authority...");
+            if (DatabaseLoader.getMainAuthority() == null) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR: MainAuthority is NULL!");
+                throw new IllegalStateException("MainAuthority is null. Database may not be loaded correctly.");
+            }
+            currentGame.setMainAuthority(DatabaseLoader.getMainAuthority());
+            Gdx.app.log("NewGameOverviewScreen", "Step 2: OK - main authority set");
+            
+            //
+            Gdx.app.log("NewGameOverviewScreen", "Step 3: Setting selected countries...");
+            if (selectedCountries == null || selectedCountries.isEmpty()) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR: selectedCountries is NULL or EMPTY!");
+                throw new IllegalStateException("Selected countries list is null or empty.");
+            }
+            currentGame.setSelectedCountries(selectedCountries);
+            Gdx.app.log("NewGameOverviewScreen", "Step 3: OK - selected countries set: " + selectedCountries.size());
+            
+            Gdx.app.log("NewGameOverviewScreen", "Step 4: Setting owner profession and country...");
+            if (currentGame.getOwner() == null) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR: currentGame.getOwner() is NULL!");
+                throw new IllegalStateException("Game owner is null. Manager must be created before starting game.");
+            }
+            
+            // CRITICAL: Ensure owner has an ID for job system to work
+            if (currentGame.getOwner().getId() == null) {
+                Gdx.app.log("NewGameOverviewScreen", "Step 4a: Owner has no ID, assigning unique ID...");
+                // Generate a unique ID (use negative range to avoid conflicts with database-loaded persons)
+                // Find the highest existing person ID, or use -1 as starting point
+                Long maxId = -1L;
+                if (currentGame.getAllPersons() != null && !currentGame.getAllPersons().isEmpty()) {
+                    for (com.rndmodgames.futtoboru.data.Person p : currentGame.getAllPersons()) {
+                        if (p != null && p.getId() != null && p.getId() < 0 && p.getId() < maxId) {
+                            maxId = p.getId();
+                        }
+                    }
+                }
+                // Assign ID (decrement from maxId, so -1, -2, -3, etc.)
+                Long newOwnerId = maxId - 1;
+                currentGame.getOwner().setId(newOwnerId);
+                Gdx.app.log("NewGameOverviewScreen", "Step 4a: Assigned owner ID: " + newOwnerId);
+                System.out.println("[NewGameOverviewScreen] Assigned owner ID: " + newOwnerId);
+                
+                // Add owner to allPersons list if not already there
+                if (currentGame.getAllPersons() == null) {
+                    currentGame.setAllPersons(new ArrayList<>());
+                }
+                boolean ownerInList = false;
+                for (com.rndmodgames.futtoboru.data.Person p : currentGame.getAllPersons()) {
+                    if (p != null && p.getId() != null && p.getId().equals(newOwnerId)) {
+                        ownerInList = true;
+                        break;
+                    }
+                }
+                if (!ownerInList) {
+                    currentGame.getAllPersons().add(currentGame.getOwner());
+                    Gdx.app.log("NewGameOverviewScreen", "Step 4a: Added owner to allPersons list");
+                }
+            } else {
+                Gdx.app.log("NewGameOverviewScreen", "Step 4a: Owner already has ID: " + currentGame.getOwner().getId());
+            }
+            
+            if (primaryProfession == null) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR: primaryProfession is NULL!");
+                throw new IllegalStateException("Primary profession is null.");
+            }
+            if (startingCountry == null) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR: startingCountry is NULL!");
+                throw new IllegalStateException("Starting country is null.");
+            }
+            currentGame.getOwner().setPrimaryProfession(primaryProfession);
+            currentGame.getOwner().setCurrentCountry(startingCountry);
+            Gdx.app.log("NewGameOverviewScreen", "Step 4: OK - owner profession and country set");
+            
+            // Starting Season
+            Gdx.app.log("NewGameOverviewScreen", "Step 5: Setting game dates...");
+            if (startingSeason != null) {
+                if (startingSeason.getStartDate() == null) {
+                    Gdx.app.error("NewGameOverviewScreen", "ERROR: startingSeason.getStartDate() is NULL!");
+                    throw new IllegalStateException("Season start date is null.");
+                }
+                currentGame.setGameStartDate(startingSeason.getStartDate());
+                currentGame.setGameDate(startingSeason.getStartDate());
+                Gdx.app.log("NewGameOverviewScreen", "Step 5: OK - game dates set: " + startingSeason.getStartDate());
+            } else {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR: startingSeason is NULL!");
+                throw new IllegalStateException("Starting season is null.");
+            }
+            
+            /**
+             * Clubs Database
+             * 
+             * TODO: this should be loaded in a more automatic way, so we don't need to do that much setup on unit tests
+             */
+            Gdx.app.log("NewGameOverviewScreen", "Step 6: Loading clubs database...");
+            currentGame.setAllClubs(new ArrayList<>());
+            
+            if (DatabaseLoader.getClubsByCountry() == null) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR: DatabaseLoader.getClubsByCountry() is NULL!");
+                throw new IllegalStateException("Clubs by country map is null. Database may not be loaded correctly.");
+            }
+            
+            /**
+             * Competitions
+             * 
+             * CRITICAL: Ensure all cups and leagues from DatabaseLoader are added to SaveGame.
+             * Also ensure ALL participant clubs for those competitions are added to SaveGame,
+             * even if their country wasn't selected (e.g., Linfield in FA Cup).
+             * This ensures AuthorityManager can find and process them correctly.
+             */
+            Gdx.app.log("NewGameOverviewScreen", "Step 6a: Adding competitions and participant clubs to SaveGame...");
+            List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+            if (allCompetitions != null) {
+                for (Competition comp : allCompetitions) {
+                    if (comp == null) continue;
+                    
+                    // Add competition to SaveGame lists
+                    if (Competition.COMPETITION_CUP.equals(comp.getCompetitionType())) {
+                        if (!currentGame.getAllCups().contains(comp)) {
+                            currentGame.getAllCups().add(comp);
+                        }
+                    } else if (Competition.COMPETITION_LEAGUE.equals(comp.getCompetitionType())) {
+                        if (!currentGame.getAllLeagues().contains(comp)) {
+                            currentGame.getAllLeagues().add(comp);
+                        }
+                    }
+                    
+                    // Ensure all participant clubs from all editions are in SaveGame.allClubs
+                    if (comp.getEditions() != null) {
+                        for (com.rndmodgames.futtoboru.data.CompetitionEdition edition : comp.getEditions()) {
+                            if (edition != null && edition.getParticipantClubsIds() != null) {
+                                for (Long clubId : edition.getParticipantClubsIds()) {
+                                    if (clubId != null && currentGame.getClubById(clubId) == null) {
+                                        Club club = DatabaseLoader.getClubById(clubId);
+                                        if (club != null) {
+                                            Gdx.app.log("NewGameOverviewScreen", "Adding participant club " + club.getName() + " (ID: " + clubId + ") to SaveGame for competition: " + comp.getName());
+                                            currentGame.getAllClubs().add(club);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Gdx.app.log("NewGameOverviewScreen", "Step 6a: OK - Total cups: " + currentGame.getAllCups().size() + ", leagues: " + currentGame.getAllLeagues().size() + ", total clubs: " + currentGame.getAllClubs().size());
+            }
+            
+            for (Country country : selectedCountries) {
+                if (country == null) {
+                    Gdx.app.error("NewGameOverviewScreen", "ERROR: country in selectedCountries is NULL!");
+                    continue;
+                }
+                if (country.getId() == null) {
+                    Gdx.app.error("NewGameOverviewScreen", "ERROR: country.getId() is NULL for country: " + country.getCommonName());
+                    continue;
+                }
+                
+                List<Club> clubsForCountry = DatabaseLoader.getClubsByCountry().get(country.getId());
+                if (clubsForCountry == null) {
+                    Gdx.app.error("NewGameOverviewScreen", "ERROR: No clubs found for country ID: " + country.getId() + " (" + country.getCommonName() + ")");
+                    continue;
+                }
+                
+                // Add all Clubs for the selected countries to be simulated
+                currentGame.getAllClubs().addAll(clubsForCountry);
+                Gdx.app.log("NewGameOverviewScreen", "Step 6: Added " + clubsForCountry.size() + " clubs for country: " + country.getCommonName());
+            }
+            Gdx.app.log("NewGameOverviewScreen", "Step 6: OK - Total clubs loaded: " + currentGame.getAllClubs().size());
+
+            /**
+             * Starting Club
+             * 
+             * TODO: we also need to set the Person as working at Club level (owner, staff, etc.)
+             * 
+             * NOTE: starting club cannot be null because we insert a ghost UNAVAILABLE Club
+             */
+            Gdx.app.log("NewGameOverviewScreen", "Step 7: Setting starting club...");
+            Gdx.app.log("NewGameOverviewScreen", "Step 7: startingClub = " + (startingClub != null ? startingClub.getName() : "NULL"));
+            Gdx.app.log("NewGameOverviewScreen", "Step 7: startingClub.getId() = " + (startingClub != null && startingClub.getId() != null ? startingClub.getId() : "NULL"));
+            Gdx.app.log("NewGameOverviewScreen", "Step 7: primaryProfession = " + (primaryProfession != null ? primaryProfession.getName() + " (ID: " + primaryProfession.getId() + ")" : "NULL"));
+            
+            // Check if this is a profession that doesn't have a club (Player, Retired Player, Agent, Investor)
+            boolean professionRequiresNoClub = !professionRequiresClub(primaryProfession);
+            
+            if (startingClub != null && startingClub.getId() != null && !professionRequiresNoClub) {
+                boolean clubFound = false;
+                /**
+                 * Make sure current club is a club instance on currentGame.currentclubs to avoid split instances
+                 */
+                for (Club club : currentGame.getAllClubs()) {
+                    if (club == null) {
+                        continue;
+                    }
+                    if (startingClub.getId().equals(club.getId())) {
+                        // We only save the current club ID to avoid saving repeated times on JSON file
+                        currentGame.getOwner().setCurrentClubId(club.getId());
+                        clubFound = true;
+                        Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - Starting club set: " + club.getName() + " (ID: " + club.getId() + ")");
+                        break;
+                    }
+                }
+                if (!clubFound) {
+                    Gdx.app.error("NewGameOverviewScreen", "WARNING: Starting club ID " + startingClub.getId() + " not found in loaded clubs!");
+                }
+            } else {
+                if (professionRequiresNoClub) {
+                    Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - Profession " + primaryProfession.getName() + " does not require a starting club");
+                } else if (startingClub == null) {
+                    Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - No starting club selected (unemployed start)");
+                } else {
+                    Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - Starting club is UNAVAILABLE placeholder (no club ID)");
+                }
+                // Explicitly set currentClubId to null for professions that don't have clubs
+                currentGame.getOwner().setCurrentClubId(null);
+            }
+            
+            /**
+             * Starting Scripts
+             * 
+             *  WIP:
+             *  
+             *      - add some basic scripted messages to appear on the inbox screen listing as the game starts
+             *      
+             *  - Basic way to do:
+             *      - Add a date to scripted messages
+             *      - If date is in the future, the message "is not sent" isSent = false
+             *      - Inbox Screen rendering ignores those directly
+             *      - 
+             *     
+             *  - UNEMPLOYED:
+             *      - Welcome Message, button to JOBS SCREEN
+             *      
+             *  - MANAGER:
+             *      - Welcome Message, buttons to SQUAD, LINEUP, TACTICS, TRAINING, ETC
+             *      
+             *  - GENERIC:
+             *      - The League will be formed on X_DATE
+             *      
+             *  TBD: audit save game stuff
+             *      - game real starting date
+             *      - game real last saved game date
+             *      - number of saves
+             *      - play time
+             *      - number of clicks
+             *      - number of key strokes
+             *      - most visited screens data
+             *      
+             * -------------------------------------------------------------
+             * 
+             */
+            Gdx.app.log("NewGameOverviewScreen", "Step 8: Loading season scripts...");
+            if (startingSeason.getSeasonScripts() == null) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR: startingSeason.getSeasonScripts() is NULL!");
+                throw new IllegalStateException("Season scripts list is null.");
+            }
+            
+            if (Futtoboru.DEBUG_MODE) {
+                Gdx.app.log("NewGameOverviewScreen", "--------------------------");
+                Gdx.app.log("NewGameOverviewScreen", "ITERATING SEASON SCRIPTS: ");
+                
+                for (BasicScript script : startingSeason.getSeasonScripts()) {
+                    if (script == null) {
+                        Gdx.app.error("NewGameOverviewScreen", "WARNING: Found null script in season scripts!");
+                        continue;
+                    }
+                    Gdx.app.log("NewGameOverviewScreen", "SEASON SCRIPT: " + script.getName());
+                    Gdx.app.log("NewGameOverviewScreen", "DESCRIPTION  : " + script.getDescription());
+                    
+                    /**
+                     * TEXT / SERIALIZED SCRIPT VERSION
+                     */
+                    if (script.getScriptValues() != null) {
+                        Gdx.app.log("NewGameOverviewScreen", "SCRIPT VALUES: " + script.getScriptValues().size());
+                        
+                        for (Map.Entry<String, Object> entry : script.getScriptValues().entrySet()) {
+                            Gdx.app.log("NewGameOverviewScreen", "Script Key = " + entry.getKey() + ", Script Value = " + entry.getValue());
+                        }
+                    } else {
+                        Gdx.app.error("NewGameOverviewScreen", "WARNING: Script values are null for script: " + script.getName());
+                    }
+                    
+                    Gdx.app.log("NewGameOverviewScreen", "--------------------------");
+                }
+            }
+            
+            /**
+             * Add Season Scripts to SaveGame
+             */
+            currentGame.getGameScripts().addAll(startingSeason.getSeasonScripts());
+            Gdx.app.log("NewGameOverviewScreen", "Step 8: OK - Added " + startingSeason.getSeasonScripts().size() + " season scripts");
+            
+            Gdx.app.log("NewGameOverviewScreen", "Step 9: Initializing job system...");
+            try {
+                ((Futtoboru) game).initializeJobSystem();
+                Gdx.app.log("NewGameOverviewScreen", "Step 9: OK - Job system initialized");
+            } catch (Exception e) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 9 (initializeJobSystem):", e);
+                e.printStackTrace();
+                throw e; // Re-throw to be caught by outer catch
+            }
+            
+            Gdx.app.log("NewGameOverviewScreen", "Step 10: Creating initial job openings...");
+            try {
+                if (((Futtoboru) game).getJobManager() != null) {
+                    ((Futtoboru) game).getJobManager().initializeJobOpenings();
+                    Gdx.app.log("NewGameOverviewScreen", "Step 10: OK - Initial job openings created");
+                } else {
+                    Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 10: JobManager is NULL!");
+                    throw new IllegalStateException("JobManager is null after initialization");
+                }
+            } catch (Exception e) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 10 (initializeJobOpenings):", e);
+                e.printStackTrace();
+                throw e; // Re-throw to be caught by outer catch
+            }
+            
+            // Generate attributes for all players (v1.0)
+            try {
+                Gdx.app.log("NewGameOverviewScreen", "Step 11: Generating player attributes...");
+                generateAttributesForAllPlayers(currentGame);
+                Gdx.app.log("NewGameOverviewScreen", "Step 11: OK - Player attributes generated");
+            } catch (Exception e) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 11 (generateAttributesForAllPlayers):", e);
+                e.printStackTrace();
+                // Don't throw - attributes can be generated later if needed
+            }
+            
+            // Create initial attribute snapshots for change tracking (v1.0)
+            try {
+                Gdx.app.log("NewGameOverviewScreen", "Step 12: Creating initial attribute snapshots...");
+                createInitialAttributeSnapshots(currentGame);
+                Gdx.app.log("NewGameOverviewScreen", "Step 12: OK - Initial snapshots created");
+            } catch (Exception e) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 12 (createInitialAttributeSnapshots):", e);
+                e.printStackTrace();
+                // Don't throw - snapshots can be created later
+            }
+            
+            // Create Welcome message (v2.0)
+            try {
+                Gdx.app.log("NewGameOverviewScreen", "Step 13: Creating welcome message...");
+                Futtoboru futtoboru = (Futtoboru) game;
+                if (futtoboru.getGameEngine() != null && futtoboru.getGameEngine().getMessageManager() != null) {
+                    com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
+                        futtoboru.getGameEngine().getMessageManager();
+                    
+                    com.rndmodgames.futtoboru.data.Message welcomeMessage = 
+                        messageManager.createWelcomeMessage(
+                            currentGame.getOwner(),
+                            primaryProfession,
+                            startingCountry,
+                            startingClub,
+                            currentGame.getGameStartDate()
+                        );
+                    
+                    if (welcomeMessage != null) {
+                        // Deliver immediately
+                        messageManager.deliverMessage(welcomeMessage);
+                        Gdx.app.log("NewGameOverviewScreen", "Step 13: OK - Welcome message created and delivered");
+                        System.out.println("NewGameOverviewScreen: Created and delivered welcome message ID " + welcomeMessage.getId());
+                        
+                        // Verify message was added
+                        int messageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
+                        System.out.println("NewGameOverviewScreen: Total messages after welcome: " + messageCount);
+                    } else {
+                        Gdx.app.error("NewGameOverviewScreen", "Step 13: WARNING - Welcome message is null");
+                    }
+                } else {
+                    Gdx.app.error("NewGameOverviewScreen", "Step 13: ERROR - MessageManager not available");
+                }
+            } catch (Exception e) {
+                Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 13 (createWelcomeMessage):", e);
+                e.printStackTrace();
+                // Don't throw - welcome message is nice to have but not critical
+            }
+            
+            Gdx.app.log("NewGameOverviewScreen", "Step 14: Changing to GAME_SCREEN...");
+            ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
+            Gdx.app.log("NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
+            
+        } catch (Exception e) {
+            // Print to console (System.out) so it shows in debug window
+            System.err.println("========================================");
+            System.err.println("CRITICAL ERROR DURING GAME STARTUP!");
+            System.err.println("========================================");
+            System.err.println("Exception type: " + e.getClass().getName());
+            System.err.println("Exception message: " + e.getMessage());
+            if (e.getCause() != null) {
+                System.err.println("Caused by: " + e.getCause().getClass().getName() + " - " + e.getCause().getMessage());
+            }
+            System.err.println("----------------------------------------");
+            e.printStackTrace(System.err);
+            System.err.println("========================================");
+            
+            // Also log via Gdx for consistency
+            Gdx.app.error("NewGameOverviewScreen", "CRITICAL ERROR during game startup!", e);
+            Gdx.app.error("NewGameOverviewScreen", "Exception type: " + e.getClass().getName());
+            Gdx.app.error("NewGameOverviewScreen", "Exception message: " + e.getMessage());
+            if (e.getCause() != null) {
+                Gdx.app.error("NewGameOverviewScreen", "Caused by: " + e.getCause().getClass().getName() + " - " + e.getCause().getMessage());
+            }
+            e.printStackTrace();
+            
+            // Print full stack trace to console
+            StackTraceElement[] stackTrace = e.getStackTrace();
+            System.err.println("Full stack trace:");
+            Gdx.app.error("NewGameOverviewScreen", "Stack trace:");
+            for (int i = 0; i < Math.min(30, stackTrace.length); i++) {
+                System.err.println("  at " + stackTrace[i].toString());
+                Gdx.app.error("NewGameOverviewScreen", "  at " + stackTrace[i].toString());
+            }
+            System.err.println("========================================");
+            
+            Gdx.app.error("NewGameOverviewScreen", "Game startup failed. Showing error dialog to player.");
+            System.err.println("Game startup failed. Showing error dialog to player.");
+
+            // Reset UI state and show the player a visible error instead of leaving them looking at an
+            // unresponsive button with no explanation (P0 fix, pre-game menus audit 2026-07-19).
+            startGameBusyBar.setVisible(false);
+            startGameButton.setDisabled(false);
+            new ErrorDialog(
+                    LanguageModLoader.getValue("start_game"),
+                    LanguageModLoader.getValue("start_game_failed_message")
+            ).show(stage);
+        }
     }
 
     @Override
@@ -887,6 +957,51 @@ public class NewGameOverviewScreen implements Screen {
         // TODO Auto-generated method stub
         
     }
+
+    /**
+     * Whether a competition belongs to one of the player's selected countries — used to filter the
+     * Cups/Leagues counts on this screen so they match the already-correct Teams/Players filtering
+     * (P1 fix, pre-game menus audit 2026-07-19).
+     */
+    private static boolean isCompetitionInSelectedCountries(Competition competition, List<Country> selectedCountries) {
+        if (competition == null || competition.getCountryId() == null) {
+            return false;
+        }
+        for (Country country : selectedCountries) {
+            if (country != null && competition.getCountryId().equals(country.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Whether the given profession requires the player to pick a starting club (Manager, Director,
+     * Scout, Club Owner) as opposed to starting without one (Player, Retired Player, Agent, Investor).
+     * Extracted 2026-07-19 so the same rule can drive both the proactive Start Game disabled-state
+     * check and the existing submit-time logic, instead of being duplicated.
+     */
+    private static boolean professionRequiresClub(Profession profession) {
+        if (profession == null || profession.getId() == null) {
+            return false;
+        }
+        long id = profession.getId();
+        return id != 1L && id != 2L && id != 6L && id != 7L;
+    }
+
+    /**
+     * Proactive Start Game validation (P1 fix, pre-game menus audit 2026-07-19): disabled while a
+     * profession isn't selected, or a club-requiring profession has no club selected yet.
+     */
+    private void updateStartGameButtonState() {
+        if (startGameButton == null) {
+            return;
+        }
+        boolean missingProfession = primaryProfession == null;
+        boolean missingRequiredClub = professionRequiresClub(primaryProfession)
+                && (startingClub == null || startingClub.getId() == null);
+        startGameButton.setDisabled(missingProfession || missingRequiredClub);
+    }
     
     /**
      * Updates the Starting Club after changes on Starting Country, etc
@@ -907,7 +1022,7 @@ public class NewGameOverviewScreen implements Screen {
          * 7, Investor,true
          * 8, Club Owner,true
          */
-        switch (primaryProfession.getId().intValue()) {
+        switch(primaryProfession.getId().intValue()) {
 
         // No Selectable club
         case 1:
@@ -915,7 +1030,7 @@ public class NewGameOverviewScreen implements Screen {
         case 6:
         case 7:
             // set starting club to UNAVAILABLE and DISABLE
-            startingClubSelectBox.setItems(new Club("UNAVAILABLE"));
+            startingClubSelectBox.setItems(new Club(LanguageModLoader.getValue("starting_club_unavailable")));
             startingClubSelectBox.setDisabled(true);
             break;
             
@@ -945,8 +1060,6 @@ public class NewGameOverviewScreen implements Screen {
     
     @Override
     public void hide() {
-        
-        System.out.println("HIDE WAS CALLED ON NEW GAME OVERVIEW SCREEN - DISPOSE");
         
         // Hide will be called after switching to a separate screen
         dispose();

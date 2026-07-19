@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -127,80 +128,172 @@ public class SaveLoadSystem {
     
     /**
      * This will return a List of Saved Game Names, so the we can show on a list and the user can pick
+     *
+     * <p>Sorted most-recently-modified first (PL menu audit 2026-07-19: the Load Game list and the Main
+     * Menu "Continue" shortcut both need a stable "most recent save" ordering, and file-system listing
+     * order is not guaranteed to be that).
      */
     public static List<String> getSavedGames() {
-        ensureSaveGamesDirectory();
+        List<FileHandle> files = getSavedGameFiles();
+        files.sort(Comparator.comparingLong(FileHandle::lastModified).reversed());
         List<String> savedGames = new ArrayList<>();
+        for (FileHandle entry : files) {
+            savedGames.add(entry.nameWithoutExtension());
+        }
+        return savedGames;
+    }
+
+    private static List<FileHandle> getSavedGameFiles() {
+        ensureSaveGamesDirectory();
+        List<FileHandle> files = new ArrayList<>();
         if (Gdx.files == null) {
-            return savedGames;
+            return files;
         }
         FileHandle dirHandle = Gdx.files.absolute(saveGamesDirectoryPath());
         if (!dirHandle.exists()) {
-            return savedGames;
+            return files;
         }
         for (FileHandle entry : dirHandle.list()) {
             if (entry.isDirectory()) {
                 continue;
             }
             if (SAVE_EXTENSION.equals("." + entry.extension())) {
-                savedGames.add(entry.nameWithoutExtension());
+                files.add(entry);
             }
         }
-        return savedGames;
+        return files;
+    }
+
+    /**
+     * Name (no extension) of the most recently modified save, or {@code null} if there are none.
+     * Backs the Main Menu "Continue" shortcut (PL menu audit 2026-07-19).
+     */
+    public static String getMostRecentSaveGameName() {
+        List<String> savedGames = getSavedGames();
+        return savedGames.isEmpty() ? null : savedGames.get(0);
+    }
+
+    /**
+     * Deletes a save file by base name. No-op (returns {@code false}) if it doesn't exist.
+     */
+    public static boolean deleteSaveGame(String saveGameName) {
+        ensureSaveGamesDirectory();
+        String baseName = normalizeSaveBasename(saveGameName);
+        FileHandle fileHandle = Gdx.files.absolute(saveGamesDirectoryPath() + baseName + SAVE_EXTENSION);
+        if (!fileHandle.exists()) {
+            return false;
+        }
+        return fileHandle.delete();
     }
     
+    private static String managersDirectoryPath() {
+        return System.getProperty(USER_HOME) + GAME_FOLDER + MANAGERS_FOLDER;
+    }
+
+    private static void ensureManagersDirectory() {
+        if (Gdx.files == null) {
+            return;
+        }
+        FileHandle dir = Gdx.files.absolute(managersDirectoryPath());
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+    }
+
+    /**
+     * Strips directory and extension from either a bare filename or a full path (as returned by
+     * {@link #listSavedManagers()}) down to the base name expected by {@link #saveManagerDataFile}.
+     */
+    private static String managerBaseName(String filenameOrPath) {
+        if (filenameOrPath == null) {
+            return "";
+        }
+        String normalized = filenameOrPath.replace('\\', '/');
+        int slash = normalized.lastIndexOf('/');
+        String base = slash >= 0 ? normalized.substring(slash + 1) : normalized;
+        if (base.endsWith(SAVE_EXTENSION)) {
+            base = base.substring(0, base.length() - SAVE_EXTENSION.length());
+        }
+        return base;
+    }
+
+    /**
+     * Whether a manager file with this base name (e.g. a lastname) already exists — used to gate the
+     * overwrite {@code ConfirmDialog} on {@code NewManagerScreen} (P0, pre-game menus audit 2026-07-19:
+     * creating a manager that collided with an existing saved manager used to overwrite it silently).
+     */
+    public static boolean managerFileExists(String filename) {
+        ensureManagersDirectory();
+        String baseName = managerBaseName(filename);
+        if (baseName.isEmpty()) {
+            return false;
+        }
+        FileHandle fileHandle = Gdx.files.absolute(managersDirectoryPath() + baseName + SAVE_EXTENSION);
+        return fileHandle.exists();
+    }
+
     /**
      * This will create a Manager Save File
      */
     public static void saveManagerDataFile(Person manager, String filename) {
         
-        String userHomePath = System.getProperty(USER_HOME);
-        
-        System.out.println("Saving New Manager File on USER HOME PATH: " + userHomePath);
+        ensureManagersDirectory();
         
         Json json = configuredJson();
 
-        FileHandle fileHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + MANAGERS_FOLDER + filename + SAVE_EXTENSION);
+        FileHandle fileHandle = Gdx.files.absolute(managersDirectoryPath() + filename + SAVE_EXTENSION);
         
         // Encode only for Releases
         if (PRODUCTION_MODE_ENCRYPT) {
             
             fileHandle.writeString(Base64Coder.encodeString(json.prettyPrint(manager)), false);
         } else {
-           
-//            System.out.println(manager.getBirthdate());
-            
-            System.out.println(json.prettyPrint(manager));
-//            System.out.println(json.toJson(manager));
             
             // Save as Plain Text JSON
             fileHandle.writeString(json.prettyPrint(manager), false);
         }
-        
-        System.out.println("NEW MANAGER SAVED!");
+    }
+
+    /**
+     * Deletes a saved manager file. Accepts either a bare base name or a full path (as returned by
+     * {@link #listSavedManagers()}). No-op (returns {@code false}) if it doesn't exist.
+     */
+    public static boolean deleteSavedManager(String filenameOrPath) {
+        ensureManagersDirectory();
+        String baseName = managerBaseName(filenameOrPath);
+        if (baseName.isEmpty()) {
+            return false;
+        }
+        FileHandle fileHandle = Gdx.files.absolute(managersDirectoryPath() + baseName + SAVE_EXTENSION);
+        if (!fileHandle.exists()) {
+            return false;
+        }
+        return fileHandle.delete();
     }
     
     /**
      * This will return a list of the save files for existing Managers
+     *
+     * <p>Defensively creates the managers directory first (2026-07-19 fix): on a fresh install with no
+     * managers ever saved, {@code dirHandle.list()} on a non-existent directory previously risked a
+     * {@code NullPointerException}/crash the very first time {@code NewGameSeasonScreen} opened.
      */
     public static List<String> listSavedManagers() {
         
+        ensureManagersDirectory();
+        
         List<String> savedGames = new ArrayList<>();
         
-        String userHomePath = System.getProperty(USER_HOME);
-        
-        System.out.println("Listing Saved Games on USER HOME PATH: " + userHomePath);
-        
-        FileHandle dirHandle = Gdx.files.absolute(userHomePath + GAME_FOLDER + MANAGERS_FOLDER);
+        FileHandle dirHandle = Gdx.files.absolute(managersDirectoryPath());
 
-        System.out.println("Found " + dirHandle.list().length + " Saved Games");
-        
+        if (!dirHandle.exists()) {
+            return savedGames;
+        }
+
         for (FileHandle entry: dirHandle.list()) {
             
             // 
             if (entry.toString().contains(SAVE_EXTENSION)) {
-                
-                System.out.println("Saved Game: " + entry.toString());
                 
                 // 
                 savedGames.add(entry.toString());

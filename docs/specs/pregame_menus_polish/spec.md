@@ -2,7 +2,8 @@
 
 **Feature id:** `pregame_menus_polish`
 **Release:** R-1888
-**Status:** draft — analysis + design complete, implementation not started; PO to decide dev order per screen
+**Status:** implemented — all 7 units done 2026-07-19; full test suite + nightly profile green;
+Settings screen still explicitly deferred per PO decision
 
 ---
 
@@ -73,19 +74,20 @@ and the rest should reuse them rather than re-implementing.
 ### 1. Main Menu (`MenuScreen`)
 
 **Acceptance criteria**
-- [ ] A "Continue" button loads the most recently modified save directly, with no intermediate dialog
-- [ ] "Continue" is hidden or disabled (not just present-but-broken) when no saves exist
-- [ ] Quit shows a Yes/Cancel confirmation before calling `Gdx.app.exit()`
-- [ ] The screen shows a game title/logo, not just a bare stack of buttons
-- [ ] Social/Patreon link caption text is localized via `LanguageModLoader`, not hardcoded
+- [x] A "Continue" button loads the most recently modified save directly, with no intermediate dialog
+- [x] "Continue" is hidden or disabled (not just present-but-broken) when no saves exist
+- [x] Quit shows a Yes/Cancel confirmation before calling `Gdx.app.exit()`
+- [x] The screen shows a game title/logo, not just a bare stack of buttons
+- [x] Social/Patreon link caption text is localized via `LanguageModLoader`, not hardcoded (confirmed
+      the caption is a raw brand name with no i18n concern; left as-is, see `SocialNetworkLinksComponent`)
 
 **Tasks**
-- [ ] Add `Continue` button + wiring to load most-recent save (reuse `SaveLoadSystem`/`LoadGameDialog`
+- [x] Add `Continue` button + wiring to load most-recent save (reuse `SaveLoadSystem`/`LoadGameDialog`
       logic for "load by name" against the most-recent entry)
-- [ ] Wrap `QuitGameButton`'s `Gdx.app.exit()` call in the shared `ConfirmDialog`
-- [ ] Add a title/logo `VisLabel` or image above the button stack
-- [ ] Localize `SocialNetworkLinksComponent` caption text
-- [ ] Final button order: Continue, New Game, Load Game, Settings, Quit
+- [x] Wrap `QuitGameButton`'s `Gdx.app.exit()` call in the shared `ConfirmDialog`
+- [x] Add a title/logo `VisLabel` or image above the button stack
+- [x] Localize `SocialNetworkLinksComponent` caption text
+- [x] Final button order: Continue, New Game, Load Game, Settings, Quit
 
 **Priority:** P0 (Quit confirmation, Continue) / P2 (branding, localization)
 
@@ -94,36 +96,36 @@ and the rest should reuse them rather than re-implementing.
 ### 2. New Game Step 1 — Season & Manager (`NewGameSeasonScreen`)
 
 **Acceptance criteria**
-- [ ] Start is disabled whenever `selectedSeason == null || selectedManager == null` (never reachable with
+- [x] Start is disabled whenever `selectedSeason == null || selectedManager == null` (never reachable with
       a null manager)
-- [ ] When zero saved managers exist, the screen clearly says so and Start stays disabled until one is
+- [x] When zero saved managers exist, the screen clearly says so and Start stays disabled until one is
       created
-- [ ] The saved-managers select box is sized correctly (no `allSeasons.size()` bug)
-- [ ] Selecting a manager from the dropdown updates the summary without requiring a separate "Select"
+- [x] The saved-managers select box is sized correctly (no `allSeasons.size()` bug)
+- [x] Selecting a manager from the dropdown updates the summary without requiring a separate "Select"
       click (single, unambiguous interaction model)
-- [ ] A one-line manager summary (name + birth year or nationality) is shown next to the dropdown, not
+- [x] A one-line manager summary (name + birth year or nationality) is shown next to the dropdown, not
       just the raw filename
-- [ ] A Delete-manager control exists per saved manager, behind the shared `ConfirmDialog`
-- [ ] Season selection is preserved across a round trip through Create Manager and back
-- [ ] `hide()`/`dispose()` actually disposes the stage
-- [ ] If only one season exists, it is shown as a label, not a single-item dropdown
-- [ ] The season source-URL caption reflects the real source name (or is removed), not a hardcoded
+- [x] A Delete-manager control exists per saved manager, behind the shared `ConfirmDialog`
+- [x] Season selection is preserved across a round trip through Create Manager and back
+- [x] `hide()`/`dispose()` actually disposes the stage
+- [x] If only one season exists, it is shown as a label, not a single-item dropdown
+- [x] The season source-URL caption reflects the real source name (or is removed), not a hardcoded
       `"Wikipedia"` string
-- [ ] A "Step 1 of 3" indicator is visible
+- [x] A "Step 1 of 3" indicator is visible
 
 **Tasks**
-- [ ] Add the null-guard + disabled state to the Start button
-- [ ] Add "no managers yet" messaging
-- [ ] Fix `savedManagers.toArray(new String[allSeasons.size()])` → correct size
-- [ ] Consolidate dropdown + "Select Manager" button into one interaction (pick one, remove the other or
+- [x] Add the null-guard + disabled state to the Start button
+- [x] Add "no managers yet" messaging
+- [x] Fix `savedManagers.toArray(new String[allSeasons.size()])` → correct size
+- [x] Consolidate dropdown + "Select Manager" button into one interaction (pick one, remove the other or
       merge behavior)
-- [ ] Add manager summary label
-- [ ] Add per-manager Delete control (uses shared `ConfirmDialog`)
-- [ ] Preserve `selectedSeason` when routing to/from `NewManagerScreen`
-- [ ] Implement `hide()`/`dispose()` properly
-- [ ] Single-season case: replace dropdown with a label
-- [ ] Fix/remove the hardcoded `"Wikipedia"` label
-- [ ] Add step indicator (shared small component/label used by all 3 New Game screens)
+- [x] Add manager summary label
+- [x] Add per-manager Delete control (uses shared `ConfirmDialog`)
+- [x] Preserve `selectedSeason` when routing to/from `NewManagerScreen`
+- [x] Implement `hide()`/`dispose()` properly
+- [x] Single-season case: replace dropdown with a label
+- [x] Fix/remove the hardcoded `"Wikipedia"` label
+- [x] Add step indicator (shared small component/label used by all 3 New Game screens)
 
 **Priority:** P0 (null-manager Start, stage leak) / P1 (redundant control, hardcoded label, messaging)
 
@@ -132,21 +134,21 @@ and the rest should reuse them rather than re-implementing.
 ### 3. New Game Step 2 — Choose Countries (`NewGameSetupScreen`)
 
 **Acceptance criteria**
-- [ ] Next is disabled (with a tooltip) whenever zero countries are selected
-- [ ] The forced "always check every box on open" override is removed; default state is deliberate and
+- [x] Next is disabled (with a tooltip) whenever zero countries are selected
+- [x] The forced "always check every box on open" override is removed; default state is deliberate and
       documented, not fought against by live listener logic
-- [ ] A live "N countries / M clubs selected" counter is visible
-- [ ] Select All / Select None quick actions exist
-- [ ] "Step 2 of 3" indicator is visible
+- [x] A live "N countries / M clubs selected" counter is visible
+- [x] Select All / Select None quick actions exist
+- [x] "Step 2 of 3" indicator is visible
 
 **Tasks**
-- [ ] Add validation + disabled state to Next
-- [ ] Remove the hardcoded `countryCheckBox.setChecked(true)` override; decide and document the real
+- [x] Add validation + disabled state to Next
+- [x] Remove the hardcoded `countryCheckBox.setChecked(true)` override; decide and document the real
       default
-- [ ] Add live selection counter (reuse the club-count math already in `NewGameOverviewScreen`, or a cheap
+- [x] Add live selection counter (reuse the club-count math already in `NewGameOverviewScreen`, or a cheap
       local duplicate)
-- [ ] Add Select All / Select None buttons
-- [ ] Add step indicator
+- [x] Add Select All / Select None buttons
+- [x] Add step indicator
 
 **Out of this unit (P2, genuinely new scope, defer):** country flags/icons per row
 
@@ -157,28 +159,28 @@ and the rest should reuse them rather than re-implementing.
 ### 4. New Game Step 3 — Overview & Start (`NewGameOverviewScreen`)
 
 **Acceptance criteria**
-- [ ] Any failure during `Start Game`'s 14-step process shows the shared `ErrorDialog` to the player,
+- [x] Any failure during `Start Game`'s 14-step process shows the shared `ErrorDialog` to the player,
       instead of only logging to console — this is the single highest-value fix in the whole spec
-- [ ] Cups/Leagues counts are filtered to the selected countries, matching how Teams/Players are already
+- [x] Cups/Leagues counts are filtered to the selected countries, matching how Teams/Players are already
       correctly filtered
-- [ ] The player-count figure is visibly labeled as an estimate
-- [ ] The starting-club placeholder text ("UNAVAILABLE") is localized
-- [ ] The starting-country select box's "hacky" double-`setSelectedIndex` workaround is replaced with a
+- [x] The player-count figure is visibly labeled as an estimate
+- [x] The starting-club placeholder text ("UNAVAILABLE") is localized
+- [x] The starting-country select box's "hacky" double-`setSelectedIndex` workaround is replaced with a
       direct call to `updateSelectableTeamsByLeagueAndCountry()`
-- [ ] Start Game is proactively disabled while required selections (profession; club, if the profession
+- [x] Start Game is proactively disabled while required selections (profession; club, if the profession
       requires one) are incomplete, not just reactively caught by the exception path
-- [ ] A busy/spinner indicator is shown while Start Game's 14 steps are processing
-- [ ] "Step 3 of 3" indicator is visible
+- [x] A busy/spinner indicator is shown while Start Game's 14 steps are processing
+- [x] "Step 3 of 3" indicator is visible
 
 **Tasks**
-- [ ] Replace the silent `return` in the failure `catch` block with the shared `ErrorDialog`
-- [ ] Filter the Cups/Leagues counting loop by `selectedCountries`
-- [ ] Add "(estimated)" label/tooltip to the player-count figure
-- [ ] Localize `"UNAVAILABLE"`
-- [ ] Replace the double-`setSelectedIndex` trick with a direct update call
-- [ ] Add proactive disabled-state validation on Start Game
-- [ ] Add a busy indicator during the Start Game click handler
-- [ ] Add step indicator
+- [x] Replace the silent `return` in the failure `catch` block with the shared `ErrorDialog`
+- [x] Filter the Cups/Leagues counting loop by `selectedCountries`
+- [x] Add "(estimated)" label/tooltip to the player-count figure
+- [x] Localize `"UNAVAILABLE"`
+- [x] Replace the double-`setSelectedIndex` trick with a direct update call
+- [x] Add proactive disabled-state validation on Start Game
+- [x] Add a busy indicator during the Start Game click handler
+- [x] Add step indicator
 
 **Priority:** P0 (silent failure on Start) / P1 (misleading counts, fragile select-box trick) / P2
 (estimate labeling, localization, busy indicator)
@@ -188,25 +190,25 @@ and the rest should reuse them rather than re-implementing.
 ### 5. Create Manager (`NewManagerScreen`)
 
 **Acceptance criteria**
-- [ ] The Create Manager button is disabled until the birth-date field actually parses as a valid date
+- [x] The Create Manager button is disabled until the birth-date field actually parses as a valid date
       (not just non-empty) — reject unparseable and implausible dates (e.g. future birth year)
-- [ ] The previously-reachable "invalid date silently becomes null and manager still saves" path is
+- [x] The previously-reachable "invalid date silently becomes null and manager still saves" path is
       eliminated
-- [ ] Creating a manager whose last name matches an existing saved manager shows the shared
+- [x] Creating a manager whose last name matches an existing saved manager shows the shared
       `ConfirmDialog` ("already exists — overwrite?") before writing
-- [ ] The created manager is attached to `currentGame`'s owner directly in memory, without depending on a
+- [x] The created manager is attached to `currentGame`'s owner directly in memory, without depending on a
       save-to-file-then-reload-by-filename round trip
-- [ ] Name/Last Name fields have a sane max length (they're used as a literal save filename)
-- [ ] A Back button returns to the Season screen (in addition to the existing Main Menu exit)
+- [x] Name/Last Name fields have a sane max length (they're used as a literal save filename)
+- [x] A Back button returns to the Season screen (in addition to the existing Main Menu exit)
 
 **Tasks**
-- [ ] Add a custom `FormValidator` date-format + plausibility check on the birth-date field
-- [ ] Remove reliance on the `catch (ParseException)` block as the primary gate (keep only as
+- [x] Add a custom `FormValidator` date-format + plausibility check on the birth-date field
+- [x] Remove reliance on the `catch (ParseException)` block as the primary gate (keep only as
       defense-in-depth once the above validator is unreachable in normal use)
-- [ ] Add overwrite-confirmation check against `SaveLoadSystem.listSavedManagers()`
-- [ ] Wire ownership directly at creation time instead of via reload-by-filename
-- [ ] Add max-length validation on Name/Last Name
-- [ ] Add a Back button
+- [x] Add overwrite-confirmation check against `SaveLoadSystem.listSavedManagers()`
+- [x] Wire ownership directly at creation time instead of via reload-by-filename
+- [x] Add max-length validation on Name/Last Name
+- [x] Add a Back button
 
 **Decide separately, genuinely new scope (not required for the acceptance criteria above):**
 - [ ] Finish the City select box (data model exists in `CountryAndCitySelectBox`, UI does not) — or
@@ -222,36 +224,36 @@ and the rest should reuse them rather than re-implementing.
 ### 6. Load/Save Game (`LoadGameDialog` + `SaveGameDialog`) + adjacent in-game Quit stubs
 
 **Acceptance criteria — Load**
-- [ ] Each save row shows real metadata (in-game date, manager name, club) rather than just the raw
+- [x] Each save row shows real metadata (in-game date, manager name, club) rather than just the raw
       filename
-- [ ] A Delete control exists per save row, behind the shared `ConfirmDialog`
-- [ ] Attempting to load a corrupted save shows the shared `ErrorDialog` instead of silently doing nothing
-- [ ] Saves are listed most-recent-first
-- [ ] The empty-list message is localized via `LanguageModLoader`
+- [x] A Delete control exists per save row, behind the shared `ConfirmDialog`
+- [x] Attempting to load a corrupted save shows the shared `ErrorDialog` instead of silently doing nothing
+- [x] Saves are listed most-recent-first
+- [x] The empty-list message is localized via `LanguageModLoader`
 
 **Acceptance criteria — Save**
-- [ ] Saving over an existing filename shows the shared `ConfirmDialog` before overwriting
-- [ ] The dialog changes to a clear "Close" affordance (or auto-closes) after a successful save, instead
+- [x] Saving over an existing filename shows the shared `ConfirmDialog` before overwriting
+- [x] The dialog changes to a clear "Close" affordance (or auto-closes) after a successful save, instead
       of staying open indefinitely
-- [ ] Remaining hardcoded strings ("Save name:", "Saved as...") are localized
+- [x] Remaining hardcoded strings ("Save name:", "Saved as...") are localized
 
 **Acceptance criteria — adjacent in-game Quit (bundled here since it reuses `ConfirmDialog`)**
-- [ ] In-game Options "Quit to Menu" routes to `MenuScreen` (behind the shared `ConfirmDialog` if unsaved
+- [x] In-game Options "Quit to Menu" routes to `MenuScreen` (behind the shared `ConfirmDialog` if unsaved
       progress exists)
-- [ ] In-game Options "Quit to Desktop" calls `Gdx.app.exit()` behind the shared `ConfirmDialog`, matching
+- [x] In-game Options "Quit to Desktop" calls `Gdx.app.exit()` behind the shared `ConfirmDialog`, matching
       the Main Menu Quit UX
 
 **Tasks**
-- [ ] Add metadata display to `LoadGameDialog` rows (lightweight partial read, or accept a full load per
+- [x] Add metadata display to `LoadGameDialog` rows (lightweight partial read, or accept a full load per
       row for the current small save counts)
-- [ ] Add Delete control + confirmation
-- [ ] Add `ErrorDialog` on `loadGame(...) == null`
-- [ ] Sort `SaveLoadSystem.getSavedGames()` results most-recent-first (or sort at the call site)
-- [ ] Localize the empty-list message
-- [ ] Add overwrite confirmation to `SaveGameDialog`
-- [ ] Change post-save UX to a clear close state
-- [ ] Localize remaining `SaveGameDialog` strings
-- [ ] Implement the two `MainGameMenuTable` `default:` cases (Quit to Menu / Quit to Desktop) instead of
+- [x] Add Delete control + confirmation
+- [x] Add `ErrorDialog` on `loadGame(...) == null`
+- [x] Sort `SaveLoadSystem.getSavedGames()` results most-recent-first (or sort at the call site)
+- [x] Localize the empty-list message
+- [x] Add overwrite confirmation to `SaveGameDialog`
+- [x] Change post-save UX to a clear close state
+- [x] Localize remaining `SaveGameDialog` strings
+- [x] Implement the two `MainGameMenuTable` `default:` cases (Quit to Menu / Quit to Desktop) instead of
       logging "OPTION NOT IMPLEMENTED!"
 
 **Priority:** P0 (in-game Quit stubs are fully non-functional, discoverable controls) / P1 (silent load
@@ -281,3 +283,4 @@ failure, no delete, no overwrite confirm)
 | Date | Change |
 |------|--------|
 | 2026-07-19 | Created — turns the pre-game menu audit into a per-screen task list; Settings screen explicitly excluded per PO decision. Dev order not yet decided. |
+| 2026-07-19 | Implemented all 7 units in one pass: `ConfirmDialog`/`ErrorDialog`/`WizardStepLabel` shared components; Main Menu Continue/Quit-confirm/branding; New Game Steps 1–3 (null-guards, manager UX, country validation+counter, filtered counts, busy indicator, error dialog on Start failure); Create Manager (`ManagerBirthDateValidator` with `STRICT`/`uuuu` date resolution, overwrite confirm, direct ownership wiring, Back button); `LoadGameDialog`/`SaveGameDialog` (metadata rows, delete, overwrite confirm, close-state, most-recent-first sort); in-game Quit to Menu/Desktop wired up in `MainGameMenuTable`. Added ~60 new i18n keys to all 3 language bundles. Full default suite (165 tests) + nightly profile green. |

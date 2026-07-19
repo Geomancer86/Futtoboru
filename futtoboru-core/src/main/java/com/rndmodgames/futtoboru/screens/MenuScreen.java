@@ -16,10 +16,13 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.QuitGameButton;
 import com.rndmodgames.components.SettingsButton;
 import com.rndmodgames.components.SocialNetworkLinksComponent;
+import com.rndmodgames.futtoboru.dialogs.ErrorDialog;
 import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.match.engine.MatchEngineVersion;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
+import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.localization.LanguageModLoader;
 
 public class MenuScreen implements Screen {
@@ -50,6 +53,54 @@ public class MenuScreen implements Screen {
 		final VisTable mainTable = new VisTable(true);
         mainTable.setFillParent(true);
 		final VisTable table = new VisTable();
+		
+		/**
+		 * Title / Branding
+		 * 
+		 * Added 2026-07-19 (pre-game menus UX audit, P2): the Main Menu used to be a bare stack of
+		 * buttons with no game identity at all.
+		 */
+		final VisLabel titleLabel = new VisLabel("Futtoboru — 1888/89 Season");
+		titleLabel.setFontScale(1.6f);
+		
+		/**
+		 * Continue:
+		 * 	- Loads the most recently modified save directly, no intermediate dialog
+		 * 
+		 * Added 2026-07-19 (pre-game menus UX audit, P0): there was previously no shortcut back into
+		 * an existing save from the Main Menu at all — only "New Game" and "Load Game" (which itself
+		 * required an extra click per save).
+		 */
+		final String mostRecentSave = SaveLoadSystem.getMostRecentSaveGameName();
+		final VisTextButton continueButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
+		continueButton.setDisabled(mostRecentSave == null);
+		
+		continueButton.addCaptureListener(new InputListener() {
+			
+		    @Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				
+			    if (continueButton.isPressed() && !continueButton.isDisabled()) {
+					
+			        SaveGame loaded = SaveLoadSystem.loadGame(mostRecentSave);
+			        
+			        if (loaded != null) {
+			            ((Futtoboru) game).activateSaveGame(loaded);
+			            ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
+			        } else if (stage != null) {
+			            new ErrorDialog(
+			                    LanguageModLoader.getValue("load_game"),
+			                    LanguageModLoader.getValue("load_game_failed_message")
+			            ).show(stage);
+			        }
+				}
+			}
+		});
 		
 		/**
 		 * New Game: 
@@ -136,6 +187,10 @@ public class MenuScreen implements Screen {
 		 */
 		final VisTextButton exitButton = new QuitGameButton(game);
 		
+		//
+		table.row();
+		table.add(continueButton).fill();
+		
 		// 
 		table.row();
 		table.add(newGameButton).fill();
@@ -157,13 +212,8 @@ public class MenuScreen implements Screen {
 		table.row();
 		table.add(exitButton).fill();
 		
-		/**
-         * Patreon Link / Clickable Label
-         * 
-         * TODO: i18n
-         */
-//        
-		
+        mainTable.add(titleLabel).padBottom(20);
+        mainTable.row();
         mainTable.add(table).grow();
         
         // Bottom row: Match Engine Build Info on left, Social links (Patreon) on right

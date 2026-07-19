@@ -71,7 +71,7 @@ mvn test -pl futtoboru-core -Pnightly
 .\scripts\run-soak-with-preflight.ps1
 ```
 
-**Expected:** 158 + 5 = **163** automated methods green before L4.
+**Expected:** 165 + 5 = **170** automated methods green before L4.
 
 **Note:** L4 human testers run/verify **only** the L1+L2 command above (~1 min) plus normal manual play.
 They never run the nightly (L3) or soak commands — those are engineering/CI artifacts that generate the
@@ -88,6 +88,7 @@ evidence PM/PO use to sign off, produced before testers are ever invited. See
 | 2026-07-03 | Cross-links to gap analysis + PO roadmap decision |
 | 2026-07-15 | Test count 131+5 → 152+5 after QA hardening pass (cup-replay tests, save-corruption tests, soak fail-fast/progress, player-ID persistence assertion) |
 | 2026-07-19 | Test count 152+5 → 158+5 after JFR-profiling-driven fix of a sixth soak perf hotspot (JobManagerTest); 60-season soak now ~74s (was ~80-90 min) |
+| 2026-07-19 (latest) | Test count 158+5 → 165+5 after implementing all 7 pre-game menu fix units (`ManagerBirthDateValidatorTest` +7); see `docs/specs/pregame_menus_polish/spec.md` |
 
 ---
 

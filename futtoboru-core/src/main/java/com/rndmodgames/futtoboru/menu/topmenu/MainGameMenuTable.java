@@ -12,12 +12,14 @@ import com.kotcrab.vis.ui.widget.BusyBar;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.dialogs.ConfirmDialog;
 import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
+import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.widgets.CurrentDateAndTimeWidget;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -152,7 +154,42 @@ public class MainGameMenuTable extends VisTable {
                 case 3:
                     ((Futtoboru) game).changeScreen(Futtoboru.SETTINGS_SCREEN);
                     break;
-                
+
+                case 4:
+                    /**
+                     * Quit to Menu — behind a confirmation only when there is unsaved progress to lose.
+                     * Fixed 2026-07-19 (pre-game menus UX audit): this option previously just logged
+                     * "OPTION NOT IMPLEMENTED!" and did nothing.
+                     */
+                    SaveGame currentGameForMenuQuit = ((Futtoboru) game).getCurrentGame();
+                    boolean hasUnsavedProgress = currentGameForMenuQuit == null
+                            || currentGameForMenuQuit.getIsSaved() == null
+                            || !currentGameForMenuQuit.getIsSaved();
+
+                    if (hasUnsavedProgress) {
+                        new ConfirmDialog(
+                                LanguageModLoader.getValue("quit_to_menu"),
+                                LanguageModLoader.getValue("quit_to_menu_unsaved_confirm_message"),
+                                () -> ((Futtoboru) game).changeScreen(Futtoboru.MENU_SCREEN)
+                        ).show(stage);
+                    } else {
+                        ((Futtoboru) game).changeScreen(Futtoboru.MENU_SCREEN);
+                    }
+                    break;
+
+                case 5:
+                    /**
+                     * Quit to Desktop — same confirm-before-exit UX as the Main Menu Quit button.
+                     * Fixed 2026-07-19 (pre-game menus UX audit): this option previously just logged
+                     * "OPTION NOT IMPLEMENTED!" and did nothing.
+                     */
+                    new ConfirmDialog(
+                            LanguageModLoader.getValue("quit_to_desktop"),
+                            LanguageModLoader.getValue("quit_to_desktop_confirm_message"),
+                            () -> Gdx.app.exit()
+                    ).show(stage);
+                    break;
+
                 default:
                     DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "OPTION NOT IMPLEMENTED!");
                     break;

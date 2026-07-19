@@ -294,6 +294,47 @@ public class Futtoboru extends Game {
             break;
         }
     }
+
+    /**
+     * Manages the Active Screen when only a Season needs to survive the trip (New Game Step 1
+     * &lt;-&gt; Create Manager). Added 2026-07-19 (pre-game menus UX audit): previously
+     * {@code Create Manager} discarded the player's season choice, forcing a re-pick on return.
+     */
+    public void changeScreen(int screen, Season startingSeason) {
+
+        currentScreenId = screen;
+
+        switch (screen) {
+        case NEW_GAME_SCREEN:
+            this.setScreen(new NewGameSeasonScreen(this, startingSeason));
+            break;
+
+        case NEW_MANAGER_SCREEN:
+            this.setScreen(new NewManagerScreen(this, startingSeason));
+            break;
+
+        default:
+            changeScreen(screen);
+            break;
+        }
+    }
+
+    /**
+     * Routes back to the Season screen with a just-created manager wired directly in memory as the
+     * pre-selected manager — avoids the save-to-file-then-reload-by-filename round trip that
+     * {@code NewGameSeasonScreen}'s saved-managers dropdown otherwise requires. Added 2026-07-19
+     * (pre-game menus UX audit, Create Manager unit).
+     */
+    public void changeScreen(int screen, Season startingSeason, com.rndmodgames.futtoboru.data.Person newlyCreatedManager) {
+
+        currentScreenId = screen;
+
+        if (screen == NEW_GAME_SCREEN) {
+            this.setScreen(new NewGameSeasonScreen(this, startingSeason, newlyCreatedManager));
+        } else {
+            changeScreen(screen, startingSeason);
+        }
+    }
     
     /**
      * Utility method used to update Screen Resolution
