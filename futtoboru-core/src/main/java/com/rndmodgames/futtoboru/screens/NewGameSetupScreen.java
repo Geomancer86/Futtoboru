@@ -243,9 +243,18 @@ public class NewGameSetupScreen implements Screen {
          */
         nextButton = new VisTextButton(LanguageModLoader.getValue("next"));
 
-        nextButtonTooltip = new Tooltip(LanguageModLoader.getValue("choose_countries_none_selected_tooltip"));
-        nextButtonTooltip.setTarget(nextButton);
-        nextButtonTooltip.attach();
+        // NOTE: Tooltip(String) is NOT a text constructor -- it looks up a named TooltipStyle in the
+        // skin and throws GdxRuntimeException if no style is registered under that exact string. The
+        // Builder is the correct way to get a plain-text tooltip (found 2026-07-19 via an actual click
+        // through the real game after two earlier bugs in this same wizard were already fixed the same
+        // day -- see A-12 in docs/registries/blockers-resolved.yaml). Builder.target(...) already
+        // attaches during build() -- a follow-up .attach() call here throws IllegalStateException
+        // ("More than one tooltip cannot be added to the same target!"), found the same way one rebuild
+        // later. updateNextButtonState() below re-targets it later via setTarget(), not attach(), which
+        // is the correct way to change target on an already-attached Tooltip.
+        nextButtonTooltip = new Tooltip.Builder(LanguageModLoader.getValue("choose_countries_none_selected_tooltip"))
+                .target(nextButton)
+                .build();
         
         nextButton.addCaptureListener(new InputListener() {
             @Override
@@ -320,6 +329,18 @@ public class NewGameSetupScreen implements Screen {
         
         // Add Settings Screen Main Container to Stage
         UiScale.addOverflowScroll(stage, mainContainer);
+    }
+
+    /**
+     * Test-only entry point for headless/scripted E2E smoke checks (see
+     * {@code Futtoboru.debug.startScreen=NEW_GAME_FULL_FLOW}): invokes the exact same Next-button logic
+     * as a real click, without needing one. Mirrors {@code NewGameOverviewScreen.triggerStartGameForTesting()}.
+     */
+    public void triggerNextForTesting() {
+        if (nextButton.isDisabled()) {
+            throw new IllegalStateException("DEBUG: Next button is disabled -- no countries selected");
+        }
+        ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_OVERVIEW_SCREEN, startingSeason, selectedCountries);
     }
 
     private void updateNextButtonState() {

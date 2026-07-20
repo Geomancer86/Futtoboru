@@ -109,3 +109,32 @@ resolved:
       167 tests (was 166), all green. The two debug hooks are harmless in normal play (off unless the
       system property is set) and are now a reusable tool for the next time someone needs to check the
       New Game flow without clicking through it by hand.
+
+  - id: A-12
+    resolved: "2026-07-19"
+    title: New Game Step 2 (Choose Countries) crashed immediately on screen construction
+    note: >
+      A human tester clicked through the real game right after A-10/A-11 shipped and hit a third,
+      different crash on the exact same real click path: NewGameSeasonScreen -> Start ->
+      NewGameSetupScreen threw GdxRuntimeException "No TooltipStyle registered with name: Select at
+      least one country to continue" the instant the screen was constructed -- before any click on
+      that screen was even possible. This was missed by the NEW_GAME_FULL_FLOW debug hook added for
+      A-11 because that hook's first version jumped straight from Step 1 to
+      NewGameOverviewScreen (Step 3), skipping NewGameSetupScreen (Step 2) entirely -- the exact
+      opposite of what the real Start button does. Root cause #1:
+      `new Tooltip(LanguageModLoader.getValue("choose_countries_none_selected_tooltip"))` -- VisUI's
+      `Tooltip(String)` constructor is NOT a text constructor, it looks up a *named TooltipStyle* in
+      the skin and throws if nothing is registered under that literal string; the correct API for a
+      plain-text tooltip is `new Tooltip.Builder(text).target(actor).build()`. Fixed that, rebuilt,
+      re-ran the debug hook (now correctly routed through Step 2) and hit root cause #2 immediately:
+      `IllegalStateException: More than one tooltip cannot be added to the same target!` --
+      `Tooltip.Builder.target(actor)` already attaches during `.build()`, so the pre-existing explicit
+      `.attach()` call right after (copied from the old, wrong `Tooltip(String)` + `setTarget()` +
+      `attach()` pattern) double-attached to the same button. Fixed by dropping the redundant
+      `.attach()` call. Fixed `Futtoboru.runFullNewGameFlowForTesting()` (the A-11 debug hook) and
+      added `NewGameSetupScreen.triggerNextForTesting()` so the scripted flow now genuinely goes
+      Step 1 -> Step 2 (construct + Next click) -> Step 3 -> Start Game, matching the real button
+      chain exactly instead of skipping a step. Re-verified both the no-club and club-required
+      profession paths end to end after the fix: zero exceptions, reaches MainGameScreen cleanly.
+      No test count change (no new automated test added this round; the debug hook itself is the
+      verification tool, run manually against the real packaged jar) -- L1+L2 still 167 + 5, all green.

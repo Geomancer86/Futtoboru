@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.game;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -361,9 +362,12 @@ public class Futtoboru extends Game {
     /**
      * Test-only: drives the entire New Game wizard headlessly (season -> manager -> countries ->
      * Start Game) using the first available season/country and a throwaway manager, exactly mirroring
-     * what a human clicking through every screen would trigger, so a crash anywhere in that chain
-     * shows up in a scripted run instead of only being found by a human tester. Invoked via
-     * {@code -Dfuttoboru.debug.startScreen=NEW_GAME_FULL_FLOW}. Added 2026-07-19.
+     * what a human clicking through every screen would trigger -- including {@code NEW_GAME_SETUP_SCREEN}
+     * (Step 2, choose countries), which the real Start button always routes through and which an
+     * earlier version of this hook wrongly skipped straight past, missing a real crash there (A-12) --
+     * so a crash anywhere in the chain shows up in a scripted run instead of only being found by a
+     * human tester. Invoked via {@code -Dfuttoboru.debug.startScreen=NEW_GAME_FULL_FLOW}. Added
+     * 2026-07-19, fixed 2026-07-19 to actually go through Step 2 instead of skipping it.
      */
     private void runFullNewGameFlowForTesting() {
         List<Season> allSeasons = DatabaseLoader.getInstance().getSeasons();
@@ -372,8 +376,8 @@ public class Futtoboru extends Game {
         }
         Season season = allSeasons.get(0);
 
-        List<Country> countries = season.getCountries();
-        if (countries == null || countries.isEmpty()) {
+        List<Country> allCountries = season.getCountries();
+        if (allCountries == null || allCountries.isEmpty()) {
             throw new IllegalStateException("DEBUG NEW_GAME_FULL_FLOW: season '" + season.getName() + "' has no countries");
         }
 
@@ -381,14 +385,25 @@ public class Futtoboru extends Game {
         owner.setName("Debug");
         owner.setLastname("Tester");
         owner.setBirthDate(java.time.LocalDateTime.of(1850, 1, 1, 0, 0));
-        owner.setCountry(countries.get(0));
+        owner.setCountry(allCountries.get(0));
 
         SaveGame currentGame = new SaveGame();
         setCurrentGame(currentGame);
         currentGame.setOwner(owner);
 
-        System.out.println("DEBUG NEW_GAME_FULL_FLOW: season=" + season.getName() + ", countries=" + countries.size());
-        changeScreen(NEW_GAME_OVERVIEW_SCREEN, season, countries);
+        System.out.println("DEBUG NEW_GAME_FULL_FLOW: season=" + season.getName() + ", countries=" + allCountries.size());
+
+        // Step 1 -> Step 2, exactly like NewGameSeasonScreen's Start button (empty list -> Step 2
+        // defaults to every active country selected).
+        changeScreen(NEW_GAME_SETUP_SCREEN, season, new ArrayList<>());
+        if (!(getScreen() instanceof NewGameSetupScreen)) {
+            throw new IllegalStateException("DEBUG NEW_GAME_FULL_FLOW: expected NewGameSetupScreen, got "
+                    + (getScreen() != null ? getScreen().getClass().getName() : "null"));
+        }
+        System.out.println("DEBUG NEW_GAME_FULL_FLOW: setup screen constructed OK, triggering Next...");
+
+        // Step 2 -> Step 3, exactly like the real Next button.
+        ((NewGameSetupScreen) getScreen()).triggerNextForTesting();
 
         if (!(getScreen() instanceof NewGameOverviewScreen)) {
             throw new IllegalStateException("DEBUG NEW_GAME_FULL_FLOW: expected NewGameOverviewScreen, got "

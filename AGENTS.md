@@ -60,6 +60,16 @@ Add `-Dfuttoboru.debug.professionId=3 -Dfuttoboru.debug.clubId=1` (or any valid 
 club-requiring profession instead of the default no-club one, and `-Dfuttoboru.debug.exitAfterStartScreen=true`
 so the process exits on its own instead of sitting on the real window. This is what found A-11 — read
 the console output for `missing bundle key:` lines or a `CRITICAL ERROR DURING GAME STARTUP!` block.
+The hook goes through every real wizard step (Season → **Setup/choose-countries** → Overview → Start) in
+that exact order — don't skip Setup even for a "quick" test, it's exactly where A-12 was hiding.
+
+**VisUI `Tooltip` gotcha (A-12):** `new Tooltip(String)` is **not** a text constructor — it looks up a
+*named `TooltipStyle`* in the skin and throws `GdxRuntimeException` if nothing is registered under that
+literal string. For a plain-text tooltip use `new Tooltip.Builder(text).target(actor).build()`. Also,
+`Builder.target(actor)` already attaches during `.build()` — do not additionally call `.attach()`
+afterwards, it throws `IllegalStateException: More than one tooltip cannot be added to the same
+target!`. To change the target later (e.g. show/hide based on state), use `tooltip.setTarget(actor)`
+(or `null`), not another `attach()`.
 
 **E2E note:** `GameTestHarness` is **engine** E2E (no VisUI clicks). Opening the real window and clicking is **human L4** today; proposed L2.5 Scene2D player + optional L5 vision agents are documented in `docs/planning/ANALYSIS_AGENT_PLAYER_E2E_V1.md` — do not implement for R-1888 unless PO schedules it.
 
