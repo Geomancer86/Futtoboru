@@ -202,3 +202,74 @@ resolved:
       got 15/15 league champions **and** 15/15 FA Cup champions with zero health issues, ~1s/season
       -- cup competitions now genuinely complete every season, not just the league. L1+L2 167 + 5 ->
       **168 + 5**, all green.
+
+  - id: A-14
+    resolved: "2026-07-19"
+    title: Home/Overview screen was a "HOME screen placeholder" button since the beginning of the project
+    note: >
+      Human request, same session: "we have a home screen placeholder since the beginning of eras,
+      what can we show there? analyze football manager and championship manager games". Replaced
+      `HomeScreenTable` (previously a single hardcoded `VisTextButton("HOME screen placeholder")`,
+      not wired to `updateDynamicComponents()` or `MainMenuManager` at all) with an FM/CM-style
+      overview dashboard covering: club identity + manager + current date; league position (Nth of
+      M) and full record via `LeagueStandingsManager`; recent form as a coloured W/D/L strip (last 5
+      non-friendly results, oldest-to-newest); next fixture (opponent, home/away, competition, date)
+      with a context-aware action button (Play Match if playable today via
+      `MATCH_PREVIEW_SCREEN`, otherwise View Schedule); latest inbox news (up to 5, unread-marked)
+      with an unread-count badge and a jump-to-Inbox button; squad status (injured player count +
+      names + return estimates via `PlayerConditionService`); a finances snapshot (balance, season
+      income/expenditure) with a jump-to-Finances button; and a quick-links row to
+      Squad/Tactics/Schedule/Finances/Inbox/Club Info. Also handles the previously-untested
+      unemployed state (no current club) with a "Find a Job" CTA to the job board instead of a blank
+      screen. No club crest/colours or board-objectives data exists yet in the data model, so those
+      FM/CM staples are intentionally omitted for now rather than faked.
+      Pulled the pure decision logic (next-fixture resolution, recent-form W/D/L classification,
+      league-position lookup, ordinal formatting) out into a separate VisUI-free
+      `HomeDashboardSupport` class specifically so it stays covered by fast unit tests
+      (`HomeDashboardSupportTest`, 14 cases) -- discovered while doing this that the current headless
+      test harness (`HeadlessGdxTestSupport`/`GameTestHarness`, used by every other integration test)
+      boots a real `HeadlessApplication` with no GL context, so `VisUI.load(...)` never runs there
+      (guarded by `Gdx.gl == null` in `Futtoboru.loadVisUiSkin()`) -- meaning **no JUnit test can
+      construct a `VisTable`/`VisLabel` today**, a structural gap already called out in
+      `docs/planning/ANALYSIS_AGENT_PLAYER_E2E_V1.md` (proposed L2.5/L5 test player, not scheduled
+      for R-1888). Verified the actual widget tree instead by building the real desktop jar and
+      running the existing `-Dfuttoboru.debug.startScreen=NEW_GAME_FULL_FLOW` debug hook twice (once
+      as an unemployed Retired Player, once as an employed Manager at Preston North End via
+      `-Dfuttoboru.debug.professionId=3 -Dfuttoboru.debug.clubId=1`): both reached `MainGameScreen`
+      (which defaults to the Home tab) with zero exceptions and zero missing-i18n-key warnings.
+      Also found `tactics` was never added to any language bundle (a pre-existing gap, now needed by
+      Home's quick-links row) and added it, plus ~35 new `home_*` keys, to all four bundles (English
+      US/UK, Spanish Spain/Latin America); `LanguageBundleKeyCoverageTest` covers all of them.
+      Separately noticed (but did **not** fix, out of scope for this change): `BaseBundle_sp_SP.properties`
+      has pre-existing corrupted accented characters (literal U+FFFD replacement bytes baked into the
+      file, e.g. "Mi�rcoles") predating this session -- worth a dedicated encoding-repair pass later.
+      L1+L2 168+5 -> **182+5** (14 new `HomeDashboardSupportTest` cases), all green.
+
+  - id: A-15
+    resolved: "2026-07-19"
+    title: UI scroll audit -- one pre-game screen had no scroll fallback at all; one nested scroll pane could silently disable scrolling everywhere else on screen
+    note: >
+      Human request, same session: "make sure when screens cover more than visible we always have
+      horizontal or vertical scroll". Audited every screen/table under `tables/`, `screens/`, and
+      `menu/` (subagent-assisted, ~50 classes). Baseline: `MainGameScreen` already wraps its whole
+      main content panel in one outer `VisScrollPane` (`contentScroll`), so every in-game tab
+      (`MainMenuManager.setActiveMainScreen()` target) already scrolls at minimum via that outer
+      wrapper, even the several that also nest their own inner scroll pane for a sub-list (Squad,
+      Inbox, League/Cup detail, Job board, Player detail, etc. -- all intentional, not a gap). Found
+      two real issues: (1) `NewGameSeasonScreen` (pre-game wizard Step 1 -- Season & Manager) was
+      the one screen among its siblings (`NewGameSetupScreen`, `NewGameOverviewScreen`,
+      `NewManagerScreen`, `SettingsScreen`) that used a bare `mainContainer.pad(50).setFillParent(true)`
+      + `stage.addActor(mainContainer)` with **no scroll fallback at all** -- at higher UI scale or
+      with many saved managers, bottom controls (Start/Create Manager/Back) could clip off-screen
+      with no way to reach them. Fixed by switching to the same `UiScale.addOverflowScroll(stage,
+      mainContainer)` pattern its siblings already use. (2) `AutoFocusScrollPane` (used by
+      `ScheduleScreenTable`'s fixtures list to let the mouse wheel scroll it without clicking first)
+      unconditionally cleared the stage's scroll focus to null on mouse-exit, even if focus had
+      already moved to some *other* actor by the time exit fired -- meaning the mouse wheel could
+      silently stop doing anything anywhere on that screen (not just the fixtures list) until the
+      user clicked something to re-establish focus manually. Fixed by only clearing focus if this
+      pane still owns it. Verified both fixes by rebuilding the desktop jar and running
+      `-Dfuttoboru.debug.startScreen=NEW_GAME_SCREEN` (Step 1 in isolation) and the full
+      `NEW_GAME_FULL_FLOW` debug hook: zero crashes either way. L1+L2 unchanged at 182+5 (behavioural
+      UI fix, not new pure logic to unit test -- see the VisUI-not-loaded-in-headless-tests gotcha in
+      AGENTS.md/A-14 for why).

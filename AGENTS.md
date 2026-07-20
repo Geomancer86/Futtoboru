@@ -12,7 +12,7 @@ Machine-readable project context for AI coding agents. Humans: start at [docs/pl
 ## Build & test
 
 ```powershell
-# L1+L2 — run before every commit (168 tests)
+# L1+L2 — run before every commit (182 tests)
 mvn test -pl futtoboru-core
 
 # L3 nightly (+5)
@@ -85,6 +85,18 @@ mandatory-message-related integration test's trustworthiness until found. See A-
 entity (per cup tie, per player, etc.) must have a title/type combination that's unique per entity —
 `MessageManager`'s dedup cache is keyed on (type, title) as well as id, so a shared generic title across
 multiple real messages silently drops all but the first.
+
+**No JUnit test can construct a VisUI widget today (A-14):** `HeadlessGdxTestSupport`/`GameTestHarness`
+boot a real `HeadlessApplication` with no GL context, and `Futtoboru.loadVisUiSkin()` guards
+`VisUI.load(...)` behind `Gdx.gl == null` — so `VisUI.isLoaded()` is always false in every existing
+test, and constructing any `VisTable`/`VisLabel`/etc. there throws `IllegalStateException: VisUI is not
+loaded!`. If a screen/table class needs real regression coverage, pull its non-VisUI decision logic out
+into a plain class (see `HomeDashboardSupport` next to `HomeScreenTable`) and unit test that directly;
+verify the actual widget construction manually by building the desktop jar and running it with
+`-Dfuttoboru.debug.startScreen=NEW_GAME_FULL_FLOW` (see `Futtoboru.runFullNewGameFlowForTesting()`),
+checking console output for exceptions/missing-key warnings. Closing this gap for real (e.g. a mock GL
+or a hidden LWJGL3 window) is proposed L2.5/L5 work in
+`docs/planning/ANALYSIS_AGENT_PLAYER_E2E_V1.md`, not scheduled for R-1888.
 
 ## Code conventions
 

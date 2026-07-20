@@ -29,7 +29,16 @@ public class AutoFocusScrollPane extends VisScrollPane {
             }
 
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                getStage().setScrollFocus(null);
+                // Only clear scroll focus if this pane still owns it -- clearing unconditionally used
+                // to also null out focus that a *different* actor already claimed in between this
+                // pane's enter/exit events firing (e.g. quickly moving the pointer across two
+                // auto-focus panes, or off this pane onto a plain VisScrollPane that only gets focus on
+                // click), which left the mouse wheel doing nothing anywhere on screen until the user
+                // clicked something -- exactly the kind of "scroll silently stops working" bug the
+                // 2026-07-19 UI scroll audit was looking for. See docs/registries/blockers-resolved.yaml.
+                if (getStage() != null && getStage().getScrollFocus() == AutoFocusScrollPane.this) {
+                    getStage().setScrollFocus(null);
+                }
             }
         });
     }

@@ -96,7 +96,7 @@ public class NewGameSeasonScreen implements Screen {
         stage = new Stage(UiScale.newViewport());
 
         VisTable mainContainer = new VisTable();
-        mainContainer.pad(50).setFillParent(true);
+        mainContainer.pad(50);
 
         //
         final VisTable table = new VisTable(true);
@@ -347,8 +347,11 @@ public class NewGameSeasonScreen implements Screen {
         // Add table to main container
         mainContainer.add(table);
 
-        // Add Settings Screen Main Container to Stage
-        stage.addActor(mainContainer);
+        // Wrapped in an overflow scroll pane (not a bare setFillParent(true) actor) so this screen
+        // doesn't clip its bottom controls at higher UI scales or with many saved managers -- unlike
+        // its sibling wizard steps (NewGameSetupScreen, NewGameOverviewScreen, NewManagerScreen,
+        // SettingsScreen), this was the one pre-game screen still missing it (UI scroll audit, 2026-07-19).
+        UiScale.addOverflowScroll(stage, mainContainer);
     }
 
     private void updateStartButtonState() {
