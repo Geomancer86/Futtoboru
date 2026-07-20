@@ -670,7 +670,14 @@ public class MessageManager {
         message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_DRAW_RESULT");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle(cup.getName() + " " + (roundName != null ? roundName : "Draw"));
+        // NOTE: must be unique per club, not just per cup+round. deliverMessage() dedups by
+        // "type\0title" forever within a session, and every Round 1 tie used to share the exact
+        // same title (e.g. "FA Cup First Round") regardless of which two clubs were involved -- so
+        // only the very first tie's "you've been drawn against X" message ever reached any inbox;
+        // every other participating club's copy was silently dropped as a false-positive duplicate.
+        // Found 2026-07-19 while investigating a human report of a soft-locked cup draw; see A-13 in
+        // docs/registries/blockers-resolved.yaml.
+        message.setTitle(cup.getName() + " " + (roundName != null ? roundName : "Draw") + " - " + club.getName());
         
         StringBuilder content = new StringBuilder();
         content.append("The draw for the ");

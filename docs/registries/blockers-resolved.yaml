@@ -138,3 +138,67 @@ resolved:
       profession paths end to end after the fix: zero exceptions, reaches MainGameScreen cleanly.
       No test count change (no new automated test added this round; the debug hook itself is the
       verification tool, run manually against the real packaged jar) -- L1+L2 still 167 + 5, all green.
+
+  - id: A-13
+    resolved: "2026-07-19"
+    title: Cup draw soft-locked Continue forever; cup competitions could never progress past Round 1
+    note: >
+      Human report, same session: "we got a message telling what team we play against... but the
+      continue button is stuck on draw but it does not move to the draw screen. The same bug
+      happened with the league draw but we were able to move forward. We were not able to finish a
+      complete season." Investigated by writing a new headless regression test
+      (CupDrawUiFlowIT) that drives raw continueOneDay() (no test-only shortcuts) until a real cup
+      draw fires, then replicates MainGameMenuTable's "INBOX -> DRAW" click handler and
+      MainMenuManager's CUP_DRAW_SCREEN case statement-for-statement to find exactly where the real
+      UI flow breaks down -- found THREE independent real bugs stacked on top of each other:
+      (1) HeadlessGdxTestSupport (shared by every headless integration test, including all
+      multi-season soak ITs) manually built its own scriptsManager/authorityManager/gameEngine
+      triple and wired it into the `Futtoboru` app object, then ALSO called
+      `new HeadlessApplication(application, config)`, which runs the real LibGDX lifecycle and
+      calls `Futtoboru.create()` -- which unconditionally built and wired in a *second*, completely
+      independent triple, silently orphaning the first. Every test kept driving continueGame()/match
+      simulation through the orphaned (first) engine, while AuthorityManager/ScriptsManager
+      internally re-fetch "the current" engine dynamically via `game.getGameEngine()` and got the
+      second (create()'s) one -- so match-result messages and cup/league-draw messages were
+      delivered through two independent `MessageManager` instances, each with its own
+      `nextMessageId` counter, both writing into the *same* `SaveGame.allMessages`/
+      `scheduledMessages` lists. Once a match-result message (counter A) happened to reuse the exact
+      same numeric id as a freshly-scheduled mandatory CUP_DRAW message (counter B),
+      `MessageManager.deliverMessage()`'s id-based dedup check treated the brand-new CUP_DRAW
+      message as "already delivered" (matching the unrelated match-result message's id) and
+      silently dropped it forever -- it never reached the inbox, so `MainMenuManager`'s
+      CUP_DRAW_SCREEN case could never find it, logged "Could not find competition edition for cup
+      draw", and silently fell back to the inbox screen: exactly the "stuck, does not move to the
+      draw screen" symptom. Fixed by adding null-guards around the scriptsManager/authorityManager/
+      gameEngine construction in `Futtoboru.create()` so a caller that has already wired up this
+      exact triple (as the test harness does) is reused instead of silently duplicated -- normal
+      desktop play is unaffected (create() only ever runs once there, so the guarded fields are
+      always null at that point). NOTE: because `Futtoboru.create()` really is only ever called once
+      in the shipped desktop app, this specific *mechanism* was a test-harness-only artifact, not
+      reachable in real play -- but it was actively corrupting the trustworthiness of every existing
+      engine-level integration test that touches mandatory messages (dedup silently drops messages
+      with zero error logged, so nothing was failing loudly), which is exactly why "the testing is
+      not good" felt true even though the fast default suite was all green.
+      (2) `MessageManager.createCupDrawResultMessage()` (the "your club has been drawn against X"
+      spoiler, unrelated to the mandatory gate above) gave every Round 1 tie's message the *exact
+      same* title ("<Cup> First Round") regardless of which two clubs were involved --
+      `deliverMessage()`'s separate type+title dedup check silently dropped every tie's result
+      message except the very first one delivered, so most participating clubs' "you play against
+      X" message never reached any inbox at all, independent of bug (1) and reproducible in real
+      production. Fixed by including the club name in the title so each tie's message is unique.
+      (3) `AuthorityManager.competitionScheduler` (the field `checkCupRoundProgression()` uses to
+      draw Round 2+ once Round 1 finishes) was declared but **never assigned** anywhere in the
+      codebase -- a genuine, real, always-present production bug found only once bug (1) stopped
+      masking it (by delaying/varying exactly when Round 1 completion was reached in these tests):
+      every attempt to progress a cup past Round 1 threw a `NullPointerException`, caught and only
+      logged as a "CRITICAL ERROR" (so the game never visibly crashed), meaning **no cup competition
+      could ever complete a full bracket** in the shipped game either -- directly explaining "we were
+      not able to finish a complete season" independent of the Continue-button soft-lock. Fixed by
+      constructing `this.competitionScheduler = new CompetitionScheduler(parent)` in
+      `AuthorityManager`'s constructor, mirroring the existing `fixtureGenerator` field one line
+      above it. Verified all three fixes together: `CupDrawUiFlowIT` (new, added this round) passes
+      end to end (message delivered, edition resolved, fixtures found, gate clears, Continue
+      advances again); re-ran `MultiSeasonLeagueAndCupSoakIT` (15 procedural seasons) manually and
+      got 15/15 league champions **and** 15/15 FA Cup champions with zero health issues, ~1s/season
+      -- cup competitions now genuinely complete every season, not just the league. L1+L2 167 + 5 ->
+      **168 + 5**, all green.

@@ -12,7 +12,7 @@ Machine-readable project context for AI coding agents. Humans: start at [docs/pl
 ## Build & test
 
 ```powershell
-# L1+L2 — run before every commit (167 tests)
+# L1+L2 — run before every commit (168 tests)
 mvn test -pl futtoboru-core
 
 # L3 nightly (+5)
@@ -72,6 +72,19 @@ target!`. To change the target later (e.g. show/hide based on state), use `toolt
 (or `null`), not another `attach()`.
 
 **E2E note:** `GameTestHarness` is **engine** E2E (no VisUI clicks). Opening the real window and clicking is **human L4** today; proposed L2.5 Scene2D player + optional L5 vision agents are documented in `docs/planning/ANALYSIS_AGENT_PLAYER_E2E_V1.md` — do not implement for R-1888 unless PO schedules it.
+
+**Headless test harness gotcha (A-13):** `HeadlessGdxTestSupport` and `Futtoboru.create()` must build
+**exactly one** `scriptsManager`/`authorityManager`/`gameEngine` triple between them, never two. `create()`
+null-guards its construction of these three fields specifically so a caller (the test harness) that
+already wired them up first is reused, not silently duplicated. If you ever see mandatory messages
+(draws, injuries, etc.) mysteriously "not reaching the inbox" in a headless test with no exception logged,
+suspect two independent `MessageManager` instances writing into the same `SaveGame` message lists with
+colliding `nextMessageId` counters before anything else — this exact bug silently corrupted every
+mandatory-message-related integration test's trustworthiness until found. See A-13 in
+`docs/registries/blockers-resolved.yaml`. Relatedly: any message meant to be sent once per distinct
+entity (per cup tie, per player, etc.) must have a title/type combination that's unique per entity —
+`MessageManager`'s dedup cache is keyed on (type, title) as well as id, so a shared generic title across
+multiple real messages silently drops all but the first.
 
 ## Code conventions
 

@@ -65,6 +65,12 @@ public class AuthorityManager {
         //
         this.game = parent;
         this.fixtureGenerator = new LeagueFixtureGenerator(parent);
+        // NOTE: this field was declared but never assigned, so checkCupRoundProgression() NPE'd
+        // on every attempt to draw Round 2+ of ANY cup competition -- caught and only logged as a
+        // "CRITICAL ERROR", so the game never crashed, it just silently never advanced any cup past
+        // Round 1, forever. Found 2026-07-19 while investigating a human report of a soft-locked cup
+        // draw and "could not finish a complete season"; see A-13 in docs/registries/blockers-resolved.yaml.
+        this.competitionScheduler = new CompetitionScheduler(parent);
         this.seasonManager = new SeasonManager(parent);
         refreshCurrentGame();
     }

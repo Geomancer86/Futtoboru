@@ -183,16 +183,32 @@ public class Futtoboru extends Game {
         DatabaseLoader.getInstance();
 
         // Initialize the Script Manager
-        this.scriptsManager = new ScriptsManager(this);
+        // NOTE: null-guarded (not unconditional) so that a caller who has already wired up this
+        // exact triple before create() runs (see HeadlessGdxTestSupport, used by every headless
+        // integration test) doesn't get a second, independent set silently built on top of it here.
+        // Before this guard existed, that was happening: create() unconditionally overwrote
+        // scriptsManager/authorityManager/gameEngine with brand-new instances, orphaning whatever
+        // the caller had already set, which meant two independent MessageManager instances (each
+        // with their own message-id counter) both wrote into the same SaveGame message lists --
+        // colliding ids caused deliverMessage() to silently drop a real mandatory CUP_DRAW message
+        // forever (see A-13 in docs/registries/blockers-resolved.yaml). In normal desktop play these
+        // fields are always null here (create() runs exactly once), so behavior is unchanged.
+        if (this.scriptsManager == null) {
+            this.scriptsManager = new ScriptsManager(this);
+        }
         
         // Initialize the Person Generator
         this.setPersonGenerator(new PersonGenerator(this));
         
         // Initialize the Authority Manager
-        this.authorityManager = new AuthorityManager(this);
+        if (this.authorityManager == null) {
+            this.authorityManager = new AuthorityManager(this);
+        }
         
         // Initialize the Game Engine
-        this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager, authorityManager));
+        if (this.gameEngine == null) {
+            this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager, authorityManager));
+        }
         
         // Show Main Menu 
         // NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
