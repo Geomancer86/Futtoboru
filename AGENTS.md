@@ -12,7 +12,7 @@ Machine-readable project context for AI coding agents. Humans: start at [docs/pl
 ## Build & test
 
 ```powershell
-# L1+L2 — run before every commit (152 tests)
+# L1+L2 — run before every commit (167 tests)
 mvn test -pl futtoboru-core
 
 # L3 nightly (+5)
@@ -38,6 +38,28 @@ requested `..._en_US.properties`) that 165 green tests did not catch — see A-1
 build scripts), actually run `build.bat` then launch the produced jar
 (`java -jar futtoboru-desktop\target\futtoboru-desktop-*-jar-with-dependencies.jar`) and confirm it
 reaches the main menu before calling a change done — don't rely on `mvn test` alone for that class of bug.
+
+**"Doesn't crash" ≠ "works":** `LanguageModLoader.getValue(key)` deliberately never throws on a missing
+key — it logs `missing bundle key: X` and falls back to showing the raw key string, by design, so one
+bad key can't take down the whole UI. That means a whole screen full of untranslated `home`/`squad`/
+`nationality`-style raw keys instead of real words produces **zero exceptions and zero automated test
+failures**, even though it is exactly as broken to a human as a crash — this is what A-11 in
+`docs/registries/blockers-resolved.yaml` was. `LanguageBundleKeyCoverageTest` (fully headless, no UI
+construction) now statically checks every literal `LanguageModLoader.getValue("...")` call in the
+codebase against every shipped bundle and is part of the default `mvn test` run — but it can only catch
+*literal* string keys, not ones built dynamically. If you add a new label/button/dialog, run it once
+for real (see `futtoboru.debug.startScreen` below) and actually read the text on screen, don't just
+check that nothing threw.
+
+**Manual E2E smoke-testing hook (no clicking required):** launch the packaged jar with
+`-Dfuttoboru.debug.startScreen=NEW_GAME_SCREEN` (or `NEW_MANAGER_SCREEN` / `SETTINGS_SCREEN`) to jump
+straight to that screen on boot, or `-Dfuttoboru.debug.startScreen=NEW_GAME_FULL_FLOW` to drive the
+*entire* New Game wizard headlessly end to end (season → throwaway manager → all countries → Start
+Game), exercising the exact same production code path a human clicking through every screen would.
+Add `-Dfuttoboru.debug.professionId=3 -Dfuttoboru.debug.clubId=1` (or any valid IDs) to force a
+club-requiring profession instead of the default no-club one, and `-Dfuttoboru.debug.exitAfterStartScreen=true`
+so the process exits on its own instead of sitting on the real window. This is what found A-11 — read
+the console output for `missing bundle key:` lines or a `CRITICAL ERROR DURING GAME STARTUP!` block.
 
 **E2E note:** `GameTestHarness` is **engine** E2E (no VisUI clicks). Opening the real window and clicking is **human L4** today; proposed L2.5 Scene2D player + optional L5 vision agents are documented in `docs/planning/ANALYSIS_AGENT_PLAYER_E2E_V1.md` — do not implement for R-1888 unless PO schedules it.
 

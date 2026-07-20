@@ -86,6 +86,7 @@ public class NewGameOverviewScreen implements Screen {
     // Globally available components
     final VisLabel estimatedPlayerCountValueLabel = new VisLabel();
     final VisSelectBox<Club> startingClubSelectBox = new VisSelectBox<>();
+    final VisSelectBox<Profession> professionsSelectBox = new VisSelectBox<>();
     final BusyBar startGameBusyBar = new BusyBar();
     VisTextButton startGameButton;
     
@@ -296,8 +297,6 @@ public class NewGameOverviewScreen implements Screen {
          *  - Depending on the Selected Profession, the Player might choose to start Employed or Unemployed
          *  
          */
-        final VisSelectBox<Profession> professionsSelectBox = new VisSelectBox<>();
-        
         professionsSelectBox.setItems(DatabaseLoader.getInstance().getSelectableProfessions()
                 .toArray(new Profession[DatabaseLoader.getInstance().getSelectableProfessions().size()]));
         
@@ -471,6 +470,39 @@ public class NewGameOverviewScreen implements Screen {
      * unresponsive screen is now a visible {@link ErrorDialog}, and the busy indicator/button are
      * always re-enabled afterwards regardless of outcome.
      */
+    /**
+     * Test-only entry point for headless/scripted E2E smoke checks (see
+     * {@code Futtoboru.debug.startScreen=NEW_GAME_FULL_FLOW}): invokes the exact same startup logic as
+     * clicking Start Game, without needing a real click. Added 2026-07-19 after a launch-blocking bug
+     * was found only by a human clicking through the real game, with zero automated coverage of this
+     * path.
+     */
+    public void triggerStartGameForTesting() {
+        runStartGame();
+    }
+
+    /**
+     * Test-only: selects a profession (by ID) and, if that profession requires one, a club (by ID),
+     * exactly as the real {@link VisSelectBox} listeners would in response to a real click. See
+     * {@link #triggerStartGameForTesting()}.
+     */
+    public void selectProfessionAndClubForTesting(long professionId, Long clubId) {
+        for (Profession profession : professionsSelectBox.getItems()) {
+            if (profession != null && profession.getId() != null && profession.getId() == professionId) {
+                professionsSelectBox.setSelected(profession);
+                break;
+            }
+        }
+        if (clubId != null) {
+            for (Club club : startingClubSelectBox.getItems()) {
+                if (club != null && club.getId() != null && club.getId().equals(clubId)) {
+                    startingClubSelectBox.setSelected(club);
+                    break;
+                }
+            }
+        }
+    }
+
     private void runStartGame() {
         try {
             /**

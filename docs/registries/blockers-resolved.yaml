@@ -67,3 +67,45 @@ resolved:
       Language known to LanguageModLoader. L1+L2 now 166 tests (was 165), all green.
       AGENTS.md updated with a "packaged-jar smoke check" note: after touching packaged
       resources, actually run build.bat and launch the produced jar, not just `mvn test`.
+
+  - id: A-11
+    resolved: "2026-07-19"
+    title: New Game -> Start Game reached MainGameScreen with ~36 raw/untranslated UI labels
+    note: >
+      Follow-up report from the same user, same session, right after A-10 was fixed: "the game
+      fails and you cannot start it, from the new game option". The desktop jar itself no longer
+      crashed on boot (A-10 was real), but MainGameScreen and its tabs (Squad, Authority, Personal
+      Details, Schedule, Finances, Club Info, Competitions, Match History, Inbox, Home, day-of-week
+      headers on the fixtures table, etc.) render dozens of labels via
+      LanguageModLoader.getValue("some_key") whose key was never added to *any* language bundle --
+      LanguageModLoader.getValue() deliberately never throws on a missing key (by design, so one
+      bad key doesn't crash the whole UI), it just logs "missing bundle key: X" and falls back to
+      showing the raw key string itself. To a human tester clicking through a real New Game, a
+      screen full of "home / squad / authority / nationality / current_club / MONDAY" instead of
+      real words reads exactly like "the game fails and you cannot start it", even though nothing
+      technically threw. Zero automated test exercises MainGameScreen or its tabs (out of scope for
+      R-1888 per AGENTS.md's stance on real Scene2D/VisUI screen construction in tests), so nothing
+      caught this either.
+      Root-caused by adding two small, off-by-default, system-property-gated debug hooks to the
+      *production* code (Futtoboru.changeScreen / a new runFullNewGameFlowForTesting(), plus a
+      NewGameOverviewScreen.triggerStartGameForTesting()/selectProfessionAndClubForTesting() test
+      entry point) that drive the exact real production code path -- season select -> manager
+      create -> country select -> profession/club select -> Start Game -- from the command line
+      (`-Dfuttoboru.debug.startScreen=NEW_GAME_FULL_FLOW -Dfuttoboru.debug.exitAfterStartScreen=true`,
+      optionally `-Dfuttoboru.debug.professionId=` / `-Dfuttoboru.debug.clubId=` to force a specific
+      profession/club), then actually running the packaged jar with them and reading the console.
+      Reproduced on both the no-club (Retired Player) and club-required (Manager + a real club) paths.
+      Found 36 missing keys via a static-analysis diff (every literal
+      `LanguageModLoader.getValue("...")` call in the codebase vs. every key defined in
+      BaseBundle_en_US.properties) -- same technique then reused to discover en_UK/sp_LA/sp_SP were
+      missing even more (up to 111 for sp_SP, which was missing its entire "Layer B" tactics section
+      and the whole pre-game-menus section from two earlier work sessions). Fixed all four bundles so
+      every literal getValue() key used anywhere in the codebase now resolves in every bundle (Spanish
+      translations added for sp_LA/sp_SP, not just copy-pasted English). Added a permanent regression
+      test, LanguageBundleKeyCoverageTest, that statically scans every .java file for literal
+      getValue(...) calls and asserts the key exists in every shipped bundle -- fully headless, no UI
+      construction needed, so it runs in the normal fast default suite. Re-ran both full-flow debug
+      paths after the fix: zero "missing bundle key" lines, reaches MainGameScreen cleanly. L1+L2 now
+      167 tests (was 166), all green. The two debug hooks are harmless in normal play (off unless the
+      system property is set) and are now a reusable tool for the next time someone needs to check the
+      New Game flow without clicking through it by hand.

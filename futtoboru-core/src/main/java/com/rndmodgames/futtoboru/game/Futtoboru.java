@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.kotcrab.vis.ui.VisUI;
 import com.rndmodgames.PreferencesManager;
 import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.engine.AuthorityManager;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
@@ -197,6 +198,44 @@ public class Futtoboru extends Game {
         if (com.badlogic.gdx.Gdx.gl != null) {
             changeScreen(MENU_SCREEN);
         }
+
+        // Manual E2E smoke-testing hook: launch with
+        // -Dfuttoboru.debug.startScreen=NEW_GAME_SCREEN (or NEW_MANAGER_SCREEN / SETTINGS_SCREEN) to
+        // jump straight to a pre-game screen on boot, so real crashes in screen construction (which
+        // require a live GL context and are otherwise only reachable by actually clicking through the
+        // real window) can be caught headlessly-by-a-human/CI without manual clicking. Added 2026-07-19
+        // after a launch-blocking crash was found only by a human tester, not by any automated test.
+        String debugStartScreen = System.getProperty("futtoboru.debug.startScreen");
+        if (debugStartScreen != null && !debugStartScreen.isBlank()) {
+            System.out.println("DEBUG: jumping straight to screen '" + debugStartScreen + "' on boot");
+            try {
+                switch (debugStartScreen.trim()) {
+                    case "NEW_GAME_SCREEN":
+                        changeScreen(NEW_GAME_SCREEN);
+                        break;
+                    case "NEW_MANAGER_SCREEN":
+                        changeScreen(NEW_MANAGER_SCREEN);
+                        break;
+                    case "SETTINGS_SCREEN":
+                        changeScreen(SETTINGS_SCREEN);
+                        break;
+                    case "NEW_GAME_FULL_FLOW":
+                        runFullNewGameFlowForTesting();
+                        break;
+                    default:
+                        System.err.println("DEBUG: unknown futtoboru.debug.startScreen value: " + debugStartScreen);
+                }
+                System.out.println("DEBUG: reached screen '" + debugStartScreen + "' without throwing");
+            } catch (RuntimeException e) {
+                System.err.println("DEBUG: crash while jumping to screen '" + debugStartScreen + "'");
+                e.printStackTrace();
+                throw e;
+            }
+            if ("true".equals(System.getProperty("futtoboru.debug.exitAfterStartScreen"))) {
+                System.out.println("DEBUG: exiting after reaching debug start screen");
+                Gdx.app.exit();
+            }
+        }
     }
     
     /**
@@ -317,6 +356,70 @@ public class Futtoboru extends Game {
             changeScreen(screen);
             break;
         }
+    }
+
+    /**
+     * Test-only: drives the entire New Game wizard headlessly (season -> manager -> countries ->
+     * Start Game) using the first available season/country and a throwaway manager, exactly mirroring
+     * what a human clicking through every screen would trigger, so a crash anywhere in that chain
+     * shows up in a scripted run instead of only being found by a human tester. Invoked via
+     * {@code -Dfuttoboru.debug.startScreen=NEW_GAME_FULL_FLOW}. Added 2026-07-19.
+     */
+    private void runFullNewGameFlowForTesting() {
+        List<Season> allSeasons = DatabaseLoader.getInstance().getSeasons();
+        if (allSeasons == null || allSeasons.isEmpty()) {
+            throw new IllegalStateException("DEBUG NEW_GAME_FULL_FLOW: no seasons loaded from database");
+        }
+        Season season = allSeasons.get(0);
+
+        List<Country> countries = season.getCountries();
+        if (countries == null || countries.isEmpty()) {
+            throw new IllegalStateException("DEBUG NEW_GAME_FULL_FLOW: season '" + season.getName() + "' has no countries");
+        }
+
+        Person owner = new Person();
+        owner.setName("Debug");
+        owner.setLastname("Tester");
+        owner.setBirthDate(java.time.LocalDateTime.of(1850, 1, 1, 0, 0));
+        owner.setCountry(countries.get(0));
+
+        SaveGame currentGame = new SaveGame();
+        setCurrentGame(currentGame);
+        currentGame.setOwner(owner);
+
+        System.out.println("DEBUG NEW_GAME_FULL_FLOW: season=" + season.getName() + ", countries=" + countries.size());
+        changeScreen(NEW_GAME_OVERVIEW_SCREEN, season, countries);
+
+        if (!(getScreen() instanceof NewGameOverviewScreen)) {
+            throw new IllegalStateException("DEBUG NEW_GAME_FULL_FLOW: expected NewGameOverviewScreen, got "
+                    + (getScreen() != null ? getScreen().getClass().getName() : "null"));
+        }
+
+        String debugProfessionId = System.getProperty("futtoboru.debug.professionId");
+        if (debugProfessionId != null && !debugProfessionId.isBlank()) {
+            String debugClubId = System.getProperty("futtoboru.debug.clubId");
+            System.out.println("DEBUG NEW_GAME_FULL_FLOW: selecting profession=" + debugProfessionId
+                    + ", club=" + debugClubId);
+            ((NewGameOverviewScreen) getScreen()).selectProfessionAndClubForTesting(
+                    Long.parseLong(debugProfessionId),
+                    debugClubId != null && !debugClubId.isBlank() ? Long.parseLong(debugClubId) : null);
+        }
+
+        System.out.println("DEBUG NEW_GAME_FULL_FLOW: overview screen constructed OK, triggering Start Game...");
+        // runStartGame() deliberately swallows its own exceptions and shows an in-game ErrorDialog
+        // instead of propagating (P0 fix from the earlier menu audit) -- so success/failure here can
+        // only be told apart by whether the screen actually advanced past the overview screen.
+        ((NewGameOverviewScreen) getScreen()).triggerStartGameForTesting();
+
+        if (getScreen() instanceof NewGameOverviewScreen) {
+            throw new IllegalStateException(
+                    "DEBUG NEW_GAME_FULL_FLOW: Start Game failed -- screen did not advance past "
+                    + "NewGameOverviewScreen (see CRITICAL ERROR DURING GAME STARTUP! in the log above "
+                    + "for the real exception; runStartGame() catches it and shows an ErrorDialog instead "
+                    + "of propagating)");
+        }
+        System.out.println("DEBUG NEW_GAME_FULL_FLOW: SUCCESS, current screen is now "
+                + getScreen().getClass().getSimpleName());
     }
 
     /**
