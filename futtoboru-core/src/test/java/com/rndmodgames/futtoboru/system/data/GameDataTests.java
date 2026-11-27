@@ -36,7 +36,7 @@ class GameDataTests {
         assertEquals("", data.getReport().errorsText());
         assertEquals(List.of("core"), data.getPacks());
         assertEquals(35, data.all(GameData.CLUB).size());
-        assertEquals(539, data.all(GameData.PERSON).size()); // slice 4 data apply, see REVIEW_1888-89_FINDINGS
+        assertEquals(542, data.all(GameData.PERSON).size()); // H-01b data fixes (539 after slice 4), see REVIEW_1888-89_FINDINGS
         assertEquals(35, data.records("squad", "1888-89").size());
         assertEquals(2, data.get(GameData.SEASON, "1888-89").children().size());
         // the same warnings validate.py gives (copied rosters, short squad, placeholders...)

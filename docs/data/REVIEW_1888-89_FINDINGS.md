@@ -13,6 +13,63 @@ minor clubs were read.
 Short sources: **FAC** = https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup ·
 **FACQ** = https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup_qualifying_rounds
 
+## Applied (H-01b, WORKSTATION, 2026-11-27)
+The sourced corrections from the H-01 research (`docs/data/history/clubs/*.md` "Data notes",
+`docs/data/history/PLAYERS_1888-89.md`) plus the H-02 ground notes (`docs/data/history/GROUNDS_1888-89.md`, branch
+`ws/H-02-grounds`). No schema change. Every touched record has an `H-01b (<doc>): ...` line in `notes` and the
+cited URLs in `sources`. Validator: before 0 errors / 11 warnings, after 0 errors / 10 warnings (the Lintott age
+warning is gone; placeholders 74 → 82). People 539 → 542.
+
+- **Wrong people (ids per D11):** `arthur-brown-1858` → new `albert-brown-1862` (Albert Alfred Brown, b. 1862-01-07
+  per the article lead, 1865-01-06 per its infobox), aliased because Arthur is in no other squad; `james-weir-1864` →
+  `john-weir-1865` (Scotland, b. 1865-01-10), aliased; `harry-cursham-1859` (Swifts) merged into
+  `henry-cursham-1863` (b. 1859-11-27), aliased; `george-cotterill-1868` (Swifts) merged into `gh-cotterill-1868`
+  (same birth date; Old Brightonians only), aliased. All four in the rename log (`docs/DATA_MODEL.md`).
+  `david-russel-1863` → surname Russell, id kept (a name correction inside the record, D11). Bambridge brothers:
+  first/last names were swapped (Charles, Arthur, Ernest).
+- **Affiliations:** Percy and Arthur Walters moved Old Westminsters → Old Carthusians. Removed (record deleted, id in
+  `ids.json` `retired`): `arthur-dunn-1860`, `norman-pares-1854` (Old Etonians; no such club in the data),
+  `evelyn-lintott-1883` (aged 5), `gilbert-smith-1872` (G. O. Smith, still a Charterhouse pupil),
+  `harry-linacre-1869` (joined Forest 1899), `john-mcpherson-1867` (Hearts 1888-91).
+- **Missing squad members (3, new numbers):** Everton `frank-sugg-1862` (9 apps), `joe-davies-1870` (Wales, 8 apps,
+  2 goals); Villa `bob-thomas-1867` (season debutant; birth year from the article's red-link title, nationality
+  assumed England: estimate).
+- **Placeholders (8, short-squad rule step 3):** Forest 2, Old Westminsters 4, Swifts 2, to keep XIs at 11.
+- **Nationalities (21):** to Scotland: Barbour, Stevenson, McLellan, Hugh Galbraith, Bonar (Accrington); Coupar
+  (Bolton); Lang, McFettridge, Cox, McMahon (Burnley); Archibald Ferguson (Derby); Nick Ross, Dick (Everton);
+  Milarvie, Sloane, Hendry (Stoke). To Wales: Gillam (Bolton), George Farmer (Everton), William Bell (Crewe), Job
+  Wilding (Bootle). To England: `jack-edwards-1867`. (John Weir and Joe Davies are new records with the right country.)
+- **Birth dates (53 records, 7 of them together with the nationality fix, plus Cursham):** the club-file corrections for Accrington, Burnley, Derby, Everton, Notts County,
+  Preston, Stoke and WBA, incl. Sherwin 1851-02-26, Gunn 1858-12-04, Plackett 1871-04-14, Milward 1870-09-12,
+  Midgley 1856, Edwards 1867-08-25. Ids keep their old years.
+- **Grounds:** new `clee-park` (Grimsby), `meadow-lane` (Notts Rangers, from Sep 1886), `great-lines` (Chatham's
+  Army ground "The Lines"), `the-meadow-belfast` (Linfield), set as the 1888-89 grounds; capacity/value/rent copied
+  from the ground they replace (game estimates, noted). Opened years: `abbey-park` 1880 → 1889, `hawthorne-road`
+  1880 → 1884 (1883 per the club article), `chuckery-ground` 1888 → 1881, `ulsterville-avenue` 1886 → 1889,
+  `maidstone-road-ground` 1882 → 1889. Descriptions: `racecourse-ground` now tells the County Ground's story (it
+  told the Baseball Ground's), `castle-ground`, `ulsterville-avenue`, `maidstone-road-ground`. `wellington-road`
+  capacity 26,849 → 20,000 (26,849 is the 7 Jan 1888 record crowd, now in its notes; 20,000 is a game estimate).
+- **Clubs:** Stoke founded 1868 → 1863 (club's official year; 1868 = first documented match; dispute noted);
+  Swifts 1869 → 1871.
+- **Test:** `GameDataTests` people count 539 → 542 (one number, commented).
+
+### Not applied (and why)
+- **Club officials** (no officials model; for the schema proposal): William Sudell (Preston); George Ramsay,
+  William McGregor, Frederick Rinder (Villa); Jack Addenbrooke (Wolves); Thomas Mitchell (Blackburn); J. J. Bentley
+  (Bolton); Henry Jackson, Edward W. Heelis (WBA); W. E. Barclay, John Houlding (Everton); B. Wyatt Granger, Harry
+  Bradshaw, Charles Massey (Burnley); William Morley (Derby); Harry Lockett (Stoke). Also William Johnston
+  (Linfield's ineligible player, Feb 1889) is not a person record.
+- **Invented-looking cup squads left as they are** (no sourced replacement): Chatham (Millers/Ashes), Grimsby (11
+  "Chris"), Halliwell (11 Smiths), South Shore (10 Birkets + Bond). Doubtful but unsourced either way: Forest's
+  `albert-smith-1869`, `enoch-tranter-1861`, `arthur-leighton-1863`, `sam-widdowson-1851`; Swifts'
+  `bambridge-ernest-1848`, `robert-barker-1847` (1870s men); Old Westminsters' `francis-birley-1850`; Old
+  Carthusians' `maurice-stanbrough-1870` (probably still at school, not checked).
+- **Other ground notes:** Derby Junction (Arboretum Field), Halliwell (The Bennetts), South Shore (Cow Gap Lane)
+  need new ground records; not in this brief. Notts County's Castle Ground games still need a per-match venue.
+  Chatham's no-admission ground has no model flag.
+- **Unresolved data:** `james-costley-1865` first name (James vs T.); Notts County's Galbraith first name; Bob
+  Jardine's nationality; season-article vs player-article appearance conflicts (club files).
+
 ## Applied to gamedata (P2-4 slice 4, WORKSTATION, 2026-11-27)
 Validator: before 0 errors / 57 warnings, after 0 errors / 11 warnings. People 487 → 539 (55 removed, 38 real
 people added, 74 placeholders added; 5 merged into an existing record). Extra sources read for this pass:

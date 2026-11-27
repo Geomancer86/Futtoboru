@@ -113,11 +113,13 @@
     "id": "stoke",
     "name": "Stoke",
     "fullName": "Stoke City Football Club",
-    "founded": 1868,
+    "founded": 1863,
     "country": "england",
     "sources": [
-      "https://en.wikipedia.org/wiki/Stoke_City_F.C."
-    ]
+      "https://en.wikipedia.org/wiki/Stoke_City_F.C.",
+      "https://en.wikipedia.org/wiki/History_of_Stoke_City_F.C."
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): founded 1863 is the club's own (official) year; 1868 is the first documented match and was the value here before. Both are defensible: disputed."
   },
   {
     "id": "old-westminsters",
@@ -133,11 +135,12 @@
     "id": "swifts",
     "name": "Swifts",
     "fullName": "Swifts Football Club",
-    "founded": 1869,
+    "founded": 1871,
     "country": "england",
     "sources": [
       "https://en.wikipedia.org/wiki/Swifts_F.C."
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/swifts.md): founded February 1871 per the club article (was 1869)."
   },
   {
     "id": "old-brightonians",

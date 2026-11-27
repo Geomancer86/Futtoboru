@@ -31,7 +31,7 @@
     "players": [
       "albert-allen-1867",
       "walter-ashmore-1861",
-      "arthur-brown-1858",
+      "albert-brown-1862",
       "john-burton-1863",
       "frank-coulton-1866",
       "gershom-cox-1863",
@@ -46,7 +46,8 @@
       "archie-hunter-1859",
       "jimmy-warner-1865",
       "arthur-wollaston-1865",
-      "harry-yates-1861"
+      "harry-yates-1861",
+      "bob-thomas-1867"
     ]
   },
   {
@@ -203,7 +204,7 @@
       "george-dobson-1862",
       "robert-smalley-1865",
       "nick-ross-1863",
-      "james-weir-1864",
+      "john-weir-1865",
       "george-farmer-1865",
       "robert-watson-1864",
       "james-costley-1865",
@@ -230,7 +231,9 @@
       "roberts-1865",
       "george-stephenson-1864",
       "harry-warmby-1864",
-      "walter-wilson-1864"
+      "walter-wilson-1864",
+      "frank-sugg-1862",
+      "joe-davies-1870"
     ]
   },
   {
@@ -379,17 +382,17 @@
     "ground": "vincent-square",
     "balance": 0,
     "players": [
-      "arthur-dunn-1860",
       "william-moon-1868",
-      "norman-pares-1854",
-      "percy-walters-1863",
-      "arthur-walters-1864",
       "rupert-sandilands-1868",
       "william-ingram-1867",
       "charles-squire-1863",
       "frederick-ingram-1866",
       "francis-birley-1850",
-      "joseph-moore-1865"
+      "joseph-moore-1865",
+      "isaac-morris-1864",
+      "horatio-davies-1866",
+      "edgar-phillips-1864",
+      "timothy-king-1862"
     ]
   },
   {
@@ -400,14 +403,14 @@
       "bambridge-charles-1858",
       "bambridge-arthur-1861",
       "bambridge-ernest-1848",
-      "george-cotterill-1868",
       "wildam-hay-1851",
       "francis-pawson-1861",
       "humphrey-tytheridge-1865",
       "robert-barker-1847",
       "william-nicholl-1868",
-      "harry-cursham-1859",
-      "joseph-johnson-1868"
+      "joseph-johnson-1868",
+      "noah-carter-1865",
+      "tom-jones-1866"
     ]
   },
   {
@@ -453,20 +456,20 @@
     "players": [
       "billy-gunn-1858",
       "tinsley-lindley-1865",
-      "harry-linacre-1869",
-      "john-mcpherson-1867",
       "albert-smith-1869",
       "bob-hancock-1866",
       "sam-widdowson-1851",
       "frank-burton-1865",
       "billy-fletcher-1866",
       "enoch-tranter-1861",
-      "arthur-leighton-1863"
+      "arthur-leighton-1863",
+      "mark-wright-1861",
+      "nathan-carter-1865"
     ]
   },
   {
     "club": "linfield",
-    "ground": "ulsterville-avenue",
+    "ground": "the-meadow-belfast",
     "balance": 0,
     "players": [
       "jack-peden-1863",
@@ -521,7 +524,7 @@
   },
   {
     "club": "chatham-town",
-    "ground": "maidstone-road-ground",
+    "ground": "great-lines",
     "balance": 0,
     "players": [
       "charles-miller-1865",
@@ -557,7 +560,7 @@
   },
   {
     "club": "grimsby-town",
-    "ground": "abbey-park",
+    "ground": "clee-park",
     "balance": 0,
     "players": [
       "chris-short-1865",
@@ -632,7 +635,6 @@
     "ground": "charterhouse-school-grounds",
     "balance": 0,
     "players": [
-      "gilbert-smith-1872",
       "charles-wreford-brown-1866",
       "william-cobbold-1863",
       "james-prinsep-1861",
@@ -641,8 +643,9 @@
       "maurice-stanbrough-1870",
       "william-page-1862",
       "leonard-wilkinson-1868",
-      "evelyn-lintott-1883",
-      "george-gillingham-1865"
+      "george-gillingham-1865",
+      "percy-walters-1863",
+      "arthur-walters-1864"
     ]
   },
   {
@@ -665,7 +668,7 @@
   },
   {
     "club": "notts-rangers",
-    "ground": "castle-ground",
+    "ground": "meadow-lane",
     "balance": 0,
     "players": [
       "fred-geary-1868",
