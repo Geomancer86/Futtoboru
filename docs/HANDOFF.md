@@ -11,12 +11,14 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Ready to take (from docs/ROADMAP.md)
 - **P1-2** Maven wrapper (`mvnw`) + `.sh` run scripts + `.gitattributes`.
 - **P1-3** GitHub Actions: `mvn -B verify` on push and PRs.
-- **P1-4** Remove dead 3D demo code, unused bullet deps, PDFs under `resources/concepts`.
+- **P1-4** Remove dead 3D demo code and unused bullet deps (concept images/PDF already gone via SEC-01).
 - **P2-1** Fix Continue double-click advancing two days (`MainGameMenuTable`).
 - **P2-2** Merge the two match-result paths in `FuttoboruGameEngine`.
 - **P2-3** Headless test: simulate the full 1888-89 season end to end.
 - **P2-4** Data: Burnley placeholder players (1865 birthdates), Pat Gallocher at two clubs.
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · merge · Merged `b3/SEC-01-public-hygiene` then `ws/phase0-public` into develop (1ba9722); `mvn clean package` green, 41 core tests. Jenkinsfile conflict resolved by **deleting** the Sonar stage (producer: token is dead). BOOK3PRO: `git fetch && git switch develop && git pull`; both SEC-01 and ws/phase0-public can be deleted. P1-4: concept images/PDF already removed by SEC-01; dead 3D code and unused deps still open.
+- 2026-11-27 · WORKSTATION · NOTE · private · Bitbucket `Geomancer/futtoboru-private` (private) holds the 4 former local repos with full history, marketing and cost docs. Clone to `C:\git\futtoboru-private`.
 - 2026-11-27 · WORKSTATION · DONE · P0-4 · Cup completion/runner-up, next season generated when the league ends, null-team guard, champion display, 17 new tests (41 core tests green). Branch `ws/P0-4-competition-completion`.
 - 2026-11-27 · WORKSTATION · DONE · P0-1/P0-2/P0-3/P1-1 · Public-safe docs of the 4 former local-only repos into `docs/archive/`; all of them, history and business material included, into the private Bitbucket repo `Geomancer/futtoboru-private`; moved 62 root docs to `docs/archive/2025-12-ai/`, fixed the Maven 3.9 build, added CLAUDE.md + docs. Branch `ws/phase0-consolidation`.
