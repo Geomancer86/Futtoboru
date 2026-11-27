@@ -210,8 +210,8 @@ class UiThemeTest {
      */
     private static final java.util.Map<String, String> LITERAL_ALLOW_LIST = java.util.Map.of(
             "com/rndmodgames/futtoboru/ui/UiTheme.java", "the token accessor itself",
-            "com/rndmodgames/futtoboru/dialogs/LoadGameDialog.java", "BOOK3PRO P2-5 lock (3 x pad(5)); convert after",
-            "com/rndmodgames/futtoboru/dialogs/SaveGameDialog.java", "BOOK3PRO P2-5 lock; convert after");
+            "com/rndmodgames/futtoboru/dialogs/LoadGameDialog.java", "P2-5 save dialogs, left out of U-02b by the PM (pad(5) only); convert in a follow-up",
+            "com/rndmodgames/futtoboru/dialogs/SaveGameDialog.java", "P2-5 save dialogs, left out of U-02b by the PM (pad(5) only); convert in a follow-up");
 
     /** Literal patterns the UI must take from {@code UiTheme} instead (docs/design/UI_AUDIT.md 2.6). */
     static final java.util.Map<String, Pattern> STYLE_LITERALS = java.util.Map.of(
