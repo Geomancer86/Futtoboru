@@ -25,4 +25,7 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
   no cards; one umpire per side plus a referee off the pitch.
 - Game data is JSON in `futtoboru-core/src/main/resources/gamedata/` (`docs/DATA_MODEL.md`): stable string ids that never change (renames via `aliases.json` + rename log), a source per record. Run `python tools/data/validate.py` and `python -m pytest tools/data` on every data change.
 - Match results come from the event/possession engine (decision D5); the 2D prototype is only a viewer.
+- Real historical results/fixtures (`docs/data/results_*.csv`, later `seasons/*/results.json`) are reference data (D17):
+  engine calibration in test code, and history for seasons before the start season. Game code must never read them
+  to decide or schedule a match the player plays.
 - Keep new docs short and few. Update `docs/STATUS.md` instead of writing new summary files.

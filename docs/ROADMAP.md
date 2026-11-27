@@ -21,6 +21,7 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 | D14 | **All game data in JSON**, like DarkBlade: packs under `resources/gamedata/<pack>/` with a `pack.json` that lists every file; strict validator (unknown fields are errors). |
 | D15 | **One people table + season squads**; seasonal facts (ground, balance, squad) per season folder. v0.4 saves are **not** migrated; saves are versioned from now on. |
 | D16 | **UI/UX phase after the data redesign** and before the match engine. |
+| D17 | **Real historical results are reference data only** (producer, 2026-11-27). They are used (a) by the engine calibration in test code (E-05) and (b) as history for seasons before the chosen start season (tables, champions, cup winners, records). They never decide, script or nudge a match the player plays: every played season is simulated. Season 1 keeps the **generated schedule**; real 1888-89 fixture dates and pairings are reference data too. |
 
 ## Phases
 **Phase 0: consolidate git** (done 2026-11-27 except P0-4)
