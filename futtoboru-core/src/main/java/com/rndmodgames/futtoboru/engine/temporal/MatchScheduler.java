@@ -14,7 +14,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.MatchIncome;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
-import com.rndmodgames.futtoboru.system.DebugLogManager;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Match Scheduler v1
@@ -93,7 +93,7 @@ public class MatchScheduler {
             return false;
         }
         
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "CHECKING IF TODAY IS A MATCH DAY!");
+        Log.info(Log.ENGINE_SCHEDULING, "CHECKING IF TODAY IS A MATCH DAY!");
         
         // Null check: club might not have scheduled matches initialized
         if (club.getScheduledMatches() == null) {
@@ -127,7 +127,7 @@ public class MatchScheduler {
                 
                 // Check if match date is today
                 if (match.getMatchDateTime() != null && match.getMatchDateTime().toLocalDate().equals(today.toLocalDate())) {
-                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH DAY! " + match.getBracketPath() + " on " + today);
+                    Log.info(Log.ENGINE_SCHEDULING, "MATCH DAY! " + match.getBracketPath() + " on " + today);
                     return true;
                 }
             }
@@ -146,7 +146,7 @@ public class MatchScheduler {
     public void checkClubSheduledMatches(Club club) {
         
         //
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "CLUB SCHEDULED MATCHES: " + club.getScheduledMatches().size());
+        Log.info(Log.ENGINE_SCHEDULING, "CLUB SCHEDULED MATCHES: " + club.getScheduledMatches().size());
         
         // Get current game date
         java.time.LocalDateTime currentDate = game.getCurrentGame().getGameDate();
@@ -169,7 +169,7 @@ public class MatchScheduler {
             
             // BUG FIX: Skip matches that have already been played
             if (scheduled.getIsPlayed() != null && scheduled.getIsPlayed()) {
-                DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Skipping already played match");
+                Log.debug(Log.ENGINE_SCHEDULING, "MatchScheduler: Skipping already played match");
                 continue;
             }
             
@@ -186,7 +186,7 @@ public class MatchScheduler {
             
             // BUG FIX: Only sell tickets for matches scheduled in the future
             if (scheduled.getMatchDateTime() == null) {
-                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Skipping match with no date");
+                Log.warn(Log.ENGINE_SCHEDULING, "MatchScheduler: Skipping match with no date");
                 continue;
             }
             
@@ -197,14 +197,14 @@ public class MatchScheduler {
             
             if (daysUntilMatch > 7) {
                 // Match is more than 7 days away, don't sell tickets yet
-                DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Match is " + daysUntilMatch + " days away, not selling tickets yet");
+                Log.debug(Log.ENGINE_SCHEDULING, "MatchScheduler: Match is " + daysUntilMatch + " days away, not selling tickets yet");
                 continue;
             }
             
             if (daysUntilMatch < 0) {
                 // Match date has passed but hasn't been marked as played yet
                 // This shouldn't happen, but skip it to be safe
-                DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Match date has passed but not marked as played, skipping");
+                Log.warn(Log.ENGINE_SCHEDULING, "MatchScheduler: Match date has passed but not marked as played, skipping");
                 continue;
             }
             
@@ -228,17 +228,17 @@ public class MatchScheduler {
             Club awayClub = game.getCurrentGame().getClubById(scheduled.getAwayClubId());
             
             if (homeClub == null || awayClub == null) {
-                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler", 
+                Log.error(Log.ENGINE_SCHEDULING, "MatchScheduler", 
                     "CRITICAL: Cannot find club(s) for match. HomeClubId: " + scheduled.getHomeClubId() + 
                     ", AwayClubId: " + scheduled.getAwayClubId() + ", Match ID: " + scheduled.getId());
                 continue; // Skip this match to prevent crash
             }
             
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH            : " + homeClub.getName() + " vs " + awayClub.getName());
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "STADIUM NAME     : " + club.getStadium().getName());
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "STADIUM CAPACITY : " + club.getStadium().getCapacity());
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "TICKETS SOLD     : " + currentAttendance);
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "TICKETS AVAILABLE: " + maxTickets);
+            Log.info(Log.ENGINE_SCHEDULING, "MATCH            : " + homeClub.getName() + " vs " + awayClub.getName());
+            Log.info(Log.ENGINE_SCHEDULING, "STADIUM NAME     : " + club.getStadium().getName());
+            Log.info(Log.ENGINE_SCHEDULING, "STADIUM CAPACITY : " + club.getStadium().getCapacity());
+            Log.info(Log.ENGINE_SCHEDULING, "TICKETS SOLD     : " + currentAttendance);
+            Log.info(Log.ENGINE_SCHEDULING, "TICKETS AVAILABLE: " + maxTickets);
             
             if (maxTickets > 0) {
                 
@@ -280,10 +280,10 @@ public class MatchScheduler {
                 }
                 
                 //
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH TYPE: " + (scheduled.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
+                Log.info(Log.ENGINE_SCHEDULING, "MATCH TYPE: " + (scheduled.getMatchType() == Match.FRIENDLY_MATCH ? "FRIENDLY" : 
                                                    scheduled.getMatchType() == Match.LEAGUE_MATCH ? "LEAGUE" : "CUP"));
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "ATTENDANCE MULTIPLIER: " + attendanceMultiplier);
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "TICKETS TO SELL TODAY: min: " + minPerDay + ", max: " + maxPerDay);
+                Log.info(Log.ENGINE_SCHEDULING, "ATTENDANCE MULTIPLIER: " + attendanceMultiplier);
+                Log.info(Log.ENGINE_SCHEDULING, "TICKETS TO SELL TODAY: min: " + minPerDay + ", max: " + maxPerDay);
                 
                 int randomTickets;
                 
@@ -308,8 +308,8 @@ public class MatchScheduler {
                 BigDecimal ticketPrice = getTicketPrice(scheduled.getMatchType());
                 BigDecimal dayCash = new BigDecimal(randomTickets).multiply(ticketPrice);
                 
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "SOLD TICKETS: " + randomTickets);
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH DAY CASH IS: " + Money.format(dayCash));
+                Log.info(Log.ENGINE_SCHEDULING, "SOLD TICKETS: " + randomTickets);
+                Log.info(Log.ENGINE_SCHEDULING, "MATCH DAY CASH IS: " + Money.format(dayCash));
                 
                 // Record match revenue on Match object (v1.0)
                 BigDecimal currentRevenue = scheduled.getMatchRevenue();
@@ -328,7 +328,7 @@ public class MatchScheduler {
             } else {
                 
                 //
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "NOT SELLING TICKETS FOR MATCH, SOLD OUT!");
+                Log.info(Log.ENGINE_SCHEDULING, "NOT SELLING TICKETS FOR MATCH, SOLD OUT!");
             }
         }
     }
@@ -345,7 +345,7 @@ public class MatchScheduler {
     public void checkClubProposedMatches(Club club) {
         
         //
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "CLUB PROPOSED MATCHES: " + club.getProposedMatches());
+        Log.info(Log.ENGINE_SCHEDULING, "CLUB PROPOSED MATCHES: " + club.getProposedMatches());
         
         //
         for (Match match : club.getProposedMatches()) {
@@ -353,7 +353,7 @@ public class MatchScheduler {
             boolean freeSchedule = true;
             
             // 
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "CHECKING FRIENDY PROPOSAL AGAINST " + club.getScheduledMatches().size() + " SCHEDULED MATCHES");
+            Log.info(Log.ENGINE_SCHEDULING, "CHECKING FRIENDY PROPOSAL AGAINST " + club.getScheduledMatches().size() + " SCHEDULED MATCHES");
             
             // TODO compare scheduled dates and proposed date
             // TODO set freeschedule as needed
@@ -365,7 +365,7 @@ public class MatchScheduler {
             if (freeSchedule) {
                 
                 //
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "Schedule is free, accepting friendly request!");
+                Log.info(Log.ENGINE_SCHEDULING, "Schedule is free, accepting friendly request!");
                 
                 match.setIsAccepted(true);
                 
@@ -374,7 +374,7 @@ public class MatchScheduler {
                 
             } else {
                 
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "Friendly request cannot be accepted, scheduling conflicts!");
+                Log.info(Log.ENGINE_SCHEDULING, "Friendly request cannot be accepted, scheduling conflicts!");
             }
             
             //LocalDateTime beforeDate = match.getProposeDateTime().minusDays(3).at;

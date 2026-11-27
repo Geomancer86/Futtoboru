@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Cup Bracket Manager v1.0
@@ -45,7 +45,7 @@ public class CupBracketManager {
      */
     public Match advanceWinner(Match completedMatch) {
         if (completedMatch == null || completedMatch.getIsPlayed() == null || !completedMatch.getIsPlayed()) {
-            Gdx.app.error("CupBracketManager", "Cannot advance winner: match not completed");
+            Log.error(Log.ENGINE_CUP, "CupBracketManager", "Cannot advance winner: match not completed");
             return null;
         }
         
@@ -56,9 +56,9 @@ public class CupBracketManager {
         
         // CRITICAL: Validate teams exist before determining winner
         if (completedMatch.getHomeClubId() == null || completedMatch.getAwayClubId() == null) {
-            Gdx.app.error("CupBracketManager", "Cannot advance winner: match has missing teams (Home: " + 
+            Log.error(Log.ENGINE_CUP, "CupBracketManager", "Cannot advance winner: match has missing teams (Home: " + 
                 completedMatch.getHomeClubId() + ", Away: " + completedMatch.getAwayClubId() + ")");
-            System.out.println("CupBracketManager: *** ERROR *** Match " + completedMatch.getBracketPath() + 
+            Log.info(Log.ENGINE_CUP, "CupBracketManager: *** ERROR *** Match " + completedMatch.getBracketPath() + 
                 " has missing teams - cannot determine winner");
             return null;
         }
@@ -84,24 +84,24 @@ public class CupBracketManager {
             // Draw - schedule replay (unless this is already a replay, then we need extra time/penalties - for now, pick random winner)
             if (isReplay) {
                 // Replay also ended in draw - for now, pick random winner (future: implement extra time/penalties)
-                Gdx.app.log("CupBracketManager", "Replay also ended in draw - picking random winner (extra time/penalties not yet implemented)");
+                Log.info(Log.ENGINE_CUP, "CupBracketManager", "Replay also ended in draw - picking random winner (extra time/penalties not yet implemented)");
                 boolean homeWins = com.rndmodgames.futtoboru.game.Futtoboru.randomOf(gameInstance)
                         .fork("replay-decider:" + completedMatch.getId()).nextBoolean();
                 Club homeClub = currentGame.getClubById(completedMatch.getHomeClubId());
                 Club awayClub = currentGame.getClubById(completedMatch.getAwayClubId());
                 if (homeClub == null || awayClub == null) {
-                    Gdx.app.error("CupBracketManager", "Cannot resolve replay draw - clubs not found");
+                    Log.error(Log.ENGINE_CUP, "CupBracketManager", "Cannot resolve replay draw - clubs not found");
                     return null;
                 }
                 winner = homeWins ? homeClub : awayClub;
-                System.out.println("CupBracketManager: Replay draw resolved - winner: " + winner.getName() + 
+                Log.info(Log.ENGINE_CUP, "CupBracketManager: Replay draw resolved - winner: " + winner.getName() + 
                     " (Original match round: " + originalRound + ")");
                 
                 // CRITICAL FIX: If this is a final replay that ended in draw, we need to complete the cup
                 // Check if the original match was the final (Round 5+)
                 if (isFinal) {
-                    System.out.println("CupBracketManager: *** FINAL REPLAY DRAW RESOLVED *** Champion: " + winner.getName());
-                    Gdx.app.log("CupBracketManager", "Final replay draw resolved! Cup champion: " + winner.getName());
+                    Log.info(Log.ENGINE_CUP, "CupBracketManager: *** FINAL REPLAY DRAW RESOLVED *** Champion: " + winner.getName());
+                    Log.info(Log.ENGINE_CUP, "CupBracketManager", "Final replay draw resolved! Cup champion: " + winner.getName());
                     
                     // Complete the cup immediately
                     if (gameInstance != null && gameInstance.getGameEngine() != null) {
@@ -113,8 +113,8 @@ public class CupBracketManager {
                             if (cup != null && edition != null) {
                                 // CRITICAL FIX: Pass currentGame to ensure it's not null
                                 authorityManager.completeCupEdition(cup, edition, winner, currentGame);
-                                System.out.println("CupBracketManager: Cup completion triggered for final replay draw");
-                                Gdx.app.log("CupBracketManager", "Cup completion triggered for: " + cup.getName());
+                                Log.info(Log.ENGINE_CUP, "CupBracketManager: Cup completion triggered for final replay draw");
+                                Log.info(Log.ENGINE_CUP, "CupBracketManager", "Cup completion triggered for: " + cup.getName());
                             }
                         }
                     }
@@ -124,7 +124,7 @@ public class CupBracketManager {
                 // Original match ended in draw - schedule replay
                 Match replayMatch = scheduleReplay(completedMatch);
                 if (replayMatch == null) {
-                    Gdx.app.error("CupBracketManager", "Failed to schedule replay for match: " + completedMatch.getId());
+                    Log.error(Log.ENGINE_CUP, "CupBracketManager", "Failed to schedule replay for match: " + completedMatch.getId());
                 }
                 return null; // No winner yet, replay will determine it
             }
@@ -132,11 +132,11 @@ public class CupBracketManager {
         
         // Additional validation: ensure winner club exists
         if (winner == null) {
-            Gdx.app.error("CupBracketManager", "Cannot advance winner: winner is null after determination");
+            Log.error(Log.ENGINE_CUP, "CupBracketManager", "Cannot advance winner: winner is null after determination");
             return null;
         }
         
-        System.out.println("CupBracketManager: Match " + completedMatch.getBracketPath() + 
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: Match " + completedMatch.getBracketPath() + 
             " (ID: " + completedMatch.getId() + ") completed. Winner: " + winner.getName() + " (ID: " + winner.getId() + ")");
         
         // If this is a replay, find the original match to determine which next round match to advance to
@@ -144,7 +144,7 @@ public class CupBracketManager {
         if (isReplay && completedMatch.getParentMatch1Id() != null) {
             // This is a replay - use the original match's ID to find next round match
             parentMatchId = completedMatch.getParentMatch1Id();
-            System.out.println("CupBracketManager: Replay completed, using original match ID: " + parentMatchId);
+            Log.info(Log.ENGINE_CUP, "CupBracketManager: Replay completed, using original match ID: " + parentMatchId);
         }
         
         // Find next round match that depends on this match (or original match if replay)
@@ -154,8 +154,8 @@ public class CupBracketManager {
             // Check if this is actually the final (the bracket's last tie) or if there's a bracket error
             if (isFinal) {
                 // This is the final - cup is complete
-                System.out.println("CupBracketManager: *** CUP FINAL COMPLETED *** Champion: " + winner.getName());
-                Gdx.app.log("CupBracketManager", "Final match completed! Cup champion: " + winner.getName());
+                Log.info(Log.ENGINE_CUP, "CupBracketManager: *** CUP FINAL COMPLETED *** Champion: " + winner.getName());
+                Log.info(Log.ENGINE_CUP, "CupBracketManager", "Final match completed! Cup champion: " + winner.getName());
                 
                 // CRITICAL: Trigger cup completion via AuthorityManager
                 // This ensures champions/runners-up are saved to CompetitionEdition
@@ -169,45 +169,45 @@ public class CupBracketManager {
                         if (cup != null && edition != null) {
                             // CRITICAL FIX: Pass currentGame to ensure it's not null
                             authorityManager.completeCupEdition(cup, edition, winner, currentGame);
-                            System.out.println("CupBracketManager: Cup completion triggered via AuthorityManager");
-                            Gdx.app.log("CupBracketManager", "Cup completion triggered for: " + cup.getName());
+                            Log.info(Log.ENGINE_CUP, "CupBracketManager: Cup completion triggered via AuthorityManager");
+                            Log.info(Log.ENGINE_CUP, "CupBracketManager", "Cup completion triggered for: " + cup.getName());
                         } else {
-                            Gdx.app.error("CupBracketManager", "Cannot complete cup: cup or edition not found for edition ID: " + completedMatch.getCompetitionEditionId());
+                            Log.error(Log.ENGINE_CUP, "CupBracketManager", "Cannot complete cup: cup or edition not found for edition ID: " + completedMatch.getCompetitionEditionId());
                         }
                     } else {
-                        Gdx.app.error("CupBracketManager", "Cannot complete cup: AuthorityManager not available");
+                        Log.error(Log.ENGINE_CUP, "CupBracketManager", "Cannot complete cup: AuthorityManager not available");
                     }
                 } else {
-                    Gdx.app.log("CupBracketManager", "Game instance not available - cup completion will be handled by AuthorityManager.checkCupRoundProgression()");
+                    Log.info(Log.ENGINE_CUP, "CupBracketManager", "Game instance not available - cup completion will be handled by AuthorityManager.checkCupRoundProgression()");
                 }
                 
                 return null;
             } else {
                 // Bracket error - match should have a next round match
-                System.out.println("CupBracketManager: *** CRITICAL ERROR *** Match " + completedMatch.getBracketPath() + 
+                Log.info(Log.ENGINE_CUP, "CupBracketManager: *** CRITICAL ERROR *** Match " + completedMatch.getBracketPath() + 
                     " (Round " + completedMatch.getRound() + ", ID: " + completedMatch.getId() + 
                     ") completed but NO NEXT ROUND MATCH FOUND!");
-                System.out.println("CupBracketManager: Edition ID: " + completedMatch.getCompetitionEditionId());
-                System.out.println("CupBracketManager: Searching for parent match ID: " + parentMatchId);
+                Log.info(Log.ENGINE_CUP, "CupBracketManager: Edition ID: " + completedMatch.getCompetitionEditionId());
+                Log.info(Log.ENGINE_CUP, "CupBracketManager: Searching for parent match ID: " + parentMatchId);
                 
                 // Debug: List all matches for this edition to see what's available
                 List<Match> allEditionMatches = getAllMatchesForEdition(completedMatch.getCompetitionEditionId());
-                System.out.println("CupBracketManager: Total matches found for edition: " + allEditionMatches.size());
+                Log.info(Log.ENGINE_CUP, "CupBracketManager: Total matches found for edition: " + allEditionMatches.size());
                 for (Match m : allEditionMatches) {
                     if (m.getRound() != null && m.getRound() == completedMatch.getRound() + 1) {
-                        System.out.println("  - Next round match: " + m.getBracketPath() + 
+                        Log.info(Log.ENGINE_CUP, "  - Next round match: " + m.getBracketPath() + 
                             " (ID: " + m.getId() + ", Parent1: " + m.getParentMatch1Id() + 
                             ", Parent2: " + m.getParentMatch2Id() + ")");
                     }
                 }
                 
-                Gdx.app.error("CupBracketManager", "CRITICAL: Match " + completedMatch.getBracketPath() + 
+                Log.error(Log.ENGINE_CUP, "CupBracketManager", "CRITICAL: Match " + completedMatch.getBracketPath() + 
                     " has no next round match - bracket may be incomplete!");
                 return null;
             }
         }
         
-        System.out.println("CupBracketManager: Found next round match: " + nextRoundMatch.getBracketPath() + 
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: Found next round match: " + nextRoundMatch.getBracketPath() + 
             " (ID: " + nextRoundMatch.getId() + ", Round: " + nextRoundMatch.getRound() + 
             ", Date: " + nextRoundMatch.getMatchDateTime() + ")");
         
@@ -215,15 +215,15 @@ public class CupBracketManager {
         if (nextRoundMatch.getParentMatch1Id() != null && nextRoundMatch.getParentMatch1Id().equals(parentMatchId)) {
             // This match's winner goes to home position
             nextRoundMatch.setHomeClubId(winner.getId());
-            Gdx.app.log("CupBracketManager", "Winner " + winner.getName() + " advanced to " + 
+            Log.info(Log.ENGINE_CUP, "CupBracketManager", "Winner " + winner.getName() + " advanced to " + 
                 nextRoundMatch.getBracketPath() + " (Home)");
         } else if (nextRoundMatch.getParentMatch2Id() != null && nextRoundMatch.getParentMatch2Id().equals(parentMatchId)) {
             // This match's winner goes to away position
             nextRoundMatch.setAwayClubId(winner.getId());
-            Gdx.app.log("CupBracketManager", "Winner " + winner.getName() + " advanced to " + 
+            Log.info(Log.ENGINE_CUP, "CupBracketManager", "Winner " + winner.getName() + " advanced to " + 
                 nextRoundMatch.getBracketPath() + " (Away)");
         } else {
-            Gdx.app.error("CupBracketManager", "Match " + parentMatchId + 
+            Log.error(Log.ENGINE_CUP, "CupBracketManager", "Match " + parentMatchId + 
                 " (original: " + completedMatch.getId() + ") is not a parent of match " + nextRoundMatch.getId());
             return null;
         }
@@ -252,7 +252,7 @@ public class CupBracketManager {
                 }
                 if (!homeHasMatch) {
                     homeClub.getScheduledMatches().add(nextRoundMatch);
-                    Gdx.app.log("CupBracketManager", "Added match " + nextRoundMatch.getBracketPath() + " to " + homeClub.getName());
+                    Log.info(Log.ENGINE_CUP, "CupBracketManager", "Added match " + nextRoundMatch.getBracketPath() + " to " + homeClub.getName());
                 }
             }
             
@@ -269,11 +269,11 @@ public class CupBracketManager {
                 }
                 if (!awayHasMatch) {
                     awayClub.getScheduledMatches().add(nextRoundMatch);
-                    Gdx.app.log("CupBracketManager", "Added match " + nextRoundMatch.getBracketPath() + " to " + awayClub.getName());
+                    Log.info(Log.ENGINE_CUP, "CupBracketManager", "Added match " + nextRoundMatch.getBracketPath() + " to " + awayClub.getName());
                 }
             }
             
-            System.out.println("CupBracketManager: *** MATCH READY TO PLAY *** " + nextRoundMatch.getBracketPath() + 
+            Log.info(Log.ENGINE_CUP, "CupBracketManager: *** MATCH READY TO PLAY *** " + nextRoundMatch.getBracketPath() + 
                 ": " + (homeClub != null ? homeClub.getName() : "TBD") + 
                 " vs " + (awayClub != null ? awayClub.getName() : "TBD") + 
                 " on " + nextRoundMatch.getMatchDateTime() + 
@@ -298,19 +298,19 @@ public class CupBracketManager {
                     }
                 }
             }
-            System.out.println("CupBracketManager: Match accessibility - Home club has it: " + homeHasIt + 
+            Log.info(Log.ENGINE_CUP, "CupBracketManager: Match accessibility - Home club has it: " + homeHasIt + 
                 ", Away club has it: " + awayHasIt);
             
-            Gdx.app.log("CupBracketManager", "Match " + nextRoundMatch.getBracketPath() + 
+            Log.info(Log.ENGINE_CUP, "CupBracketManager", "Match " + nextRoundMatch.getBracketPath() + 
                 " is now READY TO PLAY: " + (homeClub != null ? homeClub.getName() : "TBD") + 
                 " vs " + (awayClub != null ? awayClub.getName() : "TBD") + 
                 " on " + nextRoundMatch.getMatchDateTime());
         } else {
             // Only one team determined so far
-            System.out.println("CupBracketManager: Match " + nextRoundMatch.getBracketPath() + 
+            Log.info(Log.ENGINE_CUP, "CupBracketManager: Match " + nextRoundMatch.getBracketPath() + 
                 " waiting for other team: Home=" + (nextRoundMatch.getHomeClubId() != null ? "Set (ID: " + nextRoundMatch.getHomeClubId() + ")" : "TBD") + 
                 ", Away=" + (nextRoundMatch.getAwayClubId() != null ? "Set (ID: " + nextRoundMatch.getAwayClubId() + ")" : "TBD"));
-            Gdx.app.log("CupBracketManager", "Match " + nextRoundMatch.getBracketPath() + 
+            Log.info(Log.ENGINE_CUP, "CupBracketManager", "Match " + nextRoundMatch.getBracketPath() + 
                 " waiting for other team: Home=" + (nextRoundMatch.getHomeClubId() != null ? "Set" : "TBD") + 
                 ", Away=" + (nextRoundMatch.getAwayClubId() != null ? "Set" : "TBD"));
         }
@@ -370,14 +370,14 @@ public class CupBracketManager {
      */
     private Match scheduleReplay(Match originalMatch) {
         if (originalMatch == null || originalMatch.getHomeClubId() == null || originalMatch.getAwayClubId() == null) {
-            Gdx.app.error("CupBracketManager", "Cannot schedule replay: invalid match");
+            Log.error(Log.ENGINE_CUP, "CupBracketManager", "Cannot schedule replay: invalid match");
             return null;
         }
         
         // Check if replay already exists (to prevent duplicate replays)
         Match existingReplay = findExistingReplay(originalMatch);
         if (existingReplay != null) {
-            System.out.println("CupBracketManager: Replay already exists for " + originalMatch.getBracketPath() + 
+            Log.info(Log.ENGINE_CUP, "CupBracketManager: Replay already exists for " + originalMatch.getBracketPath() + 
                 " - ID: " + existingReplay.getId() + ", Date: " + existingReplay.getMatchDateTime());
             return existingReplay;
         }
@@ -461,10 +461,10 @@ public class CupBracketManager {
             }
         }
         
-        System.out.println("CupBracketManager: *** REPLAY SCHEDULED *** " + replayMatch.getBracketPath() + 
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: *** REPLAY SCHEDULED *** " + replayMatch.getBracketPath() + 
             " on " + replayMatch.getMatchDateTime() + " (Original: " + originalMatch.getBracketPath() + 
             ", Current Date: " + currentDate + ")");
-        Gdx.app.log("CupBracketManager", "Replay scheduled: " + replayMatch.getBracketPath() + 
+        Log.info(Log.ENGINE_CUP, "CupBracketManager", "Replay scheduled: " + replayMatch.getBracketPath() + 
             " on " + replayMatch.getMatchDateTime());
         
         return replayMatch;
@@ -546,11 +546,11 @@ public class CupBracketManager {
      */
     private Match findMatchWithParent(Long parentMatchId, Long editionId) {
         if (parentMatchId == null || editionId == null) {
-            System.out.println("CupBracketManager: findMatchWithParent - null parameters");
+            Log.info(Log.ENGINE_CUP, "CupBracketManager: findMatchWithParent - null parameters");
             return null;
         }
         
-        System.out.println("CupBracketManager: Searching for next round match with parent ID: " + parentMatchId + ", edition ID: " + editionId);
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: Searching for next round match with parent ID: " + parentMatchId + ", edition ID: " + editionId);
         
         int clubsChecked = 0;
         int matchesChecked = 0;
@@ -577,7 +577,7 @@ public class CupBracketManager {
                     // Check if this match has the parent match
                     if (!isReplayMatch(match) && ((match.getParentMatch1Id() != null && match.getParentMatch1Id().equals(parentMatchId)) ||
                         (match.getParentMatch2Id() != null && match.getParentMatch2Id().equals(parentMatchId)))) {
-                        System.out.println("CupBracketManager: Found next round match in scheduled! " + 
+                        Log.info(Log.ENGINE_CUP, "CupBracketManager: Found next round match in scheduled! " + 
                             (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                             " (ID: " + match.getId() + ", Round: " + match.getRound() + 
                             ", Parent1: " + match.getParentMatch1Id() + ", Parent2: " + match.getParentMatch2Id() + ")");
@@ -601,7 +601,7 @@ public class CupBracketManager {
                     // Check if this match has the parent match
                     if (!isReplayMatch(match) && ((match.getParentMatch1Id() != null && match.getParentMatch1Id().equals(parentMatchId)) ||
                         (match.getParentMatch2Id() != null && match.getParentMatch2Id().equals(parentMatchId)))) {
-                        System.out.println("CupBracketManager: Found next round match in played! " + 
+                        Log.info(Log.ENGINE_CUP, "CupBracketManager: Found next round match in played! " + 
                             (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                             " (ID: " + match.getId() + ", Round: " + match.getRound() + 
                             ", Parent1: " + match.getParentMatch1Id() + ", Parent2: " + match.getParentMatch2Id() + ")");
@@ -611,20 +611,20 @@ public class CupBracketManager {
             }
         }
         
-        System.out.println("CupBracketManager: Searched " + clubsChecked + " clubs, " + matchesChecked + " matches in club lists, not found. Trying getAllMatchesForEdition...");
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: Searched " + clubsChecked + " clubs, " + matchesChecked + " matches in club lists, not found. Trying getAllMatchesForEdition...");
         
         // Also search matches that might not be in clubs yet (future rounds)
         // We need to search all matches for this edition
         List<Match> allEditionMatches = getAllMatchesForEdition(editionId);
-        System.out.println("CupBracketManager: getAllMatchesForEdition returned " + allEditionMatches.size() + " matches");
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: getAllMatchesForEdition returned " + allEditionMatches.size() + " matches");
         
-        System.out.println("CupBracketManager: Searching through " + allEditionMatches.size() + " matches for parent ID: " + parentMatchId);
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: Searching through " + allEditionMatches.size() + " matches for parent ID: " + parentMatchId);
         for (Match match : allEditionMatches) {
             if (match == null) continue;
             
             // Debug: Log all matches with their parent IDs
             if (match.getRound() != null && match.getRound() > 1) {
-                System.out.println("CupBracketManager: Checking match " + match.getBracketPath() + 
+                Log.info(Log.ENGINE_CUP, "CupBracketManager: Checking match " + match.getBracketPath() + 
                     " (Round " + match.getRound() + ", ID: " + match.getId() + 
                     ", Parent1: " + match.getParentMatch1Id() + ", Parent2: " + match.getParentMatch2Id() + 
                     ") against parent ID: " + parentMatchId);
@@ -632,14 +632,14 @@ public class CupBracketManager {
             
             if (!isReplayMatch(match) && ((match.getParentMatch1Id() != null && match.getParentMatch1Id().equals(parentMatchId)) ||
                 (match.getParentMatch2Id() != null && match.getParentMatch2Id().equals(parentMatchId)))) {
-                System.out.println("CupBracketManager: *** FOUND NEXT ROUND MATCH *** " + 
+                Log.info(Log.ENGINE_CUP, "CupBracketManager: *** FOUND NEXT ROUND MATCH *** " + 
                     (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                     " (Round " + match.getRound() + ", ID: " + match.getId() + ")");
                 return match;
             }
         }
         
-        System.out.println("CupBracketManager: WARNING - Could not find next round match for parent ID: " + parentMatchId);
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: WARNING - Could not find next round match for parent ID: " + parentMatchId);
         return null;
     }
     
@@ -676,7 +676,7 @@ public class CupBracketManager {
                         match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH) {
                         matchesWithWrongEdition++;
                         if (matchesWithWrongEdition <= 3) {
-                            System.out.println("CupBracketManager: Found cup match with WRONG edition ID: " + 
+                            Log.info(Log.ENGINE_CUP, "CupBracketManager: Found cup match with WRONG edition ID: " + 
                                 match.getBracketPath() + " (Round " + match.getRound() + 
                                 ", Expected: " + editionId + ", Found: " + match.getCompetitionEditionId() + ")");
                         }
@@ -714,11 +714,11 @@ public class CupBracketManager {
             }
         }
         
-        System.out.println("CupBracketManager: getAllMatchesForEdition - Searched " + clubsSearched + 
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: getAllMatchesForEdition - Searched " + clubsSearched + 
             " clubs, checked " + matchesChecked + " matches, found " + matchesWithWrongEdition + 
             " cup matches with wrong edition ID");
         
-        System.out.println("CupBracketManager: getAllMatchesForEdition found " + matches.size() + 
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: getAllMatchesForEdition found " + matches.size() + 
             " matches for edition " + editionId + " (searched both scheduled and played)");
         
         // Debug: Log breakdown by round
@@ -728,7 +728,7 @@ public class CupBracketManager {
                 matchesByRound.put(m.getRound(), matchesByRound.getOrDefault(m.getRound(), 0) + 1);
             }
         }
-        System.out.println("CupBracketManager: Matches by round: " + matchesByRound);
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: Matches by round: " + matchesByRound);
         
         // Debug: Log a few Round 2+ matches if they exist
         int round2PlusCount = 0;
@@ -736,14 +736,14 @@ public class CupBracketManager {
             if (m.getRound() != null && m.getRound() > 1) {
                 round2PlusCount++;
                 if (round2PlusCount <= 3) {
-                    System.out.println("CupBracketManager: Round " + m.getRound() + " match found: " + 
+                    Log.info(Log.ENGINE_CUP, "CupBracketManager: Round " + m.getRound() + " match found: " + 
                         m.getBracketPath() + " (ID: " + m.getId() + 
                         ", Edition: " + m.getCompetitionEditionId() + 
                         ", Parent1: " + m.getParentMatch1Id() + ", Parent2: " + m.getParentMatch2Id() + ")");
                 }
             }
         }
-        System.out.println("CupBracketManager: Total Round 2+ matches found: " + round2PlusCount);
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: Total Round 2+ matches found: " + round2PlusCount);
         
         return matches;
     }

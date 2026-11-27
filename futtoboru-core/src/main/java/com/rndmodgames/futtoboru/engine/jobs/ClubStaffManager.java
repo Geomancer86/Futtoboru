@@ -3,13 +3,13 @@ package com.rndmodgames.futtoboru.engine.jobs;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Club Staff Manager v1
@@ -102,20 +102,20 @@ public class ClubStaffManager {
         
         try {
             if (club == null) {
-                Gdx.app.log("ClubStaffManager", "getVacantPositions: club is null");
+                Log.info(Log.ENGINE_JOBS, "ClubStaffManager", "getVacantPositions: club is null");
                 return vacant;
             }
             
             // Check all selectable professions (v1.0: Manager, Director, Scout)
             DatabaseLoader dbLoader = DatabaseLoader.getInstance();
             if (dbLoader == null) {
-                Gdx.app.error("ClubStaffManager", "DatabaseLoader.getInstance() returned null");
+                Log.error(Log.ENGINE_JOBS, "ClubStaffManager", "DatabaseLoader.getInstance() returned null");
                 return vacant;
             }
             
             List<Profession> selectableProfessions = dbLoader.getSelectableProfessions();
             if (selectableProfessions == null) {
-                Gdx.app.error("ClubStaffManager", "getSelectableProfessions() returned null");
+                Log.error(Log.ENGINE_JOBS, "ClubStaffManager", "getSelectableProfessions() returned null");
                 return vacant;
             }
             
@@ -134,9 +134,9 @@ public class ClubStaffManager {
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("ClubStaffManager", "ERROR in getVacantPositions() for club: " + 
+            Log.error(Log.ENGINE_JOBS, "ClubStaffManager", "ERROR in getVacantPositions() for club: " + 
                          (club != null ? club.getName() : "null"), e);
-            e.printStackTrace();
+            Log.error(Log.ENGINE_JOBS, e);
         }
         
         return vacant;
@@ -161,7 +161,7 @@ public class ClubStaffManager {
             // Set person as unemployed
             currentStaff.setCurrentClubId(null);
             
-            Gdx.app.log("ClubStaffManager", "Fired " + profession.getName() + 
+            Log.info(Log.ENGINE_JOBS, "ClubStaffManager", "Fired " + profession.getName() + 
                        " from " + club.getName() + ": " + currentStaff.getName());
         }
     }
@@ -187,7 +187,7 @@ public class ClubStaffManager {
             person.setPrimaryProfession(profession);
         }
         
-        Gdx.app.log("ClubStaffManager", "Hired " + person.getName() + 
+        Log.info(Log.ENGINE_JOBS, "ClubStaffManager", "Hired " + person.getName() + 
                    " as " + profession.getName() + " at " + club.getName());
     }
 }

@@ -8,8 +8,8 @@ import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.engine.cup.CupBracketManager;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * The single match-result path (P2-2).
@@ -86,7 +86,7 @@ public class MatchResultRecorder {
             return false;
         }
         if (isLeagueMatch(match) && hasMandatoryDrawBlocker(game())) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "MatchResultRecorder",
+            Log.info(Log.ENGINE_MATCH, "MatchResultRecorder",
                 "Not playing league match " + match.getId() + ": a mandatory draw message is pending");
             return false;
         }
@@ -103,7 +103,7 @@ public class MatchResultRecorder {
             return false;
         }
         if (!simulator.simulateMatch(match)) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_MATCH, "MatchResultRecorder",
+            Log.error(Log.ENGINE_MATCH, "MatchResultRecorder",
                 "Failed to simulate match " + match.getId());
             return false;
         }
@@ -124,7 +124,7 @@ public class MatchResultRecorder {
         Club homeClub = game.getClubById(match.getHomeClubId());
         Club awayClub = game.getClubById(match.getAwayClubId());
         if (homeClub == null || awayClub == null) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_MATCH, "MatchResultRecorder",
+            Log.error(Log.ENGINE_MATCH, "MatchResultRecorder",
                 "Cannot record match " + match.getId() + ": club not found");
             return;
         }
@@ -137,7 +137,7 @@ public class MatchResultRecorder {
         if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH
                 && match.getCompetitionEditionId() != null) {
             Match next = new CupBracketManager(game, gameInstance).advanceWinner(match);
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_CUP, "MatchResultRecorder",
+            Log.info(Log.ENGINE_CUP, "MatchResultRecorder",
                 "Cup match " + match.getBracketPath() + " recorded"
                 + (next != null ? ", winner goes to " + next.getBracketPath() : ""));
         }
@@ -152,7 +152,7 @@ public class MatchResultRecorder {
             }
         }
 
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "MatchResultRecorder",
+        Log.info(Log.ENGINE_MATCH, "MatchResultRecorder",
             "Recorded " + homeClub.getName() + " " + match.getHomeGoals() + " - " + match.getAwayGoals()
             + " " + awayClub.getName());
     }

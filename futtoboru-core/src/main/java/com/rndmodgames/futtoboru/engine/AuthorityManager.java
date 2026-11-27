@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 
 import com.rndmodgames.futtoboru.data.Authority;
@@ -24,6 +23,7 @@ import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Authority Manager v1
@@ -123,7 +123,7 @@ public class AuthorityManager {
     public void checkCompetitionsSchedule() {
 
         //
-        Gdx.app.debug("AuthorityManager", "checkCompetitionsSchedule()");
+        Log.debug(Log.ENGINE_AUTHORITY, "AuthorityManager", "checkCompetitionsSchedule()");
 
         if (currentGame() == null || currentGame.getMainAuthority() == null) {
             return;
@@ -193,8 +193,8 @@ public class AuthorityManager {
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkLeagueCompletion()", e);
-            e.printStackTrace();
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Error in checkLeagueCompletion()", e);
+            Log.error(Log.ENGINE_AUTHORITY, e);
         }
     }
     
@@ -253,7 +253,7 @@ public class AuthorityManager {
      * Complete the league season and trigger awards
      */
     private void completeLeagueSeason(League league, com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager standingsManager) {
-        Gdx.app.log("AuthorityManager", "Season complete for league: " + league.getName());
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Season complete for league: " + league.getName());
         
         List<Club> standings = standingsManager.calculateStandings(league);
         if (standings.isEmpty()) return;
@@ -274,9 +274,9 @@ public class AuthorityManager {
         // Calculate Best Defense
         Club bestDefense = calculateBestDefense(standings);
         
-        Gdx.app.log("AuthorityManager", "CHAMPION: " + champion.getName());
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "CHAMPION: " + champion.getName());
         if (topScorer != null) {
-            Gdx.app.log("AuthorityManager", "TOP SCORER: " + topScorer.getName() + " " + topScorer.getLastname() + " (" + topScorerGoals + " goals)");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "TOP SCORER: " + topScorer.getName() + " " + topScorer.getLastname() + " (" + topScorerGoals + " goals)");
         }
         
         // Update league edition with champions and keep its final table (P2-6)
@@ -290,7 +290,7 @@ public class AuthorityManager {
                 table.add(com.rndmodgames.futtoboru.data.LeagueStandingRow.of(i + 1, standings.get(i)));
             }
             edition.setFinalStandings(table);
-Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + " with champions: " + champion.getName());
+Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + edition.getName() + " with champions: " + champion.getName());
         }
         
         // Season name in the message titles: MessageManager drops a message whose type and title are already in
@@ -363,7 +363,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
             club.setGoalsConceded(0);
             club.setPoints(0);
         }
-        Gdx.app.log("AuthorityManager", "League table reset for the new season: " + league.getName());
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "League table reset for the new season: " + league.getName());
     }
 
     /**
@@ -608,24 +608,24 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
      */
     private void checkAndScheduleLeagueFixtures() {
         try {
-            Gdx.app.log("AuthorityManager", "checkAndScheduleLeagueFixtures() called");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "checkAndScheduleLeagueFixtures() called");
             
             if (mainAuthority == null) {
-                Gdx.app.debug("AuthorityManager", "mainAuthority is null - no leagues to check");
+                Log.debug(Log.ENGINE_AUTHORITY, "AuthorityManager", "mainAuthority is null - no leagues to check");
                 return;
             }
             
             if (mainAuthority.getLeagues() == null) {
-                Gdx.app.debug("AuthorityManager", "mainAuthority.getLeagues() is null - no leagues to check");
+                Log.debug(Log.ENGINE_AUTHORITY, "AuthorityManager", "mainAuthority.getLeagues() is null - no leagues to check");
                 return;
             }
             
             List<League> leagues = mainAuthority.getLeagues();
             
-            Gdx.app.log("AuthorityManager", "Found " + leagues.size() + " leagues in main authority");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Found " + leagues.size() + " leagues in main authority");
             
             if (leagues.isEmpty()) {
-                Gdx.app.debug("AuthorityManager", "No leagues found in main authority");
+                Log.debug(Log.ENGINE_AUTHORITY, "AuthorityManager", "No leagues found in main authority");
                 return;
             }
             
@@ -633,47 +633,47 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
             LocalDateTime seasonStart = getSeasonStartDate();
             LocalDateTime seasonEnd = getSeasonEndDate(seasonStart);
             
-            Gdx.app.log("AuthorityManager", "Season dates: " + seasonStart + " to " + seasonEnd);
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Season dates: " + seasonStart + " to " + seasonEnd);
             
             for (League league : leagues) {
                 if (league == null) {
-                    Gdx.app.error("AuthorityManager", "Found null league in list");
+                    Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Found null league in list");
                     continue;
                 }
                 
-                Gdx.app.log("AuthorityManager", "Checking league: " + league.getName());
+                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Checking league: " + league.getName());
                 
                 if (league.getLeagueClubs() == null) {
-                    Gdx.app.error("AuthorityManager", "League " + league.getName() + " has null leagueClubs list");
+                    Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "League " + league.getName() + " has null leagueClubs list");
                     continue;
                 }
                 
                 if (league.getLeagueClubs().isEmpty()) {
-                    Gdx.app.error("AuthorityManager", "League " + league.getName() + " has no clubs");
+                    Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "League " + league.getName() + " has no clubs");
                     continue;
                 }
                 
-                Gdx.app.log("AuthorityManager", "League " + league.getName() + " has " + league.getLeagueClubs().size() + " clubs");
+                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "League " + league.getName() + " has " + league.getLeagueClubs().size() + " clubs");
                 
                 // Check if fixtures are already scheduled
                 boolean hasFixtures = fixtureGenerator.hasFixturesScheduled(league);
-                Gdx.app.log("AuthorityManager", "League " + league.getName() + " has fixtures scheduled: " + hasFixtures);
+                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "League " + league.getName() + " has fixtures scheduled: " + hasFixtures);
                 
                 if (!hasFixtures) {
-                    Gdx.app.log("AuthorityManager", "Generating fixtures for league: " + league.getName());
+                    Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generating fixtures for league: " + league.getName());
                     
                     // Generate fixtures
                     List<com.rndmodgames.futtoboru.data.Match> fixtures = 
                         fixtureGenerator.generateLeagueFixtures(league, seasonStart, seasonEnd);
                     
-                    Gdx.app.log("AuthorityManager", "Generated " + fixtures.size() + " fixtures for " + league.getName());
+                    Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generated " + fixtures.size() + " fixtures for " + league.getName());
                 } else {
-                    Gdx.app.debug("AuthorityManager", "League " + league.getName() + " already has fixtures scheduled");
+                    Log.debug(Log.ENGINE_AUTHORITY, "AuthorityManager", "League " + league.getName() + " already has fixtures scheduled");
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkAndScheduleLeagueFixtures()", e);
-            e.printStackTrace();
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Error in checkAndScheduleLeagueFixtures()", e);
+            Log.error(Log.ENGINE_AUTHORITY, e);
         }
     }
     
@@ -708,25 +708,25 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
      */
     private void checkAndScheduleCupDraws() {
         try {
-            Gdx.app.log("AuthorityManager", "checkAndScheduleCupDraws() called");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "checkAndScheduleCupDraws() called");
             
             if (currentGame == null) {
-                Gdx.app.debug("AuthorityManager", "currentGame is null - no cups to check");
+                Log.debug(Log.ENGINE_AUTHORITY, "AuthorityManager", "currentGame is null - no cups to check");
                 return;
             }
             
             List<Competition> cups = currentGame.getAllCups();
             if (cups == null || cups.isEmpty()) {
-                Gdx.app.debug("AuthorityManager", "No cups found in current game");
+                Log.debug(Log.ENGINE_AUTHORITY, "AuthorityManager", "No cups found in current game");
                 return;
             }
             
-            Gdx.app.log("AuthorityManager", "Found " + cups.size() + " cups to check");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Found " + cups.size() + " cups to check");
             LocalDateTime currentDate = currentGame.getGameDate();
             
             for (Competition cup : cups) {
                 if (cup == null) {
-                    Gdx.app.error("AuthorityManager", "Found null cup in list");
+                    Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Found null cup in list");
                     continue;
                 }
                 
@@ -735,7 +735,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                     continue;
                 }
                 
-                Gdx.app.log("AuthorityManager", "Checking cup: " + cup.getName());
+                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Checking cup: " + cup.getName());
                 
                 // Get or create current edition
                 CompetitionEdition edition = getCurrentCupEdition(cup, currentDate);
@@ -756,7 +756,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                         if (currentDate.getMonthValue() >= CUP_SEASON_OPENS_MONTH) {
                             edition.setStartDate(currentDate);
                             edition.setEndDate(currentDate.plusMonths(12)); // Allow a full year
-                            Gdx.app.log("AuthorityManager", "Activated upcoming cup edition: " + edition.getName());
+                            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Activated upcoming cup edition: " + edition.getName());
                         } else {
                             continue; // Not yet time to start this cup
                         }
@@ -779,15 +779,15 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                 
                 // Check if cup needs initial draw
                 if (needsCupDraw(edition)) {
-                    Gdx.app.log("AuthorityManager", "Generating cup draw for: " + cup.getName());
+                    Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generating cup draw for: " + cup.getName());
                     generateCupDraw(cup, edition);
                 } else {
-                    Gdx.app.debug("AuthorityManager", "Cup " + cup.getName() + " already has matches scheduled");
+                    Log.debug(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cup " + cup.getName() + " already has matches scheduled");
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkAndScheduleCupDraws()", e);
-            e.printStackTrace();
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Error in checkAndScheduleCupDraws()", e);
+            Log.error(Log.ENGINE_AUTHORITY, e);
         }
     }
     
@@ -849,7 +849,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         }
         cup.getEditions().add(edition);
         
-        Gdx.app.log("AuthorityManager", "Created new cup edition: " + edition.getName() + 
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Created new cup edition: " + edition.getName() + 
             " with " + participantIds.size() + " participants");
         
         return edition;
@@ -906,7 +906,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
      */
     private void generateCupDraw(Competition cup, CompetitionEdition edition) {
         if (edition.getParticipantClubsIds() == null || edition.getParticipantClubsIds().isEmpty()) {
-            Gdx.app.error("AuthorityManager", "Cannot generate cup draw: no participants");
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cannot generate cup draw: no participants");
             return;
         }
         
@@ -928,13 +928,13 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         );
         
         if (allMatches == null || allMatches.isEmpty()) {
-            Gdx.app.error("AuthorityManager", "Cup bracket generation produced no matches");
-            System.out.println("AuthorityManager: ERROR - Bracket generation returned null or empty!");
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cup bracket generation produced no matches");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: ERROR - Bracket generation returned null or empty!");
             return;
         }
         
-        System.out.println("AuthorityManager: *** BRACKET GENERATION COMPLETE ***");
-        System.out.println("AuthorityManager: Total matches generated: " + allMatches.size());
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: *** BRACKET GENERATION COMPLETE ***");
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: Total matches generated: " + allMatches.size());
         
         // Count matches by round
         Map<Integer, Integer> matchesByRound = new HashMap<>();
@@ -943,7 +943,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                 matchesByRound.put(m.getRound(), matchesByRound.getOrDefault(m.getRound(), 0) + 1);
             }
         }
-        System.out.println("AuthorityManager: Matches by round BEFORE adding to clubs: " + matchesByRound);
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: Matches by round BEFORE adding to clubs: " + matchesByRound);
         
         MessageManager messageManager = game.getGameEngine().getMessageManager();
         
@@ -956,18 +956,18 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         int round2PlusCount = 0;
         int nullRoundCount = 0;
         
-        System.out.println("AuthorityManager: Processing " + allMatches.size() + " matches from bracket generator");
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: Processing " + allMatches.size() + " matches from bracket generator");
         
         for (Match match : allMatches) {
             if (match == null) {
-                System.out.println("AuthorityManager: WARNING - Null match in allMatches list!");
+                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: WARNING - Null match in allMatches list!");
                 continue;
             }
             
             // Debug: Log match details
             if (match.getRound() == null) {
                 nullRoundCount++;
-                System.out.println("AuthorityManager: WARNING - Match has null round! ID: " + match.getId() + 
+                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: WARNING - Match has null round! ID: " + match.getId() + 
                     ", BracketPath: " + match.getBracketPath() + ", Edition: " + match.getCompetitionEditionId());
             }
             
@@ -1011,7 +1011,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                 // Future rounds: Add to ALL participating clubs so matches are accessible
                 // When teams are determined, they'll already be in the clubs' lists
                 round2PlusCount++;
-                System.out.println("AuthorityManager: *** ADDING FUTURE ROUND MATCH *** " + match.getBracketPath() + 
+                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: *** ADDING FUTURE ROUND MATCH *** " + match.getBracketPath() + 
                     " (Round " + match.getRound() + ", ID: " + match.getId() + 
                     ", Date: " + match.getMatchDateTime() + ") to all " + edition.getParticipantClubsIds().size() + " participating clubs");
                 
@@ -1036,7 +1036,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                         }
                     }
                 }
-                System.out.println("AuthorityManager: Added match " + match.getBracketPath() + 
+                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: Added match " + match.getBracketPath() + 
                     " (Round " + match.getRound() + ", ID: " + match.getId() + 
                     ", Edition: " + match.getCompetitionEditionId() + 
                     ") to " + addedCount + " clubs");
@@ -1049,34 +1049,34 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                         for (Match m : testClub.getScheduledMatches()) {
                             if (m != null && m.getId() != null && m.getId().equals(match.getId())) {
                                 found = true;
-                                System.out.println("AuthorityManager: VERIFIED - Match " + match.getBracketPath() + 
+                                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: VERIFIED - Match " + match.getBracketPath() + 
                                     " is in club " + testClub.getName() + "'s scheduled matches");
                                 break;
                             }
                         }
                         if (!found) {
-                            System.out.println("AuthorityManager: ERROR - Match " + match.getBracketPath() + 
+                            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: ERROR - Match " + match.getBracketPath() + 
                                 " was NOT found in club " + testClub.getName() + " after adding!");
                         }
                     }
                 }
             } else {
-                System.out.println("AuthorityManager: WARNING - Match with null or invalid round: " + 
+                Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: WARNING - Match with null or invalid round: " + 
                     (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                     ", Round: " + match.getRound());
             }
         }
         
-        System.out.println("AuthorityManager: Processed " + round1Count + " Round 1 matches, " + 
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: Processed " + round1Count + " Round 1 matches, " + 
             round2PlusCount + " Round 2+ matches, " + nullRoundCount + " matches with null round");
         
         if (round2PlusCount == 0 && allMatches.size() > round1Count) {
-            System.out.println("AuthorityManager: CRITICAL ERROR - Expected Round 2+ matches but found none!");
-            System.out.println("AuthorityManager: Total matches: " + allMatches.size() + ", Round 1: " + round1Count);
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: CRITICAL ERROR - Expected Round 2+ matches but found none!");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: Total matches: " + allMatches.size() + ", Round 1: " + round1Count);
             // Debug: List all matches to see what's wrong
             for (Match m : allMatches) {
                 if (m != null) {
-                    System.out.println("  - Match: " + m.getBracketPath() + ", Round: " + m.getRound() + 
+                    Log.info(Log.ENGINE_AUTHORITY, "  - Match: " + m.getBracketPath() + ", Round: " + m.getRound() + 
                         ", Edition: " + m.getCompetitionEditionId());
                 }
             }
@@ -1097,21 +1097,21 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                 }
             }
         }
-        System.out.println("AuthorityManager: FINAL VERIFICATION - Matches by round in clubs: " + finalMatchesByRoundInClubs);
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: FINAL VERIFICATION - Matches by round in clubs: " + finalMatchesByRoundInClubs);
         
         // Create MANDATORY draw message for the user (to reveal the draw)
         Message mandatoryDrawMessage = messageManager.createCupDrawMessage(cup, edition, 1, "First Round");
         if (mandatoryDrawMessage != null) {
             mandatoryDrawMessage.setScheduledDate(currentDate.plusDays(1));
             messageManager.scheduleMessage(mandatoryDrawMessage);
-            Gdx.app.log("AuthorityManager", "Scheduled mandatory cup draw message for: " + cup.getName());
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Scheduled mandatory cup draw message for: " + cup.getName());
         }
         
         // Log summary (already logged above with matchesByRound)
-        Gdx.app.log("AuthorityManager", "Generated COMPLETE cup bracket: " + allMatches.size() + " total matches");
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generated COMPLETE cup bracket: " + allMatches.size() + " total matches");
         // Use the matchesByRound already calculated above
         for (Map.Entry<Integer, Integer> entry : matchesByRound.entrySet()) {
-            Gdx.app.log("AuthorityManager", "  Round " + entry.getKey() + ": " + entry.getValue() + " matches");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "  Round " + entry.getKey() + ": " + entry.getValue() + " matches");
         }
     }
     
@@ -1150,7 +1150,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                     List<Club> winners = getRoundWinners(edition);
                     
                     if (winners.isEmpty()) {
-                        Gdx.app.error("AuthorityManager", "Round complete but no winners found for: " + cup.getName());
+                        Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Round complete but no winners found for: " + cup.getName());
                         continue;
                     }
                     
@@ -1164,8 +1164,8 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkCupRoundProgression()", e);
-            e.printStackTrace();
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Error in checkCupRoundProgression()", e);
+            Log.error(Log.ENGINE_AUTHORITY, e);
         }
     }
     
@@ -1226,7 +1226,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         }
         
         if (saveGame == null || saveGame.getAllClubs() == null) {
-            Gdx.app.error("AuthorityManager", "Cannot get matches for edition: SaveGame is null");
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cannot get matches for edition: SaveGame is null");
             return matches;
         }
         
@@ -1333,7 +1333,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
      */
     private void advanceCupRound(Competition cup, CompetitionEdition edition, List<Club> winners) {
         if (winners.isEmpty()) {
-            Gdx.app.error("AuthorityManager", "Cannot advance round: no winners");
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cannot advance round: no winners");
             return;
         }
         
@@ -1351,7 +1351,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         }
         
         if (winnerIds.isEmpty()) {
-            Gdx.app.error("AuthorityManager", "Cannot advance round: no valid winner IDs");
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cannot advance round: no valid winner IDs");
             return;
         }
         
@@ -1359,7 +1359,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         List<Match> nextRoundMatches = competitionScheduler.competitionDraw(cup, winnerIds);
         
         if (nextRoundMatches == null || nextRoundMatches.isEmpty()) {
-            Gdx.app.error("AuthorityManager", "Next round draw generated no matches");
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Next round draw generated no matches");
             return;
         }
         
@@ -1408,7 +1408,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
             }
         }
         
-        Gdx.app.log("AuthorityManager", "Advanced cup to " + roundName + ": " + 
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Advanced cup to " + roundName + ": " + 
             nextRoundMatches.size() + " matches for " + cup.getName());
     }
     
@@ -1456,20 +1456,20 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
      */
     public void completeCupEdition(Competition cup, CompetitionEdition edition, Club winner, SaveGame saveGame) {
         if (winner == null) {
-            Gdx.app.error("AuthorityManager", "Cannot complete cup: winner is null");
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cannot complete cup: winner is null");
             return;
         }
         
         // Use provided SaveGame or fall back to currentGame
         SaveGame gameToUse = saveGame != null ? saveGame : currentGame();
         if (gameToUse == null) {
-            Gdx.app.error("AuthorityManager", "Cannot complete cup: SaveGame is null");
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cannot complete cup: SaveGame is null");
             return;
         }
         
         // Once only: the bracket path (CupBracketManager) and checkCupRoundProgression can both get here
         if (edition.getChampionsId() != null) {
-            Gdx.app.log("AuthorityManager", "Cup already complete: " + edition.getName());
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cup already complete: " + edition.getName());
             return;
         }
 
@@ -1481,11 +1481,11 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         Club runnerUp = finalMatch != null ? getMatchLoser(finalMatch, winner, gameToUse) : null;
         if (runnerUp != null) {
             edition.setRunnersUpId(runnerUp.getId());
-            Gdx.app.log("AuthorityManager", "Cup runner-up saved: " + runnerUp.getName() + " (ID: " + runnerUp.getId() + ")");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cup runner-up saved: " + runnerUp.getName() + " (ID: " + runnerUp.getId() + ")");
         }
         
         // Log completion details
-        Gdx.app.log("AuthorityManager", "Cup completion saved - Champion ID: " + edition.getChampionsId() + 
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cup completion saved - Champion ID: " + edition.getChampionsId() + 
             ", Runner-up ID: " + edition.getRunnersUpId());
         
         // Create cup completion message
@@ -1495,7 +1495,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
             messageManager.deliverMessage(completionMessage);
         }
         
-        Gdx.app.log("AuthorityManager", "Cup complete: " + cup.getName() + " won by " + winner.getName());
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cup complete: " + cup.getName() + " won by " + winner.getName());
     }
     
     /**
@@ -1617,8 +1617,8 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("AuthorityManager", "Error in checkCupReplays()", e);
-            e.printStackTrace();
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Error in checkCupReplays()", e);
+            Log.error(Log.ENGINE_AUTHORITY, e);
         }
     }
     
@@ -1709,7 +1709,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
             }
         }
         
-        Gdx.app.log("AuthorityManager", "Scheduled cup replay: " + 
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Scheduled cup replay: " + 
             (homeClub != null ? homeClub.getName() : "Unknown") + " v " + 
             (awayClub != null ? awayClub.getName() : "Unknown") + 
             " on " + replay.getMatchDateTime());
@@ -1790,7 +1790,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         if (currentDate == null) return;
         
         if (needsNextSeasonGeneration(league, currentDate)) {
-            Gdx.app.log("AuthorityManager", "Generating next season for " + league.getName() + " after completion");
+            Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generating next season for " + league.getName() + " after completion");
             generateNextSeason(league, currentDate);
         }
     }
@@ -1809,7 +1809,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
     }
 
     private void generateNextSeason(League league, LocalDateTime currentDate) {
-        Gdx.app.log("AuthorityManager", "Generating next season for league: " + league.getName());
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generating next season for league: " + league.getName());
         
         CompetitionEdition nextEdition = new CompetitionEdition();
         nextEdition.setId(ids().nextId());
@@ -1833,7 +1833,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         // This ensures the league can be played immediately
         List<com.rndmodgames.futtoboru.data.Match> fixtures = 
             fixtureGenerator.generateLeagueFixtures(league, nextEdition.getStartDate(), nextEdition.getEndDate());
-        Gdx.app.log("AuthorityManager", "Generated " + fixtures.size() + " fixtures for new season: " + nextEdition.getName());
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generated " + fixtures.size() + " fixtures for new season: " + nextEdition.getName());
         
         // The league table is reset when the previous season completes (completeLeagueSeason, P2-6), not here:
         // this edition can be generated while the previous season is still being played.
@@ -1873,7 +1873,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
     }
 
     private void generateNextCupStaging(Competition cup, LocalDateTime currentDate) {
-        Gdx.app.log("AuthorityManager", "Generating next season staging for cup: " + cup.getName());
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generating next season staging for cup: " + cup.getName());
         
         CompetitionEdition nextEdition = new CompetitionEdition();
         nextEdition.setId(ids().nextId());
@@ -1901,6 +1901,6 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         // CRITICAL: Generate cup draw for the new staging
         // This ensures the cup can be played immediately
         generateCupDraw(cup, nextEdition);
-        Gdx.app.log("AuthorityManager", "Generated cup draw for new staging: " + nextEdition.getName());
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generated cup draw for new staging: " + nextEdition.getName());
     }
 }

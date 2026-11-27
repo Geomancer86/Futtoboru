@@ -12,6 +12,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Scripts Manager v1
@@ -50,7 +51,7 @@ public class ScriptsManager {
      */
     public void checkGameScripts() {
         
-        System.out.println("CHECKING GAME SCRIPTS! " + gameInstance.getCurrentGame().getGameScripts().size());
+        Log.info(Log.ENGINE_SCRIPTS, "CHECKING GAME SCRIPTS! " + gameInstance.getCurrentGame().getGameScripts().size());
         
         // keep track for easier access
         this.currentGame = gameInstance.getCurrentGame();
@@ -69,7 +70,7 @@ public class ScriptsManager {
                 if (script.getExecutionTime().isBefore(currentGame.getGameDate())
                         || script.getExecutionTime().isEqual(currentGame.getGameDate())) {
                     
-                    System.out.println("EXECUTING BASIC SCRIPT: " + script.getName());
+                    Log.info(Log.ENGINE_SCRIPTS, "EXECUTING BASIC SCRIPT: " + script.getName());
                     
                     switch (script.getScriptType()) {
                     case BasicScript.LEAGUE_CREATION_SCRIPT:
@@ -81,7 +82,7 @@ public class ScriptsManager {
                         createCup(script);
                         break;
                     default:
-                        System.out.println("SCRIPT TYPE NOT IMPLEMENTED, IGNORING!");
+                        Log.info(Log.ENGINE_SCRIPTS, "SCRIPT TYPE NOT IMPLEMENTED, IGNORING!");
                         break;
                     }
                 }
@@ -109,31 +110,31 @@ public class ScriptsManager {
     @SuppressWarnings("unchecked")
     public void createLeague(BasicScript script) {
         
-        System.out.println("========================================");
-        System.out.println("EXECUTING LEAGUE CREATION SCRIPT!");
-        System.out.println("========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "EXECUTING LEAGUE CREATION SCRIPT!");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
         
         // Verify SaveGame is available
         if (currentGame == null) {
-            System.out.println("ERROR: currentGame is null! Cannot create league.");
-            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "currentGame is null in createLeague()");
+            Log.error(Log.ENGINE_SCRIPTS, "currentGame is null! Cannot create league.");
+            Log.error(Log.ENGINE_SCRIPTS, "ScriptsManager", "currentGame is null in createLeague()");
             return;
         }
         
         // Verify mainAuthority exists
         if (currentGame.getMainAuthority() == null) {
-            System.out.println("ERROR: mainAuthority is null! Cannot add league.");
-            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "mainAuthority is null in createLeague()");
+            Log.error(Log.ENGINE_SCRIPTS, "mainAuthority is null! Cannot add league.");
+            Log.error(Log.ENGINE_SCRIPTS, "ScriptsManager", "mainAuthority is null in createLeague()");
             return;
         }
         
         // Initialize leagues list if null
         if (currentGame.getMainAuthority().getLeagues() == null) {
-            System.out.println("WARNING: mainAuthority.getLeagues() is null, initializing...");
+            Log.warn(Log.ENGINE_SCRIPTS, "mainAuthority.getLeagues() is null, initializing...");
             currentGame.getMainAuthority().setLeagues(new java.util.ArrayList<>());
         }
         
-        System.out.println("Current leagues count before creation: " + currentGame.getMainAuthority().getLeagues().size());
+        Log.info(Log.ENGINE_SCRIPTS, "Current leagues count before creation: " + currentGame.getMainAuthority().getLeagues().size());
         
         //
         League league = new League();
@@ -141,24 +142,24 @@ public class ScriptsManager {
         // Get league name
         String leagueName = (String) script.getScriptValues().get(ScriptsLoader.LEAGUE_NAME);
         if (leagueName == null) {
-            System.out.println("ERROR: League name is null in script!");
+            Log.error(Log.ENGINE_SCRIPTS, "League name is null in script!");
             return;
         }
         league.setName(leagueName);
-        System.out.println("Creating league: " + leagueName);
+        Log.info(Log.ENGINE_SCRIPTS, "Creating league: " + leagueName);
         
         // Get league country
         Long countryId = (Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_COUNTRY);
         if (countryId == null) {
-            System.out.println("ERROR: League country ID is null in script!");
+            Log.error(Log.ENGINE_SCRIPTS, "League country ID is null in script!");
             return;
         }
         league.setCountry(DatabaseLoader.getCountryById(countryId));
         if (league.getCountry() == null) {
-            System.out.println("ERROR: Country with ID " + countryId + " not found!");
+            Log.error(Log.ENGINE_SCRIPTS, "Country with ID " + countryId + " not found!");
             return;
         }
-        System.out.println("League country: " + league.getCountry().getCommonName());
+        Log.info(Log.ENGINE_SCRIPTS, "League country: " + league.getCountry().getCommonName());
         
         /**
          * Iterate Teams and add them to the League
@@ -171,17 +172,17 @@ public class ScriptsManager {
         Array<Long> clubIds = (Array<Long>) script.getScriptValues().get(ScriptsLoader.LEAGUE_FOUNDING_TEAMS);
         
         if (clubIds == null || clubIds.size == 0) {
-            System.out.println("ERROR: No club IDs found in script!");
+            Log.error(Log.ENGINE_SCRIPTS, "No club IDs found in script!");
             return;
         }
         
-        System.out.println("Found " + clubIds.size + " club IDs in script: " + clubIds.toString());
+        Log.info(Log.ENGINE_SCRIPTS, "Found " + clubIds.size + " club IDs in script: " + clubIds.toString());
         
         // Use a Set to detect duplicates in the script itself
         java.util.Set<Long> uniqueIdsInScript = new java.util.HashSet<>();
         for (Long id : clubIds) {
             if (!uniqueIdsInScript.add(id)) {
-                System.out.println("CRITICAL WARNING: Duplicate club ID " + id + " found in script!");
+                Log.info(Log.ENGINE_SCRIPTS, "CRITICAL WARNING: Duplicate club ID " + id + " found in script!");
             }
         }
         
@@ -189,7 +190,7 @@ public class ScriptsManager {
         int clubsAdded = 0;
         for (Long clubId : clubIds) {
             if (clubId == null) {
-                System.out.println("WARNING: Null club ID in list, skipping");
+                Log.warn(Log.ENGINE_SCRIPTS, "Null club ID in list, skipping");
                 continue;
             }
             
@@ -202,12 +203,12 @@ public class ScriptsManager {
                 
                 if (club != null) {
                     // Add to SaveGame so fixture generator can find it
-                    System.out.println("ScriptsManager: Adding club " + club.getName() + " (ID: " + clubId + ") to SaveGame from DatabaseLoader");
+                    Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager: Adding club " + club.getName() + " (ID: " + clubId + ") to SaveGame from DatabaseLoader");
                     currentGame.getAllClubs().add(club);
                 } else {
                     String errorMsg = "CRITICAL ERROR: Club ID " + clubId + " not found in DatabaseLoader or SaveGame! The league MUST have all historical clubs.";
-                    System.out.println(errorMsg);
-                    com.badlogic.gdx.Gdx.app.error("ScriptsManager", errorMsg);
+                    Log.info(Log.ENGINE_SCRIPTS, errorMsg);
+                    Log.error(Log.ENGINE_SCRIPTS, "ScriptsManager", errorMsg);
                     throw new RuntimeException(errorMsg);
                 }
             }
@@ -215,8 +216,8 @@ public class ScriptsManager {
             // Final sanity check: club MUST have players
             if (club.getPlayers() == null || club.getPlayers().isEmpty()) {
                 String errorMsg = "CRITICAL ERROR: Club " + club.getName() + " (ID: " + clubId + ") has NO PLAYERS loaded. Cannot generate league matches.";
-                System.out.println(errorMsg);
-                com.badlogic.gdx.Gdx.app.error("ScriptsManager", errorMsg);
+                Log.info(Log.ENGINE_SCRIPTS, errorMsg);
+                Log.error(Log.ENGINE_SCRIPTS, "ScriptsManager", errorMsg);
                 throw new RuntimeException(errorMsg);
             }
             
@@ -224,21 +225,21 @@ public class ScriptsManager {
             if (!league.getLeagueClubs().contains(club)) {
                 league.getLeagueClubs().add(club);
                 clubsAdded++;
-                System.out.println("ScriptsManager: Successfully added club " + club.getName() + " (ID: " + clubId + ") to league " + league.getName());
+                Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager: Successfully added club " + club.getName() + " (ID: " + clubId + ") to league " + league.getName());
             } else {
-                System.out.println("WARNING: Club " + club.getName() + " (ID: " + clubId + ") was already in the league list. Skipping duplicate.");
+                Log.warn(Log.ENGINE_SCRIPTS, "Club " + club.getName() + " (ID: " + clubId + ") was already in the league list. Skipping duplicate.");
             }
         }
         
-        System.out.println("Total unique clubs added to league: " + clubsAdded + " (Expected: " + clubIds.size + ")");
+        Log.info(Log.ENGINE_SCRIPTS, "Total unique clubs added to league: " + clubsAdded + " (Expected: " + clubIds.size + ")");
         
         if (clubsAdded != clubIds.size) {
             String errorMsg = "CRITICAL ERROR: Expected " + clubIds.size + " unique clubs in league, but only " + clubsAdded + " were added.";
-            System.out.println(errorMsg);
+            Log.info(Log.ENGINE_SCRIPTS, errorMsg);
         }
         
         if (league.getLeagueClubs().isEmpty()) {
-            System.out.println("ERROR: No clubs were added to league! Cannot create empty league.");
+            Log.error(Log.ENGINE_SCRIPTS, "No clubs were added to league! Cannot create empty league.");
             return;
         }
         
@@ -249,13 +250,13 @@ public class ScriptsManager {
         java.time.LocalDateTime startDate = currentGame.getGameStartDate();
         if (startDate != null && startDate.getYear() == 1888) {
             rules = com.rndmodgames.futtoboru.data.CompetitionRules.createHistoricalRules();
-            System.out.println("Assigned HISTORICAL competition rules to league (1888-89)");
+            Log.info(Log.ENGINE_SCRIPTS, "Assigned HISTORICAL competition rules to league (1888-89)");
         } else {
             rules = com.rndmodgames.futtoboru.data.CompetitionRules.createDefaultRules();
-            System.out.println("Assigned DEFAULT competition rules to league");
+            Log.info(Log.ENGINE_SCRIPTS, "Assigned DEFAULT competition rules to league");
         }
         league.setRules(rules);
-        System.out.println("Assigned competition rules to league (points: " + rules.getPointsForWin() + 
+        Log.info(Log.ENGINE_SCRIPTS, "Assigned competition rules to league (points: " + rules.getPointsForWin() + 
                           "-" + rules.getPointsForDraw() + "-" + rules.getPointsForLoss() + ")");
         
         // Set league ID before adding to game (needed for draw message actionData)
@@ -289,7 +290,7 @@ public class ScriptsManager {
         }
         for (Club club : league.getLeagueClubs()) {
             if (currentGame.getClubById(club.getId()) == null) {
-                System.out.println("ScriptsManager: Adding missing league club " + club.getName() + " (ID: " + club.getId() + ") to SaveGame");
+                Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager: Adding missing league club " + club.getName() + " (ID: " + club.getId() + ") to SaveGame");
                 currentGame.getAllClubs().add(club);
             }
         }
@@ -319,14 +320,14 @@ public class ScriptsManager {
             leagueCompetition.getEditions().add(edition);
         }
         
-        System.out.println("Created first edition for league: " + edition.getName());
+        Log.info(Log.ENGINE_SCRIPTS, "Created first edition for league: " + edition.getName());
         
-        System.out.println("========================================");
-        System.out.println("LEAGUE CREATION SUCCESSFUL!");
-        System.out.println("League Name: " + league.getName());
-        System.out.println("League Clubs: " + league.getLeagueClubs().size());
-        System.out.println("Total Leagues in SaveGame: " + currentGame.getMainAuthority().getLeagues().size());
-        System.out.println("========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "LEAGUE CREATION SUCCESSFUL!");
+        Log.info(Log.ENGINE_SCRIPTS, "League Name: " + league.getName());
+        Log.info(Log.ENGINE_SCRIPTS, "League Clubs: " + league.getLeagueClubs().size());
+        Log.info(Log.ENGINE_SCRIPTS, "Total Leagues in SaveGame: " + currentGame.getMainAuthority().getLeagues().size());
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
 
         // Mark as executed to avoid running more than once
         script.setIsExecuted(true);
@@ -335,47 +336,47 @@ public class ScriptsManager {
          * STEP 2: Generate fixtures immediately when league is created
          * This ensures fixtures are ready right away, not waiting for daily check
          */
-        System.out.println("========================================");
-        System.out.println("STEP 2: GENERATING FIXTURES");
-        System.out.println("========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "STEP 2: GENERATING FIXTURES");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
         
         java.util.List<com.rndmodgames.futtoboru.data.Match> fixtures = null;
         try {
-            com.badlogic.gdx.Gdx.app.log("ScriptsManager", "Generating fixtures for newly created league: " + league.getName());
-            System.out.println("ScriptsManager: Generating fixtures for league: " + league.getName());
+            Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager", "Generating fixtures for newly created league: " + league.getName());
+            Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager: Generating fixtures for league: " + league.getName());
             
             // Get season dates (use game start date or current date)
             java.time.LocalDateTime seasonStart = currentGame.getGameStartDate();
             if (seasonStart == null) {
                 seasonStart = currentGame.getGameDate();
-                System.out.println("WARNING: gameStartDate is null, using current date: " + seasonStart);
+                Log.warn(Log.ENGINE_SCRIPTS, "gameStartDate is null, using current date: " + seasonStart);
             }
-            System.out.println("Season start date: " + seasonStart);
+            Log.info(Log.ENGINE_SCRIPTS, "Season start date: " + seasonStart);
             
             // Season typically runs September to May (9 months)
             // Extending to 10 months to ensure all 22 matches fit before awards in June
             java.time.LocalDateTime seasonEnd = seasonStart.plusMonths(10);
-            System.out.println("Season end date: " + seasonEnd);
+            Log.info(Log.ENGINE_SCRIPTS, "Season end date: " + seasonEnd);
             
             // Generate fixtures
-            System.out.println("Creating LeagueFixtureGenerator...");
+            Log.info(Log.ENGINE_SCRIPTS, "Creating LeagueFixtureGenerator...");
             com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator fixtureGenerator = 
                 new com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator(gameInstance);
             
-            System.out.println("Calling generateLeagueFixtures()...");
+            Log.info(Log.ENGINE_SCRIPTS, "Calling generateLeagueFixtures()...");
             fixtures = fixtureGenerator.generateLeagueFixtures(league, seasonStart, seasonEnd);
             
-            System.out.println("========================================");
-            System.out.println("FIXTURE GENERATION RESULT:");
-            System.out.println("Generated " + (fixtures != null ? fixtures.size() : 0) + " fixtures for league " + league.getName());
-            System.out.println("========================================");
+            Log.info(Log.ENGINE_SCRIPTS, "========================================");
+            Log.info(Log.ENGINE_SCRIPTS, "FIXTURE GENERATION RESULT:");
+            Log.info(Log.ENGINE_SCRIPTS, "Generated " + (fixtures != null ? fixtures.size() : 0) + " fixtures for league " + league.getName());
+            Log.info(Log.ENGINE_SCRIPTS, "========================================");
             
             if (fixtures == null) {
-                System.out.println("ERROR: fixtures list is NULL!");
+                Log.error(Log.ENGINE_SCRIPTS, "fixtures list is NULL!");
             } else if (fixtures.isEmpty()) {
-                System.out.println("ERROR: fixtures list is EMPTY! No matches were generated.");
+                Log.error(Log.ENGINE_SCRIPTS, "fixtures list is EMPTY! No matches were generated.");
             } else {
-                System.out.println("SUCCESS: " + fixtures.size() + " fixtures generated");
+                Log.info(Log.ENGINE_SCRIPTS, "SUCCESS: " + fixtures.size() + " fixtures generated");
                 // Verify matches were added to clubs
                 int totalMatchesInClubs = 0;
                 for (com.rndmodgames.futtoboru.data.Club club : league.getLeagueClubs()) {
@@ -383,37 +384,37 @@ public class ScriptsManager {
                         totalMatchesInClubs += club.getScheduledMatches().size();
                     }
                 }
-                System.out.println("Total match references in clubs' scheduledMatches: " + totalMatchesInClubs + " (expected: " + (fixtures.size() * 2) + ")");
+                Log.info(Log.ENGINE_SCRIPTS, "Total match references in clubs' scheduledMatches: " + totalMatchesInClubs + " (expected: " + (fixtures.size() * 2) + ")");
             }
             
-            com.badlogic.gdx.Gdx.app.log("ScriptsManager", "Successfully generated " + fixtures.size() + " fixtures for league " + league.getName());
+            Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager", "Successfully generated " + fixtures.size() + " fixtures for league " + league.getName());
             
         } catch (Exception e) {
-            System.out.println("========================================");
-            System.out.println("ERROR GENERATING FIXTURES!");
-            System.out.println("Exception: " + e.getMessage());
-            System.out.println("========================================");
-            e.printStackTrace();
-            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "Failed to generate fixtures for league " + league.getName(), e);
+            Log.info(Log.ENGINE_SCRIPTS, "========================================");
+            Log.info(Log.ENGINE_SCRIPTS, "ERROR GENERATING FIXTURES!");
+            Log.info(Log.ENGINE_SCRIPTS, "Exception: " + e.getMessage());
+            Log.info(Log.ENGINE_SCRIPTS, "========================================");
+            Log.error(Log.ENGINE_SCRIPTS, e);
+            Log.error(Log.ENGINE_SCRIPTS, "ScriptsManager", "Failed to generate fixtures for league " + league.getName(), e);
         }
         
         /**
          * STEP 3: Schedule league creation announcement message and draw message
          */
-        System.out.println("========================================");
-        System.out.println("STEP 3: CREATING MESSAGES");
-        System.out.println("========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "STEP 3: CREATING MESSAGES");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
         
         try {
-            System.out.println("ScriptsManager: Attempting to create messages for league: " + league.getName());
+            Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager: Attempting to create messages for league: " + league.getName());
             
             if (gameInstance == null) {
-                System.out.println("ERROR: gameInstance is null!");
+                Log.error(Log.ENGINE_SCRIPTS, "gameInstance is null!");
                 return;
             }
             
             if (gameInstance.getGameEngine() == null) {
-                System.out.println("ERROR: gameEngine is null!");
+                Log.error(Log.ENGINE_SCRIPTS, "gameEngine is null!");
                 return;
             }
             
@@ -421,11 +422,11 @@ public class ScriptsManager {
                 gameInstance.getGameEngine().getMessageManager();
             
             if (messageManager == null) {
-                System.out.println("ERROR: messageManager is null!");
+                Log.error(Log.ENGINE_SCRIPTS, "messageManager is null!");
                 return;
             }
             
-            System.out.println("ScriptsManager: MessageManager found, creating messages...");
+            Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager: MessageManager found, creating messages...");
             
             // Create league creation message
                     com.rndmodgames.futtoboru.data.Message leagueMessage = 
@@ -440,12 +441,12 @@ public class ScriptsManager {
                     // Also deliver immediately to ensure it appears
                     messageManager.deliverMessage(leagueMessage);
                     
-                    System.out.println("Created and delivered league creation message for " + leagueCreationDate);
-                    System.out.println("Message ID: " + leagueMessage.getId() + ", Title: " + leagueMessage.getTitle());
+                    Log.info(Log.ENGINE_SCRIPTS, "Created and delivered league creation message for " + leagueCreationDate);
+                    Log.info(Log.ENGINE_SCRIPTS, "Message ID: " + leagueMessage.getId() + ", Title: " + leagueMessage.getTitle());
                     
                     // Verify message was added
                     int messageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
-                    System.out.println("Total messages in SaveGame after delivery: " + messageCount);
+                    Log.info(Log.ENGINE_SCRIPTS, "Total messages in SaveGame after delivery: " + messageCount);
                     
                     // Send welcome message to each club in the league
                     java.time.LocalDateTime seasonStart = currentGame.getGameStartDate();
@@ -477,41 +478,41 @@ public class ScriptsManager {
                                 welcomeMessage.setScheduledDate(leagueCreationDate);
                                 messageManager.scheduleMessage(welcomeMessage);
                                 messageManager.deliverMessage(welcomeMessage);
-                                System.out.println("Created and delivered league welcome message for player's club: " + playerClub.getName());
-                                System.out.println("Welcome message ID: " + welcomeMessage.getId());
+                                Log.info(Log.ENGINE_SCRIPTS, "Created and delivered league welcome message for player's club: " + playerClub.getName());
+                                Log.info(Log.ENGINE_SCRIPTS, "Welcome message ID: " + welcomeMessage.getId());
                             }
                         } else {
-                            System.out.println("Player's club " + playerClub.getName() + " is not in league " + league.getName() + ", skipping welcome message");
+                            Log.info(Log.ENGINE_SCRIPTS, "Player's club " + playerClub.getName() + " is not in league " + league.getName() + ", skipping welcome message");
                         }
                     } else {
-                        System.out.println("Player has no club or league has no clubs, skipping league welcome messages");
+                        Log.info(Log.ENGINE_SCRIPTS, "Player has no club or league has no clubs, skipping league welcome messages");
                     }
                     
                     // Verify all messages were added
                     int finalMessageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
-                    System.out.println("Total messages after all deliveries: " + finalMessageCount);
+                    Log.info(Log.ENGINE_SCRIPTS, "Total messages after all deliveries: " + finalMessageCount);
                     
                     // STEP 3.1: Create mandatory draw message (1 day after league creation)
                     // This message blocks time advancement until the draw is viewed
-                    System.out.println("STEP 3.1: Creating draw message...");
-                    System.out.println("Fixtures status: " + (fixtures != null ? "NOT NULL" : "NULL") + 
+                    Log.info(Log.ENGINE_SCRIPTS, "STEP 3.1: Creating draw message...");
+                    Log.info(Log.ENGINE_SCRIPTS, "Fixtures status: " + (fixtures != null ? "NOT NULL" : "NULL") + 
                                      ", Size: " + (fixtures != null ? fixtures.size() : 0));
                     
                     if (fixtures != null && fixtures.size() > 0) {
-                        System.out.println("Calling createLeagueDrawMessage()...");
+                        Log.info(Log.ENGINE_SCRIPTS, "Calling createLeagueDrawMessage()...");
                         com.rndmodgames.futtoboru.data.Message drawMessage = 
                             messageManager.createLeagueDrawMessage(league);
                         
                         if (drawMessage != null) {
-                            System.out.println("Draw message created successfully!");
+                            Log.info(Log.ENGINE_SCRIPTS, "Draw message created successfully!");
                             // CRITICAL: Schedule draw message for CURRENT date, not tomorrow
                             // Fixtures are ready NOW, so the draw message should be available immediately
                             // This ensures the message appears in inbox and the button shows correctly
                             java.time.LocalDateTime drawDate = currentGame.getGameDate();
-                            System.out.println("Setting scheduled date to: " + drawDate);
+                            Log.info(Log.ENGINE_SCRIPTS, "Setting scheduled date to: " + drawDate);
                             drawMessage.setScheduledDate(drawDate);
                             
-                            System.out.println("Scheduling message...");
+                            Log.info(Log.ENGINE_SCRIPTS, "Scheduling message...");
                             messageManager.scheduleMessage(drawMessage);
                             
                             // CRITICAL: Deliver the draw message immediately since fixtures are ready
@@ -520,17 +521,17 @@ public class ScriptsManager {
                             
                             // Verify message was scheduled
                             int scheduledCount = (currentGame.getScheduledMessages() != null) ? currentGame.getScheduledMessages().size() : 0;
-                            System.out.println("Total scheduled messages after draw message: " + scheduledCount);
+                            Log.info(Log.ENGINE_SCRIPTS, "Total scheduled messages after draw message: " + scheduledCount);
                             
-                            System.out.println("========================================");
-                            System.out.println("MANDATORY DRAW MESSAGE CREATED!");
-                            System.out.println("Draw message scheduled for: " + drawDate);
-                            System.out.println("Draw message ID: " + drawMessage.getId());
-                            System.out.println("Is Mandatory: " + drawMessage.getIsMandatory());
-                            System.out.println("Message Type: " + drawMessage.getMessageType());
-                            System.out.println("Action Screen: " + drawMessage.getActionScreen());
-                            System.out.println("Action Data (League ID): " + drawMessage.getActionData());
-                            System.out.println("========================================");
+                            Log.info(Log.ENGINE_SCRIPTS, "========================================");
+                            Log.info(Log.ENGINE_SCRIPTS, "MANDATORY DRAW MESSAGE CREATED!");
+                            Log.info(Log.ENGINE_SCRIPTS, "Draw message scheduled for: " + drawDate);
+                            Log.info(Log.ENGINE_SCRIPTS, "Draw message ID: " + drawMessage.getId());
+                            Log.info(Log.ENGINE_SCRIPTS, "Is Mandatory: " + drawMessage.getIsMandatory());
+                            Log.info(Log.ENGINE_SCRIPTS, "Message Type: " + drawMessage.getMessageType());
+                            Log.info(Log.ENGINE_SCRIPTS, "Action Screen: " + drawMessage.getActionScreen());
+                            Log.info(Log.ENGINE_SCRIPTS, "Action Data (League ID): " + drawMessage.getActionData());
+                            Log.info(Log.ENGINE_SCRIPTS, "========================================");
                             
                             // Also create a non-mandatory fixture release message for reference
                             com.rndmodgames.futtoboru.data.Message fixtureMessage = 
@@ -538,26 +539,26 @@ public class ScriptsManager {
                             if (fixtureMessage != null) {
                                 fixtureMessage.setScheduledDate(drawDate);
                                 messageManager.scheduleMessage(fixtureMessage);
-                                System.out.println("Scheduled fixture release message for " + drawDate);
+                                Log.info(Log.ENGINE_SCRIPTS, "Scheduled fixture release message for " + drawDate);
                             }
                         } else {
-                            System.out.println("========================================");
-                            System.out.println("ERROR: createLeagueDrawMessage returned null!");
-                            System.out.println("========================================");
+                            Log.info(Log.ENGINE_SCRIPTS, "========================================");
+                            Log.error(Log.ENGINE_SCRIPTS, "createLeagueDrawMessage returned null!");
+                            Log.info(Log.ENGINE_SCRIPTS, "========================================");
                         }
                     } else {
-                        System.out.println("========================================");
-                        System.out.println("WARNING: No fixtures generated, skipping draw message");
-                        System.out.println("Fixtures is null: " + (fixtures == null));
+                        Log.info(Log.ENGINE_SCRIPTS, "========================================");
+                        Log.warn(Log.ENGINE_SCRIPTS, "No fixtures generated, skipping draw message");
+                        Log.info(Log.ENGINE_SCRIPTS, "Fixtures is null: " + (fixtures == null));
                         if (fixtures != null) {
-                            System.out.println("Fixtures size: " + fixtures.size());
+                            Log.info(Log.ENGINE_SCRIPTS, "Fixtures size: " + fixtures.size());
                         }
-                        System.out.println("========================================");
+                        Log.info(Log.ENGINE_SCRIPTS, "========================================");
                     }
         } catch (Exception e) {
-            System.out.println("ERROR scheduling league messages: " + e.getMessage());
-            e.printStackTrace();
-            com.badlogic.gdx.Gdx.app.error("ScriptsManager", "Error creating messages", e);
+            Log.info(Log.ENGINE_SCRIPTS, "ERROR scheduling league messages: " + e.getMessage());
+            Log.error(Log.ENGINE_SCRIPTS, e);
+            Log.error(Log.ENGINE_SCRIPTS, "ScriptsManager", "Error creating messages", e);
         }
     }
 
@@ -566,19 +567,19 @@ public class ScriptsManager {
      */
     @SuppressWarnings("unchecked")
     public void createCup(BasicScript script) {
-        System.out.println("========================================");
-        System.out.println("EXECUTING CUP CREATION SCRIPT!");
-        System.out.println("========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "EXECUTING CUP CREATION SCRIPT!");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
         
         if (currentGame == null) {
-            System.out.println("ERROR: currentGame is null! Cannot create cup.");
+            Log.error(Log.ENGINE_SCRIPTS, "currentGame is null! Cannot create cup.");
             return;
         }
         
         // Get cup name
         String cupName = (String) script.getScriptValues().get(ScriptsLoader.CUP_NAME);
         if (cupName == null) {
-            System.out.println("ERROR: Cup name is null in script!");
+            Log.error(Log.ENGINE_SCRIPTS, "Cup name is null in script!");
             return;
         }
         
@@ -597,13 +598,13 @@ public class ScriptsManager {
             cup.setName(cupName);
             cup.setCompetitionType(com.rndmodgames.futtoboru.data.Competition.COMPETITION_CUP);
             currentGame.getAllCups().add(cup);
-            System.out.println("Created new competition object for: " + cupName);
+            Log.info(Log.ENGINE_SCRIPTS, "Created new competition object for: " + cupName);
         }
         
         // Get participants
         Array<Long> participantIds = (Array<Long>) script.getScriptValues().get(ScriptsLoader.CUP_PARTICIPANTS);
         if (participantIds == null || participantIds.size == 0) {
-            System.out.println("ERROR: No participants found for cup script!");
+            Log.error(Log.ENGINE_SCRIPTS, "No participants found for cup script!");
             return;
         }
         
@@ -627,7 +628,7 @@ public class ScriptsManager {
             if (currentGame.getClubById(id) == null) {
                 Club club = DatabaseLoader.getClubById(id);
                 if (club != null) {
-                    System.out.println("ScriptsManager: Adding missing cup club " + club.getName() + " (ID: " + id + ") to SaveGame");
+                    Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager: Adding missing cup club " + club.getName() + " (ID: " + id + ") to SaveGame");
                     currentGame.getAllClubs().add(club);
                 }
             }
@@ -635,7 +636,7 @@ public class ScriptsManager {
         edition.setParticipantClubs(participantIds.size);
         cup.getEditions().add(edition);
         
-        System.out.println("Created cup edition: " + edition.getName() + " with " + participantIds.size + " teams");
+        Log.info(Log.ENGINE_SCRIPTS, "Created cup edition: " + edition.getName() + " with " + participantIds.size + " teams");
         
         // Deliver Message (Informing User)
         if (gameInstance != null && gameInstance.getGameEngine() != null) {
@@ -659,14 +660,14 @@ public class ScriptsManager {
                 if (drawMessage != null) {
                     drawMessage.setScheduledDate(gameDate); 
                     messageManager.deliverMessage(drawMessage);
-                    System.out.println("Scheduled cup draw message for " + cupName);
+                    Log.info(Log.ENGINE_SCRIPTS, "Scheduled cup draw message for " + cupName);
                 }
             }
         }
         
         script.setIsExecuted(true);
-        System.out.println("CUP CREATION SUCCESSFUL!");
-        System.out.println("========================================");
+        Log.info(Log.ENGINE_SCRIPTS, "CUP CREATION SUCCESSFUL!");
+        Log.info(Log.ENGINE_SCRIPTS, "========================================");
     }
 
     /**
