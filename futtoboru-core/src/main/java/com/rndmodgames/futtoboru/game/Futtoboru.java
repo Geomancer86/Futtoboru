@@ -157,6 +157,7 @@ public class Futtoboru extends Game {
         if (com.badlogic.gdx.Gdx.gl != null) {
             VisUI.load(Gdx.files.internal("skin/tixel.json"));
         }
+        com.rndmodgames.futtoboru.ui.UiTheme.loadDefault(); // U-01a: theme tokens (no GL needed); fails fast if ui/theme.json is invalid
         
         // 
         manager.finishLoading();
