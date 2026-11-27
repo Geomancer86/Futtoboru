@@ -67,6 +67,11 @@ SPECS = {
                              "footballingStrength": ("num", False)},
     "region": {"id": ("str", True), "name": ("str", True), "country": ("ref:country", True),
                "modifiers": ("attrs", True), "places": ("strs", False), "notes": ("str", False)},
+    # one real match of a season (E-00b): reference data only (D17), never used to schedule or decide a match
+    "result": {"edition": ("ref:edition", True), "round": ("str", False), "date": ("date", False),
+               "home": ("ref:club", True), "away": ("ref:club", True), "homeGoals": ("int", False),
+               "awayGoals": ("int", False), "walkover": ("ref:club", False), "attendance": ("int", False),
+               "venue": ("str", False), "source": ("str", True), "notes": ("str", False)},
     "pack": {"id": ("str", True), "name": ("str", True), "version": ("int", True), "dataVersion": ("int", True),
              "seasons": ("strs", True), "files": ("strs", True)},
 }
@@ -80,6 +85,7 @@ PACK_FILES = {
 SEASON_FILES = {
     "squads.json": ("squad", None), "nationality_modifiers.json": ("nationality_modifier", None),
     "region_modifiers.json": ("region", "region"),
+    "results.json": ("result", None),
 }
 
 
@@ -158,6 +164,28 @@ def check_value(v, typ: str, where: str, rep: Report, refs: list):
             check_record(x, typ[5:], f"{where}[{i}]", rep, refs)
 
 
+def check_results(data: list, where: str, sid: str, season: dict | None, rep: Report):
+    """A result is either played (both goals, a date) or a walkover (`walkover` = one of the two clubs, no goals);
+    its edition belongs to its own season. Checked here because the field spec can't say "one or the other"."""
+    own = {e.get("id") for e in (season or {}).get("editions") or [] if isinstance(e, dict)}
+    for i, r in enumerate(data):
+        if not isinstance(r, dict):
+            continue
+        rw = f"{where}[{i}]"
+        goals = [r.get("homeGoals"), r.get("awayGoals")]
+        if r.get("walkover") is not None:
+            if any(g is not None for g in goals):
+                rep.error(rw, "a walkover has no goals")
+            if r["walkover"] not in (r.get("home"), r.get("away")):
+                rep.error(rw, f"walkover `{r['walkover']}` is neither the home nor the away club")
+        elif any(g is None for g in goals) or r.get("date") is None:
+            rep.error(rw, "a played match needs `date`, `homeGoals` and `awayGoals` (or `walkover`)")
+        if r.get("home") is not None and r.get("home") == r.get("away"):
+            rep.error(rw, "home and away are the same club")
+        if isinstance(r.get("edition"), str) and r["edition"] not in own:
+            rep.error(rw, f"edition `{r['edition']}` is not an edition of season {sid}")
+
+
 def load_json(path: Path, rep: Report, where: str):
     try:
         return json.loads(path.read_text(encoding="utf-8"))
@@ -189,6 +217,7 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
     refs: list[tuple[str, str, str]] = []
     seasons: dict[str, dict] = {}
     squads_by_season = s.squads_by_season
+    results: list[tuple[list, str, str]] = []  # (records, where, season): checked once every season.json is read
 
     index = root / "index.txt"
     if not index.exists():
@@ -281,9 +310,14 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
                     register(kind, rec, rw)
             if spec_name == "squad":
                 squads_by_season[parts[1]] = data
+            if spec_name == "result":
+                results.append((data, where, parts[1]))
         for sid in manifest.get("seasons", []):
             if not (pdir / "seasons" / sid / "season.json").exists():
                 rep.error(f"{pack}/pack.json", f"season `{sid}` has no seasons/{sid}/season.json")
+
+    for data, where, sid in results:
+        check_results(data, where, sid, seasons.get(sid), rep)
 
     # aliases: an old id must be gone, its target must exist
     for kind, table in aliases.items():
