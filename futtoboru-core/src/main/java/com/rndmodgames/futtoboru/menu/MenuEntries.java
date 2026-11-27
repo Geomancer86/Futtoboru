@@ -55,6 +55,7 @@ public final class MenuEntries {
             new MenuEntry("schedule", MainMenuManager.SCHEDULE_SCREEN, Audience.MANAGER, GROUP_MATCHES),
             new MenuEntry("match_history", MainMenuManager.MATCH_HISTORY_SCREEN, Audience.MANAGER, GROUP_MATCHES),
             new MenuEntry("competitions", MainMenuManager.COMPETITIONS_SCREEN, Audience.MANAGER, GROUP_MATCHES),
+            new MenuEntry("history", MainMenuManager.HISTORY_SCREEN, Audience.ALL, GROUP_MATCHES),
 
             new MenuEntry("club_info", MainMenuManager.CLUB_INFO_SCREEN, Audience.MANAGER, GROUP_CLUB),
             new MenuEntry("finances", MainMenuManager.FINANCES_SCREEN, Audience.MANAGER, GROUP_CLUB),

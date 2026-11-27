@@ -81,6 +81,7 @@ public class MainMenuManager {
     public static final int MATCH_PREVIEW_SCREEN = 10000;
     public static final int MATCH_RESULT_SCREEN  = 20000;
     public static final int MATCH_HISTORY_SCREEN = 30000;
+    public static final int HISTORY_SCREEN       = 40000;   // U-07 champions, cup winners, final tables
     
     // Job System Screens (v1.0)
     public static final int CLUB_BROWSER_SCREEN = 10001;
@@ -129,6 +130,7 @@ public class MainMenuManager {
     private MatchPreviewScreenTable matchPreviewScreenTable = null;
     private MatchResultScreenTable matchResultScreenTable = null;
     private MatchHistoryScreenTable matchHistoryScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.history.HistoryScreenTable historyScreenTable = null;
     private ClubInfoScreenTable clubInfoScreenTable = null;
     private FinancesScreenTable financesScreenTable = null;
     private CompetitionsScreenTable competitionsScreenTable = null;
@@ -186,6 +188,7 @@ public class MainMenuManager {
         matchPreviewScreenTable = new MatchPreviewScreenTable(game);
         matchResultScreenTable = new MatchResultScreenTable(game);
         matchHistoryScreenTable = new MatchHistoryScreenTable(game);
+        historyScreenTable = new com.rndmodgames.futtoboru.tables.history.HistoryScreenTable(game);
         clubInfoScreenTable = new ClubInfoScreenTable(game);
         financesScreenTable = new FinancesScreenTable(game);
         competitionsScreenTable = new CompetitionsScreenTable(game);
@@ -874,6 +877,10 @@ public class MainMenuManager {
             
         case COMPETITIONS_SCREEN:
             competitionsScreenTable.updateDynamicComponents();
+            break;
+            
+        case HISTORY_SCREEN:
+            historyScreenTable.updateDynamicComponents();
             break;
             
         case LEAGUE_DETAIL_SCREEN:

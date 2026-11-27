@@ -25,14 +25,14 @@ class MenuEntriesTests {
     void managerMenu() {
         assertEquals(List.of(MainMenuManager.HOME_SCREEN, MainMenuManager.INBOX_SCREEN, MainMenuManager.MAIN_SQUAD_SCREEN,
                 MainMenuManager.SCHEDULE_SCREEN, MainMenuManager.MATCH_HISTORY_SCREEN, MainMenuManager.COMPETITIONS_SCREEN,
-                MainMenuManager.CLUB_INFO_SCREEN, MainMenuManager.FINANCES_SCREEN,
+                MainMenuManager.HISTORY_SCREEN, MainMenuManager.CLUB_INFO_SCREEN, MainMenuManager.FINANCES_SCREEN,
                 MainMenuManager.PERSON_DETAILS_SCREEN, MainMenuManager.AUTHORITY_SCREEN),
                 screens(MenuEntries.forProfession(true)));
     }
 
     @Test
     void jobSeekerMenuHasNoClubScreens() {
-        assertEquals(List.of(MainMenuManager.HOME_SCREEN, MainMenuManager.INBOX_SCREEN,
+        assertEquals(List.of(MainMenuManager.HOME_SCREEN, MainMenuManager.INBOX_SCREEN, MainMenuManager.HISTORY_SCREEN,
                 MainMenuManager.CLUB_BROWSER_SCREEN, MainMenuManager.JOB_BOARD_SCREEN, MainMenuManager.MY_APPLICATIONS_SCREEN,
                 MainMenuManager.PERSON_DETAILS_SCREEN, MainMenuManager.AUTHORITY_SCREEN),
                 screens(MenuEntries.forProfession(false)));

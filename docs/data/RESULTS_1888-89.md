@@ -7,8 +7,10 @@ engine and for `seasons/1888-89/results.json` once BOOK3PRO's data-model slice 2
 - `results_1888-89.csv`: `date,home_id,away_id,home_goals,away_goals,attendance,source`, 132 rows.
 - `facup_1888-89.csv`: the same plus `round` (R1, R1r = replay, R2r2 = second replay, R3, SF, SFr, F) and `venue`
   (only set for neutral grounds). Walkovers have no date and no goals.
-- `check_results_1888-89.py`: recomputes the league table from the CSV and compares it with the published table
-  (`python docs/data/check_results_1888-89.py`, exit 0 = match).
+- `check_results_1888-89.py`: recomputes the league table and compares it with the published table
+  (`python docs/data/check_results_1888-89.py [file]`, exit 0 = match; default file: the game data's results.json).
+- Game data: `gamedata/core/seasons/1888-89/results.json` (E-00b), written from both CSVs by
+  `python tools/data/results_csv_to_json.py` (edit the CSV, then rerun it). Reference data only (D17).
 
 ## Coverage
 

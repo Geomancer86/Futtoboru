@@ -7,7 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +37,7 @@ import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.Log;
@@ -51,8 +55,8 @@ class FullSeasonTests extends BaseTest {
 
     static final long SEED = 1888L;
     /**
-     * The game starts on 1 Apr 1888 and the generated league schedule ends in January 1889 (about 280 days, the
-     * fixtures start at the game start); twice that and more means the game is stuck or loops.
+     * The game starts on 1 Apr 1888 and the generated league schedule follows the era calendar (P2-11): 8 Sep 1888
+     * to 20 Apr 1889, about 385 days to the rollover; twice that and more means the game is stuck or loops.
      */
     static final int DAY_BUDGET = 800;
     static final String STARTING_CLUB = "preston-north-end";
@@ -273,6 +277,78 @@ class FullSeasonTests extends BaseTest {
             assertEquals(0, club.getPoints(), club.getName() + " points in the new table");
             assertEquals(0, club.getGoalsScored() + club.getGoalsConceded(), club.getName() + " goals");
         }
+    }
+
+    /**
+     * P2-11: the generated schedule follows the era calendar. League on Saturdays from September to April; FA Cup
+     * ties on winter Saturdays (proper rounds February-March, final in late March), replays the following Saturday
+     * or midweek; no club plays twice on one day.
+     */
+    @Test
+    void theScheduleFollowsTheEraCalendar() {
+        LocalDate leagueFirst = null;
+        LocalDate leagueLast = null;
+        for (Match m : first.leagueMatches) {
+            LocalDate d = m.getMatchDateTime().toLocalDate();
+            leagueFirst = leagueFirst == null || d.isBefore(leagueFirst) ? d : leagueFirst;
+            leagueLast = leagueLast == null || d.isAfter(leagueLast) ? d : leagueLast;
+            assertEquals(DayOfWeek.SATURDAY, d.getDayOfWeek(), "league match " + m.getId() + " on " + d);
+            assertTrue(!d.isBefore(LocalDate.of(1888, 9, 1)) && !d.isAfter(LocalDate.of(1889, 4, 30)),
+                    "league match " + m.getId() + " within September 1888 - April 1889: " + d);
+        }
+        LocalDate cupFirst = null;
+        LocalDate cupLast = null;
+        LocalDate finalDay = null;
+        Map<String, LocalDate> tieDays = new HashMap<>();
+        for (Match m : first.cupMatches) {
+            if (!m.getBracketPath().endsWith("R")) {
+                tieDays.put(m.getBracketPath(), m.getMatchDateTime().toLocalDate());
+            }
+        }
+        for (Match m : first.cupMatches) {
+            LocalDate d = m.getMatchDateTime().toLocalDate();
+            cupFirst = cupFirst == null || d.isBefore(cupFirst) ? d : cupFirst;
+            cupLast = cupLast == null || d.isAfter(cupLast) ? d : cupLast;
+            String path = m.getBracketPath();
+            if (path.endsWith("R")) {
+                LocalDate tie = tieDays.get(path.substring(0, path.length() - 1));
+                assertNotNull(tie, "replay " + path + " of a tie");
+                long after = java.time.temporal.ChronoUnit.DAYS.between(tie, d);
+                assertTrue(after >= 2 && after <= 7, "replay " + path + " in the week after the tie: " + tie + " -> " + d);
+                assertNotEquals(DayOfWeek.SUNDAY, d.getDayOfWeek(), "no football on Sunday: " + path);
+            } else {
+                assertEquals(DayOfWeek.SATURDAY, d.getDayOfWeek(), "cup tie " + path + " on " + d);
+                Month month = d.getMonth();
+                assertTrue(month == Month.FEBRUARY || month == Month.MARCH, "32-club proper round in Feb-Mar: " + path + " " + d);
+                finalDay = finalDay == null || d.isAfter(finalDay) ? d : finalDay; // the last tie is the final
+            }
+        }
+        assertEquals(SeasonCalendar.forSeason(1888).cupFinal(), finalDay, "the final on the last Saturday of March");
+        assertEquals(Month.MARCH, finalDay.getMonth());
+
+        // no club plays twice on one day (league, cup, replays, friendlies)
+        Map<String, Set<Long>> byClubAndDay = new HashMap<>();
+        Set<String> seen = new HashSet<>();
+        for (Club c : first.save.getAllClubs()) {
+            for (Match m : c.getPlayedMatches()) {
+                if (m.getMatchDateTime() == null || !m.getMatchDateTime().isBefore(LocalDateTime.of(1889, 7, 1, 0, 0))
+                        || !seen.add(String.valueOf(m.getId()))) {
+                    continue;
+                }
+                for (Long club : new Long[] { m.getHomeClubId(), m.getAwayClubId() }) {
+                    Set<Long> ids = byClubAndDay.computeIfAbsent(club + "@" + m.getMatchDateTime().toLocalDate(),
+                            k -> new HashSet<>());
+                    ids.add(m.getId());
+                    assertEquals(1, ids.size(), "club " + club + " plays twice on " + m.getMatchDateTime().toLocalDate()
+                            + ": matches " + ids);
+                }
+            }
+        }
+        Log.info(Log.ENGINE_SCHEDULING, "FullSeasonTests", "P2-11 calendar: league " + leagueFirst + " to " + leagueLast
+                + " (" + first.leagueMatches.size() + " matches), FA Cup " + cupFirst + " to " + cupLast + " ("
+                + first.cupMatches.size() + " ties incl. replays), final " + finalDay);
+        System.out.println("P2-11 calendar: league " + leagueFirst + " to " + leagueLast + ", FA Cup " + cupFirst
+                + " to " + cupLast + ", final " + finalDay + ", " + first.cupMatches.size() + " cup matches");
     }
 
     @Test
