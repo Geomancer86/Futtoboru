@@ -1,0 +1,73 @@
+{
+  "id": "alexandra-recreation-ground",
+  "name": "Alexandra Recreation Ground",
+  "season": "spring",
+  "weather": "overcast",
+  "crowd": 80,
+  "view": "Crewe: an oval with a cinder cycle track, a 100 ft grandstand on the west side, banking elsewhere; the station and LNWR works smoke behind.",
+  "skyline": [
+    {
+      "type": "railway",
+      "x": 0.08,
+      "embankment": 4,
+      "train": true
+    },
+    {
+      "type": "chimney",
+      "x": 0.55,
+      "height": 40
+    },
+    {
+      "type": "chimney",
+      "x": 0.62,
+      "height": 36
+    },
+    {
+      "type": "mill",
+      "x": 0.66,
+      "height": 18,
+      "width": 50,
+      "chimney": false
+    }
+  ],
+  "farSide": [
+    {
+      "type": "bank",
+      "from": -0.12,
+      "to": 0.3,
+      "height": 7
+    },
+    {
+      "type": "grandstand",
+      "from": 0.33,
+      "to": 0.67,
+      "covered": true,
+      "height": 18
+    },
+    {
+      "type": "bank",
+      "from": 0.7,
+      "to": 1.12,
+      "height": 7
+    }
+  ],
+  "nearSide": {
+    "type": "bank",
+    "crowd": 85
+  },
+  "pitch": {
+    "condition": "good",
+    "track": "cinder"
+  },
+  "kits": {
+    "home": [
+      "red",
+      "white"
+    ],
+    "away": [
+      "blue",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#alexandra-recreation-ground"
+}

@@ -1,0 +1,78 @@
+{
+  "id": "dudley-road",
+  "name": "Dudley Road",
+  "season": "winter",
+  "weather": "overcast",
+  "crowd": 55,
+  "view": "Blakenhall: a muddy, sloping field with only a lean-to shelter on the south touchline and duckboards, the Fighting Cocks Inn across the road.",
+  "skyline": [
+    {
+      "type": "houses",
+      "x": 0.0,
+      "width": 120,
+      "height": 12
+    },
+    {
+      "type": "chimney",
+      "x": 0.42,
+      "height": 42
+    },
+    {
+      "type": "chimney",
+      "x": 0.55,
+      "height": 34
+    },
+    {
+      "type": "spire",
+      "x": 0.78,
+      "height": 40
+    }
+  ],
+  "farSide": [
+    {
+      "type": "shed",
+      "from": 0.36,
+      "to": 0.6,
+      "height": 10
+    },
+    {
+      "type": "inn",
+      "from": 0.84,
+      "to": 1.0,
+      "height": 15,
+      "sign": "red"
+    },
+    {
+      "type": "crowd",
+      "from": -0.08,
+      "to": 0.34
+    },
+    {
+      "type": "crowd",
+      "from": 0.62,
+      "to": 0.82
+    }
+  ],
+  "slope": {
+    "direction": "left-down",
+    "amount": 3
+  },
+  "nearSide": {
+    "type": "fence",
+    "crowd": 55
+  },
+  "pitch": {
+    "condition": "muddy"
+  },
+  "kits": {
+    "home": [
+      "red",
+      "white"
+    ],
+    "away": [
+      "blue",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#dudley-road"
+}

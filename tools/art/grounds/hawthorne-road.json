@@ -1,0 +1,69 @@
+{
+  "id": "hawthorne-road",
+  "name": "Hawthorne Road",
+  "season": "winter",
+  "weather": "mist",
+  "crowd": 40,
+  "view": "Bootle, February 1889: a cricket field with only the cricket pavilion on the east side; the 1889 football stands are not drawn.",
+  "skyline": [
+    {
+      "type": "houses",
+      "x": 0.0,
+      "width": 200,
+      "height": 12
+    },
+    {
+      "type": "chimney",
+      "x": 0.66,
+      "height": 40
+    },
+    {
+      "type": "chimney",
+      "x": 0.74,
+      "height": 34
+    },
+    {
+      "type": "gasholder",
+      "x": 0.84,
+      "height": 18,
+      "width": 24
+    }
+  ],
+  "farSide": [
+    {
+      "type": "pavilion",
+      "from": 0.7,
+      "to": 0.88,
+      "height": 18,
+      "flag": "blue"
+    },
+    {
+      "type": "rails",
+      "from": -0.15,
+      "to": 1.15
+    },
+    {
+      "type": "crowd",
+      "from": -0.1,
+      "to": 0.68
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 40
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "blue",
+      "white"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#hawthorne-road"
+}

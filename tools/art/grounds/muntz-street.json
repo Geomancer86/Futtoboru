@@ -1,0 +1,71 @@
+{
+  "id": "muntz-street",
+  "name": "Muntz Street",
+  "season": "winter",
+  "weather": "overcast",
+  "crowd": 50,
+  "view": "Small Heath: a bumpy, stony pitch ('celery trenches'), a changing hut, a small covered wooden stand on the Coventry Road side, open terracing; terraced streets and fields.",
+  "skyline": [
+    {
+      "type": "houses",
+      "x": 0.0,
+      "width": 150,
+      "height": 12
+    },
+    {
+      "type": "trees",
+      "x": 0.55,
+      "width": 80,
+      "height": 12
+    },
+    {
+      "type": "chimney",
+      "x": 0.88,
+      "height": 36
+    }
+  ],
+  "farSide": [
+    {
+      "type": "grandstand",
+      "from": 0.34,
+      "to": 0.56,
+      "covered": true,
+      "height": 14
+    },
+    {
+      "type": "shed",
+      "from": 0.62,
+      "to": 0.68
+    },
+    {
+      "type": "stand",
+      "from": -0.1,
+      "to": 0.3,
+      "height": 6
+    },
+    {
+      "type": "stand",
+      "from": 0.72,
+      "to": 1.1,
+      "height": 6
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 50
+  },
+  "pitch": {
+    "condition": "muddy"
+  },
+  "kits": {
+    "home": [
+      "blue",
+      "white"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#muntz-street"
+}
