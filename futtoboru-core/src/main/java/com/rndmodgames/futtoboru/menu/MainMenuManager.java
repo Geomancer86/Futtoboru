@@ -82,6 +82,7 @@ public class MainMenuManager {
     public static final int MATCH_PREVIEW_SCREEN = 10000;
     public static final int MATCH_RESULT_SCREEN  = 20000;
     public static final int MATCH_HISTORY_SCREEN = 30000;
+    public static final int HISTORY_SCREEN       = 40000;   // U-07 champions, cup winners, final tables
     
     // Job System Screens (v1.0)
     public static final int CLUB_BROWSER_SCREEN = 10001;
@@ -117,6 +118,7 @@ public class MainMenuManager {
     private VisTextButton squadButton = null;
     private VisTextButton scheduleButton = null;
     private VisTextButton matchHistoryButton = null;
+    private VisTextButton historyButton = null;
     private VisTextButton clubInfoButton = null;
     private VisTextButton financesButton = null;
     private VisTextButton competitionsButton = null;
@@ -137,6 +139,7 @@ public class MainMenuManager {
     private MatchPreviewScreenTable matchPreviewScreenTable = null;
     private MatchResultScreenTable matchResultScreenTable = null;
     private MatchHistoryScreenTable matchHistoryScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.history.HistoryScreenTable historyScreenTable = null;
     private ClubInfoScreenTable clubInfoScreenTable = null;
     private FinancesScreenTable financesScreenTable = null;
     private CompetitionsScreenTable competitionsScreenTable = null;
@@ -196,6 +199,7 @@ public class MainMenuManager {
         matchPreviewScreenTable = new MatchPreviewScreenTable(game);
         matchResultScreenTable = new MatchResultScreenTable(game);
         matchHistoryScreenTable = new MatchHistoryScreenTable(game);
+        historyScreenTable = new com.rndmodgames.futtoboru.tables.history.HistoryScreenTable(game);
         clubInfoScreenTable = new ClubInfoScreenTable(game);
         financesScreenTable = new FinancesScreenTable(game);
         competitionsScreenTable = new CompetitionsScreenTable(game);
@@ -245,6 +249,7 @@ public class MainMenuManager {
         squadButton = new SquadButton(this);
         scheduleButton = new ScheduleButton(this);
         matchHistoryButton = new MatchHistoryButton(this);
+        historyButton = new com.rndmodgames.futtoboru.menu.buttons.HistoryButton(this);
         clubInfoButton = new ClubInfoButton(this);
         financesButton = new FinancesButton(this);
         competitionsButton = new CompetitionsButton(this);
@@ -287,6 +292,10 @@ public class MainMenuManager {
             
             // Sport Authorities
             buttonsMenu.add(authorityButton).fill();
+            buttonsMenu.row();
+            
+            // History (U-07)
+            buttonsMenu.add(historyButton).fill();
             buttonsMenu.row();
             
             // Job System (v1.0)
@@ -341,6 +350,10 @@ public class MainMenuManager {
             
             // Club Competitions
             buttonsMenu.add(competitionsButton).fill();
+            buttonsMenu.row();
+            
+            // History (U-07)
+            buttonsMenu.add(historyButton).fill();
             buttonsMenu.row();
             
             // Club Area Separator
@@ -695,6 +708,11 @@ public class MainMenuManager {
             
             break;
             
+        case HISTORY_SCREEN:
+            historyScreenTable.updateDynamicComponents();
+            parentTable.add(historyScreenTable).grow();
+            break;
+            
         case COMPETITIONS_SCREEN:
             
             // Update dynamic components
@@ -926,6 +944,10 @@ public class MainMenuManager {
             
         case COMPETITIONS_SCREEN:
             competitionsScreenTable.updateDynamicComponents();
+            break;
+            
+        case HISTORY_SCREEN:
+            historyScreenTable.updateDynamicComponents();
             break;
             
         case LEAGUE_DETAIL_SCREEN:
