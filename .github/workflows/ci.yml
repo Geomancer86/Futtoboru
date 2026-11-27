@@ -25,8 +25,8 @@ jobs:
           cache: maven
       - name: Install Xvfb (libGDX tests, as on the old Jenkins)
         run: sudo apt-get update -q && sudo apt-get install -y -q xvfb
-      - name: mvn -B verify
-        run: xvfb-run -a mvn -B -ntp verify
+      - name: ./mvnw -B verify
+        run: xvfb-run -a ./mvnw -B -ntp verify
       - name: Upload test reports on failure
         if: failure()
         uses: actions/upload-artifact@v4
