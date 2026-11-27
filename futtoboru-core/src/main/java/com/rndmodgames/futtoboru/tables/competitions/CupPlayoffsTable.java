@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.Color;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -18,6 +17,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Cup Playoffs Table v1.0
@@ -81,14 +81,14 @@ public class CupPlayoffsTable extends VisTable {
         bracketContainer.clear();
         
         if (currentEdition == null || currentCup == null) {
-            bracketContainer.add(new VisLabel("No edition selected")).pad(20);
+            bracketContainer.add(new VisLabel("No edition selected")).pad(UiTheme.space("lg"));
             return;
         }
         
         // Header
         VisLabel titleLabel = new VisLabel(currentCup.getName() + " - " + currentEdition.getName() + " Bracket");
-        titleLabel.setFontScale(1.2f);
-        bracketContainer.add(titleLabel).colspan(10).pad(10).row();
+        titleLabel.setFontScale(UiTheme.fontScale("heading"));
+        bracketContainer.add(titleLabel).colspan(10).pad(UiTheme.space("sm")).row();
         
         // Collect matches by round
         Map<Integer, List<Match>> matchesByRound = new HashMap<>();
@@ -105,7 +105,7 @@ public class CupPlayoffsTable extends VisTable {
         }
         
         if (maxRound == 0) {
-            bracketContainer.add(new VisLabel("The draw has not been conducted yet.")).pad(20).row();
+            bracketContainer.add(new VisLabel("The draw has not been conducted yet.")).pad(UiTheme.space("lg")).row();
             System.out.println("CupPlayoffsTable: No matches found - edition ID: " + currentEdition.getId() + ", currentGame: " + (currentGame != null ? "not null" : "null"));
             return;
         }
@@ -135,15 +135,15 @@ public class CupPlayoffsTable extends VisTable {
             
             // Round Title
             VisLabel roundTitle = new VisLabel("Round " + r);
-            roundTitle.setColor(Color.GOLD);
-            roundColumn.add(roundTitle).pad(10).row();
+            roundTitle.setColor(UiTheme.color("state.winner"));
+            roundColumn.add(roundTitle).pad(UiTheme.space("sm")).row();
             
             // Matches in this round
             for (Match match : roundMatches) {
-                roundColumn.add(createMatchBox(match)).pad(5).row();
+                roundColumn.add(createMatchBox(match)).pad(UiTheme.space("xs")).row();
             }
             
-            columnsTable.add(roundColumn).top().pad(10);
+            columnsTable.add(roundColumn).top().pad(UiTheme.space("sm"));
         }
         
         bracketContainer.add(columnsTable).grow().row();
@@ -158,7 +158,7 @@ public class CupPlayoffsTable extends VisTable {
                 }
             }
         });
-        bracketContainer.add(backButton).pad(20);
+        bracketContainer.add(backButton).pad(UiTheme.space("lg"));
     }
     
     private VisTable createMatchBox(Match match) {
@@ -202,20 +202,20 @@ public class CupPlayoffsTable extends VisTable {
             // Highlight winner
             if (match.getHomeGoals() != null && match.getAwayGoals() != null) {
                 if (match.getHomeGoals() > match.getAwayGoals()) {
-                    homeLabel.setColor(Color.GREEN);
+                    homeLabel.setColor(UiTheme.color("match.winner"));
                 } else if (match.getAwayGoals() > match.getHomeGoals()) {
-                    awayLabel.setColor(Color.GREEN);
+                    awayLabel.setColor(UiTheme.color("match.winner"));
                 }
             }
         } else if (home == null || away == null) {
             // Future match - teams not yet determined
-            homeLabel.setColor(Color.GRAY);
-            awayLabel.setColor(Color.GRAY);
+            homeLabel.setColor(UiTheme.color("text.muted"));
+            awayLabel.setColor(UiTheme.color("text.muted"));
         }
         
-        box.add(homeLabel).width(150).left().pad(2).row();
-        box.add(new VisLabel("vs")).center().pad(2).row();
-        box.add(awayLabel).width(150).left().pad(2);
+        box.add(homeLabel).width(UiTheme.size("col.label")).left().pad(UiTheme.space("xxs")).row();
+        box.add(new VisLabel("vs")).center().pad(UiTheme.space("xxs")).row();
+        box.add(awayLabel).width(UiTheme.size("col.label")).left().pad(UiTheme.space("xxs"));
         
         return box;
     }

@@ -11,6 +11,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Competitions Screen Table v1
@@ -75,21 +76,21 @@ public class CompetitionsScreenTable extends VisTable {
         // Title
         this.row().colspan(3);
         VisLabel titleLabel = new VisLabel("COMPETITIONS");
-        titleLabel.setFontScale(1.2f);
-        this.add(titleLabel).pad(10).row();
+        titleLabel.setFontScale(UiTheme.fontScale("heading"));
+        this.add(titleLabel).pad(UiTheme.space("sm")).row();
         
-        this.addSeparator().colspan(3).pad(5).row();
+        this.addSeparator().colspan(3).pad(UiTheme.space("xs")).row();
         
         // Check if mainAuthority exists
         if (currentGame == null) {
             this.row().colspan(3);
-            this.add(new VisLabel("ERROR: SaveGame is null")).pad(10).row();
+            this.add(new VisLabel("ERROR: SaveGame is null")).pad(UiTheme.space("sm")).row();
             return;
         }
         
         if (currentGame.getMainAuthority() == null) {
             this.row().colspan(3);
-            this.add(new VisLabel("No Football Association found")).pad(10).row();
+            this.add(new VisLabel("No Football Association found")).pad(UiTheme.space("sm")).row();
             return;
         }
         
@@ -98,9 +99,9 @@ public class CompetitionsScreenTable extends VisTable {
         
         if (leagues == null || leagues.isEmpty()) {
             this.row().colspan(3);
-            this.add(new VisLabel("No leagues found. League creation script may not have executed yet.")).pad(10).row();
+            this.add(new VisLabel("No leagues found. League creation script may not have executed yet.")).pad(UiTheme.space("sm")).row();
             this.row().colspan(3);
-            this.add(new VisLabel("Check console logs for league creation messages.")).pad(5).row();
+            this.add(new VisLabel("Check console logs for league creation messages.")).pad(UiTheme.space("xs")).row();
             return;
         }
         
@@ -109,16 +110,16 @@ public class CompetitionsScreenTable extends VisTable {
         // --- LEAGUES SECTION ---
         this.row().colspan(3);
         VisLabel leaguesTitle = new VisLabel("LEAGUES");
-        leaguesTitle.setColor(0.7f, 0.7f, 1f, 1f);
-        this.add(leaguesTitle).padTop(10).padBottom(5).row();
+        leaguesTitle.setColor(UiTheme.color("text.heading"));
+        this.add(leaguesTitle).padTop(UiTheme.space("sm")).padBottom(UiTheme.space("xs")).row();
         
         // Header row
-        this.row().pad(5);
-        this.add(new VisLabel("League Name")).width(300);
-        this.add(new VisLabel("Clubs")).width(100);
-        this.add(new VisLabel("Country")).width(150);
+        this.row().pad(UiTheme.space("xs"));
+        this.add(new VisLabel("League Name")).width(UiTheme.size("col.xwide"));
+        this.add(new VisLabel("Clubs")).width(UiTheme.size("col.number"));
+        this.add(new VisLabel("Country")).width(UiTheme.size("col.label"));
         this.row();
-        this.addSeparator().colspan(3).pad(2).row();
+        this.addSeparator().colspan(3).pad(UiTheme.space("xxs")).row();
         
         // Display each league
         for (League league : leagues) {
@@ -145,18 +146,18 @@ public class CompetitionsScreenTable extends VisTable {
                 }
             });
             
-            this.row().pad(2);
-            this.add(leagueButton).width(300);
+            this.row().pad(UiTheme.space("xxs"));
+            this.add(leagueButton).width(UiTheme.size("col.xwide"));
             
             // Number of clubs
             int clubCount = (league.getLeagueClubs() != null) ? league.getLeagueClubs().size() : 0;
-            this.add(new VisLabel(String.valueOf(clubCount))).width(100);
+            this.add(new VisLabel(String.valueOf(clubCount))).width(UiTheme.size("col.number"));
             
             // Country
             String countryName = (league.getCountry() != null && league.getCountry().getCommonName() != null) 
                 ? league.getCountry().getCommonName() 
                 : "Unknown";
-            this.add(new VisLabel(countryName)).width(150);
+            this.add(new VisLabel(countryName)).width(UiTheme.size("col.label"));
         }
         
         // --- CUPS SECTION ---
@@ -164,16 +165,16 @@ public class CompetitionsScreenTable extends VisTable {
         if (cups != null && !cups.isEmpty()) {
             this.row().colspan(3);
             VisLabel cupsTitle = new VisLabel("CUPS");
-            cupsTitle.setColor(0.7f, 0.7f, 1f, 1f);
-            this.add(cupsTitle).padTop(20).padBottom(5).row();
+            cupsTitle.setColor(UiTheme.color("text.heading"));
+            this.add(cupsTitle).padTop(UiTheme.space("lg")).padBottom(UiTheme.space("xs")).row();
             
             // Header row
-            this.row().pad(5);
-            this.add(new VisLabel("Cup Name")).width(300);
-            this.add(new VisLabel("Teams")).width(100);
-            this.add(new VisLabel("Country")).width(150);
+            this.row().pad(UiTheme.space("xs"));
+            this.add(new VisLabel("Cup Name")).width(UiTheme.size("col.xwide"));
+            this.add(new VisLabel("Teams")).width(UiTheme.size("col.number"));
+            this.add(new VisLabel("Country")).width(UiTheme.size("col.label"));
             this.row();
-            this.addSeparator().colspan(3).pad(2).row();
+            this.addSeparator().colspan(3).pad(UiTheme.space("xxs")).row();
             
             for (com.rndmodgames.futtoboru.data.Competition cup : cups) {
                 if (cup == null) continue;
@@ -195,8 +196,8 @@ public class CompetitionsScreenTable extends VisTable {
                     }
                 });
                 
-                this.row().pad(2);
-                this.add(cupButton).width(300);
+                this.row().pad(UiTheme.space("xxs"));
+                this.add(cupButton).width(UiTheme.size("col.xwide"));
                 
                 // Get participant count from latest edition
                 int participantCount = 0;
@@ -206,16 +207,16 @@ public class CompetitionsScreenTable extends VisTable {
                         participantCount = latestEdition.getParticipantClubs();
                     }
                 }
-                this.add(new VisLabel(String.valueOf(participantCount))).width(100);
+                this.add(new VisLabel(String.valueOf(participantCount))).width(UiTheme.size("col.number"));
                 
                 // Country (assume first club's country or default)
-                this.add(new VisLabel("England")).width(150);
+                this.add(new VisLabel("England")).width(UiTheme.size("col.label"));
             }
         }
         
         // Add spacing at bottom
         this.row();
-        this.add().height(20).colspan(3).row();
+        this.add().height(UiTheme.space("lg")).colspan(3).row();
         
         // 
 //        this.row().colspan(2);

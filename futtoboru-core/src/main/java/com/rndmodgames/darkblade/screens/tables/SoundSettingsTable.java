@@ -8,6 +8,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSlider;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * SoundSettingsTable v1
@@ -55,14 +56,14 @@ public class SoundSettingsTable extends VisTable {
 		
 		row();
 		
-		add(soundSettingsLabel).pad(5).colspan(2).expandX().align(Align.center);
+		add(soundSettingsLabel).pad(UiTheme.space("xs")).colspan(2).expandX().align(Align.center);
 		
 		row();
-		add(masterSoundLabel).pad(5).fill().align(Align.center);
-		add(masterSoundValueLabel).pad(5).fill().align(Align.center);
+		add(masterSoundLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+		add(masterSoundValueLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
 		
 		row();
-		add(masterSoundSlider).pad(5).colspan(2).fill();
+		add(masterSoundSlider).pad(UiTheme.space("xs")).colspan(2).fill();
 		
 		row();
 		add(musicSoundLabel);

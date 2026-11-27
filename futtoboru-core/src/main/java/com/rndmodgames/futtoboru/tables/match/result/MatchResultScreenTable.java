@@ -9,6 +9,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Match Result Screen Table v1
@@ -70,50 +71,50 @@ public class MatchResultScreenTable extends VisTable {
         String matchTime = match.getMatchDateTime() != null ? match.getMatchDateTime().format(timeFormatter) : "Unknown";
         
         // Match Header
-        this.row().padTop(20);
+        this.row().padTop(UiTheme.space("lg"));
         VisLabel headerLabel = new VisLabel("MATCH RESULT");
-        headerLabel.setFontScale(1.5f);
-        this.add(headerLabel).colspan(2).padBottom(20);
+        headerLabel.setFontScale(UiTheme.fontScale("display"));
+        this.add(headerLabel).colspan(2).padBottom(UiTheme.space("lg"));
         
         // Match Date and Time
         this.row();
-        this.add("Date:").padRight(10);
+        this.add("Date:").padRight(UiTheme.space("sm"));
         this.add(matchDate + " at " + matchTime).left();
         
         // Venue
-        this.row().padTop(5);
-        this.add("Venue:").padRight(10);
+        this.row().padTop(UiTheme.space("xs"));
+        this.add("Venue:").padRight(UiTheme.space("sm"));
         String venueName = homeClub.getStadium() != null && homeClub.getStadium().getName() != null 
             ? homeClub.getStadium().getName() 
             : "Unknown Stadium";
         this.add(venueName).left();
         
         // Separator
-        this.row().padTop(15).padBottom(15);
+        this.row().padTop(UiTheme.space("md")).padBottom(UiTheme.space("md"));
         this.addSeparator().colspan(2);
         
         // Teams and Score
-        this.row().padTop(10);
+        this.row().padTop(UiTheme.space("sm"));
         
         // Home Team
         VisTable homeTeamTable = new VisTable();
         homeTeamTable.add(new VisLabel(homeClub.getName())).row();
         homeTeamTable.add(new VisLabel(String.valueOf(match.getHomeGoals() != null ? match.getHomeGoals() : 0)))
-            .padTop(5);
+            .padTop(UiTheme.space("xs"));
         this.add(homeTeamTable).expandX().center();
         
         // VS
-        this.add(new VisLabel("vs")).padLeft(20).padRight(20);
+        this.add(new VisLabel("vs")).padLeft(UiTheme.space("lg")).padRight(UiTheme.space("lg"));
         
         // Away Team
         VisTable awayTeamTable = new VisTable();
         awayTeamTable.add(new VisLabel(awayClub.getName())).row();
         awayTeamTable.add(new VisLabel(String.valueOf(match.getAwayGoals() != null ? match.getAwayGoals() : 0)))
-            .padTop(5);
+            .padTop(UiTheme.space("xs"));
         this.add(awayTeamTable).expandX().center();
         
         // Result
-        this.row().padTop(15);
+        this.row().padTop(UiTheme.space("md"));
         String result;
         if (match.getHomeGoals() != null && match.getAwayGoals() != null) {
             if (match.getHomeGoals() > match.getAwayGoals()) {
@@ -127,31 +128,31 @@ public class MatchResultScreenTable extends VisTable {
             result = "Result not available";
         }
         VisLabel resultLabel = new VisLabel(result);
-        resultLabel.setFontScale(1.2f);
-        this.add(resultLabel).colspan(3).padBottom(20);
+        resultLabel.setFontScale(UiTheme.fontScale("heading"));
+        this.add(resultLabel).colspan(3).padBottom(UiTheme.space("lg"));
         
         // Separator
-        this.row().padTop(15).padBottom(15);
+        this.row().padTop(UiTheme.space("md")).padBottom(UiTheme.space("md"));
         this.addSeparator().colspan(3);
         
         // Match Details
-        this.row().padTop(10);
-        this.add("Match Type:").padRight(10);
+        this.row().padTop(UiTheme.space("sm"));
+        this.add("Match Type:").padRight(UiTheme.space("sm"));
         String matchType = match.getMatchType() != null && match.getMatchType() == Match.FRIENDLY_MATCH 
             ? "Friendly" 
             : "Competition";
         this.add(matchType).left();
         
         // Attendance
-        this.row().padTop(5);
-        this.add("Attendance:").padRight(10);
+        this.row().padTop(UiTheme.space("xs"));
+        this.add("Attendance:").padRight(UiTheme.space("sm"));
         String attendance = match.getAttendance() != null ? String.valueOf(match.getAttendance()) : "Unknown";
         this.add(attendance).left();
         
         // Stadium capacity if available
         if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
-            this.row().padTop(5);
-            this.add("Capacity:").padRight(10);
+            this.row().padTop(UiTheme.space("xs"));
+            this.add("Capacity:").padRight(UiTheme.space("sm"));
             this.add(String.valueOf(homeClub.getStadium().getCapacity())).left();
         }
     }

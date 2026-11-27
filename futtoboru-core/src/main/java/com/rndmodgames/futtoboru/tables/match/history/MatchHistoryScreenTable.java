@@ -14,6 +14,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Match History Screen Table v1
@@ -91,16 +92,16 @@ public class MatchHistoryScreenTable extends VisTable {
         });
         
         // Header
-        this.row().padTop(10).padBottom(10);
+        this.row().padTop(UiTheme.space("sm")).padBottom(UiTheme.space("sm"));
         VisLabel headerLabel = new VisLabel("MATCH HISTORY");
-        headerLabel.setFontScale(1.3f);
-        this.add(headerLabel).colspan(4).padBottom(15);
+        headerLabel.setFontScale(UiTheme.fontScale("title"));
+        this.add(headerLabel).colspan(4).padBottom(UiTheme.space("md"));
         
         // Column headers
-        this.row().padBottom(5);
-        this.add(new VisLabel("Date")).width(100);
+        this.row().padBottom(UiTheme.space("xs"));
+        this.add(new VisLabel("Date")).width(UiTheme.size("col.number"));
         this.add(new VisLabel("Home")).expandX().left();
-        this.add(new VisLabel("Score")).width(80);
+        this.add(new VisLabel("Score")).width(UiTheme.size("col.value"));
         this.add(new VisLabel("Away")).expandX().left();
         
         // Separator
@@ -123,11 +124,11 @@ public class MatchHistoryScreenTable extends VisTable {
             }
             
             // Date
-            this.row().padTop(5).padBottom(5);
+            this.row().padTop(UiTheme.space("xs")).padBottom(UiTheme.space("xs"));
             String matchDate = match.getMatchDateTime() != null 
                 ? match.getMatchDateTime().format(dateFormatter) 
                 : "Unknown";
-            this.add(new VisLabel(matchDate)).width(100);
+            this.add(new VisLabel(matchDate)).width(UiTheme.size("col.number"));
             
             // Home team (clickable)
             String homeTeamName = homeClub.getName();
@@ -161,7 +162,7 @@ public class MatchHistoryScreenTable extends VisTable {
                     viewMatchDetails(match);
                 }
             });
-            this.add(scoreLink).width(80);
+            this.add(scoreLink).width(UiTheme.size("col.value"));
             
             // Away team (clickable)
             String awayTeamName = awayClub.getName();
