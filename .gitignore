@@ -130,3 +130,22 @@ build.properties
 ## OS
 .DS_Store
 Thumbs.db
+
+## Private material: this repo is PUBLIC (see PRIVACY.md).
+## Private docs live OUTSIDE the clone (C:\git\futtoboru-private); these
+## entries are only a second line of defence.
+private/
+secrets/
+references/
+*.local.*
+*.properties.local
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*.jks
+credentials*.json
+settings.xml
