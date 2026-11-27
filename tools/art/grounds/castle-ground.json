@@ -1,0 +1,71 @@
+{
+  "id": "castle-ground",
+  "name": "Castle Ground",
+  "season": "spring",
+  "weather": "overcast",
+  "crowd": 45,
+  "view": "The Meadows, Nottingham: a cricket field ringed by the 1886 cinder cycle track with a single pavilion at the north end; few other spectator facilities.",
+  "skyline": [
+    {
+      "type": "houses",
+      "x": 0.0,
+      "width": 140,
+      "height": 11
+    },
+    {
+      "type": "chimney",
+      "x": 0.5,
+      "height": 34
+    },
+    {
+      "type": "trees",
+      "x": 0.62,
+      "width": 60,
+      "height": 14
+    },
+    {
+      "type": "houses",
+      "x": 0.82,
+      "width": 60,
+      "height": 10
+    }
+  ],
+  "farSide": [
+    {
+      "type": "pavilion",
+      "from": 0.4,
+      "to": 0.58,
+      "height": 18,
+      "flag": "white"
+    },
+    {
+      "type": "crowd",
+      "from": -0.1,
+      "to": 0.38
+    },
+    {
+      "type": "crowd",
+      "from": 0.6,
+      "to": 1.1
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 45
+  },
+  "pitch": {
+    "condition": "worn",
+    "track": "cinder"
+  },
+  "kits": {
+    "home": [
+      "ink",
+      "white"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#castle-ground"
+}

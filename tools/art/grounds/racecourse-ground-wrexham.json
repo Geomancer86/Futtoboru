@@ -1,0 +1,73 @@
+{
+  "id": "racecourse-ground-wrexham",
+  "name": "Racecourse Ground, Wrexham",
+  "season": "winter",
+  "weather": "overcast",
+  "crowd": 45,
+  "view": "Wrexham: an open field inside the racecourse rails, used mostly for cricket, with the Turf Tavern at the corner and Welsh hills beyond.",
+  "hills": {
+    "height": 26
+  },
+  "skyline": [
+    {
+      "type": "houses",
+      "x": 0.38,
+      "width": 100,
+      "height": 11
+    },
+    {
+      "type": "tower",
+      "x": 0.55,
+      "height": 34
+    }
+  ],
+  "farSide": [
+    {
+      "type": "inn",
+      "from": -0.12,
+      "to": 0.06,
+      "height": 16,
+      "sign": "green"
+    },
+    {
+      "type": "pavilion",
+      "from": 0.5,
+      "to": 0.62,
+      "height": 16,
+      "flag": "red"
+    },
+    {
+      "type": "rails",
+      "from": -0.15,
+      "to": 1.15
+    },
+    {
+      "type": "crowd",
+      "from": 0.08,
+      "to": 0.48
+    },
+    {
+      "type": "crowd",
+      "from": 0.64,
+      "to": 1.1
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 45
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "red",
+      "white"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#racecourse-ground-wrexham"
+}

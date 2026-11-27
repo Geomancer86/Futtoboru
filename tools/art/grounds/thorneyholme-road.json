@@ -1,0 +1,81 @@
+{
+  "id": "thorneyholme-road",
+  "name": "Thorneyholme Road",
+  "season": "winter",
+  "weather": "overcast",
+  "crowd": 55,
+  "view": "Accrington cricket ground: football on the western end, a small covered stand with open seating on one touchline, open benches behind the goals, the cricket pavilion beside; Pennine hills behind.",
+  "hills": {
+    "height": 20
+  },
+  "skyline": [
+    {
+      "type": "chimney",
+      "x": 0.18,
+      "height": 40
+    },
+    {
+      "type": "mill",
+      "x": 0.22,
+      "height": 20,
+      "width": 40
+    },
+    {
+      "type": "houses",
+      "x": 0.5,
+      "width": 110,
+      "height": 12
+    },
+    {
+      "type": "chimney",
+      "x": 0.84,
+      "height": 34
+    }
+  ],
+  "farSide": [
+    {
+      "type": "stand",
+      "from": 0.04,
+      "to": 0.26,
+      "height": 7
+    },
+    {
+      "type": "grandstand",
+      "from": 0.3,
+      "to": 0.52,
+      "covered": true,
+      "height": 15
+    },
+    {
+      "type": "stand",
+      "from": 0.54,
+      "to": 0.72,
+      "height": 7
+    },
+    {
+      "type": "pavilion",
+      "from": 0.84,
+      "to": 0.98,
+      "height": 18,
+      "flag": "red"
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 50
+  },
+  "pitch": {
+    "condition": "worn"
+  },
+  "kits": {
+    "home": [
+      "red",
+      "white"
+    ],
+    "away": [
+      "white",
+      "black"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#thorneyholme-road"
+}

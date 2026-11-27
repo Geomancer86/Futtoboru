@@ -1,0 +1,73 @@
+{
+  "id": "bramall-lane",
+  "name": "Bramall Lane",
+  "season": "spring",
+  "weather": "clear",
+  "crowd": 90,
+  "view": "Sheffield, 1889 semi-final: a big cricket ground with a pavilion and crowds round the ropes; hills and distant works chimneys.",
+  "hills": {
+    "height": 22
+  },
+  "skyline": [
+    {
+      "type": "chimney",
+      "x": 0.1,
+      "height": 36
+    },
+    {
+      "type": "chimney",
+      "x": 0.18,
+      "height": 30
+    },
+    {
+      "type": "houses",
+      "x": 0.24,
+      "width": 120,
+      "height": 11
+    },
+    {
+      "type": "chimney",
+      "x": 0.8,
+      "height": 40
+    }
+  ],
+  "farSide": [
+    {
+      "type": "pavilion",
+      "from": 0.4,
+      "to": 0.6,
+      "height": 20,
+      "flag": "white"
+    },
+    {
+      "type": "stand",
+      "from": -0.12,
+      "to": 0.38,
+      "height": 8
+    },
+    {
+      "type": "stand",
+      "from": 0.62,
+      "to": 1.12,
+      "height": 8
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 92
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "white",
+      "navy"
+    ],
+    "away": [
+      "blue",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#bramall-lane"
+}

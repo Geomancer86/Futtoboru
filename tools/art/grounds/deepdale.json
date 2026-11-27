@@ -1,0 +1,83 @@
+{
+  "id": "deepdale",
+  "name": "Deepdale",
+  "season": "autumn",
+  "weather": "clear",
+  "crowd": 70,
+  "view": "1888-89 as researched: an old farm field on the edge of Preston with a grass running track and the 1876 wooden grandstand; no covered stand documented.",
+  "hills": {
+    "height": 8
+  },
+  "skyline": [
+    {
+      "type": "chimney",
+      "x": 0.08,
+      "height": 40
+    },
+    {
+      "type": "mill",
+      "x": 0.14,
+      "height": 20,
+      "width": 36
+    },
+    {
+      "type": "spire",
+      "x": 0.86,
+      "height": 44
+    },
+    {
+      "type": "trees",
+      "x": 0.55,
+      "width": 60,
+      "height": 16
+    }
+  ],
+  "farSide": [
+    {
+      "type": "grandstand",
+      "from": 0.3,
+      "to": 0.66,
+      "covered": false,
+      "height": 16
+    },
+    {
+      "type": "shed",
+      "from": 0.74,
+      "to": 0.8
+    },
+    {
+      "type": "shed",
+      "from": 0.84,
+      "to": 0.9
+    },
+    {
+      "type": "crowd",
+      "from": -0.1,
+      "to": 0.27
+    },
+    {
+      "type": "crowd",
+      "from": 0.92,
+      "to": 1.12
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 65
+  },
+  "pitch": {
+    "condition": "good",
+    "track": "grass"
+  },
+  "kits": {
+    "home": [
+      "white",
+      "navy"
+    ],
+    "away": [
+      "blue",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#deepdale"
+}

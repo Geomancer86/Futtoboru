@@ -1,0 +1,81 @@
+{
+  "id": "victoria-ground",
+  "name": "Victoria Ground",
+  "season": "autumn",
+  "weather": "clear",
+  "crowd": 60,
+  "view": "Boothen Road, Stoke: an athletics oval with a cinder track round the pitch, a small wooden stand for 1,000 on the east side and banks; bottle ovens of the Potteries beyond.",
+  "skyline": [
+    {
+      "type": "kiln",
+      "x": 0.06,
+      "height": 22
+    },
+    {
+      "type": "kiln",
+      "x": 0.16,
+      "height": 18
+    },
+    {
+      "type": "kiln",
+      "x": 0.62,
+      "height": 24
+    },
+    {
+      "type": "chimney",
+      "x": 0.7,
+      "height": 40
+    },
+    {
+      "type": "kiln",
+      "x": 0.85,
+      "height": 20
+    },
+    {
+      "type": "houses",
+      "x": 0.28,
+      "width": 70,
+      "height": 11
+    }
+  ],
+  "farSide": [
+    {
+      "type": "bank",
+      "from": -0.12,
+      "to": 0.3,
+      "height": 7
+    },
+    {
+      "type": "grandstand",
+      "from": 0.36,
+      "to": 0.62,
+      "covered": true,
+      "height": 16
+    },
+    {
+      "type": "bank",
+      "from": 0.68,
+      "to": 1.12,
+      "height": 7
+    }
+  ],
+  "nearSide": {
+    "type": "bank",
+    "crowd": 60
+  },
+  "pitch": {
+    "condition": "good",
+    "track": "cinder"
+  },
+  "kits": {
+    "home": [
+      "red",
+      "white"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#victoria-ground"
+}

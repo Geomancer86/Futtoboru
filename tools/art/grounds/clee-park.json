@@ -1,0 +1,69 @@
+{
+  "id": "clee-park",
+  "name": "Clee Park",
+  "season": "winter",
+  "weather": "clear",
+  "crowd": 70,
+  "view": "Grimsby Town's ground to summer 1889: a flat coastal field with a wooden grandstand (a 'grandstand view' cost extra) and a 300-seat stand, both later moved to Abbey Park.",
+  "skyline": [
+    {
+      "type": "houses",
+      "x": 0.0,
+      "width": 180,
+      "height": 11
+    },
+    {
+      "type": "tower",
+      "x": 0.78,
+      "height": 44
+    },
+    {
+      "type": "chimney",
+      "x": 0.66,
+      "height": 30
+    }
+  ],
+  "farSide": [
+    {
+      "type": "grandstand",
+      "from": 0.3,
+      "to": 0.58,
+      "covered": true,
+      "height": 16
+    },
+    {
+      "type": "stand",
+      "from": 0.64,
+      "to": 0.82,
+      "height": 8
+    },
+    {
+      "type": "crowd",
+      "from": -0.1,
+      "to": 0.28
+    },
+    {
+      "type": "crowd",
+      "from": 0.84,
+      "to": 1.1
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 70
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "blue",
+      "white"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#clee-park"
+}
