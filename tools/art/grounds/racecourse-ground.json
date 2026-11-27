@@ -1,0 +1,83 @@
+{
+  "id": "racecourse-ground",
+  "name": "County Ground (Racecourse), Derby",
+  "season": "autumn",
+  "weather": "clear",
+  "crowd": 45,
+  "view": "Nottingham Road, Derby: football across the west end of the county cricket field inside the racecourse, under the big racecourse grandstand, with the 1885 pavilion and the course rails.",
+  "skyline": [
+    {
+      "type": "trees",
+      "x": 0.0,
+      "width": 90,
+      "height": 16
+    },
+    {
+      "type": "spire",
+      "x": 0.48,
+      "height": 46
+    },
+    {
+      "type": "tower",
+      "x": 0.6,
+      "height": 30
+    },
+    {
+      "type": "houses",
+      "x": 0.66,
+      "width": 90,
+      "height": 10
+    }
+  ],
+  "farSide": [
+    {
+      "type": "grandstand",
+      "from": 0.05,
+      "to": 0.5,
+      "covered": true,
+      "height": 26,
+      "gable": true,
+      "flag": "red"
+    },
+    {
+      "type": "pavilion",
+      "from": 0.66,
+      "to": 0.82,
+      "height": 20,
+      "flag": "white"
+    },
+    {
+      "type": "rails",
+      "from": -0.15,
+      "to": 1.15
+    },
+    {
+      "type": "crowd",
+      "from": 0.52,
+      "to": 0.64
+    },
+    {
+      "type": "crowd",
+      "from": 0.84,
+      "to": 1.1
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 45
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "amber",
+      "navy"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#racecourse-ground"
+}

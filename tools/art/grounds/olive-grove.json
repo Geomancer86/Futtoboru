@@ -1,0 +1,61 @@
+{
+  "id": "olive-grove",
+  "name": "Olive Grove",
+  "season": "winter",
+  "weather": "overcast",
+  "crowd": 55,
+  "view": "Sheffield: a new 110 x 70 yd pitch with a cinder path round it, one long shed holding about 1,000, the Midland Railway alongside and hills beyond.",
+  "hills": {
+    "height": 24
+  },
+  "skyline": [
+    {
+      "type": "railway",
+      "x": 0.5,
+      "embankment": 7,
+      "train": true
+    },
+    {
+      "type": "chimney",
+      "x": 0.15,
+      "height": 34
+    }
+  ],
+  "farSide": [
+    {
+      "type": "shed",
+      "from": 0.2,
+      "to": 0.7,
+      "height": 10
+    },
+    {
+      "type": "fence",
+      "from": -0.12,
+      "to": 0.18
+    },
+    {
+      "type": "fence",
+      "from": 0.72,
+      "to": 1.12
+    }
+  ],
+  "nearSide": {
+    "type": "fence",
+    "crowd": 55
+  },
+  "pitch": {
+    "condition": "worn",
+    "track": "cinder"
+  },
+  "kits": {
+    "home": [
+      "blue",
+      "white"
+    ],
+    "away": [
+      "ink",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#olive-grove"
+}

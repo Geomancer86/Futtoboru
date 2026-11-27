@@ -761,6 +761,7 @@ public class NewGameOverviewScreen implements Screen {
                     }
                     
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 14: Changing to GAME_SCREEN...");
+                    com.rndmodgames.futtoboru.menu.MainMenuManager.resetNavigation();
                     ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
                     

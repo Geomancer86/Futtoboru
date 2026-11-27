@@ -1,0 +1,67 @@
+{
+  "id": "pikes-lane",
+  "name": "Pike's Lane",
+  "season": "winter",
+  "weather": "mist",
+  "crowd": 65,
+  "view": "Deane, Bolton: a muddy four-and-a-half-acre field with earth banks on both sides, a farmer's field overlooking it, mill chimneys around.",
+  "hills": {
+    "height": 10
+  },
+  "skyline": [
+    {
+      "type": "mill",
+      "x": 0.02,
+      "height": 24,
+      "width": 44
+    },
+    {
+      "type": "chimney",
+      "x": 0.3,
+      "height": 44
+    },
+    {
+      "type": "chimney",
+      "x": 0.62,
+      "height": 36
+    },
+    {
+      "type": "houses",
+      "x": 0.66,
+      "width": 100,
+      "height": 12
+    }
+  ],
+  "farSide": [
+    {
+      "type": "bank",
+      "from": -0.1,
+      "to": 0.48,
+      "height": 8
+    },
+    {
+      "type": "bank",
+      "from": 0.52,
+      "to": 1.1,
+      "height": 8
+    }
+  ],
+  "nearSide": {
+    "type": "bank",
+    "crowd": 70
+  },
+  "pitch": {
+    "condition": "muddy"
+  },
+  "kits": {
+    "home": [
+      "white",
+      "navy"
+    ],
+    "away": [
+      "amber",
+      "black"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#pikes-lane"
+}

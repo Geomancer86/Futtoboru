@@ -1,0 +1,85 @@
+{
+  "id": "turf-moor",
+  "name": "Turf Moor",
+  "season": "autumn",
+  "weather": "clear",
+  "crowd": 60,
+  "wind": -1,
+  "view": "Burnley: the 1885 800-seat wooden grandstand on the Brunshaw Road (south) side, open standing at the ends, the cricket field beside and Bee Hole Colliery to the east; moorland behind.",
+  "hills": {
+    "height": 24
+  },
+  "skyline": [
+    {
+      "type": "chimney",
+      "x": 0.08,
+      "height": 40
+    },
+    {
+      "type": "houses",
+      "x": 0.12,
+      "width": 70,
+      "height": 11
+    },
+    {
+      "type": "headgear",
+      "x": 0.8,
+      "height": 26
+    },
+    {
+      "type": "chimney",
+      "x": 0.62,
+      "height": 36
+    }
+  ],
+  "farSide": [
+    {
+      "type": "pavilion",
+      "from": -0.14,
+      "to": 0.02,
+      "height": 18,
+      "flag": "white"
+    },
+    {
+      "type": "grandstand",
+      "from": 0.26,
+      "to": 0.68,
+      "covered": true,
+      "height": 18
+    },
+    {
+      "type": "bank",
+      "from": 0.04,
+      "to": 0.24,
+      "height": 6
+    },
+    {
+      "type": "bank",
+      "from": 0.7,
+      "to": 1.1,
+      "height": 6
+    }
+  ],
+  "slope": {
+    "direction": "right-down",
+    "amount": 1
+  },
+  "nearSide": {
+    "type": "rope",
+    "crowd": 60
+  },
+  "pitch": {
+    "condition": "worn"
+  },
+  "kits": {
+    "home": [
+      "claret",
+      "white"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#turf-moor"
+}

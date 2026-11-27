@@ -1,0 +1,77 @@
+{
+  "id": "trent-bridge",
+  "name": "Trent Bridge",
+  "season": "autumn",
+  "weather": "clear",
+  "crowd": 55,
+  "view": "West Bridgford: a famous cricket ground behind the Trent Bridge Inn with the large 1886 members' pavilion; the football pitch roped across the outfield.",
+  "skyline": [
+    {
+      "type": "trees",
+      "x": 0.0,
+      "width": 100,
+      "height": 20
+    },
+    {
+      "type": "bridge",
+      "x": 0.62,
+      "width": 70,
+      "height": 10
+    },
+    {
+      "type": "spire",
+      "x": 0.86,
+      "height": 38
+    }
+  ],
+  "farSide": [
+    {
+      "type": "pavilion",
+      "from": 0.2,
+      "to": 0.52,
+      "height": 26,
+      "wall": "brick_hi",
+      "flag": "green"
+    },
+    {
+      "type": "inn",
+      "from": 0.72,
+      "to": 0.92,
+      "height": 16,
+      "sign": "gold"
+    },
+    {
+      "type": "rails",
+      "from": -0.15,
+      "to": 1.15
+    },
+    {
+      "type": "crowd",
+      "from": -0.1,
+      "to": 0.18
+    },
+    {
+      "type": "crowd",
+      "from": 0.54,
+      "to": 0.7
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 55
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "ink",
+      "white"
+    ],
+    "away": [
+      "blue",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#trent-bridge"
+}

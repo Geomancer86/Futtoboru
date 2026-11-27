@@ -126,7 +126,8 @@
     "table.squad.name": 150,
     "table.squad.age": 80,
     "table.squad.country": 100,
-    "table.squad.attr": 70
+    "table.squad.attr": 70,
+    "dashboard.card.w": 480
   },
   "styles": {
     "button.primary": "blue",

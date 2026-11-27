@@ -1,0 +1,91 @@
+{
+  "id": "leamington-road",
+  "name": "Leamington Road",
+  "season": "autumn",
+  "weather": "clear",
+  "crowd": 70,
+  "view": "Leamington Street: a hillside ground rising towards Revidge, a grandstand on the north-east touchline, a pavilion in the east corner, boarded perimeter and an ornate arched entrance; mill chimneys in the valley.",
+  "hills": {
+    "height": 22
+  },
+  "skyline": [
+    {
+      "type": "houses",
+      "x": 0.05,
+      "width": 80,
+      "height": 12
+    },
+    {
+      "type": "chimney",
+      "x": 0.35,
+      "height": 38
+    },
+    {
+      "type": "chimney",
+      "x": 0.7,
+      "height": 46
+    },
+    {
+      "type": "mill",
+      "x": 0.74,
+      "height": 18,
+      "width": 34
+    }
+  ],
+  "farSide": [
+    {
+      "type": "arch",
+      "from": -0.12,
+      "to": -0.04,
+      "height": 12
+    },
+    {
+      "type": "grandstand",
+      "from": 0.22,
+      "to": 0.58,
+      "covered": true,
+      "height": 18,
+      "gable": true,
+      "flag": "blue"
+    },
+    {
+      "type": "pavilion",
+      "from": 0.78,
+      "to": 0.94,
+      "height": 18,
+      "flag": "blue"
+    },
+    {
+      "type": "fence",
+      "from": 0.0,
+      "to": 0.2
+    },
+    {
+      "type": "fence",
+      "from": 0.6,
+      "to": 0.76
+    }
+  ],
+  "slope": {
+    "direction": "left-down",
+    "amount": 5
+  },
+  "nearSide": {
+    "type": "fence",
+    "crowd": 70
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "blue",
+      "white"
+    ],
+    "away": [
+      "red",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#leamington-road"
+}

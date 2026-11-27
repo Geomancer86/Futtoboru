@@ -7,19 +7,24 @@ import java.util.List;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.MainMenuButton;
 import com.rndmodgames.darkblade.screens.tables.ModsSettingsTable;
 import com.rndmodgames.darkblade.screens.tables.SoundSettingsTable;
@@ -54,8 +59,27 @@ public class SettingsScreen implements Screen {
 	 * @param parent
 	 */
 	public SettingsScreen(Game game) {
-		
-this.game = game;
+		this(game, Futtoboru.MENU_SCREEN);
+	}
+
+	/**
+	 * Screen that Back (and Esc) returns to: the main menu, or {@link Futtoboru#GAME_SCREEN} when opened from the
+	 * in-game Options (U-04d).
+	 */
+	private final int returnScreen;
+
+	/** Set once Back was taken, so a second click or Esc in the same frame does not open two screens. */
+	private boolean leaving = false;
+
+	/**
+	 * Settings Screen opened from somewhere else than the main menu
+	 *
+	 * @param returnScreen a {@link Futtoboru} screen id
+	 */
+	public SettingsScreen(Game game, int returnScreen) {
+
+        this.game = game;
+        this.returnScreen = returnScreen;
         
         stage = new Stage(new ScreenViewport());
         
@@ -327,23 +351,49 @@ this.game = game;
         gameplaySettings.add(gameplaySettingsLabel).pad(UiTheme.space("xs"));
         
         // 5 Panel Layout (added Debug Logging)
-        mainContainer.row().colspan(5).expandX().fillX();
-        
-        // 
-        mainContainer.add(graphicsSettings).pad(UiTheme.space("sm")).align(Align.top);
-        mainContainer.add(soundSettings).pad(UiTheme.space("sm")).align(Align.top);
-        mainContainer.add(gameplaySettings).pad(UiTheme.space("sm")).align(Align.top);
-        mainContainer.add(modSettings).pad(UiTheme.space("sm")).align(Align.top);
-        mainContainer.add(debugLoggingSettings).pad(UiTheme.space("sm")).align(Align.top);
+        // the panels scroll (the logging list is taller than 720 px) so the Back button below stays on screen (D18)
+        VisTable panels = new VisTable();
+        panels.add(graphicsSettings).pad(UiTheme.space("sm")).align(Align.top);
+        panels.add(soundSettings).pad(UiTheme.space("sm")).align(Align.top);
+        panels.add(gameplaySettings).pad(UiTheme.space("sm")).align(Align.top);
+        panels.add(modSettings).pad(UiTheme.space("sm")).align(Align.top);
+        panels.add(debugLoggingSettings).pad(UiTheme.space("sm")).align(Align.top);
+        VisScrollPane panelsScroll = new com.rndmodgames.components.AutoFocusScrollPane(panels);
+        panelsScroll.setFadeScrollBars(false);
+        panelsScroll.setScrollingDisabled(true, false);
+        panelsScroll.setOverscroll(false, false);
+        mainContainer.add(panelsScroll).grow();
 
-        // Main Menu Button
-        final MainMenuButton exitButton = new MainMenuButton(game);
+        // Back: to the main menu, or back to the game when opened in-game
+        final VisTextButton exitButton = returnScreen == Futtoboru.MENU_SCREEN
+                ? new MainMenuButton(game)
+                : new VisTextButton(LanguageModLoader.getValue("back"));
+        if (returnScreen != Futtoboru.MENU_SCREEN) {
+            exitButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    goBack();
+                }
+            });
+        }
+
+        // Esc does the same as the Back / Main Menu button
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Keys.ESCAPE) {
+                    goBack();
+                    return true;
+                }
+                return false;
+            }
+        });
         
         //
         mainContainer.row();
         
         // Add the Quit to Main Menu button NOTE: weird colspan needed to center, might be easy to fix
-        mainContainer.add(exitButton).colspan(20).pad(UiTheme.space("xs"));
+        mainContainer.add(exitButton).pad(UiTheme.space("xs"));
 
         // Set debug for Stage and recursive
 //        stage.setDebugAll(DarkBlade.DEBUG_TABLES_ENABLED);
@@ -352,6 +402,15 @@ this.game = game;
         stage.addActor(mainContainer);
     }
     
+    /** Leaves Settings for the screen it was opened from (after the current frame's input is handled). */
+    private void goBack() {
+        if (leaving) {
+            return;
+        }
+        leaving = true;
+        Gdx.app.postRunnable(() -> ((Futtoboru) game).changeScreen(returnScreen));
+    }
+
     @Override
     public void show() {
         

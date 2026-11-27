@@ -1,0 +1,78 @@
+{
+  "id": "gregory-ground",
+  "name": "Gregory Ground",
+  "season": "spring",
+  "weather": "clear",
+  "crowd": 50,
+  "view": "Lenton: a levelled, well-drained pitch with an iron rail, low wooden stands for 2,500 plus members' seats, the old pavilion from Parkside and a press box; the Midland line nearby.",
+  "skyline": [
+    {
+      "type": "railway",
+      "x": 0.7,
+      "embankment": 3,
+      "train": true
+    },
+    {
+      "type": "trees",
+      "x": 0.0,
+      "width": 120,
+      "height": 16
+    },
+    {
+      "type": "chimney",
+      "x": 0.48,
+      "height": 32
+    }
+  ],
+  "farSide": [
+    {
+      "type": "stand",
+      "from": 0.04,
+      "to": 0.34,
+      "height": 9
+    },
+    {
+      "type": "grandstand",
+      "from": 0.38,
+      "to": 0.56,
+      "covered": true,
+      "height": 14
+    },
+    {
+      "type": "stand",
+      "from": 0.58,
+      "to": 0.78,
+      "height": 9
+    },
+    {
+      "type": "pavilion",
+      "from": 0.84,
+      "to": 0.98,
+      "height": 16,
+      "flag": "red"
+    },
+    {
+      "type": "shed",
+      "from": -0.1,
+      "to": 0.0
+    }
+  ],
+  "nearSide": {
+    "type": "fence",
+    "crowd": 50
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "red",
+      "white"
+    ],
+    "away": [
+      "ink",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#gregory-ground"
+}

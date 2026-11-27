@@ -12,6 +12,7 @@ import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
+import com.rndmodgames.futtoboru.menu.UnsavedProgress;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
@@ -32,6 +33,9 @@ public class SaveGameDialog extends VisDialog {
     private final VisTextField nameField = new VisTextField();
     private final VisTable savesTable = new VisTable();
     private final VisTextButton saveGameButton = new VisTextButton(LanguageModLoader.getValue("save_game"));
+
+    /** Run once after the next successful save (U-04d "save first, then quit"); cleared on every show. */
+    private Runnable onSaved;
 
     public SaveGameDialog(SaveGame saveGame, VisTextButton continueGameButton) {
 
@@ -58,11 +62,18 @@ public class SaveGameDialog extends VisDialog {
                 }
                 try {
                     SaveLoadSystem.saveGame(saveGame, nameField.getText());
+                    UnsavedProgress.markSaved(saveGame);
 
                     // Enable the Continue Game Button
                     continueGameButton.setDisabled(false);
 
                     hide();
+
+                    Runnable next = onSaved;
+                    onSaved = null;
+                    if (next != null) {
+                        next.run();
+                    }
                 } catch (IOException | RuntimeException e) {
                     Log.error(Log.SYSTEM_INIT, "SaveGameDialog",
                             "save failed: " + e);
@@ -110,6 +121,12 @@ public class SaveGameDialog extends VisDialog {
     /** The list of saves and the suggested name are read again every time the dialog opens. */
     @Override
     public VisDialog show(Stage stage) {
+        return showThen(stage, null);
+    }
+
+    /** Shows the dialog; {@code afterSave} runs once if the player saves (not on Cancel). */
+    public VisDialog showThen(Stage stage, Runnable afterSave) {
+        onSaved = afterSave;
         refresh();
         return super.show(stage);
     }

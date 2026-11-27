@@ -265,22 +265,6 @@ public class LeagueDetailScreenTable extends VisTable {
             contentTable.add().height(UiTheme.space("sm")).row();
         }
         
-        // Back button
-        VisTextButton backButton = new VisTextButton("Back to Competitions");
-        backButton.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-            
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (menuManager != null) {
-                    menuManager.setActiveMainScreen(MainMenuManager.COMPETITIONS_SCREEN);
-                }
-            }
-        });
-        contentTable.add(backButton).pad(UiTheme.space("sm")).row();
     }
     
     /**
