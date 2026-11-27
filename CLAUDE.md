@@ -2,7 +2,7 @@
 
 Futtoboru is a football manager that starts with the 1888-89 Football League.
 Java 17, Maven (`futtoboru-core`, `futtoboru-desktop`), libGDX 1.12 + VisUI.
-Game data lives in `futtoboru-core/src/main/resources/mods/seasons/18/` (CSV-like `.txt`).
+Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, see `docs/DATA_MODEL.md`).
 
 ## Before you start
 1. `git fetch origin` and read `docs/HANDOFF.md`: what the other machine claimed, merged or left half-done.
