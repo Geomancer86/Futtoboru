@@ -37,7 +37,6 @@ public class NegotiationScreenTable extends VisTable {
     
     public NegotiationScreenTable(Game parent) {
         super(true);
-        this.setDebug(true);
         
         this.game = parent;
         this.currentGame = ((Futtoboru)game).getCurrentGame();

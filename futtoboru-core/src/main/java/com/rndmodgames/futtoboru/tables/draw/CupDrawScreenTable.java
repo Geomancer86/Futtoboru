@@ -280,7 +280,8 @@ public class CupDrawScreenTable extends VisTable {
         int weeksBetweenRounds = 2;
         
         com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator bracketGenerator = 
-            new com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator(currentGame.getIdAllocator());
+            new com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator(currentGame.getIdAllocator(),
+                Futtoboru.randomOf(game).fork("cup-draw:" + currentCup.getId() + ":" + currentEdition.getId()));
         
         List<Match> allMatches = bracketGenerator.generateCompleteBracket(
             currentEdition.getParticipantClubsIds(),

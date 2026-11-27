@@ -81,7 +81,8 @@ public class CupBracketManager {
             if (isReplay) {
                 // Replay also ended in draw - for now, pick random winner (future: implement extra time/penalties)
                 Gdx.app.log("CupBracketManager", "Replay also ended in draw - picking random winner (extra time/penalties not yet implemented)");
-                boolean homeWins = new java.util.Random().nextBoolean();
+                boolean homeWins = com.rndmodgames.futtoboru.game.Futtoboru.randomOf(gameInstance)
+                        .fork("replay-decider:" + completedMatch.getId()).nextBoolean();
                 Club homeClub = currentGame.getClubById(completedMatch.getHomeClubId());
                 Club awayClub = currentGame.getClubById(completedMatch.getAwayClubId());
                 if (homeClub == null || awayClub == null) {

@@ -33,7 +33,6 @@ public class CountryAndCitySelectBox extends VisTable {
         // This enables the automatic component spacing
         super(true);
         
-//        setDebug(true);
         
         VisLabel countryLabel = new VisLabel(LanguageModLoader.getValue("country"));
         VisLabel stateLabel = new VisLabel(LanguageModLoader.getValue("state"));

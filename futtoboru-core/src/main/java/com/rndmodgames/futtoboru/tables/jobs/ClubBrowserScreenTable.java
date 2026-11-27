@@ -40,7 +40,6 @@ public class ClubBrowserScreenTable extends VisTable {
     
     public ClubBrowserScreenTable(Game parent) {
         super(true);
-        this.setDebug(true);
         
         this.game = parent;
         this.currentGame = ((Futtoboru)game).getCurrentGame();
@@ -55,7 +54,6 @@ public class ClubBrowserScreenTable extends VisTable {
         
         // Clubs list
         clubsListTable = new VisTable(true);
-        clubsListTable.setDebug(true);
         
         clubsScrollPane = new VisScrollPane(clubsListTable);
         clubsScrollPane.setFadeScrollBars(false);

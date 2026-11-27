@@ -13,7 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import com.rndmodgames.futtoboru.data.Authority;
@@ -32,6 +31,7 @@ import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.RegionModifier;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.data.BirthDates;
 import com.rndmodgames.futtoboru.system.data.DataRecord;
 import com.rndmodgames.futtoboru.system.data.DataReport;
@@ -113,10 +113,25 @@ public class DatabaseLoader {
     private static DatabaseLoader instance;
 
     /**
-     * TODO: use the same random generator all over
-     * TODO: set a game seed to allow to replay the same game over and over
+     * The random source the database is generated from (P2-0). {@code Futtoboru.create()} injects
+     * {@code game.random().fork("database")} before the first {@link #getInstance()}; without a game (tests, tools)
+     * it is a freshly seeded source. Every player draws from its own fork ("player:" + id), so the data of one
+     * player does not depend on load order.
      */
-    public static Random RNG = new Random();
+    private static RandomSource random = RandomSource.seeded(RandomSource.newSeed());
+
+    /** The source the next {@link #getInstance()} load uses (and the fallback when code runs without a game). */
+    public static synchronized RandomSource getRandom() {
+        return random;
+    }
+
+    /** Sets the source for the next load; call before {@link #getInstance()} (or after {@link #resetDatabaseLoaderInstance()}). */
+    public static synchronized void setRandom(RandomSource source) {
+        if (source == null) {
+            throw new IllegalArgumentException("random source is required");
+        }
+        random = source;
+    }
 
     public DatabaseLoader() {
 
@@ -134,7 +149,7 @@ public class DatabaseLoader {
 
             DatabaseLoader loaded = new DatabaseLoader();
 
-            load(GameData.loadDefault(), RNG);
+            load(GameData.loadDefault(), random);
 
             instance = loaded;
         }
@@ -249,9 +264,10 @@ public class DatabaseLoader {
     }
 
     /**
-     * Builds the whole database from game data. Missing month/day of birth dates are drawn from {@code rng}.
+     * Builds the whole database from game data. Missing month/day of birth dates, generated attributes, contracts
+     * and occupations are drawn from forks of {@code rng}.
      */
-    public static synchronized void load(GameData data, Random rng) {
+    public static synchronized void load(GameData data, RandomSource rng) {
 
         clear();
         gameData = data;
@@ -277,7 +293,7 @@ public class DatabaseLoader {
         loadModifiers(data, dataIds);
         loadCompetitions(data);
         loadPeople(data, rng);
-        loadSeasons(data, dataIds);
+        loadSeasons(data, dataIds, rng);
 
         if (dataIds.peek() >= IdAllocator.GAME_START) {
             DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "GameData",
@@ -458,8 +474,8 @@ public class DatabaseLoader {
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Finished loading " + competitions.size() + " Competitions.");
     }
 
-    /** The canonical Person of every record in people.json (birth dates completed with {@code rng}). */
-    private static void loadPeople(GameData data, Random rng) {
+    /** The canonical Person of every record in people.json (birth dates completed from {@code rng.fork("born:" + id)}). */
+    private static void loadPeople(GameData data, RandomSource rng) {
         for (DataRecord r : data.all(GameData.PERSON)) {
             Person person = new Person();
             person.setId(r.runtimeId());
@@ -467,13 +483,13 @@ public class DatabaseLoader {
             person.setName(r.str("firstName"));
             person.setLastname(r.str("lastName"));
             person.setCountry(countriesByDataId.get(r.ref("country")));
-            person.setBirthDate(BirthDates.complete(r.str("born"), rng));
+            person.setBirthDate(BirthDates.complete(r.str("born"), rng.fork("born:" + r.id()).asRandom()));
             persons.add(person);
             personsByDataId.put(person.getDataId(), person);
         }
     }
 
-    private static void loadSeasons(GameData data, IdAllocator dataIds) {
+    private static void loadSeasons(GameData data, IdAllocator dataIds, RandomSource rng) {
         for (DataRecord r : data.all(GameData.SEASON)) {
             Season season = new Season();
             season.setId(r.runtimeId());
@@ -493,7 +509,7 @@ public class DatabaseLoader {
 
             DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "LOADING SEASON " + season.getName());
 
-            loadSquads(data, season, dataIds);
+            loadSquads(data, season, dataIds, rng);
 
             // Editions of this season (participants by runtime club id)
             Map<CompetitionEdition, Competition> editions = new LinkedHashMap<>();
@@ -530,7 +546,7 @@ public class DatabaseLoader {
      * keeps today's gameplay: the first squad gets the canonical Person, later squads a runtime copy with the same
      * data id. Lookups by data id return the canonical one.
      */
-    private static void loadSquads(GameData data, Season season, IdAllocator dataIds) {
+    private static void loadSquads(GameData data, Season season, IdAllocator dataIds, RandomSource rng) {
         Set<String> listed = new HashSet<>();
         Set<String> usedGrounds = new HashSet<>();
         int copies = 0;
@@ -579,7 +595,7 @@ public class DatabaseLoader {
                     person = copyOf(person, dataIds.nextId());
                     copies++;
                 }
-                club.getPlayers().add(createPlayer(person, club, season, dataIds));
+                club.getPlayers().add(createPlayer(person, club, season, dataIds, rng));
             }
 
             season.getClubs().add(club);
@@ -610,8 +626,11 @@ public class DatabaseLoader {
     }
 
     /** A loaded player: attributes, a random contract and an occupation, as the legacy PlayersLoader did. */
-    private static Player createPlayer(Person person, Club club, Season season, IdAllocator dataIds) {
+    private static Player createPlayer(Person person, Club club, Season season, IdAllocator dataIds, RandomSource rng) {
         Player player = new Player();
+
+        // one stream per player (runtime ids of data are stable), so load order does not matter
+        RandomSource playerRng = rng.fork("player:" + person.getId());
 
         // players and persons share ids (a Player is the football role of a Person)
         player.setId(person.getId());
@@ -619,17 +638,19 @@ public class DatabaseLoader {
 
         // Note: the attribute generator uses the person's birth date + 20 years as the reference date
         LocalDateTime estimatedDate = person.getBirthDate().plusYears(20);
-        new PlayerAttributeGenerator().generatePlayerAttributes(player, person, estimatedDate);
+        new PlayerAttributeGenerator().generatePlayerAttributes(player, person, estimatedDate, playerRng.fork("attributes"));
 
         // For Season 1, contracts are randomly generated (ids from the data range: they are made at load)
         LocalDateTime seasonStartDate = season.getStartDate() != null ? season.getStartDate() : estimatedDate;
-        PlayerContract contract = PlayerContractGenerator.generateRandomContract(player, club, seasonStartDate, dataIds);
+        PlayerContract contract = PlayerContractGenerator.generateRandomContract(player, club, seasonStartDate, dataIds,
+                playerRng.fork("contract"));
         if (contract != null) {
             club.addPlayerContract(contract);
         }
 
         // Professional players won't get occupations (full-time football)
-        PlayerProfessionAssigner.assignProfession(player, club, contract != null ? contract.getContractType() : null);
+        PlayerProfessionAssigner.assignProfession(player, club, contract != null ? contract.getContractType() : null,
+                playerRng.fork("profession"));
 
         if (person.getCurrentClubId() == null) {
             person.setCurrentClubId(club.getId());

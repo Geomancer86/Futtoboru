@@ -46,7 +46,6 @@ public class ClubDetailScreenTable extends VisTable {
     
     public ClubDetailScreenTable(Game parent) {
         super(true);
-        this.setDebug(true);
         
         Gdx.app.log("ClubDetailScreenTable", "=== CONSTRUCTOR START ===");
         System.out.println("[ClubDetailScreenTable] ===== CONSTRUCTOR CALLED =====");

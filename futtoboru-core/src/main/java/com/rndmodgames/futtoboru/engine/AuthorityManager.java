@@ -803,7 +803,8 @@ public class AuthorityManager {
         int weeksBetweenRounds = 2;
         
         com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator bracketGenerator = 
-            new com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator(ids());
+            new com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator(ids(),
+                Futtoboru.randomOf(game).fork("cup-draw:" + cup.getId() + ":" + edition.getId()));
         
         List<Match> allMatches = bracketGenerator.generateCompleteBracket(
             edition.getParticipantClubsIds(),

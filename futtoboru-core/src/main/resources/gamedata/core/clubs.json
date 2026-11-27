@@ -180,14 +180,16 @@
     ]
   },
   {
-    "id": "witton-albion",
-    "name": "Witton Albion",
-    "fullName": "Witton Albion Football Club",
-    "founded": 1887,
+    "id": "witton",
+    "name": "Witton",
+    "fullName": "Witton Football Club",
+    "founded": 1874,
     "country": "england",
     "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
+      "https://en.wikipedia.org/wiki/Witton_F.C.",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup"
+    ],
+    "notes": "Witton F.C. of Blackburn, Lancashire (1874-1892), the \"Witton\" that lost 2-3 to Aston Villa in the 1888-89 FA Cup first round. Was wrongly entered as Witton Albion (Northwich), which played no FA Cup until 1907-08; old id `witton-albion` is an alias."
   },
   {
     "id": "bootle",

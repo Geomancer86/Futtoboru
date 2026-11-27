@@ -43,7 +43,6 @@ public class JobBoardScreenTable extends VisTable {
     
     public JobBoardScreenTable(Game parent) {
         super(true);
-        this.setDebug(true);
         
         // Force output immediately
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "===== CONSTRUCTOR CALLED =====");
@@ -64,7 +63,6 @@ public class JobBoardScreenTable extends VisTable {
         
         // Jobs list
         jobsListTable = new VisTable(true);
-        jobsListTable.setDebug(true);
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Created jobsListTable");
         
         jobsScrollPane = new VisScrollPane(jobsListTable);

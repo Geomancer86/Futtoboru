@@ -9,6 +9,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ContractType;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerProfession;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
 
@@ -31,8 +32,9 @@ public class PlayerProfessionAssigner {
      * @param player The player
      * @param club The player's club (for regional profession selection)
      * @param contractType The player's contract type (AMATEUR, SEMI_PRO, PROFESSIONAL)
+     * @param rng picks the occupation (a fork of the game's random source for this player)
      */
-    public static void assignProfession(Player player, Club club, Integer contractType) {
+    public static void assignProfession(Player player, Club club, Integer contractType, RandomSource rng) {
         if (player == null) {
             return;
         }
@@ -47,7 +49,7 @@ public class PlayerProfessionAssigner {
         // For now, assign randomly based on club region
         // Future: Load from scripts with historical data
         
-        PlayerProfession profession = selectRandomProfessionForClub(club);
+        PlayerProfession profession = selectRandomProfessionForClub(club, rng);
         player.setPlayerProfession(profession);
         
         if (profession != null) {
@@ -70,7 +72,7 @@ public class PlayerProfessionAssigner {
      * For now, select from all professions with weighted probability
      * Future: Use regional availability from profession data
      */
-    private static PlayerProfession selectRandomProfessionForClub(Club club) {
+    private static PlayerProfession selectRandomProfessionForClub(Club club, RandomSource rng) {
         Map<Long, PlayerProfession> allProfessions = DatabaseLoader.getAllPlayerProfessions();
         
         if (allProfessions == null || allProfessions.isEmpty()) {
@@ -87,7 +89,7 @@ public class PlayerProfessionAssigner {
         
         // For now, random selection
         // Future: Weight by club region, profession category, etc.
-        int randomIndex = DatabaseLoader.RNG.nextInt(professionList.size());
+        int randomIndex = rng.nextInt(professionList.size());
         return professionList.get(randomIndex);
     }
     
@@ -97,7 +99,7 @@ public class PlayerProfessionAssigner {
      * @param club The club
      * @param contracts Map of player ID to contract type (if available)
      */
-    public static void assignProfessionsToClub(Club club, Map<Long, Integer> contracts) {
+    public static void assignProfessionsToClub(Club club, Map<Long, Integer> contracts, RandomSource rng) {
         if (club == null || club.getPlayers() == null) {
             return;
         }
@@ -115,7 +117,7 @@ public class PlayerProfessionAssigner {
             }
             
             // Assign profession
-            assignProfession(player, club, contractType);
+            assignProfession(player, club, contractType, rng.fork("profession:" + player.getId()));
             
             if (player.getPlayerProfession() != null) {
                 assigned++;

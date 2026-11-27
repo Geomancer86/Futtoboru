@@ -345,6 +345,16 @@ public final class UiTheme {
 Test: `UiThemeTest` parses `theme.json`, checks every `colors` value resolves (palette or a `skin:` name listed in
 `tixel.json`), and checks that every `UiTheme.color("...")` / `space("...")` literal found in `src/main/java` exists in the JSON.
 
+**U-01a implemented (2026-11-27, `ws/U-01a-ui-theme`).** `resources/ui/theme.json` holds the starter tokens above,
+plus `label.small` in `styles` and five `table.league.*` / four `table.squad.*` column sizes. `ui/UiTheme` loads it
+in `Futtoboru.create()` (`UiTheme.loadDefault()`, no GL needed) and offers `color`, `space`, `size`, `style`,
+`fontScale`, `font` and `clearScreen`. Two changes from the sketch above: an unknown token **throws**
+`IllegalArgumentException` (no magenta fallback), and loading is strict (unknown or missing fields, duplicate keys,
+bad hex, unknown palette/skin colour, font or style names all throw). Merged colours to keep in mind in U-02c/d:
+pure `00FF00`/`FF0000` (PlayersList, PlayerDetail, MyApplications, ClubDetail) become `state.positive`/`state.negative`
+(`33FF33`/`FF3333`), PlayerDetail gold `FFD600` becomes `FFD700`, and `Color.GRAY` (`7F7F7F`) becomes `808080`.
+`label(...)`, `uiScale()` and key constants are left for U-02c and U-03a.
+
 ### 4.3 U-02: cleanup approach
 
 1. Delete the 12 `setDebug(true)` calls. Optionally put a global toggle behind `Futtoboru.DEBUG_MODE`: F11

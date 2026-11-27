@@ -4,9 +4,17 @@
   "profession": {},
   "occupation": {},
   "competition": {},
-  "club": {},
+  "club": {
+    "witton-albion": "witton"
+  },
   "ground": {},
-  "person": {},
+  "person": {
+    "james-duerden-1865": "james-duerden-1866",
+    "robert-haresnape-1865": "robert-haresnape-1866",
+    "joe-lofthouse-1865": "joe-lofthouse-1864",
+    "pat-gallocher-1865-2": "pat-gallocher-1865",
+    "william-chatterton-1865": "william-chatterton-1861"
+  },
   "region": {},
   "season": {},
   "edition": {}

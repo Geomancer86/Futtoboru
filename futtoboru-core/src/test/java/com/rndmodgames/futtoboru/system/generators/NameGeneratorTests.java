@@ -10,6 +10,7 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -32,6 +33,7 @@ public class NameGeneratorTests {
         application.setPersonGenerator(new PersonGenerator(application));
         
         new HeadlessApplication(application , config);
+        com.rndmodgames.futtoboru.BaseTest.awaitHeadlessCreate(); // create() must finish: DatabaseLoader publishes its instance before loading
     }
     
     @Test
@@ -47,7 +49,7 @@ public class NameGeneratorTests {
         assertNotNull(england);
         
         // Generates a random game
-        String randomName [] = NameGenerator.generateName(england);
+        String randomName [] = NameGenerator.generateName(england, RandomSource.seeded(1888));
    
         assertNotNull(randomName);
         
