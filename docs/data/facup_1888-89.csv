@@ -1,0 +1,39 @@
+round,date,home_id,away_id,home_goals,away_goals,attendance,venue,source
+R1,1889-02-02,accrington,blackburn-rovers,1,1,3000,,FAC;RSC;E11C att:WH;WA
+R1,1889-02-02,aston-villa,witton-albion,3,2,1500,,FAC;RSC;E11C att:WH
+R1,1889-02-02,birmingham-st-georges,long-eaton-rangers,3,2,,,FAC;RSC;E11C
+R1,1889-02-02,bootle,preston-north-end,0,3,1000,,FAC;RSC;E11C att:WA
+R1,1889-02-02,burnley,old-westminsters,4,3,,,FAC;RSC;E11C
+R1,1889-02-02,chatham-town,south-shore,2,1,,,FAC;RSC;E11C
+R1,1889-02-02,derby-county,derby-junction,1,0,4000,,FAC;RSC;E11C att:WH
+R1,1889-02-02,grimsby-town,sunderland-albion,3,1,,,FAC;RSC;E11C
+R1,1889-02-02,halliwell,crewe-alexandra,2,2,,,RSC;E11C (FAC lists Crewe first)
+R1,1889-02-02,nottingham-forest,linfield,2,2,,,FAC;RSC;E11C
+R1,1889-02-02,notts-county,old-brightonians,2,0,3000,,FAC;RSC;E11C att:WH
+R1,1889-02-02,notts-rangers,sheffield-wednesday,1,1,,,FAC;RSC;E11C
+R1,1889-02-02,small-heath,west-bromwich-albion,2,3,3034,,FAC;RSC;E11C att:WA
+R1,1889-02-02,swifts,wrexham,3,1,,,FAC;RSC;E11C
+R1,1889-02-02,walsall,heeley,5,1,,,FAC;RSC;E11C
+R1,1889-02-02,wolverhampton-wanderers,old-carthusians,4,3,6000,,FAC;RSC;E11C att:WH
+R1r,1889-02-09,blackburn-rovers,accrington,5,0,8000,,FAC;RSC;E11C att:WH;WA
+R1r,1889-02-09,crewe-alexandra,halliwell,1,5,,,FAC;RSC;E11C
+R1r,1889-02-09,sheffield-wednesday,notts-rangers,3,0,,,FAC;RSC;E11C
+R1r,,nottingham-forest,linfield,,,,,FAC;RSC walkover (Linfield conceded the tie)
+R2,,blackburn-rovers,swifts,,,,,FAC;RSC walkover (Swifts scratched)
+R2,1889-02-16,aston-villa,derby-county,5,3,2000,,FAC;RSC;E11C att:WH;WA
+R2,1889-02-16,chatham-town,nottingham-forest,1,1,,,FAC;RSC;E11C
+R2,1889-02-16,grimsby-town,preston-north-end,0,2,8000,,FAC;RSC;E11C att:WA
+R2,1889-02-16,halliwell,birmingham-st-georges,2,3,,,FAC;RSC;E11C
+R2,1889-02-16,sheffield-wednesday,notts-county,3,2,3000,,FAC;RSC;E11C att:WA
+R2,1889-02-16,west-bromwich-albion,burnley,5,1,5104,,FAC;RSC;E11C att:WH;WA
+R2,1889-02-16,wolverhampton-wanderers,walsall,6,1,5000,,FAC;RSC;E11C att:WH
+R2r,1889-02-23,nottingham-forest,chatham-town,2,2,,,FAC;RSC;E11C
+R2r2,1889-02-28,chatham-town,nottingham-forest,3,2,,Kennington Oval,FAC;RSC;E11C
+R3,1889-03-02,blackburn-rovers,aston-villa,8,1,12000,,FAC;RSC;E11C att:WH;WA
+R3,1889-03-02,chatham-town,west-bromwich-albion,1,10,17000,,FAC;RSC;E11C att:WA
+R3,1889-03-02,preston-north-end,birmingham-st-georges,2,0,8000,,FAC;RSC;E11C att:WH
+R3,1889-03-02,wolverhampton-wanderers,sheffield-wednesday,3,0,10000,,FAC;RSC;E11C att:WH
+SF,1889-03-16,preston-north-end,west-bromwich-albion,1,0,22688,Bramall Lane,FAC;RSC;E11C att:WH;WA
+SF,1889-03-16,wolverhampton-wanderers,blackburn-rovers,1,1,15000,Alexandra Recreation Ground,FAC;E11C;RSC att:WH;WA
+SFr,1889-03-23,wolverhampton-wanderers,blackburn-rovers,3,1,9000,Alexandra Recreation Ground,FAC;RSC;E11C att:WH;WA
+F,1889-03-30,preston-north-end,wolverhampton-wanderers,3,0,27000,Kennington Oval,FAC;RSC;E11C att:FINAL
