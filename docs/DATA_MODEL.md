@@ -96,6 +96,17 @@ Warnings: a person in several squads, a squad under 11, no first name, an age ou
 - League founders and cup entrants come from the editions in `season.json`; code compares professions by data id
   (`Profession.MANAGER`...), never by number.
 
+### How slice 3 (saves v1, P2-5) is built
+- `system/save/SaveCodec`: a header (`saveVersion`, game and data versions, packs, `savedAt`, a `summary` for the
+  load list), the `game` fields, then one table per kind of game object (authorities, competitions, editions,
+  leagues, clubs, persons, players, matches), each object once, sorted by runtime id; anywhere else a game object is
+  its runtime id. Countries, continents, professions, occupations and a ground's facts are their data id, re-linked
+  on load to the database's objects. A reference that doesn't resolve is reported and left out, never a crash.
+- Loading rebuilds the database objects from the data, reads the save, then binds the lookups
+  (`DatabaseLoader.getClubById` and the rest) to the game's objects: one object per club, person, competition.
+- `SaveMigrations` holds one step per version (empty: v1 is the first); a file without `saveVersion` (v0.4) is
+  listed as "older version" and not loaded. The first real v1 save is kept in `src/test/resources/saves/`.
+
 ## Rename log
 | Date | Kind | Old id | New id | Why | Approved by |
 |---|---|---|---|---|---|
