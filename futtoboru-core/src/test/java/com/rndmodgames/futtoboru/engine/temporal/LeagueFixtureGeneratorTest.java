@@ -42,6 +42,7 @@ public class LeagueFixtureGeneratorTest {
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         config.updatesPerSecond = 30;
         new HeadlessApplication(new Futtoboru(), config);
+        com.rndmodgames.futtoboru.BaseTest.awaitHeadlessCreate(); // create() must finish: DatabaseLoader publishes its instance before loading
     }
     
     @BeforeEach
