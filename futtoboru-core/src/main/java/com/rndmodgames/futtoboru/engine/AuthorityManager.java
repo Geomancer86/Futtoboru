@@ -55,6 +55,9 @@ public class AuthorityManager {
     public static final java.math.BigDecimal LEAGUE_CHAMPION_PRIZE = new java.math.BigDecimal("500.00");
     public static final java.math.BigDecimal LEAGUE_RUNNER_UP_PRIZE = new java.math.BigDecimal("250.00");
 
+    /** The month a cup's season opens (its edition starts and is drawn): May, as for the 1888-89 FA Cup */
+    static final int CUP_SEASON_OPENS_MONTH = 5;
+
     // for quick reference
     Futtoboru game;
     SaveGame currentGame;
@@ -691,11 +694,16 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                     edition = findUpcomingEdition(cup, currentDate);
                     
                     if (edition == null) {
+                        if (cup.getEditions() != null && !cup.getEditions().isEmpty()) {
+                            // P2-3: between editions; the next one is staged in May (checkNewSeasonGeneration).
+                            // Making one here gave an "FA Cup 1889" of the 12 league clubs in February 1889.
+                            continue;
+                        }
                         edition = createNewCupEdition(cup, currentDate);
                     } else {
                         // Activate the upcoming edition if it's time
                         // FA Cup creation script runs on May 1st
-                        if (currentDate.getMonthValue() >= 5) {
+                        if (currentDate.getMonthValue() >= CUP_SEASON_OPENS_MONTH) {
                             edition.setStartDate(currentDate);
                             edition.setEndDate(currentDate.plusMonths(12)); // Allow a full year
                             Gdx.app.log("AuthorityManager", "Activated upcoming cup edition: " + edition.getName());
@@ -1793,7 +1801,16 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
     }
 
     private boolean needsNextCupStaging(Competition cup, LocalDateTime currentDate) {
-        // Similar logic for cups
+        // P2-3: not on 1 January (a 1889-90 cup was drawn and played in January 1889, alongside the 1888-89
+        // season): the next edition opens in May, like the first one (the cup creation script and the 1888-89
+        // activation in checkAndScheduleCupDraws), and not while the edition being played has no winner yet
+        if (currentDate.getMonthValue() < CUP_SEASON_OPENS_MONTH) {
+            return false;
+        }
+        CompetitionEdition current = getCurrentCupEdition(cup, currentDate);
+        if (current != null && current.getChampionsId() == null) {
+            return false;
+        }
         int nextYear = currentDate.getYear();
         String nextSeasonNameFragment = nextYear + "-" + ((nextYear + 1) % 100);
         
