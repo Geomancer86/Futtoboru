@@ -69,8 +69,11 @@ pipeline {
                     
         //             //wrap([$class: 'Xvfb', screen: '1920x1080x32']) {
         //             wrap([$class: 'Xvfb']) {
-        //                 // Run Sonar 
-        //                 sh "mvn clean verify -Djacoco.skip=false sonar:sonar -Dsonar.projectKey=FuttoboruDEV -Dsonar.host.url=http://192.168.0.102:9000 -Dsonar.login=7860635e27b1b05389584bbc0e6c73f077a4631e"
+        //                 // Run Sonar (URL and token come from Jenkins credentials, never literals)
+        //                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN'),
+        //                                  string(credentialsId: 'sonar-host-url', variable: 'SONAR_HOST_URL')]) {
+        //                     sh 'mvn clean verify -Djacoco.skip=false sonar:sonar -Dsonar.projectKey=FuttoboruDEV -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.token=$SONAR_TOKEN'
+        //                 }
         //             }        
         //         }
                        

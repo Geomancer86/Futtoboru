@@ -1,0 +1,61 @@
+#!/bin/sh
+# Futtoboru pre-commit guard: this repository is PUBLIC.
+# Blocks commits whose staged changes add secrets, private IPs, personal
+# emails, files from private folders or reference papers.
+# Enable once per clone:   git config core.hooksPath tools/hooks
+# Emergency bypass (only if you are sure it is a false positive):
+#   git commit --no-verify
+
+fail=0
+
+# 1. If gitleaks is installed, let it scan the staged changes too.
+if command -v gitleaks >/dev/null 2>&1; then
+    if ! gitleaks protect --staged --redact --no-banner; then
+        fail=1
+    fi
+fi
+
+# 2. Built-in checks on the added lines (works with plain Git for Windows).
+added=$(git diff --cached -U0 --no-color --diff-filter=ACM -- . ':(exclude)tools/hooks/pre-commit' | grep '^+' | grep -v '^+++')
+
+check() {
+    label="$1"; pattern="$2"
+    hits=$(printf '%s\n' "$added" | grep -E -i -- "$pattern")
+    if [ -n "$hits" ]; then
+        echo "pre-commit: possible $label in staged changes:" >&2
+        printf '%s\n' "$hits" | cut -c1-160 | head -5 >&2
+        fail=1
+    fi
+}
+
+check "credential"        '(sonar\.(login|token)=[A-Za-z0-9]|api[_-]?key[[:space:]]*[:=][[:space:]]*["'"'"']?[A-Za-z0-9_-]{12,}|(password|passwd|secret)[[:space:]]*[:=][[:space:]]*["'"'"'][^"'"'"'$ {]{6,})'
+check "GitHub token"      '(ghp_|gho_|ghu_|ghs_|github_pat_)[A-Za-z0-9_]{20,}'
+check "AWS key"           'AKIA[0-9A-Z]{16}'
+check "private key"       'BEGIN [A-Z ]*PRIVATE KEY'
+check "private LAN IP"    '(^|[^0-9.])(192\.168\.[0-9]{1,3}\.[0-9]{1,3}|10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|172\.(1[6-9]|2[0-9]|3[01])\.[0-9]{1,3}\.[0-9]{1,3})([^0-9]|$)'
+check "personal email"    '[A-Za-z0-9._%+-]+@(gmail|hotmail|outlook|yahoo|live|icloud|proton(mail)?)\.[a-z.]+'
+check "local user path"   '[Cc]:[\\/]+Users[\\/]+[A-Za-z0-9._-]+'
+
+# 3. Files that must never be committed here.
+files=$(git diff --cached --name-only --diff-filter=ACM)
+bad=$(printf '%s\n' "$files" | grep -E -i '(^|/)(private|secrets|references)/|\.(pem|key|p12|pfx|jks|keystore|pdf)$|(^|/)\.env(\.|$)|credentials.*\.json$')
+if [ -n "$bad" ]; then
+    echo "pre-commit: these files look private or third-party (keep them in C:\\git\\futtoboru-private):" >&2
+    printf '  %s\n' $bad >&2
+    fail=1
+fi
+
+# 4. Author email must be the GitHub noreply address.
+email=$(git config user.email)
+case "$email" in
+    *@users.noreply.github.com) ;;
+    *) echo "pre-commit: user.email is '$email'; use your GitHub noreply address:" >&2
+       echo "  git config user.email \"<id>+<user>@users.noreply.github.com\"" >&2
+       fail=1 ;;
+esac
+
+if [ "$fail" -ne 0 ]; then
+    echo "pre-commit: commit blocked (see PRIVACY.md)." >&2
+    exit 1
+fi
+exit 0
