@@ -1,0 +1,44 @@
+[
+  {
+    "country": "england",
+    "modifiers": {
+      "strength": 2,
+      "endurance": 1,
+      "dexterity": 1,
+      "determination": 2,
+      "perception": 1,
+      "teamwork": 1
+    },
+    "notes": "Inventor of modern football, dominant in 1887-88. Industrial workers provide physical strength and determination. Strong competitive spirit.",
+    "footballingStrength": 9
+  },
+  {
+    "country": "scotland",
+    "modifiers": {
+      "speed": 1,
+      "perception": 2,
+      "teamwork": 1
+    },
+    "notes": "Strong footballing tradition, skillful play, tactical awareness. Won 1888-89 championship. Known for passing game.",
+    "footballingStrength": 9
+  },
+  {
+    "country": "wales",
+    "modifiers": {
+      "strength": 1,
+      "courage": 2,
+      "determination": 1
+    },
+    "notes": "Fighting spirit and determination. Some good results (11-0 vs Ireland 1887-88) but inconsistent. Mining/industrial background.",
+    "footballingStrength": 6
+  },
+  {
+    "country": "ireland",
+    "modifiers": {
+      "courage": 1,
+      "determination": 1
+    },
+    "notes": "Less developed football culture. Struggled defensively in 1888-89 (conceded 26 goals in 1887-88). Fighting spirit but needs development.",
+    "footballingStrength": 4
+  }
+]

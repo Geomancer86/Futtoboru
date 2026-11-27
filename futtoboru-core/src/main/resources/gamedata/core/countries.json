@@ -1,0 +1,1203 @@
+[
+  {
+    "id": "afghanistan",
+    "legacyId": 1,
+    "name": "Afghanistan",
+    "continent": "asia"
+  },
+  {
+    "id": "albania",
+    "legacyId": 2,
+    "name": "Albania",
+    "continent": "europe"
+  },
+  {
+    "id": "algeria",
+    "legacyId": 3,
+    "name": "Algeria",
+    "continent": "africa"
+  },
+  {
+    "id": "andorra",
+    "legacyId": 4,
+    "name": "Andorra",
+    "continent": "europe"
+  },
+  {
+    "id": "angola",
+    "legacyId": 5,
+    "name": "Angola",
+    "continent": "africa"
+  },
+  {
+    "id": "antigua-and-barbuda",
+    "legacyId": 6,
+    "name": "Antigua and Barbuda",
+    "continent": "north-america"
+  },
+  {
+    "id": "argentina",
+    "legacyId": 7,
+    "name": "Argentina",
+    "continent": "south-america",
+    "selectableByDefault": true
+  },
+  {
+    "id": "armenia",
+    "legacyId": 8,
+    "name": "Armenia",
+    "continent": "europe"
+  },
+  {
+    "id": "australia",
+    "legacyId": 9,
+    "name": "Australia",
+    "continent": "oceania"
+  },
+  {
+    "id": "austria",
+    "legacyId": 10,
+    "name": "Austria",
+    "continent": "europe"
+  },
+  {
+    "id": "azerbaijan",
+    "legacyId": 11,
+    "name": "Azerbaijan",
+    "continent": "europe"
+  },
+  {
+    "id": "bahrain",
+    "legacyId": 13,
+    "name": "Bahrain",
+    "continent": "asia"
+  },
+  {
+    "id": "bangladesh",
+    "legacyId": 14,
+    "name": "Bangladesh",
+    "continent": "asia"
+  },
+  {
+    "id": "barbados",
+    "legacyId": 15,
+    "name": "Barbados",
+    "continent": "north-america"
+  },
+  {
+    "id": "belarus",
+    "legacyId": 16,
+    "name": "Belarus",
+    "continent": "europe"
+  },
+  {
+    "id": "belgium",
+    "legacyId": 17,
+    "name": "Belgium",
+    "continent": "europe"
+  },
+  {
+    "id": "belize",
+    "legacyId": 18,
+    "name": "Belize",
+    "continent": "north-america"
+  },
+  {
+    "id": "benin",
+    "legacyId": 19,
+    "name": "Benin",
+    "continent": "africa"
+  },
+  {
+    "id": "bhutan",
+    "legacyId": 20,
+    "name": "Bhutan",
+    "continent": "asia"
+  },
+  {
+    "id": "bolivia",
+    "legacyId": 21,
+    "name": "Bolivia",
+    "continent": "south-america"
+  },
+  {
+    "id": "bosnia-and-herzegovina",
+    "legacyId": 22,
+    "name": "Bosnia and Herzegovina",
+    "continent": "europe"
+  },
+  {
+    "id": "botswana",
+    "legacyId": 23,
+    "name": "Botswana",
+    "continent": "africa"
+  },
+  {
+    "id": "brazil",
+    "legacyId": 24,
+    "name": "Brazil",
+    "continent": "south-america"
+  },
+  {
+    "id": "brunei",
+    "legacyId": 25,
+    "name": "Brunei",
+    "continent": "asia"
+  },
+  {
+    "id": "bulgaria",
+    "legacyId": 26,
+    "name": "Bulgaria",
+    "continent": "europe"
+  },
+  {
+    "id": "burkina-faso",
+    "legacyId": 27,
+    "name": "Burkina Faso",
+    "continent": "africa"
+  },
+  {
+    "id": "burundi",
+    "legacyId": 28,
+    "name": "Burundi",
+    "continent": "africa"
+  },
+  {
+    "id": "cambodia",
+    "legacyId": 29,
+    "name": "Cambodia",
+    "continent": "asia"
+  },
+  {
+    "id": "cameroon",
+    "legacyId": 30,
+    "name": "Cameroon",
+    "continent": "africa"
+  },
+  {
+    "id": "canada",
+    "legacyId": 31,
+    "name": "Canada",
+    "continent": "north-america"
+  },
+  {
+    "id": "cape-verde",
+    "legacyId": 32,
+    "name": "Cape Verde",
+    "continent": "africa"
+  },
+  {
+    "id": "central-african-republic",
+    "legacyId": 33,
+    "name": "Central African Republic",
+    "continent": "africa"
+  },
+  {
+    "id": "chad",
+    "legacyId": 34,
+    "name": "Chad",
+    "continent": "africa"
+  },
+  {
+    "id": "chile",
+    "legacyId": 35,
+    "name": "Chile",
+    "continent": "south-america"
+  },
+  {
+    "id": "china",
+    "legacyId": 36,
+    "name": "China",
+    "continent": "asia"
+  },
+  {
+    "id": "colombia",
+    "legacyId": 37,
+    "name": "Colombia",
+    "continent": "south-america"
+  },
+  {
+    "id": "comoros",
+    "legacyId": 38,
+    "name": "Comoros",
+    "continent": "africa"
+  },
+  {
+    "id": "democratic-republic-of-the-congo",
+    "legacyId": 39,
+    "name": "Democratic Republic of the Congo",
+    "continent": "africa"
+  },
+  {
+    "id": "republic-of-the-congo",
+    "legacyId": 40,
+    "name": "Republic of the Congo",
+    "continent": "africa"
+  },
+  {
+    "id": "cook-islands",
+    "legacyId": 41,
+    "name": "Cook Islands",
+    "continent": "oceania"
+  },
+  {
+    "id": "costa-rica",
+    "legacyId": 42,
+    "name": "Costa Rica",
+    "continent": "north-america"
+  },
+  {
+    "id": "croatia",
+    "legacyId": 43,
+    "name": "Croatia",
+    "continent": "europe"
+  },
+  {
+    "id": "cuba",
+    "legacyId": 44,
+    "name": "Cuba",
+    "continent": "north-america"
+  },
+  {
+    "id": "cyprus",
+    "legacyId": 45,
+    "name": "Cyprus",
+    "continent": "europe"
+  },
+  {
+    "id": "czech-republic",
+    "legacyId": 46,
+    "name": "Czech Republic",
+    "continent": "europe"
+  },
+  {
+    "id": "denmark",
+    "legacyId": 48,
+    "name": "Denmark",
+    "continent": "europe"
+  },
+  {
+    "id": "djibouti",
+    "legacyId": 49,
+    "name": "Djibouti",
+    "continent": "africa"
+  },
+  {
+    "id": "dominica",
+    "legacyId": 50,
+    "name": "Dominica",
+    "continent": "north-america"
+  },
+  {
+    "id": "dominican-republic",
+    "legacyId": 51,
+    "name": "Dominican Republic",
+    "continent": "north-america"
+  },
+  {
+    "id": "east-timor",
+    "legacyId": 52,
+    "name": "East Timor",
+    "continent": "oceania"
+  },
+  {
+    "id": "ecuador",
+    "legacyId": 53,
+    "name": "Ecuador",
+    "continent": "south-america"
+  },
+  {
+    "id": "egypt",
+    "legacyId": 54,
+    "name": "Egypt",
+    "continent": "africa"
+  },
+  {
+    "id": "el-salvador",
+    "legacyId": 55,
+    "name": "El Salvador",
+    "continent": "north-america"
+  },
+  {
+    "id": "england",
+    "legacyId": 1000,
+    "name": "England",
+    "continent": "europe"
+  },
+  {
+    "id": "equatorial-guinea",
+    "legacyId": 56,
+    "name": "Equatorial Guinea",
+    "continent": "africa"
+  },
+  {
+    "id": "eritrea",
+    "legacyId": 57,
+    "name": "Eritrea",
+    "continent": "africa"
+  },
+  {
+    "id": "estonia",
+    "legacyId": 58,
+    "name": "Estonia",
+    "continent": "europe"
+  },
+  {
+    "id": "eswatini",
+    "legacyId": 59,
+    "name": "Eswatini",
+    "continent": "africa"
+  },
+  {
+    "id": "ethiopia",
+    "legacyId": 60,
+    "name": "Ethiopia",
+    "continent": "africa"
+  },
+  {
+    "id": "fiji",
+    "legacyId": 61,
+    "name": "Fiji",
+    "continent": "oceania"
+  },
+  {
+    "id": "finland",
+    "legacyId": 62,
+    "name": "Finland",
+    "continent": "europe"
+  },
+  {
+    "id": "france",
+    "legacyId": 63,
+    "name": "France",
+    "continent": "europe"
+  },
+  {
+    "id": "gabon",
+    "legacyId": 64,
+    "name": "Gabon",
+    "continent": "africa"
+  },
+  {
+    "id": "georgia",
+    "legacyId": 66,
+    "name": "Georgia",
+    "continent": "europe"
+  },
+  {
+    "id": "germany",
+    "legacyId": 67,
+    "name": "Germany",
+    "continent": "europe"
+  },
+  {
+    "id": "ghana",
+    "legacyId": 68,
+    "name": "Ghana",
+    "continent": "africa"
+  },
+  {
+    "id": "greece",
+    "legacyId": 69,
+    "name": "Greece",
+    "continent": "europe"
+  },
+  {
+    "id": "grenada",
+    "legacyId": 70,
+    "name": "Grenada",
+    "continent": "north-america"
+  },
+  {
+    "id": "guatemala",
+    "legacyId": 71,
+    "name": "Guatemala",
+    "continent": "north-america"
+  },
+  {
+    "id": "guinea",
+    "legacyId": 72,
+    "name": "Guinea",
+    "continent": "africa"
+  },
+  {
+    "id": "guinea-bissau",
+    "legacyId": 73,
+    "name": "Guinea-Bissau",
+    "continent": "africa"
+  },
+  {
+    "id": "guyana",
+    "legacyId": 74,
+    "name": "Guyana",
+    "continent": "north-america"
+  },
+  {
+    "id": "haiti",
+    "legacyId": 75,
+    "name": "Haiti",
+    "continent": "north-america"
+  },
+  {
+    "id": "honduras",
+    "legacyId": 76,
+    "name": "Honduras",
+    "continent": "north-america"
+  },
+  {
+    "id": "hungary",
+    "legacyId": 77,
+    "name": "Hungary",
+    "continent": "europe"
+  },
+  {
+    "id": "iceland",
+    "legacyId": 78,
+    "name": "Iceland",
+    "continent": "europe"
+  },
+  {
+    "id": "india",
+    "legacyId": 79,
+    "name": "India",
+    "continent": "asia"
+  },
+  {
+    "id": "indonesia",
+    "legacyId": 80,
+    "name": "Indonesia",
+    "continent": "asia"
+  },
+  {
+    "id": "iran",
+    "legacyId": 81,
+    "name": "Iran",
+    "continent": "asia"
+  },
+  {
+    "id": "iraq",
+    "legacyId": 82,
+    "name": "Iraq",
+    "continent": "asia"
+  },
+  {
+    "id": "ireland",
+    "legacyId": 83,
+    "name": "Ireland",
+    "continent": "europe"
+  },
+  {
+    "id": "israel",
+    "legacyId": 84,
+    "name": "Israel",
+    "continent": "europe"
+  },
+  {
+    "id": "italy",
+    "legacyId": 85,
+    "name": "Italy",
+    "continent": "europe"
+  },
+  {
+    "id": "ivory-coast",
+    "legacyId": 86,
+    "name": "Ivory Coast",
+    "continent": "africa"
+  },
+  {
+    "id": "jamaica",
+    "legacyId": 87,
+    "name": "Jamaica",
+    "continent": "north-america"
+  },
+  {
+    "id": "japan",
+    "legacyId": 88,
+    "name": "Japan",
+    "continent": "asia"
+  },
+  {
+    "id": "jordan",
+    "legacyId": 89,
+    "name": "Jordan",
+    "continent": "africa"
+  },
+  {
+    "id": "kazakhstan",
+    "legacyId": 90,
+    "name": "Kazakhstan",
+    "continent": "asia"
+  },
+  {
+    "id": "kenya",
+    "legacyId": 91,
+    "name": "Kenya",
+    "continent": "africa"
+  },
+  {
+    "id": "kiribati",
+    "legacyId": 92,
+    "name": "Kiribati",
+    "continent": "africa"
+  },
+  {
+    "id": "north-korea",
+    "legacyId": 93,
+    "name": "North Korea",
+    "continent": "asia"
+  },
+  {
+    "id": "south-korea",
+    "legacyId": 94,
+    "name": "South Korea",
+    "continent": "asia"
+  },
+  {
+    "id": "kosovo",
+    "legacyId": 95,
+    "name": "Kosovo",
+    "continent": "europe"
+  },
+  {
+    "id": "kuwait",
+    "legacyId": 96,
+    "name": "Kuwait",
+    "continent": "asia"
+  },
+  {
+    "id": "kyrgyzstan",
+    "legacyId": 97,
+    "name": "Kyrgyzstan",
+    "continent": "asia"
+  },
+  {
+    "id": "laos",
+    "legacyId": 98,
+    "name": "Laos",
+    "continent": "asia"
+  },
+  {
+    "id": "latvia",
+    "legacyId": 99,
+    "name": "Latvia",
+    "continent": "africa"
+  },
+  {
+    "id": "lebanon",
+    "legacyId": 100,
+    "name": "Lebanon",
+    "continent": "asia"
+  },
+  {
+    "id": "lesotho",
+    "legacyId": 101,
+    "name": "Lesotho",
+    "continent": "africa"
+  },
+  {
+    "id": "liberia",
+    "legacyId": 102,
+    "name": "Liberia",
+    "continent": "africa"
+  },
+  {
+    "id": "lybia",
+    "legacyId": 103,
+    "name": "Lybia",
+    "continent": "africa"
+  },
+  {
+    "id": "liechtenstein",
+    "legacyId": 104,
+    "name": "Liechtenstein",
+    "continent": "europe"
+  },
+  {
+    "id": "lithuania",
+    "legacyId": 105,
+    "name": "Lithuania",
+    "continent": "europe"
+  },
+  {
+    "id": "luxembourg",
+    "legacyId": 106,
+    "name": "Luxembourg",
+    "continent": "europe"
+  },
+  {
+    "id": "madagascar",
+    "legacyId": 108,
+    "name": "Madagascar",
+    "continent": "africa"
+  },
+  {
+    "id": "malawi",
+    "legacyId": 109,
+    "name": "Malawi",
+    "continent": "africa"
+  },
+  {
+    "id": "malaysia",
+    "legacyId": 110,
+    "name": "Malaysia",
+    "continent": "asia"
+  },
+  {
+    "id": "maldives",
+    "legacyId": 111,
+    "name": "Maldives",
+    "continent": "asia"
+  },
+  {
+    "id": "mali",
+    "legacyId": 112,
+    "name": "Mali",
+    "continent": "africa"
+  },
+  {
+    "id": "malta",
+    "legacyId": 113,
+    "name": "Malta",
+    "continent": "europe"
+  },
+  {
+    "id": "marshall-islands",
+    "legacyId": 114,
+    "name": "Marshall Islands",
+    "continent": "north-america"
+  },
+  {
+    "id": "mauritania",
+    "legacyId": 115,
+    "name": "Mauritania",
+    "continent": "africa"
+  },
+  {
+    "id": "mauritius",
+    "legacyId": 116,
+    "name": "Mauritius",
+    "continent": "africa"
+  },
+  {
+    "id": "mexico",
+    "legacyId": 117,
+    "name": "Mexico",
+    "continent": "north-america"
+  },
+  {
+    "id": "micronesia",
+    "legacyId": 118,
+    "name": "Micronesia",
+    "continent": "oceania"
+  },
+  {
+    "id": "moldova",
+    "legacyId": 119,
+    "name": "Moldova",
+    "continent": "europe"
+  },
+  {
+    "id": "monaco",
+    "legacyId": 120,
+    "name": "Monaco",
+    "continent": "europe"
+  },
+  {
+    "id": "mongolia",
+    "legacyId": 121,
+    "name": "Mongolia",
+    "continent": "asia"
+  },
+  {
+    "id": "montenegro",
+    "legacyId": 122,
+    "name": "Montenegro",
+    "continent": "europe"
+  },
+  {
+    "id": "morocco",
+    "legacyId": 123,
+    "name": "Morocco",
+    "continent": "africa"
+  },
+  {
+    "id": "mozambique",
+    "legacyId": 124,
+    "name": "Mozambique",
+    "continent": "africa"
+  },
+  {
+    "id": "myanmar",
+    "legacyId": 125,
+    "name": "Myanmar",
+    "continent": "asia"
+  },
+  {
+    "id": "namibia",
+    "legacyId": 126,
+    "name": "Namibia",
+    "continent": "africa"
+  },
+  {
+    "id": "nauru",
+    "legacyId": 127,
+    "name": "Nauru",
+    "continent": "oceania"
+  },
+  {
+    "id": "nepal",
+    "legacyId": 128,
+    "name": "Nepal",
+    "continent": "asia"
+  },
+  {
+    "id": "netherlands",
+    "legacyId": 129,
+    "name": "Netherlands",
+    "continent": "europe"
+  },
+  {
+    "id": "new-zealand",
+    "legacyId": 130,
+    "name": "New Zealand",
+    "continent": "oceania"
+  },
+  {
+    "id": "nicaragua",
+    "legacyId": 131,
+    "name": "Nicaragua",
+    "continent": "north-america"
+  },
+  {
+    "id": "niger",
+    "legacyId": 132,
+    "name": "Niger",
+    "continent": "africa"
+  },
+  {
+    "id": "nigeria",
+    "legacyId": 133,
+    "name": "Nigeria",
+    "continent": "africa"
+  },
+  {
+    "id": "north-macedonia",
+    "legacyId": 134,
+    "name": "North Macedonia",
+    "continent": "europe"
+  },
+  {
+    "id": "norway",
+    "legacyId": 135,
+    "name": "Norway",
+    "continent": "europe"
+  },
+  {
+    "id": "oman",
+    "legacyId": 136,
+    "name": "Oman",
+    "continent": "asia"
+  },
+  {
+    "id": "pakistan",
+    "legacyId": 137,
+    "name": "Pakistan",
+    "continent": "asia"
+  },
+  {
+    "id": "palau",
+    "legacyId": 138,
+    "name": "Palau",
+    "continent": "oceania"
+  },
+  {
+    "id": "palestine",
+    "legacyId": 139,
+    "name": "Palestine",
+    "continent": "asia"
+  },
+  {
+    "id": "panama",
+    "legacyId": 140,
+    "name": "Panama",
+    "continent": "north-america"
+  },
+  {
+    "id": "papua-new-guinea",
+    "legacyId": 141,
+    "name": "Papua New Guinea",
+    "continent": "oceania"
+  },
+  {
+    "id": "paraguay",
+    "legacyId": 142,
+    "name": "Paraguay",
+    "continent": "south-america"
+  },
+  {
+    "id": "peru",
+    "legacyId": 143,
+    "name": "Peru",
+    "continent": "south-america"
+  },
+  {
+    "id": "philippines",
+    "legacyId": 144,
+    "name": "Philippines",
+    "continent": "asia"
+  },
+  {
+    "id": "poland",
+    "legacyId": 145,
+    "name": "Poland",
+    "continent": "europe"
+  },
+  {
+    "id": "portugal",
+    "legacyId": 146,
+    "name": "Portugal",
+    "continent": "europe"
+  },
+  {
+    "id": "qatar",
+    "legacyId": 147,
+    "name": "Qatar",
+    "continent": "asia"
+  },
+  {
+    "id": "romania",
+    "legacyId": 148,
+    "name": "Romania",
+    "continent": "europe"
+  },
+  {
+    "id": "russia",
+    "legacyId": 149,
+    "name": "Russia",
+    "continent": "europe"
+  },
+  {
+    "id": "rwanda",
+    "legacyId": 150,
+    "name": "Rwanda",
+    "continent": "africa"
+  },
+  {
+    "id": "saint-kitts-and-nevis",
+    "legacyId": 151,
+    "name": "Saint Kitts and Nevis",
+    "continent": "north-america"
+  },
+  {
+    "id": "saint-lucia",
+    "legacyId": 152,
+    "name": "Saint Lucia",
+    "continent": "north-america"
+  },
+  {
+    "id": "saint-vincent-and-the-grenadines",
+    "legacyId": 153,
+    "name": "Saint Vincent and the Grenadines",
+    "continent": "north-america"
+  },
+  {
+    "id": "samoa",
+    "legacyId": 154,
+    "name": "Samoa",
+    "continent": "oceania"
+  },
+  {
+    "id": "san-marino",
+    "legacyId": 155,
+    "name": "San Marino",
+    "continent": "europe"
+  },
+  {
+    "id": "sao-tome-and-principe",
+    "legacyId": 156,
+    "name": "Sao Tome and Principe",
+    "continent": "africa"
+  },
+  {
+    "id": "saudi-arabia",
+    "legacyId": 157,
+    "name": "Saudi Arabia",
+    "continent": "africa"
+  },
+  {
+    "id": "scotland",
+    "legacyId": 1001,
+    "name": "Scotland",
+    "continent": "africa"
+  },
+  {
+    "id": "senegal",
+    "legacyId": 158,
+    "name": "Senegal",
+    "continent": "africa"
+  },
+  {
+    "id": "serbia",
+    "legacyId": 159,
+    "name": "Serbia",
+    "continent": "europe"
+  },
+  {
+    "id": "seychelles",
+    "legacyId": 160,
+    "name": "Seychelles",
+    "continent": "africa"
+  },
+  {
+    "id": "sierra-leone",
+    "legacyId": 161,
+    "name": "Sierra Leone",
+    "continent": "africa"
+  },
+  {
+    "id": "singapore",
+    "legacyId": 162,
+    "name": "Singapore",
+    "continent": "asia"
+  },
+  {
+    "id": "slovakia",
+    "legacyId": 163,
+    "name": "Slovakia",
+    "continent": "europe"
+  },
+  {
+    "id": "slovenia",
+    "legacyId": 164,
+    "name": "Slovenia",
+    "continent": "europe"
+  },
+  {
+    "id": "solomon-islands",
+    "legacyId": 165,
+    "name": "Solomon Islands",
+    "continent": "oceania"
+  },
+  {
+    "id": "somalia",
+    "legacyId": 166,
+    "name": "Somalia",
+    "continent": "africa"
+  },
+  {
+    "id": "south-africa",
+    "legacyId": 167,
+    "name": "South Africa",
+    "continent": "africa"
+  },
+  {
+    "id": "south-sudan",
+    "legacyId": 168,
+    "name": "South Sudan",
+    "continent": "africa"
+  },
+  {
+    "id": "spain",
+    "legacyId": 169,
+    "name": "Spain",
+    "continent": "europe"
+  },
+  {
+    "id": "sri-lanka",
+    "legacyId": 170,
+    "name": "Sri Lanka",
+    "continent": "asia"
+  },
+  {
+    "id": "sudan",
+    "legacyId": 171,
+    "name": "Sudan",
+    "continent": "africa"
+  },
+  {
+    "id": "suriname",
+    "legacyId": 172,
+    "name": "Suriname",
+    "continent": "north-america"
+  },
+  {
+    "id": "sweden",
+    "legacyId": 173,
+    "name": "Sweden",
+    "continent": "europe"
+  },
+  {
+    "id": "switzerland",
+    "legacyId": 174,
+    "name": "Switzerland",
+    "continent": "europe"
+  },
+  {
+    "id": "syria",
+    "legacyId": 175,
+    "name": "Syria",
+    "continent": "asia"
+  },
+  {
+    "id": "taiwan",
+    "legacyId": 176,
+    "name": "Taiwan",
+    "continent": "asia"
+  },
+  {
+    "id": "tajikistan",
+    "legacyId": 177,
+    "name": "Tajikistan",
+    "continent": "asia"
+  },
+  {
+    "id": "tanzania",
+    "legacyId": 178,
+    "name": "Tanzania",
+    "continent": "africa"
+  },
+  {
+    "id": "thailand",
+    "legacyId": 179,
+    "name": "Thailand",
+    "continent": "asia"
+  },
+  {
+    "id": "the-bahamas",
+    "legacyId": 180,
+    "name": "The Bahamas",
+    "continent": "north-america"
+  },
+  {
+    "id": "the-gambia",
+    "legacyId": 181,
+    "name": "The Gambia",
+    "continent": "africa"
+  },
+  {
+    "id": "togo",
+    "legacyId": 182,
+    "name": "Togo",
+    "continent": "africa"
+  },
+  {
+    "id": "tonga",
+    "legacyId": 183,
+    "name": "Tonga",
+    "continent": "asia"
+  },
+  {
+    "id": "trinidad-and-tobago",
+    "legacyId": 184,
+    "name": "Trinidad and Tobago",
+    "continent": "north-america"
+  },
+  {
+    "id": "tunisia",
+    "legacyId": 185,
+    "name": "Tunisia",
+    "continent": "africa"
+  },
+  {
+    "id": "turkey",
+    "legacyId": 186,
+    "name": "Turkey",
+    "continent": "europe"
+  },
+  {
+    "id": "turkmenistan",
+    "legacyId": 187,
+    "name": "Turkmenistan",
+    "continent": "asia"
+  },
+  {
+    "id": "tuvalu",
+    "legacyId": 188,
+    "name": "Tuvalu",
+    "continent": "oceania"
+  },
+  {
+    "id": "uganda",
+    "legacyId": 189,
+    "name": "Uganda",
+    "continent": "africa"
+  },
+  {
+    "id": "ukraine",
+    "legacyId": 190,
+    "name": "Ukraine",
+    "continent": "europe"
+  },
+  {
+    "id": "united-arab-emirates",
+    "legacyId": 191,
+    "name": "United Arab Emirates",
+    "continent": "asia"
+  },
+  {
+    "id": "united-states",
+    "legacyId": 193,
+    "name": "United States",
+    "continent": "north-america"
+  },
+  {
+    "id": "uruguay",
+    "legacyId": 194,
+    "name": "Uruguay",
+    "continent": "south-america"
+  },
+  {
+    "id": "uzbekistan",
+    "legacyId": 195,
+    "name": "Uzbekistan",
+    "continent": "asia"
+  },
+  {
+    "id": "vanuatu",
+    "legacyId": 196,
+    "name": "Vanuatu",
+    "continent": "oceania"
+  },
+  {
+    "id": "vatican-city",
+    "legacyId": 197,
+    "name": "Vatican City",
+    "continent": "europe"
+  },
+  {
+    "id": "venezuela",
+    "legacyId": 198,
+    "name": "Venezuela",
+    "continent": "south-america"
+  },
+  {
+    "id": "vietnam",
+    "legacyId": 199,
+    "name": "Vietnam",
+    "continent": "asia"
+  },
+  {
+    "id": "wales",
+    "legacyId": 1002,
+    "name": "Wales",
+    "continent": "europe"
+  },
+  {
+    "id": "yemen",
+    "legacyId": 200,
+    "name": "Yemen",
+    "continent": "asia"
+  },
+  {
+    "id": "zambia",
+    "legacyId": 201,
+    "name": "Zambia",
+    "continent": "africa"
+  },
+  {
+    "id": "zimbabwe",
+    "legacyId": 202,
+    "name": "Zimbabwe",
+    "continent": "africa"
+  }
+]

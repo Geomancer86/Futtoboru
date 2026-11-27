@@ -1,0 +1,81 @@
+{
+  "id": "1888-89",
+  "legacyId": 18,
+  "name": "1888-1889 Season",
+  "description": "The Most Important Football Season Ever, The One That Started It All.",
+  "start": "1888-04-01T04:00:00",
+  "sources": [
+    "https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League"
+  ],
+  "countries": [
+    "england"
+  ],
+  "editions": [
+    {
+      "id": "football-league-1888-89",
+      "competition": "football-league",
+      "name": "1888-89 Football League",
+      "participants": [
+        "preston-north-end",
+        "aston-villa",
+        "wolverhampton-wanderers",
+        "blackburn-rovers",
+        "bolton-wanderers",
+        "west-bromwich-albion",
+        "accrington",
+        "everton",
+        "burnley",
+        "derby-county",
+        "notts-county",
+        "stoke"
+      ],
+      "sources": [
+        "https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League"
+      ],
+      "notes": "The twelve founder members (moved here from ScriptsLoader, where they were hard-coded)."
+    },
+    {
+      "id": "fa-cup-1888-89",
+      "legacyId": 1,
+      "competition": "fa-cup",
+      "name": "1888-89 FA Cup",
+      "participants": [
+        "burnley",
+        "old-westminsters",
+        "swifts",
+        "wrexham",
+        "notts-county",
+        "old-brightonians",
+        "nottingham-forest",
+        "linfield",
+        "aston-villa",
+        "witton-albion",
+        "bootle",
+        "preston-north-end",
+        "accrington",
+        "blackburn-rovers",
+        "chatham-town",
+        "south-shore",
+        "grimsby-town",
+        "sunderland-albion",
+        "halliwell",
+        "crewe-alexandra",
+        "wolverhampton-wanderers",
+        "old-carthusians",
+        "derby-county",
+        "derby-junction",
+        "notts-rangers",
+        "sheffield-wednesday",
+        "birmingham-st-georges",
+        "long-eaton-rangers",
+        "small-heath",
+        "west-bromwich-albion",
+        "walsall",
+        "heeley"
+      ],
+      "sources": [
+        "https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup"
+      ]
+    }
+  ]
+}

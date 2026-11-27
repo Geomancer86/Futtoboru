@@ -15,7 +15,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 - **P2-1** Fix Continue double-click advancing two days (`MainGameMenuTable`).
 - **P2-2** Merge the two match-result paths in `FuttoboruGameEngine`.
 - **P2-3** Headless test: simulate the full 1888-89 season end to end.
-- **P2-4** Data: Burnley placeholder players (1865 birthdates), Pat Gallocher at two clubs.
+- **P2-4 slice 4** Data review (WORKSTATION): `docs/data/REVIEW_1888-89.md`, rebuild the copied cup rosters. Edit the JSON only after slice 2 lands (until then the JSON is generated from `mods/*.txt`; edit the .txt and rerun `tools/data/convert_legacy.py`).
 
 ## Log
 - 2026-11-27 · BOOK3PRO · CLAIM · P2-4 · Data model v2 per producer decisions D11, D14-D16 (all JSON like DarkBlade, stable string ids + save-local runtime ids, one people table + season squads, v0.4 saves not migrated). Slice 1: converter, JSON data, validator, review list.

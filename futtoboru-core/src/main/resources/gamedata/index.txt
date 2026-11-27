@@ -1,0 +1,2 @@
+# Data packs, loaded in this order (a jar folder cannot be listed)
+core

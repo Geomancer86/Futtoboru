@@ -14,6 +14,13 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 | D7 | **Fully era-accurate 1888 rules** from v1, including the 3-player offside rule, no substitutes, no penalties (until 1891), umpires + referee. |
 | D8 | WORKSTATION and BOOK3PRO are **equals**: each merges its own green branches into develop. |
 | D9 | Light coordination: `docs/HANDOFF.md` + branch prefixes (`ws/`, `b3/`) + CI. |
+| D10 | _Open._ Phase 2 additions from the BOOK3PRO review (P2-0 determinism, P2-6 season reset, P2-7 period details; larger P2-4/P2-5): Phase 2 becomes ~2 weeks. Recommended: yes. |
+| D11 | **Stable string data ids** (DarkBlade pattern): lower-case slugs unique per kind, never changed (renames via `aliases.json` + rename log); runtime `Long` ids from one saved `IdAllocator`. See `docs/DATA_MODEL.md`. |
+| D12 | UI skin stays: VisUI + Tixel + Droid Sans are Apache 2.0 (as in DarkBlade), credited in `THIRD_PARTY_NOTICES.txt`. A new own skin comes later. |
+| D13 | _Open._ Tag a release on `main` at the end of each phase (v0.4.1, v0.5.0, ...). Recommended: yes. |
+| D14 | **All game data in JSON**, like DarkBlade: packs under `resources/gamedata/<pack>/` with a `pack.json` that lists every file; strict validator (unknown fields are errors). |
+| D15 | **One people table + season squads**; seasonal facts (ground, balance, squad) per season folder. v0.4 saves are **not** migrated; saves are versioned from now on. |
+| D16 | **UI/UX phase after the data redesign** and before the match engine. |
 
 ## Phases
 **Phase 0: consolidate git** (done 2026-11-27 except P0-4)
@@ -22,12 +29,24 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 - Sonar stage and its dead token removed from `Jenkinsfile` ✔ · Producer: push the v0.4.0 release to `main`.
 
 **Phase 1: builds anywhere** (2-3 days)
-- P1-1 Maven 3.9 build fix ✔ · P1-2 `mvnw`, `.sh` scripts, `.gitattributes` · P1-3 GitHub Actions `mvn verify` · P1-4 dead 3D code, unused deps, PDFs out of resources · P1-5 one logging style
+- P1-1 Maven 3.9 build fix ✔ · P1-6 third-party notices (skin done; 3D assets with P1-4) · P1-2 `mvnw`, `.sh` scripts, `.gitattributes` · P1-3 GitHub Actions `mvn verify` · P1-4 dead 3D code, unused deps, PDFs out of resources · P1-5 one logging style
 
-**Phase 2: one full season, cleanly** (~1 week)
-- P2-1 Continue double-click · P2-2 single match-result path · P2-3 headless 1888-89 season test · P2-4 data fixes (Burnley padding, duplicate player) · P2-5 save slots + integer map keys
+**Phase 2: one full season, cleanly** (~2 weeks if D10)
+- P2-0 one seeded, injected random source (needed by P2-3 and E-02)
+- P2-1 Continue double-click (cause: 200 ms cooldown vs ~50 ms processing) · P2-2 single match-result path (only one checks the draw blocker)
+- P2-3 headless seeded 1888-89 season test
+- **P2-4 data model v2** (D11, D14, D15; `docs/DATA_MODEL.md`): slice 1 JSON pack + converter + validator + review list ✔ · slice 2 Java loader + `IdAllocator` · slice 3 saves v1 (with P2-5) · slice 4 data review (copied cup rosters, placeholders, duplicates)
+- P2-5 saves v1: ids not copies, `saveVersion`, slots, fix load path / folder name, round-trip test
+- P2-6 season rollover resets the table (empty loop in `AuthorityManager`) · P2-7 £ not $ in prize messages, cup final from the bracket
 
-**Phase 3: match engine v2** (3-5 weeks, larger because of D7)
+**Phase 3: UI/UX** (1-2 weeks, D16; skin unchanged, D12)
+- U-01 theme tokens in JSON (palette, fonts, spacing), like DarkBlade's `UiTheme`; no literal colours or sizes in screens
+- U-02 remove `setDebug(true)` and the `Color.GOLD/GREEN/CYAN` literals; consistent spacing
+- U-03 UI scaling per resolution (13 px font everywhere today)
+- U-04 navigation: one clear menu, hide or finish the 11 stub screens
+- U-05 an interface guide (one tooltip layer, one window at a time, screenshot per UI item), as DarkBlade's `GUIA_DE_INTERFAZ.md`
+
+**Phase 4: match engine v2** (3-5 weeks, larger because of D7)
 - E-01 `Position` on players + 2-3-5 XI picker (no substitutes; injured player leaves the side)
 - E-02 seeded possession/chance simulation, attack vs defence vs goalkeeper
 - E-03 era rules: 3-player offside as a phase of play that kills attacks, no penalties, goalkeeper handling in own half, umpire appeals
@@ -35,5 +54,5 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 - E-05 calibration against the real 1888-89 results (load the public fixture list as test data)
 - E-06 replace `MatchSimulator` internals; keep the 2D prototype as a future viewer
 
-**Phase 4: season 2 (1889-90)**: re-election vote, contract expiry and free agents, then "seasons as releases".
+**Phase 5: season 2 (1889-90)**: re-election vote, contract expiry and free agents, then "seasons as releases".
 Marketing only once a full season plays end to end.

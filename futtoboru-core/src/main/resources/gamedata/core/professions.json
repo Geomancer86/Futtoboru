@@ -1,0 +1,50 @@
+[
+  {
+    "id": "player",
+    "legacyId": 1,
+    "name": "Player",
+    "playerSelectable": false
+  },
+  {
+    "id": "retired-player",
+    "legacyId": 2,
+    "name": "Retired Player",
+    "playerSelectable": true
+  },
+  {
+    "id": "manager",
+    "legacyId": 3,
+    "name": "Manager",
+    "playerSelectable": true
+  },
+  {
+    "id": "director",
+    "legacyId": 4,
+    "name": "Director",
+    "playerSelectable": true
+  },
+  {
+    "id": "scout",
+    "legacyId": 5,
+    "name": "Scout",
+    "playerSelectable": true
+  },
+  {
+    "id": "agent",
+    "legacyId": 6,
+    "name": "Agent",
+    "playerSelectable": true
+  },
+  {
+    "id": "investor",
+    "legacyId": 7,
+    "name": "Investor",
+    "playerSelectable": true
+  },
+  {
+    "id": "club-owner",
+    "legacyId": 8,
+    "name": "Club Owner",
+    "playerSelectable": true
+  }
+]
