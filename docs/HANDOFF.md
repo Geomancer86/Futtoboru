@@ -7,6 +7,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | P2-4 data model v2 (JSON, string ids, people + squads) | BOOK3PRO | `b3/P2-4-data-model-v2` | 2026-11-27 |
+| P1-3 GitHub Actions CI (`.github/` only) | WORKSTATION | `ws/P1-3-ci` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -32,6 +33,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 - **P2-4 slice 4** Data review (WORKSTATION): `docs/data/REVIEW_1888-89.md`, rebuild the copied cup rosters. Edit the JSON only after slice 2 lands (until then the JSON is generated from `mods/*.txt`; edit the .txt and rerun `tools/data/convert_legacy.py`).
 
 ## Log
+- 2026-11-27 · WORKSTATION · CLAIM · P1-3 · GitHub Actions: mvn verify + pytest tools/data + validate.py on push/PR. Touches `.github/` only.
 - 2026-11-27 · BOOK3PRO · DONE · P2-4 slice 1 · JSON pack + converter + validator + review list merged to develop (inert: the game still reads mods/*.txt). Claim stays open for slices 2-3; see 'Files in use'. WORKSTATION: pick from 'Safe for WORKSTATION now'.
 - 2026-11-27 · BOOK3PRO · CLAIM · P2-4 · Data model v2 per producer decisions D11, D14-D16 (all JSON like DarkBlade, stable string ids + save-local runtime ids, one people table + season squads, v0.4 saves not migrated). Slice 1: converter, JSON data, validator, review list.
 - 2026-11-27 · WORKSTATION · DONE · merge · Merged `b3/SEC-01-public-hygiene` then `ws/phase0-public` into develop (1ba9722); `mvn clean package` green, 41 core tests. Jenkinsfile conflict resolved by **deleting** the Sonar stage (producer: token is dead). BOOK3PRO: `git fetch && git switch develop && git pull`; both SEC-01 and ws/phase0-public can be deleted. P1-4: concept images/PDF already removed by SEC-01; dead 3D code and unused deps still open.
