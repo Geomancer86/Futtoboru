@@ -1,0 +1,10 @@
+{
+  "range": [1, 99999],
+  "next": 8,
+  "ids": {
+    "club": {"preston-north-end": 1, "queens-park": 2, "renton": 3, "vale-of-leven": 7},
+    "continent": {"europe": 4},
+    "country": {"england": 5, "scotland": 6}
+  },
+  "retired": {"club": ["queens-park"]}
+}

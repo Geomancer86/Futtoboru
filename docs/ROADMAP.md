@@ -36,8 +36,9 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 - P2-0 one seeded, injected random source (needed by P2-3 and E-02)
 - P2-1 Continue double-click (cause: 200 ms cooldown vs ~50 ms processing) · P2-2 single match-result path (only one checks the draw blocker)
 - P2-3 headless seeded 1888-89 season test
-- **P2-4 data model v2** (D11, D14, D15; `docs/DATA_MODEL.md`): slice 1 JSON pack + converter + validator + review list ✔ · slice 2 Java loader + `IdAllocator` · slice 3 saves v1 (with P2-5) · slice 4 data review (copied cup rosters, placeholders, duplicates)
-- P2-5 saves v1: ids not copies, `saveVersion`, slots, fix load path / folder name, round-trip test
+- **P2-4 data model v2** (D11, D14, D15; `docs/DATA_MODEL.md`): slice 1 JSON pack + converter + validator + review list ✔ · slice 2 Java loader + `IdAllocator` ✔ · slice 3 saves v1 (with P2-5) ✔ · slice 4 data review (copied cup rosters, placeholders, duplicates)
+- P2-5 saves v1 ✔: ids not copies, `saveVersion`, slots, fix load path / folder name, round-trip test, append-only `ids.json` registry
+- P2-8 ✔ `AuthorityManager` kept the empty game from startup, so the daily competition check (league completion, cup draws/progression) never ran in real play
 - P2-6 season rollover resets the table (empty loop in `AuthorityManager`) · P2-7 £ not $ in prize messages, cup final from the bracket
 
 **Phase 3: UI/UX** (1-2 weeks, D16; skin unchanged, D12)

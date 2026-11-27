@@ -155,6 +155,15 @@ public class SaveGame implements Serializable {
      * Runtime ids of every object made during play (P2-4): starts at IdAllocator.GAME_START, saved with the game
      */
     private IdAllocator idAllocator = new IdAllocator(IdAllocator.GAME_START);
+
+    /**
+     * The save slot's name (P2-5): set when the game is saved or loaded, not saved inside the game itself
+     * (it is in the save file's summary)
+     */
+    private transient String saveName;
+
+    /** The seed of the game's root random source (P2-0): saved, and restored when the game is loaded */
+    private Long seed;
     
     /**
      * Proposed Matches
@@ -235,6 +244,24 @@ public class SaveGame implements Serializable {
         if (person != null && person.getId() == null) {
             person.setId(getIdAllocator().nextId());
         }
+    }
+
+    /** @return the seed of the game's root random source, or null before the game is made current */
+    public Long getSeed() {
+        return seed;
+    }
+
+    public void setSeed(Long seed) {
+        this.seed = seed;
+    }
+
+    /** @return the name of the save slot this game was last saved to or loaded from, or null */
+    public String getSaveName() {
+        return saveName;
+    }
+
+    public void setSaveName(String saveName) {
+        this.saveName = saveName;
     }
 
     public Person getOwner() {

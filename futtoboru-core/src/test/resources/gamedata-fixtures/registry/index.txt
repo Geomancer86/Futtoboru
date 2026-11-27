@@ -1,0 +1,2 @@
+# registry test pack
+core
