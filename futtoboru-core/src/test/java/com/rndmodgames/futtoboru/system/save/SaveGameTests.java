@@ -104,6 +104,7 @@ class SaveGameTests {
 
         assertTrue(before.values().get("matches.played").length() > 20, before.values().get("matches.played"));
         assertTrue(before.values().size() > 100);
+        assertNotNull(game.getSeed());
 
         // saving the loaded game again writes the same file
         String again = SaveCodec.encode(result.getGame(), "Round trip", LocalDateTime.of(2000, 1, 1, 0, 0));

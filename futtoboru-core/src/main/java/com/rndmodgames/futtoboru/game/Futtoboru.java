@@ -398,6 +398,10 @@ public class Futtoboru extends Game {
 
     public void setCurrentGame(SaveGame currentGame) {
         this.currentGame = currentGame;
+        // the game keeps the seed its database and play are drawn from, so a save can restore it (P2-5)
+        if (currentGame != null && currentGame.getSeed() == null) {
+            currentGame.setSeed(getSeed());
+        }
     }
 
     /**
@@ -405,7 +409,11 @@ public class Futtoboru extends Game {
      * The database lookups were already bound to the loaded game by the load.
      */
     public void startLoadedGame(SaveGame loaded) {
-        this.currentGame = loaded;
+        if (loaded.getSeed() != null) {
+            setSeed(loaded.getSeed());
+            DatabaseLoader.setRandom(random.fork("database"));
+        }
+        setCurrentGame(loaded);
         this.jobManager = null;
         this.clubStaffManager = null;
         initializeJobSystem();

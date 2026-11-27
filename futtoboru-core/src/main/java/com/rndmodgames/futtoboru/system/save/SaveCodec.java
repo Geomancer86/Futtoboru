@@ -38,6 +38,7 @@ import com.rndmodgames.futtoboru.data.PlayerProfession;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Stadium;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.BuildInfo;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -285,6 +286,11 @@ public final class SaveCodec {
             }
         }
         try {
+            // the database is rebuilt from the game's own seed (P2-0), as it was when the game started
+            JsonValue seed = root.has("game") ? root.get("game").get("seed") : null;
+            if (seed != null && seed.isLong()) {
+                DatabaseLoader.setRandom(RandomSource.seeded(seed.asLong()).fork("database"));
+            }
             DatabaseLoader.rebuild();
             return new Reading(root).read();
         } catch (RuntimeException e) {

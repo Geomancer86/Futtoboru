@@ -22,7 +22,7 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 /**
  * A comparable summary of a game's state (P2-5): key -> text, sorted, so a failing comparison shows which part
  * differs. Covers the date, the id allocator, every club's balance, record, squad, contracts and fixtures, the
- * league tables, the competition editions, messages, jobs and scripts.
+ * league tables, the competition editions, messages, jobs, scripts and the random seed.
  *
  * P2-0 can extend it (subclass and {@link #put} more keys, or compare two games after "continue N days").
  */
@@ -47,6 +47,7 @@ public class GameFingerprint {
         put("date", game.getGameDate());
         put("startDate", game.getGameStartDate());
         put("allocator.next", game.getIdAllocator().peek());
+        put("seed", game.getSeed());
         put("owner", game.getOwner() == null ? null
                 : game.getOwner().getId() + " at " + game.getOwner().getCurrentClubId());
 

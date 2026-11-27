@@ -167,7 +167,7 @@ public class DatabaseLoader {
             getInstance();
             return;
         }
-        load(gameData, RNG);
+        load(gameData, random);
     }
 
     /**
