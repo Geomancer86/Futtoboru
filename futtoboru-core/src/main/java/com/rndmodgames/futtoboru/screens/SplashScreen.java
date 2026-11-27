@@ -3,8 +3,8 @@ package com.rndmodgames.futtoboru.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 public class SplashScreen implements Screen {
 
@@ -24,8 +24,7 @@ public class SplashScreen implements Screen {
 	@Override
 	public void render(float delta) {
 
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		UiTheme.clearScreen("bg.splash");
 		
 		/**
 		 * Renders the Splash Screen

@@ -9,7 +9,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -27,6 +26,7 @@ import com.rndmodgames.darkblade.screens.tables.SoundSettingsTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.tables.settings.DebugLoggingSettingsTable;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Settings Screen v1
@@ -61,7 +61,7 @@ this.game = game;
         VisTable mainContainer = new VisTable();
 
         // TODO: padding relative to resolution so stays relatively centered
-        mainContainer.pad(50).setFillParent(true);
+        mainContainer.pad(UiTheme.space("xl")).setFillParent(true);
 
         VisTable graphicsSettings = new VisTable();
         VisTable soundSettings = new SoundSettingsTable(this.game);
@@ -272,68 +272,68 @@ this.game = game;
         /**
          * Add Components to Graphic Settings Panel
          */
-        graphicsSettings.add(graphicsSettingsLabel).pad(5).colspan(10).expandX().align(Align.center);
+        graphicsSettings.add(graphicsSettingsLabel).pad(UiTheme.space("xs")).colspan(10).expandX().align(Align.center);
         
-        graphicsSettings.row().pad(5).expandX().align(Align.center);
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
         
         // Resolution
-        graphicsSettings.add(resolutionLabel).pad(5).fill().align(Align.center);
-        graphicsSettings.add(availableResolutionsSelectBox).pad(5).fill();
-        graphicsSettings.row().pad(5).expandX().align(Align.center);
+        graphicsSettings.add(resolutionLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(availableResolutionsSelectBox).pad(UiTheme.space("xs")).fill();
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
         
         // Full Screen
-        graphicsSettings.add(fullScreenLabel).pad(5).fill().align(Align.center);
-        graphicsSettings.add(fullScreenCheckBox).pad(0).align(Align.right);
-        graphicsSettings.row().pad(5).expandX().align(Align.center);
+        graphicsSettings.add(fullScreenLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(fullScreenCheckBox).pad(UiTheme.space("none")).align(Align.right);
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
         
         // Day-Night Cycle Rendering
-        graphicsSettings.add(dayNightTintLabel).pad(5).fill().align(Align.center);
-        graphicsSettings.add(dayNightTintCheckBox).pad(0).align(Align.right);
-        graphicsSettings.row().pad(5).expandX().align(Align.center);
+        graphicsSettings.add(dayNightTintLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(dayNightTintCheckBox).pad(UiTheme.space("none")).align(Align.right);
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
         
         // Shadows Rendering
-        graphicsSettings.add(shadowsLabel).pad(5).fill().align(Align.center);
-        graphicsSettings.add(shadowsCheckBox).pad(0).align(Align.right);
-        graphicsSettings.row().pad(5).expandX().align(Align.center);
+        graphicsSettings.add(shadowsLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(shadowsCheckBox).pad(UiTheme.space("none")).align(Align.right);
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
         
         // Damage Counters Rendering
-        graphicsSettings.add(damageCountersLabel).pad(5).fill().align(Align.center);
-        graphicsSettings.add(damageCountersCheckBox).pad(0).align(Align.right);
-        graphicsSettings.row().pad(5).expandX().align(Align.center);
+        graphicsSettings.add(damageCountersLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(damageCountersCheckBox).pad(UiTheme.space("none")).align(Align.right);
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
         
         // Debug Physics Label
-        graphicsSettings.add(debugPhysicsLabel).pad(5).fill().align(Align.center);
-        graphicsSettings.add(debugPhysicsCheckBox).pad(0).align(Align.right);
-        graphicsSettings.row().pad(5).expandX().align(Align.center);
+        graphicsSettings.add(debugPhysicsLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(debugPhysicsCheckBox).pad(UiTheme.space("none")).align(Align.right);
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
         
         // Debug Path Finding
-        graphicsSettings.add(debugPathFindingLabel).pad(5).fill().align(Align.center);
-        graphicsSettings.add(debugPathFindingCheckBox).pad(0).align(Align.right);
-        graphicsSettings.row().pad(5).expandX().align(Align.center);
+        graphicsSettings.add(debugPathFindingLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(debugPathFindingCheckBox).pad(UiTheme.space("none")).align(Align.right);
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
         
         // Debug Sight
-        graphicsSettings.add(debugSightLabel).pad(5).fill().align(Align.center);
-        graphicsSettings.add(debugSightCheckBox).pad(0).align(Align.right);
-        graphicsSettings.row().pad(5).expandX().align(Align.center);
+        graphicsSettings.add(debugSightLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(debugSightCheckBox).pad(UiTheme.space("none")).align(Align.right);
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
         
         // Table Debug
-        graphicsSettings.add(tableDebugLabel).pad(5).fill().align(Align.center);
-        graphicsSettings.add(tableDebugCheckBox).pad(0).align(Align.right);
+        graphicsSettings.add(tableDebugLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(tableDebugCheckBox).pad(UiTheme.space("none")).align(Align.right);
         
         graphicsSettings.row().fill();
 
         // Gameplay Settings Panel
-        gameplaySettings.add(gameplaySettingsLabel).pad(5);
+        gameplaySettings.add(gameplaySettingsLabel).pad(UiTheme.space("xs"));
         
         // 5 Panel Layout (added Debug Logging)
         mainContainer.row().colspan(5).expandX().fillX();
         
         // 
-        mainContainer.add(graphicsSettings).pad(10).align(Align.top);
-        mainContainer.add(soundSettings).pad(10).align(Align.top);
-        mainContainer.add(gameplaySettings).pad(10).align(Align.top);
-        mainContainer.add(modSettings).pad(10).align(Align.top);
-        mainContainer.add(debugLoggingSettings).pad(10).align(Align.top);
+        mainContainer.add(graphicsSettings).pad(UiTheme.space("sm")).align(Align.top);
+        mainContainer.add(soundSettings).pad(UiTheme.space("sm")).align(Align.top);
+        mainContainer.add(gameplaySettings).pad(UiTheme.space("sm")).align(Align.top);
+        mainContainer.add(modSettings).pad(UiTheme.space("sm")).align(Align.top);
+        mainContainer.add(debugLoggingSettings).pad(UiTheme.space("sm")).align(Align.top);
 
         // Main Menu Button
         final MainMenuButton exitButton = new MainMenuButton(game);
@@ -342,7 +342,7 @@ this.game = game;
         mainContainer.row();
         
         // Add the Quit to Main Menu button NOTE: weird colspan needed to center, might be easy to fix
-        mainContainer.add(exitButton).colspan(20).pad(5);
+        mainContainer.add(exitButton).colspan(20).pad(UiTheme.space("xs"));
 
         // Set debug for Stage and recursive
 //        stage.setDebugAll(DarkBlade.DEBUG_TABLES_ENABLED);
@@ -367,8 +367,7 @@ this.game = game;
     public void render(float delta) {
         
         // Clear blit
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        UiTheme.clearScreen();
         
         // Draw
         stage.act();

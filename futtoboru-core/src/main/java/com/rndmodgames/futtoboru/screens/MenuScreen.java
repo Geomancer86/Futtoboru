@@ -3,7 +3,6 @@ package com.rndmodgames.futtoboru.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -21,6 +20,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.match.engine.MatchEngineVersion;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 public class MenuScreen implements Screen {
 
@@ -172,15 +172,15 @@ public class MenuScreen implements Screen {
         
         // Match Engine Build Info (bottom left) - aligned to bottom of cell
         VisLabel buildInfoLabel = new VisLabel(MatchEngineVersion.getBuildInfoString());
-        buildInfoLabel.setColor(0.7f, 0.7f, 0.7f, 1f); // Gray color for less prominence
-        bottomRow.add(buildInfoLabel).left().bottom().padLeft(10).padBottom(10);
+        buildInfoLabel.setColor(UiTheme.color("text.secondary")); // Gray color for less prominence
+        bottomRow.add(buildInfoLabel).left().bottom().padLeft(UiTheme.space("sm")).padBottom(UiTheme.space("sm"));
         
         bottomRow.add().expandX(); // Spacer to push social links to the right
         
         // Social links (Patreon, etc.) - bottom right
-        bottomRow.add(new SocialNetworkLinksComponent()).right().top().pad(10);
+        bottomRow.add(new SocialNetworkLinksComponent()).right().top().pad(UiTheme.space("sm"));
         
-        mainTable.add(bottomRow).growX().fillX().padBottom(10);
+        mainTable.add(bottomRow).growX().fillX().padBottom(UiTheme.space("sm"));
         
         //
         stage.addActor(mainTable);
@@ -197,8 +197,7 @@ public class MenuScreen implements Screen {
 	public void render(float delta) {
 		
 		// Clear blit
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		UiTheme.clearScreen();
         
         // Draw
         stage.act();

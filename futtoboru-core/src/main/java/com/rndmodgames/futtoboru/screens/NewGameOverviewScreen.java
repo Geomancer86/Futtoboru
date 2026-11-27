@@ -8,7 +8,6 @@ import java.util.Map;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -34,6 +33,7 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * New Game Overview Screen v1
@@ -84,7 +84,7 @@ public class NewGameOverviewScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         
         VisTable mainContainer = new VisTable(true);
-        mainContainer.pad(50).setFillParent(true);
+        mainContainer.pad(UiTheme.space("xl")).setFillParent(true);
     
         // 
         final VisTable table = new VisTable(true);
@@ -849,8 +849,7 @@ public class NewGameOverviewScreen implements Screen {
     public void render(float delta) {
 
         // Clear blit
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        UiTheme.clearScreen();
         
         // Draw
         stage.act();

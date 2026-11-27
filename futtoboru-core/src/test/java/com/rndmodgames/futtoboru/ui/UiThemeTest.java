@@ -78,7 +78,8 @@ class UiThemeTest {
     void starterTokensMatchTheLiteralsInUse() {
         assertEquals(Color.BLACK, theme.getColor("bg.screen"));
         assertEquals(Color.WHITE, theme.getColor("text.primary"));
-        assertEquals(Color.valueOf("B3B3B3"), theme.getColor("text.secondary"));
+        // hex values are what libGDX packs for the old float literals: (int) (0.7f * 255) = 178 = B2
+        assertEquals(Color.valueOf("B2B2B2"), theme.getColor("text.secondary"));
         // skin reference: tixel t-highlight (0.85, 0.5, 0.05)
         Color accent = theme.getColor("accent");
         assertEquals(0.85f, accent.r, 1e-6);

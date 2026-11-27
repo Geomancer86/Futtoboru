@@ -13,7 +13,6 @@ import java.util.GregorianCalendar;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -33,6 +32,7 @@ import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * New Manager Screen v1
@@ -71,7 +71,7 @@ public class NewManagerScreen implements Screen {
 		Person manager = new Person();
 		
 		VisTable mainContainer = new VisTable(true);
-		mainContainer.pad(50).setFillParent(true);
+		mainContainer.pad(UiTheme.space("xl")).setFillParent(true);
 		
 		/**
 		 * Name Label
@@ -306,8 +306,7 @@ public class NewManagerScreen implements Screen {
 	public void render(float delta) {
 		
 		// Clear blit
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		UiTheme.clearScreen();
         
         // Draw
         stage.act();
