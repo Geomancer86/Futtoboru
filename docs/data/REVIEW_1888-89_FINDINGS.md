@@ -131,10 +131,12 @@ Every shared name in the nine "shared roster" items is wrong for at least one of
   Howarth, Lofthouse, Geary, Billy Hughes (Bootle 1892-93); Veitch, Jackson, Woods, Sissons, Gillam not found;
   John Campbell's birth date matches the Celtic/Villa player, not verified.
 
-### Decision needed before applying
+### Decision: short squads (producer, 2026-11-27)
 Several minor clubs cannot reach 11 sourced 1888-89 players (Heeley, Witton, Derby Junction, Birmingham St
-George's, Notts Rangers, Long Eaton). Options: fill with `nearby` seasons, keep generated fillers marked
-`placeholder`, or leave short squads. To decide with the producer before slice-4 edits.
+George's, Notts Rangers, Long Eaton). Fill them in this order: (1) players sourced to the club in 1888-89;
+(2) players sourced to the club in 1887-88 or 1889-90, `confidence: unverified` with a note naming the season;
+(3) generated period-appropriate names marked `confidence: placeholder` up to 11. Invented duplicates
+(the Belfields, the Higgins) are removed, not kept as fillers.
 
 ### Offline sources for the gaps
 Tony Onslow, *The Forgotten Rivals* (Bootle); Marco Crisp, *Crewe Alexandra Match by Match*; the Football
