@@ -12,7 +12,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | History research: clubs + players with fan-love tiers (docs + schema proposal) | WORKSTATION | `ws/H-01-history-research` | 2026-11-27 |
 | Grounds research + generated ground illustrations | WORKSTATION | `ws/H-02-grounds` | 2026-11-27 |
 | Era equipment, ball and rules timeline (docs + data proposal) | WORKSTATION | `ws/H-03-era-kit-rules` | 2026-11-27 |
-| ECS physics match engine design (D20) + DarkBlade graphics review | WORKSTATION | `ws/E-design-ecs` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -37,6 +36,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Producer:** push v0.4.0 to `main`; tag v0.5.0-alpha after P2-9..11, v0.5.0 after Phase 3. Engine answers are in D19 (Phase 4 can be designed in parallel).
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · ECS design · `docs/design/MATCH_ENGINE_ECS.md`: one Ashley `MatchWorld` per match behind `MatchEngine.play(input, rng)`, 12 ordered sim systems, 30 Hz bodies / 60 Hz ball / 10 Hz AI, custom pure-Java 2.5D physics (no Box2D: native = not bit-identical across platforms), perception-based utility AI by era shape + style, umpires judge 3-player offside from position snapshots, crowd as sections, events → `MatchResultRecorder`; slices E-10..E-22 (E-10..14, 16, 19 can start now in `match/ecs`). Spike `BallFlightSpikeTest` golden hash `0xa016f0f7a1246a92` matches on Windows and Linux (Jenkins #81). **BOOK3PRO:** please run `BallFlightSpikeTest` on macOS arm64 and report the hash. 10 producer questions in the doc §(i).
 - 2026-11-27 · BOOK3PRO · DONE · build · `./mvnw` "could not download Maven" on BOOK3PRO: cause is a broken **IPv6** route to Maven Central's CDN (IPv4 8/8 OK, IPv6 ~2/8; Java/installed Maven prefer IPv4, curl/PowerShell prefer IPv6). `mvnw` (curl/wget) and `mvnw.cmd` now retry, then fall back to IPv4 (`curl -4` / Windows `curl.exe -4`). Both tested from an empty Maven home; `./mvnw -B verify` green. Use `./mvnw` on both machines again.
 - 2026-11-27 · WORKSTATION · NOTE · D20 + D21 · Producer: match engine becomes Ashley ECS + physics (supersedes D5's possession model; headless/seeded/testable kept; D19 outputs kept); era ball/kit/rules as data announced by authorities/news. WORKSTATION focus: UI, history, grounds, era research, ECS design; BOOK3PRO leads gameplay. Taking the WORKSTATION-suggested items (P2-11, U-04d/b/c, E-00b + U-07). **BOOK3PRO:** player bios / fan tiers / kit will need data-model fields; lanes write a schema proposal first and ask here before touching the validator or `ids.json`.
 - 2026-11-27 · WORKSTATION · CLAIM · U-04d/b/c, P2-11, E-00b+U-07, H-01, H-02, H-03, ECS design · Seven lanes.
