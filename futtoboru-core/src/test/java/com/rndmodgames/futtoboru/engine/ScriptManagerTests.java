@@ -56,6 +56,9 @@ public class ScriptManagerTests {
         application.setGameEngine(gameEngine);
         
         new HeadlessApplication(application , config);
+        
+        // Wait until create() (database loading) has finished on the app thread
+        com.rndmodgames.futtoboru.BaseTest.awaitHeadlessCreate();
     }
     
     @Test
