@@ -2,8 +2,6 @@ package com.rndmodgames.futtoboru.engine.simulation;
 
 import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
-import com.rndmodgames.futtoboru.data.CompetitionRules;
-import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
@@ -126,47 +124,7 @@ public class MatchSimulator {
         System.out.println("MatchSimulator: " + homeClub.getName() + " " + homeScore + 
                           " - " + awayScore + " " + awayClub.getName());
         
-        // Update club statistics
-        updateClubStatistics(match, homeClub, awayClub, homeScore, awayScore);
-        
-        // Advance winner to next round if this is a cup match (v1.0 - Complete Bracket System)
-        if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH && 
-            match.getCompetitionEditionId() != null) {
-            System.out.println("MatchSimulator: Processing cup match completion - " + 
-                (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
-                " (Round " + match.getRound() + ", ID: " + match.getId() + ")");
-            
-            // Pass gameInstance to CupBracketManager so it can trigger cup completion
-            com.rndmodgames.futtoboru.engine.cup.CupBracketManager bracketManager = 
-                new com.rndmodgames.futtoboru.engine.cup.CupBracketManager(currentGame, gameInstance);
-            Match nextRoundMatch = bracketManager.advanceWinner(match);
-            
-            if (nextRoundMatch == null) {
-                if (match.getRound() != null && match.getRound() >= 5) {
-                    // This was the final - cup is complete
-                    System.out.println("MatchSimulator: *** CUP FINAL COMPLETED *** Champion determined!");
-                } else {
-                    System.out.println("MatchSimulator: *** WARNING *** Cup match " + match.getBracketPath() + 
-                        " (Round " + match.getRound() + ") completed but NO NEXT ROUND MATCH FOUND!");
-                    System.out.println("MatchSimulator: This should not happen - bracket should have all rounds generated upfront!");
-                }
-            } else {
-                System.out.println("MatchSimulator: *** WINNER ADVANCED *** to " + 
-                    (nextRoundMatch.getBracketPath() != null ? nextRoundMatch.getBracketPath() : "null") + 
-                    " (Round " + nextRoundMatch.getRound() + ", ID: " + nextRoundMatch.getId() + 
-                    "). Match ready: " + (nextRoundMatch.getHomeClubId() != null && nextRoundMatch.getAwayClubId() != null) + 
-                    ", Home: " + nextRoundMatch.getHomeClubId() + ", Away: " + nextRoundMatch.getAwayClubId() + 
-                    ", Date: " + nextRoundMatch.getMatchDateTime());
-                
-                // If this was Round 1 and Round 2 match is now ready, log it prominently
-                if (match.getRound() != null && match.getRound() == 1 && 
-                    nextRoundMatch.getRound() != null && nextRoundMatch.getRound() == 2 &&
-                    nextRoundMatch.getHomeClubId() != null && nextRoundMatch.getAwayClubId() != null) {
-                    System.out.println("MatchSimulator: *** ROUND 2 MATCH NOW READY *** " + nextRoundMatch.getBracketPath() + 
-                        " will be played on " + nextRoundMatch.getMatchDateTime());
-                }
-            }
-        }
+        // Club statistics, points, cup advancement and match lists: MatchResultRecorder.record (P2-2)
         
         return true;
     }
@@ -211,79 +169,6 @@ public class MatchSimulator {
         // Forwards (if we had positions) would have higher weight
         // For now, just pick any random player
         return players.get(random.nextInt(players.size()));
-    }
-    
-    /**
-     * Update club statistics after a match
-     * 
-     * @param match The match that was played
-     * @param homeClub Home club
-     * @param awayClub Away club
-     * @param homeScore Home team score
-     * @param awayScore Away team score
-     */
-    private void updateClubStatistics(Match match, Club homeClub, Club awayClub, int homeScore, int awayScore) {
-        if (homeClub == null || awayClub == null) {
-            return;
-        }
-        
-        // CRITICAL FIX: Only count league matches in matchesPlayed for league standings
-        // Cup matches and friendlies should not be counted in league table
-        boolean isLeagueMatch = match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH;
-        
-        // Update matches played (only for league matches)
-        if (isLeagueMatch) {
-            homeClub.setMatchesPlayed(homeClub.getMatchesPlayed() + 1);
-            awayClub.setMatchesPlayed(awayClub.getMatchesPlayed() + 1);
-        }
-        
-        // Update goals scored and conceded
-        homeClub.setGoalsScored(homeClub.getGoalsScored() + homeScore);
-        homeClub.setGoalsConceded(homeClub.getGoalsConceded() + awayScore);
-        awayClub.setGoalsScored(awayClub.getGoalsScored() + awayScore);
-        awayClub.setGoalsConceded(awayClub.getGoalsConceded() + homeScore);
-        
-        // Determine result and update wins/draws/losses
-        // Points are only awarded for league matches, not friendlies or cups
-        // Note: isLeagueMatch was already determined above for matchesPlayed counting
-        
-        // Get competition rules if this is a league match
-        CompetitionRules rules = null;
-        if (isLeagueMatch) {
-            League league = findLeagueForMatch(match);
-            if (league != null) {
-                rules = league.getRulesOrDefault();
-            } else {
-                // Fallback to default rules if league not found
-                rules = CompetitionRules.createDefaultRules();
-            }
-        }
-        
-        if (homeScore > awayScore) {
-            // Home win
-            homeClub.setMatchesWon(homeClub.getMatchesWon() + 1);
-            if (isLeagueMatch && rules != null) {
-                homeClub.setPoints(homeClub.getPoints() + rules.getPointsForWin());
-                awayClub.setPoints(awayClub.getPoints() + rules.getPointsForLoss());
-            }
-            awayClub.setMatchesLost(awayClub.getMatchesLost() + 1);
-        } else if (awayScore > homeScore) {
-            // Away win
-            awayClub.setMatchesWon(awayClub.getMatchesWon() + 1);
-            if (isLeagueMatch && rules != null) {
-                awayClub.setPoints(awayClub.getPoints() + rules.getPointsForWin());
-                homeClub.setPoints(homeClub.getPoints() + rules.getPointsForLoss());
-            }
-            homeClub.setMatchesLost(homeClub.getMatchesLost() + 1);
-        } else {
-            // Draw
-            homeClub.setMatchesDrawn(homeClub.getMatchesDrawn() + 1);
-            if (isLeagueMatch && rules != null) {
-                homeClub.setPoints(homeClub.getPoints() + rules.getPointsForDraw());
-                awayClub.setPoints(awayClub.getPoints() + rules.getPointsForDraw());
-            }
-            awayClub.setMatchesDrawn(awayClub.getMatchesDrawn() + 1);
-        }
     }
     
     /**
@@ -424,55 +309,5 @@ public class MatchSimulator {
         return Math.min(MAX_GOALS, baseGoals);
     }
     
-    /**
-     * Find the league for a given match
-     * Searches through all leagues to find one that contains both clubs
-     * 
-     * @param match The match to find the league for
-     * @return The league containing both clubs, or null if not found
-     */
-    private League findLeagueForMatch(Match match) {
-        if (match == null || currentGame == null) {
-            return null;
-        }
-        
-        // Get both clubs
-        Club homeClub = currentGame.getClubById(match.getHomeClubId());
-        Club awayClub = currentGame.getClubById(match.getAwayClubId());
-        
-        if (homeClub == null || awayClub == null) {
-            return null;
-        }
-        
-        // Search through all leagues to find one containing both clubs
-        if (currentGame.getMainAuthority() != null && currentGame.getMainAuthority().getLeagues() != null) {
-            for (League league : currentGame.getMainAuthority().getLeagues()) {
-                if (league == null || league.getLeagueClubs() == null) {
-                    continue;
-                }
-                
-                boolean hasHomeClub = false;
-                boolean hasAwayClub = false;
-                
-                for (Club club : league.getLeagueClubs()) {
-                    if (club != null && club.getId() != null) {
-                        if (club.getId().equals(homeClub.getId())) {
-                            hasHomeClub = true;
-                        }
-                        if (club.getId().equals(awayClub.getId())) {
-                            hasAwayClub = true;
-                        }
-                    }
-                }
-                
-                // If both clubs are in this league, this is the league for the match
-                if (hasHomeClub && hasAwayClub) {
-                    return league;
-                }
-            }
-        }
-        
-        return null;
-    }
 }
 

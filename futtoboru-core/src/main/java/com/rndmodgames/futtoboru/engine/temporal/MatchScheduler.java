@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.engine.temporal;
 
 import java.math.BigDecimal;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -297,7 +298,7 @@ public class MatchScheduler {
                 BigDecimal dayCash = new BigDecimal(randomTickets).multiply(ticketPrice);
                 
                 DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "SOLD TICKETS: " + randomTickets);
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH DAY CASH IS: $" + df.format(dayCash));
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MATCH DAY CASH IS: " + Money.format(dayCash));
                 
                 // Record match revenue on Match object (v1.0)
                 BigDecimal currentRevenue = scheduled.getMatchRevenue();

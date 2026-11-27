@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
 import java.math.BigDecimal;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -127,7 +128,7 @@ public class JobBoardScreenTable extends VisTable {
             jobsListTable.row();
             jobsListTable.add(new VisLabel(club.getName())).width(200);
             jobsListTable.add(new VisLabel(profession.getName())).width(150);
-            jobsListTable.add(new VisLabel("$" + df.format(job.getSalary()))).width(100);
+            jobsListTable.add(new VisLabel(Money.format(job.getSalary()))).width(100);
             jobsListTable.add(new VisLabel(job.getContractLengthMonths() + " months")).width(100);
             jobsListTable.add(new VisLabel(job.getApplicationDeadline().toString())).width(150);
             

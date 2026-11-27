@@ -48,6 +48,9 @@ public class CompetitionEdition implements Serializable {
     
     //
     private List<Long> participantClubsIds = new ArrayList<>();
+    
+    // final league table of this season, written when the season completes (P2-6); empty for cups and running seasons
+    private List<LeagueStandingRow> finalStandings = new ArrayList<>();
 
     // 
     public Long getId() {
@@ -160,5 +163,16 @@ public class CompetitionEdition implements Serializable {
 
     public void setDataId(String dataId) {
         this.dataId = dataId;
+    }
+
+    public List<LeagueStandingRow> getFinalStandings() {
+        if (finalStandings == null) {
+            finalStandings = new ArrayList<>();
+        }
+        return finalStandings;
+    }
+
+    public void setFinalStandings(List<LeagueStandingRow> finalStandings) {
+        this.finalStandings = finalStandings;
     }
 }

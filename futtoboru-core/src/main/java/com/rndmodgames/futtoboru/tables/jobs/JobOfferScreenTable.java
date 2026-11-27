@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
 import java.math.BigDecimal;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -135,7 +136,7 @@ public class JobOfferScreenTable extends VisTable {
             
             offersListTable.row();
             offersListTable.add(new VisLabel(club.getName())).width(200);
-            offersListTable.add(new VisLabel("$" + df.format(offer.getSalary()) + "/month")).width(150);
+            offersListTable.add(new VisLabel(Money.format(offer.getSalary()) + "/month")).width(150);
             offersListTable.add(new VisLabel(offer.getContractLengthMonths() + " months")).width(150);
             
             // Action buttons
