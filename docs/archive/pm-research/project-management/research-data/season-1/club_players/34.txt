@@ -1,0 +1,33 @@
+# Walsall FC (Walsall Town Swifts) - Players File for 1888-89 FA Cup
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup
+#
+# Additional Sources:
+#   - https://wolvescompletehistory.co.uk/walsall-town-swifts-h-188889-fac2/
+#   - https://en.wikipedia.org/wiki/Albert_Aldridge
+#   - https://www.rsssf.org/tablese/engcup1889.html
+#
+# NOTE: Historical records for this season are limited. This file contains players known to have played
+#       in FA Cup matches during the 1888-89 season. The squad may be incomplete.
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Selby,Unknown,1000,1865
+2,Jones,Unknown,1000,1865
+3,Albert,Aldridge,1000,1863
+4,Morris,Unknown,1000,1865
+5,Brettle,Unknown,1000,1865
+6,Morley,Unknown,1000,1865
+7,Davies,Unknown,1000,1865
+8,Shaw,Unknown,1000,1865
+9,Holmes,Unknown,1000,1865
+10,Cope,Unknown,1000,1865
+11,Gray,Unknown,1000,1865

@@ -1,0 +1,32 @@
+# Sheffield Wednesday FC (The Wednesday) - Players File for 1888-89 FA Cup
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup
+#
+# Additional Sources:
+#   - https://wolvescompletehistory.co.uk/wednesday-h-188889-fac3/
+#   - https://en.wikipedia.org/wiki/List_of_Sheffield_Wednesday_F.C._seasons
+#
+# NOTE: Historical records for this season are limited. This file contains players known to have played
+#       in FA Cup matches during the 1888-89 season. The squad may be incomplete.
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Jim,Smith,1000,1865
+2,Thompson,Unknown,1000,1865
+3,Brayshaw,Unknown,1000,1865
+4,Jack,Dungworth,1000,1865
+5,Betts,Unknown,1000,1865
+6,Waller,Unknown,1000,1865
+7,Winterbottom,Unknown,1000,1865
+8,Ingram,Unknown,1000,1865
+9,Woolhouse,Unknown,1000,1865
+10,Tom,Cawley,1000,1865
+11,Mumford,Unknown,1000,1865

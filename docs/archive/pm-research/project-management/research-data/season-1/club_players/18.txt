@@ -1,0 +1,24 @@
+# Linfield FC - Players File for 1888-89 FA Cup
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Linfield_F.C.
+#   - https://www.fchd.info/
+#   - https://www.thecityground.com/
+#
+# NOTE: Historical records for this season are very limited. Linfield defeated Bolton Wanderers 4-0
+#       in the third qualifying round and drew 2-2 with Nottingham Forest in the first round proper.
+#       This file contains minimal data and may need expansion as more information becomes available.
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Player,Unknown,83,1865
