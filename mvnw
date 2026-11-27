@@ -193,10 +193,16 @@ esac
 
 if [ -z "${MVNW_USERNAME-}" ] && command -v wget >/dev/null; then
   verbose "Found wget ... using wget"
-  wget ${__MVNW_QUIET_WGET:+"$__MVNW_QUIET_WGET"} "$distributionUrl" -O "$TMP_DOWNLOAD_DIR/$distributionUrlName" || die "wget: Failed to fetch $distributionUrl"
+  # Futtoboru: retries, then IPv4 only (some networks have a broken IPv6 route to Maven Central's CDN)
+  wget ${__MVNW_QUIET_WGET:+"$__MVNW_QUIET_WGET"} --tries=3 --waitretry=1 --retry-connrefused "$distributionUrl" -O "$TMP_DOWNLOAD_DIR/$distributionUrlName" \
+    || wget ${__MVNW_QUIET_WGET:+"$__MVNW_QUIET_WGET"} -4 --tries=5 --waitretry=2 --retry-connrefused "$distributionUrl" -O "$TMP_DOWNLOAD_DIR/$distributionUrlName" \
+    || die "wget: Failed to fetch $distributionUrl"
 elif [ -z "${MVNW_USERNAME-}" ] && command -v curl >/dev/null; then
   verbose "Found curl ... using curl"
-  curl ${__MVNW_QUIET_CURL:+"$__MVNW_QUIET_CURL"} -f -L -o "$TMP_DOWNLOAD_DIR/$distributionUrlName" "$distributionUrl" || die "curl: Failed to fetch $distributionUrl"
+  # Futtoboru: retries, then IPv4 only (some networks have a broken IPv6 route to Maven Central's CDN)
+  curl ${__MVNW_QUIET_CURL:+"$__MVNW_QUIET_CURL"} -f -L --retry 2 --retry-delay 1 --retry-all-errors -o "$TMP_DOWNLOAD_DIR/$distributionUrlName" "$distributionUrl" \
+    || curl ${__MVNW_QUIET_CURL:+"$__MVNW_QUIET_CURL"} -4 -f -L --retry 5 --retry-delay 2 --retry-all-errors -o "$TMP_DOWNLOAD_DIR/$distributionUrlName" "$distributionUrl" \
+    || die "curl: Failed to fetch $distributionUrl"
 elif set_java_home; then
   verbose "Falling back to use Java to download"
   javaSource="$TMP_DOWNLOAD_DIR/Downloader.java"
