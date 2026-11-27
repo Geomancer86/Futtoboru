@@ -72,24 +72,28 @@ public class HomeScreenTable extends VisTable {
         add(subtitleLabel).left().colspan(2).padBottom(UiTheme.space("md"));
         row();
 
+        // cards: two columns packed to the left, whatever the window width
+        VisTable cards = new VisTable(true);
         if (dashboard.hasClub()) {
-            addCard(fixtureCard(dashboard));
-            addCard(leagueCard(dashboard));
-            row();
-            addCard(messagesCard(dashboard));
-            addCard(balanceCard(dashboard));
-            row();
-            addCard(lastResultCard(dashboard));
+            addCard(cards, fixtureCard(dashboard));
+            addCard(cards, leagueCard(dashboard));
+            cards.row();
+            addCard(cards, messagesCard(dashboard));
+            addCard(cards, balanceCard(dashboard));
+            cards.row();
+            addCard(cards, lastResultCard(dashboard));
         } else {
-            addCard(messagesCard(dashboard));
-            addCard(jobsCard(dashboard));
+            addCard(cards, messagesCard(dashboard));
+            addCard(cards, jobsCard(dashboard));
         }
+        add(cards).left().top().colspan(2);
         row();
         add().colspan(2).grow();
+        top().left();
     }
 
-    private void addCard(VisTable card) {
-        add(card).width(UiTheme.size("dashboard.card.w")).top().left().pad(UiTheme.space("xs"));
+    private static void addCard(VisTable cards, VisTable card) {
+        cards.add(card).width(UiTheme.size("dashboard.card.w")).top().left().pad(UiTheme.space("xs"));
     }
 
     // ------------------------------------------------------------------ cards

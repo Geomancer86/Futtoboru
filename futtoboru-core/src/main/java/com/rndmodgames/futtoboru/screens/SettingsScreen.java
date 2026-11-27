@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -350,14 +351,18 @@ public class SettingsScreen implements Screen {
         gameplaySettings.add(gameplaySettingsLabel).pad(UiTheme.space("xs"));
         
         // 5 Panel Layout (added Debug Logging)
-        mainContainer.row().colspan(5).expandX().fillX();
-        
-        // 
-        mainContainer.add(graphicsSettings).pad(UiTheme.space("sm")).align(Align.top);
-        mainContainer.add(soundSettings).pad(UiTheme.space("sm")).align(Align.top);
-        mainContainer.add(gameplaySettings).pad(UiTheme.space("sm")).align(Align.top);
-        mainContainer.add(modSettings).pad(UiTheme.space("sm")).align(Align.top);
-        mainContainer.add(debugLoggingSettings).pad(UiTheme.space("sm")).align(Align.top);
+        // the panels scroll (the logging list is taller than 720 px) so the Back button below stays on screen (D18)
+        VisTable panels = new VisTable();
+        panels.add(graphicsSettings).pad(UiTheme.space("sm")).align(Align.top);
+        panels.add(soundSettings).pad(UiTheme.space("sm")).align(Align.top);
+        panels.add(gameplaySettings).pad(UiTheme.space("sm")).align(Align.top);
+        panels.add(modSettings).pad(UiTheme.space("sm")).align(Align.top);
+        panels.add(debugLoggingSettings).pad(UiTheme.space("sm")).align(Align.top);
+        VisScrollPane panelsScroll = new com.rndmodgames.components.AutoFocusScrollPane(panels);
+        panelsScroll.setFadeScrollBars(false);
+        panelsScroll.setScrollingDisabled(true, false);
+        panelsScroll.setOverscroll(false, false);
+        mainContainer.add(panelsScroll).grow();
 
         // Back: to the main menu, or back to the game when opened in-game
         final VisTextButton exitButton = returnScreen == Futtoboru.MENU_SCREEN
@@ -388,7 +393,7 @@ public class SettingsScreen implements Screen {
         mainContainer.row();
         
         // Add the Quit to Main Menu button NOTE: weird colspan needed to center, might be easy to fix
-        mainContainer.add(exitButton).colspan(20).pad(UiTheme.space("xs"));
+        mainContainer.add(exitButton).pad(UiTheme.space("xs"));
 
         // Set debug for Stage and recursive
 //        stage.setDebugAll(DarkBlade.DEBUG_TABLES_ENABLED);
