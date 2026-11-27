@@ -1,0 +1,72 @@
+{
+  "id": "kennington-oval",
+  "name": "Kennington Oval",
+  "season": "spring",
+  "weather": "clear",
+  "crowd": 95,
+  "view": "The 1889 FA Cup final: a flat cricket oval packed deep round the ropes, a low Victorian pavilion (not the 1898 one) and the gasholders just outside.",
+  "skyline": [
+    {
+      "type": "houses",
+      "x": 0.0,
+      "width": 320,
+      "height": 12
+    },
+    {
+      "type": "gasholder",
+      "x": 0.62,
+      "height": 30,
+      "width": 34
+    },
+    {
+      "type": "gasholder",
+      "x": 0.75,
+      "height": 26,
+      "width": 30
+    },
+    {
+      "type": "spire",
+      "x": 0.2,
+      "height": 40
+    }
+  ],
+  "farSide": [
+    {
+      "type": "pavilion",
+      "from": 0.3,
+      "to": 0.56,
+      "height": 20,
+      "flag": "red"
+    },
+    {
+      "type": "stand",
+      "from": -0.14,
+      "to": 0.28,
+      "height": 9
+    },
+    {
+      "type": "stand",
+      "from": 0.58,
+      "to": 1.14,
+      "height": 9
+    }
+  ],
+  "nearSide": {
+    "type": "rope",
+    "crowd": 98
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "white",
+      "navy"
+    ],
+    "away": [
+      "red",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#kennington-oval"
+}

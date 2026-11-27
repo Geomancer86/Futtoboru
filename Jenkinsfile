@@ -96,12 +96,12 @@ pipeline {
                                 python3 -m venv .ci-venv && .ci-venv/bin/pip install -q pytest
                                 PY=.ci-venv/bin/python
                             fi
-                            $PY -m pytest -q tools/data
+                            $PY -m pytest -q tools/data tools/art
                             $PY tools/data/validate.py
                             $PY docs/data/check_results_1888-89.py
                         '''
                     } else {
-                        bat 'python -m pytest -q tools/data && python tools/data/validate.py'
+                        bat 'python -m pytest -q tools/data tools/art && python tools/data/validate.py'
                     }
                 }
             }
