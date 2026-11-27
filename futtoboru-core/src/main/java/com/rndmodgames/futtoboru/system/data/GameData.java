@@ -29,8 +29,13 @@ import com.badlogic.gdx.utils.SerializationException;
  * as {@code tools/data/validate.py}: an unknown or missing field, a bad id or date, a duplicate id (ignoring case),
  * a reference that doesn't resolve after the aliases, a file listed but missing (or present but not listed, when
  * the folder can be listed) are errors; suspicious data is a warning. A broken record is skipped and reported, it
- * never stops the game. Every record with a data id gets a runtime id below {@link IdAllocator#GAME_START}, in
- * load order (pack, file, record).
+ * never stops the game.
+ *
+ * Every record with a data id gets as runtime id its number in the pack's append-only {@code ids.json} registry
+ * (P2-5): numbers never change, so saved games keep pointing at the same records when the data is corrected. A
+ * renamed record (old id in {@code aliases.json}) inherits the old id's number. A record with no number (a pack
+ * without registry, or a record added without running {@code tools/data/assign_ids.py}) gets a temporary one from
+ * {@link IdAllocator#DERIVED_START}, with a warning. Objects built at load from the data continue that range.
  */
 public class GameData {
 
@@ -167,6 +172,12 @@ public class GameData {
     /** spec name -> live records in load order (squads, names, modifiers...). */
     private final Map<String, List<DataRecord>> bySpec = new HashMap<>();
     private final List<String> packs = new ArrayList<>();
+    /** Pack id -> {version, dataVersion} from its pack.json, in load order. */
+    private final Map<String, int[]> packVersions = new LinkedHashMap<>();
+    /** Registry ({@code ids.json}) of each pack that has one. */
+    private final Map<String, Registry> registries = new LinkedHashMap<>();
+    /** kind -> lower id -> runtime id of every live record (and of the old ids that alias to one). */
+    private final Map<String, Map<String, Long>> numbers = new HashMap<>();
 
     /** Continues after the last data record, for runtime copies made at load (still below GAME_START). */
     private IdAllocator dataIds;
@@ -248,7 +259,30 @@ public class GameData {
         return null;
     }
 
-    /** @return the allocator for runtime copies made while building the database (continues after the records) */
+    /** @return pack id -> {version, dataVersion} of every pack read, in load order */
+    public Map<String, int[]> getPackVersions() {
+        return Collections.unmodifiableMap(packVersions);
+    }
+
+    /** @return the highest {@code dataVersion} of the packs read (0 when none) */
+    public int getDataVersion() {
+        int v = 0;
+        for (int[] pv : packVersions.values()) {
+            v = Math.max(v, pv[1]);
+        }
+        return v;
+    }
+
+    /** @return the runtime id of a record by data id (aliases followed, ignoring case), or null when unknown */
+    public Long numberOf(String kind, String id) {
+        if (id == null) {
+            return null;
+        }
+        Map<String, Long> table = numbers.get(kind);
+        return table == null ? null : table.get(id.toLowerCase());
+    }
+
+    /** @return the allocator for objects built while making the database (from {@link IdAllocator#DERIVED_START}) */
     public IdAllocator getDataIdAllocator() {
         return dataIds;
     }
@@ -297,6 +331,7 @@ public class GameData {
         if (!pack.equals(manifest.getString("id"))) {
             report.error(manifestWhere, "id `" + manifest.getString("id") + "` differs from its folder `" + pack + "`");
         }
+        packVersions.put(pack, new int[] { manifest.getInt("version"), manifest.getInt("dataVersion") });
         List<String> listed = new ArrayList<>();
         for (JsonValue f = manifest.get("files").child; f != null; f = f.next) {
             listed.add(f.asString());
@@ -319,6 +354,10 @@ public class GameData {
             String[] parts = f.split("/");
             if (f.equals("aliases.json")) {
                 readAliases(data, where);
+                continue;
+            }
+            if (f.equals("ids.json")) {
+                readRegistry(data, where, pack);
                 continue;
             }
             String season = null;
@@ -703,12 +742,144 @@ public class GameData {
         }
     }
 
-    /** Runtime ids for every live record with a data id, in load order; then the allocator for copies. */
+    // ---------------------------------------------------------------------------------------------- ids.json
+
+    /** One pack's {@code ids.json}: its number range, the next free number and kind -> lower data id -> number. */
+    static final class Registry {
+        final String where;
+        long first = IdAllocator.DATA_START;
+        long last = IdAllocator.REGISTRY_MAX;
+        long next = Long.MAX_VALUE;
+        final Map<String, Map<String, Long>> ids = new LinkedHashMap<>();
+
+        Registry(String where) {
+            this.where = where;
+        }
+    }
+
+    private void readRegistry(JsonValue data, String where, String pack) {
+        Registry reg = new Registry(where);
+        registries.put(pack, reg);
+        if (!data.isObject()) {
+            report.error(where, "expected an object with range, next, ids, retired");
+            return;
+        }
+        JsonValue range = data.get("range");
+        if (range != null && range.isArray() && range.size == 2 && range.child.isLong() && range.child.next.isLong()
+                && range.child.asLong() >= IdAllocator.DATA_START && range.child.asLong() <= range.child.next.asLong()
+                && range.child.next.asLong() <= IdAllocator.REGISTRY_MAX) {
+            reg.first = range.child.asLong();
+            reg.last = range.child.next.asLong();
+        } else {
+            report.error(where, "`range` must be [first, last] with 1 <= first <= last <= " + IdAllocator.REGISTRY_MAX);
+        }
+        JsonValue next = data.get("next");
+        if (next != null && next.isLong()) {
+            reg.next = next.asLong();
+        } else {
+            report.error(where, "`next` must be a whole number");
+        }
+        JsonValue kinds = data.get("ids");
+        if (kinds == null || !kinds.isObject()) {
+            report.error(where, "`ids` must be an object of kind -> {data id: number}");
+            return;
+        }
+        for (JsonValue kind = kinds.child; kind != null; kind = kind.next) {
+            if (!ids.containsKey(kind.name) || !kind.isObject()) {
+                report.error(where, "unknown kind `" + kind.name + "` or not an object");
+                continue;
+            }
+            Map<String, Long> table = reg.ids.computeIfAbsent(kind.name, k -> new LinkedHashMap<>());
+            for (JsonValue e = kind.child; e != null; e = e.next) {
+                String at = where + ".ids." + kind.name + "." + e.name;
+                if (!e.isLong()) {
+                    report.error(at, "expected a whole number");
+                    continue;
+                }
+                long n = e.asLong();
+                if (n < reg.first || n > reg.last || n >= reg.next) {
+                    report.error(at, "number " + n + " is outside the pack's range [" + reg.first + ", " + reg.last
+                            + "] or not below `next` (" + reg.next + ")");
+                    continue;
+                }
+                table.put(e.name.toLowerCase(), n);
+            }
+        }
+    }
+
+    /**
+     * Runtime ids: every live record with a data id gets its registry number (its own entry, else the lowest number
+     * of the old ids that alias to it); a record without one gets a temporary number from
+     * {@link IdAllocator#DERIVED_START} (warned). Then the allocator for objects built at load continues that range.
+     */
     private void assignRuntimeIds() {
-        dataIds = new IdAllocator(IdAllocator.DATA_START);
+        // kind -> lower id -> number of every entry; a number used twice is an error and only its first entry counts
+        Map<String, Map<String, Long>> entries = new HashMap<>();
+        Map<Long, String> byNumber = new HashMap<>();
+        for (Map.Entry<String, Registry> pr : registries.entrySet()) {
+            Registry reg = pr.getValue();
+            for (Map.Entry<String, Map<String, Long>> k : reg.ids.entrySet()) {
+                for (Map.Entry<String, Long> e : k.getValue().entrySet()) {
+                    String label = pr.getKey() + " " + k.getKey() + " `" + e.getKey() + "`";
+                    String prev = byNumber.putIfAbsent(e.getValue(), label);
+                    if (prev != null) {
+                        report.error(reg.where, "number " + e.getValue() + " is used twice (" + prev + " and " + label + ")");
+                        continue;
+                    }
+                    if (entries.computeIfAbsent(k.getKey(), x -> new HashMap<>()).putIfAbsent(e.getKey(), e.getValue()) != null) {
+                        report.error(reg.where, k.getKey() + " `" + e.getKey() + "` has two entries");
+                    }
+                }
+            }
+        }
+        // a renamed record inherits the number of its old id (the lowest one when several old ids point to it)
+        Map<String, Map<String, Long>> inherited = new HashMap<>();
+        for (Map.Entry<String, Map<String, Long>> k : entries.entrySet()) {
+            for (Map.Entry<String, Long> e : k.getValue().entrySet()) {
+                if (ids.get(k.getKey()).containsKey(e.getKey())) {
+                    continue;
+                }
+                String target = resolve(k.getKey(), e.getKey());
+                if (target != null) {
+                    inherited.computeIfAbsent(k.getKey(), x -> new HashMap<>()).merge(target, e.getValue(), Math::min);
+                }
+            }
+        }
+
+        dataIds = new IdAllocator(IdAllocator.DERIVED_START);
+        Set<String> warnedPacks = new HashSet<>();
         for (DataRecord r : loaded) {
-            if (r.live && r.kind != null && (r.parent == null || r.parent.live)) {
-                r.runtimeId = dataIds.nextId();
+            if (!r.live || r.kind == null || (r.parent != null && !r.parent.live)) {
+                continue;
+            }
+            String low = r.id().toLowerCase();
+            Long n = entries.getOrDefault(r.kind, Collections.emptyMap()).get(low);
+            if (n == null) {
+                n = inherited.getOrDefault(r.kind, Collections.emptyMap()).get(low);
+            }
+            if (n == null) {
+                n = dataIds.nextId();
+                if (!registries.containsKey(r.pack)) {
+                    if (warnedPacks.add(r.pack)) {
+                        report.warn(r.pack + "/ids.json", "missing: the runtime ids of this pack are temporary"
+                                + " (run python tools/data/assign_ids.py)");
+                    }
+                } else {
+                    report.warn(r.where, r.kind + " `" + r.id() + "` has no number in " + r.pack
+                            + "/ids.json: temporary runtime id " + n + " (run python tools/data/assign_ids.py)");
+                }
+            }
+            r.runtimeId = n;
+            numbers.computeIfAbsent(r.kind, k -> new HashMap<>()).put(low, n);
+        }
+        // old (aliased) ids keep resolving to their record's number
+        for (Map.Entry<String, Map<String, Long>> k : entries.entrySet()) {
+            for (String old : k.getValue().keySet()) {
+                String target = resolve(k.getKey(), old);
+                Map<String, Long> table = numbers.get(k.getKey());
+                if (target != null && table != null && table.containsKey(target)) {
+                    table.putIfAbsent(old, table.get(target));
+                }
             }
         }
     }

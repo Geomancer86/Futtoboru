@@ -2,7 +2,8 @@
 
 Same rules as DarkBlade's book validator: a typo in a field name is an error, every
 reference must resolve (after aliases), ids are stable lower-case slugs and unique per
-kind across all packs. Suspicious but possible data (a person at two clubs, a short
+kind across all packs, and every record has a runtime number in its pack's append-only
+`ids.json` registry (see `assign_ids.py`). Suspicious but possible data (a person at two clubs, a short
 squad, an odd age) is a warning: it goes to the human review, it doesn't block.
 
 Usage:  python tools/data/validate.py [--root DIR] [--quiet]
@@ -167,23 +168,40 @@ def load_json(path: Path, rep: Report, where: str):
     return None
 
 
-def validate(root: Path = DEFAULT_ROOT) -> Report:
-    rep = Report()
-    ids: dict[str, dict[str, str]] = {k: {} for k in KINDS}   # kind -> lower id -> where
+class Scan:
+    """Everything read from the packs: records with ids in load order, aliases, registries."""
+
+    def __init__(self, root: Path):
+        self.root = root
+        self.rep = Report()
+        self.ids: dict[str, dict[str, str]] = {k: {} for k in KINDS}   # kind -> lower id -> where
+        self.aliases: dict[str, dict[str, str]] = {k: {} for k in KINDS}
+        self.records: list[tuple[str, str, str, str]] = []  # (pack, kind, lower id, where) in load order
+        self.registries: dict[str, tuple[dict, str]] = {}  # pack -> (ids.json content, where)
+        self.packs: list[str] = []
+        self.squads_by_season: dict[str, list] = {}
+
+
+def scan(root: Path = DEFAULT_ROOT) -> Scan:
+    """Reads and checks every pack (records, references, aliases); the registry is checked by `validate`."""
+    s = Scan(root)
+    rep, ids, aliases = s.rep, s.ids, s.aliases
     refs: list[tuple[str, str, str]] = []
-    aliases: dict[str, dict[str, str]] = {k: {} for k in KINDS}
     seasons: dict[str, dict] = {}
-    squads_by_season: dict[str, list] = {}
+    squads_by_season = s.squads_by_season
 
     index = root / "index.txt"
     if not index.exists():
         rep.error("index.txt", "missing (lists the packs to load)")
-        return rep
+        return s
     packs = [l.strip() for l in index.read_text(encoding="utf-8").splitlines() if l.strip() and not l.startswith("#")]
+    s.packs = packs
     on_disk = sorted(p.name for p in root.iterdir() if p.is_dir())
     for p in on_disk:
         if p not in packs:
             rep.error("index.txt", f"pack folder `{p}` is not listed")
+
+    pack = None
 
     def register(kind, rec, where):
         rid = rec.get("id")
@@ -194,6 +212,7 @@ def validate(root: Path = DEFAULT_ROOT) -> Report:
             rep.error(where, f"duplicate {kind} id `{rid}` (also {ids[kind][low]})")
         else:
             ids[kind][low] = where
+            s.records.append((pack, kind, low, where))
 
     for pack in packs:
         pdir = root / pack
@@ -216,6 +235,9 @@ def validate(root: Path = DEFAULT_ROOT) -> Report:
             if data is None:
                 continue
             parts = f.split("/")
+            if f == "ids.json":
+                s.registries[pack] = (data, where)
+                continue
             if f == "aliases.json":
                 if not isinstance(data, dict):
                     rep.error(where, "expected an object of kinds")
@@ -259,9 +281,9 @@ def validate(root: Path = DEFAULT_ROOT) -> Report:
                     register(kind, rec, rw)
             if spec_name == "squad":
                 squads_by_season[parts[1]] = data
-        for s in manifest.get("seasons", []):
-            if not (pdir / "seasons" / s / "season.json").exists():
-                rep.error(f"{pack}/pack.json", f"season `{s}` has no seasons/{s}/season.json")
+        for sid in manifest.get("seasons", []):
+            if not (pdir / "seasons" / sid / "season.json").exists():
+                rep.error(f"{pack}/pack.json", f"season `{sid}` has no seasons/{sid}/season.json")
 
     # aliases: an old id must be gone, its target must exist
     for kind, table in aliases.items():
@@ -274,6 +296,16 @@ def validate(root: Path = DEFAULT_ROOT) -> Report:
         if resolve(kind, rid, aliases, ids) is None:
             rep.error(where, f"unknown {kind} `{rid}`")
 
+    return s
+
+
+def validate(root: Path = DEFAULT_ROOT) -> Report:
+    s = scan(root)
+    rep = s.rep
+    if not s.packs:
+        return rep
+    check_registry(s)
+
     # warnings for the human review
     people = {}
     pfile = root / "core" / "people.json"
@@ -285,7 +317,7 @@ def validate(root: Path = DEFAULT_ROOT) -> Report:
     for pid, p in people.items():
         if p.get("firstName") == "":
             rep.warn(f"person `{pid}`", "no first name")
-    for sid, squads in squads_by_season.items():
+    for sid, squads in s.squads_by_season.items():
         year = int(sid[:4]) if sid[:4].isdigit() else None
         seen: dict[str, list[str]] = defaultdict(list)
         for sq in squads:
@@ -315,6 +347,141 @@ def resolve(kind: str, rid: str, aliases, ids, depth: int = 0):
     if low in aliases[kind] and depth < 16:
         return resolve(kind, aliases[kind][low], aliases, ids, depth + 1)
     return None
+
+
+# ---------------------------------------------------------------------------------------------- ids.json registry
+# Each pack has an append-only `ids.json`: kind -> data id -> runtime number. Numbers are unique across all kinds
+# and packs, lie in the pack's `range`, stay below `next`, and are never reused or changed. A removed record keeps
+# its entry (listed in `retired`); a renamed record (old id in aliases.json) keeps the old entry and its new id
+# inherits that number, so runtime ids saved in games never shift. The game reads the same file (GameData).
+REGISTRY_MAX = 899_999       # numbers 900 000+ are for objects the game derives at load; 1 000 000+ for play
+BLOCK = 100_000              # a new pack gets the next free block of numbers
+REGISTRY_FIELDS = {"range", "next", "ids", "retired"}
+
+
+def is_int(n) -> bool:
+    return isinstance(n, int) and not isinstance(n, bool)
+
+
+def registry_entries(s: Scan) -> dict:
+    """(kind, lower id) -> (number, pack) for every well-formed entry of every registry (first one wins)."""
+    out = {}
+    for pack, (reg, _where) in s.registries.items():
+        if not isinstance(reg, dict) or not isinstance(reg.get("ids"), dict):
+            continue
+        for kind, table in reg["ids"].items():
+            if kind not in KINDS or not isinstance(table, dict):
+                continue
+            for rid, n in table.items():
+                if is_int(n):
+                    out.setdefault((kind, rid.lower()), (n, pack))
+    return out
+
+
+def record_numbers(s: Scan, entries: dict | None = None) -> dict:
+    """(kind, lower id) -> runtime number of every record: its own entry, else the lowest number of the old ids
+    (aliases) that now resolve to it. Records without a number are left out."""
+    entries = registry_entries(s) if entries is None else entries
+    out = {}
+    for _pack, kind, low, _where in s.records:
+        if (kind, low) in entries:
+            out[(kind, low)] = entries[(kind, low)][0]
+    for (kind, rid), (n, _pack) in sorted(entries.items(), key=lambda e: e[1][0]):
+        if rid in s.ids[kind]:
+            continue
+        target = resolve(kind, rid, s.aliases, s.ids)
+        if target is not None and (kind, target) not in out:
+            out[(kind, target)] = n
+    return out
+
+
+def retired_entries(s: Scan) -> set:
+    out = set()
+    for reg, _where in s.registries.values():
+        if isinstance(reg, dict) and isinstance(reg.get("retired"), dict):
+            for kind, lst in reg["retired"].items():
+                if isinstance(lst, list):
+                    out.update((kind, rid.lower()) for rid in lst if isinstance(rid, str))
+    return out
+
+
+def check_registry(s: Scan):
+    rep = s.rep
+    ranges = []
+    seen_numbers: dict[int, str] = {}
+    seen_keys: dict[tuple, str] = {}
+    for pack, (reg, where) in s.registries.items():
+        if not isinstance(reg, dict):
+            rep.error(where, "expected an object with range, next, ids, retired")
+            continue
+        for k in reg:
+            if k not in REGISTRY_FIELDS:
+                rep.error(where, f"unknown field `{k}` (allowed: {', '.join(sorted(REGISTRY_FIELDS))})")
+        rng, nxt = reg.get("range"), reg.get("next")
+        if not (isinstance(rng, list) and len(rng) == 2 and all(is_int(x) for x in rng)
+                and 1 <= rng[0] <= rng[1] <= REGISTRY_MAX):
+            rep.error(where, f"`range` must be [first, last] with 1 <= first <= last <= {REGISTRY_MAX}")
+            rng = None
+        else:
+            ranges.append((rng[0], rng[1], pack))
+        if not is_int(nxt):
+            rep.error(where, "`next` must be a whole number (the next free number, never lowered)")
+            nxt = None
+        if not isinstance(reg.get("ids"), dict):
+            rep.error(where, "`ids` must be an object of kind -> {data id: number}")
+            continue
+        for kind, table in reg["ids"].items():
+            if kind not in KINDS:
+                rep.error(where, f"unknown kind `{kind}`")
+                continue
+            if not isinstance(table, dict):
+                rep.error(f"{where}.ids.{kind}", "expected an object of data id -> number")
+                continue
+            for rid, n in table.items():
+                label = f"{pack} {kind} `{rid}`"
+                if (kind, rid.lower()) in seen_keys:
+                    rep.error(where, f"{kind} `{rid}` has two entries ({seen_keys[(kind, rid.lower())]} and {label})")
+                seen_keys.setdefault((kind, rid.lower()), label)
+                if not is_int(n):
+                    rep.error(f"{where}.ids.{kind}.{rid}", "expected a whole number")
+                    continue
+                if n in seen_numbers:
+                    rep.error(where, f"number {n} is used twice ({seen_numbers[n]} and {label})")
+                seen_numbers.setdefault(n, label)
+                if rng and not rng[0] <= n <= rng[1]:
+                    rep.error(f"{where}.ids.{kind}.{rid}", f"number {n} is outside the pack's range {rng}")
+                elif nxt is not None and n >= nxt:
+                    rep.error(f"{where}.ids.{kind}.{rid}", f"number {n} is not below `next` ({nxt})")
+        retired = reg.get("retired", {})
+        if not isinstance(retired, dict):
+            rep.error(where, "`retired` must be an object of kind -> [data ids]")
+            continue
+        for kind, lst in retired.items():
+            if kind not in KINDS or not isinstance(lst, list):
+                rep.error(f"{where}.retired", f"unknown kind `{kind}` or not a list")
+                continue
+            for rid in lst:
+                if not isinstance(rid, str) or rid not in (reg["ids"].get(kind) or {}):
+                    rep.error(f"{where}.retired.{kind}", f"`{rid}` has no entry in `ids` (entries are never deleted)")
+                elif rid.lower() in s.ids[kind]:
+                    rep.error(f"{where}.retired.{kind}", f"`{rid}` is retired but still a live record")
+    ranges.sort()
+    for (_a1, b1, p1), (a2, _b2, p2) in zip(ranges, ranges[1:]):
+        if a2 <= b1:
+            rep.error("ids.json", f"the number ranges of packs `{p1}` and `{p2}` overlap")
+
+    # every record has a number; every entry has a record, is retired or is an old (aliased) id
+    entries = registry_entries(s)
+    numbers = record_numbers(s, entries)
+    for pack, kind, low, where in s.records:
+        if (kind, low) not in numbers:
+            rep.error(where, f"{kind} `{low}` has no number in {pack}/ids.json (run python tools/data/assign_ids.py)")
+    retired = retired_entries(s)
+    for (kind, rid), (n, pack) in entries.items():
+        if rid in s.ids[kind] or (kind, rid) in retired:
+            continue
+        if resolve(kind, rid, s.aliases, s.ids) is None:
+            rep.error(f"{pack}/ids.json", f"{kind} `{rid}` ({n}) has no record: list it in `retired` or alias it")
 
 
 def main() -> int:

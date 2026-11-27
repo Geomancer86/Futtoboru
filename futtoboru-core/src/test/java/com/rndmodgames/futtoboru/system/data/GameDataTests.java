@@ -164,6 +164,55 @@ class GameDataTests {
     }
 
     @Test
+    void shippedRuntimeIdsComeFromTheRegistry() {
+        GameData data = GameData.loadDefault();
+
+        for (String warning : data.getReport().getWarnings()) {
+            assertFalse(warning.contains("ids.json"), warning);
+        }
+        // the registry kept the ids the load order gave before it existed (P2-5)
+        assertEquals(1L, data.get(GameData.CLUB, "preston-north-end").runtimeId());
+        assertEquals(40L, data.get(GameData.CONTINENT, "europe").runtimeId());
+        assertEquals(914L, data.get(GameData.EDITION, "fa-cup-1888-89").runtimeId());
+        for (String kind : GameData.KINDS) {
+            for (DataRecord r : data.all(kind)) {
+                assertTrue(r.runtimeId() <= IdAllocator.REGISTRY_MAX, r.where());
+                assertEquals(Long.valueOf(r.runtimeId()), data.numberOf(kind, r.id()));
+            }
+        }
+        assertEquals(IdAllocator.DERIVED_START, data.getDataIdAllocator().peek());
+        assertEquals(1, data.getDataVersion());
+    }
+
+    @Test
+    void removedAddedOrRenamedRecordsDoNotShiftOtherRuntimeIds() {
+        GameData before = fixture("registry");
+        GameData after = fixture("registry-changed");
+
+        assertEquals("", before.getReport().errorsText());
+        assertEquals("", after.getReport().errorsText());
+        assertTrue(after.getReport().getWarnings().isEmpty(), after.getReport().getWarnings().toString());
+
+        // queens-park removed (retired), vale-of-leven added first in the file, preston renamed with an alias
+        assertEquals(before.get(GameData.CLUB, "renton").runtimeId(), after.get(GameData.CLUB, "renton").runtimeId());
+        assertEquals(before.get(GameData.COUNTRY, "scotland").runtimeId(),
+                after.get(GameData.COUNTRY, "scotland").runtimeId());
+        assertEquals(before.get(GameData.CLUB, "preston-north-end").runtimeId(),
+                after.get(GameData.CLUB, "preston-north-end-fc").runtimeId());
+        assertEquals(Long.valueOf(1), after.numberOf(GameData.CLUB, "preston-north-end"));
+        assertEquals(7L, after.get(GameData.CLUB, "vale-of-leven").runtimeId());
+        assertNull(after.numberOf(GameData.CLUB, "queens-park"));
+    }
+
+    @Test
+    void aPackWithoutRegistryGetsTemporaryIdsAndAWarning() {
+        GameData data = fixture("valid");
+
+        assertTrue(data.getReport().getWarnings().toString().contains("core/ids.json: missing"));
+        assertTrue(data.get(GameData.CLUB, "preston-north-end").runtimeId() >= IdAllocator.DERIVED_START);
+    }
+
+    @Test
     void partialBirthDatesKeepWhatIsKnown() {
         Random rng = new Random(42);
         for (int i = 0; i < 200; i++) {

@@ -86,3 +86,93 @@ def test_alias_resolves_renamed_id(pack):
 def test_alias_to_live_id_is_an_error(pack):
     edit(pack / "core" / "aliases.json", lambda d: d["club"].update({"stoke": "everton"}))
     assert "alias `stoke` is still a live id" in errors(pack)
+
+
+# ---------------------------------------------------------------------------------------------- ids.json registry
+import assign_ids  # noqa: E402
+
+
+def registry(root):
+    return json.loads((root / "core" / "ids.json").read_text(encoding="utf-8"))
+
+
+def numbers(root):
+    return validate.record_numbers(validate.scan(root))
+
+
+def test_every_shipped_record_has_a_number():
+    assert assign_ids.assign(ROOT, write=False) == []
+
+
+def test_new_record_gets_the_next_number_and_nothing_else_changes(pack):
+    before = registry(pack)
+    edit(pack / "core" / "clubs.json", lambda d: d.append(dict(d[0], id="new-club")))
+    assert "club `new-club` has no number" in errors(pack)
+    added = assign_ids.assign(pack)
+    after = registry(pack)
+    assert added == [f"core club `new-club` -> {before['next']}"]
+    assert after["ids"]["club"]["new-club"] == before["next"]
+    assert after["next"] == before["next"] + 1
+    for kind, table in before["ids"].items():
+        for rid, n in table.items():
+            assert after["ids"][kind][rid] == n
+    assert errors(pack) == ""
+
+
+def test_removed_record_keeps_its_number_reserved(pack):
+    before = numbers(pack)
+    def drop(d):
+        d[:] = [p for p in d if p["id"] != "fred-dewhurst-1863"]
+    edit(pack / "core" / "people.json", drop)
+    edit(pack / "core" / "seasons" / "1888-89" / "squads.json",
+         lambda d: [sq.update(players=[p for p in sq["players"] if p != "fred-dewhurst-1863"]) for sq in d])
+    assert "person `fred-dewhurst-1863` (" in errors(pack) and "has no record" in errors(pack)
+    edit(pack / "core" / "ids.json", lambda d: d["retired"].setdefault("person", []).append("fred-dewhurst-1863"))
+    assert errors(pack) == ""
+    after = numbers(pack)
+    del before[("person", "fred-dewhurst-1863")]
+    assert after == before
+    # the number is not handed out again
+    edit(pack / "core" / "clubs.json", lambda d: d.append(dict(d[0], id="new-club")))
+    assign_ids.assign(pack)
+    assert registry(pack)["ids"]["club"]["new-club"] == registry(pack)["next"] - 1
+    assert registry(pack)["ids"]["club"]["new-club"] not in before.values()
+
+
+def test_renamed_record_inherits_the_old_number(pack):
+    old = numbers(pack)[("club", "preston-north-end")]
+    edit(pack / "core" / "clubs.json", lambda d: d[0].update({"id": "preston-north-end-fc"}))
+    edit(pack / "core" / "aliases.json", lambda d: d["club"].update({"preston-north-end": "preston-north-end-fc"}))
+    assert errors(pack) == ""
+    assert numbers(pack)[("club", "preston-north-end-fc")] == old
+    assert assign_ids.assign(pack) == []
+
+
+def test_duplicate_number_is_an_error(pack):
+    def dup(d):
+        d["ids"]["club"]["stoke"] = d["ids"]["club"]["preston-north-end"]
+    edit(pack / "core" / "ids.json", dup)
+    assert "is used twice" in errors(pack)
+
+
+def test_retired_live_record_and_number_above_next_are_errors(pack):
+    def bad(d):
+        d["retired"]["club"] = ["stoke"]
+        d["ids"]["club"]["everton"] = d["next"] + 5
+    edit(pack / "core" / "ids.json", bad)
+    out = errors(pack)
+    assert "`stoke` is retired but still a live record" in out
+    assert "is not below `next`" in out
+
+
+def test_new_pack_gets_its_own_block_of_numbers(pack):
+    (pack / "index.txt").write_text("core\nmod\n", encoding="utf-8")
+    (pack / "mod").mkdir()
+    (pack / "mod" / "pack.json").write_text(json.dumps({"id": "mod", "name": "A mod", "version": 1, "dataVersion": 1,
+                                                        "seasons": [], "files": ["clubs.json"]}), encoding="utf-8")
+    (pack / "mod" / "clubs.json").write_text(json.dumps([{"id": "someone.new-club", "name": "New", "country": "england",
+                                                         "sources": []}]), encoding="utf-8")
+    assert "has no number in mod/ids.json" in errors(pack)
+    assert assign_ids.assign(pack) == ["mod club `someone.new-club` -> 100000"]
+    assert errors(pack) == ""
+    assert "ids.json" in json.loads((pack / "mod" / "pack.json").read_text(encoding="utf-8"))["files"]

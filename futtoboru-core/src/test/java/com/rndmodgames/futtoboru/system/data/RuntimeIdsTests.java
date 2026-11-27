@@ -22,20 +22,16 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.utils.Array;
 import com.rndmodgames.futtoboru.BaseTest;
+import com.rndmodgames.futtoboru.NewGameFixture;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
-import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
-import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
-import com.rndmodgames.futtoboru.engine.AuthorityManager;
-import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
-import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -61,70 +57,11 @@ class RuntimeIdsTests {
 
     /** Builds a fresh database and a new game the way NewGameOverviewScreen does, then plays some days. */
     private static SaveGame newGame(int days) {
-        DatabaseLoader.resetDatabaseLoaderInstance();
-        DatabaseLoader db = DatabaseLoader.getInstance();
-        Season season = DatabaseLoader.getSeasonByDataId("1888-89");
-
-        SaveGame game = new SaveGame();
-        application.setCurrentGame(game);
-        ScriptsManager scripts = new ScriptsManager(application);
-        AuthorityManager authority = new AuthorityManager(application);
-        application.setScriptsManager(scripts);
-        application.setGameEngine(new FuttoboruGameEngine(application, scripts, authority));
-
-        game.setMainAuthority(DatabaseLoader.getMainAuthority());
-        Country england = DatabaseLoader.getCountryByDataId("england");
-        List<Country> selected = new ArrayList<>();
-        selected.add(england);
-        game.setSelectedCountries(selected);
-
-        Person owner = new Person();
-        owner.setName("Test");
-        owner.setLastname("Manager");
-        game.setOwner(owner);
-        game.assignId(owner);
-        game.getAllPersons().add(owner);
-        owner.setPrimaryProfession(DatabaseLoader.getProfessionByDataId(Profession.MANAGER));
-        owner.setCurrentCountry(england);
-        game.setGameStartDate(season.getStartDate());
-        game.setGameDate(season.getStartDate());
-
-        for (Competition comp : DatabaseLoader.getCompetitions()) {
-            if (Competition.COMPETITION_CUP.equals(comp.getCompetitionType())) {
-                game.getAllCups().add(comp);
-            } else {
-                game.getAllLeagues().add(comp);
-            }
-            for (CompetitionEdition edition : comp.getEditions()) {
-                for (Long clubId : edition.getParticipantClubsIds()) {
-                    if (game.getClubById(clubId) == null) {
-                        game.getAllClubs().add(DatabaseLoader.getClubById(clubId));
-                    }
-                }
-            }
-        }
-        for (Club club : db.getClubsByCountry(england)) {
-            if (game.getClubById(club.getId()) == null) {
-                game.getAllClubs().add(club);
-            }
-        }
-        owner.setCurrentClubId(DatabaseLoader.getClubByDataId("preston-north-end").getId());
-        game.getGameScripts().addAll(season.getSeasonScripts());
-
-        // a person generated during play
-        Person generated = application.getPersonGenerator().generateUniquePerson(england, season, false);
-        game.getAllPersons().add(generated);
-
-        application.initializeJobSystem();
-        application.getJobManager().initializeJobOpenings();
-
-        for (int day = 0; day < days; day++) {
-            scripts.checkGameScripts();
-            application.getGameEngine().continueGame();
-        }
+        SaveGame game = NewGameFixture.newGame(application);
+        NewGameFixture.play(application, game, days, false);
         // time stops at the mandatory draw message: jump to the cup creation date (1 May)
         game.setGameDate(java.time.LocalDateTime.of(1888, java.time.Month.MAY, 1, 12, 0));
-        scripts.checkGameScripts();
+        application.getScriptsManager().checkGameScripts();
         return game;
     }
 
