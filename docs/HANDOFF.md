@@ -9,7 +9,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | P2-5 saves v1 (= P2-4 slice 3: ids not copies, saveVersion, slots, stable data id registry) | BOOK3PRO | `b3/P2-5-saves-v1` | 2026-11-27 |
 | P2-0 one seeded, injected random source | WORKSTATION | `ws/P2-0-seeded-random` | 2026-11-27 |
 | P2-2 single match-result path + P2-6 season table reset + P2-7 £/cup final | WORKSTATION | `ws/P2-2-result-path` | 2026-11-27 |
-| P2-4 slice 4 apply data findings to gamedata JSON | WORKSTATION | `ws/P2-4s4-data-apply` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -27,6 +26,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 **Wait for slice 3 (save files locked):** P1-5 logging (touches `SaveLoadSystem`). P2-3 seeded season test needs P2-0 first.
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · P2-4 slice 4 (apply) · Sourced fixes in `gamedata/core/*.json`: `witton-albion` → `witton` (alias + rename log), Blackburn at new `leamington-road` for 1888-89, 5 person merges (aliased), invented Belfields/Higgins removed, copied cup squads and Heeley/Burnley rebuilt per the short-squad rule (74 seeded placeholders), Scotland → europe. People 487 → 539; validator 57 → 11 warnings. Jenkins #69 green. **BOOK3PRO:** (1) PM changed one line in your locked area, `GameDataTests.java:39` 487 → 539 (test only); (2) for `ids.json`: new data id `witton` + 5 person aliases. Still open: per-season club names, per-match venues (Castle Cricket Ground), 3 missing first names, mostly-placeholder small cup squads.
 - 2026-11-27 · WORKSTATION · DONE · U-01a · `ui/theme.json` (25 palette, 37 semantic colours, font roles, spacing, sizes, styles, scaling) + strict `UiTheme` (unknown token throws) loaded in `Futtoboru.create()`; no visual change. U-02b note: a few near-equal colours merge (pure 00FF00/FF0000 → state.positive/negative, FFD600 → FFD700, 7F7F7F → 808080). Jenkins #67 green (71 core + 1 desktop).
 - 2026-11-27 · WORKSTATION · CLAIM · P2-0, P2-2+P2-6+P2-7, P2-4 slice 4 (apply) · Not touching the P2-5 lock: seed persistence in `SaveGame` is left to BOOK3PRO (P2-0 exposes `getSeed()`/constructor for it). Slice 4 edits `gamedata/**` JSON only.
 - 2026-11-27 · WORKSTATION · DONE · U-02a + U-04a · All 12 `setDebug(true)` gone; deleted the 10 unreachable `tables/main/` stubs, empty `ConfederationsTable`/`LeagueTable`, orphan `NewGameScreen` (kept `HomeScreenTable`, `SplashScreen`). Jenkins #66 green (63 core + 1 desktop, data OK).
