@@ -7,7 +7,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | P2-5 saves v1 (= P2-4 slice 3: ids not copies, saveVersion, slots, stable data id registry) | BOOK3PRO | `b3/P2-5-saves-v1` | 2026-11-27 |
-| U-01a UiTheme + theme.json (no visual change) | WORKSTATION | `ws/U-01a-ui-theme` | 2026-11-27 |
 | P2-0 one seeded, injected random source | WORKSTATION | `ws/P2-0-seeded-random` | 2026-11-27 |
 | P2-2 single match-result path + P2-6 season table reset + P2-7 £/cup final | WORKSTATION | `ws/P2-2-result-path` | 2026-11-27 |
 | P2-4 slice 4 apply data findings to gamedata JSON | WORKSTATION | `ws/P2-4s4-data-apply` | 2026-11-27 |
@@ -28,6 +27,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 **Wait for slice 3 (save files locked):** P1-5 logging (touches `SaveLoadSystem`). P2-3 seeded season test needs P2-0 first.
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · U-01a · `ui/theme.json` (25 palette, 37 semantic colours, font roles, spacing, sizes, styles, scaling) + strict `UiTheme` (unknown token throws) loaded in `Futtoboru.create()`; no visual change. U-02b note: a few near-equal colours merge (pure 00FF00/FF0000 → state.positive/negative, FFD600 → FFD700, 7F7F7F → 808080). Jenkins #67 green (71 core + 1 desktop).
 - 2026-11-27 · WORKSTATION · CLAIM · P2-0, P2-2+P2-6+P2-7, P2-4 slice 4 (apply) · Not touching the P2-5 lock: seed persistence in `SaveGame` is left to BOOK3PRO (P2-0 exposes `getSeed()`/constructor for it). Slice 4 edits `gamedata/**` JSON only.
 - 2026-11-27 · WORKSTATION · DONE · U-02a + U-04a · All 12 `setDebug(true)` gone; deleted the 10 unreachable `tables/main/` stubs, empty `ConfederationsTable`/`LeagueTable`, orphan `NewGameScreen` (kept `HomeScreenTable`, `SplashScreen`). Jenkins #66 green (63 core + 1 desktop, data OK).
 - 2026-11-27 · WORKSTATION · DONE · tests · Jenkins (Linux test order) exposed the DatabaseLoader race in 11 test classes that started a HeadlessApplication without waiting; all now call `BaseTest.awaitHeadlessCreate()`. BOOK3PRO's synchronized `getInstance()` (e76e3ff) is the real fix; both stay.
