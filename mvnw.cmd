@@ -132,7 +132,19 @@ if ($env:MVNW_USERNAME -and $env:MVNW_PASSWORD) {
   $webclient.Credentials = New-Object System.Net.NetworkCredential($env:MVNW_USERNAME, $env:MVNW_PASSWORD)
 }
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$webclient.DownloadFile($distributionUrl, "$TMP_DOWNLOAD_DIR/$distributionUrlName") | Out-Null
+# Futtoboru: retry, then IPv4 only via Windows curl.exe (some networks have a broken IPv6 route to Maven Central's CDN)
+$downloaded = $false
+for ($attempt = 1; $attempt -le 2 -and -not $downloaded; $attempt++) {
+  try { $webclient.DownloadFile($distributionUrl, "$TMP_DOWNLOAD_DIR/$distributionUrlName") | Out-Null; $downloaded = $true }
+  catch { Write-Warning "Download failed (attempt $attempt): $_"; Start-Sleep -Seconds 1 }
+}
+if (-not $downloaded) {
+  $curlExe = Join-Path $env:SystemRoot 'System32\curl.exe'
+  if (-not (Test-Path $curlExe)) { Write-Error "Failed to download $distributionUrl" }
+  Write-Warning "Retrying over IPv4 with $curlExe"
+  & $curlExe -4 -f -L -sS --retry 5 --retry-delay 2 --retry-all-errors -o "$TMP_DOWNLOAD_DIR/$distributionUrlName" $distributionUrl
+  if ($LASTEXITCODE -ne 0) { Write-Error "Failed to download $distributionUrl" }
+}
 
 # If specified, validate the SHA-256 sum of the Maven distribution zip file
 $distributionSha256Sum = (Get-Content -Raw "$scriptDir/.mvn/wrapper/maven-wrapper.properties" | ConvertFrom-StringData).distributionSha256Sum
