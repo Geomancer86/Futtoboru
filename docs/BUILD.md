@@ -61,3 +61,7 @@ Never force-push. If `git push origin develop` is rejected, pull and verify agai
 ```
 git worktree add .worktrees/<item> -b b3/<item> origin/develop
 ```
+
+## CI
+- **GitHub Actions** (`.github/workflows/ci.yml`): `./mvnw -B verify` on JDK 17 + Xvfb, plus `pytest tools/data` and `tools/data/validate.py`, on every push and PR.
+- **Local Jenkins** (`Jenkinsfile`): the same checks on the agent labelled `EXECUTOR_BACKUP` (DarkBlade pattern). Parameter `BUILD_BRANCH` builds any `ws/...` or `b3/...` branch before it is merged. Publishes JUnit results and archives the desktop jar. Job setup (once): Pipeline job, "Pipeline script from SCM", this repo, script path `Jenkinsfile`, credentials `GITHUB_GEOMANCER86`.
