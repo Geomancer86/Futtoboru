@@ -134,6 +134,11 @@ public class GameData {
                 "footballingStrength", "num");
         spec("region", "id", "str!", "name", "str!", "country", "ref:country!", "modifiers", "attrs!",
                 "places", "strs", "notes", "str");
+        // one real match of a season (E-00b): reference data only (D17), read by the history screens and calibration
+        // tests, never to schedule or decide a match; "played or walkover" is checked by validate.py
+        spec("result", "edition", "ref:edition!", "round", "str", "date", "date", "home", "ref:club!", "away",
+                "ref:club!", "homeGoals", "int", "awayGoals", "int", "walkover", "ref:club", "attendance", "int",
+                "venue", "str", "source", "str!", "notes", "str");
         spec("pack", "id", "str!", "name", "str!", "version", "int!", "dataVersion", "int!", "seasons", "strs!",
                 "files", "strs!");
     }
@@ -155,6 +160,7 @@ public class GameData {
         SEASON_FILES.put("squads.json", new String[] { "squad", null });
         SEASON_FILES.put("nationality_modifiers.json", new String[] { "nationality_modifier", null });
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
+        SEASON_FILES.put("results.json", new String[] { "result", null });
     }
 
     // ------------------------------------------------------------------------------------------------------------

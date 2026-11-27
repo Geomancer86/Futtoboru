@@ -176,3 +176,51 @@ def test_new_pack_gets_its_own_block_of_numbers(pack):
     assert assign_ids.assign(pack) == ["mod club `someone.new-club` -> 100000"]
     assert errors(pack) == ""
     assert "ids.json" in json.loads((pack / "mod" / "pack.json").read_text(encoding="utf-8"))["files"]
+
+
+# ---------------------------------------------------------------------------------------------- results.json (E-00b)
+import importlib.util  # noqa: E402
+import results_csv_to_json  # noqa: E402
+
+RESULTS = ("core", "seasons", "1888-89", "results.json")
+
+
+def test_results_json_matches_the_research_csvs():
+    assert (ROOT.joinpath(*RESULTS)).read_text(encoding="utf-8") == results_csv_to_json.dump(
+        results_csv_to_json.build("1888-89"))
+
+
+def test_results_json_gives_the_published_1888_89_table(monkeypatch):
+    path = validate.DEFAULT_ROOT.parents[4] / "docs" / "data" / "check_results_1888-89.py"
+    spec = importlib.util.spec_from_file_location("check_results", path)
+    check = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(check)
+    rows = check.read_rows(str(ROOT.joinpath(*RESULTS)))
+    assert len(rows) == 132
+    monkeypatch.setattr(sys, "argv", ["check_results_1888-89.py"])
+    assert check.main() == 0  # default path = the JSON
+
+
+def test_results_unknown_field_and_bad_club_are_errors(pack):
+    def bad(d):
+        d[0]["homeGaols"] = 1
+        d[1]["away"] = "atlantis-fc"
+    edit(pack.joinpath(*RESULTS), bad)
+    out = errors(pack)
+    assert "unknown field `homeGaols`" in out
+    assert "unknown club `atlantis-fc`" in out
+
+
+def test_result_is_played_or_walkover_and_in_its_own_season(pack):
+    def bad(d):
+        del d[0]["awayGoals"]                                      # played without a score
+        d[1]["walkover"] = "notts-county"                          # walkover by a third club, with goals
+        d[2]["edition"] = "fa-cup-1888-89"                         # fine: an edition of this season
+        d[3]["edition"] = "football-league-1889-90"                # not an edition at all
+    edit(pack.joinpath(*RESULTS), bad)
+    out = errors(pack)
+    assert "results.json[0]: a played match needs" in out
+    assert "results.json[1]: a walkover has no goals" in out
+    assert "is neither the home nor the away club" in out
+    assert "results.json[2]" not in out
+    assert "unknown edition `football-league-1889-90`" in out

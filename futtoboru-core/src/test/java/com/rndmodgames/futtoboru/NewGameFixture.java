@@ -101,6 +101,15 @@ public final class NewGameFixture {
     public static void play(Futtoboru application, SaveGame game, int days, boolean readDraws) {
         for (int day = 0; day < days; day++) {
             if (readDraws) {
+                // a mandatory draw only scheduled is delivered at once by the INBOX -> DRAW button (P2-11: the
+                // FA Cup draw message is scheduled for the day after the draw and also stops time)
+                if (game.getScheduledMessages() != null) {
+                    for (Message m : new ArrayList<>(game.getScheduledMessages())) {
+                        if (m != null && Boolean.TRUE.equals(m.getIsMandatory())) {
+                            application.getGameEngine().getMessageManager().deliverMessage(m);
+                        }
+                    }
+                }
                 for (Message m : game.getAllMessages()) {
                     if (Boolean.TRUE.equals(m.getIsMandatory())) {
                         m.setIsRead(true);

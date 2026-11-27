@@ -71,10 +71,13 @@ class SaveGameTests {
         SaveLoadSystem.setGameFolder(null);
     }
 
-    /** A new game played 30 days: the league is created, its first matches are played, time stops at the cup draw. */
+    /**
+     * A new game played 170 days (1 Apr to mid-September 1888): the league and the cup are created and drawn, and
+     * the first league match days of the era calendar (P2-11: from 8 September) are played.
+     */
     private static SaveGame playedGame() {
         SaveGame game = NewGameFixture.newGame(application);
-        NewGameFixture.play(application, game, 30, true);
+        NewGameFixture.play(application, game, 170, true);
         return game;
     }
 

@@ -61,6 +61,31 @@ public class CupBracketGenerator {
             Long editionId,
             LocalDateTime firstRoundDate,
             int weeksBetweenRounds) {
+        return generateCompleteBracket(teamIds, competitionId, editionId, rounds -> {
+            List<LocalDateTime> dates = new ArrayList<>();
+            for (int r = 0; r < rounds; r++) {
+                dates.add(firstRoundDate.plusWeeks((long) r * weeksBetweenRounds));
+            }
+            return dates;
+        });
+    }
+
+    /**
+     * P2-11: a complete bracket on the era calendar of a season (rounds on the cup dates, final last).
+     */
+    public List<Match> generateCompleteBracket(List<Long> teamIds, Long competitionId, Long editionId,
+            com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar calendar) {
+        return generateCompleteBracket(teamIds, competitionId, editionId, calendar::cupRoundDates);
+    }
+
+    /**
+     * @param roundDates gives the date of every round (first round first) for the number of rounds
+     */
+    public List<Match> generateCompleteBracket(
+            List<Long> teamIds,
+            Long competitionId,
+            Long editionId,
+            java.util.function.IntFunction<List<LocalDateTime>> roundDates) {
         
         List<Match> allMatches = new ArrayList<>();
         List<Long> teams = new ArrayList<>(teamIds);
@@ -90,8 +115,10 @@ public class CupBracketGenerator {
         Log.info(Log.ENGINE_CUP, "CupBracketGenerator", "Tournament structure: " + teamIds.size() + " clubs, " + byeTeams.size()
             + " byes, " + numRounds + " rounds");
 
+        List<LocalDateTime> dates = roundDates.apply(numRounds);
+
         // Round 1: the clubs without a bye, paired at random
-        List<Match> round1 = generateFirstRound(teams, competitionId, editionId, firstRoundDate, allMatches);
+        List<Match> round1 = generateFirstRound(teams, competitionId, editionId, dates.get(0), allMatches);
 
         // The slots of round 2: each first-round tie (its winner) or a club with a bye. They alternate, so each
         // first-round winner meets a club with a bye while there are byes left.
@@ -107,10 +134,8 @@ public class CupBracketGenerator {
             }
         }
 
-        LocalDateTime currentRoundDate = firstRoundDate;
         for (int round = 2; round <= numRounds; round++) {
-            currentRoundDate = currentRoundDate.plusWeeks(weeksBetweenRounds);
-            List<Match> roundMatches = generateNextRound(slots, competitionId, editionId, round, currentRoundDate,
+            List<Match> roundMatches = generateNextRound(slots, competitionId, editionId, round, dates.get(round - 1),
                 allMatches);
             slots = new ArrayList<>(roundMatches);
         }

@@ -21,6 +21,7 @@ futtoboru-core/src/main/resources/gamedata/
       season.json            start, countries, editions (league + cup, with participants)
       squads.json            per club this season: ground, balance, players (person ids)
       nationality_modifiers.json  region_modifiers.json
+      results.json           real results of the season: reference data only (D17), see below
 ```
 What changes from season to season (ground, balance, squad) lives in the season folder; what is permanent
 (a club, a person) lives once at pack level. A player who moves or plays several seasons is one person.
@@ -106,6 +107,15 @@ Warnings: a person in several squads, a squad under 11, no first name, an age ou
   (`DatabaseLoader.getClubById` and the rest) to the game's objects: one object per club, person, competition.
 - `SaveMigrations` holds one step per version (empty: v1 is the first); a file without `saveVersion` (v0.4) is
   listed as "older version" and not loaded. The first real v1 save is kept in `src/test/resources/saves/`.
+
+## Real results: `seasons/<id>/results.json` (E-00b)
+A list of matches, one record each: `edition` (an edition id of that season), `round` (cups: R1, R1r = replay,
+R2r2, SF, F...), `date`, `home`, `away`, `homeGoals`, `awayGoals`, `attendance`, `venue` (neutral grounds only),
+`source` (the source codes of `docs/data/RESULTS_<season>.md`), `notes`. A walkover has no date and no goals and sets
+`walkover` to the club that went through. No ids, so no `ids.json` numbers. Written from the research CSVs by
+`python tools/data/results_csv_to_json.py` (`--check` in the tests); `docs/data/check_results_1888-89.py` recomputes
+the table from it. **Decision D17: reference data only.** Read by the history screens (`history/`, seasons before the
+game's start season) and by calibration tests; never to schedule or decide a match (`ReferenceDataGuardTest`).
 
 ## Rename log
 | Date | Kind | Old id | New id | Why | Approved by |
