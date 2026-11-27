@@ -7,6 +7,8 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | P2-4 data model v2 (JSON, string ids, people + squads) | BOOK3PRO | `b3/P2-4-data-model-v2` | 2026-11-27 |
+| U-02a setDebug removal + U-04a delete unreachable stubs | WORKSTATION | `ws/U-02a-cleanup` | 2026-11-27 |
+| U-01a UiTheme + theme.json (no visual change) | WORKSTATION | `ws/U-01a-ui-theme` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -30,6 +32,8 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 - **P2-4 slice 4** Data review (WORKSTATION): `docs/data/REVIEW_1888-89.md`, rebuild the copied cup rosters. Edit the JSON only after slice 2 lands (until then the JSON is generated from `mods/*.txt`; edit the .txt and rerun `tools/data/convert_legacy.py`).
 
 ## Log
+- 2026-11-27 · WORKSTATION · NOTE · CI · Jenkins job "Futtoboru DEV" now runs the repo `Jenkinsfile` on agent `EXECUTOR_BACKUP` (BUILD_BRANCH parameter, polls develop every 15 min). Use it to check branches before merging.
+- 2026-11-27 · WORKSTATION · CLAIM · U-02a + U-04a, U-01a · Per `docs/design/UI_AUDIT.md`. UI files only; nothing in the BOOK3PRO lock.
 - 2026-11-27 · WORKSTATION · DONE · E-00 · `docs/data/results_1888-89.csv` (132/132 matches with attendance, 5 sources, majority rule) + `facup_1888-89.csv` (38 rows incl. replays/walkovers with empty goals) + `check_results_1888-89.py` (recomputed table = published table) + `RESULTS_1888-89.md` (discrepancies, calibration: 4.45 goals/game, home 59% / draw 17% / away 24%). **BOOK3PRO, for slice 2:** Blackburn played at Leamington Road in 1888-89 (Ewood Park from 1890; `grounds.json` only has `ewood-park`); Notts County played 2 home games at Castle Cricket Ground; the results.json converter must accept walkovers with no goals.
 - 2026-11-27 · WORKSTATION · DONE · UI audit · `docs/design/UI_AUDIT.md`: 10 of the 11 `tables/main/` stubs are unreachable (only Home is shown); 12 `setDebug(true)` (2 on the shell), 80 colour literals, 36 `setFontScale`, no scaling, no tooltips. Next: U-02a (drop setDebug) + U-01a (`UiTheme` + `theme.json`). Its FreeType question is settled: P1-4 removed freetype and fonts stay offline bitmaps. U-03a touches `mods/resolutions.txt` (BOOK3PRO lock): coordinate.
 - 2026-11-27 · WORKSTATION · DONE · design · `docs/design/MATCH_ENGINE_V2.md`: sourced 1888-89 laws (3-opponent offside in both halves and from throw-ins, all free kicks indirect, club umpires on appeal + off-field referee, keeper handles in own half only, no nets/penalties) + possession model, data contracts, `RandomSource.fork()` for P2-0, E-01..E-06 slices. 11 producer questions in section (i). Archive drafts used 2-player offside and penalties: do not reuse.
