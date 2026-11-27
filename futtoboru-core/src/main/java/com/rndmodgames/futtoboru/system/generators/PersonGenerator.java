@@ -11,6 +11,7 @@ import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Person Generator v1
@@ -112,12 +113,11 @@ public class PersonGenerator {
                                 
                 for (Person check : DatabaseLoader.getPersons()) {
                     
-//                    System.out.println("CHECKING BEFORE RUNNING - GENERATED NAME AGAINST " + DatabaseLoader.getPersons().size() + " EXISTING PERSON NAMES");
 
                     if (person.getName().equals(check.getName()) && person.getLastname().equals(check.getLastname())) {
 
-                        com.rndmodgames.futtoboru.system.DebugLogManager.getInstance().log(
-                            com.rndmodgames.futtoboru.system.DebugLogManager.CATEGORY_DATA_GENERATION, 
+                        com.rndmodgames.futtoboru.system.Log.info(
+                            com.rndmodgames.futtoboru.system.Log.DATA_GENERATION, 
                             "DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
                         return null;
                     }
@@ -128,13 +128,11 @@ public class PersonGenerator {
                 // If Generating When Game Running
                 for (Person check : game.getCurrentGame().getAllPersons()) {
 
-                    // System.out.println("CHECKING GENERATED NAME AGAINST: " + check.getName() + " " + check.getLastname());
-//                    System.out.println("CHECKING INGAME - GENERATED NAME AGAINST " + game.getCurrentGame().getAllPersons().size() + " EXISTING PERSON NAMES");
 
                     if (person.getName().equals(check.getName()) && person.getLastname().equals(check.getLastname())) {
 
-                        com.rndmodgames.futtoboru.system.DebugLogManager.getInstance().log(
-                            com.rndmodgames.futtoboru.system.DebugLogManager.CATEGORY_DATA_GENERATION, 
+                        com.rndmodgames.futtoboru.system.Log.info(
+                            com.rndmodgames.futtoboru.system.Log.DATA_GENERATION, 
                             "DUPLICATE NAME: " + person.getName() + " " + person.getLastname());
                         return null;
                     }

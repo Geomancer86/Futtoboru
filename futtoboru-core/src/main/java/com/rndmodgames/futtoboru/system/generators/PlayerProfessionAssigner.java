@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ContractType;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerProfession;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
-import com.rndmodgames.futtoboru.system.DebugLogManager;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Player Profession Assigner v1.0
@@ -53,7 +52,7 @@ public class PlayerProfessionAssigner {
         player.setPlayerProfession(profession);
         
         if (profession != null) {
-            DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerProfessionAssigner", 
+            Log.debug(Log.DATA_GENERATION, "PlayerProfessionAssigner", 
                 "Assigned profession " + profession.getName() + " to player " + 
                 (player.getPerson() != null ? player.getPerson().getName() : "Unknown"));
         }
@@ -76,7 +75,7 @@ public class PlayerProfessionAssigner {
         Map<Long, PlayerProfession> allProfessions = DatabaseLoader.getAllPlayerProfessions();
         
         if (allProfessions == null || allProfessions.isEmpty()) {
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerProfessionAssigner", "No professions loaded, cannot assign profession");
+            Log.info(Log.DATA_GENERATION, "PlayerProfessionAssigner", "No professions loaded, cannot assign profession");
             return null;
         }
         
@@ -124,7 +123,7 @@ public class PlayerProfessionAssigner {
             }
         }
         
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerProfessionAssigner", 
+        Log.info(Log.DATA_GENERATION, "PlayerProfessionAssigner", 
             "Assigned professions to " + assigned + " players in " + club.getName());
     }
 }

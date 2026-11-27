@@ -274,12 +274,12 @@ public class DatabaseLoader {
 
         DataReport report = data.getReport();
         for (String error : report.getErrors()) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "GameData", error);
+            Log.error(Log.DATA_LOADING, "GameData", error);
         }
         for (String warning : report.getWarnings()) {
-            DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_DATA_LOADING, "GameData", warning);
+            Log.warn(Log.DATA_LOADING, "GameData", warning);
         }
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "GameData",
+        Log.info(Log.DATA_LOADING, "GameData",
                 "Read packs " + data.getPacks() + ": " + report);
 
         IdAllocator dataIds = data.getDataIdAllocator();
@@ -296,7 +296,7 @@ public class DatabaseLoader {
         loadSeasons(data, dataIds, rng);
 
         if (dataIds.peek() >= IdAllocator.GAME_START) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "GameData",
+            Log.error(Log.DATA_LOADING, "GameData",
                     "Data runtime ids reached " + dataIds.peek() + ", the range of game objects starts at "
                             + IdAllocator.GAME_START);
         }
@@ -350,7 +350,7 @@ public class DatabaseLoader {
             continentsByDataId.put(continent.getDataId(), continent);
             countriesByContinent.put(continent.getId(), new ArrayList<>());
         }
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + continents.size() + " CONTINENTS");
+        Log.info(Log.DATA_LOADING, "FINISHED LOADING " + continents.size() + " CONTINENTS");
     }
 
     private static void loadCountries(GameData data) {
@@ -369,7 +369,7 @@ public class DatabaseLoader {
             leaguesByCountry.put(country.getId(), new ArrayList<>());
             clubsByCountry.put(country.getId(), new ArrayList<>());
         }
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + countries.size() + " COUNTRIES");
+        Log.info(Log.DATA_LOADING, "FINISHED LOADING " + countries.size() + " COUNTRIES");
     }
 
     private static void loadNames(GameData data) {
@@ -407,7 +407,7 @@ public class DatabaseLoader {
             professionsById.put(profession.getId(), profession);
             professionsByDataId.put(profession.getDataId(), profession);
         }
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + professions.size() + " PROFESSIONS");
+        Log.info(Log.DATA_LOADING, "FINISHED LOADING " + professions.size() + " PROFESSIONS");
     }
 
     private static void loadOccupations(GameData data) {
@@ -422,7 +422,7 @@ public class DatabaseLoader {
             playerProfessions.put(occupation.getId(), occupation);
             playerProfessionsByDataId.put(occupation.getDataId(), occupation);
         }
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Loaded " + playerProfessions.size() + " player professions");
+        Log.info(Log.DATA_LOADING, "Loaded " + playerProfessions.size() + " player professions");
     }
 
     private static void loadModifiers(GameData data, IdAllocator dataIds) {
@@ -455,7 +455,7 @@ public class DatabaseLoader {
             modifier.setHistoricalNotes(r.str("notes"));
             regionModifiers.put(regionKey(modifier.getRegionName(), modifier.getCountryId()), modifier);
         }
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Loaded " + nationalityModifiers.size()
+        Log.info(Log.DATA_LOADING, "Loaded " + nationalityModifiers.size()
                 + " nationality modifiers and " + regionModifiers.size() + " region modifiers");
     }
 
@@ -471,7 +471,7 @@ public class DatabaseLoader {
             competitions.add(competition);
             competitionsByDataId.put(competition.getDataId(), competition);
         }
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Finished loading " + competitions.size() + " Competitions.");
+        Log.info(Log.DATA_LOADING, "Finished loading " + competitions.size() + " Competitions.");
     }
 
     /** The canonical Person of every record in people.json (birth dates completed from {@code rng.fork("born:" + id)}). */
@@ -507,7 +507,7 @@ public class DatabaseLoader {
             seasons.add(season);
             seasonsByDataId.put(season.getDataId(), season);
 
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "LOADING SEASON " + season.getName());
+            Log.info(Log.DATA_LOADING, "LOADING SEASON " + season.getName());
 
             loadSquads(data, season, dataIds, rng);
 
@@ -523,7 +523,7 @@ public class DatabaseLoader {
                 for (String clubId : e.refs("participants")) {
                     Club club = clubsByDataId.get(clubId);
                     if (club == null) {
-                        DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "GameData", e.where()
+                        Log.error(Log.DATA_LOADING, "GameData", e.where()
                                 + ": club `" + clubId + "` has no squad in season " + season.getDataId() + ", left out");
                         continue;
                     }
@@ -536,7 +536,7 @@ public class DatabaseLoader {
             // Season scripts (league and cup creation) from the editions
             ScriptsLoader.load(season, editions);
         }
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + seasons.size() + " SEASONS");
+        Log.info(Log.DATA_LOADING, "FINISHED LOADING " + seasons.size() + " SEASONS");
     }
 
     /**
@@ -554,7 +554,7 @@ public class DatabaseLoader {
         for (DataRecord sq : data.records("squad", season.getDataId())) {
             DataRecord clubRecord = data.get(GameData.CLUB, sq.ref("club"));
             if (clubsByDataId.containsKey(clubRecord.id())) {
-                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "GameData", sq.where()
+                Log.error(Log.DATA_LOADING, "GameData", sq.where()
                         + ": club `" + clubRecord.id() + "` has a second squad this season, skipped");
                 continue;
             }
@@ -607,11 +607,11 @@ public class DatabaseLoader {
 
         personCopies += copies;
         if (copies > 0) {
-            DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_DATA_LOADING, "GameData", "season "
+            Log.warn(Log.DATA_LOADING, "GameData", "season "
                     + season.getDataId() + ": " + copies + " squad places are people already listed in another squad;"
                     + " they play as separate copies until the data review (docs/data/REVIEW_1888-89.md)");
         }
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + season.getClubs().size() + " SEASON CLUBS");
+        Log.info(Log.DATA_LOADING, "FINISHED LOADING " + season.getClubs().size() + " SEASON CLUBS");
     }
 
     private static Person copyOf(Person canonical, long runtimeId) {
@@ -666,7 +666,7 @@ public class DatabaseLoader {
                 Method m = target.getClass().getMethod(name, Integer.class);
                 m.invoke(target, a.getValue());
             } catch (ReflectiveOperationException e) {
-                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_LOADING, "GameData",
+                Log.error(Log.DATA_LOADING, "GameData",
                         "no " + name + " on " + target.getClass().getSimpleName());
             }
         }

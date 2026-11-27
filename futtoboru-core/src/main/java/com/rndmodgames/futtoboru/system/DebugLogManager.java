@@ -9,8 +9,8 @@ import com.rndmodgames.PreferencesManager;
 /**
  * Debug Logging Manager v1.0
  * 
- * Centralized logging system with category-based filtering.
- * Allows users to enable/disable logging per system/screen via Settings.
+ * Category on/off settings for logging (Settings > Debug Logging).
+ * The logging calls themselves are in {@link Log}.
  * 
  * Performance: Minimal overhead when logging is disabled (simple boolean check).
  * 
@@ -84,14 +84,15 @@ public class DebugLogManager {
         categoryStates = new HashMap<>();
         // Ensure Preferences object is valid
         if (preferences == null) {
-            System.err.println("ERROR: Preferences object is null in DebugLogManager constructor!");
+            Log.error(CATEGORY_SYSTEM_CONFIG, "Preferences object is null in DebugLogManager constructor!");
         }
-        loadSettings();
     }
     
-    public static DebugLogManager getInstance() {
+    public static synchronized DebugLogManager getInstance() {
         if (instance == null) {
             instance = new DebugLogManager();
+            // Loaded after publishing the instance: loadSettings() logs through Log, which asks for the instance.
+            instance.loadSettings();
         }
         return instance;
     }
@@ -129,136 +130,6 @@ public class DebugLogManager {
         return categoryEnabled != null ? categoryEnabled : true; // Default: enabled
     }
     
-    /**
-     * Log a message (INFO level)
-     * 
-     * @param category The logging category
-     * @param message The message to log
-     */
-    public void log(String category, String message) {
-        if (isEnabled(category)) {
-            System.out.println("[" + category + "] " + message);
-        }
-    }
-    
-    /**
-     * Log a message with tag (for Gdx.app.log compatibility)
-     * 
-     * @param category The logging category
-     * @param tag The log tag (e.g., class name)
-     * @param message The message to log
-     */
-    public void log(String category, String tag, String message) {
-        if (isEnabled(category)) {
-            Gdx.app.log(tag, message);
-            System.out.println("[" + category + "][" + tag + "] " + message);
-        }
-    }
-    
-    /**
-     * Log a debug message
-     * 
-     * @param category The logging category
-     * @param message The message to log
-     */
-    public void debug(String category, String message) {
-        if (isEnabled(category)) {
-            Gdx.app.debug("DEBUG", "[" + category + "] " + message);
-            System.out.println("[DEBUG][" + category + "] " + message);
-        }
-    }
-    
-    /**
-     * Log a debug message with tag
-     * 
-     * @param category The logging category
-     * @param tag The log tag
-     * @param message The message to log
-     */
-    public void debug(String category, String tag, String message) {
-        if (isEnabled(category)) {
-            Gdx.app.debug(tag, "[" + category + "] " + message);
-            System.out.println("[DEBUG][" + category + "][" + tag + "] " + message);
-        }
-    }
-    
-    /**
-     * Log a warning message
-     * 
-     * @param category The logging category
-     * @param message The message to log
-     */
-    public void warn(String category, String message) {
-        if (isEnabled(category)) {
-            Gdx.app.log("WARN", "[" + category + "] " + message);
-            System.out.println("[WARN][" + category + "] " + message);
-        }
-    }
-    
-    /**
-     * Log a warning message with tag
-     * 
-     * @param category The logging category
-     * @param tag The log tag
-     * @param message The message to log
-     */
-    public void warn(String category, String tag, String message) {
-        if (isEnabled(category)) {
-            Gdx.app.log(tag, "[WARN][" + category + "] " + message);
-            System.out.println("[WARN][" + category + "][" + tag + "] " + message);
-        }
-    }
-    
-    /**
-     * Log an error message (always enabled for safety)
-     * 
-     * @param category The logging category
-     * @param message The message to log
-     */
-    public void error(String category, String message) {
-        Gdx.app.error("ERROR", "[" + category + "] " + message);
-        System.err.println("[ERROR][" + category + "] " + message);
-    }
-    
-    /**
-     * Log an error message with tag (always enabled for safety)
-     * 
-     * @param category The logging category
-     * @param tag The log tag
-     * @param message The message to log
-     */
-    public void error(String category, String tag, String message) {
-        Gdx.app.error(tag, "[" + category + "] " + message);
-        System.err.println("[ERROR][" + category + "][" + tag + "] " + message);
-    }
-    
-    /**
-     * Log an error with exception (always enabled for safety)
-     * 
-     * @param category The logging category
-     * @param message The message to log
-     * @param exception The exception to log
-     */
-    public void error(String category, String message, Throwable exception) {
-        Gdx.app.error("ERROR", "[" + category + "] " + message, exception);
-        System.err.println("[ERROR][" + category + "] " + message);
-        exception.printStackTrace();
-    }
-    
-    /**
-     * Log an error with exception and tag (always enabled for safety)
-     * 
-     * @param category The logging category
-     * @param tag The log tag
-     * @param message The message to log
-     * @param exception The exception to log
-     */
-    public void error(String category, String tag, String message, Throwable exception) {
-        Gdx.app.error(tag, "[" + category + "] " + message, exception);
-        System.err.println("[ERROR][" + category + "][" + tag + "] " + message);
-        exception.printStackTrace();
-    }
-    
     // ============================================
     // SETTINGS MANAGEMENT
     // ============================================
@@ -270,13 +141,13 @@ public class DebugLogManager {
      * @param enabled true to enable, false to disable
      */
     public void setCategoryEnabled(String category, boolean enabled) {
-        System.out.println("DEBUG: setCategoryEnabled(" + category + ", " + enabled + ")");
+        Log.debug(CATEGORY_SYSTEM_CONFIG, "setCategoryEnabled(" + category + ", " + enabled + ")");
         categoryStates.put(category, enabled);
         saveCategorySetting(category, enabled);
         // Verify it was saved immediately using same Preferences instance
         String key = PREF_PREFIX + category;
         String savedValue = preferences.getString(key, "NOT_FOUND");
-        System.out.println("DEBUG: After save, preference key=" + key + ", value=" + savedValue);
+        Log.debug(CATEGORY_SYSTEM_CONFIG, "After save, preference key=" + key + ", value=" + savedValue);
     }
     
     /**
@@ -382,12 +253,12 @@ public class DebugLogManager {
      * Load settings from preferences
      */
     private void loadSettings() {
-        System.out.println("DEBUG: loadSettings() called");
+        Log.debug(CATEGORY_SYSTEM_CONFIG, "loadSettings() called");
         
         // Ensure we have a valid Preferences instance
         if (preferences == null) {
             preferences = Gdx.app.getPreferences(PreferencesManager.PREFERENCES_NAME);
-            System.out.println("DEBUG: Re-obtained Preferences instance");
+            Log.debug(CATEGORY_SYSTEM_CONFIG, "Re-obtained Preferences instance");
         }
         
         // Load master switch (default: enabled for backward compatibility)
@@ -397,7 +268,7 @@ public class DebugLogManager {
         } else {
             allEnabled = ENABLED.equals(allEnabledStr.trim());
         }
-        System.out.println("DEBUG: Master switch loaded: " + allEnabled);
+        Log.debug(CATEGORY_SYSTEM_CONFIG, "Master switch loaded: " + allEnabled);
         
         // Load category settings
         for (String category : getAllCategories()) {
@@ -405,27 +276,27 @@ public class DebugLogManager {
             // Read directly from preferences with explicit default
             String value = preferences.getString(key, null);
             
-            System.out.println("DEBUG: Loading category " + category + " - key=" + key + ", raw value=" + value);
+            Log.debug(CATEGORY_SYSTEM_CONFIG, "Loading category " + category + " - key=" + key + ", raw value=" + value);
             
             // Default: enabled (for backward compatibility)
             // Explicitly check for "disabled" to handle null, empty string, and "disabled" cases
             boolean enabled;
             if (value == null || value.trim().isEmpty()) {
                 enabled = true; // Default: enabled (key doesn't exist or is empty)
-                System.out.println("DEBUG: Category " + category + " - no value found, defaulting to enabled");
+                Log.debug(CATEGORY_SYSTEM_CONFIG, "Category " + category + " - no value found, defaulting to enabled");
             } else {
                 String trimmedValue = value.trim();
                 if (DISABLED.equals(trimmedValue)) {
                     enabled = false; // Explicitly disabled
-                    System.out.println("DEBUG: Category " + category + " - found DISABLED, setting to false");
+                    Log.debug(CATEGORY_SYSTEM_CONFIG, "Category " + category + " - found DISABLED, setting to false");
                 } else {
                     enabled = true; // Explicitly enabled or default to enabled
-                    System.out.println("DEBUG: Category " + category + " - found " + trimmedValue + ", setting to true");
+                    Log.debug(CATEGORY_SYSTEM_CONFIG, "Category " + category + " - found " + trimmedValue + ", setting to true");
                 }
             }
             
             categoryStates.put(category, enabled);
-            System.out.println("DEBUG: Category " + category + " final state: " + enabled);
+            Log.debug(CATEGORY_SYSTEM_CONFIG, "Category " + category + " final state: " + enabled);
         }
     }
     
@@ -439,7 +310,7 @@ public class DebugLogManager {
         String key = PREF_PREFIX + category;
         String value = enabled ? ENABLED : DISABLED;
         
-        System.out.println("DEBUG: saveCategorySetting(" + category + ", " + enabled + ") - key=" + key + ", value=" + value);
+        Log.debug(CATEGORY_SYSTEM_CONFIG, "saveCategorySetting(" + category + ", " + enabled + ") - key=" + key + ", value=" + value);
         
         // CRITICAL: Save directly to Preferences (same instance) and flush immediately
         // Use the same pattern as setAllEnabled() which works correctly
@@ -448,9 +319,9 @@ public class DebugLogManager {
         
         // Verify immediately after flush
         String verifyValue = preferences.getString(key, "NOT_FOUND");
-        System.out.println("DEBUG: After flush, read back value=" + verifyValue + " (expected=" + value + ")");
+        Log.debug(CATEGORY_SYSTEM_CONFIG, "After flush, read back value=" + verifyValue + " (expected=" + value + ")");
         if (!value.equals(verifyValue)) {
-            System.err.println("ERROR: Save verification failed! Expected " + value + " but got " + verifyValue);
+            Log.error(CATEGORY_SYSTEM_CONFIG, "Save verification failed! Expected " + value + " but got " + verifyValue);
         }
     }
     
@@ -458,7 +329,7 @@ public class DebugLogManager {
      * Force reload settings from preferences (useful after settings screen changes)
      */
     public void reloadSettings() {
-        System.out.println("DEBUG: reloadSettings() called");
+        Log.debug(CATEGORY_SYSTEM_CONFIG, "reloadSettings() called");
         // Ensure we're using the current Preferences instance (re-obtain to be safe)
         preferences = Gdx.app.getPreferences(PreferencesManager.PREFERENCES_NAME);
         loadSettings();

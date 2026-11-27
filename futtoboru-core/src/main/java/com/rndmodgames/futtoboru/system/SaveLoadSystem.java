@@ -194,7 +194,7 @@ public class SaveLoadSystem {
             result.getGame().setIsSaved(true);
         }
         for (String problem : result.getProblems()) {
-            DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_SYSTEM_INIT, "SaveLoadSystem",
+            Log.warn(Log.SYSTEM_INIT, "SaveLoadSystem",
                     file.getName() + ": " + problem);
         }
         log("loaded " + file + ": " + result.getStatus() + ", " + result.getProblems().size() + " problems");
@@ -261,7 +261,7 @@ public class SaveLoadSystem {
     }
 
     private static void log(String message) {
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_SYSTEM_INIT, "SaveLoadSystem", message);
+        Log.info(Log.SYSTEM_INIT, "SaveLoadSystem", message);
     }
 
     // ---------------------------------------------------------------------------------------------- managers

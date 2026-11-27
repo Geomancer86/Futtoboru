@@ -4,14 +4,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ContractType;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
-import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.data.IdAllocator;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Player Contract Generator v1.0
@@ -42,12 +41,12 @@ public class PlayerContractGenerator {
     public static PlayerContract generateRandomContract(Player player, Club club, LocalDateTime contractStartDate,
             IdAllocator ids, RandomSource rng) {
         if (player == null || club == null || contractStartDate == null) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: player=" + (player != null) + 
+            Log.error(Log.DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: player=" + (player != null) + 
                 ", club=" + (club != null) + ", date=" + (contractStartDate != null));
             return null;
         }
         
-        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerContractGenerator", "Generating contract for player ID: " + 
+        Log.debug(Log.DATA_GENERATION, "PlayerContractGenerator", "Generating contract for player ID: " + 
             (player.getId() != null ? player.getId() : (player.getPerson() != null ? player.getPerson().getId() : "NULL")) + 
             ", club: " + (club.getName() != null ? club.getName() : "NULL"));
         
@@ -66,7 +65,7 @@ public class PlayerContractGenerator {
         }
         
         if (playerIdToUse == null) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: Player has no ID (player ID: " + 
+            Log.error(Log.DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: Player has no ID (player ID: " + 
                 player.getId() + ", person ID: " + (player.getPerson() != null ? player.getPerson().getId() : "null") + ")");
             return null;
         }
@@ -76,7 +75,7 @@ public class PlayerContractGenerator {
         if (club.getId() != null) {
             contract.setClubId(club.getId());
         } else {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: Club has no ID");
+            Log.error(Log.DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: Club has no ID");
             return null;
         }
         
@@ -103,7 +102,7 @@ public class PlayerContractGenerator {
         // Set contract status
         contract.setIsActive(true);
         
-        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerContractGenerator", "Contract generated: ID=" + contract.getId() + 
+        Log.debug(Log.DATA_GENERATION, "PlayerContractGenerator", "Contract generated: ID=" + contract.getId() + 
             ", PlayerID=" + contract.getPlayerId() + ", ClubID=" + contract.getClubId() + 
             ", Type=" + ContractType.getName(contract.getContractType()) + 
             ", Wage=£" + contract.getWeeklyWage());

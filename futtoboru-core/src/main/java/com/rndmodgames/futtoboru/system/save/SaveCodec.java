@@ -44,6 +44,7 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.data.DataRecord;
 import com.rndmodgames.futtoboru.system.data.GameData;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Save format v1 (P2-5, decisions D11/D15; the DarkBlade pattern).
@@ -244,8 +245,8 @@ public final class SaveCodec {
                 Object prev = tables.get(kind).putIfAbsent(id, o);
                 if (prev != null) {
                     // two objects with one id would become one on load; keep the first, report the second
-                    com.rndmodgames.futtoboru.system.DebugLogManager.getInstance().error(
-                            com.rndmodgames.futtoboru.system.DebugLogManager.CATEGORY_SYSTEM_INIT, "SaveCodec",
+                    com.rndmodgames.futtoboru.system.Log.error(
+                            com.rndmodgames.futtoboru.system.Log.SYSTEM_INIT, "SaveCodec",
                             "two " + kind.type.getSimpleName() + " objects share id " + id + "; only the first is saved");
                 } else {
                     pending.add(o);
@@ -294,8 +295,8 @@ public final class SaveCodec {
             DatabaseLoader.rebuild();
             return new Reading(root).read();
         } catch (RuntimeException e) {
-            com.rndmodgames.futtoboru.system.DebugLogManager.getInstance().error(
-                    com.rndmodgames.futtoboru.system.DebugLogManager.CATEGORY_SYSTEM_INIT, "SaveCodec",
+            com.rndmodgames.futtoboru.system.Log.error(
+                    com.rndmodgames.futtoboru.system.Log.SYSTEM_INIT, "SaveCodec",
                     "save could not be read: " + e);
             return LoadResult.failed(LoadResult.Status.UNREADABLE, UNREADABLE_MESSAGE);
         }
