@@ -73,7 +73,6 @@ public class MainGameScreen implements Screen {
         
         // Full Game Window
         final VisTable gameWindowTable = new VisTable(true);
-        gameWindowTable.setDebug(true);
         gameWindowTable.setFillParent(true);
         gameWindowTable.pad(5);
         
