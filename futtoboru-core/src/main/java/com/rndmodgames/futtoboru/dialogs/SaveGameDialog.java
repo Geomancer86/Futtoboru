@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Save Game Dialog v2 (P2-5)
@@ -105,8 +106,8 @@ public class SaveGameDialog extends VisDialog {
         scrollPane.setFadeScrollBars(false);
 
         VisTable nameRow = new VisTable();
-        nameRow.add(new VisLabel(LanguageModLoader.getValue("save_name"))).pad(5);
-        nameRow.add(nameField).pad(5).growX();
+        nameRow.add(new VisLabel(LanguageModLoader.getValue("save_name"))).pad(UiTheme.space("xs"));
+        nameRow.add(nameField).pad(UiTheme.space("xs")).growX();
 
         this.add(nameRow).colspan(2).growX();
         this.row();
@@ -154,8 +155,8 @@ public class SaveGameDialog extends VisDialog {
                 }
             });
             savesTable.row();
-            savesTable.add(pick).pad(5).growX();
-            savesTable.add(new VisLabel(LoadGameDialog.describe(save))).pad(5);
+            savesTable.add(pick).pad(UiTheme.space("xs")).growX();
+            savesTable.add(new VisLabel(LoadGameDialog.describe(save))).pad(UiTheme.space("xs"));
         }
         updateSaveButton();
     }
