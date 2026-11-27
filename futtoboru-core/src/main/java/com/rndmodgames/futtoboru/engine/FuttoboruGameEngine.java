@@ -90,8 +90,17 @@ public class FuttoboruGameEngine {
         this.competitionScheduler = new CompetitionScheduler(gameInstance);
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
-        this.resultRecorder = new MatchResultRecorder(gameInstance, messageManager);
         this.expenseCalculator = new ExpenseCalculator();
+    }
+    
+    /**
+     * The single match-result path (P2-2), made on first use
+     */
+    private MatchResultRecorder resultRecorder() {
+        if (resultRecorder == null) {
+            resultRecorder = new MatchResultRecorder(gameInstance, messageManager);
+        }
+        return resultRecorder;
     }
     
     public MessageManager getMessageManager() {
@@ -263,7 +272,7 @@ public class FuttoboruGameEngine {
         MatchSimulator simulator = new MatchSimulator(gameInstance);
         
         // Simulate and record through the single result path (P2-2): table, cup, lists, message, draw blocker
-        if (!resultRecorder.play(nextMatch, simulator)) {
+        if (!resultRecorder().play(nextMatch, simulator)) {
             DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Match not played: " + nextMatch.getId());
             return;
         }
@@ -755,7 +764,7 @@ public class FuttoboruGameEngine {
                     
                     if (shouldSimulate) {
                         // League matches are refused while a mandatory draw is pending (MatchResultRecorder.isPlayable)
-                        if (!resultRecorder.isPlayable(match)) {
+                        if (!resultRecorder().isPlayable(match)) {
                             continue;
                         }
 
@@ -796,7 +805,7 @@ public class FuttoboruGameEngine {
         // Second pass: Simulate matches and update lists
         for (Match match : matchesToSimulate) {
             // Simulate and record through the single result path (P2-2)
-            if (resultRecorder.play(match, simulator)) {
+            if (resultRecorder().play(match, simulator)) {
                 simulatedToday.add(match);
                 matchesSimulated++;
                 DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Simulated match " + match.getId() + " on " + targetDate);
