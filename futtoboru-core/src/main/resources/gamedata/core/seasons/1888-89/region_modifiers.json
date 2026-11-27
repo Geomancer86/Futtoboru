@@ -1,0 +1,65 @@
+[
+  {
+    "id": "lancashire",
+    "legacyId": 1,
+    "name": "Lancashire",
+    "country": "england",
+    "modifiers": {
+      "strength": 1,
+      "endurance": 1,
+      "teamwork": 1
+    },
+    "places": [
+      "Blackburn",
+      "Preston",
+      "Bolton",
+      "Accrington",
+      "Burnley"
+    ],
+    "notes": "Textile mill region. Industrial workers provide strength, endurance, and teamwork from factory coordination."
+  },
+  {
+    "id": "birmingham",
+    "legacyId": 2,
+    "name": "Birmingham",
+    "country": "england",
+    "modifiers": {
+      "strength": 1,
+      "courage": 1
+    },
+    "places": [
+      "Birmingham",
+      "West Bromwich"
+    ],
+    "notes": "Metalworking and foundry region. Industrial toughness provides strength and courage."
+  },
+  {
+    "id": "derby-nottingham",
+    "legacyId": 3,
+    "name": "Derby_Nottingham",
+    "country": "england",
+    "modifiers": {
+      "jumping": 1,
+      "dexterity": 1
+    },
+    "places": [
+      "Derby",
+      "Nottingham"
+    ],
+    "notes": "Lace industry region. Fine handwork provides dexterity and concentration."
+  },
+  {
+    "id": "stoke",
+    "legacyId": 4,
+    "name": "Stoke",
+    "country": "england",
+    "modifiers": {
+      "strength": 1,
+      "endurance": 1
+    },
+    "places": [
+      "Stoke"
+    ],
+    "notes": "Pottery and mining region. Physical work provides strength and endurance."
+  }
+]

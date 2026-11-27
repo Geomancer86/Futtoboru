@@ -1,0 +1,553 @@
+[
+  {
+    "id": "deepdale",
+    "legacyId": 1,
+    "name": "Deepdale",
+    "opened": 1875,
+    "capacity": 10000,
+    "value": 5000,
+    "description": "Deepdale is the oldest continuously used professional football stadium in the world. Originally Deepdale Farm, leased in 1875. First football match played October 5, 1878. Preston North End achieved the 'Double' (league and FA Cup) in the inaugural 1888-89 season.",
+    "landValue": 2000,
+    "ownedByClub": true,
+    "annualRent": 0,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Deepdale"
+    ]
+  },
+  {
+    "id": "wellington-road",
+    "legacyId": 2,
+    "name": "Wellington Road",
+    "opened": 1876,
+    "capacity": 26849,
+    "value": 6000,
+    "description": "Wellington Road was Aston Villa's home from 1876 to 1897. Initially lacked spectator facilities, with players changing in a nearby blacksmith's shed. Hosted record crowd of 26,849 for FA Cup match against Preston North End in January 1888. First league match was September 15, 1888, Villa defeating Stoke 5-1.",
+    "landValue": 2500,
+    "ownedByClub": false,
+    "annualRent": 200,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Wellington_Road_(Perry_Barr)",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season"
+    ]
+  },
+  {
+    "id": "dudley-road",
+    "legacyId": 3,
+    "name": "Dudley Road",
+    "opened": 1881,
+    "capacity": 10000,
+    "value": 4000,
+    "description": "Wolves played at Dudley Road from 1881 to 1889. First Football League match was September 8, 1888, a 1-1 draw against Aston Villa. Record attendance was 10,000 for FA Cup match against The Wednesday in March 1889. Wolves moved to Molineux in 1889.",
+    "landValue": 2000,
+    "ownedByClub": false,
+    "annualRent": 200,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Dudley_Road",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Wolverhampton_Wanderers_F.C._season"
+    ]
+  },
+  {
+    "id": "ewood-park",
+    "legacyId": 4,
+    "name": "Ewood Park",
+    "opened": 1882,
+    "capacity": 12000,
+    "value": 7500,
+    "description": "Ewood Park (originally Ewood Bridge) opened in April 1882 as a multi-purpose sports venue. Blackburn Rovers played several matches there in 1882 before moving in permanently in 1890. Featured horse boxes, dressing tents, refreshment saloon, lavatories, and a grandstand. Club purchased the freehold in 1893 for £2,500.",
+    "landValue": 3000,
+    "ownedByClub": false,
+    "annualRent": 250,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ewood_Park",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Blackburn_Rovers_F.C._season"
+    ]
+  },
+  {
+    "id": "pikes-lane",
+    "legacyId": 5,
+    "name": "Pike's Lane",
+    "opened": 1880,
+    "capacity": 20000,
+    "value": 4000,
+    "description": "Pike's Lane was Bolton Wanderers' home from 1880 until 1895. Featured embankments on both sides, later a grandstand and wooden terracing. On September 8, 1888, hosted one of the inaugural Football League matches, with Kenny Davenport scoring the first-ever Football League goal. Often criticized for poor pitch conditions.",
+    "landValue": 2000,
+    "ownedByClub": false,
+    "annualRent": 200,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Pike%27s_Lane",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season"
+    ]
+  },
+  {
+    "id": "stoney-lane",
+    "legacyId": 6,
+    "name": "Stoney Lane",
+    "opened": 1885,
+    "capacity": 20000,
+    "value": 5000,
+    "description": "Stoney Lane served as West Bromwich Albion's home from 1885 to 1900. Secured a seven-year lease for £28 per annum from local undertaker Mr. H. Webb. Featured a wooden grandstand known as 'Noah's Ark' accommodating 600 spectators. First league match was September 29, 1888, Albion defeating Burnley 4-3.",
+    "landValue": 2000,
+    "ownedByClub": false,
+    "annualRent": 28,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Stoney_Lane",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season"
+    ]
+  },
+  {
+    "id": "thorneyholme-road",
+    "legacyId": 7,
+    "name": "Thorneyholme Road",
+    "opened": 1878,
+    "capacity": 10000,
+    "value": 3000,
+    "description": "Thorneyholme Road was shared by Accrington Cricket Club (since 1877) and Accrington Football Club (founded 1878, known as 'Owd Reds'). The football pitch was at the western end, featuring a covered stand and uncovered seating. First league match was October 6, 1888, a 4-4 draw against Wolverhampton Wanderers.",
+    "landValue": 1500,
+    "ownedByClub": false,
+    "annualRent": 150,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Thorneyholme_Road",
+      "https://en.wikipedia.org/wiki/Accrington_F.C."
+    ]
+  },
+  {
+    "id": "anfield",
+    "legacyId": 8,
+    "name": "Anfield",
+    "opened": 1884,
+    "capacity": 20000,
+    "value": 6000,
+    "description": "Everton moved to Anfield in 1884, ground owned by John Orrell. In 1885, John Houlding purchased Anfield for approximately £6,000. Rent increased from £100 (1888) to £240 (1891), causing tensions. Everton left Anfield in 1892 to move to Goodison Park. Houlding then founded Liverpool FC to occupy the vacant Anfield.",
+    "landValue": 2500,
+    "ownedByClub": false,
+    "annualRent": 100,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Anfield",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
+      "https://www.evertonfc.com/club/history/our-former-homes"
+    ]
+  },
+  {
+    "id": "turf-moor",
+    "legacyId": 9,
+    "name": "Turf Moor",
+    "opened": 1883,
+    "capacity": 12000,
+    "value": 4500,
+    "description": "Turf Moor has been associated with sports since at least 1843 when Burnley Cricket Club relocated there. In 1883, the cricket club invited Burnley FC to move from Calder Vale. In 1885, constructed an 800-seat wooden grandstand and uncovered standing for 5,000. First league match was October 6, 1888, Burnley defeating Bolton Wanderers 4-1.",
+    "landValue": 2000,
+    "ownedByClub": false,
+    "annualRent": 200,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Turf_Moor",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season"
+    ]
+  },
+  {
+    "id": "racecourse-ground",
+    "legacyId": 10,
+    "name": "Racecourse Ground",
+    "opened": 1863,
+    "capacity": 12000,
+    "value": 4000,
+    "description": "Derby County, established in 1884, initially played at the County Cricket Ground. Due to fixture clashes with cricket, they occasionally used Ley's Baseball Ground for home games. Made Baseball Ground their permanent home in 1895, remaining there for 102 years. The pitch was notorious for poor condition due to drainage issues.",
+    "landValue": 2000,
+    "ownedByClub": false,
+    "annualRent": 200,
+    "sources": [
+      "https://en.wikipedia.org/wiki/County_Cricket_Ground,_Derby",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season"
+    ]
+  },
+  {
+    "id": "trent-bridge",
+    "legacyId": 11,
+    "name": "Trent Bridge",
+    "opened": 1883,
+    "capacity": 15000,
+    "value": 5000,
+    "description": "Notts County, established in 1862 (world's oldest professional football club), began playing at Trent Bridge in 1883, a venue primarily known for cricket. First home Football League match was October 6, 1888, drawing 3-3 against Blackburn Rovers. Shared use with cricket club presented challenges. Won FA Cup in 1894.",
+    "landValue": 2500,
+    "ownedByClub": false,
+    "annualRent": 300,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Trent_Bridge",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Notts_County_F.C._season"
+    ]
+  },
+  {
+    "id": "victoria-ground",
+    "legacyId": 12,
+    "name": "Victoria Ground",
+    "opened": 1878,
+    "capacity": 5000,
+    "value": 4000,
+    "description": "The Victoria Ground served as Stoke's home from 1878 until 1997, marking 119 years of football history. At the time of its demolition, it was the oldest operational ground in the Football League. First league match was September 8, 1888, a 2-0 defeat against West Bromwich Albion.",
+    "landValue": 2000,
+    "ownedByClub": false,
+    "annualRent": 200,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Victoria_Ground",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season"
+    ]
+  },
+  {
+    "id": "vincent-square",
+    "legacyId": 13,
+    "name": "Vincent Square",
+    "opened": 1850,
+    "capacity": 2000,
+    "value": 1000,
+    "description": "Vincent Square is a grass-covered square in Westminster, London. It is the playing field of Westminster School and was the home ground of the Old Westminsters.",
+    "landValue": 500,
+    "ownedByClub": false,
+    "annualRent": 50,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Vincent_Square",
+      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C."
+    ]
+  },
+  {
+    "id": "dolphin-ground",
+    "legacyId": 14,
+    "name": "Dolphin Ground",
+    "opened": 1870,
+    "capacity": 2000,
+    "value": 800,
+    "description": "The Dolphin Ground in Slough was the home ground of the Swifts, a prominent amateur club in the early days of English football.",
+    "landValue": 400,
+    "ownedByClub": false,
+    "annualRent": 40,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Slough_Town_F.C.#Grounds",
+      "https://en.wikipedia.org/wiki/Swifts_F.C."
+    ]
+  },
+  {
+    "id": "brighton-college-grounds",
+    "legacyId": 15,
+    "name": "Brighton College Grounds",
+    "opened": 1845,
+    "capacity": 1000,
+    "value": 500,
+    "description": "The playing fields of Brighton College, used by the Old Brightonians amateur team.",
+    "landValue": 300,
+    "ownedByClub": false,
+    "annualRent": 30,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Brighton_College",
+      "https://en.wikipedia.org/wiki/Old_Brightonians_F.C."
+    ]
+  },
+  {
+    "id": "racecourse-ground-wrexham",
+    "legacyId": 16,
+    "name": "Racecourse Ground",
+    "opened": 1864,
+    "capacity": 5000,
+    "value": 2500,
+    "description": "The Racecourse Ground is the oldest international football stadium in the world that still hosts international matches. Home of Wrexham since their formation.",
+    "landValue": 1000,
+    "ownedByClub": true,
+    "annualRent": 0,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Racecourse_Ground"
+    ]
+  },
+  {
+    "id": "gregory-ground",
+    "legacyId": 17,
+    "name": "Gregory Ground",
+    "opened": 1882,
+    "capacity": 5000,
+    "value": 2000,
+    "description": "The Gregory Ground in Lenton was Nottingham Forest's home from 1882 to 1890 before moving to the Town Ground.",
+    "landValue": 1000,
+    "ownedByClub": false,
+    "annualRent": 100,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Nottingham_Forest_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "ulsterville-avenue",
+    "legacyId": 18,
+    "name": "Ulsterville Avenue",
+    "opened": 1886,
+    "capacity": 2000,
+    "value": 1000,
+    "description": "Linfield's second home ground, used from 1886 to 1889 before moving to Balmoral.",
+    "landValue": 500,
+    "ownedByClub": false,
+    "annualRent": 50,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Linfield_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "archway-ground",
+    "legacyId": 19,
+    "name": "Archway Ground",
+    "opened": 1887,
+    "capacity": 1000,
+    "value": 500,
+    "description": "The original home of Witton Albion in Northwich.",
+    "landValue": 200,
+    "ownedByClub": false,
+    "annualRent": 20,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Witton_Albion_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "hawthorne-road",
+    "legacyId": 20,
+    "name": "Hawthorne Road",
+    "opened": 1880,
+    "capacity": 5000,
+    "value": 2000,
+    "description": "Hawthorne Road was the home of the original Bootle FC, who were rivals to Everton in the early years of Merseyside football.",
+    "landValue": 1000,
+    "ownedByClub": true,
+    "annualRent": 0,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Hawthorne_Road",
+      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)#Grounds"
+    ]
+  },
+  {
+    "id": "maidstone-road-ground",
+    "legacyId": 21,
+    "name": "Maidstone Road Ground",
+    "opened": 1882,
+    "capacity": 2000,
+    "value": 1000,
+    "description": "The home of Chatham Town during their early successful runs in the FA Cup.",
+    "landValue": 500,
+    "ownedByClub": false,
+    "annualRent": 50,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Chatham_Town_F.C.",
+      "https://en.wikipedia.org/wiki/Chatham_Town_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "south-shore-ground",
+    "legacyId": 22,
+    "name": "South Shore Ground",
+    "opened": 1879,
+    "capacity": 2000,
+    "value": 1000,
+    "description": "The home ground of South Shore FC in Blackpool, who later merged with Blackpool St John's to form Blackpool FC.",
+    "landValue": 500,
+    "ownedByClub": true,
+    "annualRent": 0,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Blackpool_F.C.#Grounds",
+      "https://en.wikipedia.org/wiki/South_Shore_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "abbey-park",
+    "legacyId": 23,
+    "name": "Abbey Park",
+    "opened": 1880,
+    "capacity": 10000,
+    "value": 4000,
+    "description": "Abbey Park was the home of Grimsby Town from 1889 to 1899. It was one of the better equipped non-league grounds of the era.",
+    "landValue": 1500,
+    "ownedByClub": true,
+    "annualRent": 0,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Abbey_Park_(Grimsby)"
+    ]
+  },
+  {
+    "id": "blue-house-field",
+    "legacyId": 24,
+    "name": "Blue House Field",
+    "opened": 1888,
+    "capacity": 5000,
+    "value": 2000,
+    "description": "Sunderland Albion's first home ground in Hendon, Sunderland.",
+    "landValue": 800,
+    "ownedByClub": false,
+    "annualRent": 80,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
+      "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "halliwell-road-ground",
+    "legacyId": 25,
+    "name": "Halliwell Road Ground",
+    "opened": 1877,
+    "capacity": 3000,
+    "value": 1200,
+    "description": "The home ground of Halliwell FC in Bolton, rivals to Bolton Wanderers.",
+    "landValue": 600,
+    "ownedByClub": false,
+    "annualRent": 60,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Halliwell_F.C.",
+      "https://en.wikipedia.org/wiki/Halliwell_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "alexandra-recreation-ground",
+    "legacyId": 26,
+    "name": "Alexandra Recreation Ground",
+    "opened": 1877,
+    "capacity": 5000,
+    "value": 2500,
+    "description": "Crewe Alexandra's home ground from 1877 to 1898, located near the railway station.",
+    "landValue": 1000,
+    "ownedByClub": true,
+    "annualRent": 0,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
+      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "charterhouse-school-grounds",
+    "legacyId": 27,
+    "name": "Charterhouse School Grounds",
+    "opened": 1872,
+    "capacity": 2000,
+    "value": 1000,
+    "description": "The playing fields of Charterhouse School in Godalming, home of the Old Carthusians.",
+    "landValue": 500,
+    "ownedByClub": false,
+    "annualRent": 50,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Charterhouse_School",
+      "https://en.wikipedia.org/wiki/Old_Carthusians_F.C."
+    ]
+  },
+  {
+    "id": "derby-junction-ground",
+    "legacyId": 28,
+    "name": "Derby Junction Ground",
+    "opened": 1870,
+    "capacity": 2000,
+    "value": 800,
+    "description": "The home ground of Derby Junction, one of the prominent clubs in Derby before the rise of Derby County.",
+    "landValue": 400,
+    "ownedByClub": false,
+    "annualRent": 40,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
+    ]
+  },
+  {
+    "id": "castle-ground",
+    "legacyId": 29,
+    "name": "Castle Ground",
+    "opened": 1868,
+    "capacity": 3000,
+    "value": 1200,
+    "description": "The home ground of Notts Rangers, located near Nottingham Castle.",
+    "landValue": 600,
+    "ownedByClub": false,
+    "annualRent": 60,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
+      "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "olive-grove",
+    "legacyId": 30,
+    "name": "Olive Grove",
+    "opened": 1887,
+    "capacity": 10000,
+    "value": 5000,
+    "description": "Olive Grove was the home of Sheffield Wednesday from 1887 to 1899. It hosted the first ever Steel City Derby.",
+    "landValue": 2000,
+    "ownedByClub": false,
+    "annualRent": 200,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Olive_Grove"
+    ]
+  },
+  {
+    "id": "cape-hill",
+    "legacyId": 31,
+    "name": "Cape Hill",
+    "opened": 1875,
+    "capacity": 5000,
+    "value": 2000,
+    "description": "Cape Hill was the home of Birmingham St George's, located near the Mitchells & Butlers brewery.",
+    "landValue": 800,
+    "ownedByClub": false,
+    "annualRent": 80,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
+      "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "recreation-ground",
+    "legacyId": 32,
+    "name": "Recreation Ground",
+    "opened": 1881,
+    "capacity": 2000,
+    "value": 800,
+    "description": "The home ground of Long Eaton Rangers in Derbyshire.",
+    "landValue": 400,
+    "ownedByClub": false,
+    "annualRent": 40,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C.",
+      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "muntz-street",
+    "legacyId": 33,
+    "name": "Muntz Street",
+    "opened": 1877,
+    "capacity": 10000,
+    "value": 4500,
+    "description": "Muntz Street, also known as Coventry Road, was the home of Small Heath (later Birmingham City) from 1877 to 1906.",
+    "landValue": 1800,
+    "ownedByClub": true,
+    "annualRent": 0,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Muntz_Street"
+    ]
+  },
+  {
+    "id": "chuckery-ground",
+    "legacyId": 34,
+    "name": "Chuckery Ground",
+    "opened": 1888,
+    "capacity": 5000,
+    "value": 2000,
+    "description": "The Chuckery Ground was the first home of the newly merged Walsall Town Swifts.",
+    "landValue": 800,
+    "ownedByClub": false,
+    "annualRent": 80,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Walsall_F.C.#Grounds"
+    ]
+  },
+  {
+    "id": "heeley-ground",
+    "legacyId": 35,
+    "name": "Heeley Ground",
+    "opened": 1862,
+    "capacity": 2000,
+    "value": 800,
+    "description": "The home ground of Heeley FC, one of the oldest clubs in Sheffield.",
+    "landValue": 400,
+    "ownedByClub": false,
+    "annualRent": 40,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Heeley_F.C.",
+      "https://en.wikipedia.org/wiki/Heeley_F.C.#Grounds"
+    ]
+  }
+]

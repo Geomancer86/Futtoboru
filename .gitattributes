@@ -1,3 +1,4 @@
 # Shell scripts must keep LF endings or they break on Linux/Jenkins
 tools/hooks/* text eol=lf
 *.sh text eol=lf
+*.json text eol=lf

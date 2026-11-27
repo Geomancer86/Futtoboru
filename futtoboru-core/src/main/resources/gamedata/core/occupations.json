@@ -1,0 +1,942 @@
+[
+  {
+    "id": "spinner",
+    "legacyId": 1,
+    "name": "Spinner",
+    "category": "TEXTILE",
+    "bonuses": {
+      "endurance": 2,
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Textile mill worker operating spinning machines. Long hours, repetitive work requiring stamina and fine motor skills."
+  },
+  {
+    "id": "weaver",
+    "legacyId": 2,
+    "name": "Weaver",
+    "category": "TEXTILE",
+    "bonuses": {
+      "endurance": 2,
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Textile mill worker operating looms. Requires endurance, dexterity, and concentration."
+  },
+  {
+    "id": "sizer",
+    "legacyId": 3,
+    "name": "Sizer",
+    "category": "TEXTILE",
+    "bonuses": {
+      "endurance": 1,
+      "dexterity": 1
+    },
+    "notes": "Textile mill worker sizing cotton. Moderate physical work with fine motor skills."
+  },
+  {
+    "id": "piecer",
+    "legacyId": 4,
+    "name": "Piecer",
+    "category": "TEXTILE",
+    "bonuses": {
+      "endurance": 1,
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Textile mill worker piecing broken threads. Requires dexterity and concentration."
+  },
+  {
+    "id": "dyer",
+    "legacyId": 5,
+    "name": "Dyer",
+    "category": "TEXTILE",
+    "bonuses": {
+      "endurance": 1,
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Textile mill worker dyeing fabrics. Requires dexterity and attention to detail."
+  },
+  {
+    "id": "scavenger",
+    "legacyId": 6,
+    "name": "Scavenger",
+    "category": "TEXTILE",
+    "bonuses": {
+      "endurance": 1,
+      "dexterity": 1
+    },
+    "notes": "Textile mill worker cleaning machinery. Often young workers, physically demanding."
+  },
+  {
+    "id": "loom-operator",
+    "legacyId": 7,
+    "name": "Loom Operator",
+    "category": "TEXTILE",
+    "bonuses": {
+      "endurance": 2,
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Textile mill worker operating power looms. Requires endurance and dexterity."
+  },
+  {
+    "id": "cotton-carder",
+    "legacyId": 8,
+    "name": "Cotton Carder",
+    "category": "TEXTILE",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1
+    },
+    "notes": "Textile mill worker carding cotton. Requires strength and endurance."
+  },
+  {
+    "id": "textile-inspector",
+    "legacyId": 9,
+    "name": "Textile Inspector",
+    "category": "TEXTILE",
+    "bonuses": {
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Textile mill quality inspector. Requires perception and concentration."
+  },
+  {
+    "id": "mill-foreman",
+    "legacyId": 10,
+    "name": "Mill Foreman",
+    "category": "TEXTILE",
+    "bonuses": {
+      "leadership": 1,
+      "teamwork": 1
+    },
+    "notes": "Textile mill supervisor. Requires leadership and teamwork."
+  },
+  {
+    "id": "railway-worker",
+    "legacyId": 11,
+    "name": "Railway Worker",
+    "category": "RAILWAY",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 2,
+      "teamwork": 1
+    },
+    "notes": "General railway worker. Physically demanding work requiring strength, endurance, and teamwork."
+  },
+  {
+    "id": "signalman",
+    "legacyId": 12,
+    "name": "Signalman",
+    "category": "RAILWAY",
+    "bonuses": {
+      "endurance": 1,
+      "concentration": 2,
+      "perception": 1
+    },
+    "notes": "Railway signal operator. Requires high perception and concentration for safety."
+  },
+  {
+    "id": "railway-guard",
+    "legacyId": 13,
+    "name": "Railway Guard",
+    "category": "RAILWAY",
+    "bonuses": {
+      "endurance": 1,
+      "leadership": 1,
+      "teamwork": 1
+    },
+    "notes": "Railway guard responsible for train safety. Requires leadership and teamwork."
+  },
+  {
+    "id": "porter",
+    "legacyId": 14,
+    "name": "Porter",
+    "category": "RAILWAY",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1
+    },
+    "notes": "Railway station porter. Lifting and carrying luggage, requires strength and endurance."
+  },
+  {
+    "id": "railway-engineer",
+    "legacyId": 15,
+    "name": "Railway Engineer",
+    "category": "RAILWAY",
+    "bonuses": {
+      "dexterity": 1,
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Railway engineer maintaining trains. Requires dexterity, concentration, and perception."
+  },
+  {
+    "id": "track-layer",
+    "legacyId": 16,
+    "name": "Track Layer",
+    "category": "RAILWAY",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 2
+    },
+    "notes": "Railway track construction worker. Extremely physically demanding, requires strength and endurance."
+  },
+  {
+    "id": "station-master",
+    "legacyId": 17,
+    "name": "Station Master",
+    "category": "RAILWAY",
+    "bonuses": {
+      "leadership": 2,
+      "perception": 1
+    },
+    "notes": "Railway station manager. Requires strong leadership and perception."
+  },
+  {
+    "id": "railway-clerk",
+    "legacyId": 18,
+    "name": "Railway Clerk",
+    "category": "RAILWAY",
+    "bonuses": {
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Railway administrative clerk. Requires concentration and perception."
+  },
+  {
+    "id": "coal-miner",
+    "legacyId": 19,
+    "name": "Coal Miner",
+    "category": "MINING",
+    "bonuses": {
+      "strength": 3,
+      "endurance": 2,
+      "courage": 1,
+      "determination": 1
+    },
+    "notes": "Coal miner. Extremely physically demanding and dangerous work. Requires exceptional strength, endurance, courage, and determination."
+  },
+  {
+    "id": "quarryman",
+    "legacyId": 20,
+    "name": "Quarryman",
+    "category": "MINING",
+    "bonuses": {
+      "strength": 3,
+      "endurance": 2,
+      "courage": 1
+    },
+    "notes": "Stone quarry worker. Extremely physically demanding work extracting stone. Requires exceptional strength and endurance."
+  },
+  {
+    "id": "iron-miner",
+    "legacyId": 21,
+    "name": "Iron Miner",
+    "category": "MINING",
+    "bonuses": {
+      "strength": 3,
+      "endurance": 2,
+      "courage": 1
+    },
+    "notes": "Iron ore miner. Extremely physically demanding and dangerous work. Requires exceptional strength, endurance, and courage."
+  },
+  {
+    "id": "mine-foreman",
+    "legacyId": 22,
+    "name": "Mine Foreman",
+    "category": "MINING",
+    "bonuses": {
+      "strength": 1,
+      "courage": 1,
+      "determination": 1,
+      "leadership": 1
+    },
+    "notes": "Mine supervisor. Requires strength, courage, and leadership."
+  },
+  {
+    "id": "mine-engineer",
+    "legacyId": 23,
+    "name": "Mine Engineer",
+    "category": "MINING",
+    "bonuses": {
+      "dexterity": 1,
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Mining engineer. Requires dexterity, concentration, and perception."
+  },
+  {
+    "id": "mine-clerk",
+    "legacyId": 24,
+    "name": "Mine Clerk",
+    "category": "MINING",
+    "bonuses": {
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Mining administrative clerk. Requires concentration and perception."
+  },
+  {
+    "id": "stonemason",
+    "legacyId": 25,
+    "name": "Stonemason",
+    "category": "CONSTRUCTION",
+    "bonuses": {
+      "strength": 2,
+      "dexterity": 1,
+      "concentration": 1,
+      "positioning": 1
+    },
+    "notes": "Skilled craftsman working with stone. Requires strength, dexterity, concentration, and spatial awareness (positioning)."
+  },
+  {
+    "id": "bricklayer",
+    "legacyId": 26,
+    "name": "Bricklayer",
+    "category": "CONSTRUCTION",
+    "bonuses": {
+      "strength": 2,
+      "dexterity": 1,
+      "positioning": 1
+    },
+    "notes": "Construction worker laying bricks. Requires strength, dexterity, and spatial awareness."
+  },
+  {
+    "id": "carpenter",
+    "legacyId": 27,
+    "name": "Carpenter",
+    "category": "CONSTRUCTION",
+    "bonuses": {
+      "strength": 1,
+      "dexterity": 2,
+      "concentration": 1
+    },
+    "notes": "Skilled woodworker. Requires dexterity and concentration for precision work."
+  },
+  {
+    "id": "builder",
+    "legacyId": 28,
+    "name": "Builder",
+    "category": "CONSTRUCTION",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 1,
+      "teamwork": 1
+    },
+    "notes": "General construction worker. Requires strength, endurance, and teamwork."
+  },
+  {
+    "id": "plumber",
+    "legacyId": 29,
+    "name": "Plumber",
+    "category": "CONSTRUCTION",
+    "bonuses": {
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Plumbing tradesman. Requires dexterity and concentration."
+  },
+  {
+    "id": "painter",
+    "legacyId": 30,
+    "name": "Painter",
+    "category": "CONSTRUCTION",
+    "bonuses": {
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Painting tradesman. Requires dexterity and concentration."
+  },
+  {
+    "id": "construction-foreman",
+    "legacyId": 31,
+    "name": "Construction Foreman",
+    "category": "CONSTRUCTION",
+    "bonuses": {
+      "leadership": 1,
+      "teamwork": 1
+    },
+    "notes": "Construction site supervisor. Requires leadership and teamwork."
+  },
+  {
+    "id": "architect",
+    "legacyId": 32,
+    "name": "Architect",
+    "category": "CONSTRUCTION",
+    "bonuses": {
+      "concentration": 1,
+      "perception": 2,
+      "positioning": 2
+    },
+    "notes": "Building architect. Requires exceptional perception, concentration, and spatial awareness."
+  },
+  {
+    "id": "factory-worker",
+    "legacyId": 33,
+    "name": "Factory Worker",
+    "category": "FACTORY",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 2,
+      "teamwork": 1
+    },
+    "notes": "General factory worker. Physically demanding work requiring strength, endurance, and teamwork."
+  },
+  {
+    "id": "foundry-worker",
+    "legacyId": 34,
+    "name": "Foundry Worker",
+    "category": "FACTORY",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 2,
+      "determination": 1,
+      "teamwork": 1
+    },
+    "notes": "Foundry worker handling molten metal. Extremely physically demanding and dangerous. Requires strength, endurance, courage, and teamwork."
+  },
+  {
+    "id": "steelworker",
+    "legacyId": 35,
+    "name": "Steelworker",
+    "category": "FACTORY",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 2,
+      "determination": 1,
+      "teamwork": 1
+    },
+    "notes": "Steel mill worker. Extremely physically demanding and dangerous. Requires strength, endurance, courage, and teamwork."
+  },
+  {
+    "id": "metalworker",
+    "legacyId": 36,
+    "name": "Metalworker",
+    "category": "FACTORY",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1,
+      "dexterity": 1
+    },
+    "notes": "Metalworking tradesman. Requires strength, endurance, and dexterity."
+  },
+  {
+    "id": "machine-operator",
+    "legacyId": 37,
+    "name": "Machine Operator",
+    "category": "FACTORY",
+    "bonuses": {
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Factory machine operator. Requires dexterity and concentration."
+  },
+  {
+    "id": "factory-foreman",
+    "legacyId": 38,
+    "name": "Factory Foreman",
+    "category": "FACTORY",
+    "bonuses": {
+      "leadership": 1,
+      "teamwork": 1
+    },
+    "notes": "Factory supervisor. Requires leadership and teamwork."
+  },
+  {
+    "id": "quality-inspector",
+    "legacyId": 39,
+    "name": "Quality Inspector",
+    "category": "FACTORY",
+    "bonuses": {
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Factory quality control inspector. Requires perception and concentration."
+  },
+  {
+    "id": "engineer",
+    "legacyId": 40,
+    "name": "Engineer",
+    "category": "FACTORY",
+    "bonuses": {
+      "dexterity": 1,
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Factory engineer. Requires dexterity, concentration, and perception."
+  },
+  {
+    "id": "tramcar-conductor",
+    "legacyId": 41,
+    "name": "Tramcar Conductor",
+    "category": "TRANSPORT",
+    "bonuses": {
+      "endurance": 1,
+      "leadership": 1,
+      "perception": 1,
+      "teamwork": 1
+    },
+    "notes": "Tramcar conductor managing passengers. Requires endurance, perception, leadership, and teamwork."
+  },
+  {
+    "id": "coach-driver",
+    "legacyId": 42,
+    "name": "Coach Driver",
+    "category": "TRANSPORT",
+    "bonuses": {
+      "endurance": 1,
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Horse-drawn coach driver. Requires endurance, concentration, and perception."
+  },
+  {
+    "id": "cart-driver",
+    "legacyId": 43,
+    "name": "Cart Driver",
+    "category": "TRANSPORT",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1
+    },
+    "notes": "Cart driver transporting goods. Requires strength and endurance."
+  },
+  {
+    "id": "cab-driver",
+    "legacyId": 44,
+    "name": "Cab Driver",
+    "category": "TRANSPORT",
+    "bonuses": {
+      "endurance": 1,
+      "perception": 1
+    },
+    "notes": "Horse-drawn cab driver. Requires endurance and perception."
+  },
+  {
+    "id": "delivery-man",
+    "legacyId": 45,
+    "name": "Delivery Man",
+    "category": "TRANSPORT",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1,
+      "stamina": 1
+    },
+    "notes": "Delivery worker. Requires strength, endurance, and stamina for walking/carrying."
+  },
+  {
+    "id": "transport-manager",
+    "legacyId": 46,
+    "name": "Transport Manager",
+    "category": "TRANSPORT",
+    "bonuses": {
+      "leadership": 1,
+      "teamwork": 1
+    },
+    "notes": "Transport business manager. Requires leadership and teamwork."
+  },
+  {
+    "id": "schoolmaster",
+    "legacyId": 47,
+    "name": "Schoolmaster",
+    "category": "EDUCATION",
+    "bonuses": {
+      "dexterity": 1,
+      "leadership": 2,
+      "perception": 2,
+      "teamwork": 1
+    },
+    "notes": "School teacher and administrator. Requires exceptional perception, leadership, concentration, and teamwork."
+  },
+  {
+    "id": "teacher",
+    "legacyId": 48,
+    "name": "Teacher",
+    "category": "EDUCATION",
+    "bonuses": {
+      "dexterity": 1,
+      "leadership": 1,
+      "perception": 1,
+      "teamwork": 1
+    },
+    "notes": "School teacher. Requires perception, leadership, concentration, and teamwork."
+  },
+  {
+    "id": "headmaster",
+    "legacyId": 49,
+    "name": "Headmaster",
+    "category": "EDUCATION",
+    "bonuses": {
+      "leadership": 2,
+      "perception": 1
+    },
+    "notes": "School headmaster. Requires exceptional leadership and perception."
+  },
+  {
+    "id": "tutor",
+    "legacyId": 50,
+    "name": "Tutor",
+    "category": "EDUCATION",
+    "bonuses": {
+      "dexterity": 1,
+      "perception": 1
+    },
+    "notes": "Private tutor. Requires perception and concentration."
+  },
+  {
+    "id": "blacksmith",
+    "legacyId": 51,
+    "name": "Blacksmith",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 1,
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Blacksmith forging metal. Requires strength, endurance, dexterity, and concentration."
+  },
+  {
+    "id": "tailor",
+    "legacyId": 52,
+    "name": "Tailor",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "dexterity": 2,
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Tailor making clothes. Requires exceptional dexterity, concentration, and perception."
+  },
+  {
+    "id": "shoemaker",
+    "legacyId": 53,
+    "name": "Shoemaker",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "dexterity": 2,
+      "concentration": 1
+    },
+    "notes": "Shoemaker crafting footwear. Requires dexterity and concentration."
+  },
+  {
+    "id": "baker",
+    "legacyId": 54,
+    "name": "Baker",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1,
+      "dexterity": 1
+    },
+    "notes": "Baker making bread. Requires strength, endurance, and dexterity for kneading."
+  },
+  {
+    "id": "butcher",
+    "legacyId": 55,
+    "name": "Butcher",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "strength": 1,
+      "dexterity": 1
+    },
+    "notes": "Butcher cutting meat. Requires strength and dexterity."
+  },
+  {
+    "id": "cobbler",
+    "legacyId": 56,
+    "name": "Cobbler",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "dexterity": 1,
+      "concentration": 1
+    },
+    "notes": "Shoe repairer. Requires dexterity and concentration."
+  },
+  {
+    "id": "watchmaker",
+    "legacyId": 57,
+    "name": "Watchmaker",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "dexterity": 2,
+      "concentration": 2,
+      "perception": 1
+    },
+    "notes": "Watchmaker crafting timepieces. Requires exceptional dexterity, concentration, and perception."
+  },
+  {
+    "id": "jeweler",
+    "legacyId": 58,
+    "name": "Jeweler",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "dexterity": 2,
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Jeweler crafting jewelry. Requires exceptional dexterity, concentration, and perception."
+  },
+  {
+    "id": "barber",
+    "legacyId": 59,
+    "name": "Barber",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "dexterity": 1,
+      "teamwork": 1
+    },
+    "notes": "Barber cutting hair. Requires dexterity and teamwork (customer service)."
+  },
+  {
+    "id": "tinsmith",
+    "legacyId": 60,
+    "name": "Tinsmith",
+    "category": "SKILLED_TRADE",
+    "bonuses": {
+      "dexterity": 1
+    },
+    "notes": "Tinsmith working with tin. Requires dexterity and strength."
+  },
+  {
+    "id": "farmer",
+    "legacyId": 61,
+    "name": "Farmer",
+    "category": "AGRICULTURE",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 2,
+      "stamina": 1,
+      "leadership": 1
+    },
+    "notes": "Farmer working the land. Extremely physically demanding. Requires strength, endurance, stamina, and determination."
+  },
+  {
+    "id": "farm-laborer",
+    "legacyId": 62,
+    "name": "Farm Laborer",
+    "category": "AGRICULTURE",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 2,
+      "stamina": 1
+    },
+    "notes": "Farm worker. Extremely physically demanding. Requires strength, endurance, and stamina."
+  },
+  {
+    "id": "shepherd",
+    "legacyId": 63,
+    "name": "Shepherd",
+    "category": "AGRICULTURE",
+    "bonuses": {
+      "endurance": 1,
+      "leadership": 1,
+      "perception": 1
+    },
+    "notes": "Shepherd tending sheep. Requires endurance, perception, and determination."
+  },
+  {
+    "id": "dairy-worker",
+    "legacyId": 64,
+    "name": "Dairy Worker",
+    "category": "AGRICULTURE",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1
+    },
+    "notes": "Dairy farm worker. Requires strength and endurance."
+  },
+  {
+    "id": "agricultural-worker",
+    "legacyId": 65,
+    "name": "Agricultural Worker",
+    "category": "AGRICULTURE",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1,
+      "stamina": 1
+    },
+    "notes": "General agricultural worker. Requires strength, endurance, and stamina."
+  },
+  {
+    "id": "farm-manager",
+    "legacyId": 66,
+    "name": "Farm Manager",
+    "category": "AGRICULTURE",
+    "bonuses": {
+      "leadership": 1
+    },
+    "notes": "Farm supervisor. Requires leadership and determination."
+  },
+  {
+    "id": "publican",
+    "legacyId": 67,
+    "name": "Publican",
+    "category": "SERVICE",
+    "bonuses": {
+      "leadership": 1,
+      "perception": 1,
+      "teamwork": 1
+    },
+    "notes": "Pub owner/manager. Requires leadership, perception, and teamwork (customer service)."
+  },
+  {
+    "id": "shopkeeper",
+    "legacyId": 68,
+    "name": "Shopkeeper",
+    "category": "SERVICE",
+    "bonuses": {
+      "leadership": 1,
+      "perception": 1,
+      "teamwork": 1
+    },
+    "notes": "Shop owner/manager. Requires leadership, perception, and teamwork (customer service)."
+  },
+  {
+    "id": "clerk",
+    "legacyId": 69,
+    "name": "Clerk",
+    "category": "SERVICE",
+    "bonuses": {
+      "dexterity": 1,
+      "concentration": 1,
+      "perception": 1
+    },
+    "notes": "Office clerk. Requires concentration, perception, and dexterity (writing)."
+  },
+  {
+    "id": "bookkeeper",
+    "legacyId": 70,
+    "name": "Bookkeeper",
+    "category": "SERVICE",
+    "bonuses": {
+      "dexterity": 1,
+      "perception": 1
+    },
+    "notes": "Bookkeeper maintaining accounts. Requires concentration and perception."
+  },
+  {
+    "id": "accountant",
+    "legacyId": 71,
+    "name": "Accountant",
+    "category": "SERVICE",
+    "bonuses": {
+      "dexterity": 2,
+      "perception": 1
+    },
+    "notes": "Accountant managing finances. Requires exceptional concentration and perception."
+  },
+  {
+    "id": "bank-clerk",
+    "legacyId": 72,
+    "name": "Bank Clerk",
+    "category": "SERVICE",
+    "bonuses": {
+      "dexterity": 1,
+      "perception": 1
+    },
+    "notes": "Bank employee. Requires concentration and perception."
+  },
+  {
+    "id": "postman",
+    "legacyId": 73,
+    "name": "Postman",
+    "category": "SERVICE",
+    "bonuses": {
+      "endurance": 1,
+      "stamina": 1
+    },
+    "notes": "Postal worker delivering mail. Requires endurance and stamina for walking."
+  },
+  {
+    "id": "messenger",
+    "legacyId": 74,
+    "name": "Messenger",
+    "category": "SERVICE",
+    "bonuses": {
+      "endurance": 1,
+      "stamina": 1,
+      "speed": 1
+    },
+    "notes": "Messenger delivering messages. Requires speed, endurance, and stamina."
+  },
+  {
+    "id": "policeman",
+    "legacyId": 75,
+    "name": "Policeman",
+    "category": "OTHER",
+    "bonuses": {
+      "strength": 1,
+      "courage": 2,
+      "leadership": 1,
+      "perception": 1
+    },
+    "notes": "Police officer. Requires strength, exceptional courage, leadership, and perception."
+  },
+  {
+    "id": "fireman",
+    "legacyId": 76,
+    "name": "Fireman",
+    "category": "OTHER",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 1,
+      "courage": 2,
+      "teamwork": 1
+    },
+    "notes": "Firefighter. Requires exceptional strength, courage, endurance, and teamwork."
+  },
+  {
+    "id": "soldier",
+    "legacyId": 77,
+    "name": "Soldier",
+    "category": "OTHER",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1,
+      "courage": 1,
+      "determination": 1,
+      "teamwork": 1
+    },
+    "notes": "Military soldier. Requires strength, endurance, courage, determination, and teamwork."
+  },
+  {
+    "id": "sailor",
+    "legacyId": 78,
+    "name": "Sailor",
+    "category": "OTHER",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1,
+      "courage": 1,
+      "teamwork": 1
+    },
+    "notes": "Sailor working on ships. Requires strength, endurance, courage, and teamwork."
+  },
+  {
+    "id": "dock-worker",
+    "legacyId": 79,
+    "name": "Dock Worker",
+    "category": "OTHER",
+    "bonuses": {
+      "strength": 2,
+      "endurance": 1,
+      "teamwork": 1
+    },
+    "notes": "Dock worker loading/unloading ships. Requires strength, endurance, and teamwork."
+  },
+  {
+    "id": "warehouse-worker",
+    "legacyId": 80,
+    "name": "Warehouse Worker",
+    "category": "OTHER",
+    "bonuses": {
+      "strength": 1,
+      "endurance": 1
+    },
+    "notes": "Warehouse worker. Requires strength and endurance."
+  }
+]

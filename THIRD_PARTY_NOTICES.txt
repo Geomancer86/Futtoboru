@@ -1,0 +1,26 @@
+Futtoboru third-party notices
+=============================
+
+Futtoboru is licensed under the GNU GPL v3 (see LICENSE). It bundles or depends on:
+
+libGDX 1.12 - Apache License 2.0 - https://www.apache.org/licenses/LICENSE-2.0
+  com.badlogicgames.gdx:* (core, backends, box2d, ai, ashley)
+
+VisUI - Apache License 2.0 - https://www.apache.org/licenses/LICENSE-2.0
+  com.kotcrab.vis:vis-ui
+
+Tixel skin for VisUI (resources/skin/tixel.*) - the license of VisUI, Apache License 2.0,
+  as its README states. Same skin and notice as the DarkBlade project.
+
+Droid Sans (the UI font, resources/skin/droid-sans-13.fnt, packed in tixel.atlas)
+  - Apache License 2.0 - https://www.apache.org/licenses/LICENSE-2.0
+
+Game data
+---------
+Historical facts in resources/gamedata (clubs, grounds, players, seasons) were compiled by hand
+from Wikipedia articles, cited per record in their "sources" fields. Text adapted from Wikipedia
+is available under CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/).
+
+Still to review (P1-4 / P1-6): the 3D demo textures, skyboxes, heightmaps and models under
+resources/data, resources/models and resources/textures, and badlogic.jpg; they are unused and
+are expected to be removed with the dead 3D demo code.

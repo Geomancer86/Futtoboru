@@ -23,6 +23,6 @@ Game data lives in `futtoboru-core/src/main/resources/mods/seasons/18/` (CSV-lik
 - `docs/archive/` holds unverified AI drafts from 2025. Do not treat them as facts or specs.
   Known errors: offside in 1888 was the **3-player rule (1866-1925)**, not 2; no penalty kicks before 1891;
   no cards; one umpire per side plus a referee off the pitch.
-- Historical data must cite a source (comment header in the data file).
+- Game data is JSON in `futtoboru-core/src/main/resources/gamedata/` (`docs/DATA_MODEL.md`): stable string ids that never change (renames via `aliases.json` + rename log), a source per record. Run `python tools/data/validate.py` and `python -m pytest tools/data` on every data change.
 - Match results come from the event/possession engine (decision D5); the 2D prototype is only a viewer.
 - Keep new docs short and few. Update `docs/STATUS.md` instead of writing new summary files.

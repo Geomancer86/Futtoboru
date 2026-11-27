@@ -1,0 +1,22 @@
+[
+  {
+    "id": "fa-cup",
+    "legacyId": 1,
+    "name": "FA Cup",
+    "longName": "The Football Association Challenge Cup",
+    "type": "CUP",
+    "sources": [
+      "https://en.wikipedia.org/wiki/FA_Cup"
+    ]
+  },
+  {
+    "id": "football-league",
+    "name": "Football League",
+    "longName": "The Football League",
+    "type": "LEAGUE",
+    "sources": [
+      "https://en.wikipedia.org/wiki/English_Football_League"
+    ],
+    "notes": "Not in the legacy competitions file; the league was created in code (ScriptsLoader)."
+  }
+]

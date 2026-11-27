@@ -1,0 +1,387 @@
+[
+  {
+    "id": "preston-north-end",
+    "legacyId": 1,
+    "name": "Preston North End",
+    "fullName": "Preston North End Football Club",
+    "founded": 1880,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Preston_North_End_F.C."
+    ]
+  },
+  {
+    "id": "aston-villa",
+    "legacyId": 2,
+    "name": "Aston Villa",
+    "fullName": "Aston Villa Football Club",
+    "founded": 1874,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Aston_Villa_F.C."
+    ]
+  },
+  {
+    "id": "wolverhampton-wanderers",
+    "legacyId": 3,
+    "name": "Wolverhampton Wanderers",
+    "fullName": "Wolverhampton Wanderers Football Club",
+    "founded": 1877,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Wolverhampton_Wanderers_F.C."
+    ]
+  },
+  {
+    "id": "blackburn-rovers",
+    "legacyId": 4,
+    "name": "Blackburn Rovers",
+    "fullName": "Blackburn Rovers Football Club",
+    "founded": 1875,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Blackburn_Rovers_F.C."
+    ]
+  },
+  {
+    "id": "bolton-wanderers",
+    "legacyId": 5,
+    "name": "Bolton Wanderers",
+    "fullName": "Bolton Wanderers Football Club",
+    "founded": 1874,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bolton_Wanderers_F.C."
+    ]
+  },
+  {
+    "id": "west-bromwich-albion",
+    "legacyId": 6,
+    "name": "West Bromwich Albion",
+    "fullName": "West Bromwich Albion Football Club",
+    "founded": 1878,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/West_Bromwich_Albion_F.C."
+    ]
+  },
+  {
+    "id": "accrington",
+    "legacyId": 7,
+    "name": "Accrington",
+    "fullName": "Accrington Football Club",
+    "founded": 1878,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Accrington_F.C."
+    ]
+  },
+  {
+    "id": "everton",
+    "legacyId": 8,
+    "name": "Everton",
+    "fullName": "Everton Football Club",
+    "founded": 1878,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Everton_F.C."
+    ]
+  },
+  {
+    "id": "burnley",
+    "legacyId": 9,
+    "name": "Burnley",
+    "fullName": "Burnley Football Club",
+    "founded": 1882,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Burnley_F.C."
+    ]
+  },
+  {
+    "id": "derby-county",
+    "legacyId": 10,
+    "name": "Derby County",
+    "fullName": "Derby County Football Club",
+    "founded": 1884,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Derby_County_F.C."
+    ]
+  },
+  {
+    "id": "notts-county",
+    "legacyId": 11,
+    "name": "Notts County",
+    "fullName": "Notts County Football Club",
+    "founded": 1862,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Notts_County_F.C"
+    ]
+  },
+  {
+    "id": "stoke",
+    "legacyId": 12,
+    "name": "Stoke",
+    "fullName": "Stoke City Football Club",
+    "founded": 1868,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Stoke_City_F.C."
+    ]
+  },
+  {
+    "id": "old-westminsters",
+    "legacyId": 13,
+    "name": "Old Westminsters",
+    "fullName": "Old Westminsters Football Club",
+    "founded": 1880,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C."
+    ]
+  },
+  {
+    "id": "swifts",
+    "legacyId": 14,
+    "name": "Swifts",
+    "fullName": "Swifts Football Club",
+    "founded": 1869,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Swifts_F.C."
+    ]
+  },
+  {
+    "id": "old-brightonians",
+    "legacyId": 15,
+    "name": "Old Brightonians",
+    "fullName": "Old Brightonians Football Club",
+    "founded": 1881,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Old_Brightonians_F.C."
+    ]
+  },
+  {
+    "id": "wrexham",
+    "legacyId": 16,
+    "name": "Wrexham",
+    "fullName": "Wrexham Association Football Club",
+    "founded": 1864,
+    "country": "wales",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Wrexham_A.F.C."
+    ]
+  },
+  {
+    "id": "nottingham-forest",
+    "legacyId": 17,
+    "name": "Nottingham Forest",
+    "fullName": "Nottingham Forest Football Club",
+    "founded": 1865,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Nottingham_Forest_F.C."
+    ]
+  },
+  {
+    "id": "linfield",
+    "legacyId": 18,
+    "name": "Linfield",
+    "fullName": "Linfield Football Club",
+    "founded": 1886,
+    "country": "ireland",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Linfield_F.C."
+    ]
+  },
+  {
+    "id": "witton-albion",
+    "legacyId": 19,
+    "name": "Witton Albion",
+    "fullName": "Witton Albion Football Club",
+    "founded": 1887,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
+    ]
+  },
+  {
+    "id": "bootle",
+    "legacyId": 20,
+    "name": "Bootle",
+    "fullName": "Bootle Football Club",
+    "founded": 1879,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
+    ]
+  },
+  {
+    "id": "chatham-town",
+    "legacyId": 21,
+    "name": "Chatham Town",
+    "fullName": "Chatham Town Football Club",
+    "founded": 1882,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Chatham_Town_F.C."
+    ]
+  },
+  {
+    "id": "south-shore",
+    "legacyId": 22,
+    "name": "South Shore",
+    "fullName": "South Shore Football Club",
+    "founded": 1879,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/South_Shore_F.C."
+    ]
+  },
+  {
+    "id": "grimsby-town",
+    "legacyId": 23,
+    "name": "Grimsby Town",
+    "fullName": "Grimsby Town Football Club",
+    "founded": 1878,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Grimsby_Town_F.C."
+    ]
+  },
+  {
+    "id": "sunderland-albion",
+    "legacyId": 24,
+    "name": "Sunderland Albion",
+    "fullName": "Sunderland Albion Football Club",
+    "founded": 1888,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C."
+    ]
+  },
+  {
+    "id": "halliwell",
+    "legacyId": 25,
+    "name": "Halliwell",
+    "fullName": "Halliwell Football Club",
+    "founded": 1877,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Halliwell_F.C."
+    ]
+  },
+  {
+    "id": "crewe-alexandra",
+    "legacyId": 26,
+    "name": "Crewe Alexandra",
+    "fullName": "Crewe Alexandra Football Club",
+    "founded": 1877,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C."
+    ]
+  },
+  {
+    "id": "old-carthusians",
+    "legacyId": 27,
+    "name": "Old Carthusians",
+    "fullName": "Old Carthusians Football Club",
+    "founded": 1876,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Old_Carthusians_F.C."
+    ]
+  },
+  {
+    "id": "derby-junction",
+    "legacyId": 28,
+    "name": "Derby Junction",
+    "fullName": "Derby Junction Football Club",
+    "founded": 1870,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
+    ]
+  },
+  {
+    "id": "notts-rangers",
+    "legacyId": 29,
+    "name": "Notts Rangers",
+    "fullName": "Notts Rangers Football Club",
+    "founded": 1868,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Notts_Rangers_F.C."
+    ]
+  },
+  {
+    "id": "sheffield-wednesday",
+    "legacyId": 30,
+    "name": "Sheffield Wednesday",
+    "fullName": "Sheffield Wednesday Football Club",
+    "founded": 1867,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C."
+    ]
+  },
+  {
+    "id": "birmingham-st-georges",
+    "legacyId": 31,
+    "name": "Birmingham St George's",
+    "fullName": "Birmingham St. George's Football Club",
+    "founded": 1875,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C."
+    ]
+  },
+  {
+    "id": "long-eaton-rangers",
+    "legacyId": 32,
+    "name": "Long Eaton Rangers",
+    "fullName": "Long Eaton Rangers Football Club",
+    "founded": 1881,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
+    ]
+  },
+  {
+    "id": "small-heath",
+    "legacyId": 33,
+    "name": "Small Heath",
+    "fullName": "Small Heath Football Club",
+    "founded": 1875,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
+    ]
+  },
+  {
+    "id": "walsall",
+    "legacyId": 34,
+    "name": "Walsall",
+    "fullName": "Walsall Football Club",
+    "founded": 1888,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Walsall_F.C."
+    ]
+  },
+  {
+    "id": "heeley",
+    "legacyId": 35,
+    "name": "Heeley",
+    "fullName": "Heeley Football Club",
+    "founded": 1862,
+    "country": "england",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Heeley_F.C."
+    ]
+  }
+]

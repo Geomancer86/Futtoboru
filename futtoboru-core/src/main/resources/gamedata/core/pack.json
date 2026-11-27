@@ -1,0 +1,25 @@
+{
+  "id": "core",
+  "name": "Futtoboru base data",
+  "version": 1,
+  "dataVersion": 1,
+  "seasons": [
+    "1888-89"
+  ],
+  "files": [
+    "aliases.json",
+    "clubs.json",
+    "competitions.json",
+    "continents.json",
+    "countries.json",
+    "grounds.json",
+    "names.json",
+    "occupations.json",
+    "people.json",
+    "professions.json",
+    "seasons/1888-89/nationality_modifiers.json",
+    "seasons/1888-89/region_modifiers.json",
+    "seasons/1888-89/season.json",
+    "seasons/1888-89/squads.json"
+  ]
+}
