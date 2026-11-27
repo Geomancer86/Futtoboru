@@ -16,7 +16,7 @@ _Last updated 2026-11-27 (WORKSTATION)._ Version 0.4.0-SNAPSHOT.
 | Save / load | working | v1 format (P2-5): `saveVersion` + data version, named saves, data saved by id, one object per club after load, round-trip test; v0.4 saves show "older version" |
 | Game data | working | JSON packs in `gamedata/` with stable string ids, strict loader + `tools/data/validate.py` (P2-4). Data still unverified: review list `docs/data/REVIEW_1888-89.md` (copied cup rosters) |
 | Runtime ids | working | one saved `IdAllocator`; data numbers from the append-only `gamedata/core/ids.json` (never shift when data is corrected) |
-| Competition schedule | broken | daily check never runs in real play (P2-8, being fixed) |
+| Competition schedule | fixed | daily check runs on the current game (P2-8); full-season proof comes with the P2-3 test |
 | New season table | working | table reset when the season completes; final table kept on the edition (`CompetitionEdition.finalStandings`, P2-6), no screen shows it yet |
 | Tactics, Training, Transfers, Scouting, Staff, Board | stub | empty screens |
 
