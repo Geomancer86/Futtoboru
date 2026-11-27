@@ -356,6 +356,17 @@ public class Futtoboru extends Game {
         this.currentGame = currentGame;
     }
 
+    /**
+     * Makes a loaded game the current one (P2-5): the job managers are rebuilt so none keeps the previous game.
+     * The database lookups were already bound to the loaded game by the load.
+     */
+    public void startLoadedGame(SaveGame loaded) {
+        this.currentGame = loaded;
+        this.jobManager = null;
+        this.clubStaffManager = null;
+        initializeJobSystem();
+    }
+
     public ScriptsManager getScriptsManager() {
         return scriptsManager;
     }
