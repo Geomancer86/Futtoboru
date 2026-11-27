@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.system.generators;
 
 import com.rndmodgames.futtoboru.data.Country;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 
 /**
@@ -22,9 +23,10 @@ public class NameGenerator {
      * TODO: support for dual names and dual lastnames
      * 
      * @param country
+     * @param rng picks the names
      * @return
      */
-    public static String [] generateName(Country country) {
+    public static String [] generateName(Country country, RandomSource rng) {
         
         //
         java.util.List<String> names = DatabaseLoader.getFirstNames(country);
@@ -38,8 +40,8 @@ public class NameGenerator {
         /**
          * TODO: small chance of having more than 1 name or more than 1 lastname or both
          */
-        String randomName = names.get(DatabaseLoader.RNG.nextInt(numberOfNames - 1));
-        String randomLastName = lastnames.get(DatabaseLoader.RNG.nextInt(numberOfLastnames - 1));
+        String randomName = names.get(rng.nextInt(numberOfNames - 1));
+        String randomLastName = lastnames.get(rng.nextInt(numberOfLastnames - 1));
         
         //
         String generatedName [] = new String [2]; 

@@ -7,7 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 
 /**
  * Competition Scheduler v1
@@ -16,8 +16,10 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
  */
 public class CompetitionScheduler {
 
+    private final Futtoboru game;
+
     public CompetitionScheduler(Futtoboru parent) {
-        
+        this.game = parent;
     }
     
     /**
@@ -41,12 +43,15 @@ public class CompetitionScheduler {
         Gdx.app.log("CompetitionScheduler", "Randomizing Competition Draw for: " + competition.getName() + ", Clubs: " + clubIds.size());
         
         List<Long> auxiliarClubsIds = new ArrayList<>(clubIds);
+        
+        // the same competition and entrants draw the same way for a given game seed (P2-0)
+        RandomSource rng = Futtoboru.randomOf(game).fork("draw:" + competition.getId() + ":" + clubIds);
         List<Match> competitionMatches = new ArrayList<>();
         
         // Handle bye if odd number of teams
         if (auxiliarClubsIds.size() % 2 != 0) {
             // Pick a random team to get a bye
-            int byeIndex = DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size());
+            int byeIndex = rng.nextInt(auxiliarClubsIds.size());
             Long byeClubId = auxiliarClubsIds.remove(byeIndex);
             Gdx.app.log("CompetitionScheduler", "Club " + byeClubId + " receives a BYE");
         }
@@ -59,11 +64,11 @@ public class CompetitionScheduler {
             Match match = new Match();
             
             // Home Club
-            int homeIndex = DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size());
+            int homeIndex = rng.nextInt(auxiliarClubsIds.size());
             match.setHomeClubId(auxiliarClubsIds.remove(homeIndex));
             
             // Away Club
-            int awayIndex = DatabaseLoader.RNG.nextInt(auxiliarClubsIds.size());
+            int awayIndex = rng.nextInt(auxiliarClubsIds.size());
             match.setAwayClubId(auxiliarClubsIds.remove(awayIndex));
             
             competitionMatches.add(match);

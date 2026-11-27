@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.engine.jobs.ClubStaffManager;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
 import com.rndmodgames.futtoboru.screens.MatchEngineDebugScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
@@ -108,11 +109,52 @@ public class Futtoboru extends Game {
     private ClubStaffManager clubStaffManager = null;
     private JobManager jobManager = null;
     
-    // main constructor
+    /**
+     * The one seeded random source of the game (P2-0). Game logic forks it ({@code random().fork("match:" + id)});
+     * see {@link RandomSource}. Set {@value #SEED_PROPERTY} (e.g. {@code -Dfuttoboru.seed=1888}) to replay a run.
+     */
+    public static final String SEED_PROPERTY = "futtoboru.seed";
+    private RandomSource random;
+    
+    // main constructor: seed from -Dfuttoboru.seed, else a fresh one
     public Futtoboru() {
+        this(seedFromSystemProperty());
+    }
+    
+    /** A game whose randomness is fully determined by {@code seed}. */
+    public Futtoboru(long seed) {
     
         // keep reference of the running instance
         instance = this;
+        this.random = RandomSource.seeded(seed);
+    }
+    
+    private static long seedFromSystemProperty() {
+        Long seed = Long.getLong(SEED_PROPERTY);
+        return seed != null ? seed : RandomSource.newSeed();
+    }
+    
+    /** The root random source; fork it, don't draw from it directly. */
+    public RandomSource random() {
+        return random;
+    }
+    
+    /** The seed of the root random source (to be stored in the save game). */
+    public long getSeed() {
+        return random.getSeed();
+    }
+    
+    /** Replaces the root random source, e.g. when a saved game is loaded: {@code setSeed(save.getSeed())}. */
+    public void setSeed(long seed) {
+        this.random = RandomSource.seeded(seed);
+    }
+    
+    /** The game's root source, or the database loader's when there is no game (headless tools and tests). */
+    public static RandomSource randomOf(Futtoboru game) {
+        if (game != null && game.random() != null) {
+            return game.random();
+        }
+        return DatabaseLoader.getRandom();
     }
     
     // create
@@ -172,6 +214,7 @@ public class Futtoboru extends Game {
         /**
          * Preload the Database
          */
+        DatabaseLoader.setRandom(random.fork("database"));
         DatabaseLoader.getInstance();
 
         // Initialize the Script Manager

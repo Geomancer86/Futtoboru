@@ -9,7 +9,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ContractType;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerContract;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.data.IdAllocator;
 
@@ -36,10 +36,11 @@ public class PlayerContractGenerator {
      * @param club The club the player belongs to
      * @param contractStartDate When the contract starts (typically season start)
      * @param ids gives the contract its runtime id (the data allocator at load, the game's during play)
+     * @param rng the random terms (a fork of the game's random source for this contract)
      * @return A new PlayerContract with random terms
      */
     public static PlayerContract generateRandomContract(Player player, Club club, LocalDateTime contractStartDate,
-            IdAllocator ids) {
+            IdAllocator ids, RandomSource rng) {
         if (player == null || club == null || contractStartDate == null) {
             DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: player=" + (player != null) + 
                 ", club=" + (club != null) + ", date=" + (contractStartDate != null));
@@ -80,19 +81,19 @@ public class PlayerContractGenerator {
         }
         
         // Determine contract type based on player skill and club size
-        Integer contractType = determineContractType(player, club);
+        Integer contractType = determineContractType(player, club, rng);
         contract.setContractType(contractType);
         
         // Set contract dates
         contract.setStartDate(contractStartDate);
         
         // Contract length: 1-3 years typically (12-36 months)
-        int contractLengthMonths = 12 + DatabaseLoader.RNG.nextInt(25); // 12-36 months
+        int contractLengthMonths = 12 + rng.nextInt(25); // 12-36 months
         contract.setContractLengthMonths(contractLengthMonths);
         contract.setEndDate(contractStartDate.plusMonths(contractLengthMonths));
         
         // Generate financial terms based on contract type
-        generateFinancialTerms(contract, player, club, contractType);
+        generateFinancialTerms(contract, player, club, contractType, rng);
         
         // Generate bonuses (only for professional contracts typically)
         if (contractType == ContractType.PROFESSIONAL || contractType == ContractType.SEMI_PROFESSIONAL) {
@@ -118,12 +119,12 @@ public class PlayerContractGenerator {
      * - 40% Semi-Professional (low pay)
      * - 30% Professional (regular pay)
      */
-    private static Integer determineContractType(Player player, Club club) {
+    private static Integer determineContractType(Player player, Club club, RandomSource rng) {
         // Calculate player skill level (average of key attributes)
         float avgSkill = calculatePlayerSkill(player);
         
         // Random factor (70% skill-based, 30% random)
-        float randomFactor = DatabaseLoader.RNG.nextFloat();
+        float randomFactor = rng.nextFloat();
         float combinedFactor = (avgSkill * 0.7f) + (randomFactor * 0.3f);
         
         // Determine contract type
@@ -165,7 +166,8 @@ public class PlayerContractGenerator {
      * - Semi-Pro: £0.25-0.50/week (2s 6d - 5s)
      * - Professional: £0.50-5.00/week (10s - £1+)
      */
-    private static void generateFinancialTerms(PlayerContract contract, Player player, Club club, Integer contractType) {
+    private static void generateFinancialTerms(PlayerContract contract, Player player, Club club, Integer contractType,
+            RandomSource rng) {
         if (contractType == null) {
             return;
         }
@@ -201,7 +203,7 @@ public class PlayerContractGenerator {
                 contract.setWeeklyWage(proWage.setScale(2, RoundingMode.HALF_UP));
                 
                 // Signing bonus: 1-4 weeks of wages
-                int signingBonusWeeks = 1 + DatabaseLoader.RNG.nextInt(4);
+                int signingBonusWeeks = 1 + rng.nextInt(4);
                 contract.setSigningBonus(proWage.multiply(BigDecimal.valueOf(signingBonusWeeks)).setScale(2, RoundingMode.HALF_UP));
                 break;
                 

@@ -85,7 +85,7 @@ public class FuttoboruGameEngine {
         this.competitionScheduler = new CompetitionScheduler(gameInstance);
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
-        this.expenseCalculator = new ExpenseCalculator();
+        this.expenseCalculator = new ExpenseCalculator(gameInstance);
     }
     
     public MessageManager getMessageManager() {
@@ -483,7 +483,8 @@ public class FuttoboruGameEngine {
         for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
             for (Player player : club.getPlayers()) {
                 if (player != null && player.getPerson() != null) {
-                    attributeGenerator.applyDailyAttributeChanges(player, currentDate);
+                    attributeGenerator.applyDailyAttributeChanges(player, currentDate,
+                            gameInstance.random().fork("training:" + player.getId() + ":" + currentDate.toLocalDate()));
                     playersUpdated++;
                 }
             }

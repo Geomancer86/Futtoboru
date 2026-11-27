@@ -9,6 +9,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ClubExpenses;
 import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.game.Futtoboru;
 
 /**
  * Expense Calculator v1.0
@@ -21,6 +22,13 @@ import com.rndmodgames.futtoboru.data.Stadium;
  * @author Geomancer86
  */
 public class ExpenseCalculator {
+    
+    private final Futtoboru game;
+    
+    /** @param game owns the random source the monthly variation is forked from (null: the database loader's) */
+    public ExpenseCalculator(Futtoboru game) {
+        this.game = game;
+    }
     
     // Historical expense percentages (from Everton 1888-89)
     private static final double STADIUM_MAINTENANCE_PERCENTAGE = 0.05; // 5% of stadium value annually
@@ -83,10 +91,9 @@ public class ExpenseCalculator {
         expenses.setStadiumValue(stadiumValue);
         expenses.setStadiumCapacity(stadiumCapacity);
         
-        // Initialize monthly random seed (for repeatability)
-        // Same year/month/club = same random values
-        long monthSeed = (gameDate.getYear() * 12L) + gameDate.getMonthValue();
-        Random monthlyRandom = new Random(monthSeed + club.getId());
+        // Monthly random stream (for repeatability): same game seed + year/month/club = same random values
+        Random monthlyRandom = Futtoboru.randomOf(game)
+                .fork("expenses:" + club.getId() + ":" + gameDate.getYear() + "-" + gameDate.getMonthValue()).asRandom();
         
         // Calculate each expense category
         expenses.setStadiumMaintenance(calculateStadiumMaintenance(stadiumValue, monthlyRandom));

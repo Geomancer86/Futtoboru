@@ -15,6 +15,7 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.rndmodgames.futtoboru.system.data.IdAllocator;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 
 /**
@@ -38,7 +39,7 @@ public class CupBracketGeneratorTest {
     @Test
     void testSemiFinalsAlwaysHas2Matches() {
         // This is the bug you found - semi-finals should have exactly 2 matches
-        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START));
+        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START), RandomSource.seeded(1888));
         
         // Test with 8 teams (should have semi-finals in round 2)
         List<Long> teamIds = new ArrayList<>();
@@ -82,7 +83,7 @@ public class CupBracketGeneratorTest {
     
     @Test
     void testCompleteBracketStructureFor32Teams() {
-        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START));
+        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START), RandomSource.seeded(1888));
         
         List<Long> teamIds = new ArrayList<>();
         for (int i = 0; i < 32; i++) {
@@ -116,7 +117,7 @@ public class CupBracketGeneratorTest {
     
     @Test
     void testCompleteBracketStructureFor16Teams() {
-        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START));
+        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START), RandomSource.seeded(1888));
         
         List<Long> teamIds = new ArrayList<>();
         for (int i = 0; i < 16; i++) {
@@ -149,7 +150,7 @@ public class CupBracketGeneratorTest {
     
     @Test
     void testCompleteBracketStructureFor8Teams() {
-        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START));
+        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START), RandomSource.seeded(1888));
         
         List<Long> teamIds = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
@@ -181,7 +182,7 @@ public class CupBracketGeneratorTest {
     
     @Test
     void testAllMatchesHaveCorrectRoundNumbers() {
-        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START));
+        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START), RandomSource.seeded(1888));
         
         List<Long> teamIds = new ArrayList<>();
         for (int i = 0; i < 16; i++) {
@@ -203,7 +204,7 @@ public class CupBracketGeneratorTest {
     
     @Test
     void testParentMatchLinksAreCorrect() {
-        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START));
+        CupBracketGenerator generator = new CupBracketGenerator(new IdAllocator(IdAllocator.GAME_START), RandomSource.seeded(1888));
         
         List<Long> teamIds = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
