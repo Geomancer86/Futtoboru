@@ -248,10 +248,10 @@ class FullSeasonTests extends BaseTest {
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("Known bug, fix blocked by the P2-5 lock: the cup and league creation scripts "
+    @org.junit.jupiter.api.Disabled("Known bug, not fixed in P2-3: the cup and league creation scripts "
             + "(ScriptsManager.createCup/createLeague) add a second 1888-89 edition next to the one from season.json, "
-            + "which is never drawn or finished. Reusing the data edition breaks RuntimeIdsTests (system/data, locked), "
-            + "which pins the script-made edition, and changes which editions SaveGame stores; BOOK3PRO to decide in P2-5.")
+            + "which is never drawn or finished. The fix (reuse the season's data edition) is small, but "
+            + "system/data/RuntimeIdsTests (P2-5 area, not edited by this lane) asserts the script-made edition.")
     void oneEditionPerCompetitionAndSeason() {
         for (Competition c : first.save.getAllCups()) {
             int editions = 0;
