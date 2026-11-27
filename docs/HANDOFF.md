@@ -7,7 +7,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | P2-4 data model v2 (JSON, string ids, people + squads) | BOOK3PRO | `b3/P2-4-data-model-v2` | 2026-11-27 |
-| P1-3 GitHub Actions CI (`.github/` only) | WORKSTATION | `ws/P1-3-ci` | 2026-11-27 |
+| P2-4 slice 4 research (`docs/data/REVIEW_1888-89.md` only, no data edits) | WORKSTATION | `ws/P2-4s4-review-research` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -16,7 +16,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 
 ## Ready to take (from docs/ROADMAP.md)
 **Safe for WORKSTATION now (no overlap with the BOOK3PRO lock):**
-- **P1-3** GitHub Actions: `mvn -B verify` + `python -m pytest tools/data` + `python tools/data/validate.py` on push and PRs (`.github/` only).
 - **P1-2** Maven wrapper (`mvnw`) + `.sh` run scripts (extend the existing `.gitattributes`).
 - **P1-4** Remove dead 3D/Bullet demo code (`com/rndmodgames/graphics`, `scenes`, `org/microbasic`, `futtuboru2`, the `Bullet*` classes), unused deps (bullet, freetype, lwjgl3 in core, twitch4j, sonar plugin) and their assets; keep `match/engine/**`.
 - **P2-1** Continue double-click (`MainGameMenuTable`).
@@ -25,7 +24,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 
 **Wait for BOOK3PRO's P2-4 slice 2 (they touch the locked files):** P2-0 determinism, P2-2 single result path, P2-5 saves, P2-6 season reset, P1-5 logging.
 - **P1-2** Maven wrapper (`mvnw`) + `.sh` run scripts + `.gitattributes`.
-- **P1-3** GitHub Actions: `mvn -B verify` on push and PRs.
 - **P1-4** Remove dead 3D demo code and unused bullet deps (concept images/PDF already gone via SEC-01).
 - **P2-1** Fix Continue double-click advancing two days (`MainGameMenuTable`).
 - **P2-2** Merge the two match-result paths in `FuttoboruGameEngine`.
@@ -33,6 +31,9 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 - **P2-4 slice 4** Data review (WORKSTATION): `docs/data/REVIEW_1888-89.md`, rebuild the copied cup rosters. Edit the JSON only after slice 2 lands (until then the JSON is generated from `mods/*.txt`; edit the .txt and rerun `tools/data/convert_legacy.py`).
 
 ## Log
+- 2026-11-27 · WORKSTATION · CLAIM · P2-4 slice 4 (research part) · Findings into `docs/data/REVIEW_1888-89.md` only; no `gamedata/` or `mods/` edits until slice 2 lands.
+- 2026-11-27 · WORKSTATION · NOTE · for BOOK3PRO (locked file) · `DatabaseLoader.getInstance()` publishes `instance` before loading finishes, so a second thread (headless `create()`) sees a half-loaded loader. Linux CI hit it via `ScriptManagerTests`. Tests now wait for `create()` (`BaseTest.awaitHeadlessCreate()`); please make `getInstance()` build into a local and assign it last (or `synchronized`) in slice 2.
+- 2026-11-27 · WORKSTATION · DONE · P1-3 · `.github/workflows/ci.yml`: Maven verify (JDK 17, Xvfb) + data pytest + validator on every push and PR; green on GitHub (run 45994935767). Also fixed the Linux-only test race above. Merged a36607e.
 - 2026-11-27 · WORKSTATION · CLAIM · P1-3 · GitHub Actions: mvn verify + pytest tools/data + validate.py on push/PR. Touches `.github/` only.
 - 2026-11-27 · BOOK3PRO · DONE · P2-4 slice 1 · JSON pack + converter + validator + review list merged to develop (inert: the game still reads mods/*.txt). Claim stays open for slices 2-3; see 'Files in use'. WORKSTATION: pick from 'Safe for WORKSTATION now'.
 - 2026-11-27 · BOOK3PRO · CLAIM · P2-4 · Data model v2 per producer decisions D11, D14-D16 (all JSON like DarkBlade, stable string ids + save-local runtime ids, one people table + season squads, v0.4 saves not migrated). Slice 1: converter, JSON data, validator, review list.
