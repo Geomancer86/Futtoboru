@@ -16,6 +16,7 @@ futtoboru-core/src/main/resources/gamedata/
     grounds.json             stadiums: capacity, value, rent, description, sources
     people.json              every real person once: firstName, lastName, born, country, confidence, sources
     aliases.json             old id -> new id, per kind, kept forever
+    ids.json                 data id -> runtime number, per kind, append-only (P2-5)
     seasons/1888-89/
       season.json            start, countries, editions (league + cup, with participants)
       squads.json            per club this season: ground, balance, players (person ids)
@@ -36,6 +37,19 @@ What changes from season to season (ground, balance, squad) lives in the season 
   runtime id. No more `currentTimeMillis`, `null` or negative ids.
 - **Saves** (slice 3) store data ids for data and runtime ids for game objects, never copies of records, plus
   a `saveVersion`. The `legacyId` / `legacyIds` fields used for the switch are gone (slice 2).
+
+## Runtime numbers: `ids.json` (P2-5)
+Each pack has an append-only registry `ids.json`: `range` (the pack's block of numbers, core 1-99 999, a mod the
+next free block of 100 000), `next` (the next free number, never lowered), `ids` (kind -> data id -> number) and
+`retired` (kind -> ids removed for good). The game uses the number as the record's runtime id, so a save that holds
+runtime ids keeps pointing at the same records when the data is corrected.
+- **Adding a record:** run `python tools/data/assign_ids.py` (gives it the next free number, touches nothing else).
+- **Removing a record:** leave its entry and add its id to `retired`; the number is never handed out again.
+- **Renaming:** only the alias (above); the new id inherits the old id's number.
+- `validate.py` checks it: every record has a number, numbers unique across kinds and packs, inside the range and
+  below `next`; an entry without a record must be retired or an old (aliased) id. `assign_ids.py --check` fails when
+  a record has no number. Numbers 900 000-999 999 are for objects built at load (copies, random contracts), 1 000 000+
+  for play.
 
 ## Quality: confidence and sources
 Every person has `confidence`: `unverified` (typed by hand from the cited pages, may have errors; the default),
@@ -72,9 +86,9 @@ Warnings: a person in several squads, a squad under 11, no first name, an age ou
   entry of a *list* of references (a squad player, an edition participant) is dropped from the list instead of
   skipping the whole squad or season. "Present but not listed" is checked only when the folder can be listed
   (not inside the jar); `validate.py` stays the full check.
-- Runtime ids: data records get theirs in load order (pack, file, record) from 1; objects built at load from the
-  data (players' random contracts, the copies below, the IFAB, nationality modifiers) continue that range, so
-  every data-side id is below 1 000 000. The game's `IdAllocator` lives in `SaveGame` and starts at 1 000 000.
+- Runtime ids: data records get their `ids.json` number (slice 3; the first registry kept the load-order ids of
+  slice 2); objects built at load from the data (players' random contracts, the copies below, the IFAB,
+  nationality modifiers) get 900 000+, so every data-side id is below 1 000 000. The game's `IdAllocator` lives in `SaveGame` and starts at 1 000 000.
   A `Player` keeps the id of its `Person` (it is the person's football role, not a second object).
 - A person listed in several squads of a season (the copied rosters) still plays for each: the first squad gets
   the canonical `Person`, later squads a runtime copy with the same `dataId`; lookups by data id return the

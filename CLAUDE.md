@@ -24,6 +24,8 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
   Known errors: offside in 1888 was the **3-player rule (1866-1925)**, not 2; no penalty kicks before 1891;
   no cards; one umpire per side plus a referee off the pitch.
 - Game data is JSON in `futtoboru-core/src/main/resources/gamedata/` (`docs/DATA_MODEL.md`): stable string ids that never change (renames via `aliases.json` + rename log), a source per record. Run `python tools/data/validate.py` and `python -m pytest tools/data` on every data change.
+- A new data record gets its runtime number with `python tools/data/assign_ids.py`; `ids.json` is append-only (never
+  edit or delete a number; a removed record goes to `retired`).
 - Match results come from the event/possession engine (decision D5); the 2D prototype is only a viewer.
 - Real historical results/fixtures (`docs/data/results_*.csv`, later `seasons/*/results.json`) are reference data (D17):
   engine calibration in test code, and history for seasons before the start season. Game code must never read them
