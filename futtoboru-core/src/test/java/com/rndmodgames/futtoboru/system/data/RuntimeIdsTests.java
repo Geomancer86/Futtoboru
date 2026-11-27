@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.utils.Array;
+import com.rndmodgames.futtoboru.BaseTest;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
@@ -54,6 +55,8 @@ class RuntimeIdsTests {
         config.updatesPerSecond = 30;
         application = new Futtoboru();
         new HeadlessApplication(application, config);
+        // create() runs on the app thread and replaces the engine: wait for it before building games
+        BaseTest.awaitHeadlessCreate();
     }
 
     /** Builds a fresh database and a new game the way NewGameOverviewScreen does, then plays some days. */

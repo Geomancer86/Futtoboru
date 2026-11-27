@@ -122,14 +122,19 @@ public class DatabaseLoader {
 
     /**
      * Initialize the Game Data and Scripts in required order
+     *
+     * Synchronized and published only after loading: the headless create() thread and a test thread may both
+     * ask for the database, and neither may see it half-loaded.
      */
-    public static DatabaseLoader getInstance() {
+    public static synchronized DatabaseLoader getInstance() {
 
         if (instance == null) {
 
-            instance = new DatabaseLoader();
+            DatabaseLoader loaded = new DatabaseLoader();
 
             load(GameData.loadDefault(), RNG);
+
+            instance = loaded;
         }
 
         //
@@ -139,7 +144,7 @@ public class DatabaseLoader {
     /**
      * Used between some unit tests to avoid issues with missing data
      */
-    public static void resetDatabaseLoaderInstance() {
+    public static synchronized void resetDatabaseLoaderInstance() {
 
         instance = null;
     }
@@ -147,7 +152,7 @@ public class DatabaseLoader {
     /**
      * Builds the whole database from game data. Missing month/day of birth dates are drawn from {@code rng}.
      */
-    public static void load(GameData data, Random rng) {
+    public static synchronized void load(GameData data, Random rng) {
 
         clear();
         gameData = data;
