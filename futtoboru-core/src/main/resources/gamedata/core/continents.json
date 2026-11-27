@@ -1,32 +1,26 @@
 [
   {
     "id": "africa",
-    "legacyId": 1,
     "name": "Africa"
   },
   {
     "id": "asia",
-    "legacyId": 2,
     "name": "Asia"
   },
   {
     "id": "europe",
-    "legacyId": 3,
     "name": "Europe"
   },
   {
     "id": "north-america",
-    "legacyId": 4,
     "name": "North America"
   },
   {
     "id": "south-america",
-    "legacyId": 5,
     "name": "South America"
   },
   {
     "id": "oceania",
-    "legacyId": 6,
     "name": "Oceania"
   }
 ]

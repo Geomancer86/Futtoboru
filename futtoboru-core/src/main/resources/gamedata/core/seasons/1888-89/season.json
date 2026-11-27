@@ -1,6 +1,5 @@
 {
   "id": "1888-89",
-  "legacyId": 18,
   "name": "1888-1889 Season",
   "description": "The Most Important Football Season Ever, The One That Started It All.",
   "start": "1888-04-01T04:00:00",
@@ -36,7 +35,6 @@
     },
     {
       "id": "fa-cup-1888-89",
-      "legacyId": 1,
       "competition": "fa-cup",
       "name": "1888-89 FA Cup",
       "participants": [

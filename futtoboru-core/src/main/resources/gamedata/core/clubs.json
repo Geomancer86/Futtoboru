@@ -1,7 +1,6 @@
 [
   {
     "id": "preston-north-end",
-    "legacyId": 1,
     "name": "Preston North End",
     "fullName": "Preston North End Football Club",
     "founded": 1880,
@@ -12,7 +11,6 @@
   },
   {
     "id": "aston-villa",
-    "legacyId": 2,
     "name": "Aston Villa",
     "fullName": "Aston Villa Football Club",
     "founded": 1874,
@@ -23,7 +21,6 @@
   },
   {
     "id": "wolverhampton-wanderers",
-    "legacyId": 3,
     "name": "Wolverhampton Wanderers",
     "fullName": "Wolverhampton Wanderers Football Club",
     "founded": 1877,
@@ -34,7 +31,6 @@
   },
   {
     "id": "blackburn-rovers",
-    "legacyId": 4,
     "name": "Blackburn Rovers",
     "fullName": "Blackburn Rovers Football Club",
     "founded": 1875,
@@ -45,7 +41,6 @@
   },
   {
     "id": "bolton-wanderers",
-    "legacyId": 5,
     "name": "Bolton Wanderers",
     "fullName": "Bolton Wanderers Football Club",
     "founded": 1874,
@@ -56,7 +51,6 @@
   },
   {
     "id": "west-bromwich-albion",
-    "legacyId": 6,
     "name": "West Bromwich Albion",
     "fullName": "West Bromwich Albion Football Club",
     "founded": 1878,
@@ -67,7 +61,6 @@
   },
   {
     "id": "accrington",
-    "legacyId": 7,
     "name": "Accrington",
     "fullName": "Accrington Football Club",
     "founded": 1878,
@@ -78,7 +71,6 @@
   },
   {
     "id": "everton",
-    "legacyId": 8,
     "name": "Everton",
     "fullName": "Everton Football Club",
     "founded": 1878,
@@ -89,7 +81,6 @@
   },
   {
     "id": "burnley",
-    "legacyId": 9,
     "name": "Burnley",
     "fullName": "Burnley Football Club",
     "founded": 1882,
@@ -100,7 +91,6 @@
   },
   {
     "id": "derby-county",
-    "legacyId": 10,
     "name": "Derby County",
     "fullName": "Derby County Football Club",
     "founded": 1884,
@@ -111,7 +101,6 @@
   },
   {
     "id": "notts-county",
-    "legacyId": 11,
     "name": "Notts County",
     "fullName": "Notts County Football Club",
     "founded": 1862,
@@ -122,7 +111,6 @@
   },
   {
     "id": "stoke",
-    "legacyId": 12,
     "name": "Stoke",
     "fullName": "Stoke City Football Club",
     "founded": 1868,
@@ -133,7 +121,6 @@
   },
   {
     "id": "old-westminsters",
-    "legacyId": 13,
     "name": "Old Westminsters",
     "fullName": "Old Westminsters Football Club",
     "founded": 1880,
@@ -144,7 +131,6 @@
   },
   {
     "id": "swifts",
-    "legacyId": 14,
     "name": "Swifts",
     "fullName": "Swifts Football Club",
     "founded": 1869,
@@ -155,7 +141,6 @@
   },
   {
     "id": "old-brightonians",
-    "legacyId": 15,
     "name": "Old Brightonians",
     "fullName": "Old Brightonians Football Club",
     "founded": 1881,
@@ -166,7 +151,6 @@
   },
   {
     "id": "wrexham",
-    "legacyId": 16,
     "name": "Wrexham",
     "fullName": "Wrexham Association Football Club",
     "founded": 1864,
@@ -177,7 +161,6 @@
   },
   {
     "id": "nottingham-forest",
-    "legacyId": 17,
     "name": "Nottingham Forest",
     "fullName": "Nottingham Forest Football Club",
     "founded": 1865,
@@ -188,7 +171,6 @@
   },
   {
     "id": "linfield",
-    "legacyId": 18,
     "name": "Linfield",
     "fullName": "Linfield Football Club",
     "founded": 1886,
@@ -199,7 +181,6 @@
   },
   {
     "id": "witton-albion",
-    "legacyId": 19,
     "name": "Witton Albion",
     "fullName": "Witton Albion Football Club",
     "founded": 1887,
@@ -210,7 +191,6 @@
   },
   {
     "id": "bootle",
-    "legacyId": 20,
     "name": "Bootle",
     "fullName": "Bootle Football Club",
     "founded": 1879,
@@ -221,7 +201,6 @@
   },
   {
     "id": "chatham-town",
-    "legacyId": 21,
     "name": "Chatham Town",
     "fullName": "Chatham Town Football Club",
     "founded": 1882,
@@ -232,7 +211,6 @@
   },
   {
     "id": "south-shore",
-    "legacyId": 22,
     "name": "South Shore",
     "fullName": "South Shore Football Club",
     "founded": 1879,
@@ -243,7 +221,6 @@
   },
   {
     "id": "grimsby-town",
-    "legacyId": 23,
     "name": "Grimsby Town",
     "fullName": "Grimsby Town Football Club",
     "founded": 1878,
@@ -254,7 +231,6 @@
   },
   {
     "id": "sunderland-albion",
-    "legacyId": 24,
     "name": "Sunderland Albion",
     "fullName": "Sunderland Albion Football Club",
     "founded": 1888,
@@ -265,7 +241,6 @@
   },
   {
     "id": "halliwell",
-    "legacyId": 25,
     "name": "Halliwell",
     "fullName": "Halliwell Football Club",
     "founded": 1877,
@@ -276,7 +251,6 @@
   },
   {
     "id": "crewe-alexandra",
-    "legacyId": 26,
     "name": "Crewe Alexandra",
     "fullName": "Crewe Alexandra Football Club",
     "founded": 1877,
@@ -287,7 +261,6 @@
   },
   {
     "id": "old-carthusians",
-    "legacyId": 27,
     "name": "Old Carthusians",
     "fullName": "Old Carthusians Football Club",
     "founded": 1876,
@@ -298,7 +271,6 @@
   },
   {
     "id": "derby-junction",
-    "legacyId": 28,
     "name": "Derby Junction",
     "fullName": "Derby Junction Football Club",
     "founded": 1870,
@@ -309,7 +281,6 @@
   },
   {
     "id": "notts-rangers",
-    "legacyId": 29,
     "name": "Notts Rangers",
     "fullName": "Notts Rangers Football Club",
     "founded": 1868,
@@ -320,7 +291,6 @@
   },
   {
     "id": "sheffield-wednesday",
-    "legacyId": 30,
     "name": "Sheffield Wednesday",
     "fullName": "Sheffield Wednesday Football Club",
     "founded": 1867,
@@ -331,7 +301,6 @@
   },
   {
     "id": "birmingham-st-georges",
-    "legacyId": 31,
     "name": "Birmingham St George's",
     "fullName": "Birmingham St. George's Football Club",
     "founded": 1875,
@@ -342,7 +311,6 @@
   },
   {
     "id": "long-eaton-rangers",
-    "legacyId": 32,
     "name": "Long Eaton Rangers",
     "fullName": "Long Eaton Rangers Football Club",
     "founded": 1881,
@@ -353,7 +321,6 @@
   },
   {
     "id": "small-heath",
-    "legacyId": 33,
     "name": "Small Heath",
     "fullName": "Small Heath Football Club",
     "founded": 1875,
@@ -364,7 +331,6 @@
   },
   {
     "id": "walsall",
-    "legacyId": 34,
     "name": "Walsall",
     "fullName": "Walsall Football Club",
     "founded": 1888,
@@ -375,7 +341,6 @@
   },
   {
     "id": "heeley",
-    "legacyId": 35,
     "name": "Heeley",
     "fullName": "Heeley Football Club",
     "founded": 1862,

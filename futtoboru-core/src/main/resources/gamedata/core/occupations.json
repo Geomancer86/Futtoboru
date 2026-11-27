@@ -1,7 +1,6 @@
 [
   {
     "id": "spinner",
-    "legacyId": 1,
     "name": "Spinner",
     "category": "TEXTILE",
     "bonuses": {
@@ -13,7 +12,6 @@
   },
   {
     "id": "weaver",
-    "legacyId": 2,
     "name": "Weaver",
     "category": "TEXTILE",
     "bonuses": {
@@ -25,7 +23,6 @@
   },
   {
     "id": "sizer",
-    "legacyId": 3,
     "name": "Sizer",
     "category": "TEXTILE",
     "bonuses": {
@@ -36,7 +33,6 @@
   },
   {
     "id": "piecer",
-    "legacyId": 4,
     "name": "Piecer",
     "category": "TEXTILE",
     "bonuses": {
@@ -48,7 +44,6 @@
   },
   {
     "id": "dyer",
-    "legacyId": 5,
     "name": "Dyer",
     "category": "TEXTILE",
     "bonuses": {
@@ -60,7 +55,6 @@
   },
   {
     "id": "scavenger",
-    "legacyId": 6,
     "name": "Scavenger",
     "category": "TEXTILE",
     "bonuses": {
@@ -71,7 +65,6 @@
   },
   {
     "id": "loom-operator",
-    "legacyId": 7,
     "name": "Loom Operator",
     "category": "TEXTILE",
     "bonuses": {
@@ -83,7 +76,6 @@
   },
   {
     "id": "cotton-carder",
-    "legacyId": 8,
     "name": "Cotton Carder",
     "category": "TEXTILE",
     "bonuses": {
@@ -94,7 +86,6 @@
   },
   {
     "id": "textile-inspector",
-    "legacyId": 9,
     "name": "Textile Inspector",
     "category": "TEXTILE",
     "bonuses": {
@@ -105,7 +96,6 @@
   },
   {
     "id": "mill-foreman",
-    "legacyId": 10,
     "name": "Mill Foreman",
     "category": "TEXTILE",
     "bonuses": {
@@ -116,7 +106,6 @@
   },
   {
     "id": "railway-worker",
-    "legacyId": 11,
     "name": "Railway Worker",
     "category": "RAILWAY",
     "bonuses": {
@@ -128,7 +117,6 @@
   },
   {
     "id": "signalman",
-    "legacyId": 12,
     "name": "Signalman",
     "category": "RAILWAY",
     "bonuses": {
@@ -140,7 +128,6 @@
   },
   {
     "id": "railway-guard",
-    "legacyId": 13,
     "name": "Railway Guard",
     "category": "RAILWAY",
     "bonuses": {
@@ -152,7 +139,6 @@
   },
   {
     "id": "porter",
-    "legacyId": 14,
     "name": "Porter",
     "category": "RAILWAY",
     "bonuses": {
@@ -163,7 +149,6 @@
   },
   {
     "id": "railway-engineer",
-    "legacyId": 15,
     "name": "Railway Engineer",
     "category": "RAILWAY",
     "bonuses": {
@@ -175,7 +160,6 @@
   },
   {
     "id": "track-layer",
-    "legacyId": 16,
     "name": "Track Layer",
     "category": "RAILWAY",
     "bonuses": {
@@ -186,7 +170,6 @@
   },
   {
     "id": "station-master",
-    "legacyId": 17,
     "name": "Station Master",
     "category": "RAILWAY",
     "bonuses": {
@@ -197,7 +180,6 @@
   },
   {
     "id": "railway-clerk",
-    "legacyId": 18,
     "name": "Railway Clerk",
     "category": "RAILWAY",
     "bonuses": {
@@ -208,7 +190,6 @@
   },
   {
     "id": "coal-miner",
-    "legacyId": 19,
     "name": "Coal Miner",
     "category": "MINING",
     "bonuses": {
@@ -221,7 +202,6 @@
   },
   {
     "id": "quarryman",
-    "legacyId": 20,
     "name": "Quarryman",
     "category": "MINING",
     "bonuses": {
@@ -233,7 +213,6 @@
   },
   {
     "id": "iron-miner",
-    "legacyId": 21,
     "name": "Iron Miner",
     "category": "MINING",
     "bonuses": {
@@ -245,7 +224,6 @@
   },
   {
     "id": "mine-foreman",
-    "legacyId": 22,
     "name": "Mine Foreman",
     "category": "MINING",
     "bonuses": {
@@ -258,7 +236,6 @@
   },
   {
     "id": "mine-engineer",
-    "legacyId": 23,
     "name": "Mine Engineer",
     "category": "MINING",
     "bonuses": {
@@ -270,7 +247,6 @@
   },
   {
     "id": "mine-clerk",
-    "legacyId": 24,
     "name": "Mine Clerk",
     "category": "MINING",
     "bonuses": {
@@ -281,7 +257,6 @@
   },
   {
     "id": "stonemason",
-    "legacyId": 25,
     "name": "Stonemason",
     "category": "CONSTRUCTION",
     "bonuses": {
@@ -294,7 +269,6 @@
   },
   {
     "id": "bricklayer",
-    "legacyId": 26,
     "name": "Bricklayer",
     "category": "CONSTRUCTION",
     "bonuses": {
@@ -306,7 +280,6 @@
   },
   {
     "id": "carpenter",
-    "legacyId": 27,
     "name": "Carpenter",
     "category": "CONSTRUCTION",
     "bonuses": {
@@ -318,7 +291,6 @@
   },
   {
     "id": "builder",
-    "legacyId": 28,
     "name": "Builder",
     "category": "CONSTRUCTION",
     "bonuses": {
@@ -330,7 +302,6 @@
   },
   {
     "id": "plumber",
-    "legacyId": 29,
     "name": "Plumber",
     "category": "CONSTRUCTION",
     "bonuses": {
@@ -341,7 +312,6 @@
   },
   {
     "id": "painter",
-    "legacyId": 30,
     "name": "Painter",
     "category": "CONSTRUCTION",
     "bonuses": {
@@ -352,7 +322,6 @@
   },
   {
     "id": "construction-foreman",
-    "legacyId": 31,
     "name": "Construction Foreman",
     "category": "CONSTRUCTION",
     "bonuses": {
@@ -363,7 +332,6 @@
   },
   {
     "id": "architect",
-    "legacyId": 32,
     "name": "Architect",
     "category": "CONSTRUCTION",
     "bonuses": {
@@ -375,7 +343,6 @@
   },
   {
     "id": "factory-worker",
-    "legacyId": 33,
     "name": "Factory Worker",
     "category": "FACTORY",
     "bonuses": {
@@ -387,7 +354,6 @@
   },
   {
     "id": "foundry-worker",
-    "legacyId": 34,
     "name": "Foundry Worker",
     "category": "FACTORY",
     "bonuses": {
@@ -400,7 +366,6 @@
   },
   {
     "id": "steelworker",
-    "legacyId": 35,
     "name": "Steelworker",
     "category": "FACTORY",
     "bonuses": {
@@ -413,7 +378,6 @@
   },
   {
     "id": "metalworker",
-    "legacyId": 36,
     "name": "Metalworker",
     "category": "FACTORY",
     "bonuses": {
@@ -425,7 +389,6 @@
   },
   {
     "id": "machine-operator",
-    "legacyId": 37,
     "name": "Machine Operator",
     "category": "FACTORY",
     "bonuses": {
@@ -436,7 +399,6 @@
   },
   {
     "id": "factory-foreman",
-    "legacyId": 38,
     "name": "Factory Foreman",
     "category": "FACTORY",
     "bonuses": {
@@ -447,7 +409,6 @@
   },
   {
     "id": "quality-inspector",
-    "legacyId": 39,
     "name": "Quality Inspector",
     "category": "FACTORY",
     "bonuses": {
@@ -458,7 +419,6 @@
   },
   {
     "id": "engineer",
-    "legacyId": 40,
     "name": "Engineer",
     "category": "FACTORY",
     "bonuses": {
@@ -470,7 +430,6 @@
   },
   {
     "id": "tramcar-conductor",
-    "legacyId": 41,
     "name": "Tramcar Conductor",
     "category": "TRANSPORT",
     "bonuses": {
@@ -483,7 +442,6 @@
   },
   {
     "id": "coach-driver",
-    "legacyId": 42,
     "name": "Coach Driver",
     "category": "TRANSPORT",
     "bonuses": {
@@ -495,7 +453,6 @@
   },
   {
     "id": "cart-driver",
-    "legacyId": 43,
     "name": "Cart Driver",
     "category": "TRANSPORT",
     "bonuses": {
@@ -506,7 +463,6 @@
   },
   {
     "id": "cab-driver",
-    "legacyId": 44,
     "name": "Cab Driver",
     "category": "TRANSPORT",
     "bonuses": {
@@ -517,7 +473,6 @@
   },
   {
     "id": "delivery-man",
-    "legacyId": 45,
     "name": "Delivery Man",
     "category": "TRANSPORT",
     "bonuses": {
@@ -529,7 +484,6 @@
   },
   {
     "id": "transport-manager",
-    "legacyId": 46,
     "name": "Transport Manager",
     "category": "TRANSPORT",
     "bonuses": {
@@ -540,7 +494,6 @@
   },
   {
     "id": "schoolmaster",
-    "legacyId": 47,
     "name": "Schoolmaster",
     "category": "EDUCATION",
     "bonuses": {
@@ -553,7 +506,6 @@
   },
   {
     "id": "teacher",
-    "legacyId": 48,
     "name": "Teacher",
     "category": "EDUCATION",
     "bonuses": {
@@ -566,7 +518,6 @@
   },
   {
     "id": "headmaster",
-    "legacyId": 49,
     "name": "Headmaster",
     "category": "EDUCATION",
     "bonuses": {
@@ -577,7 +528,6 @@
   },
   {
     "id": "tutor",
-    "legacyId": 50,
     "name": "Tutor",
     "category": "EDUCATION",
     "bonuses": {
@@ -588,7 +538,6 @@
   },
   {
     "id": "blacksmith",
-    "legacyId": 51,
     "name": "Blacksmith",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -601,7 +550,6 @@
   },
   {
     "id": "tailor",
-    "legacyId": 52,
     "name": "Tailor",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -613,7 +561,6 @@
   },
   {
     "id": "shoemaker",
-    "legacyId": 53,
     "name": "Shoemaker",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -624,7 +571,6 @@
   },
   {
     "id": "baker",
-    "legacyId": 54,
     "name": "Baker",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -636,7 +582,6 @@
   },
   {
     "id": "butcher",
-    "legacyId": 55,
     "name": "Butcher",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -647,7 +592,6 @@
   },
   {
     "id": "cobbler",
-    "legacyId": 56,
     "name": "Cobbler",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -658,7 +602,6 @@
   },
   {
     "id": "watchmaker",
-    "legacyId": 57,
     "name": "Watchmaker",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -670,7 +613,6 @@
   },
   {
     "id": "jeweler",
-    "legacyId": 58,
     "name": "Jeweler",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -682,7 +624,6 @@
   },
   {
     "id": "barber",
-    "legacyId": 59,
     "name": "Barber",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -693,7 +634,6 @@
   },
   {
     "id": "tinsmith",
-    "legacyId": 60,
     "name": "Tinsmith",
     "category": "SKILLED_TRADE",
     "bonuses": {
@@ -703,7 +643,6 @@
   },
   {
     "id": "farmer",
-    "legacyId": 61,
     "name": "Farmer",
     "category": "AGRICULTURE",
     "bonuses": {
@@ -716,7 +655,6 @@
   },
   {
     "id": "farm-laborer",
-    "legacyId": 62,
     "name": "Farm Laborer",
     "category": "AGRICULTURE",
     "bonuses": {
@@ -728,7 +666,6 @@
   },
   {
     "id": "shepherd",
-    "legacyId": 63,
     "name": "Shepherd",
     "category": "AGRICULTURE",
     "bonuses": {
@@ -740,7 +677,6 @@
   },
   {
     "id": "dairy-worker",
-    "legacyId": 64,
     "name": "Dairy Worker",
     "category": "AGRICULTURE",
     "bonuses": {
@@ -751,7 +687,6 @@
   },
   {
     "id": "agricultural-worker",
-    "legacyId": 65,
     "name": "Agricultural Worker",
     "category": "AGRICULTURE",
     "bonuses": {
@@ -763,7 +698,6 @@
   },
   {
     "id": "farm-manager",
-    "legacyId": 66,
     "name": "Farm Manager",
     "category": "AGRICULTURE",
     "bonuses": {
@@ -773,7 +707,6 @@
   },
   {
     "id": "publican",
-    "legacyId": 67,
     "name": "Publican",
     "category": "SERVICE",
     "bonuses": {
@@ -785,7 +718,6 @@
   },
   {
     "id": "shopkeeper",
-    "legacyId": 68,
     "name": "Shopkeeper",
     "category": "SERVICE",
     "bonuses": {
@@ -797,7 +729,6 @@
   },
   {
     "id": "clerk",
-    "legacyId": 69,
     "name": "Clerk",
     "category": "SERVICE",
     "bonuses": {
@@ -809,7 +740,6 @@
   },
   {
     "id": "bookkeeper",
-    "legacyId": 70,
     "name": "Bookkeeper",
     "category": "SERVICE",
     "bonuses": {
@@ -820,7 +750,6 @@
   },
   {
     "id": "accountant",
-    "legacyId": 71,
     "name": "Accountant",
     "category": "SERVICE",
     "bonuses": {
@@ -831,7 +760,6 @@
   },
   {
     "id": "bank-clerk",
-    "legacyId": 72,
     "name": "Bank Clerk",
     "category": "SERVICE",
     "bonuses": {
@@ -842,7 +770,6 @@
   },
   {
     "id": "postman",
-    "legacyId": 73,
     "name": "Postman",
     "category": "SERVICE",
     "bonuses": {
@@ -853,7 +780,6 @@
   },
   {
     "id": "messenger",
-    "legacyId": 74,
     "name": "Messenger",
     "category": "SERVICE",
     "bonuses": {
@@ -865,7 +791,6 @@
   },
   {
     "id": "policeman",
-    "legacyId": 75,
     "name": "Policeman",
     "category": "OTHER",
     "bonuses": {
@@ -878,7 +803,6 @@
   },
   {
     "id": "fireman",
-    "legacyId": 76,
     "name": "Fireman",
     "category": "OTHER",
     "bonuses": {
@@ -891,7 +815,6 @@
   },
   {
     "id": "soldier",
-    "legacyId": 77,
     "name": "Soldier",
     "category": "OTHER",
     "bonuses": {
@@ -905,7 +828,6 @@
   },
   {
     "id": "sailor",
-    "legacyId": 78,
     "name": "Sailor",
     "category": "OTHER",
     "bonuses": {
@@ -918,7 +840,6 @@
   },
   {
     "id": "dock-worker",
-    "legacyId": 79,
     "name": "Dock Worker",
     "category": "OTHER",
     "bonuses": {
@@ -930,7 +851,6 @@
   },
   {
     "id": "warehouse-worker",
-    "legacyId": 80,
     "name": "Warehouse Worker",
     "category": "OTHER",
     "bonuses": {

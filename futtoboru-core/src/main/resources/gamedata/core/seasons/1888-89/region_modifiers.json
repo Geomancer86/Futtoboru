@@ -1,7 +1,6 @@
 [
   {
     "id": "lancashire",
-    "legacyId": 1,
     "name": "Lancashire",
     "country": "england",
     "modifiers": {
@@ -20,7 +19,6 @@
   },
   {
     "id": "birmingham",
-    "legacyId": 2,
     "name": "Birmingham",
     "country": "england",
     "modifiers": {
@@ -35,7 +33,6 @@
   },
   {
     "id": "derby-nottingham",
-    "legacyId": 3,
     "name": "Derby_Nottingham",
     "country": "england",
     "modifiers": {
@@ -50,7 +47,6 @@
   },
   {
     "id": "stoke",
-    "legacyId": 4,
     "name": "Stoke",
     "country": "england",
     "modifiers": {

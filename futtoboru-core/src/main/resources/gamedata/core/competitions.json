@@ -1,7 +1,6 @@
 [
   {
     "id": "fa-cup",
-    "legacyId": 1,
     "name": "FA Cup",
     "longName": "The Football Association Challenge Cup",
     "type": "CUP",
