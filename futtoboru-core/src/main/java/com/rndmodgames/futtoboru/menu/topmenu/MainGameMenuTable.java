@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 import com.kotcrab.vis.ui.widget.BusyBar;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
@@ -19,6 +20,8 @@ import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.tables.widgets.CurrentDateAndTimeWidget;
 import com.rndmodgames.localization.LanguageModLoader;
+
+import java.util.function.BooleanSupplier;
 
 /**
  * Top Game Menu Table
@@ -56,20 +59,11 @@ public class MainGameMenuTable extends VisTable {
     BusyBar processingBusyBar = new BusyBar();  // Progress indicator during game processing
     
     /**
-     * Processing state flag to prevent double-clicks
+     * True from the moment a Continue click is accepted until the day advance has finished and the UI
+     * has been refreshed. Only touched on the render thread (input, libGDX Timer tasks and posted
+     * runnables all run there), so no volatile/synchronized is needed.
      */
-    private volatile boolean isProcessing = false;
-    
-    /**
-     * Timestamp of last processing start to enforce cooldown period
-     */
-    private volatile long lastProcessingStartTime = 0;
-    
-    /**
-     * Minimum cooldown period in milliseconds between processing cycles
-     * Prevents rapid triple-clicks from slipping through
-     */
-    private static final long PROCESSING_COOLDOWN_MS = 200;
+    private boolean isProcessing = false;
     
     /**
      * Fail-safe timeout in milliseconds
@@ -83,10 +77,9 @@ public class MainGameMenuTable extends VisTable {
     private Timer.Task failsafeTask = null;
     
     /**
-     * Reference to the continue button's InputListener
-     * We keep this listener attached but check flags inside it
+     * The continue button's click listener (attached once, for the lifetime of the table)
      */
-    private InputListener continueButtonListener = null;
+    private ContinueClickListener continueButtonListener = null;
     
     CurrentDateAndTimeWidget dateTimeWidget = null;
     
@@ -161,59 +154,15 @@ public class MainGameMenuTable extends VisTable {
         /**
          * Continue Game Button
          * 
-         * CRITICAL: We keep the listener attached and use atomic checks on isProcessing.
-         * This prevents the "stuck button" bug where the listener is removed but never re-added.
+         * One listener, attached once and kept. It fires only on a completed click (press and release
+         * over the button, so dragging away cancels), ignores clicks while a day advance is in progress
+         * or the button is disabled, and swallows the second click of a double-click (P2-1).
+         * See ContinueClickListener.
          */
-        continueButtonListener = new InputListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // Check if already processing (defense in depth)
-                if (isProcessing || continueGameButton.isDisabled()) {
-                    return false; // Ignore clicks while processing or disabled
-                }
-                
-                synchronized (MainGameMenuTable.this) {
-                    // Double-check inside synchronized block
-                    if (isProcessing) {
-                        return false;
-                    }
-                    
-                    // Cooldown check
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - lastProcessingStartTime < PROCESSING_COOLDOWN_MS) {
-                        return false;
-                    }
-                    
-                    // Mark as processing IMMEDIATELY
-                    isProcessing = true;
-                    lastProcessingStartTime = currentTime;
-                    
-                    // UI Feedback
-                    continueGameButton.setDisabled(true);
-                    
-                    // Start failsafe timer
-                    startFailsafeTimer();
-                    
-                    return true;
-                }
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                // Verify button is still pressed (user didn't drag away)
-                if (!continueGameButton.isPressed()) {
-                    resetProcessingState("User dragged away");
-                    return;
-                }
-                
-                // All checks passed - proceed with game continuation
-                continueGame();
-            }
-        };
-        
-        // Add the listener once and keep it
-        continueGameButton.addCaptureListener(continueButtonListener);
+        continueButtonListener = new ContinueClickListener(
+                () -> isProcessing || continueGameButton.isDisabled(),
+                this::startContinueGame);
+        continueGameButton.addListener(continueButtonListener);
         
         /**
          * Match Preview Button
@@ -526,18 +475,22 @@ public class MainGameMenuTable extends VisTable {
     }
     
     /**
-     * Continue game - advances time by one day
-     * Prevents double-clicks and shows progress indicator during processing
+     * Called by the continue button listener for an accepted click: marks the advance as in progress
+     * (later clicks are ignored until resetProcessingState()) and starts it.
+     */
+    private void startContinueGame() {
+        isProcessing = true;
+        continueGameButton.setDisabled(true);
+        startFailsafeTimer();
+        continueGame();
+    }
+
+    /**
+     * Continue game - advances time by one day.
+     * Shows the progress indicator during processing; isProcessing is set by startContinueGame().
      */
     private void continueGame() {
-        
-        // Defense in depth: Verify flag is still set
-        if (!isProcessing) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "continueGame() called but isProcessing is false!");
-            setMainContainerButton();
-            return;
-        }
-        
+
         // Show BusyBar (animates automatically when visible)
         processingBusyBar.setVisible(true);
         
@@ -607,28 +560,26 @@ public class MainGameMenuTable extends VisTable {
      * This is the single place where isProcessing is set back to false
      */
     private void resetProcessingState(String reason) {
-        synchronized (MainGameMenuTable.this) {
-            if (!isProcessing) return;
-            
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "Resetting processing state. Reason: " + reason);
-            
-            isProcessing = false;
-            
-            if (failsafeTask != null) {
-                failsafeTask.cancel();
-                failsafeTask = null;
-            }
-            
-            // Hide progress indicator
-            processingBusyBar.setVisible(false);
-            
-            // Refresh main container (this will re-add and enable the correct button)
-            setMainContainerButton();
-            
-            // Explicitly ensure the continue button is enabled if it's the current action
-            if (continueGameButton != null) {
-                continueGameButton.setDisabled(false);
-            }
+        if (!isProcessing) return;
+
+        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "MainGameMenuTable", "Resetting processing state. Reason: " + reason);
+
+        isProcessing = false;
+
+        if (failsafeTask != null) {
+            failsafeTask.cancel();
+            failsafeTask = null;
+        }
+
+        // Hide progress indicator
+        processingBusyBar.setVisible(false);
+
+        // Refresh main container (this will re-add and enable the correct button)
+        setMainContainerButton();
+
+        // Explicitly ensure the continue button is enabled if it's the current action
+        if (continueGameButton != null) {
+            continueGameButton.setDisabled(false);
         }
     }
 
@@ -638,5 +589,48 @@ public class MainGameMenuTable extends VisTable {
 
     public void setMainMenuManager(MainMenuManager mainMenuManager) {
         this.mainMenuManager = mainMenuManager;
+    }
+
+    /**
+     * Click listener for the Continue button (P2-1: Continue sometimes advanced two days).
+     *
+     * Root cause of P2-1: the old listener guarded with an in-progress flag plus a 200 ms cooldown
+     * measured from the first press. A day advance is short (0.05 s Timer delay + ~50 ms engine work,
+     * then one frame to reset the flag), so when the second press of a double-click arrives (usually
+     * 200-400 ms after the first) the flag is already cleared and the cooldown has run out: the second
+     * click is not a re-entrant call the flag could catch, it is a fresh click that starts a second
+     * advance.
+     *
+     * Fix: a double-click counts as one Continue. libGDX's ClickListener counts consecutive taps
+     * (tapCountInterval, 0.4 s by default, measured between releases); a click with tap count > 1 is
+     * the tail of a multi-click and is ignored, then the count is reset so a third quick click is a new
+     * Continue (deliberate fast clicking still advances, one day per click pair). Clicks are also
+     * ignored while {@code blocked} is true (advance in progress or button disabled).
+     */
+    static class ContinueClickListener extends ClickListener {
+
+        private final BooleanSupplier blocked;
+        private final Runnable onContinue;
+
+        ContinueClickListener(BooleanSupplier blocked, Runnable onContinue) {
+            this.blocked = blocked;
+            this.onContinue = onContinue;
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+
+            if (getTapCount() > 1) {
+                // second click of a double-click: swallow it and start counting afresh
+                setTapCount(0);
+                return;
+            }
+
+            if (blocked.getAsBoolean()) {
+                return;
+            }
+
+            onContinue.run();
+        }
     }
 }
