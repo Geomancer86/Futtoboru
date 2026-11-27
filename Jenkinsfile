@@ -24,6 +24,11 @@ pipeline {
         jdk 'OpenJDK 17'
     }
 
+    // GitHub webhooks can't reach the LAN Jenkins: poll develop instead (cheap, no build when nothing changed)
+    triggers {
+        pollSCM('H/15 * * * *')
+    }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '10'))
         timeout(time: 30, unit: 'MINUTES')
@@ -56,11 +61,15 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'chmod +x mvnw'
-                        // libGDX tests need a display on Linux agents (Xvfb plugin, as before)
-                        wrap([$class: 'Xvfb']) {
-                            sh './mvnw -B -ntp clean verify'
-                        }
+                        // libGDX tests need a display on Linux agents: xvfb-run (installed on EXECUTOR_BACKUP)
+                        sh '''
+                            chmod +x mvnw
+                            if command -v xvfb-run >/dev/null 2>&1; then
+                                xvfb-run -a ./mvnw -B -ntp clean verify
+                            else
+                                ./mvnw -B -ntp clean verify
+                            fi
+                        '''
                     } else {
                         bat 'mvnw.cmd -B -ntp clean verify'
                     }
@@ -81,7 +90,16 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'python3 -m pytest -q tools/data && python3 tools/data/validate.py'
+                        sh '''
+                            PY=python3
+                            if ! $PY -m pytest --version >/dev/null 2>&1; then
+                                python3 -m venv .ci-venv && .ci-venv/bin/pip install -q pytest
+                                PY=.ci-venv/bin/python
+                            fi
+                            $PY -m pytest -q tools/data
+                            $PY tools/data/validate.py
+                            $PY docs/data/check_results_1888-89.py
+                        '''
                     } else {
                         bat 'python -m pytest -q tools/data && python tools/data/validate.py'
                     }
