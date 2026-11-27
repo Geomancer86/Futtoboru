@@ -11,6 +11,9 @@ import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.CompetitionRules;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.Stadium;
 import com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -36,6 +39,16 @@ public class EngineTestWorld {
         for (int i = 0; i < numClubs; i++) {
             Club club = new Club("Club " + (char) ('A' + i));
             club.setId(game.getIdAllocator().nextId());
+            Stadium ground = new Stadium();
+            ground.setCapacity(5000);
+            club.setStadium(ground);
+            for (int p = 0; p < 11; p++) { // fixture generation wants a full XI and a ground
+                Person person = new Person();
+                person.setId(game.getIdAllocator().nextId());
+                Player player = new Player();
+                player.setPerson(person);
+                club.getPlayers().add(player);
+            }
             clubs.add(club);
             game.getAllClubs().add(club);
         }

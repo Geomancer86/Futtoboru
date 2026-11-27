@@ -182,20 +182,32 @@ public class AuthorityManager {
      * Check if league season is already marked as completed
      */
     private boolean isLeagueAlreadyCompleted(League league) {
-        // Find existing messages for this league's completion
-        if (currentGame.getAllMessages() == null) return false;
-        
-        for (Message m : currentGame.getAllMessages()) {
-            if (m != null && "LEAGUE_COMPLETE".equals(m.getMessageType())) {
-                // If message contains league name, assume it's this one
-                if (m.getTitle() != null && m.getTitle().contains(league.getName())) {
-                    return true;
-                }
+        // P2-6: by edition, not by message title (a "<league> - Season Complete" message from the first
+        // season used to block the completion of every later season)
+        return league.getEditions() != null && !league.getEditions().isEmpty()
+            && findEditionToComplete(league) == null;
+    }
+
+    /**
+     * The season being completed: the first edition that has started and has no final table yet
+     * (null if there is none). The next season's edition can already exist (it is generated early).
+     */
+    private com.rndmodgames.futtoboru.data.CompetitionEdition findEditionToComplete(League league) {
+        if (league.getEditions() == null) {
+            return null;
+        }
+        LocalDateTime now = currentGame.getGameDate();
+        for (com.rndmodgames.futtoboru.data.CompetitionEdition edition : league.getEditions()) {
+            if (edition == null || !edition.getFinalStandings().isEmpty()) {
+                continue;
+            }
+            if (edition.getStartDate() == null || now == null || !edition.getStartDate().isAfter(now)) {
+                return edition;
             }
         }
-        return false;
+        return null;
     }
-    
+
     /**
      * Get the current active edition for a league
      */
@@ -241,15 +253,27 @@ public class AuthorityManager {
             Gdx.app.log("AuthorityManager", "TOP SCORER: " + topScorer.getName() + " " + topScorer.getLastname() + " (" + topScorerGoals + " goals)");
         }
         
-        // Update league edition with champions
-        com.rndmodgames.futtoboru.data.CompetitionEdition edition = getCurrentLeagueEdition(league);
+        // Update league edition with champions and keep its final table (P2-6)
+        com.rndmodgames.futtoboru.data.CompetitionEdition edition = findEditionToComplete(league);
+        if (edition == null && league.getEditions() != null && !league.getEditions().isEmpty()) {
+            edition = getCurrentLeagueEdition(league);
+        }
         if (edition != null) {
             edition.setChampionsId(champion.getId());
             if (runnerUp != null) {
                 edition.setRunnersUpId(runnerUp.getId());
             }
-            Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + " with champions: " + champion.getName());
+            List<com.rndmodgames.futtoboru.data.LeagueStandingRow> table = new ArrayList<>();
+            for (int i = 0; i < standings.size(); i++) {
+                table.add(com.rndmodgames.futtoboru.data.LeagueStandingRow.of(i + 1, standings.get(i)));
+            }
+            edition.setFinalStandings(table);
+Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + " with champions: " + champion.getName());
         }
+        
+        // Season name in the message titles: MessageManager drops a message whose type and title are already in
+        // the inbox, so titles without the season hid every later season's messages
+        String seasonName = edition != null && edition.getName() != null ? edition.getName() : league.getName();
         
         // Give prize money (historical estimation)
         java.math.BigDecimal championPrize = new java.math.BigDecimal("500.00");
@@ -267,20 +291,20 @@ public class AuthorityManager {
         MessageManager messageManager = game.getGameEngine().getMessageManager();
         
         // 1. Standings Summary
-        Message completionMessage = createLeagueCompletionMessage(league, standings);
+        Message completionMessage = createLeagueCompletionMessage(league, standings, seasonName);
         if (completionMessage != null) {
             messageManager.deliverMessage(completionMessage);
         }
         
         // 2. Champion Announcement
-        Message championMessage = createChampionMessage(league, champion);
+        Message championMessage = createChampionMessage(league, champion, seasonName);
         if (championMessage != null) {
             messageManager.deliverMessage(championMessage);
         }
         
         // 3. Top Scorer Announcement
         if (topScorer != null) {
-            Message scorerMessage = createTopScorerMessage(league, topScorer, topScorerGoals);
+            Message scorerMessage = createTopScorerMessage(league, topScorer, topScorerGoals, seasonName);
             if (scorerMessage != null) {
                 messageManager.deliverMessage(scorerMessage);
             }
@@ -288,13 +312,38 @@ public class AuthorityManager {
         
         // 4. Best Defense Announcement
         if (bestDefense != null) {
-            Message defenseMessage = createBestDefenseMessage(league, bestDefense);
+            Message defenseMessage = createBestDefenseMessage(league, bestDefense, seasonName);
             if (defenseMessage != null) {
                 messageManager.deliverMessage(defenseMessage);
             }
         }
+
+        // 5. Season rollover (P2-6): the final table is kept on the edition, the new season starts from zero
+        resetLeagueTable(league);
     }
-    
+
+    /**
+     * Season rollover: reset the league statistics (the league table) of every club in the league
+     */
+    private void resetLeagueTable(League league) {
+        if (league.getLeagueClubs() == null) {
+            return;
+        }
+        for (Club club : league.getLeagueClubs()) {
+            if (club == null) {
+                continue;
+            }
+            club.setMatchesPlayed(0);
+            club.setMatchesWon(0);
+            club.setMatchesDrawn(0);
+            club.setMatchesLost(0);
+            club.setGoalsScored(0);
+            club.setGoalsConceded(0);
+            club.setPoints(0);
+        }
+        Gdx.app.log("AuthorityManager", "League table reset for the new season: " + league.getName());
+    }
+
     /**
      * Calculate top scorer for the league season
      */
@@ -393,12 +442,12 @@ public class AuthorityManager {
     /**
      * Create top scorer announcement message
      */
-    private Message createTopScorerMessage(League league, Person scorer, int goals) {
+    private Message createTopScorerMessage(League league, Person scorer, int goals, String seasonName) {
         Message message = new Message();
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_TOP_SCORER");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Golden Boot: " + scorer.getName() + " " + scorer.getLastname());
+        message.setTitle("Golden Boot " + seasonName + ": " + scorer.getName() + " " + scorer.getLastname());
         
         StringBuilder content = new StringBuilder();
         content.append(scorer.getName()).append(" ").append(scorer.getLastname())
@@ -420,12 +469,12 @@ public class AuthorityManager {
     /**
      * Create best defense announcement message
      */
-    private Message createBestDefenseMessage(League league, Club club) {
+    private Message createBestDefenseMessage(League league, Club club, String seasonName) {
         Message message = new Message();
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_BEST_DEFENSE");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Solid Rock: " + club.getName() + "'s Defense");
+        message.setTitle("Solid Rock " + seasonName + ": " + club.getName() + "'s Defense");
         
         StringBuilder content = new StringBuilder();
         content.append(club.getName()).append(" has finished the season with the best defensive record in the ")
@@ -443,12 +492,12 @@ public class AuthorityManager {
     /**
      * Create league completion summary message
      */
-    private Message createLeagueCompletionMessage(League league, List<Club> standings) {
+    private Message createLeagueCompletionMessage(League league, List<Club> standings, String seasonName) {
         Message message = new Message();
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_COMPLETE");
         message.setPriority(MessagePriority.URGENT);
-        message.setTitle(league.getName() + " - Season Complete");
+        message.setTitle(seasonName + " - Season Complete");
         
         StringBuilder content = new StringBuilder();
         content.append("The season for the ").append(league.getName()).append(" has come to an end.\n\n");
@@ -476,12 +525,12 @@ public class AuthorityManager {
     /**
      * Create specific champion announcement message
      */
-    private Message createChampionMessage(League league, Club champion) {
+    private Message createChampionMessage(League league, Club champion, String seasonName) {
         Message message = new Message();
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_CHAMPION");
         message.setPriority(MessagePriority.URGENT);
-        message.setTitle("CHAMPIONS! " + champion.getName() + " win the " + league.getName());
+        message.setTitle("CHAMPIONS! " + champion.getName() + " win the " + seasonName);
         
         StringBuilder content = new StringBuilder();
         content.append(champion.getName()).append(" have been declared champions of the ").append(league.getName()).append("!\n\n");
@@ -1694,15 +1743,10 @@ public class AuthorityManager {
             fixtureGenerator.generateLeagueFixtures(league, nextEdition.getStartDate(), nextEdition.getEndDate());
         Gdx.app.log("AuthorityManager", "Generated " + fixtures.size() + " fixtures for new season: " + nextEdition.getName());
         
-        // Reset league stats for all participating clubs
-        for (Long clubId : nextEdition.getParticipantClubsIds()) {
-            Club club = currentGame.getClubById(clubId);
-            if (club != null) {
-                // Clear any season-specific stats if we implement them later
-            }
-        }
-        
-        // Inform user via Inbox
+        // The league table is reset when the previous season completes (completeLeagueSeason, P2-6), not here:
+        // this edition can be generated while the previous season is still being played.
+
+// Inform user via Inbox
         MessageManager messageManager = game.getGameEngine().getMessageManager();
         Message msg = new Message();
         msg.setCategory(MessageCategory.SYSTEM);
