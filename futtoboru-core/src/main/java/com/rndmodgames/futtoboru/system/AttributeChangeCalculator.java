@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.AttributeTrackingConstants;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
@@ -191,7 +190,7 @@ public class AttributeChangeCalculator {
             case "Area Positioning": return player.getAreaPositioning();
             
             default:
-                Gdx.app.error("AttributeChangeCalculator", "Unknown attribute name: " + attributeName);
+                Log.error(Log.ENGINE_GAME, "AttributeChangeCalculator", "Unknown attribute name: " + attributeName);
                 return null;
         }
     }

@@ -27,6 +27,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.tables.settings.DebugLoggingSettingsTable;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Settings Screen v1
@@ -396,7 +397,7 @@ this.game = game;
     @Override
     public void hide() {
 
-        System.out.println("HIDE WAS CALLED ON SETTINGS SCREEN - DISPOSE");
+        Log.info(Log.SYSTEM_CONFIG, "HIDE WAS CALLED ON SETTINGS SCREEN - DISPOSE");
         
         // Hide will be called after switching to a separate screen
         this.dispose();

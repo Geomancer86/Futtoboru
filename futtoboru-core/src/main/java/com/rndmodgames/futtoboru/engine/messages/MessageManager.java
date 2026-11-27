@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Message;
@@ -14,6 +13,7 @@ import com.rndmodgames.futtoboru.data.MessageCategory;
 import com.rndmodgames.futtoboru.data.MessagePriority;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Message Manager v1
@@ -104,29 +104,29 @@ public class MessageManager {
             
             if (!alreadyDelivered) {
                 currentGame.getAllMessages().add(message);
-                Gdx.app.log("MessageManager", "Delivered scheduled message ID " + message.getId() + ": " + message.getTitle());
-                System.out.println("MessageManager: Delivered scheduled message ID " + message.getId() + ": " + message.getTitle() + 
+                Log.info(Log.ENGINE_MESSAGES, "MessageManager", "Delivered scheduled message ID " + message.getId() + ": " + message.getTitle());
+                Log.info(Log.ENGINE_MESSAGES, "MessageManager: Delivered scheduled message ID " + message.getId() + ": " + message.getTitle() + 
                                  " (Type: " + message.getMessageType() + ", Mandatory: " + message.getIsMandatory() + ")");
                 
                 // If it's a mandatory message, log it prominently
                 if (message.getIsMandatory() != null && message.getIsMandatory()) {
-                    System.out.println("========================================");
-                    System.out.println("MANDATORY MESSAGE DELIVERED!");
-                    System.out.println("Message ID: " + message.getId());
-                    System.out.println("Title: " + message.getTitle());
-                    System.out.println("Type: " + message.getMessageType());
-                    System.out.println("This message blocks time advancement until viewed!");
-                    System.out.println("========================================");
+                    Log.info(Log.ENGINE_MESSAGES, "========================================");
+                    Log.info(Log.ENGINE_MESSAGES, "MANDATORY MESSAGE DELIVERED!");
+                    Log.info(Log.ENGINE_MESSAGES, "Message ID: " + message.getId());
+                    Log.info(Log.ENGINE_MESSAGES, "Title: " + message.getTitle());
+                    Log.info(Log.ENGINE_MESSAGES, "Type: " + message.getMessageType());
+                    Log.info(Log.ENGINE_MESSAGES, "This message blocks time advancement until viewed!");
+                    Log.info(Log.ENGINE_MESSAGES, "========================================");
                 }
             } else {
-                Gdx.app.log("MessageManager", "Scheduled message ID " + message.getId() + " already delivered: " + message.getTitle());
+                Log.info(Log.ENGINE_MESSAGES, "MessageManager", "Scheduled message ID " + message.getId() + " already delivered: " + message.getTitle());
             }
         }
         
         if (!toDeliver.isEmpty()) {
             int totalMessages = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
-            Gdx.app.log("MessageManager", "Delivered " + toDeliver.size() + " scheduled messages. Total messages: " + totalMessages);
-            System.out.println("MessageManager: Delivered " + toDeliver.size() + " scheduled messages. Total messages: " + totalMessages);
+            Log.info(Log.ENGINE_MESSAGES, "MessageManager", "Delivered " + toDeliver.size() + " scheduled messages. Total messages: " + totalMessages);
+            Log.info(Log.ENGINE_MESSAGES, "MessageManager: Delivered " + toDeliver.size() + " scheduled messages. Total messages: " + totalMessages);
         }
     }
     
@@ -146,7 +146,7 @@ public class MessageManager {
         
         SaveGame currentGame = getCurrentGame();
         if (currentGame == null) {
-            Gdx.app.error("MessageManager", "Cannot schedule message: SaveGame is null");
+            Log.error(Log.ENGINE_MESSAGES, "MessageManager", "Cannot schedule message: SaveGame is null");
             return;
         }
         
@@ -160,7 +160,7 @@ public class MessageManager {
         }
         currentGame.getScheduledMessages().add(message);
         
-        Gdx.app.log("MessageManager", "Scheduled message: " + message.getTitle() + " for " + message.getScheduledDate());
+        Log.info(Log.ENGINE_MESSAGES, "MessageManager", "Scheduled message: " + message.getTitle() + " for " + message.getScheduledDate());
     }
     
     /**
@@ -170,30 +170,30 @@ public class MessageManager {
      */
     public void deliverMessage(Message message) {
         if (message == null) {
-            Gdx.app.error("MessageManager", "Cannot deliver null message");
+            Log.error(Log.ENGINE_MESSAGES, "MessageManager", "Cannot deliver null message");
             return;
         }
         
         SaveGame currentGame = getCurrentGame();
         if (currentGame == null) {
-            Gdx.app.error("MessageManager", "Cannot deliver message: SaveGame is null");
-            System.out.println("MessageManager ERROR: SaveGame is null, cannot deliver message: " + message.getTitle());
+            Log.error(Log.ENGINE_MESSAGES, "MessageManager", "Cannot deliver message: SaveGame is null");
+            Log.info(Log.ENGINE_MESSAGES, "MessageManager ERROR: SaveGame is null, cannot deliver message: " + message.getTitle());
             return;
         }
         
         // Ensure allMessages list exists
         if (currentGame.getAllMessages() == null) {
             currentGame.setAllMessages(new ArrayList<>());
-            Gdx.app.log("MessageManager", "Initialized allMessages list");
-            System.out.println("MessageManager: Initialized allMessages list");
+            Log.info(Log.ENGINE_MESSAGES, "MessageManager", "Initialized allMessages list");
+            Log.info(Log.ENGINE_MESSAGES, "MessageManager: Initialized allMessages list");
         }
         
         // Check if message with same ID already exists (more reliable than contains())
         if (message.getId() != null) {
             for (Message existing : currentGame.getAllMessages()) {
                 if (existing != null && existing.getId() != null && existing.getId().equals(message.getId())) {
-                    Gdx.app.log("MessageManager", "Message with ID " + message.getId() + " already delivered: " + message.getTitle());
-                    System.out.println("MessageManager: Message with ID " + message.getId() + " already delivered: " + message.getTitle());
+                    Log.info(Log.ENGINE_MESSAGES, "MessageManager", "Message with ID " + message.getId() + " already delivered: " + message.getTitle());
+                    Log.info(Log.ENGINE_MESSAGES, "MessageManager: Message with ID " + message.getId() + " already delivered: " + message.getTitle());
                     return;
                 }
             }
@@ -208,8 +208,8 @@ public class MessageManager {
                 if (existing != null && 
                     existing.getMessageType() != null && existing.getMessageType().equals(message.getMessageType()) &&
                     existing.getTitle() != null && existing.getTitle().equals(message.getTitle())) {
-                    Gdx.app.log("MessageManager", "Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
-                    System.out.println("MessageManager: Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
+                    Log.info(Log.ENGINE_MESSAGES, "MessageManager", "Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
+                    Log.info(Log.ENGINE_MESSAGES, "MessageManager: Duplicate message detected by type/title: " + message.getMessageType() + " / " + message.getTitle());
                     return;
                 }
             }
@@ -238,8 +238,8 @@ public class MessageManager {
         currentGame.getAllMessages().add(message);
         
         int totalMessages = currentGame.getAllMessages().size();
-        Gdx.app.log("MessageManager", "Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
-        System.out.println("MessageManager: Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
+        Log.info(Log.ENGINE_MESSAGES, "MessageManager", "Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
+        Log.info(Log.ENGINE_MESSAGES, "MessageManager: Delivered message ID " + message.getId() + ": " + message.getTitle() + " (Total messages: " + totalMessages + ")");
     }
     
     // ========================================
@@ -415,9 +415,9 @@ public class MessageManager {
             message.setId(nextId());
         }
         
-        Gdx.app.log("MessageManager", "Created mandatory league draw message for league: " + league.getName() + 
+        Log.info(Log.ENGINE_MESSAGES, "MessageManager", "Created mandatory league draw message for league: " + league.getName() + 
                     " (ID: " + message.getId() + ", Mandatory: " + message.getIsMandatory() + ")");
-        System.out.println("MessageManager: Created mandatory league draw message for league: " + league.getName() + 
+        Log.info(Log.ENGINE_MESSAGES, "MessageManager: Created mandatory league draw message for league: " + league.getName() + 
                          " (ID: " + message.getId() + ", Mandatory: " + message.getIsMandatory() + ")");
         
         return message;

@@ -19,6 +19,7 @@ _Last updated 2026-11-27 (WORKSTATION)._ Version 0.4.0-SNAPSHOT.
 | Competition schedule | fixed | daily check runs on the current game (P2-8); full-season proof comes with the P2-3 test |
 | New season table | working | table reset when the season completes; final table kept on the edition (`CompetitionEdition.finalStandings`, P2-6), no screen shows it yet |
 | Tactics, Training, Transfers, Scouting, Staff, Board | stub | empty screens |
+| Logging | working | one style (P1-5): `Log.info/debug/warn/error(Log.<CATEGORY>[, tag], msg[, e])`; info/debug/warn follow Settings > Debug Logging, errors always print with stack trace; `LoggingStyleGuardTest` blocks `System.out/err`, `printStackTrace`, `Gdx.app.log` in main code |
 
 Full season: `engine/FullSeasonTests` plays 1888-89 headless and seeded to the 1889-90 rollover (P2-3, ~11 s, in `verify`).
 

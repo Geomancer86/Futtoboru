@@ -21,8 +21,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.badlogic.gdx.ApplicationLogger;
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.BaseTest;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Competition;
@@ -38,6 +36,7 @@ import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.data.GameData;
 
@@ -308,15 +307,18 @@ class FullSeasonTests extends BaseTest {
 
         static SeasonRun play(long seed) {
             SeasonRun run = new SeasonRun();
-            ApplicationLogger original = Gdx.app.getApplicationLogger();
-            Gdx.app.setApplicationLogger(new RecordingLogger(original, run.errors));
+            // Every error in main code goes through Log (LoggingStyleGuardTest keeps it that way).
+            Log.ErrorListener recorder = (category, tag, message, error) ->
+                    run.errors.add(category + (tag != null ? "/" + tag : "") + ": " + message
+                            + (error != null ? " -> " + error : ""));
+            Log.addErrorListener(recorder);
             long start = System.currentTimeMillis();
             try {
                 run.newGame(seed);
                 run.playUntilRolledOver();
                 run.collect();
             } finally {
-                Gdx.app.setApplicationLogger(original);
+                Log.removeErrorListener(recorder);
             }
             run.millis = System.currentTimeMillis() - start;
             return run;
@@ -642,29 +644,5 @@ class FullSeasonTests extends BaseTest {
             Club c = save.getClubById(clubId);
             return c != null ? c.getName() : String.valueOf(clubId);
         }
-    }
-
-    /** Passes every log line through and records errors (with their exception, if any). */
-    static final class RecordingLogger implements ApplicationLogger {
-        private final ApplicationLogger delegate;
-        private final List<String> errors;
-
-        RecordingLogger(ApplicationLogger delegate, List<String> errors) {
-            this.delegate = delegate;
-            this.errors = errors;
-        }
-
-        @Override public void log(String tag, String message) { delegate.log(tag, message); }
-        @Override public void log(String tag, String message, Throwable exception) { delegate.log(tag, message, exception); }
-        @Override public void error(String tag, String message) {
-            errors.add(tag + ": " + message);
-            delegate.error(tag, message);
-        }
-        @Override public void error(String tag, String message, Throwable exception) {
-            errors.add(tag + ": " + message + " -> " + exception);
-            delegate.error(tag, message, exception);
-        }
-        @Override public void debug(String tag, String message) { delegate.debug(tag, message); }
-        @Override public void debug(String tag, String message, Throwable exception) { delegate.debug(tag, message, exception); }
     }
 }

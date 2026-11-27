@@ -23,6 +23,7 @@ import com.rndmodgames.futtoboru.system.EngineParameters;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Arrange Friendly Table v1
@@ -189,17 +190,17 @@ public class ArrangeFriendlyTable extends VisTable {
                 //
                 if (selectedDate == null) {
                     
-                    System.out.println("MATCH DATE IS REQUIRED");
+                    Log.info(Log.UI_SCHEDULE, "MATCH DATE IS REQUIRED");
                     return;
                 }
                 
                 // ADD NEW FRIENDLY DEPENDING ON THE SELECTED ELEMENTS ON THE FORM
-                System.out.println("ADDING A NEW FRIENDLY MATCH!");
-                System.out.println("selectedMatchType       : " + selectedMatchType);
-                System.out.println("selectedVenueType       : " + selectedVenueType);
-                System.out.println("selectedMatchRulesType  : " + selectedMatchRulesType);
-                System.out.println("selectedOpponentClub    : " + opponentSelectBox.getSelected());
-                System.out.println("selectedMatchDate       : " + dateFormatter.format(selectedDate));
+                Log.info(Log.UI_SCHEDULE, "ADDING A NEW FRIENDLY MATCH!");
+                Log.info(Log.UI_SCHEDULE, "selectedMatchType       : " + selectedMatchType);
+                Log.info(Log.UI_SCHEDULE, "selectedVenueType       : " + selectedVenueType);
+                Log.info(Log.UI_SCHEDULE, "selectedMatchRulesType  : " + selectedMatchRulesType);
+                Log.info(Log.UI_SCHEDULE, "selectedOpponentClub    : " + opponentSelectBox.getSelected());
+                Log.info(Log.UI_SCHEDULE, "selectedMatchDate       : " + dateFormatter.format(selectedDate));
                 
                 // Create New Match
                 Match match = new Match();
@@ -207,7 +208,7 @@ public class ArrangeFriendlyTable extends VisTable {
                 // Runtime id from the game's allocator (P2-4)
                 Long newMatchId = currentGame.getIdAllocator().nextId();
                 match.setId(newMatchId);
-                System.out.println("ArrangeFriendlyTable: Assigned match ID: " + newMatchId);
+                Log.info(Log.UI_SCHEDULE, "ArrangeFriendlyTable: Assigned match ID: " + newMatchId);
                 
                 // TODO: implement true dynamic match type depending on selection (friendly cup/etc)
                 match.setMatchType(Match.FRIENDLY_MATCH);
@@ -262,7 +263,7 @@ public class ArrangeFriendlyTable extends VisTable {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 
                 // CLEAR UI
-                System.out.println("CLEAR ARRANGE FRIENDLY COMPONENT UI!");
+                Log.info(Log.UI_SCHEDULE, "CLEAR ARRANGE FRIENDLY COMPONENT UI!");
                 
                 //
                 clearForm();

@@ -1,10 +1,10 @@
 package com.rndmodgames.futtoboru.screens;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 public class SplashScreen implements Screen {
 
@@ -67,7 +67,7 @@ public class SplashScreen implements Screen {
 	@Override
 	public void hide() {
 		
-        System.out.println("HIDE WAS CALLED ON SPLASH SCREEN - DISPOSE");
+        Log.info(Log.SYSTEM_INIT, "HIDE WAS CALLED ON SPLASH SCREEN - DISPOSE");
         
         // Hide will be called after switching to a separate screen
         this.dispose();

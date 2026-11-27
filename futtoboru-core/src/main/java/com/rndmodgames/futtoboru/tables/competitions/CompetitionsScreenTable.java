@@ -12,6 +12,7 @@ import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Competitions Screen Table v1
@@ -71,7 +72,7 @@ public class CompetitionsScreenTable extends VisTable {
         this.clear();
         
         // Debug logging
-        System.out.println("CompetitionsScreenTable.updateDynamicComponents() called");
+        Log.info(Log.UI_COMPETITIONS, "CompetitionsScreenTable.updateDynamicComponents() called");
         
         // Title
         this.row().colspan(3);
@@ -105,7 +106,7 @@ public class CompetitionsScreenTable extends VisTable {
             return;
         }
         
-        System.out.println("Found " + leagues.size() + " leagues to display");
+        Log.info(Log.UI_COMPETITIONS, "Found " + leagues.size() + " leagues to display");
         
         // --- LEAGUES SECTION ---
         this.row().colspan(3);

@@ -3,11 +3,11 @@ package com.rndmodgames.futtoboru.engine.temporal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Competition Scheduler v1
@@ -40,7 +40,7 @@ public class CompetitionScheduler {
      */
     public List<Match> competitionDraw(Competition competition, List<Long> clubIds) {
         
-        Gdx.app.log("CompetitionScheduler", "Randomizing Competition Draw for: " + competition.getName() + ", Clubs: " + clubIds.size());
+        Log.info(Log.ENGINE_SCHEDULING, "CompetitionScheduler", "Randomizing Competition Draw for: " + competition.getName() + ", Clubs: " + clubIds.size());
         
         List<Long> auxiliarClubsIds = new ArrayList<>(clubIds);
         
@@ -53,12 +53,12 @@ public class CompetitionScheduler {
             // Pick a random team to get a bye
             int byeIndex = rng.nextInt(auxiliarClubsIds.size());
             Long byeClubId = auxiliarClubsIds.remove(byeIndex);
-            Gdx.app.log("CompetitionScheduler", "Club " + byeClubId + " receives a BYE");
+            Log.info(Log.ENGINE_SCHEDULING, "CompetitionScheduler", "Club " + byeClubId + " receives a BYE");
         }
         
         while (!auxiliarClubsIds.isEmpty() && auxiliarClubsIds.size() >= 2) {
             
-            Gdx.app.log("CompetitionScheduler", "Clubs Left: " + auxiliarClubsIds.size() + ", Matches: " + competitionMatches.size());
+            Log.info(Log.ENGINE_SCHEDULING, "CompetitionScheduler", "Clubs Left: " + auxiliarClubsIds.size() + ", Matches: " + competitionMatches.size());
             
             // pick random clubs and create new match
             Match match = new Match();
@@ -77,13 +77,13 @@ public class CompetitionScheduler {
         // Should return a list of matches between all participants
         // For 32 teams: 16 matches (no byes)
         // For 35 teams: 17 matches + 1 bye
-        Gdx.app.log("CompetitionScheduler", "Competition Draw Complete: " + competitionMatches.size() + 
+        Log.info(Log.ENGINE_SCHEDULING, "CompetitionScheduler", "Competition Draw Complete: " + competitionMatches.size() + 
             " matches for " + clubIds.size() + " teams");
         
         // Verify: matches should equal half the number of teams (or half minus 0.5 if odd)
         int expectedMatches = clubIds.size() / 2;
         if (competitionMatches.size() != expectedMatches) {
-            Gdx.app.error("CompetitionScheduler", "MISMATCH: Expected " + expectedMatches + 
+            Log.error(Log.ENGINE_SCHEDULING, "CompetitionScheduler", "MISMATCH: Expected " + expectedMatches + 
                 " matches but generated " + competitionMatches.size() + " for " + clubIds.size() + " teams!");
         }
         

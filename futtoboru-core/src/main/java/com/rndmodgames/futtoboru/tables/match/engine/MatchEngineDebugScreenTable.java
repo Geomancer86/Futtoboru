@@ -1,7 +1,6 @@
 package com.rndmodgames.futtoboru.tables.match.engine;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -9,6 +8,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Match Engine Debug Screen Table v1
@@ -85,6 +85,6 @@ public class MatchEngineDebugScreenTable extends VisTable {
      */
     public void updateDynamicComponents() {
         // TODO: Update screen content when match engine is implemented
-        Gdx.app.log("MatchEngineDebugScreenTable", "updateDynamicComponents() called");
+        Log.info(Log.UI_MATCH, "MatchEngineDebugScreenTable", "updateDynamicComponents() called");
     }
 }

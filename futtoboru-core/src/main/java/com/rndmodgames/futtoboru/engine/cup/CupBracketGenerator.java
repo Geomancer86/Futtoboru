@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Cup Bracket Generator v1.0
@@ -65,14 +65,14 @@ public class CupBracketGenerator {
         List<Match> allMatches = new ArrayList<>();
         List<Long> teams = new ArrayList<>(teamIds);
         
-        Gdx.app.log("CupBracketGenerator", "Generating complete bracket for " + teams.size() + " teams");
+        Log.info(Log.ENGINE_CUP, "CupBracketGenerator", "Generating complete bracket for " + teams.size() + " teams");
         
         // P2-3: a bracket of any size. The bracket has the next power of two of slots; the clubs that do not fit
         // in round 1 get a bye straight into round 2 (12 clubs: 4 first-round ties + 4 byes, then 4, 2, 1 ties).
         // The old generator halved the number of ties each round, so with 12 clubs the winner of R2M3 had no
         // next tie and the semi-final and final rounds were forced to the wrong size.
         if (teams.size() < 2) {
-            Gdx.app.error("CupBracketGenerator", "A cup needs at least 2 clubs, got " + teams.size());
+            Log.error(Log.ENGINE_CUP, "CupBracketGenerator", "A cup needs at least 2 clubs, got " + teams.size());
             return allMatches;
         }
         int bracketSize = Integer.highestOneBit(teams.size());
@@ -87,7 +87,7 @@ public class CupBracketGenerator {
             byeTeams.add(teams.remove(rng.nextInt(teams.size())));
         }
 
-        Gdx.app.log("CupBracketGenerator", "Tournament structure: " + teamIds.size() + " clubs, " + byeTeams.size()
+        Log.info(Log.ENGINE_CUP, "CupBracketGenerator", "Tournament structure: " + teamIds.size() + " clubs, " + byeTeams.size()
             + " byes, " + numRounds + " rounds");
 
         // Round 1: the clubs without a bye, paired at random
@@ -115,8 +115,8 @@ public class CupBracketGenerator {
             slots = new ArrayList<>(roundMatches);
         }
 
-        System.out.println("CupBracketGenerator: *** COMPLETE BRACKET GENERATED ***");
-        System.out.println("CupBracketGenerator: Total matches: " + allMatches.size());
+        Log.info(Log.ENGINE_CUP, "CupBracketGenerator: *** COMPLETE BRACKET GENERATED ***");
+        Log.info(Log.ENGINE_CUP, "CupBracketGenerator: Total matches: " + allMatches.size());
         
         // Log all matches by round
         Map<Integer, List<Match>> matchesByRound = new java.util.HashMap<>();
@@ -128,15 +128,15 @@ public class CupBracketGenerator {
         }
         
         for (Map.Entry<Integer, List<Match>> entry : matchesByRound.entrySet()) {
-            System.out.println("CupBracketGenerator: Round " + entry.getKey() + ": " + entry.getValue().size() + " matches");
+            Log.info(Log.ENGINE_CUP, "CupBracketGenerator: Round " + entry.getKey() + ": " + entry.getValue().size() + " matches");
             for (Match m : entry.getValue()) {
-                System.out.println("  - " + m.getBracketPath() + " (ID: " + m.getId() + 
+                Log.info(Log.ENGINE_CUP, "  - " + m.getBracketPath() + " (ID: " + m.getId() + 
                     ", Parent1: " + m.getParentMatch1Id() + ", Parent2: " + m.getParentMatch2Id() + 
                     ", Date: " + m.getMatchDateTime() + ")");
             }
         }
         
-        Gdx.app.log("CupBracketGenerator", "Complete bracket generated: " + allMatches.size() + " total matches");
+        Log.info(Log.ENGINE_CUP, "CupBracketGenerator", "Complete bracket generated: " + allMatches.size() + " total matches");
         
         return allMatches;
     }
@@ -196,7 +196,7 @@ public class CupBracketGenerator {
             matchNumber++;
         }
         
-        Gdx.app.log("CupBracketGenerator", "Round 1: Generated " + roundMatches.size() + " matches");
+        Log.info(Log.ENGINE_CUP, "CupBracketGenerator", "Round 1: Generated " + roundMatches.size() + " matches");
         
         return roundMatches;
     }
@@ -250,7 +250,7 @@ public class CupBracketGenerator {
         }
 
         String roundName = getRoundName(roundNumber, roundMatches.size() * 2);
-        Gdx.app.log("CupBracketGenerator", roundName + " (Round " + roundNumber + "): Generated " + roundMatches.size() + " matches");
+        Log.info(Log.ENGINE_CUP, "CupBracketGenerator", roundName + " (Round " + roundNumber + "): Generated " + roundMatches.size() + " matches");
 
         return roundMatches;
     }

@@ -4,7 +4,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.kotcrab.vis.ui.widget.LinkLabel;
@@ -15,6 +14,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Match History Screen Table v1
@@ -72,7 +72,7 @@ public class MatchHistoryScreenTable extends VisTable {
             return;
         }
         
-        System.out.println("SHOWING MATCH HISTORY SCREEN - PLAYED MATCHES: " + currentClub.getPlayedMatches().size());
+        Log.info(Log.UI_MATCH, "SHOWING MATCH HISTORY SCREEN - PLAYED MATCHES: " + currentClub.getPlayedMatches().size());
         
         this.clear();
         
@@ -119,7 +119,7 @@ public class MatchHistoryScreenTable extends VisTable {
             Club awayClub = game.getCurrentGame().getClubById(match.getAwayClubId());
             
             if (homeClub == null || awayClub == null) {
-                Gdx.app.error("MatchHistoryScreenTable", "Could not find clubs for match");
+                Log.error(Log.UI_MATCH, "MatchHistoryScreenTable", "Could not find clubs for match");
                 continue;
             }
             
@@ -195,7 +195,7 @@ public class MatchHistoryScreenTable extends VisTable {
         
         // TODO: For now, we can only show the most recent match in MatchResultScreenTable
         // In the future, we should add setSelectedMatch() to MatchResultScreenTable
-        Gdx.app.log("MatchHistoryScreenTable", "Match clicked: " + 
+        Log.info(Log.UI_MATCH, "MatchHistoryScreenTable", "Match clicked: " + 
             (match.getHomeGoals() != null ? match.getHomeGoals() : 0) + " - " + 
             (match.getAwayGoals() != null ? match.getAwayGoals() : 0));
         

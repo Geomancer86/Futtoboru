@@ -10,7 +10,6 @@ public class BigDecimalSerializer implements Json.Serializer<BigDecimal> {
     @Override
     public void write (Json json, BigDecimal number, Class knownType) {
         
-//        System.out.println("json: " + json + ", number: " + number + " knownType: " + knownType);
          
         json.writeObjectStart();
         json.writeType(BigDecimal.class);
@@ -21,7 +20,6 @@ public class BigDecimalSerializer implements Json.Serializer<BigDecimal> {
      @Override
      public BigDecimal read (Json json, JsonValue jsonData, Class type) {
          
-//         System.out.println("json: " + json + ", jsonData: " + jsonData + "type: " + type);
          
          BigDecimal number = new BigDecimal(jsonData.getString("value"));
          return number;

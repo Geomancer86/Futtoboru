@@ -12,11 +12,11 @@ import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
-import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Save Game Dialog v2 (P2-5)
@@ -64,7 +64,7 @@ public class SaveGameDialog extends VisDialog {
 
                     hide();
                 } catch (IOException | RuntimeException e) {
-                    DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_SYSTEM_INIT, "SaveGameDialog",
+                    Log.error(Log.SYSTEM_INIT, "SaveGameDialog",
                             "save failed: " + e);
                     if (getStage() != null) {
                         Dialogs.showOKDialog(getStage(), LanguageModLoader.getValue("save_game"),

@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.tools.SharingUtils;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Main Game Screen v1
@@ -64,7 +65,7 @@ public class MainGameScreen implements Screen {
         
         // Validate that a game is loaded
         if (this.currentGame == null) {
-            Gdx.app.error("MainGameScreen", "No game loaded! Cannot initialize MainGameScreen without a SaveGame.");
+            Log.error(Log.UI_MENU, "MainGameScreen", "No game loaded! Cannot initialize MainGameScreen without a SaveGame.");
             throw new IllegalStateException("MainGameScreen requires a loaded SaveGame. Please start a new game or load an existing one.");
         }
         
@@ -92,7 +93,7 @@ public class MainGameScreen implements Screen {
         if (gameEngine != null) {
             gameEngine.setMainMenuManager(menuManager);
         } else {
-            Gdx.app.error("MainGameScreen", "GameEngine is null! Some features may not work correctly.");
+            Log.error(Log.UI_MENU, "MainGameScreen", "GameEngine is null! Some features may not work correctly.");
         }
         
         /**

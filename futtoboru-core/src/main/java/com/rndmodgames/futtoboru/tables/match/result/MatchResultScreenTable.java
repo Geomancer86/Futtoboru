@@ -3,13 +3,13 @@ package com.rndmodgames.futtoboru.tables.match.result;
 import java.time.format.DateTimeFormatter;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Match Result Screen Table v1
@@ -60,7 +60,7 @@ public class MatchResultScreenTable extends VisTable {
         
         if (homeClub == null || awayClub == null) {
             this.add("Error: Could not load match details.");
-            Gdx.app.error("MatchResultScreenTable", "Home or away club not found for match");
+            Log.error(Log.UI_MATCH, "MatchResultScreenTable", "Home or away club not found for match");
             return;
         }
         

@@ -5,6 +5,7 @@ import java.util.Locale;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.rndmodgames.darkblade.screens.tables.SoundSettingsTable;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Preferences Manager v1
@@ -57,13 +58,13 @@ public class PreferencesManager {
 		// create default preferences file to avoid null pointers
 		if (prefs == null) {
 		    
-		    System.out.println("PREFS IS NULL");
+		    Log.info(Log.SYSTEM_CONFIG, "PREFS IS NULL");
 		}
 		
 		// PreferencesManager logging - use System.out directly to avoid circular dependency
 		// (DebugLogManager may not be initialized yet, and DebugLogManager uses PreferencesManager)
 		// This will be migrated to DebugLogManager later if needed, but must be done carefully
-		System.out.println("[PreferencesManager] Preferences file is: " + PREFERENCES_NAME);
+		Log.info(Log.SYSTEM_CONFIG, "[PreferencesManager] Preferences file is: " + PREFERENCES_NAME);
 	}
 	
 	/**
@@ -248,7 +249,7 @@ public class PreferencesManager {
 	 */
 	public Locale getSavedLocale() {
 	
-		System.out.println("GETTING SAVED LOCALE FROM PREFERENCES");
+		Log.info(Log.SYSTEM_CONFIG, "GETTING SAVED LOCALE FROM PREFERENCES");
 		
 		Locale locale = null;
 
@@ -257,14 +258,14 @@ public class PreferencesManager {
 			
 			locale = new Locale(prefs.getString(SETTINGS_LANGUAGE_BUNDLE_PREF));
 			
-			System.out.println("LOCALE RESTORED: " + locale.getLanguage());
+			Log.info(Log.SYSTEM_CONFIG, "LOCALE RESTORED: " + locale.getLanguage());
 			
 		} else {
 			
 			locale = new Locale(DEFAULT_LOCALE);
 			prefs.putString(SETTINGS_LANGUAGE_BUNDLE_PREF, DEFAULT_LOCALE);
 			
-			System.out.println("LOCALE NOT FOUND - DEFAULT IS : " + locale.getLanguage());
+			Log.info(Log.SYSTEM_CONFIG, "LOCALE NOT FOUND - DEFAULT IS : " + locale.getLanguage());
 			
 			// Save after each change
 			saveUserPreferences();
@@ -275,7 +276,7 @@ public class PreferencesManager {
 	
 	public void saveLocale(Locale locale) {
 		
-		System.out.println("SAVING SELECTED LOCALE: " + locale.getLanguage());
+		Log.info(Log.SYSTEM_CONFIG, "SAVING SELECTED LOCALE: " + locale.getLanguage());
 		
 		prefs.putString(SETTINGS_LANGUAGE_BUNDLE_PREF, locale.getLanguage());
 		
@@ -296,7 +297,6 @@ public class PreferencesManager {
 	 */
 	public void updateUserPreference(String key, String value) {
 		
-//		System.out.println("updateUserPreference() " + key + ", " + value);
 		
 		prefs.putString(key, value);
 		

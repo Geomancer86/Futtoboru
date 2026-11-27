@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.data.MessageCategory;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Inbox Screen Table v2
@@ -88,11 +89,11 @@ public class InboxScreenTable extends VisTable {
      */
     public void selectMessageByType(String messageType) {
         if (messageType == null || currentGame == null || currentGame.getAllMessages() == null) {
-            System.out.println("InboxScreenTable: Cannot select message - messageType or currentGame is null");
+            Log.info(Log.UI_INBOX, "InboxScreenTable: Cannot select message - messageType or currentGame is null");
             return;
         }
         
-        System.out.println("InboxScreenTable: Selecting message by type: " + messageType);
+        Log.info(Log.UI_INBOX, "InboxScreenTable: Selecting message by type: " + messageType);
         
         // Find the first unread message of this type
         for (Message message : currentGame.getAllMessages()) {
@@ -104,7 +105,7 @@ public class InboxScreenTable extends VisTable {
                 isMessageRelevantToPlayer(message)) {
                 
                 selectedMessage = message;
-                System.out.println("InboxScreenTable: Selected message: " + message.getTitle() + " (ID: " + message.getId() + ")");
+                Log.info(Log.UI_INBOX, "InboxScreenTable: Selected message: " + message.getTitle() + " (ID: " + message.getId() + ")");
                 
                 // Refresh display to show selected message
                 updateDynamicComponents();
@@ -112,7 +113,7 @@ public class InboxScreenTable extends VisTable {
             }
         }
         
-        System.out.println("InboxScreenTable: No unread message found with type: " + messageType);
+        Log.info(Log.UI_INBOX, "InboxScreenTable: No unread message found with type: " + messageType);
     }
     
     /**
@@ -154,7 +155,7 @@ public class InboxScreenTable extends VisTable {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 currentFilter = null;
                 unreadFilter = false;
-                System.out.println("InboxScreenTable: Filter changed to ALL");
+                Log.info(Log.UI_INBOX, "InboxScreenTable: Filter changed to ALL");
                 updateDynamicComponents();
             }
         });
@@ -176,7 +177,7 @@ public class InboxScreenTable extends VisTable {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 unreadFilter = true;
                 currentFilter = null; // Clear category filter when using unread filter
-                System.out.println("InboxScreenTable: Filter changed to UNREAD");
+                Log.info(Log.UI_INBOX, "InboxScreenTable: Filter changed to UNREAD");
                 updateDynamicComponents();
             }
         });
@@ -201,7 +202,7 @@ public class InboxScreenTable extends VisTable {
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     currentFilter = category;
                     unreadFilter = false; // Clear unread filter when using category filter
-                    System.out.println("InboxScreenTable: Filter changed to " + category.name());
+                    Log.info(Log.UI_INBOX, "InboxScreenTable: Filter changed to " + category.name());
                     updateDynamicComponents();
                 }
             });
@@ -342,24 +343,24 @@ public class InboxScreenTable extends VisTable {
             // Method 1: Try to get league from actionData (preferred method)
             if (message.getActionData() instanceof Long) {
                 Long leagueId = (Long) message.getActionData();
-                System.out.println("InboxScreenTable: Attempting to find league by ID from actionData: " + leagueId);
+                Log.info(Log.UI_INBOX, "InboxScreenTable: Attempting to find league by ID from actionData: " + leagueId);
                 
                 if (currentGame != null && currentGame.getMainAuthority() != null && 
                     currentGame.getMainAuthority().getLeagues() != null) {
                     for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
                         if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
                             league = l;
-                            System.out.println("InboxScreenTable: Found league by ID: " + league.getName());
+                            Log.info(Log.UI_INBOX, "InboxScreenTable: Found league by ID: " + league.getName());
                             break;
                         }
                     }
                 }
                 
                 if (league == null) {
-                    System.out.println("InboxScreenTable: WARNING - Could not find league with ID: " + leagueId);
+                    Log.info(Log.UI_INBOX, "InboxScreenTable: WARNING - Could not find league with ID: " + leagueId);
                 }
             } else {
-                System.out.println("InboxScreenTable: actionData is not a Long, trying to extract league name from title/content");
+                Log.info(Log.UI_INBOX, "InboxScreenTable: actionData is not a Long, trying to extract league name from title/content");
             }
             
             // Method 2: Extract league name from message title (fallback)
@@ -368,25 +369,25 @@ public class InboxScreenTable extends VisTable {
                 String title = message.getTitle();
                 if (title.contains(" - ")) {
                     String leagueName = title.substring(title.lastIndexOf(" - ") + 3).trim();
-                    System.out.println("InboxScreenTable: Attempting to find league by name from title: " + leagueName);
+                    Log.info(Log.UI_INBOX, "InboxScreenTable: Attempting to find league by name from title: " + leagueName);
                     
                     if (currentGame != null && currentGame.getMainAuthority() != null && 
                         currentGame.getMainAuthority().getLeagues() != null) {
                         for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
                             if (l != null && l.getName() != null && l.getName().equals(leagueName)) {
                                 league = l;
-                                System.out.println("InboxScreenTable: Found league by name from title: " + league.getName() + " (ID: " + league.getId() + ")");
+                                Log.info(Log.UI_INBOX, "InboxScreenTable: Found league by name from title: " + league.getName() + " (ID: " + league.getId() + ")");
                                 break;
                             }
                         }
                         
                         // If exact match failed, try partial match
                         if (league == null) {
-                            System.out.println("InboxScreenTable: Exact name match failed, trying partial match");
+                            Log.info(Log.UI_INBOX, "InboxScreenTable: Exact name match failed, trying partial match");
                             for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
                                 if (l != null && l.getName() != null && l.getName().contains(leagueName)) {
                                     league = l;
-                                    System.out.println("InboxScreenTable: Found league by partial name match: " + league.getName() + " (ID: " + league.getId() + ")");
+                                    Log.info(Log.UI_INBOX, "InboxScreenTable: Found league by partial name match: " + league.getName() + " (ID: " + league.getId() + ")");
                                     break;
                                 }
                             }
@@ -404,14 +405,14 @@ public class InboxScreenTable extends VisTable {
                     int endIdx = content.indexOf(" is", startIdx);
                     if (endIdx > startIdx) {
                         String leagueName = content.substring(startIdx, endIdx).trim();
-                        System.out.println("InboxScreenTable: Attempting to find league by name from content: " + leagueName);
+                        Log.info(Log.UI_INBOX, "InboxScreenTable: Attempting to find league by name from content: " + leagueName);
                         
                         if (currentGame != null && currentGame.getMainAuthority() != null && 
                             currentGame.getMainAuthority().getLeagues() != null) {
                             for (com.rndmodgames.futtoboru.data.League l : currentGame.getMainAuthority().getLeagues()) {
                                 if (l != null && l.getName() != null && l.getName().equals(leagueName)) {
                                     league = l;
-                                    System.out.println("InboxScreenTable: Found league by name from content: " + league.getName() + " (ID: " + league.getId() + ")");
+                                    Log.info(Log.UI_INBOX, "InboxScreenTable: Found league by name from content: " + league.getName() + " (ID: " + league.getId() + ")");
                                     break;
                                 }
                             }
@@ -424,7 +425,7 @@ public class InboxScreenTable extends VisTable {
             if (league != null) {
                 menuManager.setSelectedLeague(league);
             } else {
-                System.out.println("InboxScreenTable: ERROR - Could not recover league from message (title: " + 
+                Log.info(Log.UI_INBOX, "InboxScreenTable: ERROR - Could not recover league from message (title: " + 
                                  (message.getTitle() != null ? message.getTitle() : "null") + ")");
             }
         }
@@ -489,15 +490,15 @@ public class InboxScreenTable extends VisTable {
                 
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    System.out.println("InboxScreenTable: Action button clicked for message: " + message.getTitle());
-                    System.out.println("Action Screen: " + message.getActionScreen());
-                    System.out.println("Action Data: " + message.getActionData());
+                    Log.info(Log.UI_INBOX, "InboxScreenTable: Action button clicked for message: " + message.getTitle());
+                    Log.info(Log.UI_INBOX, "Action Screen: " + message.getActionScreen());
+                    Log.info(Log.UI_INBOX, "Action Data: " + message.getActionData());
                     
                     // Navigate to action screen
                     if (message.getActionScreen() != null) {
                         // Handle LEAGUE_DRAW messages specifically
                         if (message.getMessageType() != null && message.getMessageType().equals("LEAGUE_DRAW")) {
-                            System.out.println("InboxScreenTable: Handling LEAGUE_DRAW message action");
+                            Log.info(Log.UI_INBOX, "InboxScreenTable: Handling LEAGUE_DRAW message action");
                             
                             // Use the helper method to set selected league (handles actionData, title, and content extraction)
                             setSelectedLeagueFromMessageIfNeeded(message);
@@ -506,18 +507,18 @@ public class InboxScreenTable extends VisTable {
                             if (menuManager != null) {
                                 menuManager.setActiveMainScreen(message.getActionScreen());
                             } else {
-                                System.out.println("InboxScreenTable: ERROR - menuManager is null");
+                                Log.info(Log.UI_INBOX, "InboxScreenTable: ERROR - menuManager is null");
                             }
                         } else {
                             // Generic action for other message types
-                            System.out.println("InboxScreenTable: Generic action screen navigation");
+                            Log.info(Log.UI_INBOX, "InboxScreenTable: Generic action screen navigation");
                             if (menuManager != null) {
                                 setSelectedLeagueFromMessageIfNeeded(message);
                                 menuManager.setActiveMainScreen(message.getActionScreen());
                             }
                         }
                     } else {
-                        System.out.println("InboxScreenTable: ERROR - message.getActionScreen() is null");
+                        Log.info(Log.UI_INBOX, "InboxScreenTable: ERROR - message.getActionScreen() is null");
                     }
                 }
             });
@@ -540,7 +541,7 @@ public class InboxScreenTable extends VisTable {
                 // Toggle read status
                 boolean currentReadStatus = (message.getIsRead() != null && message.getIsRead());
                 message.setIsRead(!currentReadStatus);
-                System.out.println("InboxScreenTable: Message '" + message.getTitle() + "' marked as " + (!currentReadStatus ? "read" : "unread"));
+                Log.info(Log.UI_INBOX, "InboxScreenTable: Message '" + message.getTitle() + "' marked as " + (!currentReadStatus ? "read" : "unread"));
                 updateDynamicComponents();
             }
         });
@@ -552,23 +553,23 @@ public class InboxScreenTable extends VisTable {
      */
     private List<Message> getFilteredMessages() {
         if (currentGame == null) {
-            System.out.println("InboxScreenTable: currentGame is null");
+            Log.info(Log.UI_INBOX, "InboxScreenTable: currentGame is null");
             return new ArrayList<>();
         }
         
         if (currentGame.getAllMessages() == null) {
-            System.out.println("InboxScreenTable: getAllMessages() is null");
+            Log.info(Log.UI_INBOX, "InboxScreenTable: getAllMessages() is null");
             return new ArrayList<>();
         }
         
         List<Message> allMessages = currentGame.getAllMessages();
-        System.out.println("InboxScreenTable: Total messages in SaveGame: " + allMessages.size());
+        Log.info(Log.UI_INBOX, "InboxScreenTable: Total messages in SaveGame: " + allMessages.size());
         
         List<Message> filtered = new ArrayList<>();
         
         for (Message message : allMessages) {
             if (message == null) {
-                System.out.println("InboxScreenTable: Found null message in list");
+                Log.info(Log.UI_INBOX, "InboxScreenTable: Found null message in list");
                 continue;
             }
             if (message.getIsDeleted() != null && message.getIsDeleted()) {
@@ -584,7 +585,7 @@ public class InboxScreenTable extends VisTable {
             if (currentFilter != null) {
                 if (message.getCategory() == null) {
                     // Message has no category, skip if filtering
-                    System.out.println("InboxScreenTable: Message '" + message.getTitle() + "' has no category, skipping (filter: " + currentFilter.name() + ")");
+                    Log.info(Log.UI_INBOX, "InboxScreenTable: Message '" + message.getTitle() + "' has no category, skipping (filter: " + currentFilter.name() + ")");
                     continue;
                 }
                 if (message.getCategory() != currentFilter) {
@@ -603,7 +604,7 @@ public class InboxScreenTable extends VisTable {
             filtered.add(message);
         }
         
-        System.out.println("InboxScreenTable: Filtered messages count: " + filtered.size());
+        Log.info(Log.UI_INBOX, "InboxScreenTable: Filtered messages count: " + filtered.size());
         return filtered;
     }
     

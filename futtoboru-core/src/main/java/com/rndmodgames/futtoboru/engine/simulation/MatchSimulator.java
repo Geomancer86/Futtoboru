@@ -1,12 +1,12 @@
 package com.rndmodgames.futtoboru.engine.simulation;
 
-import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Match Simulator v1.0
@@ -61,9 +61,9 @@ public class MatchSimulator {
         
         // CRITICAL: Validate teams exist before simulation
         if (match.getHomeClubId() == null || match.getAwayClubId() == null) {
-            Gdx.app.error("MatchSimulator", "Cannot simulate match - missing teams (Home: " + 
+            Log.error(Log.ENGINE_MATCH, "MatchSimulator", "Cannot simulate match - missing teams (Home: " + 
                 match.getHomeClubId() + ", Away: " + match.getAwayClubId() + ")");
-            System.err.println("MatchSimulator: Cannot simulate match - missing teams");
+            Log.error(Log.ENGINE_MATCH, "MatchSimulator: Cannot simulate match - missing teams");
             return false;
         }
         
@@ -72,9 +72,9 @@ public class MatchSimulator {
         Club awayClub = currentGame.getClubById(match.getAwayClubId());
         
         if (homeClub == null || awayClub == null) {
-            Gdx.app.error("MatchSimulator", "Cannot simulate match - club not found (Home ID: " + 
+            Log.error(Log.ENGINE_MATCH, "MatchSimulator", "Cannot simulate match - club not found (Home ID: " + 
                 match.getHomeClubId() + ", Away ID: " + match.getAwayClubId() + ")");
-            System.err.println("MatchSimulator: Cannot simulate match - club not found");
+            Log.error(Log.ENGINE_MATCH, "MatchSimulator: Cannot simulate match - club not found");
             return false;
         }
         
@@ -121,7 +121,7 @@ public class MatchSimulator {
             match.setAttendance(1000 + gate.nextInt(4000)); // 1000-5000
         }
         
-        System.out.println("MatchSimulator: " + homeClub.getName() + " " + homeScore + 
+        Log.info(Log.ENGINE_MATCH, "MatchSimulator: " + homeClub.getName() + " " + homeScore + 
                           " - " + awayScore + " " + awayClub.getName());
         
         // Club statistics, points, cup advancement and match lists: MatchResultRecorder.record (P2-2)

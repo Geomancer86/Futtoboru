@@ -1,6 +1,7 @@
 package com.rndmodgames.localization;
 
 import com.badlogic.gdx.utils.I18NBundle;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Language Mod Loader v1
@@ -57,7 +58,7 @@ public class LanguageModLoader {
             /**
              * TODO: this logs as error when initially loading the bundles but shouldn't be
              */
-            System.out.println("missing bundle key: " + key);
+            Log.info(Log.DATA_LOADING, "missing bundle key: " + key);
             return key;
         }
         

@@ -34,6 +34,7 @@ import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * New Game Overview Screen v1
@@ -367,7 +368,7 @@ public class NewGameOverviewScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
  
-                Gdx.app.log("NewGameOverviewScreen", "=== START GAME BUTTON CLICKED ===");
+                Log.info(Log.UI_MENU, "NewGameOverviewScreen", "=== START GAME BUTTON CLICKED ===");
                 
                 try {
                     /**
@@ -381,36 +382,36 @@ public class NewGameOverviewScreen implements Screen {
                      *      - Starting Club             [DONE]
                      *      - Starting Scripts          [WIP]
                      */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 1: Getting current game...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 1: Getting current game...");
                     SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
                     
                     if (currentGame == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: currentGame is NULL!");
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "currentGame is NULL!");
                         throw new IllegalStateException("SaveGame is null. Cannot start game without a SaveGame instance.");
                     }
-                    Gdx.app.log("NewGameOverviewScreen", "Step 1: OK - currentGame obtained");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 1: OK - currentGame obtained");
                     
                     // Game Authority
-                    Gdx.app.log("NewGameOverviewScreen", "Step 2: Setting main authority...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 2: Setting main authority...");
                     if (DatabaseLoader.getMainAuthority() == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: MainAuthority is NULL!");
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "MainAuthority is NULL!");
                         throw new IllegalStateException("MainAuthority is null. Database may not be loaded correctly.");
                     }
                     currentGame.setMainAuthority(DatabaseLoader.getMainAuthority());
-                    Gdx.app.log("NewGameOverviewScreen", "Step 2: OK - main authority set");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 2: OK - main authority set");
                     
                     //
-                    Gdx.app.log("NewGameOverviewScreen", "Step 3: Setting selected countries...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 3: Setting selected countries...");
                     if (selectedCountries == null || selectedCountries.isEmpty()) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: selectedCountries is NULL or EMPTY!");
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "selectedCountries is NULL or EMPTY!");
                         throw new IllegalStateException("Selected countries list is null or empty.");
                     }
                     currentGame.setSelectedCountries(selectedCountries);
-                    Gdx.app.log("NewGameOverviewScreen", "Step 3: OK - selected countries set: " + selectedCountries.size());
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 3: OK - selected countries set: " + selectedCountries.size());
                     
-                    Gdx.app.log("NewGameOverviewScreen", "Step 4: Setting owner profession and country...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 4: Setting owner profession and country...");
                     if (currentGame.getOwner() == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: currentGame.getOwner() is NULL!");
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "currentGame.getOwner() is NULL!");
                         throw new IllegalStateException("Game owner is null. Manager must be created before starting game.");
                     }
                     
@@ -421,7 +422,7 @@ public class NewGameOverviewScreen implements Screen {
                         currentGame.getOwner().setId(null);
                         currentGame.assignId(currentGame.getOwner());
                         Long newOwnerId = currentGame.getOwner().getId();
-                        Gdx.app.log("NewGameOverviewScreen", "Step 4a: Assigned owner ID: " + newOwnerId);
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 4a: Assigned owner ID: " + newOwnerId);
                         
                         // Add owner to allPersons list if not already there
                         if (currentGame.getAllPersons() == null) {
@@ -436,34 +437,34 @@ public class NewGameOverviewScreen implements Screen {
                         }
                         if (!ownerInList) {
                             currentGame.getAllPersons().add(currentGame.getOwner());
-                            Gdx.app.log("NewGameOverviewScreen", "Step 4a: Added owner to allPersons list");
+                            Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 4a: Added owner to allPersons list");
                         }
                     }
                     
                     if (primaryProfession == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: primaryProfession is NULL!");
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "primaryProfession is NULL!");
                         throw new IllegalStateException("Primary profession is null.");
                     }
                     if (startingCountry == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: startingCountry is NULL!");
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "startingCountry is NULL!");
                         throw new IllegalStateException("Starting country is null.");
                     }
                     currentGame.getOwner().setPrimaryProfession(primaryProfession);
                     currentGame.getOwner().setCurrentCountry(startingCountry);
-                    Gdx.app.log("NewGameOverviewScreen", "Step 4: OK - owner profession and country set");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 4: OK - owner profession and country set");
                     
                     // Starting Season
-                    Gdx.app.log("NewGameOverviewScreen", "Step 5: Setting game dates...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 5: Setting game dates...");
                     if (startingSeason != null) {
                         if (startingSeason.getStartDate() == null) {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR: startingSeason.getStartDate() is NULL!");
+                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "startingSeason.getStartDate() is NULL!");
                             throw new IllegalStateException("Season start date is null.");
                         }
                         currentGame.setGameStartDate(startingSeason.getStartDate());
                         currentGame.setGameDate(startingSeason.getStartDate());
-                        Gdx.app.log("NewGameOverviewScreen", "Step 5: OK - game dates set: " + startingSeason.getStartDate());
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 5: OK - game dates set: " + startingSeason.getStartDate());
                     } else {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: startingSeason is NULL!");
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "startingSeason is NULL!");
                         throw new IllegalStateException("Starting season is null.");
                     }
                     
@@ -472,11 +473,11 @@ public class NewGameOverviewScreen implements Screen {
                      * 
                      * TODO: this should be loaded in a more automatic way, so we don't need to do that much setup on unit tests
                      */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 6: Loading clubs database...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: Loading clubs database...");
                     currentGame.setAllClubs(new ArrayList<>());
                     
                     if (DatabaseLoader.getClubsByCountry() == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: DatabaseLoader.getClubsByCountry() is NULL!");
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "DatabaseLoader.getClubsByCountry() is NULL!");
                         throw new IllegalStateException("Clubs by country map is null. Database may not be loaded correctly.");
                     }
                     
@@ -488,7 +489,7 @@ public class NewGameOverviewScreen implements Screen {
                      * even if their country wasn't selected (e.g., Linfield in FA Cup).
                      * This ensures AuthorityManager can find and process them correctly.
                      */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 6a: Adding competitions and participant clubs to SaveGame...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6a: Adding competitions and participant clubs to SaveGame...");
                     List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
                     if (allCompetitions != null) {
                         for (Competition comp : allCompetitions) {
@@ -513,7 +514,7 @@ public class NewGameOverviewScreen implements Screen {
                                             if (clubId != null && currentGame.getClubById(clubId) == null) {
                                                 Club club = DatabaseLoader.getClubById(clubId);
                                                 if (club != null) {
-                                                    Gdx.app.log("NewGameOverviewScreen", "Adding participant club " + club.getName() + " (ID: " + clubId + ") to SaveGame for competition: " + comp.getName());
+                                                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Adding participant club " + club.getName() + " (ID: " + clubId + ") to SaveGame for competition: " + comp.getName());
                                                     currentGame.getAllClubs().add(club);
                                                 }
                                             }
@@ -522,30 +523,30 @@ public class NewGameOverviewScreen implements Screen {
                                 }
                             }
                         }
-                        Gdx.app.log("NewGameOverviewScreen", "Step 6a: OK - Total cups: " + currentGame.getAllCups().size() + ", leagues: " + currentGame.getAllLeagues().size() + ", total clubs: " + currentGame.getAllClubs().size());
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6a: OK - Total cups: " + currentGame.getAllCups().size() + ", leagues: " + currentGame.getAllLeagues().size() + ", total clubs: " + currentGame.getAllClubs().size());
                     }
                     
                     for (Country country : selectedCountries) {
                         if (country == null) {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR: country in selectedCountries is NULL!");
+                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "country in selectedCountries is NULL!");
                             continue;
                         }
                         if (country.getId() == null) {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR: country.getId() is NULL for country: " + country.getCommonName());
+                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "country.getId() is NULL for country: " + country.getCommonName());
                             continue;
                         }
                         
                         List<Club> clubsForCountry = DatabaseLoader.getClubsByCountry().get(country.getId());
                         if (clubsForCountry == null) {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR: No clubs found for country ID: " + country.getId() + " (" + country.getCommonName() + ")");
+                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "No clubs found for country ID: " + country.getId() + " (" + country.getCommonName() + ")");
                             continue;
                         }
                         
                         // Add all Clubs for the selected countries to be simulated
                         currentGame.getAllClubs().addAll(clubsForCountry);
-                        Gdx.app.log("NewGameOverviewScreen", "Step 6: Added " + clubsForCountry.size() + " clubs for country: " + country.getCommonName());
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: Added " + clubsForCountry.size() + " clubs for country: " + country.getCommonName());
                     }
-                    Gdx.app.log("NewGameOverviewScreen", "Step 6: OK - Total clubs loaded: " + currentGame.getAllClubs().size());
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: OK - Total clubs loaded: " + currentGame.getAllClubs().size());
 
                     /**
                      * Starting Club
@@ -554,10 +555,10 @@ public class NewGameOverviewScreen implements Screen {
                      * 
                      * NOTE: starting club cannot be null because we insert a ghost UNAVAILABLE Club
                      */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 7: Setting starting club...");
-                    Gdx.app.log("NewGameOverviewScreen", "Step 7: startingClub = " + (startingClub != null ? startingClub.getName() : "NULL"));
-                    Gdx.app.log("NewGameOverviewScreen", "Step 7: startingClub.getId() = " + (startingClub != null && startingClub.getId() != null ? startingClub.getId() : "NULL"));
-                    Gdx.app.log("NewGameOverviewScreen", "Step 7: primaryProfession = " + (primaryProfession != null ? primaryProfession.getName() + " (ID: " + primaryProfession.getId() + ")" : "NULL"));
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 7: Setting starting club...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 7: startingClub = " + (startingClub != null ? startingClub.getName() : "NULL"));
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 7: startingClub.getId() = " + (startingClub != null && startingClub.getId() != null ? startingClub.getId() : "NULL"));
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 7: primaryProfession = " + (primaryProfession != null ? primaryProfession.getName() + " (ID: " + primaryProfession.getId() + ")" : "NULL"));
                     
                     // Check if this is a profession that doesn't have a club (Player, Retired Player, Agent, Investor)
                     boolean professionRequiresNoClub = (primaryProfession != null && 
@@ -579,20 +580,20 @@ public class NewGameOverviewScreen implements Screen {
                                 // We only save the current club ID to avoid saving repeated times on JSON file
                                 currentGame.getOwner().setCurrentClubId(club.getId());
                                 clubFound = true;
-                                Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - Starting club set: " + club.getName() + " (ID: " + club.getId() + ")");
+                                Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 7: OK - Starting club set: " + club.getName() + " (ID: " + club.getId() + ")");
                                 break;
                             }
                         }
                         if (!clubFound) {
-                            Gdx.app.error("NewGameOverviewScreen", "WARNING: Starting club ID " + startingClub.getId() + " not found in loaded clubs!");
+                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Starting club ID " + startingClub.getId() + " not found in loaded clubs!");
                         }
                     } else {
                         if (professionRequiresNoClub) {
-                            Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - Profession " + primaryProfession.getName() + " does not require a starting club");
+                            Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 7: OK - Profession " + primaryProfession.getName() + " does not require a starting club");
                         } else if (startingClub == null) {
-                            Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - No starting club selected (unemployed start)");
+                            Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 7: OK - No starting club selected (unemployed start)");
                         } else {
-                            Gdx.app.log("NewGameOverviewScreen", "Step 7: OK - Starting club is UNAVAILABLE placeholder (no club ID)");
+                            Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 7: OK - Starting club is UNAVAILABLE placeholder (no club ID)");
                         }
                         // Explicitly set currentClubId to null for professions that don't have clubs
                         currentGame.getOwner().setCurrentClubId(null);
@@ -633,38 +634,38 @@ public class NewGameOverviewScreen implements Screen {
                      * -------------------------------------------------------------
                      * 
                      */
-                    Gdx.app.log("NewGameOverviewScreen", "Step 8: Loading season scripts...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 8: Loading season scripts...");
                     if (startingSeason.getSeasonScripts() == null) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR: startingSeason.getSeasonScripts() is NULL!");
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "startingSeason.getSeasonScripts() is NULL!");
                         throw new IllegalStateException("Season scripts list is null.");
                     }
                     
                     if (Futtoboru.DEBUG_MODE) {
-                        Gdx.app.log("NewGameOverviewScreen", "--------------------------");
-                        Gdx.app.log("NewGameOverviewScreen", "ITERATING SEASON SCRIPTS: ");
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "--------------------------");
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "ITERATING SEASON SCRIPTS: ");
                         
                         for (BasicScript script : startingSeason.getSeasonScripts()) {
                             if (script == null) {
-                                Gdx.app.error("NewGameOverviewScreen", "WARNING: Found null script in season scripts!");
+                                Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Found null script in season scripts!");
                                 continue;
                             }
-                            Gdx.app.log("NewGameOverviewScreen", "SEASON SCRIPT: " + script.getName());
-                            Gdx.app.log("NewGameOverviewScreen", "DESCRIPTION  : " + script.getDescription());
+                            Log.info(Log.UI_MENU, "NewGameOverviewScreen", "SEASON SCRIPT: " + script.getName());
+                            Log.info(Log.UI_MENU, "NewGameOverviewScreen", "DESCRIPTION  : " + script.getDescription());
                             
                             /**
                              * TEXT / SERIALIZED SCRIPT VERSION
                              */
                             if (script.getScriptValues() != null) {
-                                Gdx.app.log("NewGameOverviewScreen", "SCRIPT VALUES: " + script.getScriptValues().size());
+                                Log.info(Log.UI_MENU, "NewGameOverviewScreen", "SCRIPT VALUES: " + script.getScriptValues().size());
                                 
                                 for (Map.Entry<String, Object> entry : script.getScriptValues().entrySet()) {
-                                    Gdx.app.log("NewGameOverviewScreen", "Script Key = " + entry.getKey() + ", Script Value = " + entry.getValue());
+                                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Script Key = " + entry.getKey() + ", Script Value = " + entry.getValue());
                                 }
                             } else {
-                                Gdx.app.error("NewGameOverviewScreen", "WARNING: Script values are null for script: " + script.getName());
+                                Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Script values are null for script: " + script.getName());
                             }
                             
-                            Gdx.app.log("NewGameOverviewScreen", "--------------------------");
+                            Log.info(Log.UI_MENU, "NewGameOverviewScreen", "--------------------------");
                         }
                     }
                     
@@ -672,58 +673,58 @@ public class NewGameOverviewScreen implements Screen {
                      * Add Season Scripts to SaveGame
                      */
                     currentGame.getGameScripts().addAll(startingSeason.getSeasonScripts());
-                    Gdx.app.log("NewGameOverviewScreen", "Step 8: OK - Added " + startingSeason.getSeasonScripts().size() + " season scripts");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 8: OK - Added " + startingSeason.getSeasonScripts().size() + " season scripts");
                     
-                    Gdx.app.log("NewGameOverviewScreen", "Step 9: Initializing job system...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 9: Initializing job system...");
                     try {
                         ((Futtoboru) game).initializeJobSystem();
-                        Gdx.app.log("NewGameOverviewScreen", "Step 9: OK - Job system initialized");
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 9: OK - Job system initialized");
                     } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 9 (initializeJobSystem):", e);
-                        e.printStackTrace();
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "ERROR in Step 9 (initializeJobSystem):", e);
+                        Log.error(Log.UI_MENU, e);
                         throw e; // Re-throw to be caught by outer catch
                     }
                     
-                    Gdx.app.log("NewGameOverviewScreen", "Step 10: Creating initial job openings...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 10: Creating initial job openings...");
                     try {
                         if (((Futtoboru) game).getJobManager() != null) {
                             ((Futtoboru) game).getJobManager().initializeJobOpenings();
-                            Gdx.app.log("NewGameOverviewScreen", "Step 10: OK - Initial job openings created");
+                            Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 10: OK - Initial job openings created");
                         } else {
-                            Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 10: JobManager is NULL!");
+                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "ERROR in Step 10: JobManager is NULL!");
                             throw new IllegalStateException("JobManager is null after initialization");
                         }
                     } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 10 (initializeJobOpenings):", e);
-                        e.printStackTrace();
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "ERROR in Step 10 (initializeJobOpenings):", e);
+                        Log.error(Log.UI_MENU, e);
                         throw e; // Re-throw to be caught by outer catch
                     }
                     
                     // Generate attributes for all players (v1.0)
                     try {
-                        Gdx.app.log("NewGameOverviewScreen", "Step 11: Generating player attributes...");
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 11: Generating player attributes...");
                         generateAttributesForAllPlayers(currentGame);
-                        Gdx.app.log("NewGameOverviewScreen", "Step 11: OK - Player attributes generated");
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 11: OK - Player attributes generated");
                     } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 11 (generateAttributesForAllPlayers):", e);
-                        e.printStackTrace();
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "ERROR in Step 11 (generateAttributesForAllPlayers):", e);
+                        Log.error(Log.UI_MENU, e);
                         // Don't throw - attributes can be generated later if needed
                     }
                     
                     // Create initial attribute snapshots for change tracking (v1.0)
                     try {
-                        Gdx.app.log("NewGameOverviewScreen", "Step 12: Creating initial attribute snapshots...");
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 12: Creating initial attribute snapshots...");
                         createInitialAttributeSnapshots(currentGame);
-                        Gdx.app.log("NewGameOverviewScreen", "Step 12: OK - Initial snapshots created");
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 12: OK - Initial snapshots created");
                     } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 12 (createInitialAttributeSnapshots):", e);
-                        e.printStackTrace();
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "ERROR in Step 12 (createInitialAttributeSnapshots):", e);
+                        Log.error(Log.UI_MENU, e);
                         // Don't throw - snapshots can be created later
                     }
                     
                     // Create Welcome message (v2.0)
                     try {
-                        Gdx.app.log("NewGameOverviewScreen", "Step 13: Creating welcome message...");
+                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 13: Creating welcome message...");
                         Futtoboru futtoboru = (Futtoboru) game;
                         if (futtoboru.getGameEngine() != null && futtoboru.getGameEngine().getMessageManager() != null) {
                             com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
@@ -741,65 +742,65 @@ public class NewGameOverviewScreen implements Screen {
                             if (welcomeMessage != null) {
                                 // Deliver immediately
                                 messageManager.deliverMessage(welcomeMessage);
-                                Gdx.app.log("NewGameOverviewScreen", "Step 13: OK - Welcome message created and delivered");
-                                System.out.println("NewGameOverviewScreen: Created and delivered welcome message ID " + welcomeMessage.getId());
+                                Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 13: OK - Welcome message created and delivered");
+                                Log.info(Log.UI_MENU, "NewGameOverviewScreen: Created and delivered welcome message ID " + welcomeMessage.getId());
                                 
                                 // Verify message was added
                                 int messageCount = (currentGame.getAllMessages() != null) ? currentGame.getAllMessages().size() : 0;
-                                System.out.println("NewGameOverviewScreen: Total messages after welcome: " + messageCount);
+                                Log.info(Log.UI_MENU, "NewGameOverviewScreen: Total messages after welcome: " + messageCount);
                             } else {
-                                Gdx.app.error("NewGameOverviewScreen", "Step 13: WARNING - Welcome message is null");
+                                Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Step 13: WARNING - Welcome message is null");
                             }
                         } else {
-                            Gdx.app.error("NewGameOverviewScreen", "Step 13: ERROR - MessageManager not available");
+                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Step 13: ERROR - MessageManager not available");
                         }
                     } catch (Exception e) {
-                        Gdx.app.error("NewGameOverviewScreen", "ERROR in Step 13 (createWelcomeMessage):", e);
-                        e.printStackTrace();
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "ERROR in Step 13 (createWelcomeMessage):", e);
+                        Log.error(Log.UI_MENU, e);
                         // Don't throw - welcome message is nice to have but not critical
                     }
                     
-                    Gdx.app.log("NewGameOverviewScreen", "Step 14: Changing to GAME_SCREEN...");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 14: Changing to GAME_SCREEN...");
                     ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
-                    Gdx.app.log("NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
                     
                 } catch (Exception e) {
                     // Print to console (System.out) so it shows in debug window
-                    System.err.println("========================================");
-                    System.err.println("CRITICAL ERROR DURING GAME STARTUP!");
-                    System.err.println("========================================");
-                    System.err.println("Exception type: " + e.getClass().getName());
-                    System.err.println("Exception message: " + e.getMessage());
+                    Log.error(Log.UI_MENU, "========================================");
+                    Log.error(Log.UI_MENU, "CRITICAL ERROR DURING GAME STARTUP!");
+                    Log.error(Log.UI_MENU, "========================================");
+                    Log.error(Log.UI_MENU, "Exception type: " + e.getClass().getName());
+                    Log.error(Log.UI_MENU, "Exception message: " + e.getMessage());
                     if (e.getCause() != null) {
-                        System.err.println("Caused by: " + e.getCause().getClass().getName() + " - " + e.getCause().getMessage());
+                        Log.error(Log.UI_MENU, "Caused by: " + e.getCause().getClass().getName() + " - " + e.getCause().getMessage());
                     }
-                    System.err.println("----------------------------------------");
-                    e.printStackTrace(System.err);
-                    System.err.println("========================================");
+                    Log.error(Log.UI_MENU, "----------------------------------------");
+                    Log.error(Log.UI_MENU, e);
+                    Log.error(Log.UI_MENU, "========================================");
                     
                     // Also log via Gdx for consistency
-                    Gdx.app.error("NewGameOverviewScreen", "CRITICAL ERROR during game startup!", e);
-                    Gdx.app.error("NewGameOverviewScreen", "Exception type: " + e.getClass().getName());
-                    Gdx.app.error("NewGameOverviewScreen", "Exception message: " + e.getMessage());
+                    Log.error(Log.UI_MENU, "NewGameOverviewScreen", "CRITICAL ERROR during game startup!", e);
+                    Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Exception type: " + e.getClass().getName());
+                    Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Exception message: " + e.getMessage());
                     if (e.getCause() != null) {
-                        Gdx.app.error("NewGameOverviewScreen", "Caused by: " + e.getCause().getClass().getName() + " - " + e.getCause().getMessage());
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Caused by: " + e.getCause().getClass().getName() + " - " + e.getCause().getMessage());
                     }
-                    e.printStackTrace();
+                    Log.error(Log.UI_MENU, e);
                     
                     // Print full stack trace to console
                     StackTraceElement[] stackTrace = e.getStackTrace();
-                    System.err.println("Full stack trace:");
-                    Gdx.app.error("NewGameOverviewScreen", "Stack trace:");
+                    Log.error(Log.UI_MENU, "Full stack trace:");
+                    Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Stack trace:");
                     for (int i = 0; i < Math.min(30, stackTrace.length); i++) {
-                        System.err.println("  at " + stackTrace[i].toString());
-                        Gdx.app.error("NewGameOverviewScreen", "  at " + stackTrace[i].toString());
+                        Log.error(Log.UI_MENU, "  at " + stackTrace[i].toString());
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "  at " + stackTrace[i].toString());
                     }
-                    System.err.println("========================================");
+                    Log.error(Log.UI_MENU, "========================================");
                     
                     // Don't throw - show error dialog instead to prevent window from closing
                     // TODO: Show error dialog to user
-                    Gdx.app.error("NewGameOverviewScreen", "Game startup failed. Window will remain open for debugging.");
-                    System.err.println("Game startup failed. Window will remain open for debugging.");
+                    Log.error(Log.UI_MENU, "NewGameOverviewScreen", "Game startup failed. Window will remain open for debugging.");
+                    Log.error(Log.UI_MENU, "Game startup failed. Window will remain open for debugging.");
                     return; // Exit the button handler without changing screens
                 }
             }
@@ -933,7 +934,7 @@ public class NewGameOverviewScreen implements Screen {
     @Override
     public void hide() {
         
-        System.out.println("HIDE WAS CALLED ON NEW GAME OVERVIEW SCREEN - DISPOSE");
+        Log.info(Log.UI_MENU, "HIDE WAS CALLED ON NEW GAME OVERVIEW SCREEN - DISPOSE");
         
         // Hide will be called after switching to a separate screen
         dispose();
@@ -967,7 +968,7 @@ public class NewGameOverviewScreen implements Screen {
             }
         }
         
-        Gdx.app.log("NewGameOverviewScreen", "Generated attributes for " + playersGenerated + " players");
+        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Generated attributes for " + playersGenerated + " players");
     }
     
     /**
@@ -997,6 +998,6 @@ public class NewGameOverviewScreen implements Screen {
             }
         }
         
-        Gdx.app.log("NewGameOverviewScreen", "Created " + snapshotsCreated + " initial attribute snapshots");
+        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Created " + snapshotsCreated + " initial attribute snapshots");
     }
 }

@@ -26,6 +26,7 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * New Game Season Screen v1
@@ -177,7 +178,7 @@ public class NewGameSeasonScreen implements Screen {
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     
                     //
-                    System.out.println("MANAGER SELECTED!");
+                    Log.info(Log.UI_MENU, "MANAGER SELECTED!");
                     
                     // Set Selected Manager
                     Person manager = SaveLoadSystem.loadPersonFromFile(savedManagersSelectBox.getSelected());
@@ -205,7 +206,7 @@ public class NewGameSeasonScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 
-                System.out.println("SWITCHING TO CREATE MANAGER SCREEN");
+                Log.info(Log.UI_MENU, "SWITCHING TO CREATE MANAGER SCREEN");
                 
                 /**
                  * Set the Selected Person as Game Owner
@@ -236,7 +237,7 @@ public class NewGameSeasonScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 
-                System.out.println("LOADING EXISTING MANAGER FROM FILE - CHANGING TO NEW GAME SETUP SCREEN");
+                Log.info(Log.UI_MENU, "LOADING EXISTING MANAGER FROM FILE - CHANGING TO NEW GAME SETUP SCREEN");
                 
                 /**
                  * Set the Selected Person as Game Owner

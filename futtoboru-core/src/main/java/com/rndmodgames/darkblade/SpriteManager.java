@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Sprite Manager v1
@@ -36,14 +37,14 @@ public class SpriteManager {
 	public TextureRegion getSprite(String sprite) {
 		
 		if (DEBUG) {
-			System.out.println("Getting " + sprite);
+			Log.info(Log.SYSTEM_INIT, "Getting " + sprite);
 		}
 		
 		// RETURN CACHED
 		if (singleCacheSprite.containsKey(sprite)) {
 			
 			if (DEBUG) {
-				System.out.println("Getting " + sprite + " sprite from Sprite Cache!");
+				Log.info(Log.SYSTEM_INIT, "Getting " + sprite + " sprite from Sprite Cache!");
 			}
 			
 			return singleCacheSprite.get(sprite); 
@@ -52,7 +53,7 @@ public class SpriteManager {
 		TextureRegion region = atlas.findRegion(sprite);
 		
 		if (DEBUG) {
-			System.out.println("Getting " + sprite + " sprite from SpriteBatch!");
+			Log.info(Log.SYSTEM_INIT, "Getting " + sprite + " sprite from SpriteBatch!");
 		}
 		
 		// CACHE

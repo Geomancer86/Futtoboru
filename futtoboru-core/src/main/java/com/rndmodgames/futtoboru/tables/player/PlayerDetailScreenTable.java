@@ -5,7 +5,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -20,6 +19,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Player Detail Screen Table v1
@@ -108,7 +108,7 @@ public class PlayerDetailScreenTable extends VisTable {
      */
     public void updateDynamicComponents(Player player) {
         if (player == null || player.getPerson() == null) {
-            Gdx.app.error("PlayerDetailScreenTable", "Cannot update: player or person is null");
+            Log.error(Log.UI_CLUB, "PlayerDetailScreenTable", "Cannot update: player or person is null");
             return;
         }
         
@@ -269,7 +269,7 @@ public class PlayerDetailScreenTable extends VisTable {
             com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
                 currentPlayer.getPerson().getCurrentClubId());
             
-            Gdx.app.debug("PlayerDetailScreenTable", "Looking for contract - Player ID: " + 
+            Log.debug(Log.UI_CLUB, "PlayerDetailScreenTable", "Looking for contract - Player ID: " + 
                 currentPlayer.getId() + ", Person ID: " + 
                 (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getId() : "null") + 
                 ", Club: " + (playerClub != null ? playerClub.getName() : "null"));
@@ -281,20 +281,20 @@ public class PlayerDetailScreenTable extends VisTable {
                 if (lookupId != null) {
                     contract = playerClub.getContractForPlayer(lookupId);
                     if (contract == null) {
-                        Gdx.app.debug("PlayerDetailScreenTable", "Contract lookup returned null for player ID: " + lookupId);
+                        Log.debug(Log.UI_CLUB, "PlayerDetailScreenTable", "Contract lookup returned null for player ID: " + lookupId);
                     } else {
-                        Gdx.app.debug("PlayerDetailScreenTable", "Found contract ID: " + contract.getId() + 
+                        Log.debug(Log.UI_CLUB, "PlayerDetailScreenTable", "Found contract ID: " + contract.getId() + 
                             " for player ID: " + lookupId);
                     }
                 } else {
-                    Gdx.app.error("PlayerDetailScreenTable", "Cannot lookup contract: both player ID and person ID are null");
+                    Log.error(Log.UI_CLUB, "PlayerDetailScreenTable", "Cannot lookup contract: both player ID and person ID are null");
                 }
             } else {
-                Gdx.app.error("PlayerDetailScreenTable", "Player club not found for club ID: " + 
+                Log.error(Log.UI_CLUB, "PlayerDetailScreenTable", "Player club not found for club ID: " + 
                     currentPlayer.getPerson().getCurrentClubId());
             }
         } else {
-            Gdx.app.error("PlayerDetailScreenTable", "Cannot lookup contract: currentClubId=" + 
+            Log.error(Log.UI_CLUB, "PlayerDetailScreenTable", "Cannot lookup contract: currentClubId=" + 
                 (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getCurrentClubId() : "null") + 
                 ", currentGame=" + (futtoboru.getCurrentGame() != null ? "not null" : "null"));
         }
@@ -390,11 +390,11 @@ public class PlayerDetailScreenTable extends VisTable {
             
             // Debug logging
             if (natMod == null) {
-                Gdx.app.debug("PlayerDetailScreenTable", "No nationality modifier found for country ID: " + 
+                Log.debug(Log.UI_CLUB, "PlayerDetailScreenTable", "No nationality modifier found for country ID: " + 
                     countryId + " (" + currentPlayer.getPerson().getCountry().getCommonName() + ")");
             }
         } else {
-            Gdx.app.debug("PlayerDetailScreenTable", "Player has no country set");
+            Log.debug(Log.UI_CLUB, "PlayerDetailScreenTable", "Player has no country set");
         }
         
         // Get region modifier
@@ -409,12 +409,12 @@ public class PlayerDetailScreenTable extends VisTable {
             
             // Debug logging
             if (regMod == null) {
-                Gdx.app.debug("PlayerDetailScreenTable", "No region modifier found for state: " + 
+                Log.debug(Log.UI_CLUB, "PlayerDetailScreenTable", "No region modifier found for state: " + 
                     stateName + ", country ID: " + countryId);
             }
         } else {
             if (currentPlayer.getPerson().getState() == null) {
-                Gdx.app.debug("PlayerDetailScreenTable", "Player has no state/region set");
+                Log.debug(Log.UI_CLUB, "PlayerDetailScreenTable", "Player has no state/region set");
             }
         }
         

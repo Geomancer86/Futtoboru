@@ -25,6 +25,7 @@ import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Club Detail Screen Table v1
@@ -48,25 +49,25 @@ public class ClubDetailScreenTable extends VisTable {
     public ClubDetailScreenTable(Game parent) {
         super(true);
         
-        Gdx.app.log("ClubDetailScreenTable", "=== CONSTRUCTOR START ===");
-        System.out.println("[ClubDetailScreenTable] ===== CONSTRUCTOR CALLED =====");
+        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "=== CONSTRUCTOR START ===");
+        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] ===== CONSTRUCTOR CALLED =====");
         
         this.game = ((Futtoboru) parent);
         this.currentGame = game.getCurrentGame();
         this.jobManager = game.getJobManager();
         this.clubStaffManager = game.getClubStaffManager();
         
-        Gdx.app.log("ClubDetailScreenTable", "Game: " + (game != null ? "OK" : "NULL"));
-        Gdx.app.log("ClubDetailScreenTable", "CurrentGame: " + (currentGame != null ? "OK" : "NULL"));
-        Gdx.app.log("ClubDetailScreenTable", "JobManager: " + (jobManager != null ? "OK" : "NULL"));
-        Gdx.app.log("ClubDetailScreenTable", "ClubStaffManager: " + (clubStaffManager != null ? "OK" : "NULL"));
-        System.out.println("[ClubDetailScreenTable] Game: " + (game != null ? "OK" : "NULL"));
-        System.out.println("[ClubDetailScreenTable] CurrentGame: " + (currentGame != null ? "OK" : "NULL"));
-        System.out.println("[ClubDetailScreenTable] JobManager: " + (jobManager != null ? "OK" : "NULL"));
-        System.out.println("[ClubDetailScreenTable] ClubStaffManager: " + (clubStaffManager != null ? "OK" : "NULL"));
+        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Game: " + (game != null ? "OK" : "NULL"));
+        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "CurrentGame: " + (currentGame != null ? "OK" : "NULL"));
+        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "JobManager: " + (jobManager != null ? "OK" : "NULL"));
+        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "ClubStaffManager: " + (clubStaffManager != null ? "OK" : "NULL"));
+        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Game: " + (game != null ? "OK" : "NULL"));
+        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] CurrentGame: " + (currentGame != null ? "OK" : "NULL"));
+        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] JobManager: " + (jobManager != null ? "OK" : "NULL"));
+        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] ClubStaffManager: " + (clubStaffManager != null ? "OK" : "NULL"));
         
-        Gdx.app.log("ClubDetailScreenTable", "=== CONSTRUCTOR COMPLETE ===");
-        System.out.println("[ClubDetailScreenTable] ===== CONSTRUCTOR COMPLETE =====");
+        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "=== CONSTRUCTOR COMPLETE ===");
+        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] ===== CONSTRUCTOR COMPLETE =====");
     }
     
     /**
@@ -75,18 +76,18 @@ public class ClubDetailScreenTable extends VisTable {
      * @param club The club to display (can be null)
      */
     public void updateDynamicComponents(Club club) {
-        Gdx.app.log("ClubDetailScreenTable", "=== updateDynamicComponents START ===");
-        System.out.println("[ClubDetailScreenTable] updateDynamicComponents called for club: " + (club != null ? club.getName() : "NULL"));
+        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "=== updateDynamicComponents START ===");
+        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] updateDynamicComponents called for club: " + (club != null ? club.getName() : "NULL"));
         
         this.clear();
         
         if (club == null) {
-            Gdx.app.log("ClubDetailScreenTable", "Club is null, showing message");
+            Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Club is null, showing message");
             this.add(new VisLabel("No club selected."));
             return;
         }
         
-        Gdx.app.log("ClubDetailScreenTable", "Updating display for club: " + club.getName());
+        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Updating display for club: " + club.getName());
         
         this.displayedClub = club;
         
@@ -292,20 +293,20 @@ public class ClubDetailScreenTable extends VisTable {
                         
                         if (existingOpening != null) {
                             List<com.rndmodgames.futtoboru.data.jobs.JobApplication> playerApps = jobManager.getPlayerApplications(owner);
-                            Gdx.app.log("ClubDetailScreenTable", "Checking " + playerApps.size() + " existing applications for opening ID: " + existingOpening.getId());
-                            System.out.println("[ClubDetailScreenTable] Checking " + playerApps.size() + " existing applications");
+                            Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Checking " + playerApps.size() + " existing applications for opening ID: " + existingOpening.getId());
+                            Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Checking " + playerApps.size() + " existing applications");
                             for (com.rndmodgames.futtoboru.data.jobs.JobApplication app : playerApps) {
                                 if (app != null && app.getJobOpeningId() != null && app.getJobOpeningId().equals(existingOpening.getId()) && app.isActive()) {
                                     alreadyApplied = true;
                                     applicationStatus = app.getStatus();
-                                    Gdx.app.log("ClubDetailScreenTable", "Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
-                                    System.out.println("[ClubDetailScreenTable] Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
+                                    Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
+                                    Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
                                     break;
                                 }
                             }
                         }
-                        Gdx.app.log("ClubDetailScreenTable", "Already applied: " + alreadyApplied + ", Status: " + applicationStatus);
-                        System.out.println("[ClubDetailScreenTable] Already applied: " + alreadyApplied + ", Status: " + applicationStatus);
+                        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Already applied: " + alreadyApplied + ", Status: " + applicationStatus);
+                        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Already applied: " + alreadyApplied + ", Status: " + applicationStatus);
                         
                         VisTextButton applyButton;
                         if (alreadyApplied) {
@@ -323,26 +324,26 @@ public class ClubDetailScreenTable extends VisTable {
                         } else {
                             applyButton = new VisTextButton("Apply");
                         }
-                        Gdx.app.log("ClubDetailScreenTable", ">>> Creating Apply button for: " + finalProfession.getName() + " at " + finalClub.getName());
-                        System.out.println("[ClubDetailScreenTable] >>> Creating Apply button");
-                        System.out.println("[ClubDetailScreenTable]     Profession: " + finalProfession.getName());
-                        System.out.println("[ClubDetailScreenTable]     Club: " + finalClub.getName());
+                        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", ">>> Creating Apply button for: " + finalProfession.getName() + " at " + finalClub.getName());
+                        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] >>> Creating Apply button");
+                        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable]     Profession: " + finalProfession.getName());
+                        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable]     Club: " + finalClub.getName());
                         
-                        Gdx.app.log("ClubDetailScreenTable", "Button created successfully, adding listener...");
-                        System.out.println("[ClubDetailScreenTable] Button created, adding listener...");
+                        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Button created successfully, adding listener...");
+                        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Button created, adding listener...");
                         
                         // Only add listener if not already applied
                         if (!alreadyApplied) {
                                 applyButton.addCaptureListener(new InputListener() {
                                     @Override
                                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                                Gdx.app.log("ClubDetailScreenTable", "*** TOUCH DOWN on Apply button! ***");
-                                System.out.println("========================================");
-                                System.out.println("[ClubDetailScreenTable] *** TOUCH DOWN EVENT ***");
-                                System.out.println("[ClubDetailScreenTable] Club: " + (finalClub != null ? finalClub.getName() : "NULL"));
-                                System.out.println("[ClubDetailScreenTable] Profession: " + (finalProfession != null ? finalProfession.getName() : "NULL"));
-                                System.out.println("[ClubDetailScreenTable] Coordinates: x=" + x + ", y=" + y);
-                                System.out.println("========================================");
+                                Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "*** TOUCH DOWN on Apply button! ***");
+                                Log.info(Log.UI_CLUB, "========================================");
+                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] *** TOUCH DOWN EVENT ***");
+                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Club: " + (finalClub != null ? finalClub.getName() : "NULL"));
+                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Profession: " + (finalProfession != null ? finalProfession.getName() : "NULL"));
+                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Coordinates: x=" + x + ", y=" + y);
+                                Log.info(Log.UI_CLUB, "========================================");
                                 return true; // Return true to indicate we want to receive the touchUp event
                             }
                             
@@ -351,37 +352,37 @@ public class ClubDetailScreenTable extends VisTable {
                                 if (!applyButton.isPressed()) {
                                     return; // Button was released outside, ignore
                                 }
-                                Gdx.app.log("ClubDetailScreenTable", "*** CLICKED EVENT FIRED ***");
-                                System.out.println("========================================");
-                                System.out.println("[ClubDetailScreenTable] *** CLICKED EVENT ***");
-                                System.out.println("[ClubDetailScreenTable] Club: " + (finalClub != null ? finalClub.getName() : "NULL"));
-                                System.out.println("[ClubDetailScreenTable] Profession: " + (finalProfession != null ? finalProfession.getName() : "NULL"));
-                                System.out.println("========================================");
+                                Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "*** CLICKED EVENT FIRED ***");
+                                Log.info(Log.UI_CLUB, "========================================");
+                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] *** CLICKED EVENT ***");
+                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Club: " + (finalClub != null ? finalClub.getName() : "NULL"));
+                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Profession: " + (finalProfession != null ? finalProfession.getName() : "NULL"));
+                                Log.info(Log.UI_CLUB, "========================================");
                                 try {
-                                    Gdx.app.log("ClubDetailScreenTable", "=== Apply button clicked ===");
-                                    System.out.println("[ClubDetailScreenTable] Apply button clicked for: " + finalProfession.getName() + " at " + finalClub.getName());
+                                    Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "=== Apply button clicked ===");
+                                    Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Apply button clicked for: " + finalProfession.getName() + " at " + finalClub.getName());
                                     
                                     if (jobManager == null) {
-                                        Gdx.app.error("ClubDetailScreenTable", "jobManager is NULL!");
-                                        System.err.println("[ClubDetailScreenTable] ERROR: jobManager is NULL!");
+                                        Log.error(Log.UI_CLUB, "ClubDetailScreenTable", "jobManager is NULL!");
+                                        Log.error(Log.UI_CLUB, "[ClubDetailScreenTable] ERROR: jobManager is NULL!");
                                         return;
                                     }
                                     
                                     if (currentGame == null) {
-                                        Gdx.app.error("ClubDetailScreenTable", "currentGame is NULL!");
-                                        System.err.println("[ClubDetailScreenTable] ERROR: currentGame is NULL!");
+                                        Log.error(Log.UI_CLUB, "ClubDetailScreenTable", "currentGame is NULL!");
+                                        Log.error(Log.UI_CLUB, "[ClubDetailScreenTable] ERROR: currentGame is NULL!");
                                         return;
                                     }
                                     
                                     Person owner = currentGame.getOwner();
                                     if (owner == null) {
-                                        Gdx.app.error("ClubDetailScreenTable", "currentGame.getOwner() is NULL!");
-                                        System.err.println("[ClubDetailScreenTable] ERROR: currentGame.getOwner() is NULL!");
+                                        Log.error(Log.UI_CLUB, "ClubDetailScreenTable", "currentGame.getOwner() is NULL!");
+                                        Log.error(Log.UI_CLUB, "[ClubDetailScreenTable] ERROR: currentGame.getOwner() is NULL!");
                                         return;
                                     }
                                     
-                                    Gdx.app.log("ClubDetailScreenTable", "Step 1: Finding or creating job opening...");
-                                    System.out.println("[ClubDetailScreenTable] Step 1: Finding or creating job opening...");
+                                    Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Step 1: Finding or creating job opening...");
+                                    Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Step 1: Finding or creating job opening...");
                                     // Find or create job opening for this position
                                     com.rndmodgames.futtoboru.data.jobs.JobOpening jobOpening = null;
                                     
@@ -395,43 +396,43 @@ public class ClubDetailScreenTable extends VisTable {
                                                 .orElse(null);
                                         }
                                     } catch (Exception e) {
-                                        Gdx.app.error("ClubDetailScreenTable", "Error getting available jobs", e);
-                                        System.err.println("[ClubDetailScreenTable] ERROR getting available jobs:");
-                                        e.printStackTrace();
+                                        Log.error(Log.UI_CLUB, "ClubDetailScreenTable", "Error getting available jobs", e);
+                                        Log.error(Log.UI_CLUB, "[ClubDetailScreenTable] ERROR getting available jobs:");
+                                        Log.error(Log.UI_CLUB, e);
                                     }
                                     
                                     if (jobOpening == null) {
-                                        Gdx.app.log("ClubDetailScreenTable", "No existing job opening found, creating new one...");
+                                        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "No existing job opening found, creating new one...");
                                         // Create job opening if it doesn't exist
                                         try {
                                             jobOpening = jobManager.createJobOpening(finalClub, finalProfession);
                                             if (jobOpening == null) {
-                                                Gdx.app.error("ClubDetailScreenTable", "createJobOpening returned NULL!");
-                                                System.err.println("[ClubDetailScreenTable] ERROR: createJobOpening returned NULL!");
+                                                Log.error(Log.UI_CLUB, "ClubDetailScreenTable", "createJobOpening returned NULL!");
+                                                Log.error(Log.UI_CLUB, "[ClubDetailScreenTable] ERROR: createJobOpening returned NULL!");
                                                 return;
                                             }
-                                            Gdx.app.log("ClubDetailScreenTable", "Job opening created: " + jobOpening.getId());
+                                            Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Job opening created: " + jobOpening.getId());
                                         } catch (Exception e) {
-                                            Gdx.app.error("ClubDetailScreenTable", "ERROR creating job opening!", e);
-                                            System.err.println("[ClubDetailScreenTable] ERROR creating job opening:");
-                                            e.printStackTrace();
+                                            Log.error(Log.UI_CLUB, "ClubDetailScreenTable", "ERROR creating job opening!", e);
+                                            Log.error(Log.UI_CLUB, "[ClubDetailScreenTable] ERROR creating job opening:");
+                                            Log.error(Log.UI_CLUB, e);
                                             return;
                                         }
                                     } else {
-                                        Gdx.app.log("ClubDetailScreenTable", "Found existing job opening: " + jobOpening.getId());
+                                        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Found existing job opening: " + jobOpening.getId());
                                     }
                                     
                                     if (jobOpening != null) {
-                                        Gdx.app.log("ClubDetailScreenTable", "Step 2: Applying for job...");
+                                        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Step 2: Applying for job...");
                                         // Apply for the job
                                         try {
                                             com.rndmodgames.futtoboru.data.jobs.JobApplication result = 
                                                 jobManager.applyForJob(owner, jobOpening);
                                             
                                             if (result != null) {
-                                                Gdx.app.log("ClubDetailScreenTable", "Application successful: " + result.getId());
-                                                System.out.println("[ClubDetailScreenTable] Applied for " + finalProfession.getName() + " at " + finalClub.getName() + " - SUCCESS");
-                                                System.out.println("[ClubDetailScreenTable] Application ID: " + result.getId() + ", Status: " + result.getStatus());
+                                                Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Application successful: " + result.getId());
+                                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Applied for " + finalProfession.getName() + " at " + finalClub.getName() + " - SUCCESS");
+                                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Application ID: " + result.getId() + ", Status: " + result.getStatus());
                                                 
                                                 // Show success message
                                                 final ClubDetailScreenTable self = ClubDetailScreenTable.this;
@@ -444,29 +445,29 @@ public class ClubDetailScreenTable extends VisTable {
                                                 });
                                                 
                                                 // Force immediate refresh to show updated status
-                                                Gdx.app.log("ClubDetailScreenTable", "Forcing immediate screen refresh...");
-                                                System.out.println("[ClubDetailScreenTable] Forcing immediate screen refresh...");
+                                                Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Forcing immediate screen refresh...");
+                                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Forcing immediate screen refresh...");
                                                 
                                                 // Post to main thread to ensure UI update happens
                                                 Gdx.app.postRunnable(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        Gdx.app.log("ClubDetailScreenTable", "Refreshing screen in postRunnable...");
-                                                        System.out.println("[ClubDetailScreenTable] Refreshing screen in postRunnable...");
+                                                        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Refreshing screen in postRunnable...");
+                                                        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Refreshing screen in postRunnable...");
                                                         try {
                                                             updateDynamicComponents(finalClub);
-                                                            Gdx.app.log("ClubDetailScreenTable", "Display refreshed successfully in postRunnable");
-                                                            System.out.println("[ClubDetailScreenTable] Display refreshed successfully");
+                                                            Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Display refreshed successfully in postRunnable");
+                                                            Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Display refreshed successfully");
                                                         } catch (Exception e) {
-                                                            Gdx.app.error("ClubDetailScreenTable", "ERROR refreshing display in postRunnable!", e);
-                                                            System.err.println("[ClubDetailScreenTable] ERROR refreshing display:");
-                                                            e.printStackTrace();
+                                                            Log.error(Log.UI_CLUB, "ClubDetailScreenTable", "ERROR refreshing display in postRunnable!", e);
+                                                            Log.error(Log.UI_CLUB, "[ClubDetailScreenTable] ERROR refreshing display:");
+                                                            Log.error(Log.UI_CLUB, e);
                                                         }
                                                     }
                                                 });
                                             } else {
-                                                Gdx.app.log("ClubDetailScreenTable", "Application returned null (may be rejected or already exists)");
-                                                System.out.println("[ClubDetailScreenTable] Application returned null");
+                                                Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Application returned null (may be rejected or already exists)");
+                                                Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Application returned null");
                                                 
                                                 // Show error message
                                                 final ClubDetailScreenTable self = ClubDetailScreenTable.this;
@@ -479,41 +480,41 @@ public class ClubDetailScreenTable extends VisTable {
                                                 });
                                             }
                                         } catch (Exception e) {
-                                            Gdx.app.error("ClubDetailScreenTable", "ERROR applying for job!", e);
-                                            System.err.println("[ClubDetailScreenTable] ERROR applying for job:");
-                                            e.printStackTrace();
+                                            Log.error(Log.UI_CLUB, "ClubDetailScreenTable", "ERROR applying for job!", e);
+                                            Log.error(Log.UI_CLUB, "[ClubDetailScreenTable] ERROR applying for job:");
+                                            Log.error(Log.UI_CLUB, e);
                                             return;
                                         }
                                     }
                                     
-                                    Gdx.app.log("ClubDetailScreenTable", "=== Apply button click completed ===");
+                                    Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "=== Apply button click completed ===");
                                     
                                 } catch (Exception e) {
-                                    Gdx.app.error("ClubDetailScreenTable", "CRITICAL ERROR in Apply button click!", e);
-                                    System.err.println("========================================");
-                                    System.err.println("[ClubDetailScreenTable] CRITICAL ERROR in Apply button!");
-                                    System.err.println("Exception: " + e.getClass().getName());
-                                    System.err.println("Message: " + e.getMessage());
-                                    System.err.println("========================================");
-                                    e.printStackTrace();
-                                    System.err.println("========================================");
+                                    Log.error(Log.UI_CLUB, "ClubDetailScreenTable", "CRITICAL ERROR in Apply button click!", e);
+                                    Log.error(Log.UI_CLUB, "========================================");
+                                    Log.error(Log.UI_CLUB, "[ClubDetailScreenTable] CRITICAL ERROR in Apply button!");
+                                    Log.error(Log.UI_CLUB, "Exception: " + e.getClass().getName());
+                                    Log.error(Log.UI_CLUB, "Message: " + e.getMessage());
+                                    Log.error(Log.UI_CLUB, "========================================");
+                                    Log.error(Log.UI_CLUB, e);
+                                    Log.error(Log.UI_CLUB, "========================================");
                                     }
                                 }
                             });
                             } // End if (!alreadyApplied)
                         
-                        Gdx.app.log("ClubDetailScreenTable", "Listener added to button, now adding button to table...");
-                        System.out.println("[ClubDetailScreenTable] Adding button to table...");
+                        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Listener added to button, now adding button to table...");
+                        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Adding button to table...");
                         this.add(applyButton).width(UiTheme.size("col.number"));
-                        Gdx.app.log("ClubDetailScreenTable", "Button added to table successfully");
-                        System.out.println("[ClubDetailScreenTable] Button added to table for: " + finalProfession.getName() + " at " + finalClub.getName());
+                        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Button added to table successfully");
+                        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Button added to table for: " + finalProfession.getName() + " at " + finalClub.getName());
                     }
                 }
             }
         }
         
-        Gdx.app.log("ClubDetailScreenTable", "=== updateDynamicComponents COMPLETE ===");
-        System.out.println("[ClubDetailScreenTable] ===== updateDynamicComponents COMPLETE =====");
+        Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "=== updateDynamicComponents COMPLETE ===");
+        Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] ===== updateDynamicComponents COMPLETE =====");
         
         // Back button
         this.addSeparator();
@@ -555,8 +556,8 @@ public class ClubDetailScreenTable extends VisTable {
             dialog.show(stage);
         } else {
             // Fallback to console if stage not available
-            Gdx.app.log("ClubDetailScreenTable", title + ": " + message);
-            System.out.println("[ClubDetailScreenTable] " + title + ": " + message);
+            Log.info(Log.UI_CLUB, "ClubDetailScreenTable", title + ": " + message);
+            Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] " + title + ": " + message);
         }
     }
 }

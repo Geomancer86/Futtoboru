@@ -56,7 +56,7 @@ public class BuildInfo {
                 commitHash = System.getProperty("git.commit.id.abbrev", commitHash);
             }
         } catch (Exception e) {
-            System.err.println("WARNING: Could not load build properties: " + e.getMessage());
+            Log.warn(Log.SYSTEM_INIT, "Could not load build properties: " + e.getMessage());
             // Use defaults
         }
         

@@ -5,7 +5,6 @@ import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextField;
@@ -17,6 +16,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Negotiation Screen Table v1
@@ -131,18 +131,18 @@ public class NegotiationScreenTable extends VisTable {
                         JobOffer counterOffer = jobManager.submitCounterOffer(currentOffer, newSalary, newContractLength);
                         
                         if (counterOffer != null) {
-                            Gdx.app.log("NegotiationScreenTable", "Counter-offer submitted");
+                            Log.info(Log.UI_JOBS, "NegotiationScreenTable", "Counter-offer submitted");
                             // Go back to offers screen
                             if (menuManager != null) {
                                 menuManager.setActiveMainScreen(MainMenuManager.JOB_OFFER_SCREEN);
                             }
                         } else {
-                            Gdx.app.log("NegotiationScreenTable", "Counter-offer failed (may have been rejected)");
+                            Log.info(Log.UI_JOBS, "NegotiationScreenTable", "Counter-offer failed (may have been rejected)");
                             // Refresh to show updated offer status
                             updateDynamicComponents();
                         }
                     } catch (NumberFormatException e) {
-                        Gdx.app.error("NegotiationScreenTable", "Invalid number format", e);
+                        Log.error(Log.UI_JOBS, "NegotiationScreenTable", "Invalid number format", e);
                     }
                 }
             }

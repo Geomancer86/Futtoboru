@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Cup Draw Screen Table v1.0
@@ -136,11 +137,11 @@ public class CupDrawScreenTable extends VisTable {
         roundFixtures = new ArrayList<>();
         drawOrder = new ArrayList<>();
         if (currentEdition == null) {
-            System.out.println("CupDrawScreenTable: currentEdition is null!");
+            Log.info(Log.UI_DRAW, "CupDrawScreenTable: currentEdition is null!");
             return;
         }
         
-        System.out.println("CupDrawScreenTable: Collecting fixtures for edition: " + currentEdition.getName() + " (ID: " + currentEdition.getId() + ")");
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: Collecting fixtures for edition: " + currentEdition.getName() + " (ID: " + currentEdition.getId() + ")");
         
         // Find all matches for this edition that haven't been played
         List<Match> editionMatches = new ArrayList<>();
@@ -164,11 +165,11 @@ public class CupDrawScreenTable extends VisTable {
             }
         }
         
-        System.out.println("CupDrawScreenTable: Checked " + totalClubsChecked + " clubs, found " + matchesFoundForEdition + " total matches for edition, " + editionMatches.size() + " are unplayed.");
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: Checked " + totalClubsChecked + " clubs, found " + matchesFoundForEdition + " total matches for edition, " + editionMatches.size() + " are unplayed.");
         
         // If no matches exist, generate the draw now
         if (editionMatches.isEmpty()) {
-            System.out.println("CupDrawScreenTable: No matches found for this edition, generating draw now...");
+            Log.info(Log.UI_DRAW, "CupDrawScreenTable: No matches found for this edition, generating draw now...");
             generateCupDraw();
             // Re-collect matches after generation - refresh currentGame reference first
             currentGame = game.getCurrentGame();
@@ -185,11 +186,11 @@ public class CupDrawScreenTable extends VisTable {
                     }
                 }
             }
-            System.out.println("CupDrawScreenTable: After generation, found " + editionMatches.size() + " matches");
+            Log.info(Log.UI_DRAW, "CupDrawScreenTable: After generation, found " + editionMatches.size() + " matches");
         }
         
         if (editionMatches.isEmpty()) {
-            System.out.println("CupDrawScreenTable: Still no matches after generation attempt!");
+            Log.info(Log.UI_DRAW, "CupDrawScreenTable: Still no matches after generation attempt!");
             return;
         }
         
@@ -204,10 +205,10 @@ public class CupDrawScreenTable extends VisTable {
         // If no round found, default to round 1 (first round)
         if (maxRound == 0) {
             maxRound = 1;
-            System.out.println("CupDrawScreenTable: No round found in matches, defaulting to round 1");
+            Log.info(Log.UI_DRAW, "CupDrawScreenTable: No round found in matches, defaulting to round 1");
         }
         
-        System.out.println("CupDrawScreenTable: Max round found: " + maxRound);
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: Max round found: " + maxRound);
         
         // Collect matches for Round 1 only (for the draw screen)
         for (Match m : editionMatches) {
@@ -216,7 +217,7 @@ public class CupDrawScreenTable extends VisTable {
             }
         }
         
-        System.out.println("CupDrawScreenTable: Collected " + roundFixtures.size() + " matches for round " + maxRound);
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: Collected " + roundFixtures.size() + " matches for round " + maxRound);
         
         // Build draw order: teams in the order they were drawn (team1, team2, team3, team4...)
         // This allows revealing teams one by one like Football Manager
@@ -232,7 +233,7 @@ public class CupDrawScreenTable extends VisTable {
             }
         }
         
-        System.out.println("CupDrawScreenTable: Built drawOrder with " + drawOrder.size() + " teams");
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: Built drawOrder with " + drawOrder.size() + " teams");
         
         // Sort matches for deterministic display (e.g. by home club name)
         Collections.sort(roundFixtures, (m1, m2) -> {
@@ -263,16 +264,16 @@ public class CupDrawScreenTable extends VisTable {
      */
     private void generateCupDraw() {
         if (currentCup == null || currentEdition == null) {
-            System.out.println("CupDrawScreenTable: Cannot generate draw - cup or edition is null");
+            Log.info(Log.UI_DRAW, "CupDrawScreenTable: Cannot generate draw - cup or edition is null");
             return;
         }
         
         if (currentEdition.getParticipantClubsIds() == null || currentEdition.getParticipantClubsIds().isEmpty()) {
-            System.out.println("CupDrawScreenTable: Cannot generate draw - no participants");
+            Log.info(Log.UI_DRAW, "CupDrawScreenTable: Cannot generate draw - no participants");
             return;
         }
         
-        System.out.println("CupDrawScreenTable: *** GENERATING COMPLETE CUP BRACKET *** for " + currentCup.getName());
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: *** GENERATING COMPLETE CUP BRACKET *** for " + currentCup.getName());
         
         // CRITICAL FIX: Use CupBracketGenerator to generate COMPLETE bracket (all rounds)
         // NOT CompetitionScheduler which only generates Round 1
@@ -293,11 +294,11 @@ public class CupDrawScreenTable extends VisTable {
         );
         
         if (allMatches == null || allMatches.isEmpty()) {
-            System.out.println("CupDrawScreenTable: ERROR - Bracket generation returned no matches!");
+            Log.info(Log.UI_DRAW, "CupDrawScreenTable: ERROR - Bracket generation returned no matches!");
             return;
         }
         
-        System.out.println("CupDrawScreenTable: Generated " + allMatches.size() + " total matches (all rounds)");
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: Generated " + allMatches.size() + " total matches (all rounds)");
         
         // Process all matches and add to clubs (same logic as AuthorityManager)
         int round1Count = 0;
@@ -370,12 +371,12 @@ public class CupDrawScreenTable extends VisTable {
                         }
                     }
                 }
-                System.out.println("CupDrawScreenTable: Added Round " + match.getRound() + " match " + 
+                Log.info(Log.UI_DRAW, "CupDrawScreenTable: Added Round " + match.getRound() + " match " + 
                     match.getBracketPath() + " to " + addedCount + " clubs");
             }
         }
         
-        System.out.println("CupDrawScreenTable: *** COMPLETE BRACKET ADDED *** Round 1: " + round1Count + 
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: *** COMPLETE BRACKET ADDED *** Round 1: " + round1Count + 
             " matches, Round 2+: " + round2PlusCount + " matches");
         
         // Update participant count
@@ -446,7 +447,7 @@ public class CupDrawScreenTable extends VisTable {
         VisTable buttonTable = new VisTable(true);
         
         // Debug: Log button state
-        System.out.println("CupDrawScreenTable: Button state - allRevealed: " + allRevealed + 
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: Button state - allRevealed: " + allRevealed + 
             ", drawOrder: " + (drawOrder != null ? drawOrder.size() + " teams" : "null") + 
             ", currentRevealedIndex: " + currentRevealedIndex);
         

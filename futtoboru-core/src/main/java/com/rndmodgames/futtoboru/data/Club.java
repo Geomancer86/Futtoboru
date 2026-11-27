@@ -7,8 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
-import com.rndmodgames.futtoboru.system.DebugLogManager;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Club v1
@@ -530,11 +529,11 @@ public class Club implements Serializable {
     
     public void addPlayerContract(PlayerContract contract) {
         if (contract == null) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_GENERATION, "Club", "Cannot add null contract to club: " + getName());
+            Log.error(Log.DATA_GENERATION, "Club", "Cannot add null contract to club: " + getName());
             return;
         }
         getPlayerContracts().add(contract);
-        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "Club", "Added contract ID " + contract.getId() + 
+        Log.debug(Log.DATA_GENERATION, "Club", "Added contract ID " + contract.getId() + 
             " for player ID " + contract.getPlayerId() + " to club " + getName() + 
             " (total contracts: " + getPlayerContracts().size() + ")");
     }
@@ -544,27 +543,27 @@ public class Club implements Serializable {
      */
     public PlayerContract getContractForPlayer(Long playerId) {
         if (playerId == null) {
-            DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "Club", "getContractForPlayer called with null playerId for club: " + getName());
+            Log.debug(Log.DATA_GENERATION, "Club", "getContractForPlayer called with null playerId for club: " + getName());
             return null;
         }
         if (playerContracts == null || playerContracts.isEmpty()) {
-            DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "Club", "No contracts found for club: " + getName() + " (playerContracts is " + 
+            Log.debug(Log.DATA_GENERATION, "Club", "No contracts found for club: " + getName() + " (playerContracts is " + 
                 (playerContracts == null ? "null" : "empty") + ")");
             return null;
         }
         
-        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "Club", "Looking for contract for player ID " + playerId + 
+        Log.debug(Log.DATA_GENERATION, "Club", "Looking for contract for player ID " + playerId + 
             " in club " + getName() + " (total contracts: " + playerContracts.size() + ")");
         
         for (PlayerContract contract : playerContracts) {
             if (contract.getPlayerId() != null && contract.getPlayerId().equals(playerId)) {
-                DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "Club", "Found contract ID " + contract.getId() + 
+                Log.debug(Log.DATA_GENERATION, "Club", "Found contract ID " + contract.getId() + 
                     " for player ID " + playerId);
                 return contract;
             }
         }
         
-        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_DATA_GENERATION, "Club", "No contract found for player ID " + playerId + 
+        Log.debug(Log.DATA_GENERATION, "Club", "No contract found for player ID " + playerId + 
             " in club " + getName() + ". Contract player IDs: " + 
             playerContracts.stream()
                 .map(c -> c.getPlayerId() != null ? c.getPlayerId().toString() : "null")
