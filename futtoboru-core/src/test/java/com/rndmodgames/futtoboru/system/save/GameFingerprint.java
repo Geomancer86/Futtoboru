@@ -125,7 +125,7 @@ public class GameFingerprint {
         for (CompetitionEdition e : editions) {
             out.add(e.getId() + " " + e.getName() + " " + e.getParticipantClubsIds().size() + " clubs, "
                     + e.getStartDate() + ".." + e.getEndDate() + ", champions " + e.getChampionsId() + ", runners-up "
-                    + e.getRunnersUpId());
+                    + e.getRunnersUpId() + ", " + e.getFinalStandings().size() + " final rows");
         }
         return out.toString();
     }
