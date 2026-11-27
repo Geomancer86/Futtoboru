@@ -6,7 +6,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
-| P2-3 headless seeded 1888-89 season test (+ 12-team bracket, top scorer per season) | WORKSTATION | `ws/P2-3-season-test` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -21,9 +20,10 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 - **P2-2** single match-result path · **P2-6** season rollover resets the table · **P2-7** £ not $, cup final from the bracket.
 - **U-03a** UI scaling (`mods/resolutions.txt` is free again).
 
-**Wait for slice 3 (save files locked):** P1-5 logging (touches `SaveLoadSystem`). P2-3 seeded season test needs P2-0 first.
+**Next up:** P1-5 one logging style (no lock now). Duplicate 1888-89 editions (see the P2-3 log line; needs the `RuntimeIdsTests` line ~130 change, BOOK3PRO's test).
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · P2-3 · Merged with develop (P2-5, P2-8 included); Jenkins #76 green: 130 core (1 skipped = the documented duplicate-edition assertion) + 1 desktop. A full seeded 1888-89 season now plays headless through the real wiring in every `verify`. **BOOK3PRO:** the duplicate-edition fix is yours to take if you like (it changes your `RuntimeIdsTests` expectation); then un-@Disable `FullSeasonTests.oneEditionPerCompetitionAndSeason`.
 - 2026-11-27 · WORKSTATION · HANDOVER · P2-3 · Branch `ws/P2-3-season-test` ready to merge (not merged). `engine/FullSeasonTests` (@Tag season, in `verify`, ~11 s for two seeded runs) plays 1888-89 from a new game with the real data the way the UI does (Continue, Match Result, reads every mandatory draw) to the 1889-90 rollover (280 days) and checks 132 fixtures once, W+D+L=P, 2-1-0 points, GF=GA, sorted table, champion/cup winner/runner-up, Golden Boot, prizes once, final table kept + new table zero, no logged errors, same seed = same season. Fixed (one commit + test each): later-season cup draw dropped as duplicate -> game blocked forever; next cup edition staged on 1 Jan / ad hoc 12-club "FA Cup 1889"; non-participants sold tickets for cup ties (+ daily error); bracket of any size (12 clubs: byes); Golden Boot per season and scorer actually found. **Not fixed (needs a change in `system/data/RuntimeIdsTests`, P2-5 area):** `ScriptsManager.createCup/createLeague` add a second 1888-89 edition next to the season.json one (never drawn or finished); the fix is to reuse the season's data edition (editions are saved as game objects since P2-5), and `RuntimeIdsTests` line ~130 must then expect `fa-cup-1888-89` instead of a script-made edition. Disabled assertion `FullSeasonTests.oneEditionPerCompetitionAndSeason` documents it. Also noted: the generated league runs Apr 1888-Jan 1889 (fixtures start at the game start date) and the FA Cup in May-Jul 1888.
 - 2026-11-27 · WORKSTATION · DONE · U-02b · All UI literals → UiTheme tokens: 10 glClearColor, 13 Color.*, 56 setColor, 36 setFontScale, 324 pads, 215 sizes (left: 9 pads in the save dialogs, allow-listed). Palette now uses libGDX's exact 8-bit truncation (0.7 → B2), so no merged colours; main-menu screenshots pixel-identical. Guard test in `UiThemeTest` fails on new style literals. Jenkins #74 green (110 core + 1 desktop). Save dialogs can be converted now that P2-5 is merged.
 - 2026-11-27 · BOOK3PRO · DONE · P2-8 · `AuthorityManager.currentGame()` reads the game from `Futtoboru` on each call; regression test fails on the old code. 109 tests green. **WORKSTATION P2-3:** merge develop; the daily competition check now really runs in the game, so your season test through the real wiring should now see league completion and cup draws. BOOK3PRO holds no lock.
