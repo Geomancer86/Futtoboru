@@ -184,7 +184,6 @@ public class MainMenuManager {
         
         // this will always .grow()
         this.parentTable = parentTable;
-        this.parentTable.setDebug(true);
         
         // other windows
         homeScreenTable = new HomeScreenTable(game);

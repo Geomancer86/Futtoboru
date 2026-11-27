@@ -37,7 +37,6 @@ public class MyApplicationsScreenTable extends VisTable {
     
     public MyApplicationsScreenTable(Game parent) {
         super(true);
-        this.setDebug(true);
         
         this.game = parent;
         this.currentGame = ((Futtoboru)game).getCurrentGame();
@@ -51,7 +50,6 @@ public class MyApplicationsScreenTable extends VisTable {
         
         // Applications list
         applicationsListTable = new VisTable(true);
-        applicationsListTable.setDebug(true);
         
         applicationsScrollPane = new VisScrollPane(applicationsListTable);
         applicationsScrollPane.setFadeScrollBars(false);

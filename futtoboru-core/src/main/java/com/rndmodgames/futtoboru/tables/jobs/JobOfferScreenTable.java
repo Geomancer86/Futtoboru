@@ -41,7 +41,6 @@ public class JobOfferScreenTable extends VisTable {
     
     public JobOfferScreenTable(Game parent) {
         super(true);
-        this.setDebug(true);
         
         this.game = parent;
         this.currentGame = ((Futtoboru)game).getCurrentGame();
@@ -55,7 +54,6 @@ public class JobOfferScreenTable extends VisTable {
         
         // Offers list
         offersListTable = new VisTable(true);
-        offersListTable.setDebug(true);
         
         offersScrollPane = new VisScrollPane(offersListTable);
         offersScrollPane.setFadeScrollBars(false);
