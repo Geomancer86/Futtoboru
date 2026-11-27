@@ -23,13 +23,13 @@
                     <exclude>**/*java</exclude>
                     <exclude>**/*SVN</exclude>
                 </excludes>
-                <filtering>true</filtering>
+                <filtering>false</filtering>
             </resource>
         </resources>
         <testResources>
             <testResource>
                 <directory>\${basedir}/src/test/resources</directory>
-                <filtering>true</filtering>
+                <filtering>false</filtering>
             </testResource>
         </testResources>
         <plugins>
