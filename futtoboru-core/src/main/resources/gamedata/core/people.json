@@ -14,23 +14,27 @@
     "id": "george-drummond-1865",
     "firstName": "George",
     "lastName": "Drummond",
-    "born": "1865",
+    "born": "1865-01-09",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season",
+      "https://en.wikipedia.org/wiki/George_Drummond_(footballer,_born_1865)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/preston-north-end.md): born 9 Jan 1865, Edinburgh. The id keeps the old year (D11)."
   },
   {
     "id": "jack-edwards-1867",
     "firstName": "Jack",
     "lastName": "Edwards",
-    "born": "1867",
-    "country": "scotland",
+    "born": "1867-08-25",
+    "country": "england",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season",
+      "https://en.wikipedia.org/wiki/Jack_Edwards_(footballer,_born_1867)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/preston-north-end.md): nationality: English: John Bentley Edwards, b. 25 Aug 1867, Preston (season article lists him ENG)."
   },
   {
     "id": "archie-goodall-1865",
@@ -100,12 +104,14 @@
     "id": "willie-graham-1866",
     "firstName": "Willie",
     "lastName": "Graham",
-    "born": "1866",
+    "born": "1866-01",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season",
+      "https://en.wikipedia.org/wiki/Willie_Graham_(footballer,_born_1866)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/preston-north-end.md): born Jan 1866, Dreghorn. The id keeps the old year (D11)."
   },
   {
     "id": "robert-holmes-1867",
@@ -135,12 +141,14 @@
     "id": "jock-inglis-1859",
     "firstName": "Jock",
     "lastName": "Inglis",
-    "born": "1859",
+    "born": "1859-06-17",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season",
+      "https://en.wikipedia.org/wiki/Jock_Inglis"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/preston-north-end.md): born 17 Jun 1859, Kilwinning. The id keeps the old year (D11)."
   },
   {
     "id": "robert-mills-roberts-1862",
@@ -157,12 +165,14 @@
     "id": "sandy-robertson-1860",
     "firstName": "Sandy",
     "lastName": "Robertson",
-    "born": "1860",
+    "born": "1860-12",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season",
+      "https://en.wikipedia.org/wiki/Sandy_Robertson_(footballer,_born_1860)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/preston-north-end.md): born Dec 1860, Edinburgh. The id keeps the old year (D11)."
   },
   {
     "id": "jimmy-ross-1866",
@@ -178,13 +188,16 @@
   {
     "id": "david-russel-1863",
     "firstName": "David",
-    "lastName": "Russel",
+    "lastName": "Russell",
     "born": "1863-07-06",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season",
+      "https://en.wikipedia.org/wiki/David_Russell_(Scottish_footballer)",
+      "https://spartacus-educational.com/PRESTONrussell.htm"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/preston-north-end.md): surname is Russell (David Kennedy Russell, b. 6 Jul 1863, Beith; Spartacus gives 1862); the id keeps the old spelling (D11). Not Davie Russell (b. 1871)."
   },
   {
     "id": "sam-thomson-1862",
@@ -276,10 +289,10 @@
     ]
   },
   {
-    "id": "arthur-brown-1858",
-    "firstName": "Arthur",
+    "id": "albert-brown-1862",
+    "firstName": "Albert",
     "lastName": "Brown",
-    "born": "1858-12-03",
+    "born": "1862-01-07",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -300,8 +313,11 @@
       "https://en.wikipedia.org/wiki/Harry_Devey",
       "https://en.wikipedia.org/wiki/Walter_Ashmore",
       "https://www.avfchistory.co.uk/aston-villa/squad/1888-89",
-      "https://www.national-football-teams.com/player/61842/Dennis_Hodgetts.html"
-    ]
+      "https://www.national-football-teams.com/player/61842/Dennis_Hodgetts.html",
+      "https://en.wikipedia.org/wiki/Albert_Brown_(footballer,_born_1862)",
+      "https://en.wikipedia.org/wiki/Arthur_Brown_(footballer,_born_1858)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/aston-villa.md): Albert Alfred Brown, Villa right winger 1884-94, born Coventry; ever-present in 1888-89 (22 League apps, 7 goals). Born 7 Jan 1862 per the article lead, 6 Jan 1865 per its infobox. Replaces `arthur-brown-1858` (his brother Arthur 'Digger' Brown, b. 1858, retired by 1886), aliased per D11."
   },
   {
     "id": "john-burton-1863",
@@ -1903,7 +1919,7 @@
     "firstName": "Thomas",
     "lastName": "Coupar",
     "born": "1865",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season",
@@ -1918,7 +1934,8 @@
       "https://en.wikipedia.org/wiki/E._Siddons",
       "https://en.wikipedia.org/wiki/H._McGuiness",
       "https://www.worldfootball.net/teams/bolton-wanderers/10/"
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/bolton-wanderers.md): nationality: Scottish per the 1888-89 season article."
   },
   {
     "id": "g-owen-1865",
@@ -1969,7 +1986,7 @@
     "firstName": "Sam",
     "lastName": "Gillam",
     "born": "1865",
-    "country": "england",
+    "country": "wales",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season",
@@ -1984,7 +2001,8 @@
       "https://en.wikipedia.org/wiki/E._Siddons",
       "https://en.wikipedia.org/wiki/H._McGuiness",
       "https://www.worldfootball.net/teams/bolton-wanderers/10/"
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/bolton-wanderers.md): nationality: Welsh per the 1888-89 season article."
   },
   {
     "id": "w-flitcroft-1864",
@@ -2206,7 +2224,7 @@
     "id": "jem-bayliss-1865",
     "firstName": "Jem",
     "lastName": "Bayliss",
-    "born": "1865",
+    "born": "1863-08-01",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2217,8 +2235,10 @@
       "https://en.wikipedia.org/wiki/George_Timmins_%28footballer%29",
       "https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29",
       "https://en.wikipedia.org/wiki/Luther_Walker",
-      "https://en.wikipedia.org/wiki/George_Woodhall"
-    ]
+      "https://en.wikipedia.org/wiki/George_Woodhall",
+      "https://en.wikipedia.org/wiki/Jem_Bayliss"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/west-bromwich-albion.md): born 1 Aug 1863, Tipton (Matthews: 14 Jan 1863). The id keeps the old year (D11)."
   },
   {
     "id": "fredrick-crabtree-1866",
@@ -2279,7 +2299,7 @@
     "firstName": "Billy",
     "lastName": "Hendry",
     "born": "1869-06-20",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season",
@@ -2296,13 +2316,13 @@
       "https://en.wikipedia.org/wiki/Alf_Underwood",
       "https://en.wikipedia.org/wiki/Billy_Hendry"
     ],
-    "notes": "Born 1869-06-20 (the id keeps the old 1865). Real move: WBA, then Stoke in April 1889."
+    "notes": "Born 1869-06-20 (the id keeps the old 1865). Real move: WBA, then Stoke in April 1889. H-01b (docs/data/history/clubs/stoke.md): nationality: born Newport-on-Tay (Scottish); also docs/data/history/clubs/west-bromwich-albion.md."
   },
   {
     "id": "ezra-horton-1864",
     "firstName": "Ezra",
     "lastName": "Horton",
-    "born": "1864",
+    "born": "1861-08-20",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2313,14 +2333,16 @@
       "https://en.wikipedia.org/wiki/George_Timmins_%28footballer%29",
       "https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29",
       "https://en.wikipedia.org/wiki/Luther_Walker",
-      "https://en.wikipedia.org/wiki/George_Woodhall"
-    ]
+      "https://en.wikipedia.org/wiki/George_Woodhall",
+      "https://en.wikipedia.org/wiki/Ezra_Horton"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/west-bromwich-albion.md): born 20 Aug 1861. The id keeps the old year (D11)."
   },
   {
     "id": "jack-horton-1863",
     "firstName": "Jack",
     "lastName": "Horton",
-    "born": "1863",
+    "born": "1866-02-15",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2331,8 +2353,10 @@
       "https://en.wikipedia.org/wiki/George_Timmins_%28footballer%29",
       "https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29",
       "https://en.wikipedia.org/wiki/Luther_Walker",
-      "https://en.wikipedia.org/wiki/George_Woodhall"
-    ]
+      "https://en.wikipedia.org/wiki/George_Woodhall",
+      "https://en.wikipedia.org/wiki/Jack_Horton_(footballer,_born_1866)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/west-bromwich-albion.md): born 15 Feb 1866. The id keeps the old year (D11)."
   },
   {
     "id": "albert-millard-1866",
@@ -2392,7 +2416,7 @@
     "id": "charlie-perry-1864",
     "firstName": "Charlie",
     "lastName": "Perry",
-    "born": "1864",
+    "born": "1866-01-03",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2403,14 +2427,16 @@
       "https://en.wikipedia.org/wiki/George_Timmins_%28footballer%29",
       "https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29",
       "https://en.wikipedia.org/wiki/Luther_Walker",
-      "https://en.wikipedia.org/wiki/George_Woodhall"
-    ]
+      "https://en.wikipedia.org/wiki/George_Woodhall",
+      "https://en.wikipedia.org/wiki/Charlie_Perry_(footballer,_born_1866)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/west-bromwich-albion.md): born 3 Jan 1866. The id keeps the old year (D11)."
   },
   {
     "id": "walter-perry-1865",
     "firstName": "Walter",
     "lastName": "Perry",
-    "born": "1865",
+    "born": "1868-10-11",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2421,8 +2447,10 @@
       "https://en.wikipedia.org/wiki/George_Timmins_%28footballer%29",
       "https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29",
       "https://en.wikipedia.org/wiki/Luther_Walker",
-      "https://en.wikipedia.org/wiki/George_Woodhall"
-    ]
+      "https://en.wikipedia.org/wiki/George_Woodhall",
+      "https://en.wikipedia.org/wiki/Walter_Perry_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/west-bromwich-albion.md): born 11 Oct 1868. The id keeps the old year (D11)."
   },
   {
     "id": "alexander-ramsey-1865",
@@ -2483,7 +2511,7 @@
     "id": "george-timmins-1863",
     "firstName": "George",
     "lastName": "Timmins",
-    "born": "1863",
+    "born": "1864",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2494,8 +2522,10 @@
       "https://en.wikipedia.org/wiki/George_Timmins_%28footballer%29",
       "https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29",
       "https://en.wikipedia.org/wiki/Luther_Walker",
-      "https://en.wikipedia.org/wiki/George_Woodhall"
-    ]
+      "https://en.wikipedia.org/wiki/George_Woodhall",
+      "https://en.wikipedia.org/wiki/George_Timmins_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/west-bromwich-albion.md): born Q1 1864. The id keeps the old year (D11)."
   },
   {
     "id": "luther-walker-1862",
@@ -2519,7 +2549,7 @@
     "id": "joe-wilson-1865",
     "firstName": "Joe",
     "lastName": "Wilson",
-    "born": "1865",
+    "born": "1861-01-08",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2530,14 +2560,16 @@
       "https://en.wikipedia.org/wiki/George_Timmins_%28footballer%29",
       "https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29",
       "https://en.wikipedia.org/wiki/Luther_Walker",
-      "https://en.wikipedia.org/wiki/George_Woodhall"
-    ]
+      "https://en.wikipedia.org/wiki/George_Woodhall",
+      "https://en.wikipedia.org/wiki/Joe_Wilson_(footballer,_born_1861)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/west-bromwich-albion.md): born 8 Jan 1861, Handsworth. The id keeps the old year (D11)."
   },
   {
     "id": "george-woodhall-1864",
     "firstName": "George",
     "lastName": "Woodhall",
-    "born": "1864",
+    "born": "1863-09-05",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2549,29 +2581,34 @@
       "https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29",
       "https://en.wikipedia.org/wiki/Luther_Walker",
       "https://en.wikipedia.org/wiki/George_Woodhall"
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/west-bromwich-albion.md): born 5 Sep 1863. The id keeps the old year (D11)."
   },
   {
     "id": "billy-barbour-1865",
     "firstName": "Billy",
     "lastName": "Barbour",
     "born": "1865",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
+      "https://en.wikipedia.org/wiki/Billy_Barbour"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/accrington.md): nationality: born Kilmarnock, 21 Sep 1865 (Scottish)."
   },
   {
     "id": "jim-bonar-1866",
     "firstName": "Jim",
     "lastName": "Bonar",
-    "born": "1866",
-    "country": "england",
+    "born": "1862-07-13",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
+      "https://en.wikipedia.org/wiki/Jim_Bonar"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/accrington.md): nationality: born Glasgow (Scottish; the season article flags him English). Born 13 Jul 1862 per the article (its categories say 1866)."
   },
   {
     "id": "bob-brand-1865",
@@ -2602,12 +2639,12 @@
     "firstName": "Hugh",
     "lastName": "Galbraith",
     "born": "1868-12-22",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
     ],
-    "notes": "Born 1868-12-22 (the id keeps the old 1866). Real: Accrington and Bootle (1 app) in 1888-89. Not the Notts County Galbraith."
+    "notes": "Born 1868-12-22 (the id keeps the old 1866). Real: Accrington and Bootle (1 app) in 1888-89. Not the Notts County Galbraith. H-01b (docs/data/history/clubs/accrington.md): nationality: Scottish per the 1888-89 season article."
   },
   {
     "id": "pat-gallocher-1865",
@@ -2631,12 +2668,14 @@
     "id": "george-haworth-1863",
     "firstName": "George",
     "lastName": "Haworth",
-    "born": "1863",
+    "born": "1864-10-17",
     "country": "england",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
+      "https://en.wikipedia.org/wiki/George_Haworth"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/accrington.md): born 17 Oct 1864, Accrington. The id keeps the old year (D11)."
   },
   {
     "id": "j-holden-1865",
@@ -2699,12 +2738,14 @@
     "id": "john-mclellan-1863",
     "firstName": "John",
     "lastName": "McLellan",
-    "born": "1863",
-    "country": "england",
+    "born": "1867",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
+      "https://en.wikipedia.org/wiki/John_McLellan_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/accrington.md): nationality: born Edinburgh (Scottish). Born 1867."
   },
   {
     "id": "henry-parkinson-1865",
@@ -2760,23 +2801,27 @@
     "id": "john-stevenson-1862",
     "firstName": "John",
     "lastName": "Stevenson",
-    "born": "1862",
-    "country": "england",
+    "born": "1861-12-10",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
+      "https://en.wikipedia.org/wiki/John_Stevenson_(footballer,_born_1862)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/accrington.md): nationality: born Calton, Glasgow (Scottish). Born 10 Dec 1861."
   },
   {
     "id": "james-tattersall-1864",
     "firstName": "James",
     "lastName": "Tattersall",
-    "born": "1864",
+    "born": "1867-06-03",
     "country": "england",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
+      "https://en.wikipedia.org/wiki/James_Tattersall"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/accrington.md): born 3 Jun 1867, Accrington (single mirror source). The id keeps the old year (D11)."
   },
   {
     "id": "arthur-wilkinson-1865",
@@ -2843,85 +2888,97 @@
     "id": "george-dobson-1862",
     "firstName": "George",
     "lastName": "Dobson",
-    "born": "1862",
+    "born": "1862-04",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/George_Dobson_(footballer,_born_1862)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): born Apr 1862, Bolton. The id keeps the old year (D11)."
   },
   {
     "id": "robert-smalley-1865",
     "firstName": "Robert",
     "lastName": "Smalley",
-    "born": "1865",
+    "born": "1867",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/Robert_Smalley"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): born 1867, Darwen. The id keeps the old year (D11)."
   },
   {
     "id": "nick-ross-1863",
     "firstName": "Nick",
     "lastName": "Ross",
-    "born": "1863",
-    "country": "england",
+    "born": "1862-12-06",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/Nick_Ross_(footballer,_born_1862)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): nationality: born Edinburgh, 6 Dec 1862 (the id keeps 1863)."
   },
   {
-    "id": "james-weir-1864",
-    "firstName": "James",
+    "id": "john-weir-1865",
+    "firstName": "John",
     "lastName": "Weir",
-    "born": "1864",
-    "country": "england",
+    "born": "1865-01-10",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/John_Weir_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): John Weir, Scottish half-back b. Crossmyloof, 1 Scotland cap (1887); 16 of 22 League games in 1888-89. Listed as 'James Weir' in the season summary and evertonresults; not the 1864-born Jimmy Weir. Replaces `james-weir-1864`, aliased per D11."
   },
   {
     "id": "george-farmer-1865",
     "firstName": "George",
     "lastName": "Farmer",
-    "born": "1865",
-    "country": "england",
+    "born": "1862-12-13",
+    "country": "wales",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/George_Farmer_(Welsh_footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): nationality: born Oswestry, 13 Dec 1862; Wales international."
   },
   {
     "id": "robert-watson-1864",
     "firstName": "Robert",
     "lastName": "Watson",
-    "born": "1864",
+    "born": "1866",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/Robert_Watson_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): born 1866, Liverpool. The id keeps the old year (D11)."
   },
   {
     "id": "james-costley-1865",
@@ -2942,14 +2999,16 @@
     "firstName": "Alec",
     "lastName": "Dick",
     "born": "1865",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/Alec_Dick_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): nationality: born Kilmarnock, 1865 (Scottish)."
   },
   {
     "id": "david-waugh-1864",
@@ -2997,15 +3056,17 @@
     "id": "alf-milward-1865",
     "firstName": "Alf",
     "lastName": "Milward",
-    "born": "1865",
+    "born": "1870-09-12",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/Alf_Milward"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): born 12 Sep 1870, Great Marlow. The id keeps the old year (D11)."
   },
   {
     "id": "jack-angus-1865",
@@ -3316,7 +3377,7 @@
     "firstName": "Ross",
     "lastName": "McMahon",
     "born": "1865",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
@@ -3325,7 +3386,8 @@
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
       "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/burnley.md): nationality: Scottish."
   },
   {
     "id": "john-yates-1861",
@@ -3367,7 +3429,7 @@
     "id": "thomas-midgley-1860",
     "firstName": "Thomas",
     "lastName": "Midgley",
-    "born": "1860",
+    "born": "1856",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -3376,15 +3438,17 @@
       "https://en.wikipedia.org/wiki/Dan_Friel",
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
+      "https://en.wikipedia.org/wiki/Ross_McMahon",
+      "https://en.wikipedia.org/wiki/Thomas_Midgley_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/burnley.md): born 1856 in Leeds, died 1957. The id keeps the old year (D11)."
   },
   {
     "id": "walter-cox-1865",
     "firstName": "Walter",
     "lastName": "Cox",
     "born": "1863",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
@@ -3392,14 +3456,33 @@
       "https://en.wikipedia.org/wiki/Dan_Friel",
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
+      "https://en.wikipedia.org/wiki/Ross_McMahon",
+      "https://en.wikipedia.org/wiki/Walter_Cox_(footballer,_born_1863)"
     ],
-    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Born 1863."
+    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Born 1863. H-01b (docs/data/history/clubs/burnley.md): nationality: Scottish goalkeeper from Leith Harp."
   },
   {
     "id": "sandy-lang-1865",
     "firstName": "Sandy",
     "lastName": "Lang",
+    "born": "1864",
+    "country": "scotland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
+      "https://en.wikipedia.org/wiki/Jack_Abrahams",
+      "https://en.wikipedia.org/wiki/Dan_Friel",
+      "https://en.wikipedia.org/wiki/Pat_Gallocher",
+      "https://en.wikipedia.org/wiki/John_Yates",
+      "https://en.wikipedia.org/wiki/Ross_McMahon",
+      "https://en.wikipedia.org/wiki/Sandy_Lang"
+    ],
+    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Born 1864. H-01b (docs/data/history/clubs/burnley.md): nationality: born Bridge of Weir (Scottish)."
+  },
+  {
+    "id": "william-bury-1865",
+    "firstName": "William",
+    "lastName": "Bury",
     "born": "1864",
     "country": "england",
     "confidence": "unverified",
@@ -3409,26 +3492,10 @@
       "https://en.wikipedia.org/wiki/Dan_Friel",
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
+      "https://en.wikipedia.org/wiki/Ross_McMahon",
+      "https://en.wikipedia.org/wiki/William_Bury_(footballer)"
     ],
-    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Born 1864."
-  },
-  {
-    "id": "william-bury-1865",
-    "firstName": "William",
-    "lastName": "Bury",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ],
-    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Birth year 1865 is the old filler value."
+    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Birth year 1865 is the old filler value. H-01b (docs/data/history/clubs/burnley.md): born Q3 1864 per the infobox (1865 in the lead), Darwen. The id keeps the old year (D11)."
   },
   {
     "id": "jack-keenan-1865",
@@ -3452,7 +3519,7 @@
     "firstName": "Bill",
     "lastName": "McFettridge",
     "born": "1864-04-22",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
@@ -3460,23 +3527,26 @@
       "https://en.wikipedia.org/wiki/Dan_Friel",
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
+      "https://en.wikipedia.org/wiki/Ross_McMahon",
+      "https://en.wikipedia.org/wiki/Bill_McFettridge"
     ],
-    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
+    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). H-01b (docs/data/history/clubs/burnley.md): nationality: born Govan (Scottish)."
   },
   {
     "id": "george-bakewell-1865",
     "firstName": "George",
     "lastName": "Bakewell",
-    "born": "1865",
+    "born": "1864-05-13",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
       "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
       "https://en.wikipedia.org/wiki/Lawrence_Plackett",
-      "https://en.wikipedia.org/wiki/Lewis_Cooper"
-    ]
+      "https://en.wikipedia.org/wiki/Lewis_Cooper",
+      "https://en.wikipedia.org/wiki/George_Bakewell"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/derby-county.md): born 13 May 1864. The id keeps the old year (D11)."
   },
   {
     "id": "ew-bellhouse-1865",
@@ -3553,14 +3623,16 @@
     "firstName": "Archibald",
     "lastName": "Ferguson",
     "born": "1863",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
       "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
       "https://en.wikipedia.org/wiki/Lawrence_Plackett",
-      "https://en.wikipedia.org/wiki/Lewis_Cooper"
-    ]
+      "https://en.wikipedia.org/wiki/Lewis_Cooper",
+      "https://en.wikipedia.org/wiki/Archibald_Ferguson"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/derby-county.md): nationality: born Edinburgh (Scottish); birth date not given."
   },
   {
     "id": "h-harbour-1865",
@@ -3650,15 +3722,17 @@
     "id": "joseph-marshall-1863",
     "firstName": "Joseph",
     "lastName": "Marshall",
-    "born": "1863",
+    "born": "1862",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
       "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
       "https://en.wikipedia.org/wiki/Lawrence_Plackett",
-      "https://en.wikipedia.org/wiki/Lewis_Cooper"
-    ]
+      "https://en.wikipedia.org/wiki/Lewis_Cooper",
+      "https://en.wikipedia.org/wiki/Joseph_Marshall_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/derby-county.md): born 1862 (24 Apr or 25 Jul; the article disagrees with itself). The id keeps the old year (D11)."
   },
   {
     "id": "isaac-monks-1864",
@@ -3730,15 +3804,17 @@
     "id": "harry-plackett-1866",
     "firstName": "Harry",
     "lastName": "Plackett",
-    "born": "1866",
+    "born": "1871-04-14",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
       "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
       "https://en.wikipedia.org/wiki/Lawrence_Plackett",
-      "https://en.wikipedia.org/wiki/Lewis_Cooper"
-    ]
+      "https://en.wikipedia.org/wiki/Lewis_Cooper",
+      "https://en.wikipedia.org/wiki/Harry_Plackett"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/derby-county.md): born 14 Apr 1871: the youngest League player in Sep 1888. The id keeps the old year (D11)."
   },
   {
     "id": "lawrence-plackett-1869",
@@ -3772,15 +3848,17 @@
     "id": "walter-roulstone-1864",
     "firstName": "Walter",
     "lastName": "Roulstone",
-    "born": "1864",
+    "born": "1866",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
       "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
       "https://en.wikipedia.org/wiki/Lawrence_Plackett",
-      "https://en.wikipedia.org/wiki/Lewis_Cooper"
-    ]
+      "https://en.wikipedia.org/wiki/Lewis_Cooper",
+      "https://en.wikipedia.org/wiki/Walter_Roulstone"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/derby-county.md): born 1866. The id keeps the old year (D11)."
   },
   {
     "id": "j-smith-1864",
@@ -3800,43 +3878,49 @@
     "id": "benjamin-spilsbury-1865",
     "firstName": "Benjamin",
     "lastName": "Spilsbury",
-    "born": "1865",
+    "born": "1864-08-01",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
       "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
       "https://en.wikipedia.org/wiki/Lawrence_Plackett",
-      "https://en.wikipedia.org/wiki/Lewis_Cooper"
-    ]
+      "https://en.wikipedia.org/wiki/Lewis_Cooper",
+      "https://en.wikipedia.org/wiki/Benjamin_Spilsbury"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/derby-county.md): born 1 Aug 1864. The id keeps the old year (D11)."
   },
   {
     "id": "albert-williamson-1864",
     "firstName": "Albert",
     "lastName": "Williamson",
-    "born": "1864",
+    "born": "1866-04-14",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
       "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
       "https://en.wikipedia.org/wiki/Lawrence_Plackett",
-      "https://en.wikipedia.org/wiki/Lewis_Cooper"
-    ]
+      "https://en.wikipedia.org/wiki/Lewis_Cooper",
+      "https://en.wikipedia.org/wiki/Albert_Williamson"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/derby-county.md): born 14 Apr 1866. The id keeps the old year (D11)."
   },
   {
     "id": "levi-wright-1864",
     "firstName": "Levi",
     "lastName": "Wright",
-    "born": "1864",
+    "born": "1862-01-15",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
       "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
       "https://en.wikipedia.org/wiki/Lawrence_Plackett",
-      "https://en.wikipedia.org/wiki/Lewis_Cooper"
-    ]
+      "https://en.wikipedia.org/wiki/Lewis_Cooper",
+      "https://en.wikipedia.org/wiki/Levi_Wright"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/derby-county.md): born 15 Jan 1862. The id keeps the old year (D11)."
   },
   {
     "id": "thomas-allin-1865",
@@ -3878,7 +3962,7 @@
     "id": "george-brown-1863",
     "firstName": "George",
     "lastName": "Brown",
-    "born": "1863",
+    "born": "1866",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -3889,8 +3973,10 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/George_H._Brown_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): George Henry Brown, born Q3 1866. The id keeps the old year (D11)."
   },
   {
     "id": "hh-brown-1865",
@@ -3932,7 +4018,7 @@
     "id": "john-clements-1864",
     "firstName": "John",
     "lastName": "Clements",
-    "born": "1864",
+    "born": "1867-11-03",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -3943,14 +4029,16 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/John_Clements_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): born 3 Nov 1867; signed Oct 1888. The id keeps the old year (D11)."
   },
   {
     "id": "henry-cursham-1863",
     "firstName": "Henry",
     "lastName": "Cursham",
-    "born": "1863",
+    "born": "1859-11-27",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -3961,8 +4049,10 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/Harry_Cursham"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): Henry Alfred 'Harry' Cursham, b. 27 Nov 1859 (the id keeps the old 1863). Merged with the Swifts entry `harry-cursham-1859` (aliased): a Notts County player, not a Swifts one (docs/data/history/clubs/swifts.md)."
   },
   {
     "id": "harry-daft-1866",
@@ -4040,7 +4130,7 @@
     "id": "william-gunn-1865",
     "firstName": "William",
     "lastName": "Gunn",
-    "born": "1865",
+    "born": "1858-12-04",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -4051,14 +4141,16 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/William_Gunn_(cricketer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): born 4 Dec 1858. The id keeps the old year (D11)."
   },
   {
     "id": "frank-guttridge-1863",
     "firstName": "Frank",
     "lastName": "Guttridge",
-    "born": "1863",
+    "born": "1866-04-12",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -4069,8 +4161,10 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/Frank_Guttridge"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): born 12 Apr 1866. The id keeps the old year (D11)."
   },
   {
     "id": "ted-harker-1865",
@@ -4094,7 +4188,7 @@
     "id": "bill-hodder-1864",
     "firstName": "Bill",
     "lastName": "Hodder",
-    "born": "1864",
+    "born": "1865-10",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -4106,7 +4200,8 @@
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
       "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): born Oct 1865. The id keeps the old year (D11)."
   },
   {
     "id": "jack-holland-1861",
@@ -4130,7 +4225,7 @@
     "id": "harry-jackson-1865",
     "firstName": "Harry",
     "lastName": "Jackson",
-    "born": "1865",
+    "born": "1864",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -4141,8 +4236,10 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/Harry_Jackson_(footballer,_born_1864)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): born 1864. The id keeps the old year (D11)."
   },
   {
     "id": "bob-jardine-1864",
@@ -4238,7 +4335,7 @@
     "id": "albert-moore-1865",
     "firstName": "Albert",
     "lastName": "Moore",
-    "born": "1865",
+    "born": "1863-09-15",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -4249,8 +4346,10 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/Albert_Moore_(footballer,_born_1863)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): born 15 Sep 1863. The id keeps the old year (D11)."
   },
   {
     "id": "hugh-owen-1864",
@@ -4328,7 +4427,7 @@
     "id": "mordecai-sherwin-1862",
     "firstName": "Mordecai",
     "lastName": "Sherwin",
-    "born": "1862",
+    "born": "1851-02-26",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -4339,8 +4438,10 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/Mordecai_Sherwin"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): born 26 Feb 1851. The id keeps the old year (D11)."
   },
   {
     "id": "herbert-snook-1865",
@@ -4436,7 +4537,7 @@
     "id": "tom-widdowson-1863",
     "firstName": "Tom",
     "lastName": "Widdowson",
-    "born": "1863",
+    "born": "1862",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -4447,22 +4548,26 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/Tom_Widdowson"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/notts-county.md): born Q1 1862. The id keeps the old year (D11)."
   },
   {
     "id": "bill-rowley-1863",
     "firstName": "Bill",
     "lastName": "Rowley",
-    "born": "1863",
+    "born": "1865-09-11",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Bill_Rowley"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): born 11 Sep 1865. The id keeps the old year (D11)."
   },
   {
     "id": "wilf-merritt-1865",
@@ -4566,29 +4671,33 @@
     "id": "george-shutt-1864",
     "firstName": "George",
     "lastName": "Shutt",
-    "born": "1864",
+    "born": "1861-12-18",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/George_Shutt"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): born 18 Dec 1861. The id keeps the old year (D11)."
   },
   {
     "id": "elijah-smith-1863",
     "firstName": "Elijah",
     "lastName": "Smith",
-    "born": "1863",
+    "born": "1860",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Elijah_Smith_(footballer)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): born 1860. The id keeps the old year (D11)."
   },
   {
     "id": "albert-farmer-1864",
@@ -4636,76 +4745,70 @@
     "id": "alf-edge-1865",
     "firstName": "Alf",
     "lastName": "Edge",
-    "born": "1865",
+    "born": "1864-11-05",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Alf_Edge"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): born 5 Nov 1864. The id keeps the old year (D11)."
   },
   {
     "id": "bob-milarvie-1864",
     "firstName": "Bob",
     "lastName": "Milarvie",
     "born": "1864",
-    "country": "england",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Bob_Milarvie"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): nationality: born Pollokshields (Scottish)."
   },
   {
     "id": "billy-tunnicliffe-1865",
     "firstName": "Billy",
     "lastName": "Tunnicliffe",
-    "born": "1865",
+    "born": "1864",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Billy_Tunnicliffe_(footballer,_born_1864)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): born 1864. The id keeps the old year (D11)."
   },
   {
     "id": "jimmy-sloane-1864",
     "firstName": "Jimmy",
     "lastName": "Sloane",
-    "born": "1864",
-    "country": "england",
+    "born": "1866-05-13",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Jimmy_Sloane"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): nationality: born Govan, 13 May 1866 (Scottish)."
   },
   {
     "id": "frank-staton-1865",
     "firstName": "Frank",
     "lastName": "Staton",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
-      "https://en.wikipedia.org/wiki/Bob_McSkimming",
-      "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
-  },
-  {
-    "id": "george-lawton-1864",
-    "firstName": "George",
-    "lastName": "Lawton",
     "born": "1864",
     "country": "england",
     "confidence": "unverified",
@@ -4713,22 +4816,42 @@
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Frank_Staton"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): born 1864. The id keeps the old year (D11)."
   },
   {
-    "id": "jimmy-sayer-1865",
-    "firstName": "Jimmy",
-    "lastName": "Sayer",
-    "born": "1865",
+    "id": "george-lawton-1864",
+    "firstName": "George",
+    "lastName": "Lawton",
+    "born": "1862-08-04",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/George_Lawton_(footballer,_born_1862)"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): born 4 Aug 1862. The id keeps the old year (D11)."
+  },
+  {
+    "id": "jimmy-sayer-1865",
+    "firstName": "Jimmy",
+    "lastName": "Sayer",
+    "born": "1862",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
+      "https://en.wikipedia.org/wiki/Bob_McSkimming",
+      "https://en.wikipedia.org/wiki/Tommy_Clare",
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Jimmy_Sayer"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): born 1862. The id keeps the old year (D11)."
   },
   {
     "id": "george-slater-1865",
@@ -4874,43 +4997,23 @@
     "id": "bill-smalley-1865",
     "firstName": "Bill",
     "lastName": "Smalley",
-    "born": "1865",
+    "born": "1864",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
-  },
-  {
-    "id": "arthur-dunn-1860",
-    "firstName": "Arthur",
-    "lastName": "Dunn",
-    "born": "1860-08-12",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C."
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Bill_Smalley"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/stoke.md): born 1864. The id keeps the old year (D11)."
   },
   {
     "id": "william-moon-1868",
     "firstName": "William",
     "lastName": "Moon",
     "born": "1868-06-07",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C."
-    ]
-  },
-  {
-    "id": "norman-pares-1854",
-    "firstName": "Norman",
-    "lastName": "Pares",
-    "born": "1854-01-16",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -4925,8 +5028,11 @@
     "country": "england",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C."
-    ]
+      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C.",
+      "https://en.wikipedia.org/wiki/Old_Carthusians_F.C.",
+      "https://en.wikipedia.org/wiki/Percy_Walters"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/old-carthusians.md): an Old Carthusian (England full-back pair 'Morning' and 'Afternoon'), not an Old Westminster: moved to the Old Carthusians squad (docs/data/history/clubs/old-westminsters.md)."
   },
   {
     "id": "arthur-walters-1864",
@@ -4936,8 +5042,11 @@
     "country": "england",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C."
-    ]
+      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C.",
+      "https://en.wikipedia.org/wiki/Old_Carthusians_F.C.",
+      "https://en.wikipedia.org/wiki/Percy_Walters"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/old-carthusians.md): an Old Carthusian (England full-back pair 'Morning' and 'Afternoon'), not an Old Westminster: moved to the Old Carthusians squad (docs/data/history/clubs/old-westminsters.md)."
   },
   {
     "id": "rupert-sandilands-1868",
@@ -5007,47 +5116,39 @@
   },
   {
     "id": "bambridge-charles-1858",
-    "firstName": "Bambridge",
-    "lastName": "Charles",
+    "firstName": "Charles",
+    "lastName": "Bambridge",
     "born": "1858-07-30",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Swifts_F.C."
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/swifts.md): first and last name were swapped (Swifts' England internationals Charles, Arthur and Ernest Bambridge)."
   },
   {
     "id": "bambridge-arthur-1861",
-    "firstName": "Bambridge",
-    "lastName": "Arthur",
+    "firstName": "Arthur",
+    "lastName": "Bambridge",
     "born": "1861-06-16",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Swifts_F.C."
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/swifts.md): first and last name were swapped (Swifts' England internationals Charles, Arthur and Ernest Bambridge)."
   },
   {
     "id": "bambridge-ernest-1848",
-    "firstName": "Bambridge",
-    "lastName": "Ernest",
+    "firstName": "Ernest",
+    "lastName": "Bambridge",
     "born": "1848-06-16",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Swifts_F.C."
-    ]
-  },
-  {
-    "id": "george-cotterill-1868",
-    "firstName": "George",
-    "lastName": "Cotterill",
-    "born": "1868-04-04",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Swifts_F.C."
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/swifts.md): first and last name were swapped (Swifts' England internationals Charles, Arthur and Ernest Bambridge)."
   },
   {
     "id": "wildam-hay-1851",
@@ -5105,17 +5206,6 @@
     ]
   },
   {
-    "id": "harry-cursham-1859",
-    "firstName": "Harry",
-    "lastName": "Cursham",
-    "born": "1859-11-27",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Swifts_F.C."
-    ]
-  },
-  {
     "id": "nc-cooper-1864",
     "firstName": "N.C.",
     "lastName": "Cooper",
@@ -5128,14 +5218,15 @@
   },
   {
     "id": "gh-cotterill-1868",
-    "firstName": "G.H.",
+    "firstName": "George",
     "lastName": "Cotterill",
     "born": "1868-04-04",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Old_Brightonians_F.C."
-    ]
+    ],
+    "notes": "H-01b (docs/data/history/clubs/old-brightonians.md): George Huth Cotterill, capped for England as an Old Brightonian; merged with the Swifts entry `george-cotterill-1868` (same birth date, aliased); kept at Old Brightonians only (docs/data/history/clubs/swifts.md [4])."
   },
   {
     "id": "am-daniel-1866",
@@ -5376,28 +5467,6 @@
     "lastName": "Lindley",
     "born": "1865-10-27",
     "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Nottingham_Forest_F.C."
-    ]
-  },
-  {
-    "id": "harry-linacre-1869",
-    "firstName": "Harry",
-    "lastName": "Linacre",
-    "born": "1869-06-20",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Nottingham_Forest_F.C."
-    ]
-  },
-  {
-    "id": "john-mcpherson-1867",
-    "firstName": "John",
-    "lastName": "McPherson",
-    "born": "1867-06-19",
-    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Nottingham_Forest_F.C."
@@ -6308,17 +6377,6 @@
     "notes": "Not found as a Crewe player in any online source; kept until an offline source decides."
   },
   {
-    "id": "gilbert-smith-1872",
-    "firstName": "Gilbert",
-    "lastName": "Smith",
-    "born": "1872-11-25",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Old_Carthusians_F.C."
-    ]
-  },
-  {
     "id": "charles-wreford-brown-1866",
     "firstName": "Charles",
     "lastName": "Wreford-Brown",
@@ -6400,17 +6458,6 @@
     "firstName": "Leonard",
     "lastName": "Wilkinson",
     "born": "1868-10-27",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Old_Carthusians_F.C."
-    ]
-  },
-  {
-    "id": "evelyn-lintott-1883",
-    "firstName": "Evelyn",
-    "lastName": "Lintott",
-    "born": "1883",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -6943,12 +6990,13 @@
     "firstName": "William",
     "lastName": "Bell",
     "born": "1860-08-22",
-    "country": "england",
+    "country": "wales",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C."
+      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
+      "https://en.wikipedia.org/wiki/William_Bell_(Welsh_footballer)"
     ],
-    "notes": "Crewe Alexandra 1888-89 (6 Combination games)."
+    "notes": "Crewe Alexandra 1888-89 (6 Combination games). H-01b (docs/data/history/clubs/crewe-alexandra.md): nationality: Wales international (5 caps 1881-86)."
   },
   {
     "id": "alfred-davies-1863",
@@ -7039,12 +7087,12 @@
     "firstName": "Job",
     "lastName": "Wilding",
     "born": "1862",
-    "country": "england",
+    "country": "wales",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
     ],
-    "notes": "Bootle from 1888."
+    "notes": "Bootle from 1888. H-01b (docs/data/history/clubs/bootle.md): nationality: Welsh international capped while at Bootle."
   },
   {
     "id": "david-jardine-1867",
@@ -7809,5 +7857,123 @@
     "confidence": "placeholder",
     "sources": [],
     "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "frank-sugg-1862",
+    "firstName": "Frank",
+    "lastName": "Sugg",
+    "born": "1862-01-11",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Frank_Sugg",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): Frank Howe Sugg, b. Ilkeston; centre-forward, signed Sep 1888, debut 6 Oct 1888, 9 of 22 League games in 1888-89; England Test cricketer (1888)."
+  },
+  {
+    "id": "joe-davies-1870",
+    "firstName": "Joe",
+    "lastName": "Davies",
+    "born": "1870",
+    "country": "wales",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Joe_Davies_(footballer,_born_1870)",
+      "https://efcheritagesociety.com/?p=482"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/everton.md): Joseph Davies, b. 1870 Chirk; outside right, League debut 1 Dec 1888 v WBA, 8 apps and 2 goals in 1888-89; 11 Wales caps from 15 Apr 1889."
+  },
+  {
+    "id": "bob-thomas-1867",
+    "firstName": "Bob",
+    "lastName": "Thomas",
+    "born": "1867",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season"
+    ],
+    "notes": "H-01b (docs/data/history/clubs/aston-villa.md): named among the season's debutants in the Villa season article (no appearance figures). Birth year 1867 from the article's (red) link title 'Bob Thomas (footballer, born 1867)', an estimate; nationality not sourced (England assumed). Season article cites https://www.avfchistory.co.uk/player/bob-thomas (not read)."
+  },
+  {
+    "id": "mark-wright-1861",
+    "firstName": "Mark",
+    "lastName": "Wright",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md; added in H-01b after removing wrong people)."
+  },
+  {
+    "id": "nathan-carter-1865",
+    "firstName": "Nathan",
+    "lastName": "Carter",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md; added in H-01b after removing wrong people)."
+  },
+  {
+    "id": "isaac-morris-1864",
+    "firstName": "Isaac",
+    "lastName": "Morris",
+    "born": "1864",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md; added in H-01b after removing wrong people)."
+  },
+  {
+    "id": "horatio-davies-1866",
+    "firstName": "Horatio",
+    "lastName": "Davies",
+    "born": "1866",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md; added in H-01b after removing wrong people)."
+  },
+  {
+    "id": "edgar-phillips-1864",
+    "firstName": "Edgar",
+    "lastName": "Phillips",
+    "born": "1864",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md; added in H-01b after removing wrong people)."
+  },
+  {
+    "id": "timothy-king-1862",
+    "firstName": "Timothy",
+    "lastName": "King",
+    "born": "1862",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md; added in H-01b after removing wrong people)."
+  },
+  {
+    "id": "noah-carter-1865",
+    "firstName": "Noah",
+    "lastName": "Carter",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md; added in H-01b after removing wrong people)."
+  },
+  {
+    "id": "tom-jones-1866",
+    "firstName": "Tom",
+    "lastName": "Jones",
+    "born": "1866",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md; added in H-01b after removing wrong people)."
   }
 ]
