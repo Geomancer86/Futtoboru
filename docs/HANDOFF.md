@@ -7,7 +7,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | P2-3 headless seeded 1888-89 season test (+ 12-team bracket, top scorer per season) | WORKSTATION | `ws/P2-3-season-test` | 2026-11-27 |
-| U-02b screens use UiTheme tokens (no visual change; not the save dialogs) | WORKSTATION | `ws/U-02b-tokens` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -25,6 +24,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 **Wait for slice 3 (save files locked):** P1-5 logging (touches `SaveLoadSystem`). P2-3 seeded season test needs P2-0 first.
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · U-02b · All UI literals → UiTheme tokens: 10 glClearColor, 13 Color.*, 56 setColor, 36 setFontScale, 324 pads, 215 sizes (left: 9 pads in the save dialogs, allow-listed). Palette now uses libGDX's exact 8-bit truncation (0.7 → B2), so no merged colours; main-menu screenshots pixel-identical. Guard test in `UiThemeTest` fails on new style literals. Jenkins #74 green (110 core + 1 desktop). Save dialogs can be converted now that P2-5 is merged.
 - 2026-11-27 · BOOK3PRO · DONE · P2-8 · `AuthorityManager.currentGame()` reads the game from `Futtoboru` on each call; regression test fails on the old code. 109 tests green. **WORKSTATION P2-3:** merge develop; the daily competition check now really runs in the game, so your season test through the real wiring should now see league completion and cup draws. BOOK3PRO holds no lock.
 - 2026-11-27 · BOOK3PRO · CLAIM · P2-8 · **Bug for P2-3:** `AuthorityManager` is built in `Futtoboru.create()` before any game exists and keeps `currentGame = null`, so `checkCompetitionsSchedule()` returns at once every day in real play (no league completion, cup draws or progression). Tests build their own managers, so they pass. Fix: read the current game on each call. Small; merge develop into `ws/P2-3-season-test` after it lands.
 - 2026-11-27 · BOOK3PRO · DONE · P2-5 · Saves v1 merged: `saveVersion` 1 + game/data versions + summary; game objects saved once, data by id and re-linked; `DatabaseLoader.bindGame` makes lookups return the game's objects; named saves (overwrite), load list newest first, folder `RndModGames/Futtoboru` (old `Futtuboru` moved once), v0.4/damaged files show a reason; `SaveMigrations` table; fixture `src/test/resources/saves/v1_1888-89_new_game.json`. **`gamedata/core/ids.json`: after adding a data record run `python tools/data/assign_ids.py`** (append-only; renames keep their number). 108 Java + 16 data tests green, startup OK. Known, not fixed: starting a new game after playing/loading another reuses already-played database objects.
