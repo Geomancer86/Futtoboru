@@ -6,12 +6,14 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| Match-engine art direction: sprite / pixel-art prototypes for producer choice (players, ball, goals, pitch, crowd, officials, weather, sidelines) → then E-21 viewer sprites | WORKSTATION | (prototypes local/private; code later on `ws/E-21-sprites`) | 2026-11-27 |
 | U-11 ground illustrations in UI + U-09 tooltips/UiDialogs + save dialogs to tokens | WORKSTATION | `ws/U-11-ground-art-ui` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
 |---|---|---|
-| _none_ | | |
+| WORKSTATION | U-11 + U-09 (in progress, not pushed yet) | `tables/club/**`, ground/club detail screens, match preview header, new tooltip helper + `UiDialogs`, `SaveGameDialog`/`LoadGameDialog` (style only), `MainGameScreen` stage disposal |
+| WORKSTATION | Engine (E-10..E-22) | `match/ecs/**` (new ECS engine; BOOK3PRO: E-01 `Position`/`dribbling` data is yours, ask before editing `match/ecs`) |
 
 ## Ready to take (from docs/ROADMAP.md)
 Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 minimum, autosave, labels in language files). Details in `docs/ROADMAP.md` Phase 2 close-out + Phase 3.
@@ -31,6 +33,8 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Producer:** push v0.4.0 to `main`; tag v0.5.0-alpha after P2-9..11, v0.5.0 after Phase 3. Engine answers are in D19 (Phase 4 can be designed in parallel).
 
 ## Log
+- 2026-11-27 · WORKSTATION · NOTE · branch check · All `ws/*` branches are merged into develop (e0d6b2a). **Unclaimed remote branch `feature/ui-auto-scale`** (469 files, ~400k lines; 544b56d "Auto UI scale…" today on top of July 2026 commits A-11..A-15: Home dashboard, tooltip fix, cup-draw soft-lock, New Game keys). It overlaps U-03a (BOOK3PRO), U-04c Home dashboard (done on develop) and U-09 tooltips (WORKSTATION, in progress). Whoever owns it: please claim here and rebase only the auto-scale commit onto develop rather than merging the July history.
+- 2026-11-27 · WORKSTATION · CLAIM · match-engine art direction · Sprite/pixel-art prototypes for the producer to choose from; code follows as E-21 in `match/ecs/view/**` + `resources/art/match/**`.
 - 2026-11-27 · WORKSTATION · DONE · H-01b · Sourced H-01/H-02 corrections in gamedata: `arthur-brown-1858` → `albert-brown-1862`, `james-weir-1864` → `john-weir-1865`, Cursham + Cotterill duplicates merged (aliases), Russell spelling, Bambridge names, Old Carthusians fix, 6 people retired (Dunn, Pares, Lintott, G. O. Smith, Linacre, McPherson), Sugg/Davies/Bob Thomas added, 21 nationalities, 53 birth dates, 1888-89 grounds `clee-park`, `meadow-lane-1886`, `great-lines-chatham`, `the-meadow-belfast`, opened years, Racecourse Ground description, `wellington-road` capacity 20,000 (record crowd in notes), Stoke 1863 / Swifts 1871. Ids 915–929. Validator 11 → 10 warnings. Jenkins #89 green. **BOOK3PRO:** test save `v1_1888-89_new_game.json` references the 6 retired ids (test passes; refresh the fixture when convenient); `GameDataTests` count 539 → 542.
 - 2026-11-27 · WORKSTATION · DONE · E-10 + E-11 + E-12 · `match/ecs`: `MatchWorld` (one Ashley Engine per match, `SimSystem`/`DrawPass` kinds, draw guard, `SystemPriority`, `MatchSystems` registration, `StateHash` + describe, `FixedStepClock`), `EcsMatchEngine.play` stand-in; `ecs/ball` (gravity, drag, Magnus, exact bounce/roll per surface, wet-mass soak, kick impulses; 0.47 µs/tick, 0 alloc); `ecs/pitch` (1888 goals without nets, capsule frame contacts, no tunnelling, disputed-goal margin, 1888 restarts with season switches). `EcsDeterminismGuardTest` bans Random/HashMap/Math.* transcendental/wall clock in `match/ecs`. Goldens equal on Windows and Linux (Jenkins #88: 230 core + 1 desktop). Next: E-13 bodies, E-14 actions, E-16 officials. **BOOK3PRO:** please run `MatchWorldTest`/`BallPhysicsTest`/`PitchGeometryTest` on macOS arm64.
 - 2026-11-27 · WORKSTATION · CLAIM · U-11 + U-09 · Club/ground screens show `art/grounds/<id>.png`; one tooltip layer + `UiDialogs`; `SaveGameDialog`/`LoadGameDialog` pads → tokens (BOOK3PRO: small style-only edit in your dialogs).
