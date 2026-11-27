@@ -20,7 +20,3 @@ Game data
 Historical facts in resources/gamedata (clubs, grounds, players, seasons) were compiled by hand
 from Wikipedia articles, cited per record in their "sources" fields. Text adapted from Wikipedia
 is available under CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/).
-
-Still to review (P1-4 / P1-6): the 3D demo textures, skyboxes, heightmaps and models under
-resources/data, resources/models and resources/textures, and badlogic.jpg; they are unused and
-are expected to be removed with the dead 3D demo code.
