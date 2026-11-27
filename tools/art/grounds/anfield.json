@@ -1,0 +1,75 @@
+{
+  "id": "anfield",
+  "name": "Anfield",
+  "season": "autumn",
+  "weather": "clear",
+  "crowd": 90,
+  "view": "Everton's Anfield, 1888: a fully enclosed 'huge circus' of covered stands and galleries round a newly turfed, perfectly level lawn; Stanley Park trees and Liverpool spires beyond.",
+  "skyline": [
+    {
+      "type": "trees",
+      "x": 0.0,
+      "width": 90,
+      "height": 22
+    },
+    {
+      "type": "spire",
+      "x": 0.4,
+      "height": 44
+    },
+    {
+      "type": "houses",
+      "x": 0.46,
+      "width": 120,
+      "height": 12
+    },
+    {
+      "type": "spire",
+      "x": 0.9,
+      "height": 36
+    }
+  ],
+  "farSide": [
+    {
+      "type": "grandstand",
+      "from": -0.14,
+      "to": 0.3,
+      "covered": true,
+      "height": 20
+    },
+    {
+      "type": "grandstand",
+      "from": 0.33,
+      "to": 0.74,
+      "covered": true,
+      "height": 24,
+      "gable": true,
+      "flag": "navy"
+    },
+    {
+      "type": "grandstand",
+      "from": 0.77,
+      "to": 1.14,
+      "covered": true,
+      "height": 20
+    }
+  ],
+  "nearSide": {
+    "type": "fence",
+    "crowd": 90
+  },
+  "pitch": {
+    "condition": "good"
+  },
+  "kits": {
+    "home": [
+      "ink",
+      "white"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#anfield"
+}

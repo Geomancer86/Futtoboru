@@ -1,0 +1,74 @@
+{
+  "id": "stoney-lane",
+  "name": "Stoney Lane",
+  "season": "autumn",
+  "weather": "overcast",
+  "crowd": 60,
+  "view": "West Bromwich: the long wooden 'Noah's Ark' grandstand flanked by open wooden stands (it stood on the south touchline), raised banking opposite.",
+  "skyline": [
+    {
+      "type": "chimney",
+      "x": 0.12,
+      "height": 40
+    },
+    {
+      "type": "houses",
+      "x": 0.18,
+      "width": 90,
+      "height": 12
+    },
+    {
+      "type": "gasholder",
+      "x": 0.78,
+      "height": 20,
+      "width": 28
+    },
+    {
+      "type": "chimney",
+      "x": 0.92,
+      "height": 34
+    }
+  ],
+  "farSide": [
+    {
+      "type": "stand",
+      "from": 0.04,
+      "to": 0.28,
+      "height": 9
+    },
+    {
+      "type": "grandstand",
+      "from": 0.3,
+      "to": 0.7,
+      "covered": true,
+      "height": 20,
+      "roof": "wood",
+      "gable": true,
+      "flag": "blue"
+    },
+    {
+      "type": "stand",
+      "from": 0.72,
+      "to": 0.96,
+      "height": 9
+    }
+  ],
+  "nearSide": {
+    "type": "bank",
+    "crowd": 60
+  },
+  "pitch": {
+    "condition": "worn"
+  },
+  "kits": {
+    "home": [
+      "blue",
+      "white"
+    ],
+    "away": [
+      "claret",
+      "white"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#stoney-lane"
+}

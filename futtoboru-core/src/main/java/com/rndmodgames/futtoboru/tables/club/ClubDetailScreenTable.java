@@ -516,24 +516,6 @@ public class ClubDetailScreenTable extends VisTable {
         Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "=== updateDynamicComponents COMPLETE ===");
         Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] ===== updateDynamicComponents COMPLETE =====");
         
-        // Back button
-        this.addSeparator();
-        this.row();
-        VisTextButton backButton = new VisTextButton("Back to Club Browser");
-        backButton.addCaptureListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-            
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (backButton.isPressed() && menuManager != null) {
-                    menuManager.setActiveMainScreen(MainMenuManager.CLUB_BROWSER_SCREEN);
-                }
-            }
-        });
-        this.add(backButton).colspan(2).fillX().pad(UiTheme.space("xs"));
     }
     
     public void setMenuManager(MainMenuManager menuManager) {

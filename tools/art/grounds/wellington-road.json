@@ -1,0 +1,87 @@
+{
+  "id": "wellington-road",
+  "name": "Wellington Road",
+  "season": "winter",
+  "weather": "overcast",
+  "crowd": 85,
+  "wind": -1,
+  "view": "Perry Barr: grandstand on the east touchline, pavilion huts, grazed and uneven turf sloping away from one goal, the Crown & Cushion and a haystack beyond.",
+  "skyline": [
+    {
+      "type": "trees",
+      "x": 0.02,
+      "width": 70,
+      "height": 18
+    },
+    {
+      "type": "houses",
+      "x": 0.62,
+      "width": 60,
+      "height": 11
+    },
+    {
+      "type": "chimney",
+      "x": 0.9,
+      "height": 30
+    }
+  ],
+  "farSide": [
+    {
+      "type": "haystack",
+      "from": -0.12,
+      "to": -0.02,
+      "height": 10
+    },
+    {
+      "type": "grandstand",
+      "from": 0.28,
+      "to": 0.62,
+      "covered": true,
+      "height": 18
+    },
+    {
+      "type": "shed",
+      "from": 0.68,
+      "to": 0.76
+    },
+    {
+      "type": "inn",
+      "from": 0.86,
+      "to": 1.02,
+      "height": 14,
+      "sign": "gold"
+    },
+    {
+      "type": "crowd",
+      "from": 0.0,
+      "to": 0.26
+    },
+    {
+      "type": "crowd",
+      "from": 0.64,
+      "to": 0.84
+    }
+  ],
+  "slope": {
+    "direction": "right-down",
+    "amount": 3
+  },
+  "nearSide": {
+    "type": "rope",
+    "crowd": 85
+  },
+  "pitch": {
+    "condition": "worn"
+  },
+  "kits": {
+    "home": [
+      "claret",
+      "skyblue"
+    ],
+    "away": [
+      "white",
+      "navy"
+    ]
+  },
+  "research": "docs/data/history/GROUNDS_1888-89.md#wellington-road"
+}
