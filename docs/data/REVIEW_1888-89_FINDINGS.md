@@ -42,13 +42,15 @@ warning is gone; placeholders 74 → 82). People 539 → 542.
 - **Birth dates (53 records, 7 of them together with the nationality fix, plus Cursham):** the club-file corrections for Accrington, Burnley, Derby, Everton, Notts County,
   Preston, Stoke and WBA, incl. Sherwin 1851-02-26, Gunn 1858-12-04, Plackett 1871-04-14, Milward 1870-09-12,
   Midgley 1856, Edwards 1867-08-25. Ids keep their old years.
-- **Grounds:** new `clee-park` (Grimsby), `meadow-lane` (Notts Rangers, from Sep 1886), `great-lines` (Chatham's
+- **Grounds:** new `clee-park` (Grimsby), `meadow-lane-1886` (Notts Rangers, from Sep 1886), `great-lines-chatham` (Chatham's
   Army ground "The Lines"), `the-meadow-belfast` (Linfield), set as the 1888-89 grounds; capacity/value/rent copied
-  from the ground they replace (game estimates, noted). Opened years: `abbey-park` 1880 → 1889, `hawthorne-road`
+  from the ground they replace (game estimates, noted); ids follow `docs/design/GROUNDS_DATA_PROPOSAL.md` (H-02), and
+  `meadow-lane-1886` is not assumed to be Notts County's 1910 Meadow Lane. Opened years: `abbey-park` 1880 → 1889, `hawthorne-road`
   1880 → 1884 (1883 per the club article), `chuckery-ground` 1888 → 1881, `ulsterville-avenue` 1886 → 1889,
   `maidstone-road-ground` 1882 → 1889. Descriptions: `racecourse-ground` now tells the County Ground's story (it
   told the Baseball Ground's), `castle-ground`, `ulsterville-avenue`, `maidstone-road-ground`. `wellington-road`
-  capacity 26,849 → 20,000 (26,849 is the 7 Jan 1888 record crowd, now in its notes; 20,000 is a game estimate).
+  capacity 26,849 → 20,000 (26,849 is the 7 Jan 1888 record crowd, now in its notes; 20,000 is a game estimate
+  until the proposal's `recordCrowd` field exists).
 - **Clubs:** Stoke founded 1868 → 1863 (club's official year; 1868 = first documented match; dispute noted);
   Swifts 1869 → 1871.
 - **Test:** `GameDataTests` people count 539 → 542 (one number, commented).

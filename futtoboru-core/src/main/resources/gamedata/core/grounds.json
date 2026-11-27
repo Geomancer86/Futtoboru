@@ -362,10 +362,10 @@
       "https://en.wikipedia.org/wiki/Chatham_Town_F.C.",
       "https://en.wikipedia.org/wiki/Chatham_Town_F.C.#Grounds"
     ],
-    "notes": "H-01b (docs/data/history/clubs/chatham-town.md; docs/data/history/GROUNDS_1888-89.md): Chatham moved here in 1889 and enclosed it with a seated pavilion for GBP 125 (in 1888-89 they played on the Lines, `great-lines`); was opened 1882."
+    "notes": "H-01b (docs/data/history/clubs/chatham-town.md; docs/data/history/GROUNDS_1888-89.md): Chatham moved here in 1889 and enclosed it with a seated pavilion for GBP 125 (in 1888-89 they played on the Lines, `great-lines-chatham`); was opened 1882."
   },
   {
-    "id": "great-lines",
+    "id": "great-lines-chatham",
     "name": "The Lines",
     "description": "Army-owned open ground at Chatham (the Great Lines), used by Chatham until 1889. Unfenced: Army rules meant no admission could be charged. The 17,000 at the 1889 FA Cup tie with West Bromwich Albion can only be an estimate.",
     "capacity": 2000,
@@ -515,10 +515,10 @@
       "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
       "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.#Grounds"
     ],
-    "notes": "H-01b (docs/data/history/clubs/notts-rangers.md; docs/data/history/GROUNDS_1888-89.md): Notts Rangers left it for Meadow Lane in Sep 1886 (`meadow-lane` is their 1888-89 ground); Notts County used it as a second ground."
+    "notes": "H-01b (docs/data/history/clubs/notts-rangers.md; docs/data/history/GROUNDS_1888-89.md): Notts Rangers left it for Meadow Lane in Sep 1886 (`meadow-lane-1886` is their 1888-89 ground); Notts County used it as a second ground."
   },
   {
-    "id": "meadow-lane",
+    "id": "meadow-lane-1886",
     "name": "Meadow Lane",
     "opened": 1886,
     "capacity": 3000,

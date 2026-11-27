@@ -524,7 +524,7 @@
   },
   {
     "club": "chatham-town",
-    "ground": "great-lines",
+    "ground": "great-lines-chatham",
     "balance": 0,
     "players": [
       "charles-miller-1865",
@@ -668,7 +668,7 @@
   },
   {
     "club": "notts-rangers",
-    "ground": "meadow-lane",
+    "ground": "meadow-lane-1886",
     "balance": 0,
     "players": [
       "fred-geary-1868",
