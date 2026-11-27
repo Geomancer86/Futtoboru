@@ -85,4 +85,9 @@ Warnings: a person in several squads, a squad under 11, no first name, an age ou
 ## Rename log
 | Date | Kind | Old id | New id | Why | Approved by |
 |---|---|---|---|---|---|
-| | | | | | |
+| 2026-11-27 | club | witton-albion | witton | Wrong club: the 1888-89 FA Cup entrant is Witton F.C. of Blackburn, not Witton Albion (Northwich, no FA Cup before 1907-08). [Witton F.C.](https://en.wikipedia.org/wiki/Witton_F.C.) | PM, P2-4 slice 4 brief |
+| 2026-11-27 | person | james-duerden-1865 | james-duerden-1866 | Same person; Blackburn in 1888-89, Burnley only 1890-91. [source](https://en.wikipedia.org/wiki/James_Duerden) | PM, P2-4 slice 4 brief |
+| 2026-11-27 | person | robert-haresnape-1865 | robert-haresnape-1866 | Same person; Blackburn in 1888-89, Burnley from 1889. [source](https://en.wikipedia.org/wiki/Robert_Haresnape) | PM, P2-4 slice 4 brief |
+| 2026-11-27 | person | joe-lofthouse-1865 | joe-lofthouse-1864 | Same person (b. 1865-04-14), Accrington all season. [source](https://en.wikipedia.org/wiki/Joe_Lofthouse) | PM, P2-4 slice 4 brief |
+| 2026-11-27 | person | pat-gallocher-1865-2 | pat-gallocher-1865 | Same person (b. 1865-04-25), Burnley then Accrington. [source](https://en.wikipedia.org/wiki/Pat_Gallocher) | PM, P2-4 slice 4 brief |
+| 2026-11-27 | person | william-chatterton-1865 | william-chatterton-1861 | Same person (b. 1861-12-27), Derby County. [source](https://en.wikipedia.org/wiki/William_Chatterton) | PM, P2-4 slice 4 brief |
