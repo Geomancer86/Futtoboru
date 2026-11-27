@@ -200,8 +200,10 @@ public class MessageManager {
         }
         
         // Also check for duplicate messages by type and title (for welcome messages, etc.)
-        // This prevents creating multiple welcome messages if updateDynamicComponents is called multiple times
-        if (message.getMessageType() != null && message.getTitle() != null) {
+        // This prevents creating multiple welcome messages if updateDynamicComponents is called multiple times.
+        // Never for a mandatory message: dropping one leaves its scheduled copy blocking the game forever (P2-3).
+        if (message.getMessageType() != null && message.getTitle() != null
+                && !Boolean.TRUE.equals(message.getIsMandatory())) {
             for (Message existing : currentGame.getAllMessages()) {
                 if (existing != null && 
                     existing.getMessageType() != null && existing.getMessageType().equals(message.getMessageType()) &&
@@ -651,7 +653,9 @@ public class MessageManager {
         message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_DRAW");
         message.setPriority(MessagePriority.URGENT);
-        message.setTitle(cup.getName() + " Draw - " + (roundName != null ? roundName : "Round " + round));
+        // The edition's name (e.g. "1888-89 FA Cup") keeps every season's draw title distinct (P2-3)
+        String competitionName = edition.getName() != null ? edition.getName() : cup.getName();
+        message.setTitle(competitionName + " Draw - " + (roundName != null ? roundName : "Round " + round));
         message.setIsMandatory(true);  // Blocks time advancement
         
         StringBuilder content = new StringBuilder();

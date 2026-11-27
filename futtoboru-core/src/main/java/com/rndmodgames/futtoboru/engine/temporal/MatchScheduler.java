@@ -173,6 +173,17 @@ public class MatchScheduler {
                 continue;
             }
             
+            // P2-3: only the two clubs of a match sell tickets for it. A cup tie of a later round sits in every
+            // entrant's list until its clubs are known: it logged a "cannot find club" error every day, and once
+            // its clubs were known every other entrant sold tickets for it too.
+            if (club.getId() == null || !(club.getId().equals(scheduled.getHomeClubId())
+                    || club.getId().equals(scheduled.getAwayClubId()))) {
+                continue;
+            }
+            if (scheduled.getHomeClubId() == null || scheduled.getAwayClubId() == null) {
+                continue; // the opponent is not decided yet: no tickets until it is
+            }
+            
             // BUG FIX: Only sell tickets for matches scheduled in the future
             if (scheduled.getMatchDateTime() == null) {
                 DebugLogManager.getInstance().warn(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler: Skipping match with no date");
@@ -213,8 +224,8 @@ public class MatchScheduler {
             int maxTickets = club.getStadium().getCapacity() - currentAttendance;
             
             // CRITICAL FIX: Add null checks to prevent NullPointerException
-            Club homeClub = DatabaseLoader.getClubById(scheduled.getHomeClubId());
-            Club awayClub = DatabaseLoader.getClubById(scheduled.getAwayClubId());
+            Club homeClub = game.getCurrentGame().getClubById(scheduled.getHomeClubId());
+            Club awayClub = game.getCurrentGame().getClubById(scheduled.getAwayClubId());
             
             if (homeClub == null || awayClub == null) {
                 DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_SCHEDULING, "MatchScheduler", 

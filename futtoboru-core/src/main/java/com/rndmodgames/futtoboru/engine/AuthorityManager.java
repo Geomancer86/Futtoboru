@@ -55,6 +55,9 @@ public class AuthorityManager {
     public static final java.math.BigDecimal LEAGUE_CHAMPION_PRIZE = new java.math.BigDecimal("500.00");
     public static final java.math.BigDecimal LEAGUE_RUNNER_UP_PRIZE = new java.math.BigDecimal("250.00");
 
+    /** The month a cup's season opens (its edition starts and is drawn): May, as for the 1888-89 FA Cup */
+    static final int CUP_SEASON_OPENS_MONTH = 5;
+
     // for quick reference
     Futtoboru game;
     SaveGame currentGame;
@@ -258,9 +261,15 @@ public class AuthorityManager {
         Club champion = standings.get(0);
         Club runnerUp = standings.size() > 1 ? standings.get(1) : null;
         
-        // Calculate Top Scorer
-        com.rndmodgames.futtoboru.data.Person topScorer = calculateTopScorer(league);
-        int topScorerGoals = topScorer != null ? getPlayerSeasonGoals(topScorer.getId(), league) : 0;
+        // The season being completed
+        com.rndmodgames.futtoboru.data.CompetitionEdition edition = findEditionToComplete(league);
+        if (edition == null && league.getEditions() != null && !league.getEditions().isEmpty()) {
+            edition = getCurrentLeagueEdition(league);
+        }
+        
+        // Calculate Top Scorer (this season's league goals only)
+        com.rndmodgames.futtoboru.data.Person topScorer = calculateTopScorer(league, edition);
+        int topScorerGoals = topScorer != null ? getPlayerSeasonGoals(topScorer.getId(), league, edition) : 0;
         
         // Calculate Best Defense
         Club bestDefense = calculateBestDefense(standings);
@@ -271,10 +280,6 @@ public class AuthorityManager {
         }
         
         // Update league edition with champions and keep its final table (P2-6)
-        com.rndmodgames.futtoboru.data.CompetitionEdition edition = findEditionToComplete(league);
-        if (edition == null && league.getEditions() != null && !league.getEditions().isEmpty()) {
-            edition = getCurrentLeagueEdition(league);
-        }
         if (edition != null) {
             edition.setChampionsId(champion.getId());
             if (runnerUp != null) {
@@ -362,10 +367,36 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
     }
 
     /**
+     * A played league match of the given season (P2-3: the played lists keep every season's matches, so the
+     * top scorer counted all of them): on or after the season's start and before the next season's start.
+     * A null season (or start) means no date limit.
+     */
+    private static boolean isSeasonLeagueMatch(Match match, League league,
+            com.rndmodgames.futtoboru.data.CompetitionEdition season) {
+        if (match == null || match.getMatchType() == null || match.getMatchType() != Match.LEAGUE_MATCH) {
+            return false;
+        }
+        if (season == null || season.getStartDate() == null || match.getMatchDateTime() == null) {
+            return true;
+        }
+        if (match.getMatchDateTime().isBefore(season.getStartDate())) {
+            return false;
+        }
+        for (com.rndmodgames.futtoboru.data.CompetitionEdition other : league.getEditions()) {
+            if (other != null && other.getStartDate() != null && other.getStartDate().isAfter(season.getStartDate())
+                    && !match.getMatchDateTime().isBefore(other.getStartDate())) {
+                return false; // a later season's match
+            }
+        }
+        return true;
+    }
+
+    /**
      * Calculate top scorer for the league season
      */
-    private com.rndmodgames.futtoboru.data.Person calculateTopScorer(League league) {
-        java.util.Map<Long, Integer> playerGoals = new java.util.HashMap<>();
+    com.rndmodgames.futtoboru.data.Person calculateTopScorer(League league,
+            com.rndmodgames.futtoboru.data.CompetitionEdition season) {
+        java.util.Map<Long, Integer> playerGoals = new java.util.LinkedHashMap<>();
         
         // Iterate all clubs in league
         for (Club club : league.getLeagueClubs()) {
@@ -373,7 +404,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
             
             // Iterate played matches
             for (Match match : club.getPlayedMatches()) {
-                if (match == null || match.getMatchType() == null || match.getMatchType() != Match.LEAGUE_MATCH) continue;
+                if (!isSeasonLeagueMatch(match, league, season)) continue;
                 
                 // Count home scorers
                 if (match.getHomeClubId() != null && match.getHomeClubId().equals(club.getId())) {
@@ -404,7 +435,16 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         
         if (topScorerId == null) return null;
         
-        // Find person by ID
+        // Find person by ID: scorers are the league clubs' players (SaveGame.allPersons holds only a few people,
+        // so the top scorer was never found there)
+        for (Club club : league.getLeagueClubs()) {
+            if (club == null || club.getPlayers() == null) continue;
+            for (com.rndmodgames.futtoboru.data.Player player : club.getPlayers()) {
+                if (player != null && player.getPerson() != null && topScorerId.equals(player.getPerson().getId())) {
+                    return player.getPerson();
+                }
+            }
+        }
         for (Person p : currentGame.getAllPersons()) {
             if (p != null && p.getId() != null && p.getId().equals(topScorerId)) {
                 return p;
@@ -417,12 +457,13 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
     /**
      * Get total goals scored by a player in a league season
      */
-    private int getPlayerSeasonGoals(Long playerId, League league) {
+    int getPlayerSeasonGoals(Long playerId, League league,
+            com.rndmodgames.futtoboru.data.CompetitionEdition season) {
         int goals = 0;
         for (Club club : league.getLeagueClubs()) {
             if (club == null || club.getPlayedMatches() == null) continue;
             for (Match match : club.getPlayedMatches()) {
-                if (match == null || match.getMatchType() == null || match.getMatchType() != Match.LEAGUE_MATCH) continue;
+                if (!isSeasonLeagueMatch(match, league, season)) continue;
                 
                 if (match.getHomeClubId() != null && match.getHomeClubId().equals(club.getId())) {
                     for (Long id : match.getHomeScorerIds()) {
@@ -703,11 +744,16 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                     edition = findUpcomingEdition(cup, currentDate);
                     
                     if (edition == null) {
+                        if (cup.getEditions() != null && !cup.getEditions().isEmpty()) {
+                            // P2-3: between editions; the next one is staged in May (checkNewSeasonGeneration).
+                            // Making one here gave an "FA Cup 1889" of the 12 league clubs in February 1889.
+                            continue;
+                        }
                         edition = createNewCupEdition(cup, currentDate);
                     } else {
                         // Activate the upcoming edition if it's time
                         // FA Cup creation script runs on May 1st
-                        if (currentDate.getMonthValue() >= 5) {
+                        if (currentDate.getMonthValue() >= CUP_SEASON_OPENS_MONTH) {
                             edition.setStartDate(currentDate);
                             edition.setEndDate(currentDate.plusMonths(12)); // Allow a full year
                             Gdx.app.log("AuthorityManager", "Activated upcoming cup edition: " + edition.getName());
@@ -1805,7 +1851,16 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
     }
 
     private boolean needsNextCupStaging(Competition cup, LocalDateTime currentDate) {
-        // Similar logic for cups
+        // P2-3: not on 1 January (a 1889-90 cup was drawn and played in January 1889, alongside the 1888-89
+        // season): the next edition opens in May, like the first one (the cup creation script and the 1888-89
+        // activation in checkAndScheduleCupDraws), and not while the edition being played has no winner yet
+        if (currentDate.getMonthValue() < CUP_SEASON_OPENS_MONTH) {
+            return false;
+        }
+        CompetitionEdition current = getCurrentCupEdition(cup, currentDate);
+        if (current != null && current.getChampionsId() == null) {
+            return false;
+        }
         int nextYear = currentDate.getYear();
         String nextSeasonNameFragment = nextYear + "-" + ((nextYear + 1) % 100);
         

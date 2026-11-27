@@ -67,55 +67,54 @@ public class CupBracketGenerator {
         
         Gdx.app.log("CupBracketGenerator", "Generating complete bracket for " + teams.size() + " teams");
         
-        // Handle bye if odd number of teams
-        Long byeTeamId = null;
-        if (teams.size() % 2 != 0) {
-            int byeIndex = rng.nextInt(teams.size());
-            byeTeamId = teams.remove(byeIndex);
-            Gdx.app.log("CupBracketGenerator", "Team " + byeTeamId + " receives a BYE (advances to Round 2)");
+        // P2-3: a bracket of any size. The bracket has the next power of two of slots; the clubs that do not fit
+        // in round 1 get a bye straight into round 2 (12 clubs: 4 first-round ties + 4 byes, then 4, 2, 1 ties).
+        // The old generator halved the number of ties each round, so with 12 clubs the winner of R2M3 had no
+        // next tie and the semi-final and final rounds were forced to the wrong size.
+        if (teams.size() < 2) {
+            Gdx.app.error("CupBracketGenerator", "A cup needs at least 2 clubs, got " + teams.size());
+            return allMatches;
         }
-        
-        // Calculate number of rounds needed
-        int numTeams = teams.size();
-        // For 32 teams: log2(32) = 5 rounds (16, 8, 4, 2, 1 matches)
-        int numRounds = calculateNumberOfRounds(numTeams);
-        
-        Gdx.app.log("CupBracketGenerator", "Tournament structure: " + numTeams + " teams, " + numRounds + " rounds");
-        Gdx.app.log("CupBracketGenerator", "Expected matches: Round 1=" + (numTeams/2) + 
-            ", Round 2=" + (numTeams/4) + ", Round 3=" + (numTeams/8) + 
-            ", Round 4=" + (numTeams/16) + ", Round 5=1 (Final)");
-        
-        // Generate Round 1 matches (first round)
-        List<Match> previousRoundMatches = generateFirstRound(
-            teams, competitionId, editionId, firstRoundDate, allMatches);
-        
-        // If there was a bye, create a "virtual" match for the bye team to advance
-        if (byeTeamId != null) {
-            // The bye team will be added to Round 2 automatically
-            Gdx.app.log("CupBracketGenerator", "Bye team " + byeTeamId + " will be added to Round 2");
+        int bracketSize = Integer.highestOneBit(teams.size());
+        if (bracketSize < teams.size()) {
+            bracketSize <<= 1;
         }
-        
-        // Generate subsequent rounds
-        LocalDateTime currentRoundDate = firstRoundDate.plusWeeks(weeksBetweenRounds);
-        int currentRound = 2;
-        
-        while (currentRound <= numRounds) {
-            List<Match> nextRoundMatches = generateNextRound(
-                previousRoundMatches,
-                competitionId,
-                editionId,
-                currentRound,
-                currentRoundDate,
-                allMatches,
-                byeTeamId,
-                currentRound == 2 // Only add bye to Round 2
-            );
-            
-            previousRoundMatches = nextRoundMatches;
+        int numRounds = Integer.numberOfTrailingZeros(bracketSize);
+
+        // Draw the byes (none when the number of clubs is a power of two)
+        List<Long> byeTeams = new ArrayList<>();
+        for (int i = bracketSize - teams.size(); i > 0; i--) {
+            byeTeams.add(teams.remove(rng.nextInt(teams.size())));
+        }
+
+        Gdx.app.log("CupBracketGenerator", "Tournament structure: " + teamIds.size() + " clubs, " + byeTeams.size()
+            + " byes, " + numRounds + " rounds");
+
+        // Round 1: the clubs without a bye, paired at random
+        List<Match> round1 = generateFirstRound(teams, competitionId, editionId, firstRoundDate, allMatches);
+
+        // The slots of round 2: each first-round tie (its winner) or a club with a bye. They alternate, so each
+        // first-round winner meets a club with a bye while there are byes left.
+        List<Object> slots = new ArrayList<>();
+        int nextTie = 0;
+        int nextBye = 0;
+        while (nextTie < round1.size() || nextBye < byeTeams.size()) {
+            if (nextTie < round1.size()) {
+                slots.add(round1.get(nextTie++));
+            }
+            if (nextBye < byeTeams.size()) {
+                slots.add(byeTeams.get(nextBye++));
+            }
+        }
+
+        LocalDateTime currentRoundDate = firstRoundDate;
+        for (int round = 2; round <= numRounds; round++) {
             currentRoundDate = currentRoundDate.plusWeeks(weeksBetweenRounds);
-            currentRound++;
+            List<Match> roundMatches = generateNextRound(slots, competitionId, editionId, round, currentRoundDate,
+                allMatches);
+            slots = new ArrayList<>(roundMatches);
         }
-        
+
         System.out.println("CupBracketGenerator: *** COMPLETE BRACKET GENERATED ***");
         System.out.println("CupBracketGenerator: Total matches: " + allMatches.size());
         
@@ -203,183 +202,59 @@ public class CupBracketGenerator {
     }
     
     /**
-     * Generate next round matches (Round 2, 3, 4, 5...)
+     * Generate a round after the first: pairs consecutive slots. A slot is the tie whose winner comes here
+     * (parent 1 = home, parent 2 = away, as CupBracketManager.advanceWinner fills them) or a club already known
+     * (a bye into round 2).
      */
     private List<Match> generateNextRound(
-            List<Match> previousRoundMatches,
+            List<Object> slots,
             Long competitionId,
             Long editionId,
             int roundNumber,
             LocalDateTime matchDate,
-            List<Match> allMatches,
-            Long byeTeamId,
-            boolean addByeToThisRound) {
-        
+            List<Match> allMatches) {
+
         List<Match> roundMatches = new ArrayList<>();
-        
-        // CRITICAL FIX: Calculate exact number of matches needed
-        // Each match in previous round produces 1 winner, so we need (previousRoundMatches.size() + byeCount) / 2 matches
-        int winnersFromPreviousRound = previousRoundMatches.size();
-        int byeCount = (addByeToThisRound && byeTeamId != null) ? 1 : 0;
-        int totalWinners = winnersFromPreviousRound + byeCount;
-        
-        // CRITICAL: Semi-finals must have exactly 2 matches (4 teams)
-        // Final must have exactly 1 match (2 teams)
-        int expectedMatches = totalWinners / 2;
-        
-        // Validate: Semi-finals (Round 4 typically) should have exactly 2 matches
-        if (roundNumber == 4 || (roundNumber >= 4 && expectedMatches == 2)) {
-            if (expectedMatches != 2) {
-                System.err.println("CupBracketGenerator: CRITICAL ERROR - Semi-finals should have exactly 2 matches, but calculated " + expectedMatches);
-                System.err.println("  Previous round matches: " + previousRoundMatches.size());
-                System.err.println("  Bye count: " + byeCount);
-                System.err.println("  Total winners: " + totalWinners);
-                // Force to 2 matches for semi-finals
-                expectedMatches = 2;
-            }
-        }
-        
-        // Validate: Final (last round) should have exactly 1 match
-        if (expectedMatches == 1 && roundNumber > 4) {
-            // This is likely the final
-            if (expectedMatches != 1) {
-                System.err.println("CupBracketGenerator: CRITICAL ERROR - Final should have exactly 1 match, but calculated " + expectedMatches);
-                expectedMatches = 1;
-            }
-        }
-        
         int matchNumber = 1;
-        
-        // Create matches pairing winners of previous round
-        // CRITICAL FIX: Only create exactly expectedMatches matches
-        for (int i = 0; i < previousRoundMatches.size() && roundMatches.size() < expectedMatches; i += 2) {
+        for (int i = 0; i + 1 < slots.size(); i += 2) {
             Match match = new Match();
-            
-            // Set match ID
             match.setId(ids.nextId());
-            
-            // Get parent matches
-            Match parent1 = previousRoundMatches.get(i);
-            Match parent2 = (i + 1 < previousRoundMatches.size()) ? previousRoundMatches.get(i + 1) : null;
-            
-            // Set parent matches
-            match.setParentMatch1Id(parent1.getId());
-            if (parent2 != null) {
-                match.setParentMatch2Id(parent2.getId());
+
+            Object home = slots.get(i);
+            Object away = slots.get(i + 1);
+            if (home instanceof Match) {
+                match.setParentMatch1Id(((Match) home).getId());
             } else {
-                // Odd number - this match gets the bye team (only if we're adding bye to this round)
-                match.setParentMatch2Id(null);
-                if (addByeToThisRound && byeTeamId != null) {
-                    match.setAwayClubId(byeTeamId); // Bye team goes to away position
-                }
+                match.setHomeClubId((Long) home);
             }
-            
-            // Teams not yet determined (will be populated when parents complete)
-            match.setHomeClubId(null);
-            if (match.getAwayClubId() == null) {
-                match.setAwayClubId(null);
+            if (away instanceof Match) {
+                match.setParentMatch2Id(((Match) away).getId());
+            } else {
+                match.setAwayClubId((Long) away);
             }
-            
-            // Set competition info
+
             match.setCompetitionId(competitionId);
             match.setCompetitionEditionId(editionId);
             match.setMatchType(Match.CUP_MATCH);
             match.setRound(roundNumber);
             match.setBracketPosition(matchNumber);
             match.setBracketPath("R" + roundNumber + "M" + matchNumber);
-            
-            // CRITICAL: Verify edition ID is set correctly
-            if (match.getCompetitionEditionId() == null || !match.getCompetitionEditionId().equals(editionId)) {
-                System.out.println("CupBracketGenerator: ERROR - Round " + roundNumber + " match " + 
-                    match.getBracketPath() + " has wrong edition ID! Expected: " + editionId + 
-                    ", Got: " + match.getCompetitionEditionId());
-            }
-            
-            // Set match date
             match.setMatchDateTime(matchDate);
             match.setIsProposed(false);
             match.setIsAccepted(true);
             match.setIsPlayed(false);
-            
+
             roundMatches.add(match);
             allMatches.add(match);
-            
             matchNumber++;
         }
-        
-        // Handle bye team in Round 2 (only if we haven't already added it)
-        if (addByeToThisRound && byeTeamId != null && roundMatches.size() < expectedMatches) {
-            // Check if bye team is already in a match
-            boolean byeAlreadyAdded = false;
-            for (Match m : roundMatches) {
-                if (m.getAwayClubId() != null && m.getAwayClubId().equals(byeTeamId)) {
-                    byeAlreadyAdded = true;
-                    break;
-                }
-            }
-            
-            if (!byeAlreadyAdded) {
-                // Create an extra match for the bye team
-                Match byeMatch = new Match();
-                byeMatch.setId(ids.nextId());
-                
-                // Last match from previous round
-                Match lastParent = previousRoundMatches.get(previousRoundMatches.size() - 1);
-                byeMatch.setParentMatch1Id(lastParent.getId());
-                byeMatch.setParentMatch2Id(null);
-                byeMatch.setAwayClubId(byeTeamId); // Bye team
-                
-                byeMatch.setHomeClubId(null); // Will be populated when parent completes
-                
-                byeMatch.setCompetitionId(competitionId);
-                byeMatch.setCompetitionEditionId(editionId);
-                byeMatch.setMatchType(Match.CUP_MATCH);
-                byeMatch.setRound(roundNumber);
-                byeMatch.setBracketPosition(matchNumber);
-                byeMatch.setBracketPath("R" + roundNumber + "M" + matchNumber);
-                
-                byeMatch.setMatchDateTime(matchDate);
-                byeMatch.setIsProposed(false);
-                byeMatch.setIsAccepted(true);
-                byeMatch.setIsPlayed(false);
-                
-                roundMatches.add(byeMatch);
-                allMatches.add(byeMatch);
-            }
-        }
-        
-        // CRITICAL VALIDATION: Verify we have the correct number of matches
-        if (roundMatches.size() != expectedMatches) {
-            System.err.println("CupBracketGenerator: CRITICAL ERROR - Round " + roundNumber + " has " + 
-                roundMatches.size() + " matches but expected " + expectedMatches);
-            System.err.println("  Previous round matches: " + previousRoundMatches.size());
-            System.err.println("  Bye count: " + byeCount);
-            System.err.println("  Total winners: " + totalWinners);
-            System.err.println("  This is a SEMI-FINAL bug if roundMatches.size() == 3!");
-        }
-        
+
         String roundName = getRoundName(roundNumber, roundMatches.size() * 2);
         Gdx.app.log("CupBracketGenerator", roundName + " (Round " + roundNumber + "): Generated " + roundMatches.size() + " matches");
-        
-        // CRITICAL VALIDATION: Log if semi-finals has wrong number of matches
-        if (roundNumber == 4 || (roundMatches.size() == 2 && roundNumber >= 4)) {
-            if (roundMatches.size() != 2) {
-                System.err.println("CupBracketGenerator: *** SEMI-FINALS BUG DETECTED *** Round " + roundNumber + 
-                    " has " + roundMatches.size() + " matches (should be 2)!");
-            }
-        }
-        
+
         return roundMatches;
     }
-    
-    /**
-     * Calculate number of rounds needed for tournament
-     */
-    private int calculateNumberOfRounds(int numTeams) {
-        if (numTeams <= 1) return 1;
-        return (int) Math.ceil(Math.log(numTeams) / Math.log(2));
-    }
-    
+
     /**
      * Get round name (First Round, Second Round, Semi-Final, Final, etc.)
      */
