@@ -80,7 +80,7 @@ footer{color:var(--muted);font:.85rem system-ui,sans-serif;padding:40px 24px 60p
 </div>
 <div class="callout ok"><b>The good news.</b> There is a working game loop: day advance, inbox, league fixtures, FA Cup with replays, a simple results simulator, standings, weekly finances, generated contracts, and a working job-hunting system for unemployed managers. The core module's 24 unit tests pass. The real 1888–89 rosters for the 12 founding clubs ship with the game.</div>
 <div class="callout"><b>The bad news.</b> The "match engine" is mostly documents: about 740 KB of them. The only code that decides results is a 444-line random scoreline generator in which team strength barely matters. The 2D prototype has 2 players and a ball. The "141 years of history researched" is 1 season of rosters plus 14 prose summaries of decades. Cost estimates of $95K–200K and "partnership proposals" are AI role-play.</div>
-<div class="callout bad"><b>Fix now, whatever else you decide.</b> (1) A Sonar login token sits in plaintext in the <code>Jenkinsfile</code> (commented stage, commits <code>eb6ca89</code>/<code>24f81fe</code>) on GitHub. It points at a LAN SonarQube (192.168.0.102), so the risk is low, but <b>revoke it</b>. (2) With a current Maven (3.9) a fresh clone <b>does not build</b>: resource filtering corrupts the PDFs and fonts under resources. It only builds with the hard-coded <code>C:\apache-maven-3.6.3</code>. That blocks BOOK3PRO until it's fixed.</div>
+<div class="callout bad"><b>Fix now, whatever else you decide.</b> (1) A Sonar login token sits in plaintext in the <code>Jenkinsfile</code> (commented stage, commits <code>eb6ca89</code>/<code>24f81fe</code>) on GitHub. Update: the token no longer works and the stage was removed from the <code>Jenkinsfile</code>. (2) With a current Maven (3.9) a fresh clone <b>does not build</b>: resource filtering corrupts the PDFs and fonts under resources. It only builds with the hard-coded <code>C:\apache-maven-3.6.3</code>. That blocks BOOK3PRO until it's fixed.</div>
 
 <h2 id="map">Repo map: every folder that holds Futtoboru work</h2>
 <div class="svgbox">
@@ -131,7 +131,7 @@ footer{color:var(--muted);font:.85rem system-ui,sans-serif;padding:40px 24px 60p
   </g>
 </svg>
 </div>
-<p style="font-family:system-ui;font-size:.9rem;color:var(--muted)">Not related: <code>campito-manager</code> (house project), <code>living-world-rpg-darkblade*</code> (AI Game Master platform; not the engine the port docs mean).</p>
+<p style="font-family:system-ui;font-size:.9rem;color:var(--muted)">Not related: <code>living-world-rpg-darkblade*</code> (AI Game Master platform; not the engine the port docs mean).</p>
 
 <h2 id="code">Game code: what actually works</h2>
 <p>Stack: <b>Java 17</b>, Maven multi-module (<code>futtoboru-core</code>, <code>futtoboru-desktop</code>), <b>libGDX 1.12 + VisUI</b>, JSON save games under <code>~/Documents/RndModGames/Futtuboru/</code>, game data as hand-written CSV-like <code>.txt</code> mods under <code>resources/mods/seasons/18/</code>. No database.</p>
@@ -204,7 +204,7 @@ footer{color:var(--muted);font:.85rem system-ui,sans-serif;padding:40px 24px 60p
 <div class="callout"><b>Unmerged branches worth a look.</b> <code>feature/competition-completion-v1</code> (Jun 2026, fast-forwards on develop) has real fixes: cup completion and runner-up, next season generated when a league ends, null-team guard, 3 tests. It also has junk: a 77 KB UTF-16 <code>temp_develop.java</code>, a duplicated test, 22 more markdown files. <code>cursor/startup-fixes-and-logging</code> is obsolete (develop already has the null checks). Every other branch is merged.</div>
 
 <h2 id="book3pro">Running Futtoboru in parallel on BOOK3PRO</h2>
-<p>BOOK3PRO is a Windows laptop (12 threads, 11 GB, WSL2) and is already your second darkblade machine. Unlike darkblade's LAN/Bitbucket setup, Futtoboru lives on <b>GitHub</b>, so it works the same from home or from El Campito.</p>
+<p>BOOK3PRO is a Windows laptop (12 threads, 11 GB, WSL2) and is already your second darkblade machine. Unlike darkblade's LAN/Bitbucket setup, Futtoboru lives on <b>GitHub</b>, so it works the same from any network.</p>
 <div class="svgbox">
 <svg viewBox="0 0 1000 210" width="100%" role="img" aria-label="Two-machine git flow">
   <g font-size="13">
@@ -238,7 +238,7 @@ footer{color:var(--muted);font:.85rem system-ui,sans-serif;padding:40px 24px 60p
 <pre># 0. Prereqs: Git for Windows (with Git Credential Manager), Temurin JDK 17, Maven 3.9 (after the filtering fix)
 java -version ; mvn -v ; git --version
 
-# 1. Clone the real repo (GitHub works off-LAN, from El Campito too)
+# 1. Clone the real repo (GitHub works from any network)
 git clone https://github.com/Geomancer86/Futtoboru.git C:\git\futtoboru
 cd C:\git\futtoboru
 git checkout develop
@@ -315,7 +315,7 @@ git fetch origin ; git merge origin/develop ; mvn verify ; git push -u origin HE
 
 <div class="dec"><h3>D8 · Two-machine roles</h3>
 <div class="opt rec"><span class="k">A</span><span><b>WORKSTATION = PM/integrator + data fixes; BOOK3PRO = dev lane</b> (build fixes, then engine). Each pushes its own branches; the integrator merges green ones. Same model as darkblade.</span></div>
-<div class="opt"><span class="k">B</span><span>BOOK3PRO primary/integrator (it's with you at El Campito); WORKSTATION secondary.</span></div>
+<div class="opt"><span class="k">B</span><span>BOOK3PRO primary/integrator; WORKSTATION secondary.</span></div>
 <div class="opt"><span class="k">C</span><span>Both equal; each merges its own green branches to develop.</span></div></div>
 
 <div class="dec"><h3>D9 · Coordination weight between machines</h3>
