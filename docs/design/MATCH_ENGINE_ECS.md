@@ -2,7 +2,7 @@
 
 _Started 2026-11-27 (WORKSTATION, `ws/E-design-ecs`). Decisions D5, D6, D7, D17, D19, **D20**; Phase 4 in
 `docs/ROADMAP.md`._ Status: **draft for producer review**; open questions in section 9. Spike:
-`futtoboru-core/src/test/java/com/rndmodgames/futtoboru/match/ecs/spike/BallFlightSpikeTest.java` (test scope only).
+`match/ecs/ball/BallPhysicsTest` and `match/ecs/MatchWorldTest` (E-10/E-11; the spike was removed).
 
 Goal: one headless, seeded, fixed-step, testable Ashley simulation in which players, referee, umpires, ball and
 crowd are entities, and the 1888-89 match (scoreline, every event, minute ticker, period report) is **read off the
@@ -102,7 +102,7 @@ MatchInput (V2 §3) + rng = game.random().fork("match:" + matchKey)
 4. **No hidden inputs.** Everything the sim reads is in `MatchInput` (+ `EngineParams` + physics params + kit by
    season). The viewer's speed, camera and whether anyone watches never reach the sim.
 5. **Tests.** Per-tick `MatchStateHash`; same input → same hash sequence; **golden hash** pinned in a test that
-   runs on both machines and CI (the spike already does this: `BallFlightSpikeTest.GOLDEN`); headless vs
+   runs on both machines and CI (`BallPhysicsTest.GOLDEN`, `MatchWorldTest.GOLDEN_PLAY_DRY/RAIN`; equal on Windows and Linux, Jenkins #88); headless vs
    with-draw-passes identical; shuffled match order in a day identical.
 
 ### 2.2 Contracts added to V2 §3

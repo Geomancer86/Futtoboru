@@ -1,0 +1,261 @@
+package com.rndmodgames.futtoboru.match.ecs;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
+import com.rndmodgames.futtoboru.match.ecs.ball.BallSystem;
+
+/** E-10: world, registration rules, draw passes vs simulation, clock, state hash, entry point golden hash. */
+class MatchWorldTest {
+
+    static MatchWorld world(PitchConditions pitch) {
+        return new MatchWorld(new PhysicsParams(), pitch, RandomSource.seeded(1888L).fork("match:test"));
+    }
+
+    /** A world with the simulation installed, 22 player stubs, the ball kicked off and an umpire stub. */
+    static MatchWorld kickedOff() {
+        MatchWorld w = world(new UniformPitch(Surface.WET, PitchConditions.RAIN));
+        MatchSystems.installSimulation(w);
+        for (int i = 0; i < 11; i++) {
+            w.spawn(SpawnRole.HOME_PLAYER);
+        }
+        for (int i = 0; i < 11; i++) {
+            w.spawn(SpawnRole.AWAY_PLAYER);
+        }
+        BallComponent b = BallComponent.atRest(0, 0, w.params().ballDryMassKg);
+        w.spawn(SpawnRole.BALL).add(b);
+        w.spawn(SpawnRole.OFFICIAL);
+        BallSystem balls = w.engine().getSystem(BallSystem.class);
+        balls.physics().kick(b, 8.0, StrictMath.toRadians(30), StrictMath.toRadians(20), 5.0);
+        return w;
+    }
+
+    // ---- draw passes ---------------------------------------------------------------------------------------------
+
+    /** Reads the ball every frame, writes nothing. */
+    static final class BallReaderPass extends EntitySystem implements DrawPass {
+        final ComponentMapper<BallComponent> balls = ComponentMapper.getFor(BallComponent.class);
+        ImmutableArray<Entity> entities;
+        int frames;
+        int updates;
+        double lastX;
+
+        BallReaderPass(int priority) {
+            super(priority);
+        }
+
+        @Override
+        public void addedToEngine(Engine engine) {
+            entities = engine.getEntitiesFor(Family.all(BallComponent.class).get());
+        }
+
+        @Override
+        public void update(float delta) {
+            updates++; // must never happen: draw passes are not part of the tick
+        }
+
+        @Override
+        public void draw(double alpha) {
+            frames++;
+            lastX = balls.get(entities.get(0)).x;
+        }
+    }
+
+    /** A buggy pass that nudges the ball. */
+    static final class MutatingPass extends EntitySystem implements DrawPass {
+        ImmutableArray<Entity> entities;
+
+        MutatingPass() {
+            super(SystemPriority.DRAW_VFX);
+        }
+
+        @Override
+        public void addedToEngine(Engine engine) {
+            entities = engine.getEntitiesFor(Family.all(BallComponent.class).get());
+        }
+
+        @Override
+        public void draw(double alpha) {
+            entities.get(0).getComponent(BallComponent.class).x += 1e-12;
+        }
+    }
+
+    static final class Both extends EntitySystem implements DrawPass, SimSystem {
+        @Override
+        public void draw(double alpha) {
+        }
+    }
+
+    static final class Sim extends EntitySystem implements SimSystem {
+        Sim(int priority) {
+            super(priority);
+        }
+    }
+
+    @Test
+    void drawPassesNeverRunInTheTickAndNeverChangeTheSimulation() {
+        int ticks = 30 * 20;
+        MatchWorld headless = kickedOff();
+        long[] expected = new long[ticks];
+        for (int t = 0; t < ticks; t++) {
+            headless.tick();
+            expected[t] = headless.stateHash();
+        }
+
+        MatchWorld viewed = kickedOff();
+        BallReaderPass ball = viewed.addDrawPass(new BallReaderPass(SystemPriority.DRAW_BALL));
+        BallReaderPass debug = viewed.addDrawPass(new BallReaderPass(SystemPriority.DRAW_DEBUG));
+        viewed.setDrawGuard(true);
+        long[] actual = new long[ticks];
+        for (int t = 0; t < ticks; t++) {
+            viewed.tick();
+            viewed.draw(0.5);
+            viewed.draw(0.9); // several frames per tick must not matter either
+            actual[t] = viewed.stateHash();
+        }
+        assertArrayEquals(expected, actual);
+        assertEquals(0, ball.updates + debug.updates, "a draw pass ran inside the simulation tick");
+        assertEquals(2 * ticks, ball.frames);
+        assertTrue(ball.lastX > 1, "the pass saw the ball move: " + ball.lastX);
+    }
+
+    @Test
+    void theDrawGuardCatchesAPassThatWritesSimulationState() {
+        MatchWorld w = kickedOff();
+        w.addDrawPass(new MutatingPass());
+        w.setDrawGuard(true);
+        w.tick();
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> w.draw(0));
+        assertTrue(e.getMessage().contains("MutatingPass"), e.getMessage());
+    }
+
+    @Test
+    void registrationRules() {
+        MatchWorld w = world(new UniformPitch(Surface.DRY, 0));
+        assertThrows(IllegalArgumentException.class, () -> w.addSimulation(new Both()));
+        assertThrows(IllegalArgumentException.class, () -> w.addDrawPass(new Both()));
+        w.addSimulation(new Sim(SystemPriority.LAWS));
+        assertThrows(IllegalArgumentException.class, () -> w.addSimulation(new Sim(SystemPriority.LAWS)));
+        w.addDrawPass(new BallReaderPass(SystemPriority.DRAW_DEBUG));
+        assertThrows(IllegalArgumentException.class,
+                () -> w.addDrawPass(new BallReaderPass(SystemPriority.DRAW_DEBUG)));
+    }
+
+    @Test
+    void drawPassesRunInPriorityOrderWhateverTheRegistrationOrder() {
+        MatchWorld w = world(new UniformPitch(Surface.DRY, 0));
+        StringBuilder order = new StringBuilder();
+        class Named extends EntitySystem implements DrawPass {
+            final String name;
+
+            Named(int priority, String name) {
+                super(priority);
+                this.name = name;
+            }
+
+            @Override
+            public void draw(double alpha) {
+                order.append(name);
+            }
+        }
+        w.addDrawPass(new Named(SystemPriority.DRAW_DEBUG, "d"));
+        w.addDrawPass(new Named(SystemPriority.DRAW_PITCH, "p"));
+        w.addDrawPass(new Named(SystemPriority.DRAW_BALL, "b"));
+        w.addDrawPass(new Named(SystemPriority.DRAW_INTERPOLATION, "i"));
+        w.draw(0);
+        assertEquals("ipbd", order.toString());
+    }
+
+    @Test
+    void entitiesAreCreatedInTheFixedOrderAndBeforeTheFirstTick() {
+        MatchWorld w = world(new UniformPitch(Surface.DRY, 0));
+        Entity home = w.spawn(SpawnRole.HOME_PLAYER);
+        Entity ball = w.spawn(SpawnRole.BALL);
+        assertEquals(0, home.getComponent(IdentityComponent.class).index);
+        assertEquals(1, ball.getComponent(IdentityComponent.class).index);
+        assertThrows(IllegalStateException.class, () -> w.spawn(SpawnRole.AWAY_PLAYER));
+        w.spawn(SpawnRole.OFFICIAL);
+        w.tick();
+        assertThrows(IllegalStateException.class, () -> w.spawn(SpawnRole.CROWD_SECTION));
+    }
+
+    // ---- clock ---------------------------------------------------------------------------------------------------
+
+    @Test
+    void fixedStepClockCarriesLeftoverTimeCapsStepsAndScalesStepsBySpeed() {
+        FixedStepClock clock = new FixedStepClock(1.0 / 30, 5);
+        assertEquals(0, clock.advance(0.02));
+        assertEquals(1, clock.advance(0.02)); // 0.04 s accumulated
+        assertEquals((0.04 - 1.0 / 30) * 30, clock.alpha(), 1e-12);
+        clock.setSpeed(4);
+        assertEquals(2, clock.advance(1.0 / 60)); // 4 x 1/60 + leftover = 2.2 steps
+        assertEquals(5, clock.advance(10)); // capped, backlog dropped
+        assertEquals(0, clock.alpha(), 0);
+
+        MatchWorld w = world(new UniformPitch(Surface.DRY, 0));
+        BallReaderPass pass = w.addDrawPass(new BallReaderPass(SystemPriority.DRAW_BALL));
+        w.spawn(SpawnRole.BALL).add(BallComponent.atRest(0, 0, 0.4));
+        FixedStepClock viewer = new FixedStepClock(w.tickSeconds(), 8);
+        int ticks = 0;
+        for (int f = 0; f < 60; f++) {
+            ticks += w.frame(viewer, 1.0 / 60); // one second at 60 fps
+        }
+        assertEquals(30, ticks, 1);
+        assertEquals(60, pass.frames);
+        assertEquals(ticks, w.tickCount());
+    }
+
+    // ---- state hash ----------------------------------------------------------------------------------------------
+
+    @Test
+    void describeModeShowsTheHashInputsAndAgreesWithTheHash() {
+        MatchWorld w = kickedOff();
+        w.runTicks(10);
+        String text = w.describeState();
+        assertTrue(text.startsWith("tick=10\n"), text);
+        assertTrue(text.contains("ball.vx="), text);
+        assertTrue(text.contains("id.role=" + SpawnRole.OFFICIAL.ordinal()), text);
+        assertTrue(text.endsWith("hash=" + Long.toHexString(w.stateHash()) + "\n"), text);
+        long before = w.stateHash();
+        w.tick();
+        assertNotEquals(before, w.stateHash());
+    }
+
+    // ---- entry point ---------------------------------------------------------------------------------------------
+
+    /** Golden hashes of the {@code play} stub over a full match (162,000 ticks); see BallPhysicsTest for the rule. */
+    static final long GOLDEN_PLAY_DRY = 0x0287cbc750d84093L;
+    static final long GOLDEN_PLAY_RAIN = 0x8f2d2af5fd95eddbL;
+
+    @Test
+    void playIsDeterministicAndPinnedByAGoldenHash() {
+        EcsMatchEngine engine = new EcsMatchEngine();
+        RandomSource game = RandomSource.seeded(1888L);
+        EcsMatchInput dry = new EcsMatchInput("m1", new UniformPitch(Surface.DRY, PitchConditions.DRY));
+        EcsMatchInput rain = new EcsMatchInput("m2", new UniformPitch(Surface.WET, PitchConditions.RAIN));
+        EcsMatchResult a = engine.play(dry, game.fork("match:m1"));
+        EcsMatchResult b = engine.play(rain, game.fork("match:m2"));
+        assertEquals(a, engine.play(dry, game.fork("match:m1")));
+        assertEquals(162_000, a.ticks());
+        assertEquals(EcsMatchEngine.ENGINE_VERSION, a.engineVersion());
+        assertEquals(0.400, a.fullTimeBallMassKg(), 0);
+        // BKP §1.3 table, 400 g ball in rain: 476 g at half-time, 526 g at full time.
+        assertEquals(0.476, b.halfTimeBallMassKg(), 0.001);
+        assertEquals(0.526, b.fullTimeBallMassKg(), 0.001);
+        assertEquals(GOLDEN_PLAY_DRY, a.finalStateHash(), () -> "dry " + Long.toHexString(a.finalStateHash()));
+        assertEquals(GOLDEN_PLAY_RAIN, b.finalStateHash(), () -> "rain " + Long.toHexString(b.finalStateHash()));
+    }
+}
