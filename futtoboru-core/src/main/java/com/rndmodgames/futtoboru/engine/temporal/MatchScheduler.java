@@ -277,7 +277,8 @@ public class MatchScheduler {
                 
                 // Sell tickets: if range is valid, use random; otherwise sell what's available
                 if (minPerDay < maxPerDay) {
-                    randomTickets = DatabaseLoader.RNG.nextInt(minPerDay, maxPerDay + 1); // +1 because nextInt is exclusive
+                    randomTickets = Futtoboru.randomOf(game).fork("tickets:" + scheduled.getId() + ":" + currentDate.toLocalDate())
+                            .nextInt(minPerDay, maxPerDay + 1); // +1 because nextInt is exclusive
                 } else {
                     // min equals max, sell that amount
                     randomTickets = maxPerDay;

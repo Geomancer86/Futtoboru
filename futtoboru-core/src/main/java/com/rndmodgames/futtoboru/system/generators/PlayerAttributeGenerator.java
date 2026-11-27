@@ -9,6 +9,7 @@ import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerProfession;
 import com.rndmodgames.futtoboru.data.RegionModifier;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
 
@@ -31,8 +32,10 @@ public class PlayerAttributeGenerator {
      * - Profession (day job bonuses for amateur/semi-pro)
      * 
      * Maximum possible: 23 (3-18 base + up to 5 from modifiers)
+     *
+     * @param rng the dice (a fork of the game's random source for this player)
      */
-    public void generatePlayerAttributes(Player player, Person person, LocalDateTime currentDate) {
+    public void generatePlayerAttributes(Player player, Person person, LocalDateTime currentDate, RandomSource rng) {
         
         if (player == null || person == null) {
             DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerAttributeGenerator", "Cannot generate attributes: player or person is null");
@@ -62,16 +65,16 @@ public class PlayerAttributeGenerator {
         }
         
         // Generate Physical Attributes (3d6 + age + nationality + region modifiers)
-        generatePhysicalAttributes(player, ageAdjustment, natMod, regMod);
+        generatePhysicalAttributes(player, ageAdjustment, natMod, regMod, rng);
         
         // Generate Mental Attributes (3d6 + age + nationality + region modifiers)
-        generateMentalAttributes(player, ageAdjustment, natMod, regMod);
+        generateMentalAttributes(player, ageAdjustment, natMod, regMod, rng);
         
         // Generate Technical Attributes (3d6 + age + nationality + region modifiers)
-        generateTechnicalAttributes(player, ageAdjustment, natMod, regMod);
+        generateTechnicalAttributes(player, ageAdjustment, natMod, regMod, rng);
         
         // Generate Goalkeeper Attributes (3d6 + age + nationality + region modifiers)
-        generateGoalkeeperAttributes(player, ageAdjustment, natMod, regMod);
+        generateGoalkeeperAttributes(player, ageAdjustment, natMod, regMod, rng);
         
         // Apply profession bonuses (for amateur/semi-pro players)
         // Profession bonuses are applied directly (no conversion needed with 3-18 system)
@@ -220,10 +223,10 @@ public class PlayerAttributeGenerator {
      * Roll 3d6 for attribute generation (D&D style)
      * Returns value between 3 and 18
      */
-    private int roll3d6() {
-        int die1 = DatabaseLoader.RNG.nextInt(6) + 1; // 1-6
-        int die2 = DatabaseLoader.RNG.nextInt(6) + 1; // 1-6
-        int die3 = DatabaseLoader.RNG.nextInt(6) + 1; // 1-6
+    private int roll3d6(RandomSource rng) {
+        int die1 = rng.nextInt(6) + 1; // 1-6
+        int die2 = rng.nextInt(6) + 1; // 1-6
+        int die3 = rng.nextInt(6) + 1; // 1-6
         return die1 + die2 + die3; // 3-18
     }
     
@@ -258,42 +261,44 @@ public class PlayerAttributeGenerator {
      * Each attribute: 3d6 roll + age adjustment + nationality modifier + region modifier
      * Range: 3-18 base, can reach 20+ with modifiers
      */
-    private void generatePhysicalAttributes(Player player, int ageAdjustment, NationalityModifier natMod, RegionModifier regMod) {
+    private void generatePhysicalAttributes(Player player, int ageAdjustment, NationalityModifier natMod, RegionModifier regMod,
+            RandomSource rng) {
         // Roll 3d6 for each attribute (independent rolls) + attribute-specific modifiers
-        player.setAcceleration(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setAcceleration(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "acceleration")));
-        player.setSpeed(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setSpeed(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "speed")));
-        player.setStamina(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setStamina(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "stamina")));
-        player.setStrength(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setStrength(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "strength")));
-        player.setEndurance(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setEndurance(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "endurance")));
-        player.setJumping(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setJumping(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "jumping")));
-        player.setDexterity(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setDexterity(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "dexterity")));
     }
     
     /**
      * Generate mental attributes (v2.0 - 3d6 system)
      */
-    private void generateMentalAttributes(Player player, int ageAdjustment, NationalityModifier natMod, RegionModifier regMod) {
+    private void generateMentalAttributes(Player player, int ageAdjustment, NationalityModifier natMod, RegionModifier regMod,
+            RandomSource rng) {
         // Roll 3d6 for each attribute (independent rolls) + attribute-specific modifiers
-        player.setConcentration(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setConcentration(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "concentration")));
-        player.setCourage(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setCourage(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "courage")));
-        player.setDetermination(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setDetermination(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "determination")));
-        player.setLeadership(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setLeadership(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "leadership")));
-        player.setPerception(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setPerception(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "perception")));
-        player.setPositioning(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setPositioning(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "positioning")));
-        player.setTeamwork(clampAttribute3d6(roll3d6() + ageAdjustment + 
+        player.setTeamwork(clampAttribute3d6(roll3d6(rng) + ageAdjustment + 
             getModifier(natMod, regMod, "teamwork")));
     }
     
@@ -303,24 +308,25 @@ public class PlayerAttributeGenerator {
      * Technical attributes don't have direct nationality/region modifiers,
      * but can be influenced by dexterity/concentration modifiers
      */
-    private void generateTechnicalAttributes(Player player, int ageAdjustment, NationalityModifier natMod, RegionModifier regMod) {
+    private void generateTechnicalAttributes(Player player, int ageAdjustment, NationalityModifier natMod, RegionModifier regMod,
+            RandomSource rng) {
         // Technical attributes use dexterity/concentration modifiers as base
         int techBaseMod = getModifier(natMod, regMod, "dexterity") + getModifier(natMod, regMod, "concentration");
         techBaseMod = techBaseMod / 2; // Average of dexterity and concentration modifiers
         
         // Roll 3d6 for each attribute (independent rolls) + base modifier
-        player.setPassing(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setKicking(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setLongShots(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setTrickShots(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setHeading(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setOneTwos(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setFreeKicks(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setCornerKicks(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setPenaltyKicks(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setThrowIns(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setMarking(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
-        player.setTackling(clampAttribute3d6(roll3d6() + ageAdjustment + techBaseMod));
+        player.setPassing(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setKicking(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setLongShots(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setTrickShots(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setHeading(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setOneTwos(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setFreeKicks(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setCornerKicks(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setPenaltyKicks(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setThrowIns(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setMarking(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
+        player.setTackling(clampAttribute3d6(roll3d6(rng) + ageAdjustment + techBaseMod));
     }
     
     /**
@@ -328,18 +334,19 @@ public class PlayerAttributeGenerator {
      * 
      * Goalkeeper attributes use perception/positioning modifiers as base
      */
-    private void generateGoalkeeperAttributes(Player player, int ageAdjustment, NationalityModifier natMod, RegionModifier regMod) {
+    private void generateGoalkeeperAttributes(Player player, int ageAdjustment, NationalityModifier natMod, RegionModifier regMod,
+            RandomSource rng) {
         // Goalkeeper attributes use perception/positioning modifiers as base
         int gkBaseMod = getModifier(natMod, regMod, "perception") + getModifier(natMod, regMod, "positioning");
         gkBaseMod = gkBaseMod / 2; // Average of perception and positioning modifiers
         
         // Roll 3d6 for each attribute (independent rolls) + base modifier
-        player.setShotStopping(clampAttribute3d6(roll3d6() + ageAdjustment + gkBaseMod));
-        player.setAreaControl(clampAttribute3d6(roll3d6() + ageAdjustment + gkBaseMod));
-        player.setPunching(clampAttribute3d6(roll3d6() + ageAdjustment + gkBaseMod));
-        player.setHandToHand(clampAttribute3d6(roll3d6() + ageAdjustment + gkBaseMod));
-        player.setRushingOut(clampAttribute3d6(roll3d6() + ageAdjustment + gkBaseMod));
-        player.setAreaPositioning(clampAttribute3d6(roll3d6() + ageAdjustment + gkBaseMod));
+        player.setShotStopping(clampAttribute3d6(roll3d6(rng) + ageAdjustment + gkBaseMod));
+        player.setAreaControl(clampAttribute3d6(roll3d6(rng) + ageAdjustment + gkBaseMod));
+        player.setPunching(clampAttribute3d6(roll3d6(rng) + ageAdjustment + gkBaseMod));
+        player.setHandToHand(clampAttribute3d6(roll3d6(rng) + ageAdjustment + gkBaseMod));
+        player.setRushingOut(clampAttribute3d6(roll3d6(rng) + ageAdjustment + gkBaseMod));
+        player.setAreaPositioning(clampAttribute3d6(roll3d6(rng) + ageAdjustment + gkBaseMod));
     }
     
     /**
@@ -414,7 +421,7 @@ public class PlayerAttributeGenerator {
      * Apply daily attribute changes (for testing - simple random changes + age-based decline)
      * TODO: Replace with proper training system in Phase 3
      */
-    public void applyDailyAttributeChanges(Player player, java.time.LocalDateTime currentDate) {
+    public void applyDailyAttributeChanges(Player player, java.time.LocalDateTime currentDate, RandomSource rng) {
         if (player == null || player.getPerson() == null) return;
         
         // Calculate age
@@ -425,8 +432,8 @@ public class PlayerAttributeGenerator {
         
         // Randomly change one physical attribute (v2.0 - 3d6 system)
         // Small changes (±1) for daily variations
-        int physicalAttr = DatabaseLoader.RNG.nextInt(7);
-        int change = DatabaseLoader.RNG.nextInt(3) - 1; // -1, 0, or +1
+        int physicalAttr = rng.nextInt(7);
+        int change = rng.nextInt(3) - 1; // -1, 0, or +1
         
         switch (physicalAttr) {
             case 0: player.setAcceleration(clampAttribute3d6((int)(player.getAcceleration() + change))); break;
@@ -439,8 +446,8 @@ public class PlayerAttributeGenerator {
         }
         
         // Randomly change one technical attribute (v2.0 - 3d6 system)
-        int technicalAttr = DatabaseLoader.RNG.nextInt(12);
-        change = DatabaseLoader.RNG.nextInt(3) - 1; // -1, 0, or +1
+        int technicalAttr = rng.nextInt(12);
+        change = rng.nextInt(3) - 1; // -1, 0, or +1
         
         switch (technicalAttr) {
             case 0: player.setPassing(clampAttribute3d6((int)(player.getPassing() + change))); break;
@@ -458,7 +465,7 @@ public class PlayerAttributeGenerator {
         }
         
         // Apply age-based decline (v1.0)
-        float declineFactor = calculateDeclineFactor(age);
+        float declineFactor = calculateDeclineFactor(age, rng);
         if (declineFactor > 0) {
             applyAgeDecline(player, declineFactor);
         }
@@ -467,15 +474,15 @@ public class PlayerAttributeGenerator {
     /**
      * Calculate age-based decline factor
      */
-    private float calculateDeclineFactor(int age) {
+    private float calculateDeclineFactor(int age, RandomSource rng) {
         if (age < 30) {
             return 0.0f; // No decline before 30
         } else if (age < 35) {
-            return 0.01f + (DatabaseLoader.RNG.nextFloat() * 0.04f); // 0.01-0.05
+            return 0.01f + (rng.nextFloat() * 0.04f); // 0.01-0.05
         } else if (age < 40) {
-            return 0.05f + (DatabaseLoader.RNG.nextFloat() * 0.05f); // 0.05-0.1
+            return 0.05f + (rng.nextFloat() * 0.05f); // 0.05-0.1
         } else {
-            return 0.1f + (DatabaseLoader.RNG.nextFloat() * 0.1f); // 0.1-0.2
+            return 0.1f + (rng.nextFloat() * 0.1f); // 0.1-0.2
         }
     }
     

@@ -1,13 +1,12 @@
 package com.rndmodgames.futtoboru.engine.simulation;
 
-import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.CompetitionRules;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
@@ -33,12 +32,22 @@ public class MatchSimulator {
     
     private SaveGame currentGame;
     private Futtoboru gameInstance;
-    private Random random;
+    private final RandomSource root;
+    private RandomSource random;
     
+    /** Draws from the game's random source ({@code game.random()}). */
     public MatchSimulator(Futtoboru gameInstance) {
+        this(gameInstance, Futtoboru.randomOf(gameInstance));
+    }
+    
+    /**
+     * @param root each match draws from {@code root.fork("match:" + id)} and its gate from {@code fork("gate:" + id)},
+     *             so a result depends on the seed and the match, not on the order the day's matches are played
+     */
+    public MatchSimulator(Futtoboru gameInstance, RandomSource root) {
         this.currentGame = gameInstance.getCurrentGame();
         this.gameInstance = gameInstance;
-        this.random = new Random();
+        this.root = root;
     }
     
     /**
@@ -71,6 +80,12 @@ public class MatchSimulator {
             return false;
         }
         
+        // One stream per match (P2-0)
+        String matchKey = match.getId() != null ? String.valueOf(match.getId())
+                : match.getHomeClubId() + "-" + match.getAwayClubId() + "@" + match.getMatchDateTime();
+        this.random = root.fork("match:" + matchKey);
+        RandomSource gate = root.fork("gate:" + matchKey);
+        
         // Calculate team strengths
         double homeStrength = calculateTeamStrength(homeClub);
         double awayStrength = calculateTeamStrength(awayClub);
@@ -101,11 +116,11 @@ public class MatchSimulator {
         if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
             // 60-90% attendance for v1.0
             int capacity = homeClub.getStadium().getCapacity();
-            int attendance = (int)(capacity * (0.6 + random.nextDouble() * 0.3));
+            int attendance = (int)(capacity * (0.6 + gate.nextDouble() * 0.3));
             match.setAttendance(attendance);
         } else {
             // Default attendance if no stadium data
-            match.setAttendance(1000 + random.nextInt(4000)); // 1000-5000
+            match.setAttendance(1000 + gate.nextInt(4000)); // 1000-5000
         }
         
         System.out.println("MatchSimulator: " + homeClub.getName() + " " + homeScore + 

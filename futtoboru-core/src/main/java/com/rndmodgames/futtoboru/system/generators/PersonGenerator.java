@@ -7,6 +7,7 @@ import java.util.List;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -22,6 +23,10 @@ public class PersonGenerator {
     SaveGame currentGame;
     
     private List<Person> allPerson = new ArrayList<>();
+    
+    // the "people" stream of the game's random source (re-forked when the game's seed changes, e.g. on load)
+    private RandomSource rootUsed;
+    private RandomSource random;
     
     public PersonGenerator(Futtoboru parent) {
         
@@ -48,7 +53,8 @@ public class PersonGenerator {
         
         Person person = new Person();
         
-        String generatedName  [] = NameGenerator.generateName(country);
+        RandomSource rng = random();
+        String generatedName  [] = NameGenerator.generateName(country, rng);
 
         // Generated Name
         person.setName(generatedName[0]);
@@ -67,8 +73,8 @@ public class PersonGenerator {
         LocalDateTime randomBirthDate = null;
         
         // Randomize
-        int randomYears = 16 + DatabaseLoader.RNG.nextInt(30);
-        int randomDays = DatabaseLoader.RNG.nextInt(365);
+        int randomYears = 16 + rng.nextInt(30);
+        int randomDays = rng.nextInt(365);
         
         if (currentGame != null) {
             
@@ -146,5 +152,18 @@ public class PersonGenerator {
         }
         
         return person;
+    }
+
+    /**
+     * One sequential stream for generated people. Retries after a duplicate name draw again, so a person's data
+     * depends on the seed and on how many people were generated before (deterministic per seed, not per id).
+     */
+    private RandomSource random() {
+        RandomSource root = Futtoboru.randomOf(game);
+        if (random == null || root != rootUsed) {
+            rootUsed = root;
+            random = root.fork("people");
+        }
+        return random;
     }
 }

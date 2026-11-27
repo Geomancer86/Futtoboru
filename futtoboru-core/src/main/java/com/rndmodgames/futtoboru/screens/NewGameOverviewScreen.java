@@ -960,7 +960,8 @@ public class NewGameOverviewScreen implements Screen {
                 if (player != null && player.getPerson() != null) {
                     // Only generate if attributes are null (not already generated)
                     if (player.getAcceleration() == null) {
-                        attrGen.generatePlayerAttributes(player, player.getPerson(), gameDate);
+                        attrGen.generatePlayerAttributes(player, player.getPerson(), gameDate,
+                                ((Futtoboru) game).random().fork("attributes:" + player.getPerson().getId()));
                         playersGenerated++;
                     }
                 }

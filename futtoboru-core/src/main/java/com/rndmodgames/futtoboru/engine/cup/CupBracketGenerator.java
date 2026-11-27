@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.rndmodgames.futtoboru.data.Match;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 
 /**
  * Cup Bracket Generator v1.0
@@ -32,8 +32,17 @@ public class CupBracketGenerator {
     /** Gives every generated match its runtime id (the game's allocator, P2-4) */
     private final com.rndmodgames.futtoboru.system.data.IdAllocator ids;
     
+    /** Draws byes and pairings (a fork of the game's random source for this cup edition, P2-0) */
+    private final RandomSource rng;
+    
+    /** Without a game (tests, tools): draws from the database loader's source. Game code passes a fork. */
     public CupBracketGenerator(com.rndmodgames.futtoboru.system.data.IdAllocator ids) {
+        this(ids, com.rndmodgames.futtoboru.system.DatabaseLoader.getRandom().fork("cup-draw"));
+    }
+
+    public CupBracketGenerator(com.rndmodgames.futtoboru.system.data.IdAllocator ids, RandomSource rng) {
         this.ids = ids;
+        this.rng = rng;
     }
     
     /**
@@ -61,7 +70,7 @@ public class CupBracketGenerator {
         // Handle bye if odd number of teams
         Long byeTeamId = null;
         if (teams.size() % 2 != 0) {
-            int byeIndex = DatabaseLoader.RNG.nextInt(teams.size());
+            int byeIndex = rng.nextInt(teams.size());
             byeTeamId = teams.remove(byeIndex);
             Gdx.app.log("CupBracketGenerator", "Team " + byeTeamId + " receives a BYE (advances to Round 2)");
         }
@@ -154,10 +163,10 @@ public class CupBracketGenerator {
             match.setId(ids.nextId());
             
             // Pick random teams
-            int homeIndex = DatabaseLoader.RNG.nextInt(remainingTeams.size());
+            int homeIndex = rng.nextInt(remainingTeams.size());
             Long homeTeamId = remainingTeams.remove(homeIndex);
             
-            int awayIndex = DatabaseLoader.RNG.nextInt(remainingTeams.size());
+            int awayIndex = rng.nextInt(remainingTeams.size());
             Long awayTeamId = remainingTeams.remove(awayIndex);
             
             // Set teams

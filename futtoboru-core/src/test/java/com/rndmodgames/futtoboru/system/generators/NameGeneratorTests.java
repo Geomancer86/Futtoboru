@@ -10,6 +10,7 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Person;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -48,7 +49,7 @@ public class NameGeneratorTests {
         assertNotNull(england);
         
         // Generates a random game
-        String randomName [] = NameGenerator.generateName(england);
+        String randomName [] = NameGenerator.generateName(england, RandomSource.seeded(1888));
    
         assertNotNull(randomName);
         
