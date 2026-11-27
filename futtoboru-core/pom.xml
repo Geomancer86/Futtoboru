@@ -71,11 +71,6 @@
                 <version>${maven.surefire.plugin.version}</version>
             </plugin>
             <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.9.1.2184</version>
-            </plugin> 
-            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
@@ -100,31 +95,16 @@
 
     <dependencies>
 
-        <!-- https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx-backend-lwjgl3 -->
+        <!-- https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx -->
         <dependency>
             <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx-backend-lwjgl3</artifactId>
-            <version>${libgdx.version}</version>
-        </dependency>
-        
-        <!-- https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx-bullet -->
-        <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx-bullet</artifactId>
+            <artifactId>gdx</artifactId>
             <version>${libgdx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.badlogicgames.gdx</groupId>
             <artifactId>gdx-platform</artifactId>
-            <version>${libgdx.version}</version>
-            <classifier>natives-desktop</classifier>
-        </dependency>
-        
-        <!-- https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx-freetype-platform -->
-        <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx-freetype-platform</artifactId>
             <version>${libgdx.version}</version>
             <classifier>natives-desktop</classifier>
         </dependency>
@@ -158,14 +138,6 @@
             <classifier>natives-desktop</classifier>
         </dependency>
         
-        <!-- https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx-bullet-platform -->
-        <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx-bullet-platform</artifactId>
-            <version>${libgdx.version}</version>
-            <classifier>natives-desktop</classifier>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.kotcrab.vis/vis-ui -->
         <dependency>
             <groupId>com.kotcrab.vis</groupId>
