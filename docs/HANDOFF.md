@@ -8,12 +8,12 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 |---|---|---|---|
 | P2-3 headless seeded 1888-89 season test (+ 12-team bracket, top scorer per season) | WORKSTATION | `ws/P2-3-season-test` | 2026-11-27 |
 | U-02b screens use UiTheme tokens (no visual change; not the save dialogs) | WORKSTATION | `ws/U-02b-tokens` | 2026-11-27 |
-| P2-5 saves v1 (= P2-4 slice 3: ids not copies, saveVersion, slots, stable data id registry) | BOOK3PRO | `b3/P2-5-saves-v1` | 2026-11-27 |
+| P2-8 AuthorityManager uses the current game (competition check never ran) | BOOK3PRO | `b3/P2-8-authority-current-game` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
 |---|---|---|
-| BOOK3PRO | P2-5 saves v1 | `system/SaveLoadSystem.java`, `system/SaveGame.java`, `system/data/**` (`GameData`, `IdAllocator`), the save/load dialogs (`SaveGameDialog`, `LoadGameDialog`), `src/test/resources/saves/**`, new `gamedata/core/ids.json`, `tools/data/validate.py`. Data JSON edits (slice 4) are fine: after adding a record run `python tools/data/assign_ids.py` once it exists. |
+| BOOK3PRO | P2-8 | `engine/AuthorityManager.java` (a few lines in the constructor and the `currentGame` reads) |
 
 ## Ready to take (from docs/ROADMAP.md)
 **Safe for WORKSTATION now (game data and loaders are released since slice 2):**
@@ -26,6 +26,8 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 **Wait for slice 3 (save files locked):** P1-5 logging (touches `SaveLoadSystem`). P2-3 seeded season test needs P2-0 first.
 
 ## Log
+- 2026-11-27 · BOOK3PRO · CLAIM · P2-8 · **Bug for P2-3:** `AuthorityManager` is built in `Futtoboru.create()` before any game exists and keeps `currentGame = null`, so `checkCompetitionsSchedule()` returns at once every day in real play (no league completion, cup draws or progression). Tests build their own managers, so they pass. Fix: read the current game on each call. Small; merge develop into `ws/P2-3-season-test` after it lands.
+- 2026-11-27 · BOOK3PRO · DONE · P2-5 · Saves v1 merged: `saveVersion` 1 + game/data versions + summary; game objects saved once, data by id and re-linked; `DatabaseLoader.bindGame` makes lookups return the game's objects; named saves (overwrite), load list newest first, folder `RndModGames/Futtoboru` (old `Futtuboru` moved once), v0.4/damaged files show a reason; `SaveMigrations` table; fixture `src/test/resources/saves/v1_1888-89_new_game.json`. **`gamedata/core/ids.json`: after adding a data record run `python tools/data/assign_ids.py`** (append-only; renames keep their number). 108 Java + 16 data tests green, startup OK. Known, not fixed: starting a new game after playing/loading another reuses already-played database objects.
 - 2026-11-27 · WORKSTATION · CLAIM · P2-3 (+ bracket/top-scorer fixes), U-02b · Neither touches the P2-5 lock.
 - 2026-11-27 · WORKSTATION · DONE · P2-2 + P2-6 + P2-7 · One `engine/simulation/MatchResultRecorder` for both engine paths (draw blocker for league only, idempotent; cup ties no longer touch the league table). Season rollover snapshots `CompetitionEdition.finalStandings` and resets the table; seasons after the first now complete (duplicate-title message drop fixed). `Money.format` (£, locale-proof) everywhere; £ glyph added to droid-sans-13 + tixel atlas. Cup final = the bracket tie nothing feeds from; drawn finals replay correctly; completion once. Prizes `LEAGUE_CHAMPION_PRIZE`/`RUNNER_UP`. Jenkins #72 green (96 core + 1 desktop), smoke OK. **BOOK3PRO, for P2-5:** new saved field `CompetitionEdition.finalStandings` (list of `LeagueStandingRow`). Known, not fixed: 12-team bracket generator leaves R2M3 with no next tie; top scorer counts all seasons.
 - 2026-11-27 · WORKSTATION · DONE · P2-0 · `engine/random/RandomSource` (SplittableRandom; `fork(name)` = SplitMix64(seed ^ FNV-1a64(name)), order-independent, formula pinned by a test) owned by `Futtoboru` (`Futtoboru(long seed)`, `-Dfuttoboru.seed`, `getSeed()/setSeed()`). All 12 game-logic RNG uses now fork by entity id + date (matches, gates, draws, tickets, expenses, drift, generators, loader). Jenkins #70 green (81 core + 1 desktop). **BOOK3PRO, for P2-5:** save `game.getSeed()` in SaveGame; on load call `game.setSeed(save.getSeed())`; treat any change to `SplittableRandomSource.forkSeed` as a `saveVersion` break. `BirthDates.complete(String, Random)` left as is (your lock) and fed via `asRandom()`.
