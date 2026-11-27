@@ -6,6 +6,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| U-11 ground illustrations in UI + U-09 tooltips/UiDialogs + save dialogs to tokens | WORKSTATION | `ws/U-11-ground-art-ui` | 2026-11-27 |
 | H-01b apply the H-01 data corrections to gamedata JSON (no schema change) | WORKSTATION | `ws/H-01b-data-fixes` | 2026-11-27 |
 | E-10 ECS skeleton + E-11 ball physics (new `match/ecs/**`) | WORKSTATION | `ws/E-10-ecs-skeleton` | 2026-11-27 |
 | E-12 pitch/goal geometry, line crossings, restarts (new `match/ecs/**`) | WORKSTATION | `ws/E-12-pitch` | 2026-11-27 |
@@ -33,6 +34,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Producer:** push v0.4.0 to `main`; tag v0.5.0-alpha after P2-9..11, v0.5.0 after Phase 3. Engine answers are in D19 (Phase 4 can be designed in parallel).
 
 ## Log
+- 2026-11-27 · WORKSTATION · CLAIM · U-11 + U-09 · Club/ground screens show `art/grounds/<id>.png`; one tooltip layer + `UiDialogs`; `SaveGameDialog`/`LoadGameDialog` pads → tokens (BOOK3PRO: small style-only edit in your dialogs).
 - 2026-11-27 · WORKSTATION · DONE · U-04d/b/c · Options all work (Save via the P2-5 dialog + `showThen` hook; Load/Quit ask Save First / Do Not Save / Cancel; Settings returns to the screen you left; `menu/UnsavedProgress`). One menu list `menu/MenuEntries` (14 button classes deleted; drill-down → entry map; active highlight), top-bar Back + Esc via `menu/NavigationHistory`; removed the crashing in-game "Match Engine Debug" entry. Home dashboard (`tables/main/HomeDashboard`): next fixture, messages, league position, balance, last result; job-seeker variant. 56 labels added to all 4 bundles; `LanguageBundleKeysTest` guards missing keys. Jenkins #85 green (181 core + 1 desktop, 68 pytest). **Adding a screen to the menu = one line in `MenuEntries`.** Known: in-game Settings round trip leaks one SpriteBatch; Settings shows saved "640x480" (U-03a, BOOK3PRO).
 - 2026-11-27 · WORKSTATION · DONE · H-02 · `docs/data/history/GROUNDS_1888-89.md` (22 grounds, cited; best period details e.g. Anfield "a huge circus", Perry Barr blacksmith's shed, Pike's Lane farmer selling views) + `tools/art/ground_art.py` (stdlib-only, deterministic pixel-art generator from `tools/art/grounds/<id>.json`; `--check`) → `resources/art/grounds/<id>.png` 320×180 + `_thumb` 64×36 (own work, not yet shown in UI) + `docs/design/GROUNDS_DATA_PROPOSAL.md` (stands, pitch, recordCrowd, admission, illustration…). CI now runs `pytest tools/art`. Jenkins #84 green. **BOOK3PRO/producer:** approve the grounds proposal; proposed new ids kennington-oval, bramall-lane, clee-park.
 - 2026-11-27 · WORKSTATION · CLAIM · H-01b · `gamedata/core/*.json` only; aliases + rename log per D11 for any id change.
