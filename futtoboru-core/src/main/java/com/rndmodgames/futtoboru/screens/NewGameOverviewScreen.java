@@ -35,6 +35,7 @@ import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.GroundArt;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiTooltips;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -898,6 +899,9 @@ public class NewGameOverviewScreen implements Screen {
         }
         Actor thumb = ((Futtoboru) game).getGroundArt().picture(GroundArt.groundId(club), true,
                 UiTheme.size("art.thumb.w"), UiTheme.size("art.thumb.h"));
+        if (club.getStadium() != null) {
+            UiTooltips.tipText(thumb, club.getStadium().getName());
+        }
         startingClubThumb.add(thumb);
     }
 

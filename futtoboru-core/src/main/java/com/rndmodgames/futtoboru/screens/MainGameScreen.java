@@ -20,6 +20,7 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.tools.SharingUtils;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiDialogs;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -222,6 +223,9 @@ public class MainGameScreen implements Screen {
     
     /** @return true while a dialog (save, load, confirm) is on the stage */
     private boolean isDialogOpen() {
+        if (UiDialogs.isOpenOn(stage)) {
+            return true;
+        }
         for (Actor actor : stage.getRoot().getChildren()) {
             if (actor instanceof Dialog && actor.isVisible()) {
                 return true;

@@ -13,7 +13,6 @@ import com.kotcrab.vis.ui.widget.BusyBar;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
@@ -26,6 +25,7 @@ import com.rndmodgames.localization.LanguageModLoader;
 
 import java.util.function.BooleanSupplier;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiDialogs;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -247,7 +247,7 @@ public class MainGameMenuTable extends VisTable {
                 if (loadGameDialog == null) {
                     loadGameDialog = new LoadGameDialog(game);
                 }
-                loadGameDialog.show(stage);
+                UiDialogs.show(stage, loadGameDialog);
             });
             break;
 
@@ -292,7 +292,7 @@ public class MainGameMenuTable extends VisTable {
             return;
         }
 
-        Dialogs.showConfirmDialog(stage,
+        UiDialogs.confirm(stage,
                 LanguageModLoader.getValue("unsaved_progress"),
                 LanguageModLoader.getValue("unsaved_progress_text"),
                 new String[] { LanguageModLoader.getValue("save_first"),

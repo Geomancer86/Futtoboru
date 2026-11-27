@@ -15,6 +15,7 @@ import com.rndmodgames.futtoboru.history.HistoryProvider;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiTooltips;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -129,12 +130,14 @@ public class HistoryScreenTable extends VisTable {
 
     private static VisTable table(HistoryEntry e) {
         VisTable tbl = new VisTable(true);
-        tbl.add(new VisLabel(t("history_pos"))).width(UiTheme.size("table.league.pos"));
+        tbl.add(UiTooltips.header("history_pos", "tip_pos")).width(UiTheme.size("table.league.pos"));
         tbl.add(new VisLabel(t("history_club"))).width(UiTheme.size("table.league.club")).left();
-        for (String k : new String[] { "history_p", "history_w", "history_d", "history_l", "history_f", "history_a" }) {
-            tbl.add(new VisLabel(t(k))).width(UiTheme.size("table.league.stat"));
+        String[][] stats = { { "history_p", "tip_played" }, { "history_w", "tip_won" }, { "history_d", "tip_drawn" },
+                { "history_l", "tip_lost" }, { "history_f", "tip_goals_for" }, { "history_a", "tip_goals_against" } };
+        for (String[] k : stats) {
+            tbl.add(UiTooltips.header(k[0], k[1])).width(UiTheme.size("table.league.stat"));
         }
-        tbl.add(new VisLabel(t("history_pts"))).width(UiTheme.size("table.league.pts"));
+        tbl.add(UiTooltips.header("history_pts", "tip_points")).width(UiTheme.size("table.league.pts"));
         tbl.row();
         for (HistoryEntry.TableRow r : e.table) {
             tbl.add(new VisLabel(String.valueOf(r.position)));

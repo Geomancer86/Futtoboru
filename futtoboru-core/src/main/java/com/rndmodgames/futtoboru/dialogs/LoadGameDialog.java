@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
@@ -19,6 +18,7 @@ import com.rndmodgames.futtoboru.system.save.LoadResult;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiDialogs;
 
 /**
  * Load Game Dialog v2 (P2-5)
@@ -76,6 +76,7 @@ public class LoadGameDialog extends VisDialog {
     @Override
     public VisDialog show(Stage stage) {
         refresh();
+        UiDialogs.track(this);
         return super.show(stage);
     }
 
@@ -115,7 +116,7 @@ public class LoadGameDialog extends VisDialog {
                     LoadResult result = SaveLoadSystem.loadGame(save.getFile());
 
                     if (!result.isLoaded()) {
-                        Dialogs.showOKDialog(getStage(), LanguageModLoader.getValue("load_game"), reason(result.getStatus()));
+                        UiDialogs.info(getStage(), LanguageModLoader.getValue("load_game"), reason(result.getStatus()));
                         return;
                     }
 
