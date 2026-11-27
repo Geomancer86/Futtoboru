@@ -6,7 +6,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
-| _none_ | | | |
+| P2-4 data model v2 (JSON, string ids, people + squads) | BOOK3PRO | `b3/P2-4-data-model-v2` | 2026-11-27 |
 
 ## Ready to take (from docs/ROADMAP.md)
 - **P1-2** Maven wrapper (`mvnw`) + `.sh` run scripts + `.gitattributes`.
@@ -18,6 +18,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 - **P2-4** Data: Burnley placeholder players (1865 birthdates), Pat Gallocher at two clubs.
 
 ## Log
+- 2026-11-27 · BOOK3PRO · CLAIM · P2-4 · Data model v2 per producer decisions D11, D14-D16 (all JSON like DarkBlade, stable string ids + save-local runtime ids, one people table + season squads, v0.4 saves not migrated). Slice 1: converter, JSON data, validator, review list.
 - 2026-11-27 · WORKSTATION · DONE · merge · Merged `b3/SEC-01-public-hygiene` then `ws/phase0-public` into develop (1ba9722); `mvn clean package` green, 41 core tests. Jenkinsfile conflict resolved by **deleting** the Sonar stage (producer: token is dead). BOOK3PRO: `git fetch && git switch develop && git pull`; both SEC-01 and ws/phase0-public can be deleted. P1-4: concept images/PDF already removed by SEC-01; dead 3D code and unused deps still open.
 - 2026-11-27 · WORKSTATION · NOTE · private · Bitbucket `Geomancer/futtoboru-private` (private) holds the 4 former local repos with full history, marketing and cost docs. Clone to `C:\git\futtoboru-private`.
 - 2026-11-27 · WORKSTATION · DONE · P0-4 · Cup completion/runner-up, next season generated when the league ends, null-team guard, champion display, 17 new tests (41 core tests green). Branch `ws/P0-4-competition-completion`.
