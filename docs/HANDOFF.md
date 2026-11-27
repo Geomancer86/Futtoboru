@@ -8,7 +8,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 |---|---|---|---|
 | P2-4 data model v2 (JSON, string ids, people + squads) | BOOK3PRO | `b3/P2-4-data-model-v2` | 2026-11-27 |
 | E-00 real 1888-89 fixtures/results (docs only) | WORKSTATION | `ws/E-00-1888-results` | 2026-11-27 |
-| Phase 3 UI audit (docs only) | WORKSTATION | `ws/U-audit` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -32,6 +31,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 - **P2-4 slice 4** Data review (WORKSTATION): `docs/data/REVIEW_1888-89.md`, rebuild the copied cup rosters. Edit the JSON only after slice 2 lands (until then the JSON is generated from `mods/*.txt`; edit the .txt and rerun `tools/data/convert_legacy.py`).
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · UI audit · `docs/design/UI_AUDIT.md`: 10 of the 11 `tables/main/` stubs are unreachable (only Home is shown); 12 `setDebug(true)` (2 on the shell), 80 colour literals, 36 `setFontScale`, no scaling, no tooltips. Next: U-02a (drop setDebug) + U-01a (`UiTheme` + `theme.json`). Its FreeType question is settled: P1-4 removed freetype and fonts stay offline bitmaps. U-03a touches `mods/resolutions.txt` (BOOK3PRO lock): coordinate.
 - 2026-11-27 · WORKSTATION · DONE · design · `docs/design/MATCH_ENGINE_V2.md`: sourced 1888-89 laws (3-opponent offside in both halves and from throw-ins, all free kicks indirect, club umpires on appeal + off-field referee, keeper handles in own half only, no nets/penalties) + possession model, data contracts, `RandomSource.fork()` for P2-0, E-01..E-06 slices. 11 producer questions in section (i). Archive drafts used 2-player offside and penalties: do not reuse.
 - 2026-11-27 · WORKSTATION · DONE · P1-4 · Removed 41 dead 3D/Bullet classes (5.5k lines), 57 assets (~15 MB), gdx-bullet/freetype/sonar; core now depends on plain `gdx` (lwjgl3 only in desktop). Fat jar 44.8 to 16.6 MB. Smoke-launched OK. **BOOK3PRO: core `pom.xml` changed; expect a small conflict if slice 2 adds a dependency.**
 - 2026-11-27 · WORKSTATION · DONE · P1-2 · `./mvnw` (Maven 3.9.12) + `.sh` twins of every .bat; CI now runs `./mvnw`. Use `./mvnw -B verify` from now on.
