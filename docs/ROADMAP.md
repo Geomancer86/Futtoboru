@@ -22,6 +22,8 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 | D15 | **One people table + season squads**; seasonal facts (ground, balance, squad) per season folder. v0.4 saves are **not** migrated; saves are versioned from now on. |
 | D16 | **UI/UX phase after the data redesign** and before the match engine. |
 | D17 | **Real historical results are reference data only** (producer, 2026-11-27). They are used (a) by the engine calibration in test code (E-05) and (b) as history for seasons before the chosen start season (tables, champions, cup winners, records). They never decide, script or nudge a match the player plays: every played season is simulated. Season 1 keeps the **generated schedule**; real 1888-89 fixture dates and pairings are reference data too. |
+| D18 | **v0.5.0 scope** (producer, 2026-11-27): a full 1888-89 season playable end to end, **every visible button works**, no "placeholder" / "not implemented" left, history screens; XI picker, tactics and the match screen go to v0.6 with the engine. **Minimum resolution 1280×720** (sub-720p entries dropped, default 1280×720, UI scale Auto/1×/2×). **Autosave** to one rotating slot on the 1st of each month and at season rollover. **English only in v0.5, but every label goes through the language files** (no new hard-coded text; convert each screen as it is touched) so Spanish is a pure translation job later. |
+| D19 | **Engine v2 choices** (producer, 2026-11-27; answers to `docs/design/MATCH_ENGINE_V2.md` §9): (1) per-club strength factor seeded from the real 1888-89 table, sourced player attributes later (D17 holds: the factor shapes odds, never results); (2) each club's umpire leans to his club, the referee settles; (3) injuries as knock / passenger / carried off (may return), days out in a later release; (4) sendings-off a very rare event; (5) disputed goals (no nets) a rare umpire-decided event; (6) tactics: club style (dribbling / combination) **and the era's shapes** (2-3-5, 2-2-6, 1-2-7, ...), AI picks, player can set; (7) **new `dribbling` attribute** in the people data (validator, ids, saves); (8) weather seeded from month + ground; (9) **all match events saved** (compact), with FM-style filters in the match screen and report: key / extended / full; (10) **minute ticker** match screen that reveals events, then the report; (11) drawn ties and every other rule follow **the sourced rule of that season** (e.g. extra time by agreement where the rules allowed it, else replay), as historical as possible. D19 widens D6 (key events only) to full event storage. |
 
 ## Phases
 **Phase 0: consolidate git** (done 2026-11-27 except P0-4)
@@ -41,19 +43,31 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 - P2-8 ✔ `AuthorityManager` kept the empty game from startup, so the daily competition check (league completion, cup draws/progression) never ran in real play
 - P2-6 season rollover resets the table (empty loop in `AuthorityManager`) · P2-7 £ not $ in prize messages, cup final from the bracket
 
-**Phase 3: UI/UX** (1-2 weeks, D16; skin unchanged, D12)
-- U-01 theme tokens in JSON (palette, fonts, spacing), like DarkBlade's `UiTheme`; no literal colours or sizes in screens
-- U-02 remove `setDebug(true)` and the `Color.GOLD/GREEN/CYAN` literals; consistent spacing
-- U-03 UI scaling per resolution (13 px font everywhere today)
-- U-04 navigation: one clear menu, hide or finish the 11 stub screens
-- U-05 an interface guide (one tooltip layer, one window at a time, screenshot per UI item), as DarkBlade's `GUIA_DE_INTERFAZ.md`
+**Phase 2 close-out** (before tagging v0.5.0-alpha)
+- P2-9 one edition per competition and season (`ScriptsManager.createCup/createLeague` reuse the season.json edition; `RuntimeIdsTests` ~130; re-enable `FullSeasonTests.oneEditionPerCompetitionAndSeason`)
+- P2-10 a new game after playing/loading another starts from fresh data (no reused played objects)
+- P2-11 era calendar for the generated schedule: league September-April, FA Cup in the winter (dates generated, D17)
+- Producer: push v0.4.0 to `main` (still shows 0.2.0), then tag v0.5.0-alpha
 
-**Phase 4: match engine v2** (3-5 weeks, larger because of D7)
-- E-01 `Position` on players + 2-3-5 XI picker (no substitutes; injured player leaves the side)
-- E-02 seeded possession/chance simulation, attack vs defence vs goalkeeper
-- E-03 era rules: 3-player offside as a phase of play that kills attacks, no penalties, goalkeeper handling in own half, umpire appeals
-- E-04 `MatchEvent` list (goal, chance, offside, injury) + period-style text report and match screen
-- E-05 calibration against the real 1888-89 results (load the public fixture list as test data)
+**Phase 3: UI/UX → v0.5.0** (1-2 weeks, D16, D18; skin unchanged, D12). Done = D18 (every button works, 1280×720 and 2560×1440).
+- U-01 theme tokens ✔ · U-02 debug lines and literals → tokens ✔ · U-04a stubs deleted ✔
+- U-03a UI scale Auto/1×/2×, one startup resolution (default 1280×720), sub-720p entries dropped
+- U-04b one menu-entry list for both professions, active highlight, Back button + Esc on drill-downs
+- U-04c Home dashboard (next fixture, unread messages, league position, balance)
+- U-04d in-game Options: Save, Load, Settings, Quit to menu, Quit to desktop, "unsaved progress" confirm
+- U-06 saves: name, overwrite confirm, delete; autosave slot monthly + season rollover (D18)
+- U-07 history screens: final tables (`CompetitionEdition.finalStandings`), champions / cup winners, earlier seasons from reference data (E-00b, D17)
+- U-08 friendlies finished (11 TODOs) or hidden; sound settings hidden until there is audio
+- U-09 one tooltip layer (table headers Pld/W/D/L/GF/GA/Pts) + one `UiDialogs` helper (one modal at a time)
+- U-10 labels into the language files, per screen as touched (D18); a guard test against new hard-coded labels
+- U-05 interface guide with our own screenshots (last, after U-03/U-04)
+
+**Phase 4: match engine v2 → v0.6.0** (4-6 weeks, larger because of D7 and D19)
+- E-01 `Position` + `dribbling` attribute (data, validator, `ids.json`, saves) + XI picker with the era's shapes and club style (no substitutes)
+- E-02 seeded possession/chance simulation, attack vs defence vs goalkeeper, club strength factor, weather from month + ground
+- E-03 era rules per season (sourced): 3-player offside, no penalties, keeper handling in own half, partisan umpires + referee, disputed goals, rare sendings-off, drawn ties per that season's rule
+- E-04 full `MatchEvent` list saved compactly; minute-ticker match screen + period-style report with key / extended / full filters
+- E-05 calibration against the real 1888-89 results (test data only, D17)
 - E-06 replace `MatchSimulator` internals; keep the 2D prototype as a future viewer
 
 **Phase 5: season 2 (1889-90)**: re-election vote, contract expiry and free agents, then "seasons as releases".

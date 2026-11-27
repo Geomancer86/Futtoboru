@@ -315,6 +315,11 @@ E-02a can start right after P2-0/P2-2 with positions defaulted from squad order.
 
 ## 9. Open questions for the producer
 
+> **Answered 2026-11-27, see ROADMAP D19:** 1 b, 2 c, 3 b (days out later), 4 b, 5 b, 8 b as suggested;
+> **6 c** (styles + the era's shapes), **7 b** (`dribbling` attribute), **9 a** (all events, with key / extended / full
+> filters), **10 b** (minute ticker), **11**: follow the sourced rule of each season (extra time by agreement
+> where allowed, else replay). Sections above that assume the suggestions are superseded where they differ.
+
 1. **Team strength source** (decides whether the table can look like 1888-89):
    a) attributes as generated (3d6), accept any table; b) a per-club strength factor seeded from the real 1888-89
    table; c) hand-set attributes for real players from sources (slow, best). _Suggest b now, c later._

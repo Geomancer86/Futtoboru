@@ -13,16 +13,24 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | _none_ | | |
 
 ## Ready to take (from docs/ROADMAP.md)
-**Safe for WORKSTATION now (game data and loaders are released since slice 2):**
-- **P2-4 slice 4** Data review: work `docs/data/REVIEW_1888-89.md` and edit the JSON in `gamedata/core/` directly (it is the only copy now; never change an id, use `aliases.json` + the rename log in `docs/DATA_MODEL.md`). Includes the copied cup rosters, Blackburn at Leamington Road in 1888-89 (new ground record), Notts County's two Castle Cricket Ground games. Run `python tools/data/validate.py` and `python -m pytest tools/data`.
-- **E-00b** (D17: reference data only, never decides or schedules a match) the 1888-89 results as JSON for E-05 calibration and the history screens; walkovers with no goals allowed; a spec in `validate.py` and `GameData`.
-- **P2-0** One seeded random source (`RandomSource.fork()` per the engine design); `MatchSimulator` and `DatabaseLoader.RNG` are the last unseeded ones.
-- **P2-2** single match-result path · **P2-6** season rollover resets the table · **P2-7** £ not $, cup final from the bracket.
-- **U-03a** UI scaling (`mods/resolutions.txt` is free again).
+Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 minimum, autosave, labels in language files). Details in `docs/ROADMAP.md` Phase 2 close-out + Phase 3.
 
-**Next up:** Phase 3 continues (U-03 scaling, U-04 navigation, U-05 guide; save dialogs to tokens). Duplicate 1888-89 editions (see the P2-3 log line; needs the `RuntimeIdsTests` line ~130 change, BOOK3PRO's test).
+**Suggested for BOOK3PRO** (saves / ids / data area):
+- **P2-9** one edition per competition and season (`RuntimeIdsTests` ~130, re-enable `FullSeasonTests.oneEditionPerCompetitionAndSeason`)
+- **P2-10** new game after a load starts from fresh data
+- **U-06** saves: name, overwrite confirm, delete, autosave slot (monthly + rollover)
+- **U-03a** UI scale Auto/1×/2×, default 1280×720, drop sub-720p from `mods/resolutions.txt`
+
+**Suggested for WORKSTATION** (menus / screens):
+- **P2-11** era calendar (league Sep-Apr, cup in winter; generated dates)
+- **U-04d** in-game Options (Load, Settings, Quit to menu/desktop + unsaved confirm) → **U-04b** menu list, highlight, Back/Esc → **U-04c** Home dashboard
+- **E-00b** 1888-89 results JSON (D17 reference only), then **U-07** history screens
+
+**Either:** U-08 friendlies or hide + hide sound · U-09 tooltips + `UiDialogs` · U-10 labels to language files (per screen as touched) · U-05 guide last.
+**Producer:** push v0.4.0 to `main`; tag v0.5.0-alpha after P2-9..11, v0.5.0 after Phase 3. Engine answers are in D19 (Phase 4 can be designed in parallel).
 
 ## Log
+- 2026-11-27 · BOOK3PRO · NOTE · D18 + D19 · Producer decisions: v0.5.0 scope (playable season + every menu works; 1280×720 min; autosave monthly + rollover; English, labels via language files) and the 11 engine answers (club strength factor, partisan umpires, injuries knock/passenger/off, rare sendings-off, disputed goals, styles + era shapes, new `dribbling` attribute, seeded weather, **all events saved with key/extended/full filters**, **minute ticker**, drawn ties per each season's sourced rule). ROADMAP Phase 2 close-out (P2-9..11) and Phase 3 (U-03a..U-10) rewritten; Ready-to-take split by machine.
 - 2026-11-27 · WORKSTATION · DONE · P1-5 · One style: `system/Log` facade (`Log.info/debug/warn(category[, tag], msg)`, `Log.error(..., Throwable)`, `addErrorListener`) over the existing Debug Logging category switches; ~1,200 call sites converted (println, printStackTrace, Gdx.app.*, DebugLogManager.*); each line now prints once. `LoggingStyleGuardTest` blocks new println/printStackTrace/Gdx.app.log (allow-list: `Log`, `DesktopLauncher`). `FullSeasonTests` listens for errors via the facade. Jenkins #78 green (132 core, 1 skipped + 1 desktop). **Use `Log.*` in new code.**
 - 2026-11-27 · WORKSTATION · CLAIM · P1-5 · Touches many files (log calls only). BOOK3PRO: if you start something, prefer files outside `engine/**`, `system/**` for the next hour or expect trivial log-line conflicts.
 - 2026-11-27 · WORKSTATION · DONE · P2-3 · Merged with develop (P2-5, P2-8 included); Jenkins #76 green: 130 core (1 skipped = the documented duplicate-edition assertion) + 1 desktop. A full seeded 1888-89 season now plays headless through the real wiring in every `verify`. **BOOK3PRO:** the duplicate-edition fix is yours to take if you like (it changes your `RuntimeIdsTests` expectation); then un-@Disable `FullSeasonTests.oneEditionPerCompetitionAndSeason`.
