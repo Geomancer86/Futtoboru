@@ -6,7 +6,9 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -153,6 +155,16 @@ public class MainGameScreen implements Screen {
                     toastShort(LanguageModLoader.getValue("screenshot_taken"));
 
                     return true;
+
+                /**
+                 * ESC - BACK (U-04b), unless a dialog is open (the dialog handles its own keys)
+                 */
+                case Keys.ESCAPE:
+                    if (isDialogOpen()) {
+                        return false;
+                    }
+                    return menuManager.goBack();
+
                 default:
                     return false;
                 }
@@ -208,6 +220,16 @@ public class MainGameScreen implements Screen {
         
     }
     
+    /** @return true while a dialog (save, load, confirm) is on the stage */
+    private boolean isDialogOpen() {
+        for (Actor actor : stage.getRoot().getChildren()) {
+            if (actor instanceof Dialog && actor.isVisible()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Toasts
     /**
      * Displays short toast

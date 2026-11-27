@@ -62,6 +62,7 @@ public class MainGameMenuTable extends VisTable {
     VisTextButton matchPreviewButton = new VisTextButton(LanguageModLoader.getValue("match_preview"));
     VisTextButton matchResultButton = new VisTextButton(LanguageModLoader.getValue("match_result"));
     VisTextButton drawButton = new VisTextButton(LanguageModLoader.getValue("mandatory_draw"));  // Mandatory draw button
+    VisTextButton backButton = new VisTextButton(LanguageModLoader.getValue("back"));  // U-04b: Back on drill-down screens (also Esc)
     BusyBar processingBusyBar = new BusyBar();  // Progress indicator during game processing
     
     /**
@@ -183,6 +184,18 @@ public class MainGameMenuTable extends VisTable {
         
         // dynamic menu table
         dynamicMainGameMenuTable = new VisTable(true);
+
+        // Back: shown while the menu manager has a screen to go back to
+        backButton.setVisible(false);
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (mainMenuManager != null) {
+                    mainMenuManager.goBack();
+                }
+            }
+        });
+        dynamicMainGameMenuTable.add(backButton).left();
 
         add(dynamicMainGameMenuTable).expandX().left();
         
@@ -651,6 +664,11 @@ public class MainGameMenuTable extends VisTable {
         if (continueGameButton != null) {
             continueGameButton.setDisabled(false);
         }
+    }
+
+    /** Shows the Back button when there is a screen to go back to (called by the menu manager). */
+    public void setBackButtonVisible(boolean visible) {
+        backButton.setVisible(visible);
     }
 
     public MainMenuManager getMainMenuManager() {

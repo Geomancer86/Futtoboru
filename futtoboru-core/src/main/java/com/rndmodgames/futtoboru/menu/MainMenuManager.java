@@ -1,19 +1,16 @@
 package com.rndmodgames.futtoboru.menu;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
-import com.rndmodgames.futtoboru.menu.buttons.AuthorityButton;
-import com.rndmodgames.futtoboru.menu.buttons.ClubInfoButton;
-import com.rndmodgames.futtoboru.menu.buttons.CompetitionsButton;
-import com.rndmodgames.futtoboru.menu.buttons.FinancesButton;
-import com.rndmodgames.futtoboru.menu.buttons.HomeButton;
-import com.rndmodgames.futtoboru.menu.buttons.InboxButton;
-import com.rndmodgames.futtoboru.menu.buttons.MatchHistoryButton;
-import com.rndmodgames.futtoboru.menu.buttons.PersonalDetailsButton;
-import com.rndmodgames.futtoboru.menu.buttons.ScheduleButton;
-import com.rndmodgames.futtoboru.menu.buttons.SquadButton;
+import com.rndmodgames.futtoboru.data.Profession;
+import com.rndmodgames.futtoboru.menu.MenuEntries.MenuEntry;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
 import com.rndmodgames.futtoboru.tables.club.ClubInfoScreenTable;
@@ -33,6 +30,8 @@ import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
 import com.rndmodgames.futtoboru.tables.schedule.ScheduleScreenTable;
 import com.rndmodgames.futtoboru.tables.squad.SquadScreenTable;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Main Menu Manager v1
@@ -98,8 +97,6 @@ public class MainMenuManager {
     public static final int LEAGUE_DRAW_SCREEN = 10008;
     public static final int CUP_DRAW_SCREEN = 10009;
     
-    // Match Engine Debug Screen (v1.0)
-    public static final int MATCH_ENGINE_DEBUG_SCREEN = 10010;
         
     //
     public static int PREVIOUS_SCREEN = -1; //
@@ -116,24 +113,12 @@ public class MainMenuManager {
     // Current negotiation offer (v1.0)
     private com.rndmodgames.futtoboru.data.jobs.JobOffer currentNegotiationOffer = null;
     
-    // Main Game Buttons
-    private VisTextButton homeButton = null;
-    private VisTextButton personalDetailsButton = null;
-    private VisTextButton authorityButton = null;
-    private VisTextButton inboxButton = null;
-    private VisTextButton squadButton = null;
-    private VisTextButton scheduleButton = null;
-    private VisTextButton matchHistoryButton = null;
-    private VisTextButton clubInfoButton = null;
-    private VisTextButton financesButton = null;
-    private VisTextButton competitionsButton = null;
-    private VisTextButton matchEngineDebugButton = null;
-    
-    // Job System Buttons (v1.0)
-    private VisTextButton clubBrowserButton = null;
-    private VisTextButton jobBoardButton = null;
-    private VisTextButton myApplicationsButton = null;
-    
+    /** Left menu buttons by screen id, built from {@link MenuEntries} (U-04b) */
+    private final Map<Integer, VisTextButton> entryButtons = new LinkedHashMap<>();
+
+    /** Screens visited since the last menu entry: what Back and Esc go through (U-04b) */
+    private final NavigationHistory history = new NavigationHistory();
+
     //
     private HomeScreenTable homeScreenTable = null;
     private PersonDetailsScreenTable personDetailsScreenTable = null;
@@ -167,9 +152,6 @@ public class MainMenuManager {
     
     // Player Detail Screen (v1.0)
     private com.rndmodgames.futtoboru.tables.player.PlayerDetailScreenTable playerDetailScreenTable = null;
-    
-    // Match Engine Debug Screen (v1.0)
-    private com.rndmodgames.futtoboru.tables.match.engine.MatchEngineDebugScreenTable matchEngineDebugScreenTable = null;
     
     // Selected club for detail view and job application
     private Club selectedClubForDetail = null;
@@ -244,26 +226,8 @@ public class MainMenuManager {
         matchHistoryScreenTable.setMainMenuManager(this);
         
         
-        // custom buttons with logic to switch screen/tables
-        homeButton = new HomeButton(this);
-        personalDetailsButton = new PersonalDetailsButton(this);
-        authorityButton = new AuthorityButton(this);
-        inboxButton = new InboxButton(this);
-        squadButton = new SquadButton(this);
-        scheduleButton = new ScheduleButton(this);
-        matchHistoryButton = new MatchHistoryButton(this);
-        clubInfoButton = new ClubInfoButton(this);
-        financesButton = new FinancesButton(this);
-        competitionsButton = new CompetitionsButton(this);
-        matchEngineDebugButton = new com.rndmodgames.futtoboru.menu.buttons.MatchEngineDebugButton(this);
-        
-        // Job System Buttons (v1.0)
-        clubBrowserButton = new com.rndmodgames.futtoboru.menu.buttons.ClubBrowserButton(this);
-        jobBoardButton = new com.rndmodgames.futtoboru.menu.buttons.JobBoardButton(this);
-        myApplicationsButton = new com.rndmodgames.futtoboru.menu.buttons.MyApplicationsButton(this);
-        
-        
-        // set the current screen by default
+        // set the current screen by default; a drill-down (e.g. back from Settings) can still go Back to its entry
+        history.reset(MenuEntries.entryScreenFor(CURRENT_SCREEN));
         setActiveMainScreen(CURRENT_SCREEN);
         
         /**
@@ -273,111 +237,88 @@ public class MainMenuManager {
     }
 
     /**
-     * 
+     * Builds the left menu from {@link MenuEntries} for the owner's profession (U-04b). Called again when the
+     * profession changes (a job offer accepted), so it starts from an empty menu.
      */
     public void setDynamicButtonsMenu() {
-       
-        // if UNEMPLOYED/RETIRED
-        if (currentGame.getOwner().getPrimaryProfession().is(com.rndmodgames.futtoboru.data.Profession.RETIRED_PLAYER)) {
-            
-            // Home
-            buttonsMenu.add(homeButton).fill();
+
+        buttonsMenu.clearChildren();
+        entryButtons.clear();
+
+        int lastGroup = -1;
+        for (final MenuEntry entry : MenuEntries.forProfession(isManager())) {
+
+            if (lastGroup >= 0 && entry.group() != lastGroup) {
+                buttonsMenu.addSeparator();
+            }
+            lastGroup = entry.group();
+
+            final VisTextButton button = new VisTextButton(LanguageModLoader.getValue(entry.labelKey()),
+                    UiTheme.style("button.toggle"));
+            button.setProgrammaticChangeEvents(false);
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    openMenuEntry(entry.screen());
+                }
+            });
+
+            entryButtons.put(entry.screen(), button);
+            buttonsMenu.add(button).fill();
             buttonsMenu.row();
-            
-            // Inbox
-            buttonsMenu.add(inboxButton).fill();
-            buttonsMenu.row();
-            
-            // Personal Details
-            buttonsMenu.add(personalDetailsButton).fill();
-            buttonsMenu.row();
-            
-            // Sport Authorities
-            buttonsMenu.add(authorityButton).fill();
-            buttonsMenu.row();
-            
-            // Job System (v1.0)
-            buttonsMenu.add(clubBrowserButton).fill();
-            buttonsMenu.row();
-            
-            buttonsMenu.add(jobBoardButton).fill();
-            buttonsMenu.row();
-            
-            buttonsMenu.add(myApplicationsButton).fill();
-            buttonsMenu.row();
-            
         }
-        
-        /**
-         * if MANAGER
-         * 
-         * TODO WIP:
-         * 
-         *   Team Screens:
-         *      - Squad
-         *      - Schedule
-         *      - Formations/Lineup/Tactics
-         *      - Training
-         *      - Board
-         *      - Staff
-         */
-        if (currentGame.getOwner().getPrimaryProfession().is(com.rndmodgames.futtoboru.data.Profession.MANAGER)) {
-            
-            // Home
-            buttonsMenu.add(homeButton).fill();
-            buttonsMenu.row();
-            
-            // Inbox
-            buttonsMenu.add(inboxButton).fill();
-            buttonsMenu.row();
-            
-            // Squad
-            buttonsMenu.add(squadButton).fill();
-            buttonsMenu.row();
-            
-            // Matches Area Separator
-            buttonsMenu.addSeparator();
-            
-            // Schedule
-            buttonsMenu.add(scheduleButton).fill();
-            buttonsMenu.row();
-            
-            // Match History
-            buttonsMenu.add(matchHistoryButton).fill();
-            buttonsMenu.row();
-            
-            // Club Competitions
-            buttonsMenu.add(competitionsButton).fill();
-            buttonsMenu.row();
-            
-            // Club Area Separator
-            buttonsMenu.addSeparator();
-            
-            // Club Info
-            buttonsMenu.add(clubInfoButton).fill();
-            buttonsMenu.row();
-            
-            // Finances
-            buttonsMenu.add(financesButton).fill();
-            buttonsMenu.row();
-            
-            // Match Engine Debug (Development)
-            buttonsMenu.add(matchEngineDebugButton).fill();
-            buttonsMenu.row();
-            
-            // Separator
-            buttonsMenu.addSeparator();
-            
-            // Personal Details
-            buttonsMenu.add(personalDetailsButton).fill();
-            buttonsMenu.row();
-            
-            // Sport Authorities
-            buttonsMenu.add(authorityButton).fill();
-            buttonsMenu.row();
+
+        syncMenuState();
+    }
+
+    /** @return true if the owner works as a manager (the manager menu), false for the job-seeker menu */
+    private boolean isManager() {
+        return currentGame.getOwner() != null && currentGame.getOwner().getPrimaryProfession() != null
+                && currentGame.getOwner().getPrimaryProfession().is(Profession.MANAGER);
+    }
+
+    /** A menu entry was picked: its screen starts a new Back history. */
+    public void openMenuEntry(int screen) {
+        history.reset(screen);
+        setActiveMainScreen(screen);
+    }
+
+    /**
+     * Back button / Esc: shows the previous screen of the history.
+     *
+     * @return false if there was nothing to go back to
+     */
+    public boolean goBack() {
+        int previous = history.back();
+        if (previous < 0) {
+            return false;
+        }
+        setActiveMainScreen(previous);
+        return true;
+    }
+
+    /** @return true if Back has somewhere to go */
+    public boolean canGoBack() {
+        return history.canGoBack();
+    }
+
+    /** The screen asked for cannot be shown (no club, nothing selected): show {@code screen} in its place. */
+    private void redirectTo(int screen) {
+        history.dropCurrent();
+        setActiveMainScreen(screen);
+    }
+
+    /** Highlights the menu entry of the current screen and shows or hides the Back button. */
+    private void syncMenuState() {
+        int active = MenuEntries.entryScreenFor(CURRENT_SCREEN);
+        for (Map.Entry<Integer, VisTextButton> e : entryButtons.entrySet()) {
+            e.getValue().setChecked(e.getKey() == active);
+        }
+        if (topMenuTable != null) {
+            topMenuTable.setBackButtonVisible(history.canGoBack());
         }
     }
-    
+
     /**
      * Handle the Table Switching for the Main Screen
      */
@@ -391,6 +332,7 @@ public class MainMenuManager {
         
         // Set/Change the active screen
         CURRENT_SCREEN = screen;
+        history.visit(screen);
 
         /**
          * Get the Current Club Instance
@@ -531,7 +473,7 @@ public class MainMenuManager {
                     // Failed to recover league, fallback to inbox
                     Log.info(Log.UI_MENU, "MainMenuManager: ERROR - Could not recover league from message, falling back to inbox");
                     Log.error(Log.UI_MENU, "MainMenuManager", "Cannot show draw screen: selectedLeague is null and recovery failed");
-                    setActiveMainScreen(INBOX_SCREEN);
+                    redirectTo(INBOX_SCREEN);
                     return;
                 }
             }
@@ -584,7 +526,7 @@ public class MainMenuManager {
                 parentTable.add(cupDrawScreenTable).grow().fill();
             } else {
                 Log.error(Log.UI_MENU, "MainMenuManager", "Could not find competition edition for cup draw");
-                setActiveMainScreen(INBOX_SCREEN);
+                redirectTo(INBOX_SCREEN);
             }
             
             break;
@@ -614,7 +556,7 @@ public class MainMenuManager {
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Squad screen: player is unemployed (no club)");
-                setActiveMainScreen(HOME_SCREEN);
+                redirectTo(HOME_SCREEN);
                 return;
             }
             squadScreenTable.setCurrentClub(currentClub);
@@ -638,7 +580,7 @@ public class MainMenuManager {
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Schedule screen: player is unemployed (no club)");
-                setActiveMainScreen(HOME_SCREEN);
+                redirectTo(HOME_SCREEN);
                 return;
             }
             scheduleScreenTable.setCurrentClub(currentClub);
@@ -680,7 +622,7 @@ public class MainMenuManager {
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Match History screen: player is unemployed (no club)");
-                setActiveMainScreen(HOME_SCREEN);
+                redirectTo(HOME_SCREEN);
                 return;
             }
             matchHistoryScreenTable.setCurrentClub(currentClub);
@@ -690,15 +632,6 @@ public class MainMenuManager {
             
             // Set as main content
             parentTable.add(matchHistoryScreenTable).grow();
-            
-            break;
-            
-        //
-        case MATCH_ENGINE_DEBUG_SCREEN:
-            
-            // Match Engine Debug Screen - Development/Testing
-            matchEngineDebugScreenTable.updateDynamicComponents();
-            parentTable.add(matchEngineDebugScreenTable).grow();
             
             break;
             
@@ -718,7 +651,7 @@ public class MainMenuManager {
             if (selectedLeague == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager: WARNING - selectedLeague is null for league detail screen");
                 Log.info(Log.UI_MENU, "MainMenuManager", "No league selected for detail view, redirecting to competitions");
-                setActiveMainScreen(COMPETITIONS_SCREEN);
+                redirectTo(COMPETITIONS_SCREEN);
                 return;
             }
             
@@ -734,7 +667,7 @@ public class MainMenuManager {
             
         case CUP_DETAIL_SCREEN:
             if (selectedCup == null) {
-                setActiveMainScreen(COMPETITIONS_SCREEN);
+                redirectTo(COMPETITIONS_SCREEN);
                 return;
             }
             cupDetailScreenTable.setSelectedCup(selectedCup);
@@ -743,7 +676,7 @@ public class MainMenuManager {
             
         case CUP_PLAYOFFS_SCREEN:
             if (selectedCup == null) {
-                setActiveMainScreen(COMPETITIONS_SCREEN);
+                redirectTo(COMPETITIONS_SCREEN);
                 return;
             }
             // Find current edition
@@ -764,7 +697,7 @@ public class MainMenuManager {
                 cupPlayoffsTable.setCompetitionEdition(cupEd);
                 parentTable.add(cupPlayoffsTable).grow().fill();
             } else {
-                setActiveMainScreen(COMPETITIONS_SCREEN);
+                redirectTo(COMPETITIONS_SCREEN);
             }
             break;
             
@@ -774,7 +707,7 @@ public class MainMenuManager {
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Club Info screen: player is unemployed (no club)");
-                setActiveMainScreen(HOME_SCREEN);
+                redirectTo(HOME_SCREEN);
                 return;
             }
             clubInfoScreenTable.updateDynamicComponents();
@@ -790,7 +723,7 @@ public class MainMenuManager {
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Finances screen: player is unemployed (no club)");
-                setActiveMainScreen(HOME_SCREEN);
+                redirectTo(HOME_SCREEN);
                 return;
             }
             financesScreenTable.updateDynamicComponents();
@@ -826,7 +759,7 @@ public class MainMenuManager {
             } else {
                 Log.error(Log.UI_MENU, "MainMenuManager", "No club selected for detail view");
                 Log.error(Log.UI_MENU, "[MainMenuManager] ERROR: No club selected, redirecting to CLUB_BROWSER_SCREEN");
-                setActiveMainScreen(CLUB_BROWSER_SCREEN);
+                redirectTo(CLUB_BROWSER_SCREEN);
             }
             break;
             
@@ -879,7 +812,7 @@ public class MainMenuManager {
                 parentTable.add(playerDetailScreenTable).grow();
             } else {
                 Log.error(Log.UI_MENU, "MainMenuManager", "No player selected for detail view");
-                setActiveMainScreen(MAIN_SQUAD_SCREEN);
+                redirectTo(MAIN_SQUAD_SCREEN);
             }
             break;
         
@@ -893,6 +826,8 @@ public class MainMenuManager {
          * NOTE: this is where we set the final alignment of the MAIN / CENTRAL SCREEN
          */
         parentTable.top().left();
+
+        syncMenuState();
     }
     
     /**
@@ -1083,5 +1018,6 @@ public class MainMenuManager {
 
     public void setTopMenuTable(com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable topMenuTable) {
         this.topMenuTable = topMenuTable;
+        syncMenuState();
     }
 }
