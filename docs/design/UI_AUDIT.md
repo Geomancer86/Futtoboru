@@ -355,6 +355,14 @@ pure `00FF00`/`FF0000` (PlayersList, PlayerDetail, MyApplications, ClubDetail) b
 (`33FF33`/`FF3333`), PlayerDetail gold `FFD600` becomes `FFD700`, and `Color.GRAY` (`7F7F7F`) becomes `808080`.
 `label(...)`, `uiScale()` and key constants are left for U-02c and U-03a.
 
+**U-02b implemented (2026-11-27, `ws/U-02b-tokens`).** All UI colour, clear, font-scale, padding and size literals
+now come from `UiTheme` (the save/load dialogs under the P2-5 lock are allow-listed). No colour merges after all:
+palette hex values are what libGDX packs for the old floats (`(int) (f * 255)`, so 0.7 is `B2`, 0.5 is `7F`,
+which also equals `Color.GRAY`), and pure `00FF00`/`FF0000` and `FFD600` got their own palette entries and
+tokens (`status.*`, `application.*`, `modifier.*`, `match.winner`, `state.critical`, `trend.up/down`,
+`rating.excellent/exceptional`). Lint: `UiThemeTest.noStyleLiteralsInUiSources` (JUnit, so CI runs it) fails on
+new literals in the UI packages.
+
 ### 4.3 U-02: cleanup approach
 
 1. Delete the 12 `setDebug(true)` calls. Optionally put a global toggle behind `Futtoboru.DEBUG_MODE`: F11
