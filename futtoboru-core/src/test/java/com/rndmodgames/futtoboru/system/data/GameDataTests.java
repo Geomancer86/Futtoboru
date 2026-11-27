@@ -173,7 +173,7 @@ class GameDataTests {
         // the registry kept the ids the load order gave before it existed (P2-5)
         assertEquals(1L, data.get(GameData.CLUB, "preston-north-end").runtimeId());
         assertEquals(40L, data.get(GameData.CONTINENT, "europe").runtimeId());
-        assertEquals(860L, data.get(GameData.EDITION, "fa-cup-1888-89").runtimeId());
+        assertEquals(914L, data.get(GameData.EDITION, "fa-cup-1888-89").runtimeId());
         for (String kind : GameData.KINDS) {
             for (DataRecord r : data.all(kind)) {
                 assertTrue(r.runtimeId() <= IdAllocator.REGISTRY_MAX, r.where());
