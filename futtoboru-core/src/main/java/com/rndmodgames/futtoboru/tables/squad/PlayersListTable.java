@@ -20,6 +20,7 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Players List Table v1
@@ -120,53 +121,53 @@ public class PlayersListTable extends VisTable {
          * Header Row with Sortable Columns
          */
         this.row();
-        this.add(createSortableHeader("Name", "name")).width(150);
-        this.add(createSortableHeader("Age", "age")).width(80);
-        this.add(createSortableHeader("Country", "country")).width(100);
+        this.add(createSortableHeader("Name", "name")).width(UiTheme.size("table.squad.name"));
+        this.add(createSortableHeader("Age", "age")).width(UiTheme.size("table.squad.age"));
+        this.add(createSortableHeader("Country", "country")).width(UiTheme.size("table.squad.country"));
         
         // Physical attribute columns
         if (showAcceleration) {
-            this.add(createSortableHeader("Accel", "acceleration")).width(70);
+            this.add(createSortableHeader("Accel", "acceleration")).width(UiTheme.size("table.squad.attr"));
         }
         if (showSpeed) {
-            this.add(createSortableHeader("Speed", "speed")).width(70);
+            this.add(createSortableHeader("Speed", "speed")).width(UiTheme.size("table.squad.attr"));
         }
         if (showStrength) {
-            this.add(createSortableHeader("Str", "strength")).width(70);
+            this.add(createSortableHeader("Str", "strength")).width(UiTheme.size("table.squad.attr"));
         }
         if (showStamina) {
-            this.add(createSortableHeader("Sta", "stamina")).width(70);
+            this.add(createSortableHeader("Sta", "stamina")).width(UiTheme.size("table.squad.attr"));
         }
         if (showJumping) {
-            this.add(createSortableHeader("Jump", "jumping")).width(70);
+            this.add(createSortableHeader("Jump", "jumping")).width(UiTheme.size("table.squad.attr"));
         }
         
         // Technical attribute columns
         if (showPassing) {
-            this.add(createSortableHeader("Pass", "passing")).width(70);
+            this.add(createSortableHeader("Pass", "passing")).width(UiTheme.size("table.squad.attr"));
         }
         if (showLongShots) {
-            this.add(createSortableHeader("Long", "longShots")).width(70);
+            this.add(createSortableHeader("Long", "longShots")).width(UiTheme.size("table.squad.attr"));
         }
         if (showHeading) {
-            this.add(createSortableHeader("Head", "heading")).width(70);
+            this.add(createSortableHeader("Head", "heading")).width(UiTheme.size("table.squad.attr"));
         }
         if (showTackling) {
-            this.add(createSortableHeader("Tack", "tackling")).width(70);
+            this.add(createSortableHeader("Tack", "tackling")).width(UiTheme.size("table.squad.attr"));
         }
         if (showMarking) {
-            this.add(createSortableHeader("Mark", "marking")).width(70);
+            this.add(createSortableHeader("Mark", "marking")).width(UiTheme.size("table.squad.attr"));
         }
         
         // Mental attribute columns
         if (showDetermination) {
-            this.add(createSortableHeader("Det", "determination")).width(70);
+            this.add(createSortableHeader("Det", "determination")).width(UiTheme.size("table.squad.attr"));
         }
         if (showPositioning) {
-            this.add(createSortableHeader("Pos", "positioning")).width(70);
+            this.add(createSortableHeader("Pos", "positioning")).width(UiTheme.size("table.squad.attr"));
         }
         if (showTeamwork) {
-            this.add(createSortableHeader("Team", "teamwork")).width(70);
+            this.add(createSortableHeader("Team", "teamwork")).width(UiTheme.size("table.squad.attr"));
         }
         
         // Add separator with correct column span
@@ -195,16 +196,16 @@ public class PlayersListTable extends VisTable {
                     }
                 }
             });
-            this.add(playerDetailLink).width(150);
+            this.add(playerDetailLink).width(UiTheme.size("table.squad.name"));
             
             // Age
             long yearsOld = ChronoUnit.YEARS.between(player.getPerson().getBirthDate(), game.getCurrentGame().getGameDate());
-            this.add(new VisLabel(String.valueOf(yearsOld))).width(80);
+            this.add(new VisLabel(String.valueOf(yearsOld))).width(UiTheme.size("table.squad.age"));
             
             // Country
             String countryName = player.getPerson().getCountry() != null ? 
                 player.getPerson().getCountry().getCommonName() : "N/A";
-            this.add(new VisLabel(countryName)).width(100);
+            this.add(new VisLabel(countryName)).width(UiTheme.size("table.squad.country"));
             
             // Physical attributes (with change indicators)
             if (showAcceleration) {
@@ -406,12 +407,12 @@ public class PlayersListTable extends VisTable {
         
         // Color coding based on change
         if (changeText.contains("↑↑") || changeText.contains("↑")) {
-            label.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green for improvement
+            label.setColor(UiTheme.color("trend.up")); // Green for improvement
         } else if (changeText.contains("↓↓") || changeText.contains("↓")) {
-            label.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red for decline
+            label.setColor(UiTheme.color("trend.down")); // Red for decline
         }
         
-        this.add(label).width(70);
+        this.add(label).width(UiTheme.size("table.squad.attr"));
     }
     
     public List<Player> getCurrentPlayers() {

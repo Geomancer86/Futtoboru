@@ -10,6 +10,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Club Info Screen Table v1
@@ -46,17 +47,17 @@ public class ClubInfoScreenTable extends VisTable {
         
         Club club = currentGame.getCurrentClub();
         if (club == null) {
-            this.add(new VisLabel("No club selected.")).pad(20);
+            this.add(new VisLabel("No club selected.")).pad(UiTheme.space("lg"));
             return;
         }
 
         // Club Name Header
         this.row();
         VisLabel clubNameHeader = new VisLabel("CLUB INFORMATION");
-        clubNameHeader.setFontScale(1.2f);
-        this.add(clubNameHeader).colspan(2).pad(10);
+        clubNameHeader.setFontScale(UiTheme.fontScale("heading"));
+        this.add(clubNameHeader).colspan(2).pad(UiTheme.space("sm"));
         this.row();
-        this.addSeparator().colspan(2).pad(5);
+        this.addSeparator().colspan(2).pad(UiTheme.space("xs"));
         
         // Basic Club Info
         this.row();
@@ -86,11 +87,11 @@ public class ClubInfoScreenTable extends VisTable {
         
         // Stadium Information
         if (club.getStadium() != null) {
-            this.addSeparator().colspan(2).padTop(10).padBottom(5);
+            this.addSeparator().colspan(2).padTop(UiTheme.space("sm")).padBottom(UiTheme.space("xs"));
             this.row();
             VisLabel stadiumHeader = new VisLabel("STADIUM INFORMATION");
-            stadiumHeader.setFontScale(1.1f);
-            this.add(stadiumHeader).colspan(2).left().padTop(10);
+            stadiumHeader.setFontScale(UiTheme.fontScale("subheading"));
+            this.add(stadiumHeader).colspan(2).left().padTop(UiTheme.space("sm"));
             this.row();
             
             // Stadium Name
@@ -147,7 +148,7 @@ public class ClubInfoScreenTable extends VisTable {
                 if (totalAssetValue.compareTo(BigDecimal.ZERO) > 0) {
                     this.add(new VisLabel("Total Asset Value:")).left();
                     VisLabel assetValueLabel = new VisLabel(Money.format(totalAssetValue));
-                    assetValueLabel.setColor(0.2f, 1.0f, 0.2f, 1.0f); // Green for asset value
+                    assetValueLabel.setColor(UiTheme.color("state.positive")); // Green for asset value
                     this.add(assetValueLabel).left().expandX();
                     this.row();
                 }
@@ -155,28 +156,28 @@ public class ClubInfoScreenTable extends VisTable {
             
             // Historical Description
             if (club.getStadium().getDescription() != null && !club.getStadium().getDescription().trim().isEmpty()) {
-                this.addSeparator().colspan(2).padTop(5).padBottom(5);
+                this.addSeparator().colspan(2).padTop(UiTheme.space("xs")).padBottom(UiTheme.space("xs"));
                 this.row();
                 VisLabel descHeader = new VisLabel("Historical Summary:");
-                descHeader.setFontScale(1.05f);
+                descHeader.setFontScale(UiTheme.fontScale("subheading.minor"));
                 this.add(descHeader).colspan(2).left();
                 this.row();
                 // Description text (may be long, so wrap it)
                 VisLabel descriptionLabel = new VisLabel(club.getStadium().getDescription());
                 descriptionLabel.setWrap(true);
-                this.add(descriptionLabel).colspan(2).left().width(600).padTop(5);
+                this.add(descriptionLabel).colspan(2).left().width(UiTheme.size("text.wrap")).padTop(UiTheme.space("xs"));
                 this.row();
             }
             
             // URL Source (Wikipedia link)
             if (club.getStadium().getUrlSource() != null && !club.getStadium().getUrlSource().trim().isEmpty()) {
-                this.addSeparator().colspan(2).padTop(5).padBottom(5);
+                this.addSeparator().colspan(2).padTop(UiTheme.space("xs")).padBottom(UiTheme.space("xs"));
                 this.row();
                 this.add(new VisLabel("Source:")).left();
                 
                 final String url = club.getStadium().getUrlSource();
                 final VisLabel urlLabel = new VisLabel(url);
-                urlLabel.setColor(0.3f, 0.5f, 1.0f, 1.0f); // Blue for link
+                urlLabel.setColor(UiTheme.color("link.normal")); // Blue for link
                 
                 // Make URL clickable and add hover feedback
                 urlLabel.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
@@ -188,13 +189,13 @@ public class ClubInfoScreenTable extends VisTable {
                     
                     @Override
                     public void enter(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor fromActor) {
-                        urlLabel.setColor(0.5f, 0.7f, 1.0f, 1.0f); // Brighter blue on hover
+                        urlLabel.setColor(UiTheme.color("link.hover")); // Brighter blue on hover
                         com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Hand);
                     }
                     
                     @Override
                     public void exit(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor toActor) {
-                        urlLabel.setColor(0.3f, 0.5f, 1.0f, 1.0f); // Original blue
+                        urlLabel.setColor(UiTheme.color("link.normal")); // Original blue
                         com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Arrow);
                     }
                 });
@@ -206,11 +207,11 @@ public class ClubInfoScreenTable extends VisTable {
         
         // Finances
         if (club.getClubBalance() != null) {
-            this.addSeparator().colspan(2).padTop(10).padBottom(5);
+            this.addSeparator().colspan(2).padTop(UiTheme.space("sm")).padBottom(UiTheme.space("xs"));
             this.row();
             VisLabel financesHeader = new VisLabel("FINANCES");
-            financesHeader.setFontScale(1.1f);
-            this.add(financesHeader).colspan(2).left().padTop(10);
+            financesHeader.setFontScale(UiTheme.fontScale("subheading"));
+            this.add(financesHeader).colspan(2).left().padTop(UiTheme.space("sm"));
             this.row();
             this.add(new VisLabel("Balance:")).left();
             this.add(new VisLabel(Money.format(club.getClubBalance()))).left().expandX();
