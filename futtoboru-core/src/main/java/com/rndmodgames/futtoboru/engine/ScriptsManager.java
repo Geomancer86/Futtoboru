@@ -301,7 +301,9 @@ public class ScriptsManager {
         String seasonName = (startDate != null) ? startDate.getYear() + "-" + ((startDate.getYear() + 1) % 100) : "Season 1";
         edition.setName(leagueName + " " + seasonName);
         edition.setStartDate(startDate);
-        edition.setEndDate(edition.getStartDate() != null ? edition.getStartDate().plusMonths(9) : null);
+        // P2-11: the season runs to the league's last match day of the era calendar (mid-April)
+        edition.setEndDate(edition.getStartDate() != null
+                ? com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(edition.getStartDate()).leagueEnd() : null);
         
         if (clubIds != null) {
             for (Long clubId : clubIds) {
@@ -353,9 +355,9 @@ public class ScriptsManager {
             }
             Log.info(Log.ENGINE_SCRIPTS, "Season start date: " + seasonStart);
             
-            // Season typically runs September to May (9 months)
-            // Extending to 10 months to ensure all 22 matches fit before awards in June
-            java.time.LocalDateTime seasonEnd = seasonStart.plusMonths(10);
+            // P2-11: the fixtures follow the era calendar (Saturdays, September to mid-April); see SeasonCalendar
+            java.time.LocalDateTime seasonEnd = com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar
+                    .forDate(seasonStart).leagueEnd();
             Log.info(Log.ENGINE_SCRIPTS, "Season end date: " + seasonEnd);
             
             // Generate fixtures
@@ -453,7 +455,14 @@ public class ScriptsManager {
                     if (seasonStart == null) {
                         seasonStart = currentGame.getGameDate();
                     }
-                    java.time.LocalDateTime seasonEnd = seasonStart.plusMonths(9);
+                    // P2-11: the dates the fixtures are played between (era calendar)
+                    com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar calendar =
+                            com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(seasonStart);
+                    if (seasonStart.toLocalDate().isBefore(calendar.leagueOpening())) {
+                        seasonStart = calendar.leagueOpening().atTime(com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.KICK_OFF);
+                    }
+                    java.time.LocalDateTime seasonEnd = calendar.leagueClosing()
+                            .atTime(com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.KICK_OFF);
                     
                     // Only send league welcome message to player's club (if player has a club)
                     com.rndmodgames.futtoboru.data.Club playerClub = currentGame.getCurrentClub();
@@ -615,7 +624,7 @@ public class ScriptsManager {
         String seasonName = gameDate.getYear() + "-" + ((gameDate.getYear() + 1) % 100);
         edition.setName(cupName + " " + seasonName);
         edition.setStartDate(gameDate);
-        edition.setEndDate(gameDate.plusMonths(9));
+        edition.setEndDate(com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(gameDate).cupEnd()); // P2-11
         
         if (currentGame.getAllClubs() == null) {
             currentGame.setAllClubs(new java.util.ArrayList<>());
