@@ -149,17 +149,6 @@ public class CupPlayoffsTable extends VisTable {
         
         bracketContainer.add(columnsTable).grow().row();
         
-        // Back Button
-        VisTextButton backButton = new VisTextButton("Back to Cup Details");
-        backButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                if (menuManager != null) {
-                    menuManager.setActiveMainScreen(MainMenuManager.CUP_DETAIL_SCREEN);
-                }
-            }
-        });
-        bracketContainer.add(backButton).pad(UiTheme.space("lg"));
     }
     
     private VisTable createMatchBox(Match match) {

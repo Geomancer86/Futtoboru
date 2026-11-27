@@ -13,10 +13,14 @@ import com.kotcrab.vis.ui.widget.BusyBar;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.dialogs.SaveGameDialog;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.menu.UnsavedProgress;
+import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.tables.widgets.CurrentDateAndTimeWidget;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -43,6 +47,7 @@ public class MainGameMenuTable extends VisTable {
      * Dialogs
      */
     private SaveGameDialog saveGameDialog = null;
+    private LoadGameDialog loadGameDialog = null;
     
     /**
      * Dynamic Main Game Menu table
@@ -56,7 +61,8 @@ public class MainGameMenuTable extends VisTable {
     VisTextButton continueGameButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
     VisTextButton matchPreviewButton = new VisTextButton(LanguageModLoader.getValue("match_preview"));
     VisTextButton matchResultButton = new VisTextButton(LanguageModLoader.getValue("match_result"));
-    VisTextButton drawButton = new VisTextButton("INBOX -> DRAW");  // Mandatory draw button
+    VisTextButton drawButton = new VisTextButton(LanguageModLoader.getValue("mandatory_draw"));  // Mandatory draw button
+    VisTextButton backButton = new VisTextButton(LanguageModLoader.getValue("back"));  // U-04b: Back on drill-down screens (also Esc)
     BusyBar processingBusyBar = new BusyBar();  // Progress indicator during game processing
     
     /**
@@ -108,42 +114,14 @@ public class MainGameMenuTable extends VisTable {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 
-                /**
-                 * Available Game Settings - Save Game v1
-                 */
                 int selectedOptionIndex = gameSettingsSelectBox.getSelectedIndex();
-                
-                switch(selectedOptionIndex) {
-                
-                case 0:
-                    // ignore, main options button
-                    break;
-                
-                case 1:
-                    /**
-                     * Show Save Game Dialog Window
-                     */
-                    if (saveGameDialog == null) {
-                        
-                        /**
-                         * Pass the reference to the Continue Game button so we can enable that after saving the game once
-                         */
-                        saveGameDialog = new SaveGameDialog(((Futtoboru)(game)).getCurrentGame(), continueGameButton);  
-                    } 
 
-                    // 
-                    saveGameDialog.show(stage);
-                    break;
-                
-                default:
-                    Log.info(Log.UI_MENU, "OPTION NOT IMPLEMENTED!");
-                    break;
-                }
-                
                 /**
-                 * Clear the selection after click
+                 * Clear the selection first: the box keeps showing "Options" whatever was picked
                  */
-                gameSettingsSelectBox.setSelectedIndex(0);
+                gameSettingsSelectBox.setSelectedIndex(OPTION_NONE);
+
+                runOption(selectedOptionIndex, stage);
             }
         });
         
@@ -207,6 +185,18 @@ public class MainGameMenuTable extends VisTable {
         // dynamic menu table
         dynamicMainGameMenuTable = new VisTable(true);
 
+        // Back: shown while the menu manager has a screen to go back to
+        backButton.setVisible(false);
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (mainMenuManager != null) {
+                    mainMenuManager.goBack();
+                }
+            }
+        });
+        dynamicMainGameMenuTable.add(backButton).left();
+
         add(dynamicMainGameMenuTable).expandX().left();
         
         // Settings SelectBox & Continue Game Button
@@ -230,6 +220,98 @@ public class MainGameMenuTable extends VisTable {
         add(rightMenu).expandX().right();
     }
     
+    /** Options select box entries, in the order they are listed (U-04d). */
+    static final int OPTION_NONE = 0;
+    static final int OPTION_SAVE = 1;
+    static final int OPTION_LOAD = 2;
+    static final int OPTION_SETTINGS = 3;
+    static final int OPTION_QUIT_TO_MENU = 4;
+    static final int OPTION_QUIT_TO_DESKTOP = 5;
+
+    /**
+     * Runs one Options entry (U-04d): Save and Settings at once; Load and both Quits first ask what to do with
+     * unsaved progress (see {@link #confirmUnsavedProgress}).
+     */
+    private void runOption(int option, Stage stage) {
+
+        Futtoboru futtoboru = (Futtoboru) game;
+
+        switch (option) {
+
+        case OPTION_SAVE:
+            showSaveDialog(stage, null);
+            break;
+
+        case OPTION_LOAD:
+            confirmUnsavedProgress(stage, () -> {
+                if (loadGameDialog == null) {
+                    loadGameDialog = new LoadGameDialog(game);
+                }
+                loadGameDialog.show(stage);
+            });
+            break;
+
+        case OPTION_SETTINGS:
+            // the game stays in memory; Settings' Back (or Esc) returns to this game on the same screen
+            Gdx.app.postRunnable(() -> futtoboru.setScreen(new SettingsScreen(game, Futtoboru.GAME_SCREEN)));
+            break;
+
+        case OPTION_QUIT_TO_MENU:
+            confirmUnsavedProgress(stage, () -> Gdx.app.postRunnable(() -> futtoboru.changeScreen(Futtoboru.MENU_SCREEN)));
+            break;
+
+        case OPTION_QUIT_TO_DESKTOP:
+            confirmUnsavedProgress(stage, () -> Gdx.app.exit());
+            break;
+
+        default:
+            // OPTION_NONE: the "Options" title itself
+            break;
+        }
+    }
+
+    /** Shows the P2-5 save dialog; {@code afterSave} runs once after a successful save. */
+    private void showSaveDialog(Stage stage, Runnable afterSave) {
+        if (saveGameDialog == null) {
+            /**
+             * Pass the reference to the Continue Game button so we can enable that after saving the game once
+             */
+            saveGameDialog = new SaveGameDialog(((Futtoboru) (game)).getCurrentGame(), continueGameButton);
+        }
+        saveGameDialog.showThen(stage, afterSave);
+    }
+
+    /**
+     * Runs {@code action} at once when the game has no unsaved progress. Otherwise asks first:
+     * Save First (save dialog, then the action), Don't Save (the action), or Cancel.
+     */
+    private void confirmUnsavedProgress(Stage stage, Runnable action) {
+
+        if (!UnsavedProgress.isUnsaved(((Futtoboru) game).getCurrentGame())) {
+            action.run();
+            return;
+        }
+
+        Dialogs.showConfirmDialog(stage,
+                LanguageModLoader.getValue("unsaved_progress"),
+                LanguageModLoader.getValue("unsaved_progress_text"),
+                new String[] { LanguageModLoader.getValue("save_first"),
+                               LanguageModLoader.getValue("discard_progress"),
+                               LanguageModLoader.getValue("cancel") },
+                new Integer[] { CONFIRM_SAVE_FIRST, CONFIRM_DISCARD, CONFIRM_CANCEL },
+                result -> {
+                    if (result == CONFIRM_SAVE_FIRST) {
+                        showSaveDialog(stage, action);
+                    } else if (result == CONFIRM_DISCARD) {
+                        action.run();
+                    }
+                });
+    }
+
+    private static final int CONFIRM_SAVE_FIRST = 1;
+    private static final int CONFIRM_DISCARD = 2;
+    private static final int CONFIRM_CANCEL = 3;
+
     /**
      * Sets the Main Button depending on the state of the game
      */
@@ -582,6 +664,11 @@ public class MainGameMenuTable extends VisTable {
         if (continueGameButton != null) {
             continueGameButton.setDisabled(false);
         }
+    }
+
+    /** Shows the Back button when there is a screen to go back to (called by the menu manager). */
+    public void setBackButtonVisible(boolean visible) {
+        backButton.setVisible(visible);
     }
 
     public MainMenuManager getMainMenuManager() {

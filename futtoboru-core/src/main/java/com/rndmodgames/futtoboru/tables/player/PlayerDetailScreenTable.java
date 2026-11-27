@@ -44,7 +44,6 @@ public class PlayerDetailScreenTable extends VisTable {
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
     
     // UI Components
-    private VisTextButton backButton;
     private VisLabel playerNameLabel;
     private VisTable contentTable; // Main content table that will be scrollable
     private VisScrollPane scrollPane; // Scroll pane for the content
@@ -63,21 +62,6 @@ public class PlayerDetailScreenTable extends VisTable {
             this.changeCalculator = new AttributeChangeCalculator(futtoboru.getCurrentGame());
         }
         
-        // Back button
-        backButton = new VisTextButton("← Back to Squad");
-        backButton.addCaptureListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-            
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (event.getButton() == 0 && menuManager != null) {
-                    menuManager.setActiveMainScreen(MainMenuManager.MAIN_SQUAD_SCREEN);
-                }
-            }
-        });
         
         // Player name (will be set dynamically)
         playerNameLabel = new VisLabel("");
@@ -122,9 +106,7 @@ public class PlayerDetailScreenTable extends VisTable {
         // Clear content table (not the main table - that has the scroll pane)
         contentTable.clear();
         
-        // Top section: Back button and player name
-        contentTable.row();
-        contentTable.add(backButton).left().padBottom(UiTheme.space("sm"));
+        // Top section: player name (Back is in the top bar, U-04b)
         contentTable.row();
         contentTable.add(playerNameLabel).colspan(2).center().padBottom(UiTheme.space("lg"));
         contentTable.row();
