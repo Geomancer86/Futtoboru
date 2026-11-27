@@ -11,7 +11,6 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerProfession;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
-import com.rndmodgames.futtoboru.system.loaders.PlayerProfessionsLoader;
 
 /**
  * Player Profession Assigner v1.0
@@ -72,7 +71,7 @@ public class PlayerProfessionAssigner {
      * Future: Use regional availability from profession data
      */
     private static PlayerProfession selectRandomProfessionForClub(Club club) {
-        Map<Long, PlayerProfession> allProfessions = PlayerProfessionsLoader.getAllProfessions();
+        Map<Long, PlayerProfession> allProfessions = DatabaseLoader.getAllPlayerProfessions();
         
         if (allProfessions == null || allProfessions.isEmpty()) {
             DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerProfessionAssigner", "No professions loaded, cannot assign profession");

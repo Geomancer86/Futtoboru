@@ -36,12 +36,20 @@ public class JobManager {
     private Futtoboru gameInstance;
     private SaveGame currentGame;
     private ClubStaffManager clubStaffManager;
-    private static long nextId = 1L; // Simple ID generation (v1.0)
 
     public JobManager(Futtoboru gameInstance, ClubStaffManager clubStaffManager) {
         this.gameInstance = gameInstance;
         this.currentGame = gameInstance.getCurrentGame();
         this.clubStaffManager = clubStaffManager;
+    }
+
+    /**
+     * Ids of openings, applications, offers and messages come from the game's allocator (P2-4)
+     */
+    private long nextId() {
+        SaveGame game = gameInstance != null && gameInstance.getCurrentGame() != null
+                ? gameInstance.getCurrentGame() : currentGame;
+        return game.getIdAllocator().nextId();
     }
 
     // ========== Job Openings ==========
@@ -147,7 +155,7 @@ public class JobManager {
                 return null;
             }
             JobOpening opening = new JobOpening(club, profession, gameDate);
-            opening.setId(nextId++);
+            opening.setId(nextId());
             
             // Calculate salary based on club finances and profession (v1.0: simple)
             opening.setSalary(calculateJobSalary(club, profession));
@@ -198,11 +206,11 @@ public class JobManager {
         
         // Adjust by profession (v1.0: simple multipliers)
         double multiplier = 1.0;
-        if (profession.getId().equals(3L)) { // Manager
+        if (profession.is(Profession.MANAGER)) { // Manager
             multiplier = 1.5;
-        } else if (profession.getId().equals(4L)) { // Director
+        } else if (profession.is(Profession.DIRECTOR)) { // Director
             multiplier = 1.2;
-        } else if (profession.getId().equals(5L)) { // Scout
+        } else if (profession.is(Profession.SCOUT)) { // Scout
             multiplier = 0.8;
         }
         
@@ -507,7 +515,7 @@ public class JobManager {
                 }
             }
             
-            application.setId(nextId++);
+            application.setId(nextId());
             application.setApplicationDate(gameDate);
             
             DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_JOBS, "JobManager", "Step 7: Calculating match percentage...");
@@ -731,7 +739,7 @@ public class JobManager {
         
         // Create offer
         JobOffer offer = new JobOffer(jobOpening, candidate);
-        offer.setId(nextId++);
+        offer.setId(nextId());
         offer.setOfferDate(currentGame.getGameDate());
         offer.setExpirationDate(currentGame.getGameDate().plusDays(JobConstants.OFFER_EXPIRATION_DAYS));
         
@@ -947,7 +955,7 @@ public class JobManager {
         
         // Create counter-offer
         JobOffer counterOffer = new JobOffer();
-        counterOffer.setId(nextId++);
+        counterOffer.setId(nextId());
         counterOffer.setJobOpeningId(originalOffer.getJobOpeningId());
         counterOffer.setRecipientId(originalOffer.getRecipientId());
         counterOffer.setSalary(newSalary);
@@ -1057,7 +1065,7 @@ public class JobManager {
         }
         
         return currentGame.getAllPersons().stream()
-            .filter(p -> p.getId().equals(id))
+            .filter(p -> p != null && id.equals(p.getId()))
             .findFirst()
             .orElse(null);
     }
@@ -1096,7 +1104,7 @@ public class JobManager {
         
         // Create message
         Message message = new Message();
-        message.setId(nextId++);
+        message.setId(nextId());
         message.setRemitent(null); // System message
         message.setMessageTime(currentGame.getGameDate());
         message.setTitle("Job Offer Received");

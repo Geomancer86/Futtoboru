@@ -3,16 +3,19 @@ package com.rndmodgames.futtoboru.system.loaders;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.utils.Array;
+import com.rndmodgames.futtoboru.data.Competition;
+import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 
 /**
- * Scripts Loader v1
+ * Scripts Loader v2
  * 
- *  - Load the Season related game scripts  [WIP]
+ *  - Builds the Season scripts from the season's editions in the game data (season.json): one league creation
+ *    script per LEAGUE edition (its participants are the founders), one cup creation script per CUP edition
  *  - Load the generic game scripts         [TBD]
  *  
  * 
@@ -28,84 +31,93 @@ public class ScriptsLoader {
     public static final String LEAGUE_COUNTRY           = "LEAGUE_COUNTRY";
     public static final String LEAGUE_FOUNDING_TEAMS    = "LEAGUE_FOUNDING_TEAMS";
     public static final String LEAGUE_RULES             = "LEAGUE_RULES";
+    public static final String LEAGUE_COMPETITION       = "LEAGUE_COMPETITION"; // competition runtime id
     
     // Cup Support
     public static final String CUP_NAME                 = "CUP_NAME";
     public static final String CUP_COUNTRY              = "CUP_COUNTRY";
     public static final String CUP_PARTICIPANTS         = "CUP_PARTICIPANTS";
+    public static final String CUP_COMPETITION          = "CUP_COMPETITION"; // competition runtime id
     
     /**
      * Load the Scripts bundled with a Season
+     * 
+     * TODO: the execution dates are still fixed (17 April for the league, 1 May for the cup of the season's
+     *       start year); they belong in season.json
+     * 
+     * @param editions the season's editions (in data order) with their competition
      */
-    public static void load(List<Season> seasons) {
+    public static void load(Season season, Map<CompetitionEdition, Competition> editions) {
         
-        // iterate the seasons and load the existing scripts from data folders
-        for (Season season : seasons) {
+        // Season Scripts List
+        season.setSeasonScripts(new ArrayList<>());
+        
+        int year = season.getStartDate() != null ? season.getStartDate().getYear() : 1888;
+        Long countryId = season.getCountries() != null && !season.getCountries().isEmpty()
+                ? season.getCountries().get(0).getId() : null;
+        
+        for (Map.Entry<CompetitionEdition, Competition> entry : editions.entrySet()) {
             
-            /**
-             * 1) LEAGUE_CREATION_SCRIPT
-             */
-            BasicScript theLeagueCreationScript = new BasicScript();
+            CompetitionEdition edition = entry.getKey();
+            Competition competition = entry.getValue();
             
-            // Name & Description
-            theLeagueCreationScript.setName("The English Football League Creation");
-            theLeagueCreationScript.setDescription("This will create The 1888-89 Football League with it's Rules and add the initial 12 English Teams");
-            
-            // Set Script Type
-            theLeagueCreationScript.setScriptType(BasicScript.LEAGUE_CREATION_SCRIPT);
-            
-            /**
-             * Script execution date
-             */
-            theLeagueCreationScript.setExecutionTime(LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); // 17 April 1888
-            
-            /**
-             * Add Required Script Values
-             */
-            theLeagueCreationScript.getScriptValues().put(LEAGUE_NAME, "English Football League");
-            theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, LocalDateTime.of(1888, Month.APRIL, 17, 19, 30, 00)); 
-            theLeagueCreationScript.getScriptValues().put(LEAGUE_COUNTRY, 1000L); // By ID
-            
-            /**
-             * League Clubs by ID
-             */
-            Array<Long> leagueClubIds = new Array<>();
-            for (long i = 1; i <= 12; i++) {
-                leagueClubIds.add(i);
+            Array<Long> clubIds = new Array<>();
+            for (Long clubId : edition.getParticipantClubsIds()) {
+                clubIds.add(clubId);
             }
             
-            theLeagueCreationScript.getScriptValues().put(LEAGUE_FOUNDING_TEAMS, leagueClubIds); 
-            theLeagueCreationScript.getScriptValues().put(LEAGUE_RULES, null); 
-            
-            /**
-             * 2) CUP_CREATION_SCRIPT (FA Cup)
-             * Executed on May 1st, 1888
-             */
-            BasicScript theCupCreationScript = new BasicScript();
-            theCupCreationScript.setName("The FA Cup 1888-89 Creation");
-            theCupCreationScript.setDescription("This will create the 1888-89 FA Cup edition and add all participants");
-            theCupCreationScript.setScriptType(BasicScript.CUP_CREATION_SCRIPT);
-            theCupCreationScript.setExecutionTime(LocalDateTime.of(1888, Month.MAY, 1, 10, 0, 0));
-            
-            theCupCreationScript.getScriptValues().put(CUP_NAME, "FA Cup");
-            theCupCreationScript.getScriptValues().put(CUP_COUNTRY, 1000L);
-            
-            Array<Long> cupClubsIds = new Array<>();
-            // 1888-89 FA Cup First Round had exactly 32 teams (16 matches)
-            // Historical participants: 12 League teams + 20 non-league teams = 32 teams
-            // Using IDs 1-32 (excluding IDs 33-35 which were not in the first round)
-            // Note: Some teams may have been eliminated in qualifying rounds
-            for (long i = 1; i <= 32; i++) {
-                cupClubsIds.add(i);
+            if (Competition.COMPETITION_LEAGUE.equals(competition.getCompetitionType())) {
+                
+                /**
+                 * 1) LEAGUE_CREATION_SCRIPT
+                 */
+                BasicScript theLeagueCreationScript = new BasicScript();
+                
+                // Name & Description
+                theLeagueCreationScript.setName("The " + competition.getName() + " Creation");
+                theLeagueCreationScript.setDescription("This will create the " + edition.getName()
+                        + " with its Rules and add the " + clubIds.size + " founder clubs");
+                
+                // Set Script Type
+                theLeagueCreationScript.setScriptType(BasicScript.LEAGUE_CREATION_SCRIPT);
+                
+                /**
+                 * Script execution date
+                 */
+                LocalDateTime creation = LocalDateTime.of(year, Month.APRIL, 17, 19, 30, 00); // 17 April 1888
+                theLeagueCreationScript.setExecutionTime(creation);
+                
+                /**
+                 * Add Required Script Values (clubs by runtime id, from the edition's participants)
+                 */
+                theLeagueCreationScript.getScriptValues().put(LEAGUE_NAME, competition.getName());
+                theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, creation);
+                theLeagueCreationScript.getScriptValues().put(LEAGUE_COUNTRY, countryId);
+                theLeagueCreationScript.getScriptValues().put(LEAGUE_COMPETITION, competition.getId());
+                theLeagueCreationScript.getScriptValues().put(LEAGUE_FOUNDING_TEAMS, clubIds);
+                theLeagueCreationScript.getScriptValues().put(LEAGUE_RULES, null);
+                
+                season.getSeasonScripts().add(theLeagueCreationScript);
+                
+            } else if (Competition.COMPETITION_CUP.equals(competition.getCompetitionType())) {
+                
+                /**
+                 * 2) CUP_CREATION_SCRIPT (FA Cup)
+                 * Executed on May 1st, 1888
+                 */
+                BasicScript theCupCreationScript = new BasicScript();
+                theCupCreationScript.setName("The " + edition.getName() + " Creation");
+                theCupCreationScript.setDescription("This will create the " + edition.getName() + " edition and add all participants");
+                theCupCreationScript.setScriptType(BasicScript.CUP_CREATION_SCRIPT);
+                theCupCreationScript.setExecutionTime(LocalDateTime.of(year, Month.MAY, 1, 10, 0, 0));
+                
+                theCupCreationScript.getScriptValues().put(CUP_NAME, competition.getName());
+                theCupCreationScript.getScriptValues().put(CUP_COUNTRY, countryId);
+                theCupCreationScript.getScriptValues().put(CUP_COMPETITION, competition.getId());
+                theCupCreationScript.getScriptValues().put(CUP_PARTICIPANTS, clubIds);
+                
+                season.getSeasonScripts().add(theCupCreationScript);
             }
-            theCupCreationScript.getScriptValues().put(CUP_PARTICIPANTS, cupClubsIds);
-            
-            // Season Scripts List
-            season.setSeasonScripts(new ArrayList<>());
-            
-            // Add the Scripts to the Season
-            season.getSeasonScripts().add(theLeagueCreationScript);
-            season.getSeasonScripts().add(theCupCreationScript);
         }
     }
 }

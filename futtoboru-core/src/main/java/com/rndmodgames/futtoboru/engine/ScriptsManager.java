@@ -260,7 +260,7 @@ public class ScriptsManager {
         
         // Set league ID before adding to game (needed for draw message actionData)
         // Use index in leagues list as ID, or timestamp if needed
-        league.setId((long) currentGame.getMainAuthority().getLeagues().size());
+        league.setId(currentGame.getIdAllocator().nextId());
         
         // Save the created League on the current game
         currentGame.getMainAuthority().getLeagues().add(league);
@@ -270,18 +270,13 @@ public class ScriptsManager {
             currentGame.setAllLeagues(new java.util.ArrayList<>());
         }
         
-        // We need to find or create a Competition object for this League
-        Competition leagueCompetition = null;
-        for (Competition comp : currentGame.getAllLeagues()) {
-            if (comp.getName() != null && comp.getName().equals(leagueName)) {
-                leagueCompetition = comp;
-                break;
-            }
-        }
+        // We need to find or create a Competition object for this League (by the data's competition id first)
+        Competition leagueCompetition = findCompetition(currentGame.getAllLeagues(),
+                (Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_COMPETITION), leagueName);
         
         if (leagueCompetition == null) {
             leagueCompetition = new Competition();
-            leagueCompetition.setId(System.currentTimeMillis()); // TODO: Better ID
+            leagueCompetition.setId(currentGame.getIdAllocator().nextId());
             leagueCompetition.setName(leagueName);
             leagueCompetition.setCompetitionType(Competition.COMPETITION_LEAGUE);
             currentGame.getAllLeagues().add(leagueCompetition);
@@ -301,7 +296,7 @@ public class ScriptsManager {
         
         // Create the first edition for this league
         com.rndmodgames.futtoboru.data.CompetitionEdition edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
-        edition.setId(System.currentTimeMillis()); // TODO: Better ID generation
+        edition.setId(currentGame.getIdAllocator().nextId());
         String seasonName = (startDate != null) ? startDate.getYear() + "-" + ((startDate.getYear() + 1) % 100) : "Season 1";
         edition.setName(leagueName + " " + seasonName);
         edition.setStartDate(startDate);
@@ -593,16 +588,12 @@ public class ScriptsManager {
             currentGame.setAllCups(new java.util.ArrayList<>());
         }
         
-        for (com.rndmodgames.futtoboru.data.Competition existingCup : currentGame.getAllCups()) {
-            if (existingCup.getName() != null && existingCup.getName().equals(cupName)) {
-                cup = existingCup;
-                break;
-            }
-        }
+        cup = findCompetition(currentGame.getAllCups(),
+                (Long) script.getScriptValues().get(ScriptsLoader.CUP_COMPETITION), cupName);
         
         if (cup == null) {
             cup = new com.rndmodgames.futtoboru.data.Competition();
-            cup.setId(System.currentTimeMillis());
+            cup.setId(currentGame.getIdAllocator().nextId());
             cup.setName(cupName);
             cup.setCompetitionType(com.rndmodgames.futtoboru.data.Competition.COMPETITION_CUP);
             currentGame.getAllCups().add(cup);
@@ -618,7 +609,7 @@ public class ScriptsManager {
         
         // Create Edition
         com.rndmodgames.futtoboru.data.CompetitionEdition edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
-        edition.setId(System.currentTimeMillis() + 1);
+        edition.setId(currentGame.getIdAllocator().nextId());
         java.time.LocalDateTime gameDate = currentGame.getGameDate();
         String seasonName = gameDate.getYear() + "-" + ((gameDate.getYear() + 1) % 100);
         edition.setName(cupName + " " + seasonName);
@@ -676,5 +667,31 @@ public class ScriptsManager {
         script.setIsExecuted(true);
         System.out.println("CUP CREATION SUCCESSFUL!");
         System.out.println("========================================");
+    }
+
+    /**
+     * Finds a competition of the game: by runtime id (the data's competition, from the script), else by name; a
+     * data competition not yet in the list is taken from the database and added to it.
+     */
+    private Competition findCompetition(java.util.List<Competition> competitions, Long competitionId, String name) {
+        if (competitionId != null) {
+            for (Competition comp : competitions) {
+                if (competitionId.equals(comp.getId())) {
+                    return comp;
+                }
+            }
+            for (Competition comp : DatabaseLoader.getCompetitions()) {
+                if (competitionId.equals(comp.getId())) {
+                    competitions.add(comp);
+                    return comp;
+                }
+            }
+        }
+        for (Competition comp : competitions) {
+            if (comp.getName() != null && comp.getName().equals(name)) {
+                return comp;
+            }
+        }
+        return null;
     }
 }

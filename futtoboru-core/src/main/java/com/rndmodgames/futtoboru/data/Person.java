@@ -17,6 +17,10 @@ public class Person implements Serializable {
     private static final long serialVersionUID = 2212901640133697781L;
 
     private Long id;
+
+
+    // stable data id from the game data (P2-4, D11); null for objects made during play
+    private String dataId;
     private String name;
     private String lastname;
     
@@ -263,5 +267,13 @@ public class Person implements Serializable {
     @Deprecated
     public void incrementApplicationCount() {
         incrementApplicationCount(LocalDateTime.now());
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
     }
 }

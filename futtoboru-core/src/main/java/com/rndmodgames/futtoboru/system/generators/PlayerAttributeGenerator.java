@@ -11,8 +11,6 @@ import com.rndmodgames.futtoboru.data.PlayerProfession;
 import com.rndmodgames.futtoboru.data.RegionModifier;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
-import com.rndmodgames.futtoboru.system.loaders.NationalityModifiersLoader;
-import com.rndmodgames.futtoboru.system.loaders.RegionModifiersLoader;
 
 /**
  * Player Attribute Generator v1
@@ -50,7 +48,7 @@ public class PlayerAttributeGenerator {
         // Get nationality modifier (attribute-specific)
         NationalityModifier natMod = null;
         if (person.getCountry() != null && person.getCountry().getId() != null) {
-            natMod = NationalityModifiersLoader.getModifier(person.getCountry().getId());
+            natMod = DatabaseLoader.getNationalityModifier(person.getCountry().getId());
         }
         
         // Get region modifier (attribute-specific, based on state/city)
@@ -59,7 +57,7 @@ public class PlayerAttributeGenerator {
         if (person.getState() != null && person.getState().getName() != null && 
             person.getCountry() != null && person.getCountry().getId() != null) {
             // Try to find region by state name
-            regMod = RegionModifiersLoader.getModifier(
+            regMod = DatabaseLoader.getRegionModifier(
                 person.getState().getName(), person.getCountry().getId());
         }
         

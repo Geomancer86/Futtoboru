@@ -13,7 +13,6 @@ import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.rndmodgames.futtoboru.data.Competition;
 import com.rndmodgames.futtoboru.data.Continent;
 import com.rndmodgames.futtoboru.data.Country;
-import com.rndmodgames.futtoboru.data.DataBase;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 
@@ -29,22 +28,6 @@ class DatabaseLoaderTests {
         application = new Futtoboru();
         
         new HeadlessApplication(application , config);
-    }
-    
-    @Test
-    void loadDatabaseTest() {
-        
-        DatabaseLoader dbLoader = DatabaseLoader.getInstance();
-        
-        assertNotNull(dbLoader);
-        
-        List<DataBase> allDataBases = dbLoader.getDataBases();
-        
-        assertNotNull(allDataBases);
-        
-        assertNotEquals(true, allDataBases.isEmpty());
-        
-        System.out.println("FOUND " + allDataBases.size() + " DATABASES");
     }
     
     @Test
@@ -119,7 +102,7 @@ class DatabaseLoaderTests {
         List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
         
         // England
-        Country england = DatabaseLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryByDataId("england");
         
         // FA Cup
         Competition faCup = allCompetitions.get(0);

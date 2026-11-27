@@ -39,6 +39,10 @@ public class Competition implements Serializable {
     private static final long serialVersionUID = 1028475113111090045L;
 
     private Long id;
+
+
+    // stable data id from the game data (P2-4, D11); null for objects made during play
+    private String dataId;
     private String name;
     private String fullname;
     private String competitionType;
@@ -137,5 +141,13 @@ public class Competition implements Serializable {
 
     public void setEditions(List<CompetitionEdition> editions) {
         this.editions = editions;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
     }
 }

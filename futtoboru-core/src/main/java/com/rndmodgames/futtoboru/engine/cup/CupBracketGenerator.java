@@ -29,6 +29,13 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
  */
 public class CupBracketGenerator {
     
+    /** Gives every generated match its runtime id (the game's allocator, P2-4) */
+    private final com.rndmodgames.futtoboru.system.data.IdAllocator ids;
+    
+    public CupBracketGenerator(com.rndmodgames.futtoboru.system.data.IdAllocator ids) {
+        this.ids = ids;
+    }
+    
     /**
      * Generate complete bracket for a cup competition
      * 
@@ -144,7 +151,7 @@ public class CupBracketGenerator {
             Match match = new Match();
             
             // Set match ID
-            match.setId(System.currentTimeMillis() + matchNumber + (int)(Math.random() * 1000));
+            match.setId(ids.nextId());
             
             // Pick random teams
             int homeIndex = DatabaseLoader.RNG.nextInt(remainingTeams.size());
@@ -240,7 +247,7 @@ public class CupBracketGenerator {
             Match match = new Match();
             
             // Set match ID
-            match.setId(System.currentTimeMillis() + (roundNumber * 10000) + matchNumber + (int)(Math.random() * 1000));
+            match.setId(ids.nextId());
             
             // Get parent matches
             Match parent1 = previousRoundMatches.get(i);
@@ -305,7 +312,7 @@ public class CupBracketGenerator {
             if (!byeAlreadyAdded) {
                 // Create an extra match for the bye team
                 Match byeMatch = new Match();
-                byeMatch.setId(System.currentTimeMillis() + (roundNumber * 10000) + matchNumber + (int)(Math.random() * 1000));
+                byeMatch.setId(ids.nextId());
                 
                 // Last match from previous round
                 Match lastParent = previousRoundMatches.get(previousRoundMatches.size() - 1);

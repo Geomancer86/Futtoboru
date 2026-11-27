@@ -67,6 +67,14 @@ public class AuthorityManager {
     }
     
     /**
+     * Runtime ids for objects made during play (P2-4), from the current game
+     */
+    private com.rndmodgames.futtoboru.system.data.IdAllocator ids() {
+        SaveGame g = game != null && game.getCurrentGame() != null ? game.getCurrentGame() : currentGame;
+        return g.getIdAllocator();
+    }
+    
+    /**
      * Authorities AI
      * 
      *  - iterates all over the game authorities
@@ -713,7 +721,7 @@ public class AuthorityManager {
      */
     private CompetitionEdition createNewCupEdition(Competition cup, LocalDateTime currentDate) {
         CompetitionEdition edition = new CompetitionEdition();
-        edition.setId(System.currentTimeMillis()); // TODO: Better ID generation
+        edition.setId(ids().nextId());
         edition.setName(cup.getName() + " " + currentDate.getYear());
         edition.setStartDate(currentDate);
         edition.setEndDate(currentDate.plusMonths(6)); // Cup typically runs 6 months
@@ -795,7 +803,7 @@ public class AuthorityManager {
         int weeksBetweenRounds = 2;
         
         com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator bracketGenerator = 
-            new com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator();
+            new com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator(ids());
         
         List<Match> allMatches = bracketGenerator.generateCompleteBracket(
             edition.getParticipantClubsIds(),
@@ -1663,7 +1671,7 @@ public class AuthorityManager {
         Gdx.app.log("AuthorityManager", "Generating next season for league: " + league.getName());
         
         CompetitionEdition nextEdition = new CompetitionEdition();
-        nextEdition.setId(System.currentTimeMillis());
+        nextEdition.setId(ids().nextId());
         int startYear = currentDate.getYear();
         nextEdition.setName(league.getName() + " " + startYear + "-" + ((startYear + 1) % 100));
         
@@ -1723,7 +1731,7 @@ public class AuthorityManager {
         Gdx.app.log("AuthorityManager", "Generating next season staging for cup: " + cup.getName());
         
         CompetitionEdition nextEdition = new CompetitionEdition();
-        nextEdition.setId(System.currentTimeMillis());
+        nextEdition.setId(ids().nextId());
         int startYear = currentDate.getYear();
         nextEdition.setName(cup.getName() + " " + startYear + "-" + ((startYear + 1) % 100));
         

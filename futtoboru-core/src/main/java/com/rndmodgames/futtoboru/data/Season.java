@@ -38,6 +38,10 @@ public class Season implements Serializable {
     private static final long serialVersionUID = -72888293779564961L;
 
     private Long id;
+
+
+    // stable data id from the game data (P2-4, D11); null for objects made during play
+    private String dataId;
     private String name;
     private String description;
     private String urlSource;
@@ -126,5 +130,13 @@ public class Season implements Serializable {
     @Override
     public String toString() {
         return name != null ? name : "empty_season_name";
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
     }
 }

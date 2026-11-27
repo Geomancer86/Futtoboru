@@ -30,7 +30,6 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 public class MessageManager {
     
     private Futtoboru gameInstance;
-    private long nextMessageId = 1L;
     
     public MessageManager(Futtoboru game) {
         this.gameInstance = game;
@@ -45,6 +44,14 @@ public class MessageManager {
             return null;
         }
         return gameInstance.getCurrentGame();
+    }
+    
+    /**
+     * Message ids come from the game's allocator (P2-4); null when there is no game yet
+     */
+    private Long nextId() {
+        SaveGame game = getCurrentGame();
+        return game != null ? game.getIdAllocator().nextId() : null;
     }
     
     /**
@@ -74,7 +81,7 @@ public class MessageManager {
             
             // Ensure message has ID
             if (message.getId() == null) {
-                message.setId(nextMessageId++);
+                message.setId(nextId());
             }
             
             // Set delivery time
@@ -147,7 +154,9 @@ public class MessageManager {
             currentGame.setScheduledMessages(new ArrayList<>());
         }
         
-        message.setId(nextMessageId++);
+        if (message.getId() == null) {
+            message.setId(nextId());
+        }
         currentGame.getScheduledMessages().add(message);
         
         Gdx.app.log("MessageManager", "Scheduled message: " + message.getTitle() + " for " + message.getScheduledDate());
@@ -214,7 +223,7 @@ public class MessageManager {
         
         // Set message ID if not set
         if (message.getId() == null) {
-            message.setId(nextMessageId++);
+            message.setId(nextId());
         }
         
         // Set message time if not set
@@ -400,7 +409,7 @@ public class MessageManager {
         
         // Set message ID if not set
         if (message.getId() == null) {
-            message.setId(nextMessageId++);
+            message.setId(nextId());
         }
         
         Gdx.app.log("MessageManager", "Created mandatory league draw message for league: " + league.getName() + 

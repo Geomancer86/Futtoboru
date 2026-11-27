@@ -23,6 +23,11 @@ public class PlayerProfession implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private Long id;
+
+    
+    // stable data id from the game data (P2-4, D11); null for objects made during play
+    
+    private String dataId;
     private String name;
     private String description;
     
@@ -257,5 +262,13 @@ public class PlayerProfession implements Serializable {
 
     public void setRegionalAvailability(String regionalAvailability) {
         this.regionalAvailability = regionalAvailability;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
     }
 }

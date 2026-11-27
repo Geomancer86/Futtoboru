@@ -15,6 +15,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.City;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.State;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 
 public class CountryAndCitySelectBox extends VisTable {
@@ -41,53 +42,12 @@ public class CountryAndCitySelectBox extends VisTable {
         VisSelectBox<State> stateSelectBox = new VisSelectBox<>();
 
         /**
-         * Load default list of Countries from /mods/countries.txt file and Load the SelectBox
+         * Load the list of Countries from the game data and Load the SelectBox
          * 
          *  - The City SelectBox will be automatically filled with the right Cities for each Country
          */
-        FileHandle countriesTxt = Gdx.files.internal("mods/countries.txt");
-        List<Country> availableCountries = new ArrayList<>();
+        List<Country> availableCountries = new ArrayList<>(DatabaseLoader.getCountries());
 
-        if (countriesTxt.exists()){
-            BufferedReader reader = new BufferedReader(countriesTxt.reader());
-            
-            String line;
-            
-            try {
-                line = reader.readLine();
-
-                // Use # symbol as starting for comment (to enable or disable available resolutions)
-                while (line != null) {
-                    
-                    if (!line.startsWith("#")) {
-  
-                        String [] splitted = line.split(",");
-                        
-                        /**
-                         * Country Format
-                         * 
-                         *  # COLUMNS
-                         *  # id, common name, formal name
-                         */
-                        Country country = new Country();
-                        
-                        country.setId(Long.valueOf(splitted[0]));
-                        country.setCommonName(splitted[1]);
-                        
-                        availableCountries.add(country);
-                    }
-                    
-                    line = reader.readLine();
-                }
-                
-            } catch (IOException e) {
-                // TODO: If error, restore default resolutions.txt file
-            }
-            
-        } else {
-            // TODO: If file doesn't exist, restore from default
-        }
-        
         /**
          * Load Countries Select Box
          */

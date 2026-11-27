@@ -2,7 +2,6 @@ package com.rndmodgames.futtoboru.system.generators;
 
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
-import com.rndmodgames.futtoboru.system.loaders.NamesLoader;
 
 /**
  * Name Generator v1
@@ -28,14 +27,19 @@ public class NameGenerator {
     public static String [] generateName(Country country) {
         
         //
-        int numberOfNames = NamesLoader.namesByCountry.get(country.getCommonName()).size();
-        int numberOfLastnames = NamesLoader.lastnamesByCountry.get(country.getCommonName()).size();
+        java.util.List<String> names = DatabaseLoader.getFirstNames(country);
+        java.util.List<String> lastnames = DatabaseLoader.getLastNames(country);
+        int numberOfNames = names.size();
+        int numberOfLastnames = lastnames.size();
+        if (numberOfNames < 2 || numberOfLastnames < 2) {
+            throw new IllegalArgumentException("No names to generate a person from " + country);
+        }
         
         /**
          * TODO: small chance of having more than 1 name or more than 1 lastname or both
          */
-        String randomName = NamesLoader.namesByCountry.get(country.getCommonName()).get(DatabaseLoader.RNG.nextInt(numberOfNames - 1));
-        String randomLastName = NamesLoader.lastnamesByCountry.get(country.getCommonName()).get(DatabaseLoader.RNG.nextInt(numberOfLastnames - 1));
+        String randomName = names.get(DatabaseLoader.RNG.nextInt(numberOfNames - 1));
+        String randomLastName = lastnames.get(DatabaseLoader.RNG.nextInt(numberOfLastnames - 1));
         
         //
         String generatedName [] = new String [2]; 

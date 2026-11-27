@@ -1,6 +1,8 @@
 package com.rndmodgames.futtoboru.system.loaders;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -46,7 +48,7 @@ class PlayersLoaderTests {
         /**
          * Iterate all clubs and make sure all players are there
          */
-        Country england = DatabaseLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryByDataId("england");
         
         List<Club> allClubs = dbLoader.getClubsByCountry(england);
         
@@ -54,6 +56,10 @@ class PlayersLoaderTests {
             
             //
             System.out.println("Club: " + club.getName() + ", Players: " + club.getPlayers().size());
+            
+            // players come from squads.json, each with a contract
+            assertTrue(club.getPlayers().size() >= 10, club.getName() + " has " + club.getPlayers().size() + " players");
+            assertEquals(club.getPlayers().size(), club.getPlayerContracts().size());
         }
         
         System.out.println("All " + allClubs.size() + " Clubs Have a Players File.");

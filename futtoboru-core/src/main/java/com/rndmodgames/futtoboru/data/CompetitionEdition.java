@@ -22,6 +22,9 @@ public class CompetitionEdition implements Serializable {
 
     //
     private Long id;
+
+    // stable data id from the game data (P2-4, D11); null for objects made during play
+    private String dataId;
     private String name;
     private String description;
     private String urlSource;
@@ -149,5 +152,13 @@ public class CompetitionEdition implements Serializable {
 
     public void setParticipantClubsIds(List<Long> participantClubsIds) {
         this.participantClubsIds = participantClubsIds;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
     }
 }

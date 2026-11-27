@@ -19,8 +19,6 @@ import com.rndmodgames.futtoboru.data.RegionModifier;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
-import com.rndmodgames.futtoboru.system.loaders.NationalityModifiersLoader;
-import com.rndmodgames.futtoboru.system.loaders.RegionModifiersLoader;
 
 /**
  * Player Detail Screen Table v1
@@ -387,7 +385,7 @@ public class PlayerDetailScreenTable extends VisTable {
         if (currentPlayer.getPerson().getCountry() != null && 
             currentPlayer.getPerson().getCountry().getId() != null) {
             Long countryId = currentPlayer.getPerson().getCountry().getId();
-            natMod = NationalityModifiersLoader.getModifier(countryId);
+            natMod = com.rndmodgames.futtoboru.system.DatabaseLoader.getNationalityModifier(countryId);
             
             // Debug logging
             if (natMod == null) {
@@ -406,7 +404,7 @@ public class PlayerDetailScreenTable extends VisTable {
             currentPlayer.getPerson().getCountry().getId() != null) {
             String stateName = currentPlayer.getPerson().getState().getName();
             Long countryId = currentPlayer.getPerson().getCountry().getId();
-            regMod = RegionModifiersLoader.getModifier(stateName, countryId);
+            regMod = com.rndmodgames.futtoboru.system.DatabaseLoader.getRegionModifier(stateName, countryId);
             
             // Debug logging
             if (regMod == null) {
