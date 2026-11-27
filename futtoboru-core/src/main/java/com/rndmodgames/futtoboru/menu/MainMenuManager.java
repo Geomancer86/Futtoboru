@@ -105,6 +105,13 @@ public class MainMenuManager {
     public static int PREVIOUS_SCREEN = -1; //
     public static int BEFORE_MATCH_SCREEN = -1; //
     public static int CURRENT_SCREEN = HOME_SCREEN; // default to home screen
+
+    /** A new or loaded game opens on Home (the static screen ids above outlive one MainGameScreen). */
+    public static void resetNavigation() {
+        PREVIOUS_SCREEN = -1;
+        BEFORE_MATCH_SCREEN = -1;
+        CURRENT_SCREEN = HOME_SCREEN;
+    }
     
     // Current negotiation offer (v1.0)
     private com.rndmodgames.futtoboru.data.jobs.JobOffer currentNegotiationOffer = null;
