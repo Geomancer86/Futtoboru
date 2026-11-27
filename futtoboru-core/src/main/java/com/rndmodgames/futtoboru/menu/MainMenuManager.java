@@ -176,6 +176,7 @@ public class MainMenuManager {
         
         // other windows
         homeScreenTable = new HomeScreenTable(game);
+        homeScreenTable.setMenuManager(this);
         personDetailsScreenTable = new PersonDetailsScreenTable(game);
         authorityScreenTable = new AuthorityScreenTable(game);
         inboxScreenTable = new InboxScreenTable(game);
@@ -344,7 +345,8 @@ public class MainMenuManager {
 
         //
         case HOME_SCREEN:
-            parentTable.add(homeScreenTable);
+            homeScreenTable.updateDynamicComponents();
+            parentTable.add(homeScreenTable).grow();
             break;
             
         // 
@@ -839,6 +841,10 @@ public class MainMenuManager {
         
         switch(CURRENT_SCREEN) {
         
+        case HOME_SCREEN:
+            homeScreenTable.updateDynamicComponents();
+            break;
+
         case MAIN_SQUAD_SCREEN:
             squadScreenTable.updateDynamicComponents();
             break;
