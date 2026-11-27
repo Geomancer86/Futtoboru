@@ -6,7 +6,7 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 | Id | Decision |
 |---|---|
 | D1 | Canonical WORKSTATION checkout: `G:\git\futtoboru` (fast-forwarded to develop). `G:\git\futtoboru_cursor\` is a read-only archive. |
-| D2 | No new repos. The 4 former local-only repos live in `docs/archive/` of this repo; the repo becomes **private**. |
+| D2 | No new repos. The 4 former local-only repos live in `docs/archive/` of this repo, which stays **public** (producer, 2026-11-27); the personal online-presence profile was left out. |
 | D3 | The 62 AI root docs moved to `docs/archive/2025-12-ai/`; short living docs replace them. |
 | D4 | `feature/competition-completion-v1`: re-apply code + tests on a clean branch, drop the junk. |
 | D5 | Match results come from an **event/possession simulation** (headless, seeded, testable). 2D only as a replay viewer later. |
@@ -19,7 +19,7 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 **Phase 0: consolidate git** (done 2026-11-27 except P0-4)
 - P0-1 archive the 4 local-only repos ✔ · P0-2 move root docs ✔ · P0-3 CLAUDE.md + HANDOFF/BUILD/ROADMAP/STATUS ✔
 - P0-4 competition-completion code + tests (D4) ✔
-- Producer: make the GitHub repo private, revoke the Sonar token in `Jenkinsfile` history, push the v0.4.0 release to `main`.
+- Sonar stage and its dead token removed from `Jenkinsfile` ✔ · Producer: push the v0.4.0 release to `main`.
 
 **Phase 1: builds anywhere** (2-3 days)
 - P1-1 Maven 3.9 build fix ✔ · P1-2 `mvnw`, `.sh` scripts, `.gitattributes` · P1-3 GitHub Actions `mvn verify` · P1-4 dead 3D code, unused deps, PDFs out of resources · P1-5 one logging style

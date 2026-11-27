@@ -19,4 +19,4 @@ Each import kept its git history (`git log -- docs/archive/<folder>`).
 - Cost estimates, ROI figures, "partnership" proposals and success probabilities are invented.
 - Decade essays contain wrong facts (e.g. Napoli credited with the 1989 title; several founding dates) and invented future events.
 - Cup-club rosters in `pm-research/` are worse than the ones the game ships; Burnley's are padded with placeholder players.
-- `marketing/analytics/ONLINE_PRESENCE_ANALYSIS_2025.md` profiles personal accounts: keep this repo private.
+- The repo is public: `ONLINE_PRESENCE_ANALYSIS_2025.md` (a personal-accounts profile) was deliberately not imported; it stays only in the local folder `futtoboru_mkt` on WORKSTATION.

@@ -70,7 +70,7 @@ footer{color:var(--muted);font:.85rem system-ui,sans-serif;padding:40px 24px 60p
 
 <main class="wrap">
 
-<div class="callout ok" style="margin-top:28px"><b>Decisions taken 27 Nov 2026:</b> D1 fast-forward <code>G:\git\futtoboru</code> (done) · D2 no new repos: all 4 local-only repos imported with history into <code>docs/archive/</code>, Futtoboru repo goes <b>private</b> · D3 root docs moved to <code>docs/archive/2025-12-ai/</code> · D4 competition-completion code re-applied cleanly · D5 event/possession engine · D6 key events · D7 <b>fully era-accurate</b> 1888 rules (engine phase now 3–5 weeks) · D8 both machines <b>equal</b> · D9 light coordination (<code>docs/HANDOFF.md</code> + CI). Living plan: <code>docs/ROADMAP.md</code>.</div>
+<div class="callout ok" style="margin-top:28px"><b>Decisions taken 27 Nov 2026:</b> D1 fast-forward <code>G:\git\futtoboru</code> (done) · D2 no new repos: all 4 local-only repos imported with history into <code>docs/archive/</code>, repo stays <b>public</b> (personal-accounts profile left out) · D3 root docs moved to <code>docs/archive/2025-12-ai/</code> · D4 competition-completion code re-applied cleanly · D5 event/possession engine · D6 key events · D7 <b>fully era-accurate</b> 1888 rules (engine phase now 3–5 weeks) · D8 both machines <b>equal</b> · D9 light coordination (<code>docs/HANDOFF.md</code> + CI). Living plan: <code>docs/ROADMAP.md</code>.</div>
 <h2 id="tldr">Summary</h2>
 <div class="grid g4">
   <div class="card stat"><b>1</b><span>real codebase: <code>G:\git\futtoboru_cursor\futtoboru</code> (develop, v0.4.0, 46k Java lines)</span></div>
@@ -250,7 +250,7 @@ git config core.autocrlf true        # until a .gitattributes is committed
 mvn -DskipTests package
 java -jar futtoboru-desktop\target\futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar
 
-# 3. The formerly local-only docs come with the clone: docs/archive/ (repo is private)
+# 3. The formerly local-only docs come with the clone: docs/archive/
 
 # 4. Daily routine on either machine
 git fetch origin ; git switch develop ; git pull

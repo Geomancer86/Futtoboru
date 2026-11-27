@@ -3,7 +3,7 @@
 ## Requirements
 - JDK 17 or newer (Temurin 17 recommended; 21 also works).
 - Maven 3.6+ (3.9 works since 2026-11-27; the old hard-coded `C:\apache-maven-3.6.3` in `build.bat` is no longer needed).
-- Git with Git Credential Manager. The GitHub repo is **private**: the first clone or fetch opens a browser login.
+- Git with Git Credential Manager (needed to push; cloning the public repo needs no login).
 
 ## Build and run
 ```
