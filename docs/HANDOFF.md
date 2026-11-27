@@ -6,7 +6,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
-| P1-5 one logging style | WORKSTATION | `ws/P1-5-logging` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -21,9 +20,10 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 - **P2-2** single match-result path · **P2-6** season rollover resets the table · **P2-7** £ not $, cup final from the bracket.
 - **U-03a** UI scaling (`mods/resolutions.txt` is free again).
 
-**Next up:** P1-5 one logging style (no lock now). Duplicate 1888-89 editions (see the P2-3 log line; needs the `RuntimeIdsTests` line ~130 change, BOOK3PRO's test).
+**Next up:** Phase 3 continues (U-03 scaling, U-04 navigation, U-05 guide; save dialogs to tokens). Duplicate 1888-89 editions (see the P2-3 log line; needs the `RuntimeIdsTests` line ~130 change, BOOK3PRO's test).
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · P1-5 · One style: `system/Log` facade (`Log.info/debug/warn(category[, tag], msg)`, `Log.error(..., Throwable)`, `addErrorListener`) over the existing Debug Logging category switches; ~1,200 call sites converted (println, printStackTrace, Gdx.app.*, DebugLogManager.*); each line now prints once. `LoggingStyleGuardTest` blocks new println/printStackTrace/Gdx.app.log (allow-list: `Log`, `DesktopLauncher`). `FullSeasonTests` listens for errors via the facade. Jenkins #78 green (132 core, 1 skipped + 1 desktop). **Use `Log.*` in new code.**
 - 2026-11-27 · WORKSTATION · CLAIM · P1-5 · Touches many files (log calls only). BOOK3PRO: if you start something, prefer files outside `engine/**`, `system/**` for the next hour or expect trivial log-line conflicts.
 - 2026-11-27 · WORKSTATION · DONE · P2-3 · Merged with develop (P2-5, P2-8 included); Jenkins #76 green: 130 core (1 skipped = the documented duplicate-edition assertion) + 1 desktop. A full seeded 1888-89 season now plays headless through the real wiring in every `verify`. **BOOK3PRO:** the duplicate-edition fix is yours to take if you like (it changes your `RuntimeIdsTests` expectation); then un-@Disable `FullSeasonTests.oneEditionPerCompetitionAndSeason`.
 - 2026-11-27 · WORKSTATION · HANDOVER · P2-3 · Branch `ws/P2-3-season-test` ready to merge (not merged). `engine/FullSeasonTests` (@Tag season, in `verify`, ~11 s for two seeded runs) plays 1888-89 from a new game with the real data the way the UI does (Continue, Match Result, reads every mandatory draw) to the 1889-90 rollover (280 days) and checks 132 fixtures once, W+D+L=P, 2-1-0 points, GF=GA, sorted table, champion/cup winner/runner-up, Golden Boot, prizes once, final table kept + new table zero, no logged errors, same seed = same season. Fixed (one commit + test each): later-season cup draw dropped as duplicate -> game blocked forever; next cup edition staged on 1 Jan / ad hoc 12-club "FA Cup 1889"; non-participants sold tickets for cup ties (+ daily error); bracket of any size (12 clubs: byes); Golden Boot per season and scorer actually found. **Not fixed (needs a change in `system/data/RuntimeIdsTests`, P2-5 area):** `ScriptsManager.createCup/createLeague` add a second 1888-89 edition next to the season.json one (never drawn or finished); the fix is to reuse the season's data edition (editions are saved as game objects since P2-5), and `RuntimeIdsTests` line ~130 must then expect `fa-cup-1888-89` instead of a script-made edition. Disabled assertion `FullSeasonTests.oneEditionPerCompetitionAndSeason` documents it. Also noted: the generated league runs Apr 1888-Jan 1889 (fixtures start at the game start date) and the FA Cup in May-Jul 1888.
