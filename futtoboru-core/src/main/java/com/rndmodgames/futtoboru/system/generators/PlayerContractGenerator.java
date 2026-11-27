@@ -11,6 +11,7 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
+import com.rndmodgames.futtoboru.system.data.IdAllocator;
 
 /**
  * Player Contract Generator v1.0
@@ -34,9 +35,11 @@ public class PlayerContractGenerator {
      * @param player The player to generate a contract for
      * @param club The club the player belongs to
      * @param contractStartDate When the contract starts (typically season start)
+     * @param ids gives the contract its runtime id (the data allocator at load, the game's during play)
      * @return A new PlayerContract with random terms
      */
-    public static PlayerContract generateRandomContract(Player player, Club club, LocalDateTime contractStartDate) {
+    public static PlayerContract generateRandomContract(Player player, Club club, LocalDateTime contractStartDate,
+            IdAllocator ids) {
         if (player == null || club == null || contractStartDate == null) {
             DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: player=" + (player != null) + 
                 ", club=" + (club != null) + ", date=" + (contractStartDate != null));
@@ -49,8 +52,8 @@ public class PlayerContractGenerator {
         
         PlayerContract contract = new PlayerContract();
         
-        // Generate unique contract ID (negative for generated contracts)
-        contract.setId(-(System.currentTimeMillis() % 1000000) - DatabaseLoader.RNG.nextInt(10000));
+        // Runtime id from the allocator (P2-4)
+        contract.setId(ids.nextId());
         
         // Set player and club IDs
         Long playerIdToUse = null;

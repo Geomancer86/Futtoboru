@@ -35,37 +35,36 @@ KINDS = ["continent", "country", "profession", "occupation", "competition", "clu
 # ref:<kind>, refs:<kind>, enum:<name>, list:<record spec name>
 ENUMS = {"confidence": CONFIDENCE, "occupation_category": OCCUPATION_CATEGORIES, "competition_type": COMPETITION_TYPES}
 SPECS = {
-    "continent": {"id": ("str", True), "legacyId": ("int", False), "name": ("str", True)},
-    "country": {"id": ("str", True), "legacyId": ("int", False), "name": ("str", True), "formalName": ("str", False),
+    "continent": {"id": ("str", True), "name": ("str", True)},
+    "country": {"id": ("str", True), "name": ("str", True), "formalName": ("str", False),
                 "continent": ("ref:continent", True), "selectableByDefault": ("bool", False)},
-    "profession": {"id": ("str", True), "legacyId": ("int", False), "name": ("str", True),
-                   "playerSelectable": ("bool", True)},
-    "occupation": {"id": ("str", True), "legacyId": ("int", False), "name": ("str", True),
+    "profession": {"id": ("str", True), "name": ("str", True), "playerSelectable": ("bool", True)},
+    "occupation": {"id": ("str", True), "name": ("str", True),
                    "category": ("enum:occupation_category", True), "bonuses": ("attrs", True), "notes": ("str", False)},
     "names": {"country": ("ref:country", True), "firstNames": ("strs", True), "lastNames": ("strs", True)},
-    "competition": {"id": ("str", True), "legacyId": ("int", False), "name": ("str", True), "longName": ("str", False),
+    "competition": {"id": ("str", True), "name": ("str", True), "longName": ("str", False),
                     "type": ("enum:competition_type", True), "sources": ("strs", True), "notes": ("str", False)},
-    "club": {"id": ("str", True), "legacyId": ("int", False), "name": ("str", True), "fullName": ("str", False),
+    "club": {"id": ("str", True), "name": ("str", True), "fullName": ("str", False),
              "founded": ("int", False), "country": ("ref:country", True), "sources": ("strs", True),
              "notes": ("str", False)},
-    "ground": {"id": ("str", True), "legacyId": ("int", False), "name": ("str", True), "opened": ("int", False),
+    "ground": {"id": ("str", True), "name": ("str", True), "opened": ("int", False),
                "capacity": ("int", False), "value": ("num", False), "description": ("str", False),
                "landValue": ("num", False), "ownedByClub": ("bool", False), "annualRent": ("num", False),
                "sources": ("strs", True), "notes": ("str", False)},
     "person": {"id": ("str", True), "firstName": ("str", True), "lastName": ("str", True), "born": ("date", True),
                "country": ("ref:country", True), "confidence": ("enum:confidence", True), "sources": ("strs", True),
-               "legacyIds": ("strs", False), "notes": ("str", False)},
-    "season": {"id": ("str", True), "legacyId": ("int", False), "name": ("str", True), "description": ("str", False),
+               "notes": ("str", False)},
+    "season": {"id": ("str", True), "name": ("str", True), "description": ("str", False),
                "start": ("datetime", True), "sources": ("strs", True), "countries": ("refs:country", True),
                "editions": ("list:edition", True)},
-    "edition": {"id": ("str", True), "legacyId": ("int", False), "competition": ("ref:competition", True),
+    "edition": {"id": ("str", True), "competition": ("ref:competition", True),
                 "name": ("str", True), "participants": ("refs:club", True), "sources": ("strs", True),
                 "notes": ("str", False)},
     "squad": {"club": ("ref:club", True), "ground": ("ref:ground", False), "balance": ("num", False),
               "players": ("refs:person", True), "notes": ("str", False)},
     "nationality_modifier": {"country": ("ref:country", True), "modifiers": ("attrs", True), "notes": ("str", False),
                              "footballingStrength": ("num", False)},
-    "region": {"id": ("str", True), "legacyId": ("int", False), "name": ("str", True), "country": ("ref:country", True),
+    "region": {"id": ("str", True), "name": ("str", True), "country": ("ref:country", True),
                "modifiers": ("attrs", True), "places": ("strs", False), "notes": ("str", False)},
     "pack": {"id": ("str", True), "name": ("str", True), "version": ("int", True), "dataVersion": ("int", True),
              "seasons": ("strs", True), "files": ("strs", True)},
@@ -171,7 +170,6 @@ def load_json(path: Path, rep: Report, where: str):
 def validate(root: Path = DEFAULT_ROOT) -> Report:
     rep = Report()
     ids: dict[str, dict[str, str]] = {k: {} for k in KINDS}   # kind -> lower id -> where
-    legacy: dict[str, dict[int, str]] = defaultdict(dict)
     refs: list[tuple[str, str, str]] = []
     aliases: dict[str, dict[str, str]] = {k: {} for k in KINDS}
     seasons: dict[str, dict] = {}
@@ -196,11 +194,6 @@ def validate(root: Path = DEFAULT_ROOT) -> Report:
             rep.error(where, f"duplicate {kind} id `{rid}` (also {ids[kind][low]})")
         else:
             ids[kind][low] = where
-        lid = rec.get("legacyId")
-        if isinstance(lid, int):
-            if lid in legacy[kind]:
-                rep.error(where, f"duplicate {kind} legacyId {lid} (also {legacy[kind][lid]})")
-            legacy[kind][lid] = where
 
     for pack in packs:
         pdir = root / pack

@@ -14,7 +14,8 @@ _Last updated 2026-11-27 (WORKSTATION)._ Version 0.4.0-SNAPSHOT.
 | Contracts | partial | generated only; no expiry or transfers |
 | New season | partial | generated when the league completes; no re-election vote yet |
 | Save / load | partial | single slot; load path probably broken; no version (P2-5) |
-| Game data | converting | JSON pack + validator ready (P2-4 slice 1); game still reads `mods/*.txt` until slice 2. Review list: `docs/data/REVIEW_1888-89.md` |
+| Game data | working | JSON packs in `gamedata/` with stable string ids, strict loader + `tools/data/validate.py` (P2-4). Data still unverified: review list `docs/data/REVIEW_1888-89.md` (copied cup rosters) |
+| Runtime ids | working | one saved `IdAllocator`; no clock/random/negative/null ids (P2-4) |
 | New season table | broken | points are never reset (P2-6) |
 | Tactics, Training, Transfers, Scouting, Staff, Board | stub | empty screens |
 

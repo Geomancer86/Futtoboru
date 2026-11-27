@@ -20,6 +20,10 @@ public class Club implements Serializable {
     private static final long serialVersionUID = -2626184195364944334L;
 
     private Long id;
+
+
+    // stable data id from the game data (P2-4, D11); null for objects made during play
+    private String dataId;
     
     /**
      * Club Official Names
@@ -608,5 +612,13 @@ public class Club implements Serializable {
     @Override
     public String toString() {
         return name;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
     }
 }

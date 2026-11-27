@@ -29,12 +29,20 @@ public class LeagueFixtureGenerator {
     private static final int DAYS_BETWEEN_MATCHDAYS = 7; // One match per week
     
     private SaveGame currentGame;
-    private long nextMatchId;
+    private final Futtoboru gameInstance;
     
     public LeagueFixtureGenerator(Futtoboru gameInstance) {
+        this.gameInstance = gameInstance;
         this.currentGame = gameInstance.getCurrentGame();
-        // Initialize match ID counter (use negative range to avoid conflicts)
-        this.nextMatchId = -1000000L;
+    }
+    
+    /**
+     * Match ids come from the game's allocator (P2-4), read fresh in case the game was replaced
+     */
+    private long nextMatchId() {
+        SaveGame game = gameInstance != null && gameInstance.getCurrentGame() != null
+                ? gameInstance.getCurrentGame() : currentGame;
+        return game.getIdAllocator().nextId();
     }
     
     /**
@@ -338,7 +346,7 @@ public class LeagueFixtureGenerator {
                 }
                 
                 Match match = new Match();
-                match.setId(nextMatchId++);
+                match.setId(nextMatchId());
                 match.setMatchType(Match.LEAGUE_MATCH);
                 match.setIsProposed(false);
                 match.setIsAccepted(true); // League matches are automatically accepted
@@ -396,7 +404,7 @@ public class LeagueFixtureGenerator {
             
             // Create return fixture by swapping home and away
             Match returnMatch = new Match();
-            returnMatch.setId(nextMatchId++);
+            returnMatch.setId(nextMatchId());
             returnMatch.setMatchType(Match.LEAGUE_MATCH);
             returnMatch.setIsProposed(false);
             returnMatch.setIsAccepted(true);

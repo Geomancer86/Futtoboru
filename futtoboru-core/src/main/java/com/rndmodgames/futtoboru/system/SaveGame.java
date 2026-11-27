@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.data.jobs.JobApplication;
 import com.rndmodgames.futtoboru.data.jobs.JobOffer;
 import com.rndmodgames.futtoboru.data.jobs.JobOpening;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
+import com.rndmodgames.futtoboru.system.data.IdAllocator;
 
 /**
  * Save Game v1
@@ -151,6 +152,11 @@ public class SaveGame implements Serializable {
     private List<PlayerAttributeSnapshot> playerAttributeSnapshots = new ArrayList<>();
     
     /**
+     * Runtime ids of every object made during play (P2-4): starts at IdAllocator.GAME_START, saved with the game
+     */
+    private IdAllocator idAllocator = new IdAllocator(IdAllocator.GAME_START);
+    
+    /**
      * Proposed Matches
      */
     
@@ -208,6 +214,29 @@ public class SaveGame implements Serializable {
     }
     
     //
+    /**
+     * @return the allocator for runtime ids of objects made during play (never null)
+     */
+    public IdAllocator getIdAllocator() {
+        if (idAllocator == null) {
+            idAllocator = new IdAllocator(IdAllocator.GAME_START);
+        }
+        return idAllocator;
+    }
+
+    public void setIdAllocator(IdAllocator idAllocator) {
+        this.idAllocator = idAllocator;
+    }
+
+    /**
+     * Gives a person made during play (the manager, generated people) a runtime id if it has none
+     */
+    public void assignId(Person person) {
+        if (person != null && person.getId() == null) {
+            person.setId(getIdAllocator().nextId());
+        }
+    }
+
     public Person getOwner() {
         return owner;
     }

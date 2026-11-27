@@ -33,6 +33,20 @@ public class Profession implements Serializable {
     private static final long serialVersionUID = 2807063764098520646L;
 
     private Long id;
+
+
+    // Data ids of the professions code depends on (professions.json); compare with is(...), never by runtime id
+    public static final String PLAYER = "player";
+    public static final String RETIRED_PLAYER = "retired-player";
+    public static final String MANAGER = "manager";
+    public static final String DIRECTOR = "director";
+    public static final String SCOUT = "scout";
+    public static final String AGENT = "agent";
+    public static final String INVESTOR = "investor";
+    public static final String CLUB_OWNER = "club-owner";
+
+    // stable data id from the game data (P2-4, D11); null for objects made during play
+    private String dataId;
     private String name;
     private String description;
     private Boolean playerSelectable;
@@ -77,5 +91,18 @@ public class Profession implements Serializable {
     @Override
     public String toString() {
         return name;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
+    }
+
+    /** @return true when this is the profession with that data id (e.g. {@link #MANAGER}) */
+    public boolean is(String professionDataId) {
+        return professionDataId != null && professionDataId.equals(dataId);
     }
 }

@@ -354,7 +354,7 @@ public class CupBracketManager {
         
         // Create replay match - swap home/away (replay at away team's venue)
         Match replayMatch = new Match();
-        replayMatch.setId(System.currentTimeMillis() + originalMatch.getId() + 1000000); // Unique ID
+        replayMatch.setId(currentGame.getIdAllocator().nextId()); // runtime id from the game (P2-4)
         
         // Swap home/away for replay
         replayMatch.setHomeClubId(originalMatch.getAwayClubId());

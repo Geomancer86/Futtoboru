@@ -628,7 +628,7 @@ public class MatchEngineDebugScreen implements Screen {
         // If no seasons found, create a placeholder
         if (seasons.isEmpty()) {
             Season placeholder = new Season();
-            placeholder.setId(18L);
+            placeholder.setDataId("1888-89");
             placeholder.setName("1888-1889 Season");
             seasons.add(placeholder);
             Gdx.app.log("MatchEngineDebug", "Using placeholder season");

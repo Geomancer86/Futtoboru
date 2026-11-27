@@ -140,6 +140,11 @@ public class PersonGenerator {
          * TODO: DEBUG/log: pretty print person data
          */
         
+        // Runtime id from the game's allocator (P2-4); a person made outside a game gets one when it joins
+        if (game != null && game.getCurrentGame() != null) {
+            game.getCurrentGame().assignId(person);
+        }
+        
         return person;
     }
 }

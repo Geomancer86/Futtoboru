@@ -272,7 +272,7 @@ public class MainMenuManager {
     public void setDynamicButtonsMenu() {
        
         // if UNEMPLOYED/RETIRED
-        if (currentGame.getOwner().getPrimaryProfession().getId().equals(2L)) {
+        if (currentGame.getOwner().getPrimaryProfession().is(com.rndmodgames.futtoboru.data.Profession.RETIRED_PLAYER)) {
             
             // Home
             buttonsMenu.add(homeButton).fill();
@@ -315,7 +315,7 @@ public class MainMenuManager {
          *      - Board
          *      - Staff
          */
-        if (currentGame.getOwner().getPrimaryProfession().getId().equals(3L)) {
+        if (currentGame.getOwner().getPrimaryProfession().is(com.rndmodgames.futtoboru.data.Profession.MANAGER)) {
             
             // Home
             buttonsMenu.add(homeButton).fill();

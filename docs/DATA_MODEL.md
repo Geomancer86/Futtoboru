@@ -35,7 +35,7 @@ What changes from season to season (ground, balance, squad) lives in the season 
   reused. Data records carry their `dataId`; generated people, contracts, matches, messages and jobs get only a
   runtime id. No more `currentTimeMillis`, `null` or negative ids.
 - **Saves** (slice 3) store data ids for data and runtime ids for game objects, never copies of records, plus
-  a `saveVersion`. `legacyId` / `legacyIds` in the JSON exist only for the switch and go away after it.
+  a `saveVersion`. The `legacyId` / `legacyIds` fields used for the switch are gone (slice 2).
 
 ## Quality: confidence and sources
 Every person has `confidence`: `unverified` (typed by hand from the cited pages, may have errors; the default),
@@ -47,7 +47,7 @@ each other (Sheffield Wednesday / Heeley, Sunderland Albion / Notts Rangers / Wa
 ## Validation (run on every data change)
 ```
 python tools/data/validate.py          # errors block, warnings feed the review
-python -m pytest tools/data            # validator tests + "JSON matches the legacy files"
+python -m pytest tools/data            # validator tests
 ```
 Errors: invalid JSON, an **unknown field** (catches typos), a missing field, a bad id or date, a duplicate id or
 legacy id, a reference that doesn't resolve (after aliases), an alias that points nowhere or shadows a live id,
@@ -65,6 +65,22 @@ Warnings: a person in several squads, a squad under 11, no first name, an age ou
    round-trip test and a fixture save kept for future migrations.
 4. **Data review** (WORKSTATION lane): work through the review list, rebuild the copied cup rosters from
    sources, mark checked people `verified`.
+
+### How slice 2 is built (notes where the code differs from the plan above)
+- `system/data/GameData` reads the packs from the classpath (`gamedata/`) with the rules of `validate.py`; a
+  broken record is skipped and reported in a `DataReport` (logged at startup), never a crash. An unresolved
+  entry of a *list* of references (a squad player, an edition participant) is dropped from the list instead of
+  skipping the whole squad or season. "Present but not listed" is checked only when the folder can be listed
+  (not inside the jar); `validate.py` stays the full check.
+- Runtime ids: data records get theirs in load order (pack, file, record) from 1; objects built at load from the
+  data (players' random contracts, the copies below, the IFAB, nationality modifiers) continue that range, so
+  every data-side id is below 1 000 000. The game's `IdAllocator` lives in `SaveGame` and starts at 1 000 000.
+  A `Player` keeps the id of its `Person` (it is the person's football role, not a second object).
+- A person listed in several squads of a season (the copied rosters) still plays for each: the first squad gets
+  the canonical `Person`, later squads a runtime copy with the same `dataId`; lookups by data id return the
+  canonical one. Slice 4 fixes the data.
+- League founders and cup entrants come from the editions in `season.json`; code compares professions by data id
+  (`Profession.MANAGER`...), never by number.
 
 ## Rename log
 | Date | Kind | Old id | New id | Why | Approved by |

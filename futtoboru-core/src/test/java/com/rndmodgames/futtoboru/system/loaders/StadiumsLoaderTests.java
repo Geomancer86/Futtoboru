@@ -46,14 +46,15 @@ class StadiumsLoaderTests {
         /**
          * Iterate all clubs and make sure all stadiums are there
          */
-        Country england = DatabaseLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryByDataId("england");
         
         List<Club> allClubs = dbLoader.getClubsByCountry(england);
         
         for (Club club : allClubs) {
             
-            // TODO: 20+ teams are missing their stadium file
-//            assertNotNull(club.getStadium());
+            // every squad in squads.json names its ground (P2-4)
+            assertNotNull(club.getStadium(), club.getName() + " has no ground");
+            assertNotNull(club.getStadium().getDataId());
         }
         
         System.out.println("All " + allClubs.size() + " Clubs Have a Stadium File.");

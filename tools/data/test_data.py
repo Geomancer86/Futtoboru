@@ -1,7 +1,6 @@
 """Tests for the game data (P2-4). Run: python -m pytest tools/data"""
 import json
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 
@@ -17,15 +16,6 @@ ROOT = validate.DEFAULT_ROOT
 def test_shipped_data_has_no_errors():
     rep = validate.validate(ROOT)
     assert rep.errors == []
-
-
-def test_json_matches_legacy_files():
-    """Until the Java loaders switch (slice 2), the JSON is generated from mods/*.txt: they must not drift."""
-    legacy = ROOT.parent / "mods" / "seasons" / "18"
-    if not legacy.exists():
-        pytest.skip("legacy files retired; the JSON is the only copy")
-    r = subprocess.run([sys.executable, "-I", str(HERE / "convert_legacy.py"), "--check"], capture_output=True, text=True)
-    assert r.returncode == 0, r.stdout + r.stderr
 
 
 def test_every_person_is_in_a_squad_and_ids_are_unique():
@@ -66,7 +56,7 @@ def test_dangling_reference_is_an_error(pack):
 
 def test_duplicate_id_is_an_error_ignoring_case(pack):
     def dup(d):
-        d.append(dict(d[0], id=d[0]["id"].upper(), legacyId=None))
+        d.append(dict(d[0], id=d[0]["id"].upper()))
     edit(pack / "core" / "clubs.json", dup)
     assert "duplicate club id" in errors(pack)
 

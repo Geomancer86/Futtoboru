@@ -23,6 +23,11 @@ public class NationalityModifier implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private Long id;
+
+    
+    // stable data id from the game data (P2-4, D11); null for objects made during play
+    
+    private String dataId;
     private Long countryId;
     private String countryName;
     
@@ -227,5 +232,13 @@ public class NationalityModifier implements Serializable {
 
     public void setFootbalingStrength(Integer footballingStrength) {
         this.footballingStrength = footballingStrength;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
     }
 }

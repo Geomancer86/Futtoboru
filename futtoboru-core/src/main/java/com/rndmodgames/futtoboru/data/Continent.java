@@ -12,6 +12,10 @@ public class Continent implements Serializable {
     private static final long serialVersionUID = -7414986916668198644L;
 
     private Long id;
+
+
+    // stable data id from the game data (P2-4, D11); null for objects made during play
+    private String dataId;
     private String name;
 
     public Long getId() {
@@ -33,5 +37,13 @@ public class Continent implements Serializable {
     @Override
     public String toString() {
         return name;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
     }
 }

@@ -13,25 +13,20 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
 |---|---|---|
-| BOOK3PRO | P2-4 slices 2-3 | `futtoboru-core/src/main/resources/gamedata/**`, `mods/**/*.txt`, `tools/data/**`, `system/loaders/**`, `system/DatabaseLoader.java`, `system/SaveLoadSystem.java`, `SaveGame.java`, `ScriptsLoader.java`, `ScriptsManager.java`, the `data/*` model classes (adding `dataId`), `PersonGenerator`, `PlayerContractGenerator`, `JobManager`/`MessageManager` id counters |
+| BOOK3PRO | P2-4 slice 3 = P2-5 saves v1 | `system/SaveLoadSystem.java`, `system/SaveGame.java`, `system/data/IdAllocator.java`, the save/load dialogs (`SaveGameDialog`, `LoadGameDialog`), `src/test/resources/saves/**` |
 
 ## Ready to take (from docs/ROADMAP.md)
-**Safe for WORKSTATION now (no overlap with the BOOK3PRO lock):**
-- **P1-2** Maven wrapper (`mvnw`) + `.sh` run scripts (extend the existing `.gitattributes`).
-- **P1-4** Remove dead 3D/Bullet demo code (`com/rndmodgames/graphics`, `scenes`, `org/microbasic`, `futtuboru2`, the `Bullet*` classes), unused deps (bullet, freetype, lwjgl3 in core, twitch4j, sonar plugin) and their assets; keep `match/engine/**`.
-- **P2-1** Continue double-click (`MainGameMenuTable`).
-- **E-00** Research the real 1888-89 Football League fixtures and results with sources (a list in a new `docs/data/` note; it becomes `seasons/1888-89/results.json` after slice 2).
-- **P2-4 slice 4 (research part)** Work `docs/data/REVIEW_1888-89.md`: find sources for the copied cup rosters, the cup entrants, the duplicates. Write findings into the review file; apply them to the JSON after slice 2 lands.
+**Safe for WORKSTATION now (game data and loaders are released since slice 2):**
+- **P2-4 slice 4** Data review: work `docs/data/REVIEW_1888-89.md` and edit the JSON in `gamedata/core/` directly (it is the only copy now; never change an id, use `aliases.json` + the rename log in `docs/DATA_MODEL.md`). Includes the copied cup rosters, Blackburn at Leamington Road in 1888-89 (new ground record), Notts County's two Castle Cricket Ground games. Run `python tools/data/validate.py` and `python -m pytest tools/data`.
+- **E-00b** `seasons/1888-89/results.json` from `docs/data/results_1888-89.csv` + `facup_1888-89.csv` (walkovers with no goals allowed; add the file to `pack.json` and a spec to `validate.py` and `GameData`).
+- **P2-0** One seeded random source (`RandomSource.fork()` per the engine design); `MatchSimulator` and `DatabaseLoader.RNG` are the last unseeded ones.
+- **P2-2** single match-result path · **P2-6** season rollover resets the table · **P2-7** £ not $, cup final from the bracket.
+- **U-03a** UI scaling (`mods/resolutions.txt` is free again).
 
-**Wait for BOOK3PRO's P2-4 slice 2 (they touch the locked files):** P2-0 determinism, P2-2 single result path, P2-5 saves, P2-6 season reset, P1-5 logging.
-- **P1-2** Maven wrapper (`mvnw`) + `.sh` run scripts + `.gitattributes`.
-- **P1-4** Remove dead 3D demo code and unused bullet deps (concept images/PDF already gone via SEC-01).
-- **P2-1** Fix Continue double-click advancing two days (`MainGameMenuTable`).
-- **P2-2** Merge the two match-result paths in `FuttoboruGameEngine`.
-- **P2-3** Headless test: simulate the full 1888-89 season end to end.
-- **P2-4 slice 4** Data review (WORKSTATION): `docs/data/REVIEW_1888-89.md`, rebuild the copied cup rosters. Edit the JSON only after slice 2 lands (until then the JSON is generated from `mods/*.txt`; edit the .txt and rerun `tools/data/convert_legacy.py`).
+**Wait for slice 3 (save files locked):** P1-5 logging (touches `SaveLoadSystem`). P2-3 seeded season test needs P2-0 first.
 
 ## Log
+- 2026-11-27 · BOOK3PRO · DONE · P2-4 slice 2 · Merged: the game reads `gamedata/` JSON (GameData, strict like validate.py, 0 errors / 57 warnings at startup), one `IdAllocator` (data ids < 1,000,000 <= game ids, saved in SaveGame), `dataId` on the models, league founders and cup entrants from `season.json`, legacy loaders + `mods/**/*.txt` data + converter deleted (kept: language bundles, resolutions.txt, states/argentina.txt). 64 tests green, startup OK. Visible changes: FA Cup entrants from data (Small Heath, Walsall, Heeley in; Bolton, Everton, Stoke out), league named "Football League". Lock narrowed to slice 3 (saves). Note: `./mvnw` could not download Maven 3.9.12 from this laptop's session; used installed Maven 3.9.16.
 - 2026-11-27 · WORKSTATION · NOTE · CI · Jenkins job "Futtoboru DEV" now runs the repo `Jenkinsfile` on agent `EXECUTOR_BACKUP` (BUILD_BRANCH parameter, polls develop every 15 min). Use it to check branches before merging.
 - 2026-11-27 · WORKSTATION · CLAIM · U-02a + U-04a, U-01a · Per `docs/design/UI_AUDIT.md`. UI files only; nothing in the BOOK3PRO lock.
 - 2026-11-27 · WORKSTATION · DONE · E-00 · `docs/data/results_1888-89.csv` (132/132 matches with attendance, 5 sources, majority rule) + `facup_1888-89.csv` (38 rows incl. replays/walkovers with empty goals) + `check_results_1888-89.py` (recomputed table = published table) + `RESULTS_1888-89.md` (discrepancies, calibration: 4.45 goals/game, home 59% / draw 17% / away 24%). **BOOK3PRO, for slice 2:** Blackburn played at Leamington Road in 1888-89 (Ewood Park from 1890; `grounds.json` only has `ewood-park`); Notts County played 2 home games at Castle Cricket Ground; the results.json converter must accept walkovers with no goals.

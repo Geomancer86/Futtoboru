@@ -257,7 +257,7 @@ public class ClubDetailScreenTable extends VisTable {
             
             for (Profession profession : allStaffPositions) {
                 // Skip Player and Retired Player (not staff positions)
-                if (profession.getId().equals(1L) || profession.getId().equals(2L)) {
+                if (profession.is(Profession.PLAYER) || profession.is(Profession.RETIRED_PLAYER)) {
                     continue;
                 }
                 

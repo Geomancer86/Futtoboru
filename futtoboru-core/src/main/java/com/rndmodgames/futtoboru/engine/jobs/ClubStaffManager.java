@@ -47,7 +47,7 @@ public class ClubStaffManager {
         
         // Find person in SaveGame
         for (Person person : currentGame.getAllPersons()) {
-            if (person.getId().equals(personId)) {
+            if (person != null && personId.equals(person.getId())) {
                 return person;
             }
         }
@@ -125,7 +125,7 @@ public class ClubStaffManager {
                 }
                 
                 // Skip Player and Retired Player (not staff positions)
-                if (profession.getId().equals(1L) || profession.getId().equals(2L)) {
+                if (profession.is(Profession.PLAYER) || profession.is(Profession.RETIRED_PLAYER)) {
                     continue;
                 }
                 

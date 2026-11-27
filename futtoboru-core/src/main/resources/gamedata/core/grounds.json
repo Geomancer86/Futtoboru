@@ -1,7 +1,6 @@
 [
   {
     "id": "deepdale",
-    "legacyId": 1,
     "name": "Deepdale",
     "opened": 1875,
     "capacity": 10000,
@@ -16,7 +15,6 @@
   },
   {
     "id": "wellington-road",
-    "legacyId": 2,
     "name": "Wellington Road",
     "opened": 1876,
     "capacity": 26849,
@@ -32,7 +30,6 @@
   },
   {
     "id": "dudley-road",
-    "legacyId": 3,
     "name": "Dudley Road",
     "opened": 1881,
     "capacity": 10000,
@@ -48,7 +45,6 @@
   },
   {
     "id": "ewood-park",
-    "legacyId": 4,
     "name": "Ewood Park",
     "opened": 1882,
     "capacity": 12000,
@@ -64,7 +60,6 @@
   },
   {
     "id": "pikes-lane",
-    "legacyId": 5,
     "name": "Pike's Lane",
     "opened": 1880,
     "capacity": 20000,
@@ -80,7 +75,6 @@
   },
   {
     "id": "stoney-lane",
-    "legacyId": 6,
     "name": "Stoney Lane",
     "opened": 1885,
     "capacity": 20000,
@@ -96,7 +90,6 @@
   },
   {
     "id": "thorneyholme-road",
-    "legacyId": 7,
     "name": "Thorneyholme Road",
     "opened": 1878,
     "capacity": 10000,
@@ -112,7 +105,6 @@
   },
   {
     "id": "anfield",
-    "legacyId": 8,
     "name": "Anfield",
     "opened": 1884,
     "capacity": 20000,
@@ -129,7 +121,6 @@
   },
   {
     "id": "turf-moor",
-    "legacyId": 9,
     "name": "Turf Moor",
     "opened": 1883,
     "capacity": 12000,
@@ -145,7 +136,6 @@
   },
   {
     "id": "racecourse-ground",
-    "legacyId": 10,
     "name": "Racecourse Ground",
     "opened": 1863,
     "capacity": 12000,
@@ -161,7 +151,6 @@
   },
   {
     "id": "trent-bridge",
-    "legacyId": 11,
     "name": "Trent Bridge",
     "opened": 1883,
     "capacity": 15000,
@@ -177,7 +166,6 @@
   },
   {
     "id": "victoria-ground",
-    "legacyId": 12,
     "name": "Victoria Ground",
     "opened": 1878,
     "capacity": 5000,
@@ -193,7 +181,6 @@
   },
   {
     "id": "vincent-square",
-    "legacyId": 13,
     "name": "Vincent Square",
     "opened": 1850,
     "capacity": 2000,
@@ -209,7 +196,6 @@
   },
   {
     "id": "dolphin-ground",
-    "legacyId": 14,
     "name": "Dolphin Ground",
     "opened": 1870,
     "capacity": 2000,
@@ -225,7 +211,6 @@
   },
   {
     "id": "brighton-college-grounds",
-    "legacyId": 15,
     "name": "Brighton College Grounds",
     "opened": 1845,
     "capacity": 1000,
@@ -241,7 +226,6 @@
   },
   {
     "id": "racecourse-ground-wrexham",
-    "legacyId": 16,
     "name": "Racecourse Ground",
     "opened": 1864,
     "capacity": 5000,
@@ -256,7 +240,6 @@
   },
   {
     "id": "gregory-ground",
-    "legacyId": 17,
     "name": "Gregory Ground",
     "opened": 1882,
     "capacity": 5000,
@@ -271,7 +254,6 @@
   },
   {
     "id": "ulsterville-avenue",
-    "legacyId": 18,
     "name": "Ulsterville Avenue",
     "opened": 1886,
     "capacity": 2000,
@@ -286,7 +268,6 @@
   },
   {
     "id": "archway-ground",
-    "legacyId": 19,
     "name": "Archway Ground",
     "opened": 1887,
     "capacity": 1000,
@@ -301,7 +282,6 @@
   },
   {
     "id": "hawthorne-road",
-    "legacyId": 20,
     "name": "Hawthorne Road",
     "opened": 1880,
     "capacity": 5000,
@@ -317,7 +297,6 @@
   },
   {
     "id": "maidstone-road-ground",
-    "legacyId": 21,
     "name": "Maidstone Road Ground",
     "opened": 1882,
     "capacity": 2000,
@@ -333,7 +312,6 @@
   },
   {
     "id": "south-shore-ground",
-    "legacyId": 22,
     "name": "South Shore Ground",
     "opened": 1879,
     "capacity": 2000,
@@ -349,7 +327,6 @@
   },
   {
     "id": "abbey-park",
-    "legacyId": 23,
     "name": "Abbey Park",
     "opened": 1880,
     "capacity": 10000,
@@ -364,7 +341,6 @@
   },
   {
     "id": "blue-house-field",
-    "legacyId": 24,
     "name": "Blue House Field",
     "opened": 1888,
     "capacity": 5000,
@@ -380,7 +356,6 @@
   },
   {
     "id": "halliwell-road-ground",
-    "legacyId": 25,
     "name": "Halliwell Road Ground",
     "opened": 1877,
     "capacity": 3000,
@@ -396,7 +371,6 @@
   },
   {
     "id": "alexandra-recreation-ground",
-    "legacyId": 26,
     "name": "Alexandra Recreation Ground",
     "opened": 1877,
     "capacity": 5000,
@@ -412,7 +386,6 @@
   },
   {
     "id": "charterhouse-school-grounds",
-    "legacyId": 27,
     "name": "Charterhouse School Grounds",
     "opened": 1872,
     "capacity": 2000,
@@ -428,7 +401,6 @@
   },
   {
     "id": "derby-junction-ground",
-    "legacyId": 28,
     "name": "Derby Junction Ground",
     "opened": 1870,
     "capacity": 2000,
@@ -443,7 +415,6 @@
   },
   {
     "id": "castle-ground",
-    "legacyId": 29,
     "name": "Castle Ground",
     "opened": 1868,
     "capacity": 3000,
@@ -459,7 +430,6 @@
   },
   {
     "id": "olive-grove",
-    "legacyId": 30,
     "name": "Olive Grove",
     "opened": 1887,
     "capacity": 10000,
@@ -474,7 +444,6 @@
   },
   {
     "id": "cape-hill",
-    "legacyId": 31,
     "name": "Cape Hill",
     "opened": 1875,
     "capacity": 5000,
@@ -490,7 +459,6 @@
   },
   {
     "id": "recreation-ground",
-    "legacyId": 32,
     "name": "Recreation Ground",
     "opened": 1881,
     "capacity": 2000,
@@ -506,7 +474,6 @@
   },
   {
     "id": "muntz-street",
-    "legacyId": 33,
     "name": "Muntz Street",
     "opened": 1877,
     "capacity": 10000,
@@ -521,7 +488,6 @@
   },
   {
     "id": "chuckery-ground",
-    "legacyId": 34,
     "name": "Chuckery Ground",
     "opened": 1888,
     "capacity": 5000,
@@ -536,7 +502,6 @@
   },
   {
     "id": "heeley-ground",
-    "legacyId": 35,
     "name": "Heeley Ground",
     "opened": 1862,
     "capacity": 2000,

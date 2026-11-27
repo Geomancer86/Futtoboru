@@ -28,7 +28,7 @@ public class CompetitionSchedulerTests extends BaseTest {
         assertNotNull(dbLoader.getSeasons().get(0).getSeasonScripts());
         
         // Base Country
-        Country england = DatabaseLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryByDataId("england");
         
         // Initialize savegame
         BaseTestTools tools = new BaseTestTools();
@@ -69,12 +69,12 @@ public class CompetitionSchedulerTests extends BaseTest {
          */
         
         // Base Country
-        Country england = DatabaseLoader.getCountryById(1000L);
+        Country england = DatabaseLoader.getCountryByDataId("england");
         
         assertNotNull(england);
         
         // Base Club
-        Club preston = DatabaseLoader.getClubById(1L);
+        Club preston = DatabaseLoader.getClubByDataId("preston-north-end");
         
         assertNotNull(preston);
         
