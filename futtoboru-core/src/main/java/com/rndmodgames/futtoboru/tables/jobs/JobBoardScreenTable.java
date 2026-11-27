@@ -24,6 +24,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Job Board Screen Table v1
@@ -107,12 +108,12 @@ public class JobBoardScreenTable extends VisTable {
         
         // Header
         jobsListTable.row();
-        jobsListTable.add(new VisLabel("Club")).width(200);
-        jobsListTable.add(new VisLabel("Position")).width(150);
-        jobsListTable.add(new VisLabel("Salary")).width(100);
-        jobsListTable.add(new VisLabel("Contract")).width(100);
-        jobsListTable.add(new VisLabel("Deadline")).width(150);
-        jobsListTable.add(new VisLabel("Action")).width(100);
+        jobsListTable.add(new VisLabel("Club")).width(UiTheme.size("col.wide"));
+        jobsListTable.add(new VisLabel("Position")).width(UiTheme.size("col.label"));
+        jobsListTable.add(new VisLabel("Salary")).width(UiTheme.size("col.number"));
+        jobsListTable.add(new VisLabel("Contract")).width(UiTheme.size("col.number"));
+        jobsListTable.add(new VisLabel("Deadline")).width(UiTheme.size("col.label"));
+        jobsListTable.add(new VisLabel("Action")).width(UiTheme.size("col.number"));
         jobsListTable.row();
         jobsListTable.addSeparator();
         
@@ -126,11 +127,11 @@ public class JobBoardScreenTable extends VisTable {
             }
             
             jobsListTable.row();
-            jobsListTable.add(new VisLabel(club.getName())).width(200);
-            jobsListTable.add(new VisLabel(profession.getName())).width(150);
-            jobsListTable.add(new VisLabel(Money.format(job.getSalary()))).width(100);
-            jobsListTable.add(new VisLabel(job.getContractLengthMonths() + " months")).width(100);
-            jobsListTable.add(new VisLabel(job.getApplicationDeadline().toString())).width(150);
+            jobsListTable.add(new VisLabel(club.getName())).width(UiTheme.size("col.wide"));
+            jobsListTable.add(new VisLabel(profession.getName())).width(UiTheme.size("col.label"));
+            jobsListTable.add(new VisLabel(Money.format(job.getSalary()))).width(UiTheme.size("col.number"));
+            jobsListTable.add(new VisLabel(job.getContractLengthMonths() + " months")).width(UiTheme.size("col.number"));
+            jobsListTable.add(new VisLabel(job.getApplicationDeadline().toString())).width(UiTheme.size("col.label"));
             
             // Apply button - Check if already applied
             final Long jobId = job.getId(); // Make final for inner class
@@ -276,7 +277,7 @@ public class JobBoardScreenTable extends VisTable {
             } // End if (!alreadyApplied)
             
             DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Listener added to button, now adding button to table...");
-            jobsListTable.add(applyButton).width(100);
+            jobsListTable.add(applyButton).width(UiTheme.size("col.number"));
             DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Button added to table successfully for job ID: " + jobId);
         }
         

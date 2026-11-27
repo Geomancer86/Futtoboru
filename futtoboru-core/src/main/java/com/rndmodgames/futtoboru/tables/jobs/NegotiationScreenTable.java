@@ -16,6 +16,7 @@ import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Negotiation Screen Table v1
@@ -98,11 +99,11 @@ public class NegotiationScreenTable extends VisTable {
         this.row();
         this.add(new VisLabel("New Salary:"));
         salaryField = new VisTextField(currentOffer.getSalary().toString());
-        this.add(salaryField).width(200);
+        this.add(salaryField).width(UiTheme.size("col.wide"));
         this.row();
         this.add(new VisLabel("New Contract Length (months):"));
         contractLengthField = new VisTextField(currentOffer.getContractLengthMonths().toString());
-        this.add(contractLengthField).width(200);
+        this.add(contractLengthField).width(UiTheme.size("col.wide"));
         this.row();
         this.addSeparator();
         
