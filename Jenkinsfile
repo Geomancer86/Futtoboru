@@ -1,65 +1,98 @@
+// Futtoboru CI on the local Jenkins (same pattern as DarkBlade: labelled agent, parameters, mvn + junit).
+// Mirrors .github/workflows/ci.yml so a ws/ or b3/ branch can be checked here before it is merged into develop.
+// Jenkins setup (once): a Pipeline job "FUTTOBORU" with "Pipeline script from SCM" -> this repo, script path "Jenkinsfile".
 pipeline {
-    agent any
 
-    environment {
-        customImage = null
+    agent {
+        label 'EXECUTOR_BACKUP'
+    }
+
+    parameters {
+        string(
+            name: 'BUILD_BRANCH',
+            defaultValue: 'develop',
+            description: 'Branch to build: develop, main, or a ws/... or b3/... branch before merging it'
+        )
+        booleanParam(
+            name: 'RUN_DATA_CHECKS',
+            defaultValue: true,
+            description: 'Run pytest tools/data and tools/data/validate.py (needs python3 + pytest on the agent)'
+        )
     }
 
     tools {
-        // Install latest Maven "Maven 3.8.5 JENKINS"
-        maven "Maven 3.8.5 JENKINS"
-        
-        // Install latest JDK "OpenJDK 17"
-        jdk "OpenJDK 17"
+        jdk 'OpenJDK 17'
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '10'))
+        timeout(time: 30, unit: 'MINUTES')
+        timestamps()
+        disableConcurrentBuilds()
     }
 
     stages {
-        stage('GIT Download') {
+        stage('Checkout') {
             steps {
-                echo 'Git download'
-                /**
-                 *  Landing Page Bitbucket
-                 */
-                git branch: 'develop',
-                    credentialsId: 'GITHUB_GEOMANCER86',
-                    url: 'https://github.com/Geomancer86/Futtoboru.git'
-            }
-        }
-        
-        stage("Test"){
-            steps {
-                // Run Maven on a Unix agent.
-                wrap([$class: 'Xvfb']) {
-                    sh "mvn -Dmaven.test.failure.ignore=true clean package"
-                    sh "mvn -Dmaven.test.failure.ignore=true test"
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "*/${params.BUILD_BRANCH}"]],
+                    extensions: [[$class: 'CleanBeforeCheckout']],
+                    userRemoteConfigs: [[
+                        credentialsId: 'GITHUB_GEOMANCER86',
+                        url: 'https://github.com/Geomancer86/Futtoboru.git'
+                    ]]
+                ])
+                script {
+                    env.GIT_COMMIT_SHORT = isUnix()
+                        ? sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                        : bat(script: '@git rev-parse --short HEAD', returnStdout: true).trim()
+                    currentBuild.displayName = "#${env.BUILD_NUMBER} ${params.BUILD_BRANCH} @ ${env.GIT_COMMIT_SHORT}"
                 }
             }
-            
+        }
+
+        stage('Maven verify') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'chmod +x mvnw'
+                        // libGDX tests need a display on Linux agents (Xvfb plugin, as before)
+                        wrap([$class: 'Xvfb']) {
+                            sh './mvnw -B -ntp clean verify'
+                        }
+                    } else {
+                        bat 'mvnw.cmd -B -ntp clean verify'
+                    }
+                }
+            }
             post {
-                // If Maven was able to run the tests, even if some of the test
-                // failed, record the test results and archive the jar file.
+                always {
+                    junit testResults: '**/target/surefire-reports/TEST-*.xml', allowEmptyResults: true
+                }
                 success {
-                    junit 'futtoboru-core/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'futtoboru-desktop/target/*.jar'
-                    echo "Maven Build Archive Artifacts Done"
+                    archiveArtifacts artifacts: 'futtoboru-desktop/target/*-jar-with-dependencies.jar', fingerprint: true
                 }
             }
         }
-        
-        stage("Test Reports") {
+
+        stage('Game data') {
+            when { expression { params.RUN_DATA_CHECKS } }
             steps {
-                dir('futtoboru-core') {
-                    jacoco(
-                            execPattern: 'target/*.exec',
-                            classPattern: 'target/classes',
-                            sourcePattern: 'src/main/java',
-                            exclusionPattern: 'src/test*',
-                            changeBuildStatus: true,
-                            runAlways: true,
-                            minimumBranchCoverage: '0'
-                    )
+                script {
+                    if (isUnix()) {
+                        sh 'python3 -m pytest -q tools/data && python3 tools/data/validate.py'
+                    } else {
+                        bat 'python -m pytest -q tools/data && python tools/data/validate.py'
+                    }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Futtoboru build ${env.BUILD_NUMBER}: branch ${params.BUILD_BRANCH} @ ${env.GIT_COMMIT_SHORT ?: 'N/A'} -> ${currentBuild.currentResult}"
         }
     }
 }
