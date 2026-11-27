@@ -59,6 +59,21 @@
     ]
   },
   {
+    "id": "leamington-road",
+    "name": "Leamington Road",
+    "opened": 1881,
+    "capacity": 15000,
+    "value": 5000,
+    "description": "Blackburn Rovers' home from 1881 to 1890, before Ewood Park. Highest League crowd 15,000 v Preston North End on 2 November 1889. Built over with housing after 1890.",
+    "landValue": 2000,
+    "ownedByClub": false,
+    "annualRent": 200,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Leamington_Road"
+    ],
+    "notes": "Capacity set to the record crowd; value, landValue and annualRent are game estimates (not sourced), in line with the other grounds of the period."
+  },
+  {
     "id": "pikes-lane",
     "name": "Pike's Lane",
     "opened": 1880,
@@ -279,6 +294,20 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Witton_Albion_F.C.#Grounds"
     ]
+  },
+  {
+    "id": "redlam-brow",
+    "name": "Redlam Brow",
+    "capacity": 3000,
+    "value": 1000,
+    "description": "Witton F.C. (Blackburn) played at Redlam Brow by 1881; bigger matches were sometimes at Witton Park.",
+    "landValue": 400,
+    "ownedByClub": false,
+    "annualRent": 40,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Witton_F.C."
+    ],
+    "notes": "Opening year and capacity not found; capacity, value, landValue and annualRent are game estimates."
   },
   {
     "id": "hawthorne-road",

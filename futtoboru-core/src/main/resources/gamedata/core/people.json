@@ -58,8 +58,10 @@
       "https://en.wikipedia.org/wiki/Harry_Devey",
       "https://en.wikipedia.org/wiki/Walter_Ashmore",
       "https://www.avfchistory.co.uk/aston-villa/squad/1888-89",
-      "https://www.national-football-teams.com/player/61842/Dennis_Hodgetts.html"
-    ]
+      "https://www.national-football-teams.com/player/61842/Dennis_Hodgetts.html",
+      "https://en.wikipedia.org/wiki/Archie_Goodall"
+    ],
+    "notes": "Real mid-season transfer: Preston to 30 Sep 1888, Aston Villa from 1 Oct 1888."
   },
   {
     "id": "john-goodall-1863",
@@ -125,7 +127,8 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season",
-      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
+      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)",
+      "https://en.wikipedia.org/wiki/Bob_Howarth"
     ]
   },
   {
@@ -730,7 +733,8 @@
       "https://en.wikipedia.org/wiki/Charlie_Mason_%28footballer%2C_born_1863%29",
       "https://en.wikipedia.org/wiki/David_Wykes",
       "https://en.wikipedia.org/wiki/Jack_Baynton",
-      "https://wolvescompletehistory.co.uk/"
+      "https://wolvescompletehistory.co.uk/",
+      "https://en.wikipedia.org/wiki/John_Brodie_(footballer,_born_1862)"
     ]
   },
   {
@@ -1270,8 +1274,10 @@
       "https://en.wikipedia.org/wiki/James_Southworth",
       "https://en.wikipedia.org/wiki/Robert_Haresnape",
       "https://en.wikipedia.org/wiki/James_Beresford_%28footballer%2C_born_1860%29",
-      "https://en.wikipedia.org/wiki/Joe_Beverley"
-    ]
+      "https://en.wikipedia.org/wiki/Joe_Beverley",
+      "https://en.wikipedia.org/wiki/James_Duerden"
+    ],
+    "notes": "Blackburn Rovers in 1888-89 (Burnley only 1890-91)."
   },
   {
     "id": "harry-fecitt-1864",
@@ -1371,7 +1377,8 @@
       "https://en.wikipedia.org/wiki/Robert_Haresnape",
       "https://en.wikipedia.org/wiki/James_Beresford_%28footballer%2C_born_1860%29",
       "https://en.wikipedia.org/wiki/Joe_Beverley"
-    ]
+    ],
+    "notes": "Blackburn Rovers in 1888-89, Burnley from 1889."
   },
   {
     "id": "william-holden-1860",
@@ -1740,7 +1747,7 @@
     "id": "bob-roberts-1864",
     "firstName": "Bob",
     "lastName": "Roberts",
-    "born": "1864",
+    "born": "1864-07",
     "country": "wales",
     "confidence": "unverified",
     "sources": [
@@ -1755,7 +1762,8 @@
       "https://en.wikipedia.org/wiki/Frank_Dyer",
       "https://en.wikipedia.org/wiki/E._Siddons",
       "https://en.wikipedia.org/wiki/H._McGuiness",
-      "https://www.worldfootball.net/teams/bolton-wanderers/10/"
+      "https://www.worldfootball.net/teams/bolton-wanderers/10/",
+      "https://en.wikipedia.org/wiki/Robert_Roberts_(footballer,_born_1864)"
     ]
   },
   {
@@ -2270,7 +2278,7 @@
     "id": "billy-hendry-1865",
     "firstName": "Billy",
     "lastName": "Hendry",
-    "born": "1865",
+    "born": "1869-06-20",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2285,8 +2293,10 @@
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
       "https://en.wikipedia.org/wiki/Bob_McSkimming",
       "https://en.wikipedia.org/wiki/Tommy_Clare",
-      "https://en.wikipedia.org/wiki/Alf_Underwood"
-    ]
+      "https://en.wikipedia.org/wiki/Alf_Underwood",
+      "https://en.wikipedia.org/wiki/Billy_Hendry"
+    ],
+    "notes": "Born 1869-06-20 (the id keeps the old 1865). Real move: WBA, then Stoke in April 1889."
   },
   {
     "id": "ezra-horton-1864",
@@ -2447,7 +2457,8 @@
       "https://en.wikipedia.org/wiki/George_Timmins_%28footballer%29",
       "https://en.wikipedia.org/wiki/Walter_Perry_%28footballer%29",
       "https://en.wikipedia.org/wiki/Luther_Walker",
-      "https://en.wikipedia.org/wiki/George_Woodhall"
+      "https://en.wikipedia.org/wiki/George_Woodhall",
+      "https://en.wikipedia.org/wiki/Bob_Roberts_(footballer,_born_1859)"
     ]
   },
   {
@@ -2566,12 +2577,14 @@
     "id": "bob-brand-1865",
     "firstName": "Bob",
     "lastName": "Brand",
-    "born": "1865",
-    "country": "england",
+    "born": "1865-08-03",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
+      "https://en.wikipedia.org/wiki/Bob_Brand"
+    ],
+    "notes": "Accrington 1888-89 (16 league apps, 11 goals); one guest match for Sunderland Albion in January 1889, not a transfer."
   },
   {
     "id": "peter-chippendale-1864",
@@ -2588,23 +2601,31 @@
     "id": "hugh-galbraith-1866",
     "firstName": "Hugh",
     "lastName": "Galbraith",
-    "born": "1866",
+    "born": "1868-12-22",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+    ],
+    "notes": "Born 1868-12-22 (the id keeps the old 1866). Real: Accrington and Bootle (1 app) in 1888-89. Not the Notts County Galbraith."
   },
   {
     "id": "pat-gallocher-1865",
     "firstName": "Pat",
     "lastName": "Gallocher",
-    "born": "1865",
+    "born": "1865-04-25",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
+      "https://en.wikipedia.org/wiki/Jack_Abrahams",
+      "https://en.wikipedia.org/wiki/Dan_Friel",
+      "https://en.wikipedia.org/wiki/Pat_Gallocher",
+      "https://en.wikipedia.org/wiki/John_Yates",
+      "https://en.wikipedia.org/wiki/Ross_McMahon"
+    ],
+    "notes": "Real mid-season move: Burnley (20 apps), then Accrington from March 1889 (1 app)."
   },
   {
     "id": "george-haworth-1863",
@@ -2654,12 +2675,14 @@
     "id": "joe-lofthouse-1864",
     "firstName": "Joe",
     "lastName": "Lofthouse",
-    "born": "1864",
+    "born": "1865-04-14",
     "country": "england",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
-    ]
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
+      "https://en.wikipedia.org/wiki/Joe_Lofthouse"
+    ],
+    "notes": "Accrington all of 1888-89 (21 league + 2 cup); the Bootle/Crewe/Long Eaton copies were merged here."
   },
   {
     "id": "robert-macbeth-1866",
@@ -2687,7 +2710,7 @@
     "id": "henry-parkinson-1865",
     "firstName": "Henry",
     "lastName": "Parkinson",
-    "born": "1865",
+    "born": "1864-12-03",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -2695,8 +2718,10 @@
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/Henry_Parkinson_(footballer,_born_1864)"
+    ],
+    "notes": "Born 1864-12-03 (the id keeps the old 1865). Real move: Everton (1 app, Dec 1888), then Accrington (1 app, Mar 1889)."
   },
   {
     "id": "luther-pemberton-1864",
@@ -3180,7 +3205,7 @@
   },
   {
     "id": "roberts-1865",
-    "firstName": "",
+    "firstName": "Isaac",
     "lastName": "Roberts",
     "born": "1865",
     "country": "england",
@@ -3189,8 +3214,10 @@
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
       "https://en.wikipedia.org/wiki/Edgar_Chadwick",
       "https://en.wikipedia.org/wiki/Johnny_Holt",
-      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29"
-    ]
+      "https://en.wikipedia.org/wiki/George_Dobson_%28footballer%2C_born_1862%29",
+      "https://en.wikipedia.org/wiki/Roberts_(footballer)"
+    ],
+    "notes": "Isaac \"Ike\" Roberts, centre-half, 1 league game (9 Feb 1889 v Wolves), born c.1865 Liverpool."
   },
   {
     "id": "george-stephenson-1864",
@@ -3238,39 +3265,7 @@
     "id": "jack-abrahams-1865",
     "firstName": "Jack",
     "lastName": "Abrahams",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "alec-brady-1865",
-    "firstName": "Alec",
-    "lastName": "Brady",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "dan-friel-1860",
-    "firstName": "Dan",
-    "lastName": "Friel",
-    "born": "1860",
+    "born": "1860-12-26",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
@@ -3280,13 +3275,31 @@
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
       "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
+    ],
+    "notes": "Born 1860-12-26 Barrhead (the id keeps the old 1865)."
   },
   {
-    "id": "pat-gallocher-1865-2",
-    "firstName": "Pat",
-    "lastName": "Gallocher",
-    "born": "1865-04-25",
+    "id": "alec-brady-1865",
+    "firstName": "Alec",
+    "lastName": "Brady",
+    "born": "1870-02-09",
+    "country": "scotland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
+      "https://en.wikipedia.org/wiki/Jack_Abrahams",
+      "https://en.wikipedia.org/wiki/Dan_Friel",
+      "https://en.wikipedia.org/wiki/Pat_Gallocher",
+      "https://en.wikipedia.org/wiki/John_Yates",
+      "https://en.wikipedia.org/wiki/Ross_McMahon"
+    ],
+    "notes": "Born 1870-02-09 (the id keeps the old 1865). Some of these apps belong to William Brady; left March 1889."
+  },
+  {
+    "id": "dan-friel-1860",
+    "firstName": "Dan",
+    "lastName": "Friel",
+    "born": "1860",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
@@ -3328,15 +3341,16 @@
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
       "https://en.wikipedia.org/wiki/Ross_McMahon",
-      "https://en.wikipedia.org/wiki/Swifts_F.C."
+      "https://en.wikipedia.org/wiki/Swifts_F.C.",
+      "https://en.wikipedia.org/wiki/Jack_Yates_(footballer,_born_1861)"
     ]
   },
   {
     "id": "william-tait-1864",
     "firstName": "William",
     "lastName": "Tait",
-    "born": "1864",
-    "country": "england",
+    "born": "1863",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
@@ -3344,8 +3358,10 @@
       "https://en.wikipedia.org/wiki/Dan_Friel",
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
+      "https://en.wikipedia.org/wiki/Ross_McMahon",
+      "https://en.wikipedia.org/wiki/William_Tait_(footballer)"
+    ],
+    "notes": "Left Burnley in October 1888."
   },
   {
     "id": "thomas-midgley-1860",
@@ -3364,10 +3380,10 @@
     ]
   },
   {
-    "id": "james-mcfettridge-1865",
-    "firstName": "James",
-    "lastName": "McFettridge",
-    "born": "1865",
+    "id": "walter-cox-1865",
+    "firstName": "Walter",
+    "lastName": "Cox",
+    "born": "1863",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -3377,12 +3393,13 @@
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
       "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
+    ],
+    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Born 1863."
   },
   {
-    "id": "john-haworth-1864",
-    "firstName": "John",
-    "lastName": "Haworth",
+    "id": "sandy-lang-1865",
+    "firstName": "Sandy",
+    "lastName": "Lang",
     "born": "1864",
     "country": "england",
     "confidence": "unverified",
@@ -3393,55 +3410,8 @@
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
       "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "walter-cox-1865",
-    "firstName": "Walter",
-    "lastName": "Cox",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "archibald-kaye-1865",
-    "firstName": "Archibald",
-    "lastName": "Kaye",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "sandy-lang-1865",
-    "firstName": "Sandy",
-    "lastName": "Lang",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
+    ],
+    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Born 1864."
   },
   {
     "id": "william-bury-1865",
@@ -3449,7 +3419,7 @@
     "lastName": "Bury",
     "born": "1865",
     "country": "england",
-    "confidence": "placeholder",
+    "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
       "https://en.wikipedia.org/wiki/Jack_Abrahams",
@@ -3457,63 +3427,16 @@
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
       "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "john-walker-1865",
-    "firstName": "John",
-    "lastName": "Walker",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "james-duerden-1865",
-    "firstName": "James",
-    "lastName": "Duerden",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "zacharious-carr-1865",
-    "firstName": "Zacharious",
-    "lastName": "Carr",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
+    ],
+    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Birth year 1865 is the old filler value."
   },
   {
     "id": "jack-keenan-1865",
     "firstName": "Jack",
     "lastName": "Keenan",
-    "born": "1865",
+    "born": "1863",
     "country": "england",
-    "confidence": "placeholder",
+    "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
       "https://en.wikipedia.org/wiki/Jack_Abrahams",
@@ -3521,15 +3444,16 @@
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
       "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
+    ],
+    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Born 1863."
   },
   {
     "id": "bill-mcfettridge-1865",
     "firstName": "Bill",
     "lastName": "McFettridge",
-    "born": "1865",
+    "born": "1864-04-22",
     "country": "england",
-    "confidence": "placeholder",
+    "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
       "https://en.wikipedia.org/wiki/Jack_Abrahams",
@@ -3537,199 +3461,8 @@
       "https://en.wikipedia.org/wiki/Pat_Gallocher",
       "https://en.wikipedia.org/wiki/John_Yates",
       "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "joseph-nash-1865",
-    "firstName": "Joseph",
-    "lastName": "Nash",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "daniel-spiers-1865",
-    "firstName": "Daniel",
-    "lastName": "Spiers",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "thomas-white-1865",
-    "firstName": "Thomas",
-    "lastName": "White",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "robert-haresnape-1865",
-    "firstName": "Robert",
-    "lastName": "Haresnape",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "jimmy-hill-1865",
-    "firstName": "Jimmy",
-    "lastName": "Hill",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "john-oswald-1865",
-    "firstName": "John",
-    "lastName": "Oswald",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "alexander-mclardie-1865",
-    "firstName": "Alexander",
-    "lastName": "McLardie",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "claude-lambie-1865",
-    "firstName": "Claude",
-    "lastName": "Lambie",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "tom-nicol-1865",
-    "firstName": "Tom",
-    "lastName": "Nicol",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "billy-bowes-1865",
-    "firstName": "Billy",
-    "lastName": "Bowes",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "john-brodie-1865",
-    "firstName": "John",
-    "lastName": "Brodie",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
-  },
-  {
-    "id": "thomas-crossley-1865",
-    "firstName": "Thomas",
-    "lastName": "Crossley",
-    "born": "1865",
-    "country": "england",
-    "confidence": "placeholder",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
-      "https://en.wikipedia.org/wiki/Jack_Abrahams",
-      "https://en.wikipedia.org/wiki/Dan_Friel",
-      "https://en.wikipedia.org/wiki/Pat_Gallocher",
-      "https://en.wikipedia.org/wiki/John_Yates",
-      "https://en.wikipedia.org/wiki/Ross_McMahon"
-    ]
+    ],
+    "notes": "Played for Burnley in 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "george-bakewell-1865",
@@ -3778,20 +3511,6 @@
     "firstName": "Enos",
     "lastName": "Bromage",
     "born": "1864",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
-      "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
-      "https://en.wikipedia.org/wiki/Lawrence_Plackett",
-      "https://en.wikipedia.org/wiki/Lewis_Cooper"
-    ]
-  },
-  {
-    "id": "william-chatterton-1865",
-    "firstName": "William",
-    "lastName": "Chatterton",
-    "born": "1865",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -3959,7 +3678,7 @@
     "id": "haydn-morley-1864",
     "firstName": "Haydn",
     "lastName": "Morley",
-    "born": "1864",
+    "born": "1860-11-26",
     "country": "england",
     "confidence": "unverified",
     "sources": [
@@ -3974,8 +3693,10 @@
       "https://en.wikipedia.org/wiki/Jack_Holland_%28footballer%2C_born_1861%29",
       "https://en.wikipedia.org/wiki/Alf_Shelton",
       "https://en.wikipedia.org/wiki/Harry_Daft",
-      "https://en.wikipedia.org/wiki/Bob_Jardine"
-    ]
+      "https://en.wikipedia.org/wiki/Bob_Jardine",
+      "https://en.wikipedia.org/wiki/Haydn_Morley"
+    ],
+    "notes": "Born 1860-11-26 (the id keeps the old 1864). Real move: Notts County, then Derby County from March 1889."
   },
   {
     "id": "thomas-needham-1865",
@@ -5530,12 +5251,14 @@
     "id": "bob-roberts-1859-2",
     "firstName": "Bob",
     "lastName": "Roberts",
-    "born": "1859",
+    "born": "1863",
     "country": "wales",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/Wrexham_A.F.C."
-    ]
+      "https://en.wikipedia.org/wiki/Wrexham_A.F.C.",
+      "https://en.wikipedia.org/wiki/Bob_Roberts_(footballer,_born_1863)"
+    ],
+    "notes": "Born 1863 (the id keeps the old 1859)."
   },
   {
     "id": "seth-powell-1862",
@@ -5767,40 +5490,32 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Linfield_F.C."
-    ]
-  },
-  {
-    "id": "john-peden-1863",
-    "firstName": "John",
-    "lastName": "Peden",
-    "born": "1863",
-    "country": "ireland",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Linfield_F.C."
-    ]
+    ],
+    "notes": "Linfield Athletic in 1888-89. Birth not found: 1866 belongs to the Distillery player of the same name, so treat it as unknown."
   },
   {
     "id": "william-dalton-1864",
     "firstName": "William",
     "lastName": "Dalton",
-    "born": "1864",
+    "born": "1870-03-16",
     "country": "ireland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Linfield_F.C."
-    ]
+    ],
+    "notes": "Born 1870-03-16 (the id keeps the old 1864). Not found in 1888-89; sourced to the club in a nearby season (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "robert-milne-1870",
     "firstName": "Robert",
     "lastName": "Milne",
-    "born": "1870-10-31",
+    "born": "1870-10-01",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Linfield_F.C."
-    ]
+    ],
+    "notes": "Not found in 1888-89; sourced to the club in a nearby season (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "jack-peden-1863",
@@ -5811,21 +5526,8 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Linfield_F.C."
-    ]
-  },
-  {
-    "id": "george-gillespie-1859",
-    "firstName": "George",
-    "lastName": "Gillespie",
-    "born": "1859",
-    "country": "scotland",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Linfield_F.C.",
-      "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
-      "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
-      "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
+    ],
+    "notes": "Linfield Athletic in 1888-89."
   },
   {
     "id": "tom-strachan-1866",
@@ -5861,24 +5563,10 @@
     ]
   },
   {
-    "id": "arthur-watson-1868",
-    "firstName": "Arthur",
-    "lastName": "Watson",
-    "born": "1868",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Linfield_F.C.",
-      "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
-      "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
-      "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
-  },
-  {
     "id": "jimmy-hannah-1868",
     "firstName": "Jimmy",
     "lastName": "Hannah",
-    "born": "1868-10-26",
+    "born": "1869-03-17",
     "country": "scotland",
     "confidence": "unverified",
     "sources": [
@@ -5886,131 +5574,8 @@
       "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
       "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
       "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
-  },
-  {
-    "id": "john-weir-1865",
-    "firstName": "John",
-    "lastName": "Weir",
-    "born": "1865",
-    "country": "scotland",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C.",
-      "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
-      "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
-      "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
-  },
-  {
-    "id": "frank-glover-1866",
-    "firstName": "Frank",
-    "lastName": "Glover",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
-  },
-  {
-    "id": "george-baker-1867",
-    "firstName": "George",
-    "lastName": "Baker",
-    "born": "1867",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
-  },
-  {
-    "id": "harry-boardman-1868",
-    "firstName": "Harry",
-    "lastName": "Boardman",
-    "born": "1868",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
-  },
-  {
-    "id": "william-cook-1865",
-    "firstName": "William",
-    "lastName": "Cook",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
-  },
-  {
-    "id": "james-davies-1866",
-    "firstName": "James",
-    "lastName": "Davies",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
-  },
-  {
-    "id": "arthur-edge-1867",
-    "firstName": "Arthur",
-    "lastName": "Edge",
-    "born": "1867",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
-  },
-  {
-    "id": "fred-farrington-1868",
-    "firstName": "Fred",
-    "lastName": "Farrington",
-    "born": "1868",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
-  },
-  {
-    "id": "george-hardern-1865",
-    "firstName": "George",
-    "lastName": "Hardern",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
-  },
-  {
-    "id": "john-hulse-1866",
-    "firstName": "John",
-    "lastName": "Hulse",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
-  },
-  {
-    "id": "william-littleton-1867",
-    "firstName": "William",
-    "lastName": "Littleton",
-    "born": "1867",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Witton_Albion_F.C."
-    ]
+    ],
+    "notes": "Born 1869-03-17 (the id keeps the old 1868). Not found in 1888-89; sourced to the club in 1889-90 (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "andrew-watson-1856",
@@ -6021,7 +5586,8 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
-    ]
+    ],
+    "notes": "Bootle 1887-92."
   },
   {
     "id": "tom-veitch-1866",
@@ -6032,18 +5598,8 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
-    ]
-  },
-  {
-    "id": "billy-hughes-1865",
-    "firstName": "Billy",
-    "lastName": "Hughes",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
-    ]
+    ],
+    "notes": "Not found as a Bootle player in any online source; kept until an offline source decides."
   },
   {
     "id": "john-campbell-1869",
@@ -6054,7 +5610,8 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
-    ]
+    ],
+    "notes": "Birth date matches the Celtic/Aston Villa John Campbell; not verified as the Bootle player."
   },
   {
     "id": "billy-jackson-1866",
@@ -6065,7 +5622,8 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
-    ]
+    ],
+    "notes": "Not found as a Bootle player in any online source; kept until an offline source decides."
   },
   {
     "id": "john-woods-1867",
@@ -6076,7 +5634,8 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
-    ]
+    ],
+    "notes": "Not found as a Bootle player in any online source; kept until an offline source decides."
   },
   {
     "id": "fred-geary-1868",
@@ -6086,8 +5645,10 @@
     "country": "england",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
-    ]
+      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)",
+      "https://en.wikipedia.org/wiki/Fred_Geary"
+    ],
+    "notes": "Notts Rangers in 1888-89."
   },
   {
     "id": "frank-sissons-1865",
@@ -6098,20 +5659,8 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
-    ]
-  },
-  {
-    "id": "joe-lofthouse-1865",
-    "firstName": "Joe",
-    "lastName": "Lofthouse",
-    "born": "1865-04-14",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)",
-      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
-      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
+    ],
+    "notes": "Not found as a Bootle player in any online source; kept until an offline source decides."
   },
   {
     "id": "walter-gillam-1866",
@@ -6122,7 +5671,8 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
-    ]
+    ],
+    "notes": "Not found as a Bootle player in any online source; kept until an offline source decides."
   },
   {
     "id": "charles-miller-1865",
@@ -6498,7 +6048,8 @@
       "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
       "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
       "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
+    ],
+    "notes": "Sunderland Albion player per the club article; 1888-89 not confirmed (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "billy-richardson-1867",
@@ -6511,7 +6062,8 @@
       "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
       "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
       "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
+    ],
+    "notes": "Sunderland Albion player per the club article; 1888-89 not confirmed (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "tom-pratt-1868",
@@ -6523,7 +6075,8 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
       "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
+    ],
+    "notes": "Sunderland Albion player per the club article; 1888-89 not confirmed (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "johnny-moore-1865",
@@ -6536,7 +6089,8 @@
       "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
       "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
       "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
+    ],
+    "notes": "Sunderland Albion player per the club article; 1888-89 not confirmed (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "harry-garside-1866",
@@ -6549,7 +6103,8 @@
       "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
       "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
       "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
+    ],
+    "notes": "Sunderland Albion player per the club article; 1888-89 not confirmed (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "peter-coupar-1866",
@@ -6562,7 +6117,8 @@
       "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
       "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
       "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
+    ],
+    "notes": "Sunderland Albion player per the club article; 1888-89 not confirmed (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "david-grey-1867",
@@ -6575,7 +6131,8 @@
       "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C.",
       "https://en.wikipedia.org/wiki/Notts_Rangers_F.C.",
       "https://en.wikipedia.org/wiki/Walsall_F.C."
-    ]
+    ],
+    "notes": "Sunderland Albion player per the club article; 1888-89 not confirmed (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "john-smith-1865",
@@ -6699,18 +6256,6 @@
     ]
   },
   {
-    "id": "billy-ollis-1865",
-    "firstName": "Billy",
-    "lastName": "Ollis",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
-      "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
-  },
-  {
     "id": "john-pearson-1868",
     "firstName": "John",
     "lastName": "Pearson",
@@ -6720,7 +6265,8 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
       "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
+    ],
+    "notes": "Crewe Alexandra 1886-95."
   },
   {
     "id": "arthur-whittaker-1866",
@@ -6732,7 +6278,8 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
       "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
+    ],
+    "notes": "Not found as a Crewe player in any online source; kept until an offline source decides."
   },
   {
     "id": "charles-sagar-1867",
@@ -6744,7 +6291,8 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
       "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
+    ],
+    "notes": "Not found as a Crewe player in any online source; kept until an offline source decides."
   },
   {
     "id": "jack-hill-1866",
@@ -6756,67 +6304,8 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
       "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
-  },
-  {
-    "id": "fred-belfield-1867",
-    "firstName": "Fred",
-    "lastName": "Belfield",
-    "born": "1867",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
-      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
-  },
-  {
-    "id": "tom-belfield-1868",
-    "firstName": "Tom",
-    "lastName": "Belfield",
-    "born": "1868",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
-      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
-  },
-  {
-    "id": "harry-belfield-1865",
-    "firstName": "Harry",
-    "lastName": "Belfield",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
-      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
-  },
-  {
-    "id": "william-belfield-1866",
-    "firstName": "William",
-    "lastName": "Belfield",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
-      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
-  },
-  {
-    "id": "george-belfield-1867",
-    "firstName": "George",
-    "lastName": "Belfield",
-    "born": "1867",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C.",
-      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
+    ],
+    "notes": "Not found as a Crewe player in any online source; kept until an offline source decides."
   },
   {
     "id": "gilbert-smith-1872",
@@ -6948,119 +6437,27 @@
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Derby_Junction_F.C.",
-      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
-    ]
-  },
-  {
-    "id": "john-higgins-1866",
-    "firstName": "John",
-    "lastName": "Higgins",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
-    ]
-  },
-  {
-    "id": "harry-higgins-1867",
-    "firstName": "Harry",
-    "lastName": "Higgins",
-    "born": "1867",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
-    ]
-  },
-  {
-    "id": "tom-higgins-1868",
-    "firstName": "Tom",
-    "lastName": "Higgins",
-    "born": "1868",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
-    ]
-  },
-  {
-    "id": "jack-higgins-1865",
-    "firstName": "Jack",
-    "lastName": "Higgins",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
-    ]
-  },
-  {
-    "id": "fred-higgins-1866",
-    "firstName": "Fred",
-    "lastName": "Higgins",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
-    ]
-  },
-  {
-    "id": "george-higgins-1867",
-    "firstName": "George",
-    "lastName": "Higgins",
-    "born": "1867",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
-    ]
-  },
-  {
-    "id": "william-higgins-1868",
-    "firstName": "William",
-    "lastName": "Higgins",
-    "born": "1868",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
-    ]
-  },
-  {
-    "id": "charles-higgins-1865",
-    "firstName": "Charles",
-    "lastName": "Higgins",
-    "born": "1865",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
-    ]
-  },
-  {
-    "id": "james-higgins-1866",
-    "firstName": "James",
-    "lastName": "Higgins",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
-    ]
+      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C.",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
+      "https://en.wikipedia.org/wiki/Alex_Higgins_%28footballer%2C_born_1863%29",
+      "https://en.wikipedia.org/wiki/Lawrence_Plackett",
+      "https://en.wikipedia.org/wiki/Lewis_Cooper",
+      "https://en.wikipedia.org/wiki/William_Chatterton"
+    ],
+    "notes": "Derby County in 1888-89 (5 apps); also the Derbyshire cricketer."
   },
   {
     "id": "teddy-brayshaw-1864",
     "firstName": "Teddy",
     "lastName": "Brayshaw",
-    "born": "1864-03-12",
+    "born": "1863-10-06",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
       "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
+    ],
+    "notes": "In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889."
   },
   {
     "id": "billy-betts-1864",
@@ -7072,7 +6469,8 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
       "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
+    ],
+    "notes": "In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889."
   },
   {
     "id": "tom-cawley-1866",
@@ -7084,91 +6482,35 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
       "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
+    ],
+    "notes": "In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889."
   },
   {
     "id": "george-waller-1864",
     "firstName": "George",
     "lastName": "Waller",
-    "born": "1864",
+    "born": "1864-12-03",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
       "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
-  },
-  {
-    "id": "andrew-amos-1863",
-    "firstName": "Andrew",
-    "lastName": "Amos",
-    "born": "1863-03-05",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
-      "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
-  },
-  {
-    "id": "james-lang-1851",
-    "firstName": "James",
-    "lastName": "Lang",
-    "born": "1851-03-12",
-    "country": "scotland",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
-      "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
+    ],
+    "notes": "In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889."
   },
   {
     "id": "william-ingram-1867-2",
     "firstName": "William",
     "lastName": "Ingram",
-    "born": "1867",
+    "born": "1865-12-11",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
-      "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
-  },
-  {
-    "id": "george-chaloner-1866",
-    "firstName": "George",
-    "lastName": "Chaloner",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
-      "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
-  },
-  {
-    "id": "john-hudson-1860",
-    "firstName": "John",
-    "lastName": "Hudson",
-    "born": "1860",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
-      "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
-  },
-  {
-    "id": "tom-brandon-1867",
-    "firstName": "Tom",
-    "lastName": "Brandon",
-    "born": "1867",
-    "country": "scotland",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
-      "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
+      "https://en.wikipedia.org/wiki/Heeley_F.C.",
+      "https://en.wikipedia.org/wiki/Billy_Ingram"
+    ],
+    "notes": "Billy Ingram of The Wednesday, born 1865-12-11 (the id keeps the old 1867); not the Old Westminsters Ingram. In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889."
   },
   {
     "id": "michael-whitham-1867",
@@ -7180,31 +6522,21 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C.",
       "https://en.wikipedia.org/wiki/Heeley_F.C."
-    ]
+    ],
+    "notes": "Uncertain for 1888-89 (1 app in 1887-88)."
   },
   {
     "id": "chris-charsley-1864",
     "firstName": "Chris",
     "lastName": "Charsley",
-    "born": "1864",
+    "born": "1864-11-07",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
       "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
-  },
-  {
-    "id": "jack-hallissey-1866",
-    "firstName": "Jack",
-    "lastName": "Hallissey",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
-      "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
+    ],
+    "notes": "Goalkeeper. At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "george-short-1866",
@@ -7216,55 +6548,47 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
       "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
-  },
-  {
-    "id": "tom-green-1866",
-    "firstName": "Tom",
-    "lastName": "Green",
-    "born": "1866",
-    "country": "england",
-    "confidence": "unverified",
-    "sources": [
-      "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
-      "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
+    ],
+    "notes": "At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "eddy-stanley-1866",
     "firstName": "Eddy",
     "lastName": "Stanley",
-    "born": "1866",
+    "born": "1860",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
       "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
+    ],
+    "notes": "Born 1860 (the id keeps the old 1866). At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "harry-morris-1866",
     "firstName": "Harry",
     "lastName": "Morris",
-    "born": "1866",
+    "born": "1866-04-11",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
       "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
+    ],
+    "notes": "At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "will-devey-1866",
     "firstName": "Will",
     "lastName": "Devey",
-    "born": "1866",
+    "born": "1865-04-12",
     "country": "england",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
       "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
+    ],
+    "notes": "Born 1865-04-12 (the id keeps the old 1866). At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
     "id": "caesar-jenkyns-1866",
@@ -7276,30 +6600,1214 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
       "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
+    ],
+    "notes": "At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
   },
   {
-    "id": "fred-wheldon-1869",
+    "id": "fred-poland-1865",
     "firstName": "Fred",
-    "lastName": "Wheldon",
-    "born": "1869-11-01",
-    "country": "england",
+    "lastName": "Poland",
+    "born": "1865",
+    "country": "scotland",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
-      "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
+      "https://en.wikipedia.org/wiki/Fred_Poland",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season"
+    ],
+    "notes": "Burnley 1888-89 (9 apps), born Dundee. Birth year not found; the year is an estimate."
   },
   {
-    "id": "charlie-hare-1866",
-    "firstName": "Charlie",
-    "lastName": "Hare",
-    "born": "1866-11-23",
+    "id": "william-mckay-1865",
+    "firstName": "William",
+    "lastName": "McKay",
+    "born": "1865",
+    "country": "scotland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/William_McKay_(footballer)",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season"
+    ],
+    "notes": "Burnley 1888-89 (14 apps). Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "william-brady-1870",
+    "firstName": "William",
+    "lastName": "Brady",
+    "born": "1870",
+    "country": "scotland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/William_Brady_(footballer)",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season"
+    ],
+    "notes": "Burnley 1888-89; born 1870 Renton per his article, which flags that as possibly wrong."
+  },
+  {
+    "id": "robert-kay-1865",
+    "firstName": "Robert",
+    "lastName": "Kay",
+    "born": "1865",
     "country": "england",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season"
+    ],
+    "notes": "Burnley goalkeeper 1888-89 (5 apps). Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "william-smith-1865",
+    "firstName": "William",
+    "lastName": "Smith",
+    "born": "1865",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season"
+    ],
+    "notes": "Burnley 1888-89 (3 apps)."
+  },
+  {
+    "id": "robert-duckworth-1865",
+    "firstName": "Robert",
+    "lastName": "Duckworth",
+    "born": "1865",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season"
+    ],
+    "notes": "Burnley 1888-89 (1 app). Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "samuel-torrans-1869",
+    "firstName": "Samuel",
+    "lastName": "Torrans",
+    "born": "1869-02-04",
+    "country": "ireland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Linfield_F.C."
+    ],
+    "notes": "Linfield Athletic in 1888-89."
+  },
+  {
+    "id": "george-gaffikin-1868",
+    "firstName": "George",
+    "lastName": "Gaffikin",
+    "born": "1868-05-17",
+    "country": "ireland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Linfield_F.C."
+    ],
+    "notes": "Linfield Athletic in 1888-89."
+  },
+  {
+    "id": "james-allan-1857",
+    "firstName": "James",
+    "lastName": "Allan",
+    "born": "1857-10-09",
+    "country": "scotland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/James_Allan_(footballer,_born_1857)",
+      "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C."
+    ],
+    "notes": "Founded Sunderland Albion on 13 March 1888; played 1888-89."
+  },
+  {
+    "id": "john-angus-1867",
+    "firstName": "John",
+    "lastName": "Angus",
+    "born": "1867",
+    "country": "scotland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sunderland_Albion_F.C."
+    ],
+    "notes": "Sunderland Albion goalkeeper in 1888-89. Not the Everton Jack Angus."
+  },
+  {
+    "id": "arthur-elliott-1870",
+    "firstName": "Arthur",
+    "lastName": "Elliott",
+    "born": "1870",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Notts_Rangers_F.C."
+    ],
+    "notes": "Likely Notts Rangers in 1888-89 (not certain)."
+  },
+  {
+    "id": "albert-aldridge-1863",
+    "firstName": "Albert",
+    "lastName": "Aldridge",
+    "born": "1863-08-04",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Walsall_F.C."
+    ],
+    "notes": "Walsall Town Swifts in 1888-89. Sources differ on his birth: 1863-08-04 or 1864-04-13."
+  },
+  {
+    "id": "alf-jones-1861",
+    "firstName": "Alf",
+    "lastName": "Jones",
+    "born": "1861-02",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Walsall_F.C."
+    ],
+    "notes": "Walsall Town Swifts in 1888-89, ever-present. Born c. February 1861."
+  },
+  {
+    "id": "charlie-shaw-1862",
+    "firstName": "Charlie",
+    "lastName": "Shaw",
+    "born": "1862-11-18",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Walsall_F.C."
+    ],
+    "notes": "Walsall Town Swifts from October 1888."
+  },
+  {
+    "id": "tom-bayley-1868",
+    "firstName": "Tom",
+    "lastName": "Bayley",
+    "born": "1868-08",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Walsall_F.C."
+    ],
+    "notes": "Not found in 1888-89; sourced to the club in a nearby season (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "jim-smith-1865",
+    "firstName": "Jim",
+    "lastName": "Smith",
+    "born": "1865",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://wolvescompletehistory.co.uk/?p=1583",
+      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C."
+    ],
+    "notes": "Goalkeeper. In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889. Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "jack-dungworth-1866",
+    "firstName": "Jack",
+    "lastName": "Dungworth",
+    "born": "1866",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://wolvescompletehistory.co.uk/?p=1583",
+      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C."
+    ],
+    "notes": "In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889. Born c.1866."
+  },
+  {
+    "id": "harry-woolhouse-1867",
+    "firstName": "Harry",
+    "lastName": "Woolhouse",
+    "born": "1867",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://wolvescompletehistory.co.uk/?p=1583",
+      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C."
+    ],
+    "notes": "In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889."
+  },
+  {
+    "id": "albert-mumford-1865",
+    "firstName": "Albert",
+    "lastName": "Mumford",
+    "born": "1865-06-07",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://wolvescompletehistory.co.uk/?p=1583",
+      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C."
+    ],
+    "notes": "In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889."
+  },
+  {
+    "id": "thompson-1865",
+    "firstName": "",
+    "lastName": "Thompson",
+    "born": "1865",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://wolvescompletehistory.co.uk/?p=1583",
+      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C."
+    ],
+    "notes": "In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889. First name not found. Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "winterbottom-1865",
+    "firstName": "",
+    "lastName": "Winterbottom",
+    "born": "1865",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://wolvescompletehistory.co.uk/?p=1583",
+      "https://en.wikipedia.org/wiki/Sheffield_Wednesday_F.C."
+    ],
+    "notes": "In The Wednesday XI v Wolves, FA Cup R3, 2 March 1889. First name not found. Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "fred-speller-1863",
+    "firstName": "Fred",
+    "lastName": "Speller",
+    "born": "1863",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
       "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
-    ]
+    ],
+    "notes": "At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "ted-devey-1871",
+    "firstName": "Ted",
+    "lastName": "Devey",
+    "born": "1871-03-19",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
+    ],
+    "notes": "At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "charlie-simms-1865",
+    "firstName": "Charlie",
+    "lastName": "Simms",
+    "born": "1865",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
+    ],
+    "notes": "At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "ted-hill-1865",
+    "firstName": "Ted",
+    "lastName": "Hill",
+    "born": "1865",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
+    ],
+    "notes": "At Small Heath across 1888-89 (docs/data/REVIEW_1888-89_FINDINGS.md). Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "billy-siddons-1864",
+    "firstName": "Billy",
+    "lastName": "Siddons",
+    "born": "1864",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/William_Siddons",
+      "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C."
+    ],
+    "notes": "William Henry Siddons, born Q3 1864 West Bromwich. From Aston Villa for 1888-89; his infobox dates St George's 1889-91 (Mitchell St George's 1886-88)."
+  },
+  {
+    "id": "jack-devey-1866",
+    "firstName": "Jack",
+    "lastName": "Devey",
+    "born": "1866-12-26",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C."
+    ],
+    "notes": "Not found in 1888-89; sourced to the club in 1889-90 (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "william-bell-1860",
+    "firstName": "William",
+    "lastName": "Bell",
+    "born": "1860-08-22",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C."
+    ],
+    "notes": "Crewe Alexandra 1888-89 (6 Combination games)."
+  },
+  {
+    "id": "alfred-davies-1863",
+    "firstName": "Alfred",
+    "lastName": "Davies",
+    "born": "1863",
+    "country": "wales",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C."
+    ],
+    "notes": "Not found in 1888-89; sourced to the club in a nearby season (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "richard-jones-1867",
+    "firstName": "Richard",
+    "lastName": "Jones",
+    "born": "1867",
+    "country": "wales",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C."
+    ],
+    "notes": "Not found in 1888-89; sourced to the club in a nearby season (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "billy-lewis-1864",
+    "firstName": "Billy",
+    "lastName": "Lewis",
+    "born": "1864",
+    "country": "wales",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Crewe_Alexandra_F.C."
+    ],
+    "notes": "Not found in 1888-89; sourced to the club in a nearby season (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "william-smith-1868-2",
+    "firstName": "William",
+    "lastName": "Smith",
+    "born": "1868-11-10",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Long_Eaton_Rangers_F.C."
+    ],
+    "notes": "William \"Tich\" Smith, Long Eaton Rangers 1888-89. Not the Halliwell William Smith."
+  },
+  {
+    "id": "s-smith-1865",
+    "firstName": "S",
+    "lastName": "Smith",
+    "born": "1865",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
+    ],
+    "notes": "Not found in 1888-89; sourced to the club in 1887-88 (FA Cup scorer) (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md). Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "w-hopkins-1865",
+    "firstName": "W",
+    "lastName": "Hopkins",
+    "born": "1865",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
+    ],
+    "notes": "Not found in 1888-89; sourced to the club in 1887-88 (FA Cup scorer) (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md). Birth year not found; the year is an estimate."
+  },
+  {
+    "id": "bob-mcfarlane-1866",
+    "firstName": "Bob",
+    "lastName": "McFarlane",
+    "born": "1866",
+    "country": "scotland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
+    ],
+    "notes": "Bootle 1888-90. Born c.1866."
+  },
+  {
+    "id": "job-wilding-1862",
+    "firstName": "Job",
+    "lastName": "Wilding",
+    "born": "1862",
+    "country": "england",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
+    ],
+    "notes": "Bootle from 1888."
+  },
+  {
+    "id": "david-jardine-1867",
+    "firstName": "David",
+    "lastName": "Jardine",
+    "born": "1867-11-03",
+    "country": "scotland",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
+    ],
+    "notes": "Bootle goalkeeper in 1888-89."
+  },
+  {
+    "id": "walter-evans-1867",
+    "firstName": "Walter",
+    "lastName": "Evans",
+    "born": "1867",
+    "country": "wales",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
+    ],
+    "notes": "Not found in 1888-89; sourced to the club in a nearby season (producer short-squad rule, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "joseph-johnson-1868",
+    "firstName": "Joseph",
+    "lastName": "Johnson",
+    "born": "1868",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "joseph-thomas-1867",
+    "firstName": "Joseph",
+    "lastName": "Thomas",
+    "born": "1867",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "elijah-walker-1861",
+    "firstName": "Elijah",
+    "lastName": "Walker",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "morgan-cooper-1861",
+    "firstName": "Morgan",
+    "lastName": "Cooper",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "phillip-moore-1864",
+    "firstName": "Phillip",
+    "lastName": "Moore",
+    "born": "1864",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "morgan-jones-1862",
+    "firstName": "Morgan",
+    "lastName": "Jones",
+    "born": "1862",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "oliver-wright-1862",
+    "firstName": "Oliver",
+    "lastName": "Wright",
+    "born": "1862",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "alexander-edwards-1868",
+    "firstName": "Alexander",
+    "lastName": "Edwards",
+    "born": "1868",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "lawrence-turner-1866",
+    "firstName": "Lawrence",
+    "lastName": "Turner",
+    "born": "1866",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "ebenezer-lee-1863",
+    "firstName": "Ebenezer",
+    "lastName": "Lee",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "amos-james-1867",
+    "firstName": "Amos",
+    "lastName": "James",
+    "born": "1867",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "fred-green-1869",
+    "firstName": "Fred",
+    "lastName": "Green",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "paul-williams-1869",
+    "firstName": "Paul",
+    "lastName": "Williams",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "richard-martin-1868",
+    "firstName": "Richard",
+    "lastName": "Martin",
+    "born": "1868",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "benjamin-white-1863",
+    "firstName": "Benjamin",
+    "lastName": "White",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "albert-carter-1866",
+    "firstName": "Albert",
+    "lastName": "Carter",
+    "born": "1866",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "jeremiah-smith-1867",
+    "firstName": "Jeremiah",
+    "lastName": "Smith",
+    "born": "1867",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "nathaniel-harris-1864",
+    "firstName": "Nathaniel",
+    "lastName": "Harris",
+    "born": "1864",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "morris-cooper-1869",
+    "firstName": "Morris",
+    "lastName": "Cooper",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "ernest-watson-1869",
+    "firstName": "Ernest",
+    "lastName": "Watson",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "oliver-davies-1862",
+    "firstName": "Oliver",
+    "lastName": "Davies",
+    "born": "1862",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "jeremiah-green-1861",
+    "firstName": "Jeremiah",
+    "lastName": "Green",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "thomas-morris-1861",
+    "firstName": "Thomas",
+    "lastName": "Morris",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "herbert-carter-1866",
+    "firstName": "Herbert",
+    "lastName": "Carter",
+    "born": "1866",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "john-ward-1867",
+    "firstName": "John",
+    "lastName": "Ward",
+    "born": "1867",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "horace-wright-1868",
+    "firstName": "Horace",
+    "lastName": "Wright",
+    "born": "1868",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "israel-thompson-1867",
+    "firstName": "Israel",
+    "lastName": "Thompson",
+    "born": "1867",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "ellis-jones-1865",
+    "firstName": "Ellis",
+    "lastName": "Jones",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "seth-watson-1866",
+    "firstName": "Seth",
+    "lastName": "Watson",
+    "born": "1866",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "cornelius-james-1867",
+    "firstName": "Cornelius",
+    "lastName": "James",
+    "born": "1867",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "phillip-brown-1861",
+    "firstName": "Phillip",
+    "lastName": "Brown",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "benjamin-johnson-1869",
+    "firstName": "Benjamin",
+    "lastName": "Johnson",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "eli-lewis-1863",
+    "firstName": "Eli",
+    "lastName": "Lewis",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "seth-wilson-1864",
+    "firstName": "Seth",
+    "lastName": "Wilson",
+    "born": "1864",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "james-baker-1861",
+    "firstName": "James",
+    "lastName": "Baker",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "simon-evans-1861",
+    "firstName": "Simon",
+    "lastName": "Evans",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "edgar-carter-1864",
+    "firstName": "Edgar",
+    "lastName": "Carter",
+    "born": "1864",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "wilson-hughes-1865",
+    "firstName": "Wilson",
+    "lastName": "Hughes",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "edward-jackson-1869",
+    "firstName": "Edward",
+    "lastName": "Jackson",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "abraham-hall-1863",
+    "firstName": "Abraham",
+    "lastName": "Hall",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "abel-turner-1863",
+    "firstName": "Abel",
+    "lastName": "Turner",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "josiah-brown-1867",
+    "firstName": "Josiah",
+    "lastName": "Brown",
+    "born": "1867",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "jacob-williams-1865",
+    "firstName": "Jacob",
+    "lastName": "Williams",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "john-johnson-1869",
+    "firstName": "John",
+    "lastName": "Johnson",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "leonard-cook-1865",
+    "firstName": "Leonard",
+    "lastName": "Cook",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "morris-james-1862",
+    "firstName": "Morris",
+    "lastName": "James",
+    "born": "1862",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "tom-clark-1869",
+    "firstName": "Tom",
+    "lastName": "Clark",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "aaron-brown-1863",
+    "firstName": "Aaron",
+    "lastName": "Brown",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "gilbert-lee-1861",
+    "firstName": "Gilbert",
+    "lastName": "Lee",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "dennis-hill-1864",
+    "firstName": "Dennis",
+    "lastName": "Hill",
+    "born": "1864",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "jesse-harris-1865",
+    "firstName": "Jesse",
+    "lastName": "Harris",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "dan-johnson-1866",
+    "firstName": "Dan",
+    "lastName": "Johnson",
+    "born": "1866",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "elijah-williams-1863",
+    "firstName": "Elijah",
+    "lastName": "Williams",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "roger-griffiths-1863",
+    "firstName": "Roger",
+    "lastName": "Griffiths",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "leonard-wilson-1867",
+    "firstName": "Leonard",
+    "lastName": "Wilson",
+    "born": "1867",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "jonah-edwards-1868",
+    "firstName": "Jonah",
+    "lastName": "Edwards",
+    "born": "1868",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "fred-cook-1863",
+    "firstName": "Fred",
+    "lastName": "Cook",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "james-thomas-1869",
+    "firstName": "James",
+    "lastName": "Thomas",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "benjamin-clark-1863",
+    "firstName": "Benjamin",
+    "lastName": "Clark",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "amos-wilson-1869",
+    "firstName": "Amos",
+    "lastName": "Wilson",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "oliver-lewis-1869",
+    "firstName": "Oliver",
+    "lastName": "Lewis",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "fred-martin-1861",
+    "firstName": "Fred",
+    "lastName": "Martin",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "ben-lee-1865",
+    "firstName": "Ben",
+    "lastName": "Lee",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "reuben-jones-1865",
+    "firstName": "Reuben",
+    "lastName": "Jones",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "israel-hall-1868",
+    "firstName": "Israel",
+    "lastName": "Hall",
+    "born": "1868",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "christopher-harrison-1862",
+    "firstName": "Christopher",
+    "lastName": "Harrison",
+    "born": "1862",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "jeremiah-harris-1861",
+    "firstName": "Jeremiah",
+    "lastName": "Harris",
+    "born": "1861",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "emanuel-wood-1868",
+    "firstName": "Emanuel",
+    "lastName": "Wood",
+    "born": "1868",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "william-davies-1869",
+    "firstName": "William",
+    "lastName": "Davies",
+    "born": "1869",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "ephraim-ward-1867",
+    "firstName": "Ephraim",
+    "lastName": "Ward",
+    "born": "1867",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "matthew-watson-1865",
+    "firstName": "Matthew",
+    "lastName": "Watson",
+    "born": "1865",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "rowland-morgan-1863",
+    "firstName": "Rowland",
+    "lastName": "Morgan",
+    "born": "1863",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "jabez-cooper-1868",
+    "firstName": "Jabez",
+    "lastName": "Cooper",
+    "born": "1868",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
+  },
+  {
+    "id": "bernard-baker-1862",
+    "firstName": "Bernard",
+    "lastName": "Baker",
+    "born": "1862",
+    "country": "england",
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md)."
   }
 ]

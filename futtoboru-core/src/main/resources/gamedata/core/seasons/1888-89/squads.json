@@ -77,7 +77,7 @@
   },
   {
     "club": "blackburn-rovers",
-    "ground": "ewood-park",
+    "ground": "leamington-road",
     "balance": 10000,
     "players": [
       "willie-almond-1868",
@@ -103,7 +103,8 @@
       "william-townley-1866",
       "nat-walton-1867",
       "bernard-whittaker-1865"
-    ]
+    ],
+    "notes": "Leamington Road in 1888-89; Ewood Park only from 1890."
   },
   {
     "club": "bolton-wanderers",
@@ -237,37 +238,25 @@
     "ground": "turf-moor",
     "balance": 10000,
     "players": [
-      "jack-abrahams-1865",
-      "alec-brady-1865",
       "dan-friel-1860",
-      "pat-gallocher-1865-2",
-      "ross-mcmahon-1865",
       "john-yates-1861",
-      "william-tait-1864",
-      "thomas-midgley-1860",
-      "james-mcfettridge-1865",
-      "john-haworth-1864",
-      "walter-cox-1865",
-      "archibald-kaye-1865",
+      "pat-gallocher-1865",
       "sandy-lang-1865",
       "william-bury-1865",
-      "john-walker-1865",
-      "james-duerden-1865",
-      "zacharious-carr-1865",
       "jack-keenan-1865",
       "bill-mcfettridge-1865",
-      "joseph-nash-1865",
-      "daniel-spiers-1865",
-      "thomas-white-1865",
-      "robert-haresnape-1865",
-      "jimmy-hill-1865",
-      "john-oswald-1865",
-      "alexander-mclardie-1865",
-      "claude-lambie-1865",
-      "tom-nicol-1865",
-      "billy-bowes-1865",
-      "john-brodie-1865",
-      "thomas-crossley-1865"
+      "jack-abrahams-1865",
+      "walter-cox-1865",
+      "william-tait-1864",
+      "ross-mcmahon-1865",
+      "thomas-midgley-1860",
+      "alec-brady-1865",
+      "fred-poland-1865",
+      "william-mckay-1865",
+      "william-brady-1870",
+      "robert-kay-1865",
+      "william-smith-1865",
+      "robert-duckworth-1865"
     ]
   },
   {
@@ -279,7 +268,7 @@
       "ew-bellhouse-1865",
       "harold-bestwick-1865",
       "enos-bromage-1864",
-      "william-chatterton-1865",
+      "william-chatterton-1861",
       "g-clifton-1865",
       "lewis-cooper-1864",
       "archibald-ferguson-1863",
@@ -417,8 +406,8 @@
       "humphrey-tytheridge-1865",
       "robert-barker-1847",
       "william-nicholl-1868",
-      "john-yates-1861",
-      "harry-cursham-1859"
+      "harry-cursham-1859",
+      "joseph-johnson-1868"
     ]
   },
   {
@@ -480,35 +469,35 @@
     "ground": "ulsterville-avenue",
     "balance": 0,
     "players": [
+      "jack-peden-1863",
       "sam-johnston-1866",
-      "john-peden-1863",
+      "samuel-torrans-1869",
+      "george-gaffikin-1868",
       "william-dalton-1864",
       "robert-milne-1870",
-      "jack-peden-1863",
-      "george-gillespie-1859",
       "tom-strachan-1866",
       "harry-mcvicker-1865",
       "william-mcvicker-1867",
-      "arthur-watson-1868",
-      "jimmy-hannah-1868"
+      "joseph-thomas-1867",
+      "elijah-walker-1861"
     ]
   },
   {
-    "club": "witton-albion",
-    "ground": "archway-ground",
+    "club": "witton",
+    "ground": "redlam-brow",
     "balance": 0,
     "players": [
-      "john-weir-1865",
-      "frank-glover-1866",
-      "george-baker-1867",
-      "harry-boardman-1868",
-      "william-cook-1865",
-      "james-davies-1866",
-      "arthur-edge-1867",
-      "fred-farrington-1868",
-      "george-hardern-1865",
-      "john-hulse-1866",
-      "william-littleton-1867"
+      "morgan-cooper-1861",
+      "phillip-moore-1864",
+      "morgan-jones-1862",
+      "oliver-wright-1862",
+      "alexander-edwards-1868",
+      "lawrence-turner-1866",
+      "ebenezer-lee-1863",
+      "amos-james-1867",
+      "fred-green-1869",
+      "paul-williams-1869",
+      "richard-martin-1868"
     ]
   },
   {
@@ -517,16 +506,17 @@
     "balance": 0,
     "players": [
       "andrew-watson-1856",
+      "bob-mcfarlane-1866",
+      "job-wilding-1862",
+      "david-jardine-1867",
+      "hugh-galbraith-1866",
+      "walter-evans-1867",
       "tom-veitch-1866",
-      "billy-hughes-1865",
-      "john-campbell-1869",
-      "bob-howarth-1865",
       "billy-jackson-1866",
       "john-woods-1867",
-      "fred-geary-1868",
       "frank-sissons-1865",
-      "joe-lofthouse-1865",
-      "walter-gillam-1866"
+      "walter-gillam-1866",
+      "john-campbell-1869"
     ]
   },
   {
@@ -588,17 +578,17 @@
     "ground": "blue-house-field",
     "balance": 0,
     "players": [
-      "john-weir-1865",
-      "jimmy-hannah-1868",
+      "james-allan-1857",
+      "john-angus-1867",
       "fred-mabane-1866",
       "billy-richardson-1867",
       "tom-pratt-1868",
       "johnny-moore-1865",
       "harry-garside-1866",
-      "george-gillespie-1859",
       "peter-coupar-1866",
       "david-grey-1867",
-      "arthur-watson-1868"
+      "jimmy-hannah-1868",
+      "benjamin-white-1863"
     ]
   },
   {
@@ -624,17 +614,17 @@
     "ground": "alexandra-recreation-ground",
     "balance": 0,
     "players": [
-      "billy-ollis-1865",
+      "william-bell-1860",
       "john-pearson-1868",
+      "alfred-davies-1863",
+      "richard-jones-1867",
+      "billy-lewis-1864",
       "arthur-whittaker-1866",
       "charles-sagar-1867",
-      "joe-lofthouse-1865",
       "jack-hill-1866",
-      "fred-belfield-1867",
-      "tom-belfield-1868",
-      "harry-belfield-1865",
-      "william-belfield-1866",
-      "george-belfield-1867"
+      "albert-carter-1866",
+      "jeremiah-smith-1867",
+      "nathaniel-harris-1864"
     ]
   },
   {
@@ -660,16 +650,17 @@
     "ground": "derby-junction-ground",
     "balance": 0,
     "players": [
-      "william-chatterton-1861",
-      "john-higgins-1866",
-      "harry-higgins-1867",
-      "tom-higgins-1868",
-      "jack-higgins-1865",
-      "fred-higgins-1866",
-      "george-higgins-1867",
-      "william-higgins-1868",
-      "charles-higgins-1865",
-      "james-higgins-1866"
+      "s-smith-1865",
+      "w-hopkins-1865",
+      "morris-cooper-1869",
+      "ernest-watson-1869",
+      "oliver-davies-1862",
+      "jeremiah-green-1861",
+      "thomas-morris-1861",
+      "herbert-carter-1866",
+      "john-ward-1867",
+      "horace-wright-1868",
+      "israel-thompson-1867"
     ]
   },
   {
@@ -677,17 +668,17 @@
     "ground": "castle-ground",
     "balance": 0,
     "players": [
-      "billy-fletcher-1866",
-      "johnny-moore-1865",
-      "harry-garside-1866",
-      "george-gillespie-1859",
-      "peter-coupar-1866",
-      "david-grey-1867",
-      "arthur-watson-1868",
-      "john-weir-1865",
-      "jimmy-hannah-1868",
-      "fred-mabane-1866",
-      "billy-richardson-1867"
+      "fred-geary-1868",
+      "arthur-elliott-1870",
+      "ellis-jones-1865",
+      "seth-watson-1866",
+      "cornelius-james-1867",
+      "phillip-brown-1861",
+      "benjamin-johnson-1869",
+      "eli-lewis-1863",
+      "seth-wilson-1864",
+      "james-baker-1861",
+      "simon-evans-1861"
     ]
   },
   {
@@ -695,16 +686,17 @@
     "ground": "olive-grove",
     "balance": 0,
     "players": [
+      "jim-smith-1865",
       "teddy-brayshaw-1864",
+      "thompson-1865",
+      "jack-dungworth-1866",
       "billy-betts-1864",
-      "tom-cawley-1866",
       "george-waller-1864",
-      "andrew-amos-1863",
-      "james-lang-1851",
+      "winterbottom-1865",
       "william-ingram-1867-2",
-      "george-chaloner-1866",
-      "john-hudson-1860",
-      "tom-brandon-1867",
+      "harry-woolhouse-1867",
+      "tom-cawley-1866",
+      "albert-mumford-1865",
       "michael-whitham-1867"
     ]
   },
@@ -713,17 +705,17 @@
     "ground": "cape-hill",
     "balance": 0,
     "players": [
-      "dennis-hodgetts-1863",
-      "chris-charsley-1864",
-      "jack-hallissey-1866",
-      "george-short-1866",
-      "tom-green-1866",
-      "eddy-stanley-1866",
-      "harry-morris-1866",
-      "will-devey-1866",
-      "caesar-jenkyns-1866",
-      "fred-wheldon-1869",
-      "charlie-hare-1866"
+      "billy-siddons-1864",
+      "jack-devey-1866",
+      "edgar-carter-1864",
+      "wilson-hughes-1865",
+      "edward-jackson-1869",
+      "abraham-hall-1863",
+      "abel-turner-1863",
+      "josiah-brown-1867",
+      "jacob-williams-1865",
+      "john-johnson-1869",
+      "leonard-cook-1865"
     ]
   },
   {
@@ -731,17 +723,17 @@
     "ground": "recreation-ground",
     "balance": 0,
     "players": [
-      "william-chatterton-1861",
-      "john-pearson-1868",
-      "arthur-whittaker-1866",
-      "charles-sagar-1867",
-      "joe-lofthouse-1865",
-      "jack-hill-1866",
-      "fred-belfield-1867",
-      "tom-belfield-1868",
-      "harry-belfield-1865",
-      "william-belfield-1866",
-      "george-belfield-1867"
+      "william-smith-1868-2",
+      "morris-james-1862",
+      "tom-clark-1869",
+      "aaron-brown-1863",
+      "gilbert-lee-1861",
+      "dennis-hill-1864",
+      "jesse-harris-1865",
+      "dan-johnson-1866",
+      "elijah-williams-1863",
+      "roger-griffiths-1863",
+      "leonard-wilson-1867"
     ]
   },
   {
@@ -749,17 +741,17 @@
     "ground": "muntz-street",
     "balance": 0,
     "players": [
-      "caesar-jenkyns-1866",
-      "fred-wheldon-1869",
-      "charlie-hare-1866",
-      "billy-ollis-1865",
       "chris-charsley-1864",
-      "jack-hallissey-1866",
-      "george-short-1866",
-      "tom-green-1866",
-      "eddy-stanley-1866",
+      "fred-speller-1863",
+      "caesar-jenkyns-1866",
       "harry-morris-1866",
-      "will-devey-1866"
+      "ted-devey-1871",
+      "charlie-simms-1865",
+      "will-devey-1866",
+      "eddy-stanley-1866",
+      "george-short-1866",
+      "ted-hill-1865",
+      "jonah-edwards-1868"
     ]
   },
   {
@@ -767,17 +759,17 @@
     "ground": "chuckery-ground",
     "balance": 0,
     "players": [
-      "tom-pratt-1868",
-      "johnny-moore-1865",
-      "harry-garside-1866",
-      "george-gillespie-1859",
-      "peter-coupar-1866",
-      "david-grey-1867",
-      "arthur-watson-1868",
-      "john-weir-1865",
-      "jimmy-hannah-1868",
-      "fred-mabane-1866",
-      "billy-richardson-1867"
+      "albert-aldridge-1863",
+      "alf-jones-1861",
+      "charlie-shaw-1862",
+      "tom-bayley-1868",
+      "fred-cook-1863",
+      "james-thomas-1869",
+      "benjamin-clark-1863",
+      "amos-wilson-1869",
+      "oliver-lewis-1869",
+      "fred-martin-1861",
+      "ben-lee-1865"
     ]
   },
   {
@@ -785,17 +777,17 @@
     "ground": "heeley-ground",
     "balance": 0,
     "players": [
-      "tom-cawley-1866",
-      "george-waller-1864",
-      "andrew-amos-1863",
-      "james-lang-1851",
-      "william-ingram-1867-2",
-      "george-chaloner-1866",
-      "john-hudson-1860",
-      "tom-brandon-1867",
-      "michael-whitham-1867",
-      "teddy-brayshaw-1864",
-      "billy-betts-1864"
+      "reuben-jones-1865",
+      "israel-hall-1868",
+      "christopher-harrison-1862",
+      "jeremiah-harris-1861",
+      "emanuel-wood-1868",
+      "william-davies-1869",
+      "ephraim-ward-1867",
+      "matthew-watson-1865",
+      "rowland-morgan-1863",
+      "jabez-cooper-1868",
+      "bernard-baker-1862"
     ]
   }
 ]
