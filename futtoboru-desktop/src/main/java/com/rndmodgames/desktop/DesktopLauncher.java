@@ -70,6 +70,10 @@ public class DesktopLauncher {
         
         // Limits FPS to the refresh rate of the currently active monitor.
         configuration.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate);
+
+        // Auto UI scale follows the monitor's OS scale (Windows 200% -> 2.0); GLFW is initialized by getDisplayMode()
+        Futtoboru.SYSTEM_UI_SCALE = readMonitorContentScale();
+        System.out.println("UI: monitor content scale " + Futtoboru.SYSTEM_UI_SCALE);
         
         // If you remove the above line and set Vsync to false, you can get unlimited FPS, which can be
         // useful for testing performance, but can also be very stressful to some hardware.
@@ -82,5 +86,22 @@ public class DesktopLauncher {
         
         //
         return configuration;
+    }
+
+    /** the primary monitor's content scale (1 = 100%), 1 when it cannot be read */
+    private static float readMonitorContentScale() {
+        try {
+            long monitor = org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor();
+            if (monitor == 0L) {
+                return 1f;
+            }
+            float[] x = new float[1];
+            float[] y = new float[1];
+            org.lwjgl.glfw.GLFW.glfwGetMonitorContentScale(monitor, x, y);
+            float scale = Math.max(x[0], y[0]);
+            return scale > 0f ? scale : 1f;
+        } catch (Throwable unavailable) {
+            return 1f;
+        }
     }
 }

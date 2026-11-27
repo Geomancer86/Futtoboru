@@ -82,7 +82,9 @@ public class Futtoboru extends Game {
      */
     public static String RESOLUTION = "640x480";              // Working
     public static boolean FULLSCREEN = false;                 // Working
-    public static float UI_SCALE = 1.0f;                      // 1.0 = 100% UI zoom
+    public static float UI_SCALE = 0f;                        // 0 = Auto (UiScale), 1.0 = 100% UI zoom
+    /** the OS scale of the monitor (2.0 at Windows 200%), set by the desktop launcher; 1 when unknown */
+    public static float SYSTEM_UI_SCALE = 1f;
     
     private int currentScreenId = MENU_SCREEN;
     
@@ -483,7 +485,7 @@ public class Futtoboru extends Game {
      */
     public void updateUiScale(float scale) {
         if (scale <= 0f) {
-            scale = PreferencesManager.DEFAULT_UI_SCALE;
+            scale = 0f; // Auto
         }
         UI_SCALE = scale;
         preferences.updateUiScale(scale);

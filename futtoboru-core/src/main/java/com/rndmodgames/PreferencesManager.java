@@ -35,6 +35,8 @@ public class PreferencesManager {
 	public static final String SETTINGS_UI_SCALE_PREF = "settings.ui_scale";
 	/** One-time HiDPI dev default (200% UI scale). */
 	public static final String SETTINGS_UI_SCALE_MIGRATION_V5_PREF = "settings.ui_scale_migration_v5_hidpi";
+	/** One-time move to Auto UI scale (follows the monitor's OS scale and the window size). */
+	public static final String SETTINGS_UI_SCALE_MIGRATION_V6_PREF = "settings.ui_scale_migration_v6_auto";
 	public static final String SETTINGS_DAY_NIGHT_RENDERING_PREF = "settings.day_night_cycle_rendering";
 	public static final String SETTINGS_DAMAGE_COUNTERS_RENDERING_PREF = "settings.damage_counters_rendering";
 	public static final String SETTINGS_DEBUG_SIGHT_PREF = "settings.debug_sight_rendering";
@@ -51,7 +53,7 @@ public class PreferencesManager {
 	
 	// DEFAULT VALUES
 	public static String DEFAULT_RESOLUTION = "1280x1024";
-	public static float DEFAULT_UI_SCALE = 2.0f;
+	public static float DEFAULT_UI_SCALE = 0f; // Auto (UiScale.AUTO)
 	public static String DEFAULT_LOCALE = "en_US";
 	
 	public PreferencesManager() {
@@ -236,13 +238,13 @@ public class PreferencesManager {
 
 	public void updateUiScale(float scale) {
 		if (scale <= 0f) {
-			scale = DEFAULT_UI_SCALE;
+			scale = 0f; // Auto
 		}
 		updateUserPreference(SETTINGS_UI_SCALE_PREF, Float.toString(scale));
 	}
 
 	/**
-	 * One-time migrations for UI scale. v4 reset broken ScrollPane experiment; v5 sets HiDPI default.
+	 * One-time migrations for UI scale. v4 reset broken ScrollPane experiment; v5 set a fixed 200%; v6 moves everyone to Auto.
 	 * UI scale is global (not per savegame).
 	 */
 	public void migrateUiScalePreferences() {
@@ -250,11 +252,14 @@ public class PreferencesManager {
 			updateUiScale(1.0f);
 			prefs.putBoolean("settings.ui_scale_migration_v4", true);
 		}
-		if (prefs.getBoolean(SETTINGS_UI_SCALE_MIGRATION_V5_PREF, false)) {
+		prefs.putBoolean(SETTINGS_UI_SCALE_MIGRATION_V5_PREF, true);
+		if (prefs.getBoolean(SETTINGS_UI_SCALE_MIGRATION_V6_PREF, false)) {
+			prefs.flush();
 			return;
 		}
+		// v6: a fixed zoom was tiny on HiDPI screens and too big on small windows; everyone starts on Auto once
 		updateUiScale(DEFAULT_UI_SCALE);
-		prefs.putBoolean(SETTINGS_UI_SCALE_MIGRATION_V5_PREF, true);
+		prefs.putBoolean(SETTINGS_UI_SCALE_MIGRATION_V6_PREF, true);
 		prefs.flush();
 	}
 	

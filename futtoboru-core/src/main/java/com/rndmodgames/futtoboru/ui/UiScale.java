@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -15,11 +16,43 @@ public final class UiScale {
 
     public static final float[] PRESET_SCALES = {1.0f, 1.25f, 1.5f, 1.75f, 2.0f};
 
+    /** stored UI scale meaning "follow the monitor and the window" (the default) */
+    public static final float AUTO = 0f;
+
+    /** Auto keeps at least this logical window (DarkBlade AJU-12: half of 1920x1080) */
+    public static final int MIN_LOGICAL_WIDTH = 960;
+    public static final int MIN_LOGICAL_HEIGHT = 540;
+
+    /** Auto never goes above this */
+    public static final float MAX_AUTO_SCALE = 3f;
+
     private UiScale() {
     }
 
+    public static boolean isAuto(float stored) {
+        return stored <= 0f;
+    }
+
+    /** the zoom used now: the chosen preset, or the Auto scale for the current window */
     public static float currentScale() {
-        return Futtoboru.UI_SCALE > 0f ? Futtoboru.UI_SCALE : 1f;
+        if (!isAuto(Futtoboru.UI_SCALE)) {
+            return Futtoboru.UI_SCALE;
+        }
+        if (Gdx.graphics == null) {
+            return 1f;
+        }
+        return autoScale(Futtoboru.SYSTEM_UI_SCALE, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+    }
+
+    /**
+     * Auto: a HiDPI monitor (the OS scale, e.g. 200% on a 2880x1800 laptop) is followed as is; on a 100% monitor,
+     * x2 when the window still leaves 960x540 logical pixels (from 1920x1080), else x1, as DarkBlade's AJU-12
+     */
+    public static float autoScale(float systemScale, int width, int height) {
+        if (systemScale > 1.01f) {
+            return Math.min(MAX_AUTO_SCALE, systemScale);
+        }
+        return width / 2 >= MIN_LOGICAL_WIDTH && height / 2 >= MIN_LOGICAL_HEIGHT ? 2f : 1f;
     }
 
     public static ScreenViewport newViewport() {

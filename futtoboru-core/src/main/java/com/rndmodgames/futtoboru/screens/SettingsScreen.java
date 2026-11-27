@@ -167,16 +167,21 @@ this.game = game;
         });
 
         final VisSelectBox<String> uiScaleSelectBox = new VisSelectBox<>();
-        String[] uiScaleItems = new String[UiScale.PRESET_SCALES.length];
+        // Auto (the default) shows the zoom it picks for this monitor and window
+        final String autoItem = LanguageModLoader.getValue("ui_scale_auto") + " (" + UiScale.formatPercent(UiScale.autoScale(
+                Futtoboru.SYSTEM_UI_SCALE, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight())) + ")";
+        String[] uiScaleItems = new String[UiScale.PRESET_SCALES.length + 1];
+        uiScaleItems[0] = autoItem;
         for (int i = 0; i < UiScale.PRESET_SCALES.length; i++) {
-            uiScaleItems[i] = UiScale.formatPercent(UiScale.PRESET_SCALES[i]);
+            uiScaleItems[i + 1] = UiScale.formatPercent(UiScale.PRESET_SCALES[i]);
         }
         uiScaleSelectBox.setItems(uiScaleItems);
-        uiScaleSelectBox.setSelected(UiScale.nearestPresetLabel(Futtoboru.UI_SCALE));
+        uiScaleSelectBox.setSelected(UiScale.isAuto(Futtoboru.UI_SCALE) ? autoItem : UiScale.nearestPresetLabel(Futtoboru.UI_SCALE));
         uiScaleSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                float scale = UiScale.parsePercent(uiScaleSelectBox.getSelected());
+                float scale = autoItem.equals(uiScaleSelectBox.getSelected()) ? UiScale.AUTO
+                        : UiScale.parsePercent(uiScaleSelectBox.getSelected());
                 if (Math.abs(scale - Futtoboru.UI_SCALE) < 0.001f) {
                     return;
                 }
