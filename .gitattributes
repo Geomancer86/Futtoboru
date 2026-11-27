@@ -1,4 +1,8 @@
 # Shell scripts must keep LF endings or they break on Linux/Jenkins
 tools/hooks/* text eol=lf
 *.sh text eol=lf
+mvnw text eol=lf
 *.json text eol=lf
+# Windows scripts keep CRLF so cmd.exe parses them reliably
+*.bat text eol=crlf
+*.cmd text eol=crlf

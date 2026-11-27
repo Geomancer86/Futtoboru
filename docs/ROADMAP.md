@@ -14,10 +14,10 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 | D7 | **Fully era-accurate 1888 rules** from v1, including the 3-player offside rule, no substitutes, no penalties (until 1891), umpires + referee. |
 | D8 | WORKSTATION and BOOK3PRO are **equals**: each merges its own green branches into develop. |
 | D9 | Light coordination: `docs/HANDOFF.md` + branch prefixes (`ws/`, `b3/`) + CI. |
-| D10 | _Open._ Phase 2 additions from the BOOK3PRO review (P2-0 determinism, P2-6 season reset, P2-7 period details; larger P2-4/P2-5): Phase 2 becomes ~2 weeks. Recommended: yes. |
+| D10 | **Yes** (producer, 2026-11-27): Phase 2 adds P2-0 determinism, P2-6 season reset, P2-7 period details; larger P2-4/P2-5; Phase 2 becomes ~2 weeks. |
 | D11 | **Stable string data ids** (DarkBlade pattern): lower-case slugs unique per kind, never changed (renames via `aliases.json` + rename log); runtime `Long` ids from one saved `IdAllocator`. See `docs/DATA_MODEL.md`. |
 | D12 | UI skin stays: VisUI + Tixel + Droid Sans are Apache 2.0 (as in DarkBlade), credited in `THIRD_PARTY_NOTICES.txt`. A new own skin comes later. |
-| D13 | _Open._ Tag a release on `main` at the end of each phase (v0.4.1, v0.5.0, ...). Recommended: yes. |
+| D13 | **Yes** (producer, 2026-11-27): tag a release on `main` at the end of each phase (v0.4.1, v0.5.0, ...). |
 | D14 | **All game data in JSON**, like DarkBlade: packs under `resources/gamedata/<pack>/` with a `pack.json` that lists every file; strict validator (unknown fields are errors). |
 | D15 | **One people table + season squads**; seasonal facts (ground, balance, squad) per season folder. v0.4 saves are **not** migrated; saves are versioned from now on. |
 | D16 | **UI/UX phase after the data redesign** and before the match engine. |

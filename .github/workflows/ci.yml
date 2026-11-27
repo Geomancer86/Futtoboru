@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  java:
+    name: Maven verify (JDK 17)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - name: Install Xvfb (libGDX tests, as on the old Jenkins)
+        run: sudo apt-get update -q && sudo apt-get install -y -q xvfb
+      - name: ./mvnw -B verify
+        run: xvfb-run -a ./mvnw -B -ntp verify
+      - name: Upload test reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: "**/target/surefire-reports/"
+          retention-days: 7
+
+  data:
+    name: Game data (pytest + validator)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --quiet pytest
+      - name: pytest tools/data
+        run: python -m pytest -q tools/data
+      - name: validate game data
+        run: python tools/data/validate.py

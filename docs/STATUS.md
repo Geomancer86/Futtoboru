@@ -4,7 +4,7 @@ _Last updated 2026-11-27 (WORKSTATION)._ Version 0.4.0-SNAPSHOT.
 
 | System | Status | Notes |
 |---|---|---|
-| Day advance / game flow | working | Continue double-click advances two days (P2-1) |
+| Day advance / game flow | working | Continue double-click fixed (P2-1) |
 | Inbox / messages | working | `MessageManager` |
 | League fixtures + standings | working | champion prize hard-coded £500 |
 | FA Cup | working | completion, runner-up, replays; tests in engine/cup and engine/temporal |
@@ -18,4 +18,4 @@ _Last updated 2026-11-27 (WORKSTATION)._ Version 0.4.0-SNAPSHOT.
 | New season table | broken | points are never reset (P2-6) |
 | Tactics, Training, Transfers, Scouting, Staff, Board | stub | empty screens |
 
-Build: `mvn -B verify` green on Maven 3.9.12 / JDK 21 (2026-11-27).
+Build: `./mvnw -B verify` green (Maven 3.9.12 via wrapper), 47 core + 1 desktop tests (2026-11-27). Dead 3D demo code removed (P1-4). Match engine v2 design: `docs/design/MATCH_ENGINE_V2.md`.
