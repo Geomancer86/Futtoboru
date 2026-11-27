@@ -24,6 +24,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Club Detail Screen Table v1
@@ -120,8 +121,8 @@ public class ClubDetailScreenTable extends VisTable {
             this.addSeparator();
             this.row();
             VisLabel stadiumHeader = new VisLabel("STADIUM INFORMATION");
-            stadiumHeader.setFontScale(1.1f);
-            this.add(stadiumHeader).colspan(2).left().padTop(10);
+            stadiumHeader.setFontScale(UiTheme.fontScale("subheading"));
+            this.add(stadiumHeader).colspan(2).left().padTop(UiTheme.space("sm"));
             this.row();
             
             // Stadium Name
@@ -178,7 +179,7 @@ public class ClubDetailScreenTable extends VisTable {
                 if (totalAssetValue.compareTo(BigDecimal.ZERO) > 0) {
                     this.add(new VisLabel("Total Asset Value:")).left();
                     VisLabel assetValueLabel = new VisLabel(Money.format(totalAssetValue));
-                    assetValueLabel.setColor(0.2f, 1.0f, 0.2f, 1.0f); // Green for asset value
+                    assetValueLabel.setColor(UiTheme.color("state.positive")); // Green for asset value
                     this.add(assetValueLabel).left().expandX();
                     this.row();
                 }
@@ -186,28 +187,28 @@ public class ClubDetailScreenTable extends VisTable {
             
             // Historical Description
             if (club.getStadium().getDescription() != null && !club.getStadium().getDescription().trim().isEmpty()) {
-                this.addSeparator().colspan(2).padTop(5).padBottom(5);
+                this.addSeparator().colspan(2).padTop(UiTheme.space("xs")).padBottom(UiTheme.space("xs"));
                 this.row();
                 VisLabel descHeader = new VisLabel("Historical Summary:");
-                descHeader.setFontScale(1.05f);
+                descHeader.setFontScale(UiTheme.fontScale("subheading.minor"));
                 this.add(descHeader).colspan(2).left();
                 this.row();
                 // Description text (may be long, so wrap it)
                 VisLabel descriptionLabel = new VisLabel(club.getStadium().getDescription());
                 descriptionLabel.setWrap(true);
-                this.add(descriptionLabel).colspan(2).left().width(600).padTop(5);
+                this.add(descriptionLabel).colspan(2).left().width(UiTheme.size("text.wrap")).padTop(UiTheme.space("xs"));
                 this.row();
             }
             
             // URL Source (Wikipedia link)
             if (club.getStadium().getUrlSource() != null && !club.getStadium().getUrlSource().trim().isEmpty()) {
-                this.addSeparator().colspan(2).padTop(5).padBottom(5);
+                this.addSeparator().colspan(2).padTop(UiTheme.space("xs")).padBottom(UiTheme.space("xs"));
                 this.row();
                 this.add(new VisLabel("Source:")).left();
                 
                 final String url = club.getStadium().getUrlSource();
                 final VisLabel urlLabel = new VisLabel(url);
-                urlLabel.setColor(0.3f, 0.5f, 1.0f, 1.0f); // Blue for link
+                urlLabel.setColor(UiTheme.color("link.normal")); // Blue for link
                 
                 // Make URL clickable and add hover feedback
                 urlLabel.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
@@ -219,13 +220,13 @@ public class ClubDetailScreenTable extends VisTable {
                     
                     @Override
                     public void enter(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor fromActor) {
-                        urlLabel.setColor(0.5f, 0.7f, 1.0f, 1.0f); // Brighter blue on hover
+                        urlLabel.setColor(UiTheme.color("link.hover")); // Brighter blue on hover
                         com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Hand);
                     }
                     
                     @Override
                     public void exit(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor toActor) {
-                        urlLabel.setColor(0.3f, 0.5f, 1.0f, 1.0f); // Original blue
+                        urlLabel.setColor(UiTheme.color("link.normal")); // Original blue
                         com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Arrow);
                     }
                 });
@@ -267,9 +268,9 @@ public class ClubDetailScreenTable extends VisTable {
                 this.add(new VisLabel(profession.getName() + ":")).left();
                 VisLabel statusLabel = new VisLabel(status);
                 if (isVacant) {
-                    statusLabel.setColor(1, 0, 0, 1); // Red for vacant
+                    statusLabel.setColor(UiTheme.color("status.vacant")); // Red for vacant
                 } else {
-                    statusLabel.setColor(0, 1, 0, 1); // Green for filled
+                    statusLabel.setColor(UiTheme.color("status.filled")); // Green for filled
                 }
                 this.add(statusLabel).left().expandX();
                 
@@ -503,7 +504,7 @@ public class ClubDetailScreenTable extends VisTable {
                         
                         Gdx.app.log("ClubDetailScreenTable", "Listener added to button, now adding button to table...");
                         System.out.println("[ClubDetailScreenTable] Adding button to table...");
-                        this.add(applyButton).width(100);
+                        this.add(applyButton).width(UiTheme.size("col.number"));
                         Gdx.app.log("ClubDetailScreenTable", "Button added to table successfully");
                         System.out.println("[ClubDetailScreenTable] Button added to table for: " + finalProfession.getName() + " at " + finalClub.getName());
                     }
@@ -531,7 +532,7 @@ public class ClubDetailScreenTable extends VisTable {
                 }
             }
         });
-        this.add(backButton).colspan(2).fillX().pad(5);
+        this.add(backButton).colspan(2).fillX().pad(UiTheme.space("xs"));
     }
     
     public void setMenuManager(MainMenuManager menuManager) {

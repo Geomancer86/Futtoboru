@@ -1,0 +1,12 @@
+[
+  {
+    "id": "england",
+    "name": "England",
+    "continent": "europe"
+  },
+  {
+    "id": "scotland",
+    "name": "Scotland",
+    "continent": "europe"
+  }
+]

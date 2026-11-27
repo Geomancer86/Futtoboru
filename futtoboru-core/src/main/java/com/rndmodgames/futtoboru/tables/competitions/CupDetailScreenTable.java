@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Cup Detail Screen Table v1.0
@@ -96,33 +97,33 @@ public class CupDetailScreenTable extends VisTable {
         contentTable.clear();
         
         if (selectedCup == null) {
-            contentTable.add(new VisLabel("No cup selected")).pad(20).row();
+            contentTable.add(new VisLabel("No cup selected")).pad(UiTheme.space("lg")).row();
             return;
         }
         
         // Title
         VisLabel titleLabel = new VisLabel(selectedCup.getName() != null ? selectedCup.getName() : "Unnamed Cup");
-        titleLabel.setFontScale(1.3f);
-        contentTable.add(titleLabel).pad(10).row();
+        titleLabel.setFontScale(UiTheme.fontScale("title"));
+        contentTable.add(titleLabel).pad(UiTheme.space("sm")).row();
         
-        contentTable.addSeparator().pad(5).row();
+        contentTable.addSeparator().pad(UiTheme.space("xs")).row();
         
         // Cup Info Section
-        contentTable.add(new VisLabel("Competition Information")).pad(5).row();
+        contentTable.add(new VisLabel("Competition Information")).pad(UiTheme.space("xs")).row();
         
         if (currentEdition != null) {
-            contentTable.add(new VisLabel("Season: " + currentEdition.getName())).left().pad(2).row();
+            contentTable.add(new VisLabel("Season: " + currentEdition.getName())).left().pad(UiTheme.space("xxs")).row();
             Integer participants = currentEdition.getParticipantClubs();
             String participantsText = participants != null ? String.valueOf(participants) : "0";
-            contentTable.add(new VisLabel("Participants: " + participantsText)).left().pad(2).row();
+            contentTable.add(new VisLabel("Participants: " + participantsText)).left().pad(UiTheme.space("xxs")).row();
         }
         
-        contentTable.add().height(10).row();
+        contentTable.add().height(UiTheme.space("sm")).row();
         
         // Past Champions Section
         if (selectedCup.getEditions() != null && !selectedCup.getEditions().isEmpty()) {
-            contentTable.add(new VisLabel("Past Champions")).pad(5).row();
-            contentTable.addSeparator().pad(2).row();
+            contentTable.add(new VisLabel("Past Champions")).pad(UiTheme.space("xs")).row();
+            contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             // Show completed editions (those with champions)
             int completedCount = 0;
@@ -137,20 +138,20 @@ public class CupDetailScreenTable extends VisTable {
                     String runnerUpName = runnerUp != null ? runnerUp.getName() : "N/A";
                     
                     VisTable historyRow = new VisTable(true);
-                    historyRow.add(new VisLabel(seasonInfo)).width(150).left();
+                    historyRow.add(new VisLabel(seasonInfo)).width(UiTheme.size("col.label")).left();
                     historyRow.add(new VisLabel("Champion: " + championName)).expandX().left();
                     if (runnerUp != null) {
                         historyRow.add(new VisLabel("Runner-up: " + runnerUpName)).expandX().left();
                     }
-                    contentTable.add(historyRow).pad(2).row();
+                    contentTable.add(historyRow).pad(UiTheme.space("xxs")).row();
                 }
             }
             
             if (completedCount == 0) {
-                contentTable.add(new VisLabel("No completed editions yet.")).left().pad(2).row();
+                contentTable.add(new VisLabel("No completed editions yet.")).left().pad(UiTheme.space("xxs")).row();
             }
             
-            contentTable.add().height(10).row();
+            contentTable.add().height(UiTheme.space("sm")).row();
         }
         
         // View Bracket Button
@@ -168,15 +169,15 @@ public class CupDetailScreenTable extends VisTable {
                 }
             }
         });
-        contentTable.add(bracketButton).pad(10).row();
+        contentTable.add(bracketButton).pad(UiTheme.space("sm")).row();
         
-        contentTable.addSeparator().pad(5).row();
+        contentTable.addSeparator().pad(UiTheme.space("xs")).row();
         
         // Fixtures and Results - Show ALL rounds (complete schedule)
         List<Match> matches = getEditionMatches();
         if (!matches.isEmpty()) {
-            contentTable.add(new VisLabel("Complete Tournament Schedule")).pad(5).row();
-            contentTable.addSeparator().pad(2).row();
+            contentTable.add(new VisLabel("Complete Tournament Schedule")).pad(UiTheme.space("xs")).row();
+            contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             // Group matches by round
             java.util.Map<Integer, List<Match>> matchesByRound = new java.util.HashMap<>();
@@ -208,8 +209,8 @@ public class CupDetailScreenTable extends VisTable {
                 // Round header
                 String roundName = getRoundName(round, roundMatches.size() * 2);
                 VisLabel roundLabel = new VisLabel(roundName + " (Round " + round + ")");
-                roundLabel.setColor(0.7f, 0.7f, 1f, 1f);
-                contentTable.add(roundLabel).padTop(10).padBottom(5).row();
+                roundLabel.setColor(UiTheme.color("text.heading"));
+                contentTable.add(roundLabel).padTop(UiTheme.space("sm")).padBottom(UiTheme.space("xs")).row();
                 
                 // Matches in this round
                 for (Match match : roundMatches) {
@@ -217,11 +218,11 @@ public class CupDetailScreenTable extends VisTable {
                     
                     // Date
                     String dateStr = match.getMatchDateTime() != null ? match.getMatchDateTime().format(dateFormatter) : "TBD";
-                    row.add(new VisLabel(dateStr)).width(100);
+                    row.add(new VisLabel(dateStr)).width(UiTheme.size("col.number"));
                     
                     // Home team or "Winner of X"
                     String homeName = getTeamNameOrWinner(match, true);
-                    row.add(new VisLabel(homeName)).width(150).right();
+                    row.add(new VisLabel(homeName)).width(UiTheme.size("col.label")).right();
                     
                     // Score or vs
                     String score = " vs ";
@@ -229,20 +230,20 @@ public class CupDetailScreenTable extends VisTable {
                         match.getHomeGoals() != null && match.getAwayGoals() != null) {
                         score = " " + match.getHomeGoals() + " - " + match.getAwayGoals() + " ";
                     }
-                    row.add(new VisLabel(score)).width(60).center();
+                    row.add(new VisLabel(score)).width(UiTheme.size("col.score")).center();
                     
                     // Away team or "Winner of X"
                     String awayName = getTeamNameOrWinner(match, false);
-                    row.add(new VisLabel(awayName)).width(150).left();
+                    row.add(new VisLabel(awayName)).width(UiTheme.size("col.label")).left();
                     
-                    contentTable.add(row).pad(2).row();
+                    contentTable.add(row).pad(UiTheme.space("xxs")).row();
                 }
             }
         } else {
-            contentTable.add(new VisLabel("No matches scheduled yet for this edition.")).pad(20).row();
+            contentTable.add(new VisLabel("No matches scheduled yet for this edition.")).pad(UiTheme.space("lg")).row();
         }
         
-        contentTable.add().height(20).row();
+        contentTable.add().height(UiTheme.space("lg")).row();
         
         // Back button
         VisTextButton backButton = new VisTextButton("Back to Competitions");
@@ -259,7 +260,7 @@ public class CupDetailScreenTable extends VisTable {
                 }
             }
         });
-        contentTable.add(backButton).pad(10).row();
+        contentTable.add(backButton).pad(UiTheme.space("sm")).row();
     }
     
     private List<Match> getEditionMatches() {

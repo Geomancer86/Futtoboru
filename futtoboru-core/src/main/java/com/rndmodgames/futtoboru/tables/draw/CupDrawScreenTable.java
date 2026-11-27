@@ -17,6 +17,7 @@ import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Cup Draw Screen Table v1.0
@@ -387,26 +388,26 @@ public class CupDrawScreenTable extends VisTable {
         contentTable.clear();
         
         if (currentCup == null || currentEdition == null) {
-            contentTable.add(new VisLabel("No cup draw selected")).pad(20).row();
+            contentTable.add(new VisLabel("No cup draw selected")).pad(UiTheme.space("lg")).row();
             return;
         }
         
         // Title
         VisLabel titleLabel = new VisLabel(currentCup.getName() + " - " + roundName + " Draw");
-        titleLabel.setFontScale(1.3f);
-        contentTable.add(titleLabel).pad(10).row();
+        titleLabel.setFontScale(UiTheme.fontScale("title"));
+        contentTable.add(titleLabel).pad(UiTheme.space("sm")).row();
         
-        contentTable.addSeparator().pad(5).row();
+        contentTable.addSeparator().pad(UiTheme.space("xs")).row();
         
         // Instructions
-        contentTable.add(new VisLabel("The draw for the " + roundName + " is being revealed.")).pad(5).row();
-        contentTable.add(new VisLabel("Click 'Next' to reveal teams one by one (like Football Manager).")).pad(5).row();
+        contentTable.add(new VisLabel("The draw for the " + roundName + " is being revealed.")).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel("Click 'Next' to reveal teams one by one (like Football Manager).")).pad(UiTheme.space("xs")).row();
         
-        contentTable.add().height(10).row();
+        contentTable.add().height(UiTheme.space("sm")).row();
         
         // Draw table - shows teams being drawn one by one
         fixturesTable = new VisTable(true);
-        fixturesTable.add(new VisLabel("Team")).width(200).row();
+        fixturesTable.add(new VisLabel("Team")).width(UiTheme.size("col.wide")).row();
         fixturesTable.addSeparator().row();
         
         // Show revealed teams
@@ -420,26 +421,26 @@ public class CupDrawScreenTable extends VisTable {
                     VisLabel teamLabel = new VisLabel((i + 1) + ". " + club.getName());
                     // If this is the second team in a pair, show it as opponent
                     if (i > 0 && i % 2 == 1) {
-                        teamLabel.setColor(0.7f, 0.9f, 0.7f, 1f); // Light green for opponent
-                        fixturesTable.add(teamLabel).width(200).pad(2).row();
+                        teamLabel.setColor(UiTheme.color("draw.opponent")); // Light green for opponent
+                        fixturesTable.add(teamLabel).width(UiTheme.size("col.wide")).pad(UiTheme.space("xxs")).row();
                         // Add separator line for completed matchup
                         fixturesTable.addSeparator().row();
                     } else {
-                        fixturesTable.add(teamLabel).width(200).pad(2).row();
+                        fixturesTable.add(teamLabel).width(UiTheme.size("col.wide")).pad(UiTheme.space("xxs")).row();
                     }
                 }
             }
             
             // Show "???" for unrevealed teams
             if (!allRevealed && currentRevealedIndex < drawOrder.size()) {
-                fixturesTable.add(new VisLabel("???")).width(200).pad(2).row();
-                fixturesTable.add(new VisLabel((drawOrder.size() - currentRevealedIndex) + " more teams to be drawn")).pad(5).row();
+                fixturesTable.add(new VisLabel("???")).width(UiTheme.size("col.wide")).pad(UiTheme.space("xxs")).row();
+                fixturesTable.add(new VisLabel((drawOrder.size() - currentRevealedIndex) + " more teams to be drawn")).pad(UiTheme.space("xs")).row();
             }
         }
         
-        contentTable.add(fixturesTable).growX().pad(10).row();
+        contentTable.add(fixturesTable).growX().pad(UiTheme.space("sm")).row();
         
-        contentTable.add().height(20).row();
+        contentTable.add().height(UiTheme.space("lg")).row();
         
         // Buttons
         VisTable buttonTable = new VisTable(true);
@@ -462,7 +463,7 @@ public class CupDrawScreenTable extends VisTable {
                     updateDynamicComponents();
                 }
             });
-            buttonTable.add(nextButton).pad(5);
+            buttonTable.add(nextButton).pad(UiTheme.space("xs"));
             
             drawAllButton = new VisTextButton("Draw All");
             drawAllButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
@@ -473,10 +474,10 @@ public class CupDrawScreenTable extends VisTable {
                     updateDynamicComponents();
                 }
             });
-            buttonTable.add(drawAllButton).pad(5);
+            buttonTable.add(drawAllButton).pad(UiTheme.space("xs"));
         } else if (drawOrder == null || drawOrder.isEmpty()) {
             // If no draw order, show a message and allow manual generation
-            contentTable.add(new VisLabel("No draw data available. Generating draw...")).pad(10).row();
+            contentTable.add(new VisLabel("No draw data available. Generating draw...")).pad(UiTheme.space("sm")).row();
             VisTextButton generateButton = new VisTextButton("Generate Draw");
             generateButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
                 @Override
@@ -486,7 +487,7 @@ public class CupDrawScreenTable extends VisTable {
                     updateDynamicComponents();
                 }
             });
-            buttonTable.add(generateButton).pad(5);
+            buttonTable.add(generateButton).pad(UiTheme.space("xs"));
         }
         
         if (allRevealed || (drawOrder != null && drawOrder.size() > 0 && currentRevealedIndex >= drawOrder.size())) {
@@ -503,10 +504,10 @@ public class CupDrawScreenTable extends VisTable {
                     }
                 }
             });
-            buttonTable.add(continueButton).pad(5);
+            buttonTable.add(continueButton).pad(UiTheme.space("xs"));
         }
         
-        contentTable.add(buttonTable).pad(10).row();
+        contentTable.add(buttonTable).pad(UiTheme.space("sm")).row();
     }
     
     private void markDrawMessageAsComplete() {

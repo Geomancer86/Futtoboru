@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * League Draw Screen Table v1.0
@@ -165,28 +166,28 @@ public class LeagueDrawScreenTable extends VisTable {
         contentTable.clear();
         
         if (selectedLeague == null) {
-            contentTable.add(new VisLabel("No league selected")).pad(20).row();
+            contentTable.add(new VisLabel("No league selected")).pad(UiTheme.space("lg")).row();
             return;
         }
         
         // Title
         VisLabel titleLabel = new VisLabel(selectedLeague.getName() != null ? selectedLeague.getName() + " - Fixture Draw" : "Fixture Draw");
-        titleLabel.setFontScale(1.3f);
-        contentTable.add(titleLabel).pad(10).row();
+        titleLabel.setFontScale(UiTheme.fontScale("title"));
+        contentTable.add(titleLabel).pad(UiTheme.space("sm")).row();
         
-        contentTable.addSeparator().pad(5).row();
+        contentTable.addSeparator().pad(UiTheme.space("xs")).row();
         
         // Instructions
-        contentTable.add(new VisLabel("The fixture draw for " + selectedLeague.getName() + " is being revealed.")).pad(5).row();
-        contentTable.add(new VisLabel("Click 'Next' to reveal fixtures one by one, or 'Draw All' to see all fixtures at once.")).pad(5).row();
+        contentTable.add(new VisLabel("The fixture draw for " + selectedLeague.getName() + " is being revealed.")).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel("Click 'Next' to reveal fixtures one by one, or 'Draw All' to see all fixtures at once.")).pad(UiTheme.space("xs")).row();
         
-        contentTable.add().height(10).row();
+        contentTable.add().height(UiTheme.space("sm")).row();
         
         // Fixtures table
         fixturesTable = new VisTable(true);
-        fixturesTable.add(new VisLabel("Date")).width(120);
-        fixturesTable.add(new VisLabel("Home")).width(200);
-        fixturesTable.add(new VisLabel("Away")).width(200).row();
+        fixturesTable.add(new VisLabel("Date")).width(UiTheme.size("col.long"));
+        fixturesTable.add(new VisLabel("Home")).width(UiTheme.size("col.wide"));
+        fixturesTable.add(new VisLabel("Away")).width(UiTheme.size("col.wide")).row();
         fixturesTable.addSeparator().colspan(3).row();
         
         // Show revealed fixtures
@@ -199,21 +200,21 @@ public class LeagueDrawScreenTable extends VisTable {
             if (homeClub != null && awayClub != null) {
                 String dateStr = match.getMatchDateTime() != null ? 
                     dateFormatter.format(match.getMatchDateTime()) : "TBA";
-                fixturesTable.add(new VisLabel(dateStr)).width(120);
-                fixturesTable.add(new VisLabel(homeClub.getName())).width(200);
-                fixturesTable.add(new VisLabel(awayClub.getName())).width(200).row();
+                fixturesTable.add(new VisLabel(dateStr)).width(UiTheme.size("col.long"));
+                fixturesTable.add(new VisLabel(homeClub.getName())).width(UiTheme.size("col.wide"));
+                fixturesTable.add(new VisLabel(awayClub.getName())).width(UiTheme.size("col.wide")).row();
             }
         }
         
         // Show "..." for unrevealed fixtures
         if (!allRevealed && currentRevealedIndex < allFixtures.size()) {
-            fixturesTable.add(new VisLabel("...")).colspan(3).pad(5).row();
-            fixturesTable.add(new VisLabel((allFixtures.size() - currentRevealedIndex) + " more fixtures to be revealed")).colspan(3).pad(5).row();
+            fixturesTable.add(new VisLabel("...")).colspan(3).pad(UiTheme.space("xs")).row();
+            fixturesTable.add(new VisLabel((allFixtures.size() - currentRevealedIndex) + " more fixtures to be revealed")).colspan(3).pad(UiTheme.space("xs")).row();
         }
         
-        contentTable.add(fixturesTable).growX().pad(10).row();
+        contentTable.add(fixturesTable).growX().pad(UiTheme.space("sm")).row();
         
-        contentTable.add().height(20).row();
+        contentTable.add().height(UiTheme.space("lg")).row();
         
         // Buttons
         VisTable buttonTable = new VisTable(true);
@@ -237,7 +238,7 @@ public class LeagueDrawScreenTable extends VisTable {
                     updateDynamicComponents();
                 }
             });
-            buttonTable.add(nextButton).pad(5);
+            buttonTable.add(nextButton).pad(UiTheme.space("xs"));
         }
         
         // Draw All button (only show if not all revealed)
@@ -257,7 +258,7 @@ public class LeagueDrawScreenTable extends VisTable {
                     updateDynamicComponents();
                 }
             });
-            buttonTable.add(drawAllButton).pad(5);
+            buttonTable.add(drawAllButton).pad(UiTheme.space("xs"));
         }
         
         // Continue button (only show when all fixtures are revealed)
@@ -286,10 +287,10 @@ public class LeagueDrawScreenTable extends VisTable {
                     }
                 }
             });
-            buttonTable.add(continueButton).pad(5);
+            buttonTable.add(continueButton).pad(UiTheme.space("xs"));
         }
         
-        contentTable.add(buttonTable).pad(10).row();
+        contentTable.add(buttonTable).pad(UiTheme.space("sm")).row();
     }
     
     /**

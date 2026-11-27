@@ -22,6 +22,7 @@ import com.rndmodgames.futtoboru.tables.widgets.CurrentDateAndTimeWidget;
 import com.rndmodgames.localization.LanguageModLoader;
 
 import java.util.function.BooleanSupplier;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Top Game Menu Table
@@ -218,11 +219,11 @@ public class MainGameMenuTable extends VisTable {
         
         // Add BusyBar directly below button (hidden by default)
         processingBusyBar.setVisible(false);
-        processingBusyBar.setWidth(150);
-        buttonAndProgressContainer.add(processingBusyBar).width(150).height(4).padTop(2);
+        processingBusyBar.setWidth(UiTheme.size("busybar.w"));
+        buttonAndProgressContainer.add(processingBusyBar).width(UiTheme.size("busybar.w")).height(UiTheme.size("busybar.h")).padTop(UiTheme.space("xxs"));
         
         rightMenu.add(gameSettingsSelectBox).right();
-        rightMenu.add(dateTimeWidget).width(100).right();
+        rightMenu.add(dateTimeWidget).width(UiTheme.size("widget.date")).right();
         rightMenu.add(buttonAndProgressContainer).right();
         
         //

@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.util.ToastManager;
@@ -18,6 +17,7 @@ import com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.tools.SharingUtils;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Main Game Screen v1
@@ -74,7 +74,7 @@ public class MainGameScreen implements Screen {
         // Full Game Window
         final VisTable gameWindowTable = new VisTable(true);
         gameWindowTable.setFillParent(true);
-        gameWindowTable.pad(5);
+        gameWindowTable.pad(UiTheme.space("xs"));
         
         // Top Menu (save, load, settings, advance time)
         mainGameMenu = new MainGameMenuTable(game, stage);
@@ -111,7 +111,7 @@ public class MainGameScreen implements Screen {
 
         // Initialize Toast Manager
         toastManager = new ToastManager(stage);
-        toastManager.setScreenPadding(10, 60); // hardcoded to let the toast show on not under the top menu, 
+        toastManager.setScreenPadding((int) UiTheme.size("toast.padX"), (int) UiTheme.size("toast.padY")); // hardcoded to let the toast show on not under the top menu, 
         toastManager.toFront(); // TODO FIX: showing the toast in front/foreground is not priority as they are mostly for debug
         
         //
@@ -169,8 +169,7 @@ public class MainGameScreen implements Screen {
     public void render(float delta) {
         
         // Clear blit
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        UiTheme.clearScreen();
         
         // Draw
         stage.act();

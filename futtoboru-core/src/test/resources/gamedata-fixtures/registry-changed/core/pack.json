@@ -1,0 +1,14 @@
+{
+  "id": "core",
+  "name": "Test pack",
+  "version": 1,
+  "dataVersion": 1,
+  "seasons": [],
+  "files": [
+    "aliases.json",
+    "clubs.json",
+    "continents.json",
+    "countries.json",
+    "ids.json"
+  ]
+}

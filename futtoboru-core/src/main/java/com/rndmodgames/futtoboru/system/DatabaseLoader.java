@@ -83,6 +83,8 @@ public class DatabaseLoader {
     private static HashMap<String, Profession> professionsByDataId = new HashMap<>();
     private static HashMap<String, Competition> competitionsByDataId = new HashMap<>();
     private static HashMap<String, Season> seasonsByDataId = new HashMap<>();
+    private static HashMap<String, Continent> continentsByDataId = new HashMap<>();
+    private static HashMap<String, PlayerProfession> playerProfessionsByDataId = new HashMap<>();
 
     //
     private static List<Profession> professions = new ArrayList<>();
@@ -157,6 +159,103 @@ public class DatabaseLoader {
     }
 
     /**
+     * Rebuilds every object of the database from the game data already read (fresh, unplayed objects), e.g. before
+     * a saved game is loaded so nothing of an earlier game in this session is left in the lookups.
+     */
+    public static synchronized void rebuild() {
+        if (instance == null || gameData == null) {
+            getInstance();
+            return;
+        }
+        load(gameData, random);
+    }
+
+    /**
+     * After a saved game is loaded (P2-5): the lookups the screens and engine use ({@link #getClubById},
+     * {@link #getClubByDataId}, {@link #getClubs}, clubs by country, seasons' clubs, people by data id, competitions,
+     * the main authority) return the game's objects, so there is one object per club, person and competition.
+     * Data objects the save doesn't hold (clubs of countries not played) stay as they are.
+     */
+    public static synchronized void bindGame(List<Club> gameClubs, List<Person> gamePersons,
+            List<Competition> gameCompetitions, Authority gameAuthority) {
+        for (Club club : gameClubs) {
+            Club byId = clubsById.get(club.getId());
+            final Club fresh = byId == null && club.getDataId() != null
+                    ? clubsByDataId.get(canonical(GameData.CLUB, club.getDataId())) : byId;
+            if (fresh == club) {
+                continue;
+            }
+            if (fresh != null) {
+                clubsById.remove(fresh.getId());
+                replace(clubs, fresh, club);
+                for (List<Club> byCountry : clubsByCountry.values()) {
+                    replace(byCountry, fresh, club);
+                }
+                for (Season season : seasons) {
+                    replace(season.getClubs(), fresh, club);
+                }
+                clubsByDataId.values().removeIf(c -> c == fresh);
+            } else {
+                clubs.add(club);
+                if (club.getCountry() != null) {
+                    clubsByCountry.computeIfAbsent(club.getCountry().getId(), k -> new ArrayList<>()).add(club);
+                }
+            }
+            clubsById.put(club.getId(), club);
+            if (club.getDataId() != null) {
+                clubsByDataId.put(canonical(GameData.CLUB, club.getDataId()), club);
+            }
+        }
+        Map<Long, Person> personsById = new HashMap<>();
+        for (Person person : gamePersons) {
+            personsById.put(person.getId(), person);
+        }
+        for (int i = 0; i < persons.size(); i++) {
+            Person saved = personsById.get(persons.get(i).getId());
+            if (saved != null) {
+                persons.set(i, saved);
+            }
+        }
+        for (Map.Entry<String, Person> e : personsByDataId.entrySet()) {
+            Person saved = personsById.get(e.getValue().getId());
+            if (saved != null) {
+                e.setValue(saved);
+            }
+        }
+        for (Competition competition : gameCompetitions) {
+            for (int i = 0; i < competitions.size(); i++) {
+                Competition fresh = competitions.get(i);
+                if (fresh.getId() != null && fresh.getId().equals(competition.getId())) {
+                    competitions.set(i, competition);
+                    competitionsByDataId.values().removeIf(c -> c == fresh);
+                    if (competition.getDataId() != null) {
+                        competitionsByDataId.put(canonical(GameData.COMPETITION, competition.getDataId()), competition);
+                    }
+                }
+            }
+        }
+        if (gameAuthority != null) {
+            for (int i = 0; i < authorities.size(); i++) {
+                if (authorities.get(i).getId() != null && authorities.get(i).getId().equals(gameAuthority.getId())) {
+                    authorities.set(i, gameAuthority);
+                }
+            }
+            mainAuthority = gameAuthority;
+        }
+    }
+
+    private static <T> void replace(List<T> list, T fresh, T saved) {
+        if (list == null) {
+            return;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) == fresh) {
+                list.set(i, saved);
+            }
+        }
+    }
+
+    /**
      * Used between some unit tests to avoid issues with missing data
      */
     public static synchronized void resetDatabaseLoaderInstance() {
@@ -225,6 +324,8 @@ public class DatabaseLoader {
         professionsByDataId = new HashMap<>();
         competitionsByDataId = new HashMap<>();
         seasonsByDataId = new HashMap<>();
+        continentsByDataId = new HashMap<>();
+        playerProfessionsByDataId = new HashMap<>();
         professions = new ArrayList<>();
         selectableProfessions = new ArrayList<>();
         playerProfessions = new LinkedHashMap<>();
@@ -246,6 +347,7 @@ public class DatabaseLoader {
             continent.setName(r.str("name"));
             continents.add(continent);
             continentsById.put(continent.getId(), continent);
+            continentsByDataId.put(continent.getDataId(), continent);
             countriesByContinent.put(continent.getId(), new ArrayList<>());
         }
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "FINISHED LOADING " + continents.size() + " CONTINENTS");
@@ -318,6 +420,7 @@ public class DatabaseLoader {
             applyAttributes(occupation, r.attrs("bonuses"), "Bonus");
             occupation.setHistoricalNotes(r.str("notes"));
             playerProfessions.put(occupation.getId(), occupation);
+            playerProfessionsByDataId.put(occupation.getDataId(), occupation);
         }
         DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_DATA_LOADING, "Loaded " + playerProfessions.size() + " player professions");
     }
@@ -669,6 +772,16 @@ public class DatabaseLoader {
      */
     public static Country getCountryById(Long id) {
         return id == null ? null : countriesById.get(id);
+    }
+
+    /** @return a Continent by data id (aliases followed) or null */
+    public static Continent getContinentByDataId(String dataId) {
+        return continentsByDataId.get(canonical(GameData.CONTINENT, dataId));
+    }
+
+    /** @return an occupation of amateur players by data id (aliases followed) or null */
+    public static PlayerProfession getPlayerProfessionByDataId(String dataId) {
+        return playerProfessionsByDataId.get(canonical(GameData.OCCUPATION, dataId));
     }
 
     /** @return a Country by data id (e.g. {@code england}, aliases followed) or null */

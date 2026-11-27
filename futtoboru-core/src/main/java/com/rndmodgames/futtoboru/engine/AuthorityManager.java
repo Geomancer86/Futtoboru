@@ -78,8 +78,20 @@ public class AuthorityManager {
      * Runtime ids for objects made during play (P2-4), from the current game
      */
     private com.rndmodgames.futtoboru.system.data.IdAllocator ids() {
-        SaveGame g = game != null && game.getCurrentGame() != null ? game.getCurrentGame() : currentGame;
-        return g.getIdAllocator();
+        return currentGame().getIdAllocator();
+    }
+
+    /**
+     * The game being played (P2-8). This manager is built in {@code Futtoboru.create()} before any game exists, so
+     * the game is read from {@code Futtoboru} on every entry instead of once in the constructor; that copy stayed
+     * null and the daily competition check never ran. Falls back to the stored game when none is set (tests that
+     * build their own manager).
+     */
+    SaveGame currentGame() {
+        if (game != null && game.getCurrentGame() != null) {
+            currentGame = game.getCurrentGame();
+        }
+        return currentGame;
     }
     
     /**
@@ -112,8 +124,8 @@ public class AuthorityManager {
 
         //
         Gdx.app.debug("AuthorityManager", "checkCompetitionsSchedule()");
-        
-        if (currentGame == null || currentGame.getMainAuthority() == null) {
+
+        if (currentGame() == null || currentGame.getMainAuthority() == null) {
             return;
         }
         
@@ -1449,7 +1461,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         }
         
         // Use provided SaveGame or fall back to currentGame
-        SaveGame gameToUse = saveGame != null ? saveGame : currentGame;
+        SaveGame gameToUse = saveGame != null ? saveGame : currentGame();
         if (gameToUse == null) {
             Gdx.app.error("AuthorityManager", "Cannot complete cup: SaveGame is null");
             return;
