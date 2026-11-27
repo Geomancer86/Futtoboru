@@ -7,12 +7,12 @@ _Last updated 2026-11-27 (WORKSTATION)._ Version 0.4.0-SNAPSHOT.
 | Day advance / game flow | working | Continue double-click advances two days (P2-1) |
 | Inbox / messages | working | `MessageManager` |
 | League fixtures + standings | working | champion prize hard-coded £500 |
-| FA Cup | partial | completion and runner-up fixes pending (P0-4) |
+| FA Cup | working | completion, runner-up, replays; tests in engine/cup and engine/temporal |
 | Match simulation | crude | random scoreline; replaced in Phase 3 |
 | Unemployed / job system | mostly working | offer and refresh bugs |
 | Finances | partial | weekly expenses, gate income |
 | Contracts | partial | generated only; no expiry or transfers |
-| New season | hacky | fires on `month == 7` |
+| New season | partial | generated when the league completes; no re-election vote yet |
 | Save / load | partial | single slot |
 | Tactics, Training, Transfers, Scouting, Staff, Board | stub | empty screens |
 

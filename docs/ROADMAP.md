@@ -18,7 +18,7 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 ## Phases
 **Phase 0: consolidate git** (done 2026-11-27 except P0-4)
 - P0-1 archive the 4 local-only repos ✔ · P0-2 move root docs ✔ · P0-3 CLAUDE.md + HANDOFF/BUILD/ROADMAP/STATUS ✔
-- P0-4 competition-completion code + tests (D4)
+- P0-4 competition-completion code + tests (D4) ✔
 - Producer: make the GitHub repo private, revoke the Sonar token in `Jenkinsfile` history, push the v0.4.0 release to `main`.
 
 **Phase 1: builds anywhere** (2-3 days)
