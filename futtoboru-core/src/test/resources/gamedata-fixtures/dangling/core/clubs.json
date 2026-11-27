@@ -1,0 +1,18 @@
+[
+  {
+    "id": "preston-north-end",
+    "name": "Preston North End",
+    "country": "atlantis",
+    "sources": [
+      "https://example.org/preston-north-end"
+    ]
+  },
+  {
+    "id": "queens-park",
+    "name": "Queens Park",
+    "country": "scotland",
+    "sources": [
+      "https://example.org/queens-park"
+    ]
+  }
+]

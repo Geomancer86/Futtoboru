@@ -1,0 +1,10 @@
+[
+  {
+    "id": "preston-north-end",
+    "name": "Preston North End",
+    "country": "england",
+    "sources": [
+      "https://example.org/preston-north-end"
+    ]
+  }
+]

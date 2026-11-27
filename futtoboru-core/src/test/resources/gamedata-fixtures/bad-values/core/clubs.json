@@ -1,0 +1,19 @@
+[
+  {
+    "id": "Preston North End",
+    "name": "Preston North End",
+    "country": "england",
+    "sources": [
+      "https://example.org/Preston North End"
+    ]
+  },
+  {
+    "id": "queens-park",
+    "name": "Queens Park",
+    "country": "scotland",
+    "sources": [
+      "https://example.org/queens-park"
+    ],
+    "founded": "1867"
+  }
+]

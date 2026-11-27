@@ -1,0 +1,10 @@
+[
+  {
+    "id": "preston-north-end-fc",
+    "name": "Preston North End Fc",
+    "country": "england",
+    "sources": [
+      "https://example.org/preston-north-end-fc"
+    ]
+  }
+]
