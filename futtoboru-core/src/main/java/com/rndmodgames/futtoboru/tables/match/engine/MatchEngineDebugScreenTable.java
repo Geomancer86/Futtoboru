@@ -8,6 +8,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Match Engine Debug Screen Table v1
@@ -40,12 +41,12 @@ public class MatchEngineDebugScreenTable extends VisTable {
         // Main content table
         contentTable = new VisTable(true);
         contentTable.setFillParent(false);
-        contentTable.pad(20);
+        contentTable.pad(UiTheme.space("lg"));
         
         // Title
         titleLabel = new VisLabel("Match Engine Debug Screen");
-        titleLabel.setFontScale(1.5f);
-        contentTable.add(titleLabel).colspan(2).padBottom(20);
+        titleLabel.setFontScale(UiTheme.fontScale("display"));
+        contentTable.add(titleLabel).colspan(2).padBottom(UiTheme.space("lg"));
         contentTable.row();
         
         // Description
@@ -60,13 +61,13 @@ public class MatchEngineDebugScreenTable extends VisTable {
             "See: G:\\git\\futtoboru_cursor\\darkblade_match_engine_port for analysis."
         );
         descriptionLabel.setWrap(true);
-        contentTable.add(descriptionLabel).width(600).colspan(2).padBottom(20);
+        contentTable.add(descriptionLabel).width(UiTheme.size("text.wrap")).colspan(2).padBottom(UiTheme.space("lg"));
         contentTable.row();
         
         // Placeholder button
         VisTextButton placeholderButton = new VisTextButton("Placeholder - Match Engine Coming Soon");
         placeholderButton.setDisabled(true);
-        contentTable.add(placeholderButton).colspan(2).padTop(20);
+        contentTable.add(placeholderButton).colspan(2).padTop(UiTheme.space("lg"));
         
         // Add content to main table
         this.add(contentTable).grow().fill();

@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -45,6 +44,7 @@ import com.rndmodgames.futtoboru.match.engine.systems.SteeringSystem;
 import com.rndmodgames.futtoboru.match.engine.systems.RenderingSystem;
 import com.rndmodgames.futtoboru.match.engine.utils.LocationAdapter;
 import com.badlogic.ashley.core.Entity;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * MatchEngineScreen - 2D Football Match Engine using Ashley ECS and Box2D
@@ -117,13 +117,13 @@ public class MatchEngineScreen implements Screen {
         // Create match info label
         Table uiTable = new Table();
         uiTable.setFillParent(true);
-        uiTable.top().left().pad(10);
+        uiTable.top().left().pad(UiTheme.space("sm"));
         
         String matchInfo = "Match Engine - Press ESC to return";
         if (config != null && config.homeTeam != null && config.awayTeam != null) {
             matchInfo = config.homeTeam.getName() + " vs " + config.awayTeam.getName() + " | Press ESC to return";
         }
-        matchInfoLabel = new Label(matchInfo, new Label.LabelStyle(font, com.badlogic.gdx.graphics.Color.WHITE));
+        matchInfoLabel = new Label(matchInfo, new Label.LabelStyle(font, UiTheme.color("text.primary")));
         uiTable.add(matchInfoLabel).left();
         uiStage.addActor(uiTable);
         
@@ -173,21 +173,21 @@ public class MatchEngineScreen implements Screen {
         
         // Player texture (blue circle)
         pixmap = new com.badlogic.gdx.graphics.Pixmap(32, 32, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-        pixmap.setColor(0.2f, 0.6f, 1.0f, 1.0f); // Blue
+        pixmap.setColor(UiTheme.color("pitch.home")); // Blue
         pixmap.fillCircle(16, 16, 15);
         playerTexture = new Texture(pixmap);
         pixmap.dispose();
         
         // Ball texture (white circle)
         pixmap = new com.badlogic.gdx.graphics.Pixmap(16, 16, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-        pixmap.setColor(1.0f, 1.0f, 1.0f, 1.0f); // White
+        pixmap.setColor(UiTheme.color("pitch.line")); // White
         pixmap.fillCircle(8, 8, 7);
         ballTexture = new Texture(pixmap);
         pixmap.dispose();
         
         // Field texture (green rectangle)
         pixmap = new com.badlogic.gdx.graphics.Pixmap(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-        pixmap.setColor(0.2f, 0.7f, 0.2f, 1.0f); // Green
+        pixmap.setColor(UiTheme.color("pitch.grass")); // Green
         pixmap.fill();
         fieldTexture = new Texture(pixmap);
         pixmap.dispose();
@@ -260,7 +260,7 @@ public class MatchEngineScreen implements Screen {
         if (!isHomeTeam) {
             // Create red texture for away team
             com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(32, 32, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-            pixmap.setColor(1.0f, 0.2f, 0.2f, 1.0f); // Red
+            pixmap.setColor(UiTheme.color("pitch.away")); // Red
             pixmap.fillCircle(16, 16, 15);
             Texture awayTexture = new Texture(pixmap);
             pixmap.dispose();
@@ -439,14 +439,13 @@ public class MatchEngineScreen implements Screen {
         }
         
         // Clear screen - black background
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        UiTheme.clearScreen();
         
         // Draw field background
         batch.begin();
-        batch.setColor(0.2f, 0.7f, 0.2f, 1f); // Green
+        batch.setColor(UiTheme.color("pitch.grass")); // Green
         batch.draw(fieldTexture, 0, 0, FIELD_WIDTH, FIELD_HEIGHT);
-        batch.setColor(1f, 1f, 1f, 1f); // Reset color
+        batch.setColor(UiTheme.color("tint.none")); // Reset color
         batch.end();
         
         // Update ECS systems (physics and rendering)

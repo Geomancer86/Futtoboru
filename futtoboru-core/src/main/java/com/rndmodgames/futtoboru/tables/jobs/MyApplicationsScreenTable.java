@@ -17,6 +17,7 @@ import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * My Applications Screen Table v1
@@ -77,10 +78,10 @@ public class MyApplicationsScreenTable extends VisTable {
         
         // Header
         applicationsListTable.row();
-        applicationsListTable.add(new VisLabel("Club")).width(200);
-        applicationsListTable.add(new VisLabel("Position")).width(150);
-        applicationsListTable.add(new VisLabel("Status")).width(150);
-        applicationsListTable.add(new VisLabel("Match %")).width(100);
+        applicationsListTable.add(new VisLabel("Club")).width(UiTheme.size("col.wide"));
+        applicationsListTable.add(new VisLabel("Position")).width(UiTheme.size("col.label"));
+        applicationsListTable.add(new VisLabel("Status")).width(UiTheme.size("col.label"));
+        applicationsListTable.add(new VisLabel("Match %")).width(UiTheme.size("col.number"));
         applicationsListTable.row();
         applicationsListTable.addSeparator();
         
@@ -107,22 +108,22 @@ public class MyApplicationsScreenTable extends VisTable {
             }
             
             applicationsListTable.row();
-            applicationsListTable.add(new VisLabel(club.getName())).width(200);
-            applicationsListTable.add(new VisLabel(profession.getName())).width(150);
+            applicationsListTable.add(new VisLabel(club.getName())).width(UiTheme.size("col.wide"));
+            applicationsListTable.add(new VisLabel(profession.getName())).width(UiTheme.size("col.label"));
             
             // Status with color
             String statusText = application.getStatus().toString();
             VisLabel statusLabel = new VisLabel(statusText);
             if (application.getStatus() == ApplicationStatus.OFFER_RECEIVED) {
-                statusLabel.setColor(0, 1, 0, 1); // Green
+                statusLabel.setColor(UiTheme.color("application.offer")); // Green
             } else if (application.getStatus() == ApplicationStatus.REJECTED) {
-                statusLabel.setColor(1, 0, 0, 1); // Red
+                statusLabel.setColor(UiTheme.color("application.rejected")); // Red
             }
-            applicationsListTable.add(statusLabel).width(150);
+            applicationsListTable.add(statusLabel).width(UiTheme.size("col.label"));
             
             applicationsListTable.add(new VisLabel(
                 application.getMatchPercentage() != null ? application.getMatchPercentage() + "%" : "N/A"
-            )).width(100);
+            )).width(UiTheme.size("col.number"));
             
             // If offer received, add button to view offer
             if (application.getStatus() == ApplicationStatus.OFFER_RECEIVED) {

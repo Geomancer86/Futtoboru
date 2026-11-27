@@ -3,7 +3,6 @@ package com.rndmodgames.futtoboru.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -33,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Match Engine Debug Screen - Prototype v1.0
@@ -135,14 +135,14 @@ public class MatchEngineDebugScreen implements Screen {
         // Main table (fills screen)
         mainTable = new VisTable(true);
         mainTable.setFillParent(true);
-        mainTable.pad(20);
+        mainTable.pad(UiTheme.space("lg"));
         
         // Header section
         buildHeaderSection();
         
         // Scrollable content
         contentTable = new VisTable(true);
-        contentTable.pad(20);
+        contentTable.pad(UiTheme.space("lg"));
         
         // Build all sections
         buildMatchTypeSection();
@@ -165,8 +165,8 @@ public class MatchEngineDebugScreen implements Screen {
         // Build info at bottom
         mainTable.row();
         VisLabel buildInfoLabel = new VisLabel(MatchEngineVersion.getBuildInfoString());
-        buildInfoLabel.setColor(0.7f, 0.7f, 0.7f, 1f);
-        mainTable.add(buildInfoLabel).left().bottom().padLeft(10).padBottom(10);
+        buildInfoLabel.setColor(UiTheme.color("text.secondary"));
+        mainTable.add(buildInfoLabel).left().bottom().padLeft(UiTheme.space("sm")).padBottom(UiTheme.space("sm"));
         
         stage.addActor(mainTable);
     }
@@ -179,13 +179,13 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Title
         VisLabel titleLabel = new VisLabel("Match Engine Debug");
-        titleLabel.setFontScale(1.5f);
+        titleLabel.setFontScale(UiTheme.fontScale("display"));
         headerTable.add(titleLabel).left().expandX();
         
         // Version info
         VisLabel versionLabel = new VisLabel(MatchEngineVersion.getVersionString());
-        versionLabel.setFontScale(0.9f);
-        headerTable.add(versionLabel).right().padLeft(20);
+        versionLabel.setFontScale(UiTheme.fontScale("small"));
+        headerTable.add(versionLabel).right().padLeft(UiTheme.space("lg"));
         
         // Back button
         VisTextButton backButton = new VisTextButton("Back");
@@ -201,9 +201,9 @@ public class MatchEngineDebugScreen implements Screen {
                 }
             }
         });
-        headerTable.add(backButton).right().padLeft(10);
+        headerTable.add(backButton).right().padLeft(UiTheme.space("sm"));
         
-        mainTable.add(headerTable).growX().fillX().padBottom(10);
+        mainTable.add(headerTable).growX().fillX().padBottom(UiTheme.space("sm"));
     }
     
     /**
@@ -211,16 +211,16 @@ public class MatchEngineDebugScreen implements Screen {
      */
     private void buildMatchTypeSection() {
         contentTable.row();
-        contentTable.addSeparator().colspan(3).pad(10);
+        contentTable.addSeparator().colspan(3).pad(UiTheme.space("sm"));
         contentTable.row();
         
         VisLabel sectionLabel = new VisLabel("STEP 1: Match Type");
-        sectionLabel.setFontScale(1.2f);
-        contentTable.add(sectionLabel).colspan(3).left().padBottom(10);
+        sectionLabel.setFontScale(UiTheme.fontScale("heading"));
+        contentTable.add(sectionLabel).colspan(3).left().padBottom(UiTheme.space("sm"));
         contentTable.row();
         
         VisLabel matchTypeLabel = new VisLabel("Match Type:");
-        contentTable.add(matchTypeLabel).left().width(150);
+        contentTable.add(matchTypeLabel).left().width(UiTheme.size("col.label"));
         
         matchTypeSelectBox = new VisSelectBox<>();
         // Use real match types from EngineParameters, plus additional options for debug
@@ -247,12 +247,12 @@ public class MatchEngineDebugScreen implements Screen {
      */
     private void buildTeamSelectionSection() {
         contentTable.row();
-        contentTable.addSeparator().colspan(3).pad(10);
+        contentTable.addSeparator().colspan(3).pad(UiTheme.space("sm"));
         contentTable.row();
         
         VisLabel sectionLabel = new VisLabel("STEP 2: Teams");
-        sectionLabel.setFontScale(1.2f);
-        contentTable.add(sectionLabel).colspan(3).left().padBottom(10);
+        sectionLabel.setFontScale(UiTheme.fontScale("heading"));
+        contentTable.add(sectionLabel).colspan(3).left().padBottom(UiTheme.space("sm"));
         contentTable.row();
         
         // Load available clubs
@@ -260,7 +260,7 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Home Team
         VisLabel homeLabel = new VisLabel("Home Team:");
-        contentTable.add(homeLabel).left().width(150);
+        contentTable.add(homeLabel).left().width(UiTheme.size("col.label"));
         
         homeTeamSelectBox = new VisSelectBox<>();
         if (!availableClubs.isEmpty()) {
@@ -283,7 +283,7 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Away Team
         VisLabel awayLabel = new VisLabel("Away Team:");
-        contentTable.add(awayLabel).left().width(150);
+        contentTable.add(awayLabel).left().width(UiTheme.size("col.label"));
         
         awayTeamSelectBox = new VisSelectBox<>();
         if (!availableClubs.isEmpty()) {
@@ -327,7 +327,7 @@ public class MatchEngineDebugScreen implements Screen {
                 }
             }
         });
-        contentTable.add(swapTeamsButton).colspan(3).padTop(5);
+        contentTable.add(swapTeamsButton).colspan(3).padTop(UiTheme.space("xs"));
         contentTable.row();
     }
     
@@ -371,17 +371,17 @@ public class MatchEngineDebugScreen implements Screen {
      */
     private void buildVenueDateSection() {
         contentTable.row();
-        contentTable.addSeparator().colspan(3).pad(10);
+        contentTable.addSeparator().colspan(3).pad(UiTheme.space("sm"));
         contentTable.row();
         
         VisLabel sectionLabel = new VisLabel("STEP 3: Venue & Date");
-        sectionLabel.setFontScale(1.2f);
-        contentTable.add(sectionLabel).colspan(3).left().padBottom(10);
+        sectionLabel.setFontScale(UiTheme.fontScale("heading"));
+        contentTable.add(sectionLabel).colspan(3).left().padBottom(UiTheme.space("sm"));
         contentTable.row();
         
         // Season
         VisLabel seasonLabel = new VisLabel("Season:");
-        contentTable.add(seasonLabel).left().width(150);
+        contentTable.add(seasonLabel).left().width(UiTheme.size("col.label"));
         
         seasonSelectBox = new VisSelectBox<>();
         List<Season> availableSeasons = loadAvailableSeasons();
@@ -410,7 +410,7 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Stadium
         VisLabel stadiumLabel = new VisLabel("Stadium:");
-        contentTable.add(stadiumLabel).left().width(150);
+        contentTable.add(stadiumLabel).left().width(UiTheme.size("col.label"));
         
         stadiumSelectBox = new VisSelectBox<>();
         // Will be populated when home team is selected
@@ -427,15 +427,15 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Stadium Info (shows capacity, etc.)
         stadiumInfoLabel = new VisLabel("");
-        stadiumInfoLabel.setColor(0.7f, 0.7f, 0.7f, 1f);
-        stadiumInfoLabel.setFontScale(0.9f);
-        contentTable.add(new VisLabel("")).left().width(150); // Spacer
+        stadiumInfoLabel.setColor(UiTheme.color("text.secondary"));
+        stadiumInfoLabel.setFontScale(UiTheme.fontScale("small"));
+        contentTable.add(new VisLabel("")).left().width(UiTheme.size("col.label")); // Spacer
         contentTable.add(stadiumInfoLabel).left().colspan(2);
         contentTable.row();
         
         // Date Picker
         VisLabel dateLabelLabel = new VisLabel("Date:");
-        contentTable.add(dateLabelLabel).left().width(150);
+        contentTable.add(dateLabelLabel).left().width(UiTheme.size("col.label"));
         
         // Initialize date from season or game or use season start
         Season defaultSeason = seasonSelectBox.getSelected();
@@ -453,9 +453,9 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Date display (large, readable)
         dateDisplayLabel = new VisLabel(dateFormatter.format(selectedMatchDate));
-        dateDisplayLabel.setFontScale(1.1f);
-        dateDisplayLabel.setColor(1f, 1f, 1f, 1f);
-        datePickerTable.add(dateDisplayLabel).colspan(5).padBottom(5);
+        dateDisplayLabel.setFontScale(UiTheme.fontScale("subheading"));
+        dateDisplayLabel.setColor(UiTheme.color("text.primary"));
+        datePickerTable.add(dateDisplayLabel).colspan(5).padBottom(UiTheme.space("xs"));
         datePickerTable.row();
         
         // Navigation buttons row
@@ -477,7 +477,7 @@ public class MatchEngineDebugScreen implements Screen {
                 }
             }
         });
-        navTable.add(datePrevWeekButton).padRight(5);
+        navTable.add(datePrevWeekButton).padRight(UiTheme.space("xs"));
         
         // Previous day
         datePrevDayButton = new VisTextButton("◄ Day");
@@ -495,7 +495,7 @@ public class MatchEngineDebugScreen implements Screen {
                 }
             }
         });
-        navTable.add(datePrevDayButton).padRight(5);
+        navTable.add(datePrevDayButton).padRight(UiTheme.space("xs"));
         
         // Set to season start / today button
         dateSetTodayButton = new VisTextButton("Reset");
@@ -519,7 +519,7 @@ public class MatchEngineDebugScreen implements Screen {
                 }
             }
         });
-        navTable.add(dateSetTodayButton).padRight(5);
+        navTable.add(dateSetTodayButton).padRight(UiTheme.space("xs"));
         
         // Next day
         dateNextDayButton = new VisTextButton("Day ►");
@@ -537,7 +537,7 @@ public class MatchEngineDebugScreen implements Screen {
                 }
             }
         });
-        navTable.add(dateNextDayButton).padRight(5);
+        navTable.add(dateNextDayButton).padRight(UiTheme.space("xs"));
         
         // Next week
         dateNextWeekButton = new VisTextButton("Week ►►");
@@ -557,14 +557,14 @@ public class MatchEngineDebugScreen implements Screen {
         });
         navTable.add(dateNextWeekButton);
         
-        datePickerTable.add(navTable).colspan(5).padTop(5);
+        datePickerTable.add(navTable).colspan(5).padTop(UiTheme.space("xs"));
         
-        contentTable.add(datePickerTable).left().colspan(2).padTop(5);
+        contentTable.add(datePickerTable).left().colspan(2).padTop(UiTheme.space("xs"));
         contentTable.row();
         
         // Time
         VisLabel timeLabel = new VisLabel("Time:");
-        contentTable.add(timeLabel).left().width(150);
+        contentTable.add(timeLabel).left().width(UiTheme.size("col.label"));
         
         VisTable timeTable = new VisTable(true);
         timeSelectBox = new VisSelectBox<>();
@@ -593,13 +593,13 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Time/Season Help Box
         timeHelpTable = new VisTable(true);
-        timeHelpTable.pad(10);
+        timeHelpTable.pad(UiTheme.space("sm"));
         timeHelpLabel = new VisLabel("");
         timeHelpLabel.setWrap(true);
-        timeHelpLabel.setColor(0.8f, 0.8f, 0.6f, 1f); // Light yellow for help text
-        timeHelpTable.add(timeHelpLabel).width(500).left();
-        contentTable.add(new VisLabel("")).left().width(150); // Spacer
-        contentTable.add(timeHelpTable).left().colspan(2).padTop(5);
+        timeHelpLabel.setColor(UiTheme.color("debug.note")); // Light yellow for help text
+        timeHelpTable.add(timeHelpLabel).width(UiTheme.size("text.wrap.narrow")).left();
+        contentTable.add(new VisLabel("")).left().width(UiTheme.size("col.label")); // Spacer
+        contentTable.add(timeHelpTable).left().colspan(2).padTop(UiTheme.space("xs"));
         contentTable.row();
         
         // Initialize help text
@@ -805,17 +805,17 @@ public class MatchEngineDebugScreen implements Screen {
      */
     private void buildConditionsSection() {
         contentTable.row();
-        contentTable.addSeparator().colspan(3).pad(10);
+        contentTable.addSeparator().colspan(3).pad(UiTheme.space("sm"));
         contentTable.row();
         
         VisLabel sectionLabel = new VisLabel("STEP 4: Match Conditions");
-        sectionLabel.setFontScale(1.2f);
-        contentTable.add(sectionLabel).colspan(3).left().padBottom(10);
+        sectionLabel.setFontScale(UiTheme.fontScale("heading"));
+        contentTable.add(sectionLabel).colspan(3).left().padBottom(UiTheme.space("sm"));
         contentTable.row();
         
         // Weather
         VisLabel weatherLabel = new VisLabel("Weather:");
-        contentTable.add(weatherLabel).left().width(150);
+        contentTable.add(weatherLabel).left().width(UiTheme.size("col.label"));
         
         weatherSelectBox = new VisSelectBox<>();
         weatherSelectBox.setItems("Sunny", "Cloudy", "Rain", "Snow", "Windy", "Fog");
@@ -831,7 +831,7 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Temperature
         VisLabel tempLabel = new VisLabel("Temperature:");
-        contentTable.add(tempLabel).left().width(150);
+        contentTable.add(tempLabel).left().width(UiTheme.size("col.label"));
         
         VisTable tempTable = new VisTable(true);
         temperatureSlider = new VisSlider(-5, 35, 1, false);
@@ -846,13 +846,13 @@ public class MatchEngineDebugScreen implements Screen {
             }
         });
         tempTable.add(temperatureSlider).fillX();
-        tempTable.add(temperatureLabel).padLeft(10);
+        tempTable.add(temperatureLabel).padLeft(UiTheme.space("sm"));
         contentTable.add(tempTable).fillX().colspan(2);
         contentTable.row();
         
         // Pitch Condition
         VisLabel pitchLabel = new VisLabel("Pitch Condition:");
-        contentTable.add(pitchLabel).left().width(150);
+        contentTable.add(pitchLabel).left().width(UiTheme.size("col.label"));
         
         pitchConditionSelectBox = new VisSelectBox<>();
         pitchConditionSelectBox.setItems("Poor", "Fair", "Good", "Excellent");
@@ -868,7 +868,7 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Attendance
         VisLabel attendanceLabel = new VisLabel("Attendance:");
-        contentTable.add(attendanceLabel).left().width(150);
+        contentTable.add(attendanceLabel).left().width(UiTheme.size("col.label"));
         
         VisTable attendanceTable = new VisTable(true);
         attendanceAutoCheckBox = new VisCheckBox("Auto");
@@ -883,14 +883,14 @@ public class MatchEngineDebugScreen implements Screen {
             }
         });
         attendanceTable.add(attendanceAutoCheckBox);
-        attendanceTable.add(new VisLabel("Manual:")).padLeft(10);
-        attendanceTable.add(attendanceManualField).width(100).padLeft(5);
+        attendanceTable.add(new VisLabel("Manual:")).padLeft(UiTheme.space("sm"));
+        attendanceTable.add(attendanceManualField).width(UiTheme.size("col.number")).padLeft(UiTheme.space("xs"));
         contentTable.add(attendanceTable).left().colspan(2);
         contentTable.row();
         
         // Crowd Atmosphere
         VisLabel atmosphereLabel = new VisLabel("Crowd Atmosphere:");
-        contentTable.add(atmosphereLabel).left().width(150);
+        contentTable.add(atmosphereLabel).left().width(UiTheme.size("col.label"));
         
         crowdAtmosphereSelectBox = new VisSelectBox<>();
         crowdAtmosphereSelectBox.setItems("Low", "Normal", "High", "Intense");
@@ -910,13 +910,13 @@ public class MatchEngineDebugScreen implements Screen {
      */
     private void buildAdvancedOptionsSection() {
         contentTable.row();
-        contentTable.addSeparator().colspan(3).pad(10);
+        contentTable.addSeparator().colspan(3).pad(UiTheme.space("sm"));
         contentTable.row();
         
         // Toggle button
         VisTable headerTable = new VisTable(true);
         VisLabel sectionLabel = new VisLabel("STEP 5: Advanced Options");
-        sectionLabel.setFontScale(1.2f);
+        sectionLabel.setFontScale(UiTheme.fontScale("heading"));
         headerTable.add(sectionLabel).left().expandX();
         
         advancedToggleButton = new VisTextButton("▼ Expand");
@@ -938,18 +938,18 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Collapsible content
         advancedContentTable = new VisTable(true);
-        advancedContentTable.pad(10);
+        advancedContentTable.pad(UiTheme.space("sm"));
         advancedContentTable.setVisible(false); // Collapsed by default
         
         // Player Conditions
         VisLabel playerCondLabel = new VisLabel("Player Conditions:");
-        playerCondLabel.setFontScale(1.1f);
-        advancedContentTable.add(playerCondLabel).colspan(3).left().padBottom(5);
+        playerCondLabel.setFontScale(UiTheme.fontScale("subheading"));
+        advancedContentTable.add(playerCondLabel).colspan(3).left().padBottom(UiTheme.space("xs"));
         advancedContentTable.row();
         
         // Home Team Condition
         VisLabel homeCondLabel = new VisLabel("Home Team Condition:");
-        advancedContentTable.add(homeCondLabel).left().width(200);
+        advancedContentTable.add(homeCondLabel).left().width(UiTheme.size("col.wide"));
         VisTable homeCondTable = new VisTable(true);
         homeTeamConditionSlider = new VisSlider(0, 100, 1, false);
         homeTeamConditionSlider.setValue(100);
@@ -962,13 +962,13 @@ public class MatchEngineDebugScreen implements Screen {
             }
         });
         homeCondTable.add(homeTeamConditionSlider).fillX();
-        homeCondTable.add(homeTeamConditionLabel).padLeft(10);
+        homeCondTable.add(homeTeamConditionLabel).padLeft(UiTheme.space("sm"));
         advancedContentTable.add(homeCondTable).fillX().colspan(2);
         advancedContentTable.row();
         
         // Away Team Condition
         VisLabel awayCondLabel = new VisLabel("Away Team Condition:");
-        advancedContentTable.add(awayCondLabel).left().width(200);
+        advancedContentTable.add(awayCondLabel).left().width(UiTheme.size("col.wide"));
         VisTable awayCondTable = new VisTable(true);
         awayTeamConditionSlider = new VisSlider(0, 100, 1, false);
         awayTeamConditionSlider.setValue(100);
@@ -981,23 +981,23 @@ public class MatchEngineDebugScreen implements Screen {
             }
         });
         awayCondTable.add(awayTeamConditionSlider).fillX();
-        awayCondTable.add(awayTeamConditionLabel).padLeft(10);
+        awayCondTable.add(awayTeamConditionLabel).padLeft(UiTheme.space("sm"));
         advancedContentTable.add(awayCondTable).fillX().colspan(2);
         advancedContentTable.row();
         
         advancedContentTable.row();
-        advancedContentTable.addSeparator().colspan(3).pad(5);
+        advancedContentTable.addSeparator().colspan(3).pad(UiTheme.space("xs"));
         advancedContentTable.row();
         
         // Team Bonuses
         VisLabel bonusesLabel = new VisLabel("Team Bonuses:");
-        bonusesLabel.setFontScale(1.1f);
-        advancedContentTable.add(bonusesLabel).colspan(3).left().padBottom(5);
+        bonusesLabel.setFontScale(UiTheme.fontScale("subheading"));
+        advancedContentTable.add(bonusesLabel).colspan(3).left().padBottom(UiTheme.space("xs"));
         advancedContentTable.row();
         
         // Home Advantage
         VisLabel homeAdvLabel = new VisLabel("Home Advantage:");
-        advancedContentTable.add(homeAdvLabel).left().width(200);
+        advancedContentTable.add(homeAdvLabel).left().width(UiTheme.size("col.wide"));
         homeAdvantageSelectBox = new VisSelectBox<>();
         homeAdvantageSelectBox.setItems("None", "Normal", "High", "Intense");
         homeAdvantageSelectBox.setSelectedIndex(1);
@@ -1006,7 +1006,7 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Form Bonuses
         VisLabel homeFormLabel = new VisLabel("Home Team Form:");
-        advancedContentTable.add(homeFormLabel).left().width(200);
+        advancedContentTable.add(homeFormLabel).left().width(UiTheme.size("col.wide"));
         homeFormBonusSelectBox = new VisSelectBox<>();
         homeFormBonusSelectBox.setItems("None", "Poor Form", "Good Form");
         homeFormBonusSelectBox.setSelectedIndex(0);
@@ -1014,7 +1014,7 @@ public class MatchEngineDebugScreen implements Screen {
         advancedContentTable.row();
         
         VisLabel awayFormLabel = new VisLabel("Away Team Form:");
-        advancedContentTable.add(awayFormLabel).left().width(200);
+        advancedContentTable.add(awayFormLabel).left().width(UiTheme.size("col.wide"));
         awayFormBonusSelectBox = new VisSelectBox<>();
         awayFormBonusSelectBox.setItems("None", "Poor Form", "Good Form");
         awayFormBonusSelectBox.setSelectedIndex(0);
@@ -1039,21 +1039,21 @@ public class MatchEngineDebugScreen implements Screen {
      */
     private void buildMatchPreviewSection() {
         contentTable.row();
-        contentTable.addSeparator().colspan(3).pad(10);
+        contentTable.addSeparator().colspan(3).pad(UiTheme.space("sm"));
         contentTable.row();
         
         VisLabel sectionLabel = new VisLabel("Match Preview");
-        sectionLabel.setFontScale(1.2f);
-        contentTable.add(sectionLabel).colspan(3).left().padBottom(10);
+        sectionLabel.setFontScale(UiTheme.fontScale("heading"));
+        contentTable.add(sectionLabel).colspan(3).left().padBottom(UiTheme.space("sm"));
         contentTable.row();
         
         previewTable = new VisTable(true);
-        previewTable.pad(10);
+        previewTable.pad(UiTheme.space("sm"));
         previewContentLabel = new VisLabel("Configure match settings to see preview...");
         previewContentLabel.setWrap(true);
-        previewTable.add(previewContentLabel).width(600).left();
+        previewTable.add(previewContentLabel).width(UiTheme.size("text.wrap")).left();
         
-        contentTable.add(previewTable).colspan(3).fillX().pad(10);
+        contentTable.add(previewTable).colspan(3).fillX().pad(UiTheme.space("sm"));
         contentTable.row();
     }
     
@@ -1147,7 +1147,7 @@ public class MatchEngineDebugScreen implements Screen {
         // Quick Presets (placeholder)
         VisTextButton presetsButton = new VisTextButton("Quick Presets");
         presetsButton.setDisabled(true); // Placeholder
-        buttonTable.add(presetsButton).padRight(10);
+        buttonTable.add(presetsButton).padRight(UiTheme.space("sm"));
         
         // Reset
         resetButton = new VisTextButton("Reset");
@@ -1163,7 +1163,7 @@ public class MatchEngineDebugScreen implements Screen {
                 }
             }
         });
-        buttonTable.add(resetButton).padRight(10);
+        buttonTable.add(resetButton).padRight(UiTheme.space("sm"));
         
         buttonTable.add().expandX(); // Spacer
         
@@ -1181,7 +1181,7 @@ public class MatchEngineDebugScreen implements Screen {
                 }
             }
         });
-        buttonTable.add(cancelButton).padRight(10);
+        buttonTable.add(cancelButton).padRight(UiTheme.space("sm"));
         
         // Start Match
         startMatchButton = new VisTextButton("Start Match");
@@ -1243,7 +1243,7 @@ public class MatchEngineDebugScreen implements Screen {
         startMatchButton.setDisabled(false);
         buttonTable.add(startMatchButton);
         
-        mainTable.add(buttonTable).growX().fillX().padTop(10);
+        mainTable.add(buttonTable).growX().fillX().padTop(UiTheme.space("sm"));
     }
     
     /**
@@ -1291,8 +1291,7 @@ public class MatchEngineDebugScreen implements Screen {
     @Override
     public void render(float delta) {
         // Clear blit - Black background to match game style
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        UiTheme.clearScreen();
         stage.act(delta);
         stage.draw();
     }

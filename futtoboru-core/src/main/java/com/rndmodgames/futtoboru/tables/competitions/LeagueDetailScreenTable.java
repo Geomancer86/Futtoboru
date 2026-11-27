@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.engine.simulation.LeagueStandingsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * League Detail Screen Table v1.0
@@ -89,55 +90,55 @@ public class LeagueDetailScreenTable extends VisTable {
         contentTable.clear();
         
         if (selectedLeague == null) {
-            contentTable.add(new VisLabel("No league selected")).pad(20).row();
+            contentTable.add(new VisLabel("No league selected")).pad(UiTheme.space("lg")).row();
             return;
         }
         
         // Title
         VisLabel titleLabel = new VisLabel(selectedLeague.getName() != null ? selectedLeague.getName() : "Unnamed League");
-        titleLabel.setFontScale(1.3f);
-        contentTable.add(titleLabel).pad(10).row();
+        titleLabel.setFontScale(UiTheme.fontScale("title"));
+        contentTable.add(titleLabel).pad(UiTheme.space("sm")).row();
         
-        contentTable.addSeparator().pad(5).row();
+        contentTable.addSeparator().pad(UiTheme.space("xs")).row();
         
         // League Info Section
-        contentTable.add(new VisLabel("League Information")).pad(5).row();
+        contentTable.add(new VisLabel("League Information")).pad(UiTheme.space("xs")).row();
         
         // Country
         if (selectedLeague.getCountry() != null) {
-            contentTable.add(new VisLabel("Country: " + selectedLeague.getCountry().getCommonName())).left().pad(2).row();
+            contentTable.add(new VisLabel("Country: " + selectedLeague.getCountry().getCommonName())).left().pad(UiTheme.space("xxs")).row();
         }
         
         // Number of clubs
         int clubCount = (selectedLeague.getLeagueClubs() != null) ? selectedLeague.getLeagueClubs().size() : 0;
-        contentTable.add(new VisLabel("Clubs: " + clubCount)).left().pad(2).row();
+        contentTable.add(new VisLabel("Clubs: " + clubCount)).left().pad(UiTheme.space("xxs")).row();
         
-        contentTable.add().height(10).row();
+        contentTable.add().height(UiTheme.space("sm")).row();
         
         // Clubs List Section
         if (selectedLeague.getLeagueClubs() != null && !selectedLeague.getLeagueClubs().isEmpty()) {
-            contentTable.add(new VisLabel("Participating Clubs")).pad(5).row();
-            contentTable.addSeparator().pad(2).row();
+            contentTable.add(new VisLabel("Participating Clubs")).pad(UiTheme.space("xs")).row();
+            contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             for (Club club : selectedLeague.getLeagueClubs()) {
                 if (club != null) {
-                    contentTable.add(new VisLabel(club.getName() != null ? club.getName() : "Unnamed Club")).left().pad(2).row();
+                    contentTable.add(new VisLabel(club.getName() != null ? club.getName() : "Unnamed Club")).left().pad(UiTheme.space("xxs")).row();
                 }
             }
             
-            contentTable.add().height(10).row();
+            contentTable.add().height(UiTheme.space("sm")).row();
         }
         
         // Competition Rules Section
         com.rndmodgames.futtoboru.data.CompetitionRules rules = selectedLeague.getRulesOrDefault();
-        contentTable.add(new VisLabel("Competition Rules")).pad(5).row();
-        contentTable.addSeparator().pad(2).row();
+        contentTable.add(new VisLabel("Competition Rules")).pad(UiTheme.space("xs")).row();
+        contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
         
         // Points system
         String pointsSystem = rules.getPointsForWin() + " points for win, " + 
                               rules.getPointsForDraw() + " point" + (rules.getPointsForDraw() != 1 ? "s" : "") + 
                               " for draw, " + rules.getPointsForLoss() + " for loss";
-        contentTable.add(new VisLabel("Points System: " + pointsSystem)).left().pad(2).row();
+        contentTable.add(new VisLabel("Points System: " + pointsSystem)).left().pad(UiTheme.space("xxs")).row();
         
         // Tie-breaking criteria
         StringBuilder tieBreakers = new StringBuilder("Tie-breakers: ");
@@ -148,20 +149,20 @@ public class LeagueDetailScreenTable extends VisTable {
             }
             tieBreakers.append(formatTieBreaker(tieBreakingOrder.get(i)));
         }
-        contentTable.add(new VisLabel(tieBreakers.toString())).left().pad(2).row();
+        contentTable.add(new VisLabel(tieBreakers.toString())).left().pad(UiTheme.space("xxs")).row();
         
         // Match format
         String matchFormat = rules.getMatchFormat() == com.rndmodgames.futtoboru.data.CompetitionRules.MatchFormat.DOUBLE_ROUND_ROBIN 
             ? "Double round-robin (home and away)" 
             : "Single round-robin";
-        contentTable.add(new VisLabel("Format: " + matchFormat)).left().pad(2).row();
+        contentTable.add(new VisLabel("Format: " + matchFormat)).left().pad(UiTheme.space("xxs")).row();
         
-        contentTable.add().height(10).row();
+        contentTable.add().height(UiTheme.space("sm")).row();
         
         // Past Champions Section
         if (selectedLeague.getEditions() != null && !selectedLeague.getEditions().isEmpty()) {
-            contentTable.add(new VisLabel("Past Champions")).pad(5).row();
-            contentTable.addSeparator().pad(2).row();
+            contentTable.add(new VisLabel("Past Champions")).pad(UiTheme.space("xs")).row();
+            contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             // Show completed editions (those with champions)
             int completedCount = 0;
@@ -176,40 +177,40 @@ public class LeagueDetailScreenTable extends VisTable {
                     String runnerUpName = runnerUp != null ? runnerUp.getName() : "N/A";
                     
                     VisTable historyRow = new VisTable(true);
-                    historyRow.add(new VisLabel(seasonInfo)).width(150).left();
+                    historyRow.add(new VisLabel(seasonInfo)).width(UiTheme.size("col.label")).left();
                     historyRow.add(new VisLabel("Champion: " + championName)).expandX().left();
                     if (runnerUp != null) {
                         historyRow.add(new VisLabel("Runner-up: " + runnerUpName)).expandX().left();
                     }
-                    contentTable.add(historyRow).pad(2).row();
+                    contentTable.add(historyRow).pad(UiTheme.space("xxs")).row();
                 }
             }
             
             if (completedCount == 0) {
-                contentTable.add(new VisLabel("No completed seasons yet.")).left().pad(2).row();
+                contentTable.add(new VisLabel("No completed seasons yet.")).left().pad(UiTheme.space("xxs")).row();
             }
             
-            contentTable.add().height(10).row();
+            contentTable.add().height(UiTheme.space("sm")).row();
         }
         
         // Standings Section (always show, even if no matches played yet)
-        contentTable.add(new VisLabel("League Standings")).pad(5).row();
-        contentTable.addSeparator().pad(2).row();
+        contentTable.add(new VisLabel("League Standings")).pad(UiTheme.space("xs")).row();
+        contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
         
         // Header
         VisTable standingsHeader = new VisTable(true);
-        standingsHeader.add(new VisLabel("Pos")).width(50);
-        standingsHeader.add(new VisLabel("Club")).width(200);
-        standingsHeader.add(new VisLabel("P")).width(40);
-        standingsHeader.add(new VisLabel("W")).width(40);
-        standingsHeader.add(new VisLabel("D")).width(40);
-        standingsHeader.add(new VisLabel("L")).width(40);
-        standingsHeader.add(new VisLabel("GF")).width(40);
-        standingsHeader.add(new VisLabel("GA")).width(40);
-        standingsHeader.add(new VisLabel("GD")).width(50);
-        standingsHeader.add(new VisLabel("Pts")).width(50);
-        contentTable.add(standingsHeader).pad(2).row();
-        contentTable.addSeparator().pad(2).row();
+        standingsHeader.add(new VisLabel("Pos")).width(UiTheme.size("table.league.pos"));
+        standingsHeader.add(new VisLabel("Club")).width(UiTheme.size("table.league.club"));
+        standingsHeader.add(new VisLabel("P")).width(UiTheme.size("table.league.stat"));
+        standingsHeader.add(new VisLabel("W")).width(UiTheme.size("table.league.stat"));
+        standingsHeader.add(new VisLabel("D")).width(UiTheme.size("table.league.stat"));
+        standingsHeader.add(new VisLabel("L")).width(UiTheme.size("table.league.stat"));
+        standingsHeader.add(new VisLabel("GF")).width(UiTheme.size("table.league.stat"));
+        standingsHeader.add(new VisLabel("GA")).width(UiTheme.size("table.league.stat"));
+        standingsHeader.add(new VisLabel("GD")).width(UiTheme.size("table.league.gd"));
+        standingsHeader.add(new VisLabel("Pts")).width(UiTheme.size("table.league.pts"));
+        contentTable.add(standingsHeader).pad(UiTheme.space("xxs")).row();
+        contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
         
         // Use LeagueStandingsManager to calculate standings based on competition rules
         // This will sort by rules even when all stats are 0 (alphabetical fallback)
@@ -220,27 +221,27 @@ public class LeagueDetailScreenTable extends VisTable {
             if (club == null) continue;
             
             VisTable row = new VisTable(true);
-            row.add(new VisLabel(String.valueOf(position++))).width(50);
-            row.add(new VisLabel(club.getName() != null ? club.getName() : "Unnamed")).width(200);
-            row.add(new VisLabel(String.valueOf(club.getMatchesPlayed() != null ? club.getMatchesPlayed() : 0))).width(40);
-            row.add(new VisLabel(String.valueOf(club.getMatchesWon() != null ? club.getMatchesWon() : 0))).width(40);
-            row.add(new VisLabel(String.valueOf(club.getMatchesDrawn() != null ? club.getMatchesDrawn() : 0))).width(40);
-            row.add(new VisLabel(String.valueOf(club.getMatchesLost() != null ? club.getMatchesLost() : 0))).width(40);
-            row.add(new VisLabel(String.valueOf(club.getGoalsScored() != null ? club.getGoalsScored() : 0))).width(40);
-            row.add(new VisLabel(String.valueOf(club.getGoalsConceded() != null ? club.getGoalsConceded() : 0))).width(40);
-            row.add(new VisLabel(String.valueOf(club.getGoalDifference() != null ? club.getGoalDifference() : 0))).width(50);
-            row.add(new VisLabel(String.valueOf(club.getPoints() != null ? club.getPoints() : 0))).width(50);
+            row.add(new VisLabel(String.valueOf(position++))).width(UiTheme.size("table.league.pos"));
+            row.add(new VisLabel(club.getName() != null ? club.getName() : "Unnamed")).width(UiTheme.size("table.league.club"));
+            row.add(new VisLabel(String.valueOf(club.getMatchesPlayed() != null ? club.getMatchesPlayed() : 0))).width(UiTheme.size("table.league.stat"));
+            row.add(new VisLabel(String.valueOf(club.getMatchesWon() != null ? club.getMatchesWon() : 0))).width(UiTheme.size("table.league.stat"));
+            row.add(new VisLabel(String.valueOf(club.getMatchesDrawn() != null ? club.getMatchesDrawn() : 0))).width(UiTheme.size("table.league.stat"));
+            row.add(new VisLabel(String.valueOf(club.getMatchesLost() != null ? club.getMatchesLost() : 0))).width(UiTheme.size("table.league.stat"));
+            row.add(new VisLabel(String.valueOf(club.getGoalsScored() != null ? club.getGoalsScored() : 0))).width(UiTheme.size("table.league.stat"));
+            row.add(new VisLabel(String.valueOf(club.getGoalsConceded() != null ? club.getGoalsConceded() : 0))).width(UiTheme.size("table.league.stat"));
+            row.add(new VisLabel(String.valueOf(club.getGoalDifference() != null ? club.getGoalDifference() : 0))).width(UiTheme.size("table.league.gd"));
+            row.add(new VisLabel(String.valueOf(club.getPoints() != null ? club.getPoints() : 0))).width(UiTheme.size("table.league.pts"));
             
-            contentTable.add(row).pad(2).row();
+            contentTable.add(row).pad(UiTheme.space("xxs")).row();
         }
         
-        contentTable.add().height(10).row();
+        contentTable.add().height(UiTheme.space("sm")).row();
         
         // Upcoming Fixtures Section
         List<Match> upcomingMatches = getUpcomingMatches(selectedLeague);
         if (!upcomingMatches.isEmpty()) {
-            contentTable.add(new VisLabel("Upcoming Fixtures (Next 5)")).pad(5).row();
-            contentTable.addSeparator().pad(2).row();
+            contentTable.add(new VisLabel("Upcoming Fixtures (Next 5)")).pad(UiTheme.space("xs")).row();
+            contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             int count = 0;
             for (Match match : upcomingMatches) {
@@ -256,12 +257,12 @@ public class LeagueDetailScreenTable extends VisTable {
                     }
                     matchText += homeClub.getName() + " vs " + awayClub.getName();
                     
-                    contentTable.add(new VisLabel(matchText)).left().pad(2).row();
+                    contentTable.add(new VisLabel(matchText)).left().pad(UiTheme.space("xxs")).row();
                     count++;
                 }
             }
             
-            contentTable.add().height(10).row();
+            contentTable.add().height(UiTheme.space("sm")).row();
         }
         
         // Back button
@@ -279,7 +280,7 @@ public class LeagueDetailScreenTable extends VisTable {
                 }
             }
         });
-        contentTable.add(backButton).pad(10).row();
+        contentTable.add(backButton).pad(UiTheme.space("sm")).row();
     }
     
     /**

@@ -22,6 +22,7 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.EngineParameters;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Arrange Friendly Table v1
@@ -271,7 +272,7 @@ public class ArrangeFriendlyTable extends VisTable {
         // Confirm Friendly Button Disabled Until Valid Form
         confirmFriendlyButton.setDisabled(true);
         
-        this.row().padTop(100);
+        this.row().padTop(UiTheme.space("xxl"));
         this.add(confirmFriendlyButton).bottom();
         this.add(cancelFriendlyButton).bottom();
         

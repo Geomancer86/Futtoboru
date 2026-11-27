@@ -21,6 +21,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Job Offer Screen Table v1
@@ -106,10 +107,10 @@ public class JobOfferScreenTable extends VisTable {
         
         // Header
         offersListTable.row();
-        offersListTable.add(new VisLabel("Club")).width(200);
-        offersListTable.add(new VisLabel("Salary")).width(150);
-        offersListTable.add(new VisLabel("Contract")).width(150);
-        offersListTable.add(new VisLabel("Actions")).width(300);
+        offersListTable.add(new VisLabel("Club")).width(UiTheme.size("col.wide"));
+        offersListTable.add(new VisLabel("Salary")).width(UiTheme.size("col.label"));
+        offersListTable.add(new VisLabel("Contract")).width(UiTheme.size("col.label"));
+        offersListTable.add(new VisLabel("Actions")).width(UiTheme.size("col.xwide"));
         offersListTable.row();
         offersListTable.addSeparator();
         
@@ -135,9 +136,9 @@ public class JobOfferScreenTable extends VisTable {
             }
             
             offersListTable.row();
-            offersListTable.add(new VisLabel(club.getName())).width(200);
-            offersListTable.add(new VisLabel(Money.format(offer.getSalary()) + "/month")).width(150);
-            offersListTable.add(new VisLabel(offer.getContractLengthMonths() + " months")).width(150);
+            offersListTable.add(new VisLabel(club.getName())).width(UiTheme.size("col.wide"));
+            offersListTable.add(new VisLabel(Money.format(offer.getSalary()) + "/month")).width(UiTheme.size("col.label"));
+            offersListTable.add(new VisLabel(offer.getContractLengthMonths() + " months")).width(UiTheme.size("col.label"));
             
             // Action buttons
             VisTable buttonsTable = new VisTable(true);
@@ -212,7 +213,7 @@ public class JobOfferScreenTable extends VisTable {
                 buttonsTable.add(negotiateButton);
             }
             
-            offersListTable.add(buttonsTable).width(300);
+            offersListTable.add(buttonsTable).width(UiTheme.size("col.xwide"));
         }
     }
 }

@@ -9,6 +9,7 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.localization.Language;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Mods Settings Table v1
@@ -49,13 +50,13 @@ public class ModsSettingsTable extends VisTable {
 		
 		row();
 		
-		add(modsSettingsLabel).pad(5).colspan(2).expandX().align(Align.center);
+		add(modsSettingsLabel).pad(UiTheme.space("xs")).colspan(2).expandX().align(Align.center);
 		
 		row();
 		
 		// SET DEFAULT MASTER SOUND VALUE
-		add(languageLabel).pad(5).fill().align(Align.center);
-		add(languagesSelectBox).pad(5).fill().align(Align.center);
+		add(languageLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+		add(languagesSelectBox).pad(UiTheme.space("xs")).fill().align(Align.center);
 
 		row();
 	}

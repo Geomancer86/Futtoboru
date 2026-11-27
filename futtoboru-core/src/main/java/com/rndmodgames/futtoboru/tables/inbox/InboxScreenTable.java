@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.MessageCategory;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Inbox Screen Table v2
@@ -135,13 +136,13 @@ public class InboxScreenTable extends VisTable {
         // LEFT PANEL: Filters
         // ========================================
         filtersTable.add(new VisLabel("Filters")).row();
-        filtersTable.add().height(10).row(); // Spacing
+        filtersTable.add().height(UiTheme.space("sm")).row(); // Spacing
         
         // All messages button
         VisTextButton allButton = new VisTextButton("All");
         if (currentFilter == null && !unreadFilter) {
             // Highlight selected
-            allButton.setColor(0.5f, 0.8f, 1.0f, 1.0f); // Light blue for selected
+            allButton.setColor(UiTheme.color("selection")); // Light blue for selected
         }
         allButton.addListener(new InputListener() {
             @Override
@@ -157,13 +158,13 @@ public class InboxScreenTable extends VisTable {
                 updateDynamicComponents();
             }
         });
-        filtersTable.add(allButton).width(120).pad(2).row();
+        filtersTable.add(allButton).width(UiTheme.size("col.long")).pad(UiTheme.space("xxs")).row();
         
         // Unread filter button
         VisTextButton unreadButton = new VisTextButton("Unread");
         if (unreadFilter) {
             // Highlight selected
-            unreadButton.setColor(0.5f, 0.8f, 1.0f, 1.0f); // Light blue for selected
+            unreadButton.setColor(UiTheme.color("selection")); // Light blue for selected
         }
         unreadButton.addListener(new InputListener() {
             @Override
@@ -179,16 +180,16 @@ public class InboxScreenTable extends VisTable {
                 updateDynamicComponents();
             }
         });
-        filtersTable.add(unreadButton).width(120).pad(2).row();
+        filtersTable.add(unreadButton).width(UiTheme.size("col.long")).pad(UiTheme.space("xxs")).row();
         
-        filtersTable.add().height(10).row(); // Spacing
+        filtersTable.add().height(UiTheme.space("sm")).row(); // Spacing
         
         // Category filter buttons
         for (MessageCategory category : MessageCategory.values()) {
             VisTextButton categoryButton = new VisTextButton(category.name());
             if (currentFilter == category) {
                 // Highlight selected by changing color
-                categoryButton.setColor(0.5f, 0.8f, 1.0f, 1.0f); // Light blue for selected
+                categoryButton.setColor(UiTheme.color("selection")); // Light blue for selected
             }
             categoryButton.addListener(new InputListener() {
                 @Override
@@ -204,13 +205,13 @@ public class InboxScreenTable extends VisTable {
                     updateDynamicComponents();
                 }
             });
-            filtersTable.add(categoryButton).width(120).pad(2).row();
+            filtersTable.add(categoryButton).width(UiTheme.size("col.long")).pad(UiTheme.space("xxs")).row();
         }
         
         // Unread count
         int unreadCount = getUnreadCount();
         if (unreadCount > 0) {
-            filtersTable.add().height(10).row();
+            filtersTable.add().height(UiTheme.space("sm")).row();
             filtersTable.add(new VisLabel("Unread: " + unreadCount)).row();
         }
         
@@ -218,7 +219,7 @@ public class InboxScreenTable extends VisTable {
         // MIDDLE PANEL: Message List
         // ========================================
         messagesListTable.add(new VisLabel("Messages (" + messagesToDisplay.size() + ")")).row();
-        messagesListTable.add().height(5).row();
+        messagesListTable.add().height(UiTheme.space("xs")).row();
         
         if (messagesToDisplay.isEmpty()) {
             messagesListTable.add(new VisLabel("No messages")).row();
@@ -254,8 +255,8 @@ public class InboxScreenTable extends VisTable {
         // LAYOUT: Three-column layout
         // ========================================
         this.row();
-        this.add(filtersTable).width(150).fillY();
-        this.add(messagesScrollPane).width(400).fillY();
+        this.add(filtersTable).width(UiTheme.size("col.label")).fillY();
+        this.add(messagesScrollPane).width(UiTheme.size("panel.list")).fillY();
         this.add(messageDetailScrollPane).grow().fill();
     }
     
@@ -269,24 +270,24 @@ public class InboxScreenTable extends VisTable {
         String indicator = (message.getIsRead() == null || !message.getIsRead()) ? "●" : "○";
         VisLabel indicatorLabel = new VisLabel(indicator);
         if (message.getIsRead() == null || !message.getIsRead()) {
-            indicatorLabel.setColor(0.2f, 0.6f, 1.0f, 1.0f); // Blue for unread
+            indicatorLabel.setColor(UiTheme.color("indicator.unread")); // Blue for unread
         } else {
-            indicatorLabel.setColor(0.5f, 0.5f, 0.5f, 1.0f); // Gray for read
+            indicatorLabel.setColor(UiTheme.color("text.muted")); // Gray for read
         }
-        messageRow.add(indicatorLabel).width(20);
+        messageRow.add(indicatorLabel).width(UiTheme.size("indicator"));
         
         // Title (clickable)
         String titleText = message.getTitle() != null ? message.getTitle() : "No Title";
         VisTextButton titleButton = new VisTextButton(titleText);
         if (message == selectedMessage) {
             // Highlight selected by changing color
-            titleButton.setColor(0.5f, 0.8f, 1.0f, 1.0f); // Light blue for selected
+            titleButton.setColor(UiTheme.color("selection")); // Light blue for selected
         } else if (message.getIsRead() == null || !message.getIsRead()) {
             // Unread messages: make text bold/darker
-            titleButton.setColor(0.9f, 0.9f, 0.9f, 1.0f); // Lighter color for unread
+            titleButton.setColor(UiTheme.color("text.unread")); // Lighter color for unread
         } else {
             // Read messages: normal color
-            titleButton.setColor(0.6f, 0.6f, 0.6f, 1.0f); // Gray for read
+            titleButton.setColor(UiTheme.color("text.read")); // Gray for read
         }
         titleButton.addListener(new InputListener() {
             @Override
@@ -311,16 +312,16 @@ public class InboxScreenTable extends VisTable {
         if (message.getMessageTime() != null) {
             dateStr = message.getMessageTime().format(dateFormatter);
         }
-        messageRow.add(new VisLabel(dateStr)).width(100);
+        messageRow.add(new VisLabel(dateStr)).width(UiTheme.size("col.number"));
         
         // Category badge
         if (message.getCategory() != null) {
             VisLabel categoryLabel = new VisLabel(message.getCategory().name());
             categoryLabel.setColor(getCategoryColor(message.getCategory()));
-            messageRow.add(categoryLabel).width(100);
+            messageRow.add(categoryLabel).width(UiTheme.size("col.number"));
         }
         
-        messagesListTable.add(messageRow).growX().pad(2).row();
+        messagesListTable.add(messageRow).growX().pad(UiTheme.space("xxs")).row();
     }
     
     /**
@@ -439,9 +440,9 @@ public class InboxScreenTable extends VisTable {
         messageDetailTable.add(new VisLabel("Title:")).row();
         VisLabel titleLabel = new VisLabel(message.getTitle() != null ? message.getTitle() : "No Title");
         titleLabel.setWrap(true);
-        messageDetailTable.add(titleLabel).growX().pad(5).row();
+        messageDetailTable.add(titleLabel).growX().pad(UiTheme.space("xs")).row();
         
-        messageDetailTable.add().height(10).row();
+        messageDetailTable.add().height(UiTheme.space("sm")).row();
         
         // Date
         if (message.getMessageTime() != null) {
@@ -460,17 +461,17 @@ public class InboxScreenTable extends VisTable {
             messageDetailTable.add(new VisLabel("Priority: " + message.getPriority().name())).row();
         }
         
-        messageDetailTable.add().height(10).row();
+        messageDetailTable.add().height(UiTheme.space("sm")).row();
         
         // Content
         messageDetailTable.add(new VisLabel("Message:")).row();
         VisLabel contentLabel = new VisLabel(message.getPlainTextMessage() != null ? message.getPlainTextMessage() : "No content");
         contentLabel.setWrap(true);
-        messageDetailTable.add(contentLabel).growX().pad(5).row();
+        messageDetailTable.add(contentLabel).growX().pad(UiTheme.space("xs")).row();
         
         // Action button (if applicable)
         if (message.getActionScreen() != null) {
-            messageDetailTable.add().height(10).row();
+            messageDetailTable.add().height(UiTheme.space("sm")).row();
             
             String buttonText = "View Draw";
             if (message.getMessageType() != null && message.getMessageType().equals("LEAGUE_DRAW")) {
@@ -520,11 +521,11 @@ public class InboxScreenTable extends VisTable {
                     }
                 }
             });
-            messageDetailTable.add(actionButton).pad(5).row();
+            messageDetailTable.add(actionButton).pad(UiTheme.space("xs")).row();
         }
         
         // Mark as read/unread button
-        messageDetailTable.add().height(10).row();
+        messageDetailTable.add().height(UiTheme.space("sm")).row();
         VisTextButton readButton = new VisTextButton(
             (message.getIsRead() != null && message.getIsRead()) ? "Mark as Unread" : "Mark as Read"
         );
@@ -543,7 +544,7 @@ public class InboxScreenTable extends VisTable {
                 updateDynamicComponents();
             }
         });
-        messageDetailTable.add(readButton).pad(5).row();
+        messageDetailTable.add(readButton).pad(UiTheme.space("xs")).row();
     }
     
     /**
@@ -724,23 +725,23 @@ public class InboxScreenTable extends VisTable {
      */
     private com.badlogic.gdx.graphics.Color getCategoryColor(MessageCategory category) {
         if (category == null) {
-            return com.badlogic.gdx.graphics.Color.WHITE;
+            return UiTheme.color("text.primary");
         }
         
         switch (category) {
             case LEAGUE:
-                return com.badlogic.gdx.graphics.Color.CYAN;
+                return UiTheme.color("category.league");
             case CUP:
-                return com.badlogic.gdx.graphics.Color.GOLD;
+                return UiTheme.color("category.cup");
             case AUTHORITY:
-                return com.badlogic.gdx.graphics.Color.ORANGE;
+                return UiTheme.color("category.authority");
             case MATCH:
-                return com.badlogic.gdx.graphics.Color.GREEN;
+                return UiTheme.color("category.match");
             case JOB:
-                return com.badlogic.gdx.graphics.Color.MAGENTA;
+                return UiTheme.color("category.job");
             case SYSTEM:
             default:
-                return com.badlogic.gdx.graphics.Color.WHITE;
+                return UiTheme.color("category.system");
         }
     }
 }

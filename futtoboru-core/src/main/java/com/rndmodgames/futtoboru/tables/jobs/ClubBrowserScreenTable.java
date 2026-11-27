@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Club Browser Screen Table v1
@@ -81,10 +82,10 @@ public class ClubBrowserScreenTable extends VisTable {
         
         // Header
         clubsListTable.row();
-        clubsListTable.add(new VisLabel("Club Name")).width(250);
-        clubsListTable.add(new VisLabel("Country")).width(150);
-        clubsListTable.add(new VisLabel("Open Positions")).width(150);
-        clubsListTable.add(new VisLabel("Actions")).width(200);
+        clubsListTable.add(new VisLabel("Club Name")).width(UiTheme.size("col.club"));
+        clubsListTable.add(new VisLabel("Country")).width(UiTheme.size("col.label"));
+        clubsListTable.add(new VisLabel("Open Positions")).width(UiTheme.size("col.label"));
+        clubsListTable.add(new VisLabel("Actions")).width(UiTheme.size("col.wide"));
         clubsListTable.row();
         clubsListTable.addSeparator();
         
@@ -130,9 +131,9 @@ public class ClubBrowserScreenTable extends VisTable {
                     }
                 }
             });
-            clubsListTable.add(clubNameLabel).width(250);
-            clubsListTable.add(new VisLabel(countryName)).width(150);
-            clubsListTable.add(new VisLabel(openPositions + " vacant")).width(150);
+            clubsListTable.add(clubNameLabel).width(UiTheme.size("col.club"));
+            clubsListTable.add(new VisLabel(countryName)).width(UiTheme.size("col.label"));
+            clubsListTable.add(new VisLabel(openPositions + " vacant")).width(UiTheme.size("col.label"));
             
             // Action buttons
             VisTable actionButtons = new VisTable(true);
@@ -153,7 +154,7 @@ public class ClubBrowserScreenTable extends VisTable {
                     }
                 }
             });
-            actionButtons.add(viewButton).pad(2);
+            actionButtons.add(viewButton).pad(UiTheme.space("xxs"));
             
             // Apply for Job button (only if open positions exist)
             if (openPositions > 0) {
@@ -173,10 +174,10 @@ public class ClubBrowserScreenTable extends VisTable {
                         }
                     }
                 });
-                actionButtons.add(applyButton).pad(2);
+                actionButtons.add(applyButton).pad(UiTheme.space("xxs"));
             }
             
-            clubsListTable.add(actionButtons).width(200);
+            clubsListTable.add(actionButtons).width(UiTheme.size("col.wide"));
         }
     }
     

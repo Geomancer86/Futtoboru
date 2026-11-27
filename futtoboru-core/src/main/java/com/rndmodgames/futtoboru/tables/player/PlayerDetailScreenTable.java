@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.data.RegionModifier;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Player Detail Screen Table v1
@@ -80,7 +81,7 @@ public class PlayerDetailScreenTable extends VisTable {
         
         // Player name (will be set dynamically)
         playerNameLabel = new VisLabel("");
-        playerNameLabel.setFontScale(1.5f);
+        playerNameLabel.setFontScale(UiTheme.fontScale("display"));
         
         // Initialize content table (will be inside scroll pane)
         contentTable = new VisTable(true);
@@ -123,45 +124,45 @@ public class PlayerDetailScreenTable extends VisTable {
         
         // Top section: Back button and player name
         contentTable.row();
-        contentTable.add(backButton).left().padBottom(10);
+        contentTable.add(backButton).left().padBottom(UiTheme.space("sm"));
         contentTable.row();
-        contentTable.add(playerNameLabel).colspan(2).center().padBottom(20);
+        contentTable.add(playerNameLabel).colspan(2).center().padBottom(UiTheme.space("lg"));
         contentTable.row();
         
         // Player Information Section
         buildInfoSection();
         contentTable.row();
-        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
         contentTable.row();
         
         // Contract Details Section (v1.0)
         buildContractSection();
         contentTable.row();
-        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
         contentTable.row();
         
         // Modifiers & Bonuses Section (v2.0 - 3d6 system)
         buildModifiersSection();
         contentTable.row();
-        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
         contentTable.row();
         
         // Physical Attributes Section
         buildPhysicalAttributesSection();
         contentTable.row();
-        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
         contentTable.row();
         
         // Mental Attributes Section
         buildMentalAttributesSection();
         contentTable.row();
-        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
         contentTable.row();
         
         // Technical Attributes Section
         buildTechnicalAttributesSection();
         contentTable.row();
-        contentTable.addSeparator().colspan(2).pad(10);
+        contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
         contentTable.row();
         
         // Goalkeeper Attributes Section
@@ -182,25 +183,25 @@ public class PlayerDetailScreenTable extends VisTable {
             futtoboru.getCurrentGame().getGameDate());
         
         infoTable.row();
-        infoTable.add(new VisLabel("Name:")).left().width(150);
+        infoTable.add(new VisLabel("Name:")).left().width(UiTheme.size("col.label"));
         infoTable.add(new VisLabel(currentPlayer.getPerson().getName() + " " + currentPlayer.getPerson().getLastname())).left();
         infoTable.row();
         
-        infoTable.add(new VisLabel("Age:")).left().width(150);
+        infoTable.add(new VisLabel("Age:")).left().width(UiTheme.size("col.label"));
         infoTable.add(new VisLabel(age + " years")).left();
         infoTable.row();
         
-        infoTable.add(new VisLabel("Nationality:")).left().width(150);
+        infoTable.add(new VisLabel("Nationality:")).left().width(UiTheme.size("col.label"));
         String countryName = currentPlayer.getPerson().getCountry() != null ? 
             currentPlayer.getPerson().getCountry().getCommonName() : "N/A";
         infoTable.add(new VisLabel(countryName)).left();
         infoTable.row();
         
-        infoTable.add(new VisLabel("Birth Date:")).left().width(150);
+        infoTable.add(new VisLabel("Birth Date:")).left().width(UiTheme.size("col.label"));
         infoTable.add(new VisLabel(dateFormatter.format(currentPlayer.getPerson().getBirthDate()))).left();
         infoTable.row();
         
-        infoTable.add(new VisLabel("Current Club:")).left().width(150);
+        infoTable.add(new VisLabel("Current Club:")).left().width(UiTheme.size("col.label"));
         String clubName = "N/A";
         if (currentPlayer.getPerson().getCurrentClubId() != null) {
             com.rndmodgames.futtoboru.data.Club club = futtoboru.getCurrentGame().getClubById(
@@ -213,7 +214,7 @@ public class PlayerDetailScreenTable extends VisTable {
         infoTable.row();
         
         // Player Profession (day job for amateur/semi-pro)
-        infoTable.add(new VisLabel("Profession:")).left().width(150);
+        infoTable.add(new VisLabel("Profession:")).left().width(UiTheme.size("col.label"));
         String professionName = "N/A (Professional Player)";
         if (currentPlayer.getPlayerProfession() != null) {
             professionName = currentPlayer.getPlayerProfession().getName();
@@ -222,7 +223,7 @@ public class PlayerDetailScreenTable extends VisTable {
         infoTable.row();
         
         // Region/State (for region modifiers)
-        infoTable.add(new VisLabel("Region:")).left().width(150);
+        infoTable.add(new VisLabel("Region:")).left().width(UiTheme.size("col.label"));
         String regionName = "N/A";
         if (currentPlayer.getPerson().getState() != null && 
             currentPlayer.getPerson().getState().getName() != null) {
@@ -232,7 +233,7 @@ public class PlayerDetailScreenTable extends VisTable {
         infoTable.row();
         
         // Contract Information (v1.0)
-        infoTable.add(new VisLabel("Contract:")).left().width(150);
+        infoTable.add(new VisLabel("Contract:")).left().width(UiTheme.size("col.label"));
         String contractInfo = "No Contract";
         if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getCurrentGame() != null) {
             com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
@@ -248,7 +249,7 @@ public class PlayerDetailScreenTable extends VisTable {
         }
         infoTable.add(new VisLabel(contractInfo)).left();
         
-        contentTable.add(infoTable).left().pad(10);
+        contentTable.add(infoTable).left().pad(UiTheme.space("sm"));
     }
     
     /**
@@ -259,7 +260,7 @@ public class PlayerDetailScreenTable extends VisTable {
         VisTable contractTable = new VisTable(true);
         
         contractTable.row();
-        contractTable.add(new VisLabel("Contract Details")).colspan(2).left().padBottom(5);
+        contractTable.add(new VisLabel("Contract Details")).colspan(2).left().padBottom(UiTheme.space("xs"));
         contractTable.row();
         
         // Get contract
@@ -301,37 +302,37 @@ public class PlayerDetailScreenTable extends VisTable {
         if (contract != null) {
             // Contract Type
             contractTable.row();
-            contractTable.add(new VisLabel("Type:")).left().width(150);
+            contractTable.add(new VisLabel("Type:")).left().width(UiTheme.size("col.label"));
             contractTable.add(new VisLabel(com.rndmodgames.futtoboru.data.ContractType.getName(contract.getContractType()))).left();
             contractTable.row();
             
             // Weekly Wage
-            contractTable.add(new VisLabel("Weekly Wage:")).left().width(150);
+            contractTable.add(new VisLabel("Weekly Wage:")).left().width(UiTheme.size("col.label"));
             contractTable.add(new VisLabel("£" + contract.getWeeklyWage().setScale(2, java.math.RoundingMode.HALF_UP))).left();
             contractTable.row();
             
             // Contract Dates
             if (contract.getStartDate() != null) {
-                contractTable.add(new VisLabel("Start Date:")).left().width(150);
+                contractTable.add(new VisLabel("Start Date:")).left().width(UiTheme.size("col.label"));
                 contractTable.add(new VisLabel(dateFormatter.format(contract.getStartDate()))).left();
                 contractTable.row();
             }
             
             if (contract.getEndDate() != null) {
-                contractTable.add(new VisLabel("End Date:")).left().width(150);
+                contractTable.add(new VisLabel("End Date:")).left().width(UiTheme.size("col.label"));
                 contractTable.add(new VisLabel(dateFormatter.format(contract.getEndDate()))).left();
                 contractTable.row();
                 
                 // Days remaining
                 long daysRemaining = java.time.temporal.ChronoUnit.DAYS.between(
                     futtoboru.getCurrentGame().getGameDate(), contract.getEndDate());
-                contractTable.add(new VisLabel("Days Remaining:")).left().width(150);
+                contractTable.add(new VisLabel("Days Remaining:")).left().width(UiTheme.size("col.label"));
                 VisLabel daysLabel = new VisLabel(String.valueOf(daysRemaining));
                 if (daysRemaining < 90) {
-                    daysLabel.setColor(1.0f, 0.5f, 0.0f, 1.0f); // Orange for expiring soon
+                    daysLabel.setColor(UiTheme.color("state.warning")); // Orange for expiring soon
                 }
                 if (daysRemaining < 30) {
-                    daysLabel.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red for expiring very soon
+                    daysLabel.setColor(UiTheme.color("state.critical")); // Red for expiring very soon
                 }
                 contractTable.add(daysLabel).left();
                 contractTable.row();
@@ -339,25 +340,25 @@ public class PlayerDetailScreenTable extends VisTable {
             
             // Bonuses (only show if non-zero)
             if (contract.getSigningBonus() != null && contract.getSigningBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
-                contractTable.add(new VisLabel("Signing Bonus:")).left().width(150);
+                contractTable.add(new VisLabel("Signing Bonus:")).left().width(UiTheme.size("col.label"));
                 contractTable.add(new VisLabel("£" + contract.getSigningBonus().setScale(2, java.math.RoundingMode.HALF_UP))).left();
                 contractTable.row();
             }
             
             if (contract.getGoalBonus() != null && contract.getGoalBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
-                contractTable.add(new VisLabel("Goal Bonus:")).left().width(150);
+                contractTable.add(new VisLabel("Goal Bonus:")).left().width(UiTheme.size("col.label"));
                 contractTable.add(new VisLabel("£" + contract.getGoalBonus().setScale(2, java.math.RoundingMode.HALF_UP) + " per goal")).left();
                 contractTable.row();
             }
             
             if (contract.getAppearanceFee() != null && contract.getAppearanceFee().compareTo(java.math.BigDecimal.ZERO) > 0) {
-                contractTable.add(new VisLabel("Appearance Fee:")).left().width(150);
+                contractTable.add(new VisLabel("Appearance Fee:")).left().width(UiTheme.size("col.label"));
                 contractTable.add(new VisLabel("£" + contract.getAppearanceFee().setScale(2, java.math.RoundingMode.HALF_UP) + " per match")).left();
                 contractTable.row();
             }
             
             if (contract.getLeagueWinBonus() != null && contract.getLeagueWinBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
-                contractTable.add(new VisLabel("League Win Bonus:")).left().width(150);
+                contractTable.add(new VisLabel("League Win Bonus:")).left().width(UiTheme.size("col.label"));
                 contractTable.add(new VisLabel("£" + contract.getLeagueWinBonus().setScale(2, java.math.RoundingMode.HALF_UP))).left();
                 contractTable.row();
             }
@@ -366,7 +367,7 @@ public class PlayerDetailScreenTable extends VisTable {
             contractTable.add(new VisLabel("No contract found")).colspan(2).left();
         }
         
-        contentTable.add(contractTable).left().pad(10);
+        contentTable.add(contractTable).left().pad(UiTheme.space("sm"));
     }
     
     /**
@@ -377,7 +378,7 @@ public class PlayerDetailScreenTable extends VisTable {
         VisTable modifiersTable = new VisTable(true);
         
         modifiersTable.row();
-        modifiersTable.add(new VisLabel("Attribute Modifiers & Bonuses")).colspan(2).left().padBottom(5);
+        modifiersTable.add(new VisLabel("Attribute Modifiers & Bonuses")).colspan(2).left().padBottom(UiTheme.space("xs"));
         modifiersTable.row();
         
         // Get nationality modifier
@@ -420,7 +421,7 @@ public class PlayerDetailScreenTable extends VisTable {
         // Nationality Modifiers
         if (natMod != null) {
             modifiersTable.row();
-            modifiersTable.add(new VisLabel("Nationality Modifiers (" + natMod.getCountryName() + "):")).colspan(2).left().padTop(5);
+            modifiersTable.add(new VisLabel("Nationality Modifiers (" + natMod.getCountryName() + "):")).colspan(2).left().padTop(UiTheme.space("xs"));
             modifiersTable.row();
             
             addModifierRow(modifiersTable, "Strength", natMod.getStrengthModifier());
@@ -439,16 +440,16 @@ public class PlayerDetailScreenTable extends VisTable {
             addModifierRow(modifiersTable, "Teamwork", natMod.getTeamworkModifier());
         } else {
             modifiersTable.row();
-            modifiersTable.add(new VisLabel("Nationality Modifiers: None")).colspan(2).left().padTop(5);
+            modifiersTable.add(new VisLabel("Nationality Modifiers: None")).colspan(2).left().padTop(UiTheme.space("xs"));
         }
         
         modifiersTable.row();
-        modifiersTable.addSeparator().colspan(2).pad(5);
+        modifiersTable.addSeparator().colspan(2).pad(UiTheme.space("xs"));
         
         // Region Modifiers
         if (regMod != null) {
             modifiersTable.row();
-            modifiersTable.add(new VisLabel("Region Modifiers (" + regMod.getRegionName() + "):")).colspan(2).left().padTop(5);
+            modifiersTable.add(new VisLabel("Region Modifiers (" + regMod.getRegionName() + "):")).colspan(2).left().padTop(UiTheme.space("xs"));
             modifiersTable.row();
             
             addModifierRow(modifiersTable, "Strength", regMod.getStrengthModifier());
@@ -467,17 +468,17 @@ public class PlayerDetailScreenTable extends VisTable {
             addModifierRow(modifiersTable, "Teamwork", regMod.getTeamworkModifier());
         } else {
             modifiersTable.row();
-            modifiersTable.add(new VisLabel("Region Modifiers: None")).colspan(2).left().padTop(5);
+            modifiersTable.add(new VisLabel("Region Modifiers: None")).colspan(2).left().padTop(UiTheme.space("xs"));
         }
         
         modifiersTable.row();
-        modifiersTable.addSeparator().colspan(2).pad(5);
+        modifiersTable.addSeparator().colspan(2).pad(UiTheme.space("xs"));
         
         // Profession Bonuses (only for amateur/semi-pro)
         if (currentPlayer.getPlayerProfession() != null) {
             PlayerProfession profession = currentPlayer.getPlayerProfession();
             modifiersTable.row();
-            modifiersTable.add(new VisLabel("Profession Bonuses (" + profession.getName() + "):")).colspan(2).left().padTop(5);
+            modifiersTable.add(new VisLabel("Profession Bonuses (" + profession.getName() + "):")).colspan(2).left().padTop(UiTheme.space("xs"));
             modifiersTable.row();
             
             addModifierRow(modifiersTable, "Strength", profession.getStrengthBonus());
@@ -496,10 +497,10 @@ public class PlayerDetailScreenTable extends VisTable {
             addModifierRow(modifiersTable, "Teamwork", profession.getTeamworkBonus());
         } else {
             modifiersTable.row();
-            modifiersTable.add(new VisLabel("Profession Bonuses: None (Professional Player)")).colspan(2).left().padTop(5);
+            modifiersTable.add(new VisLabel("Profession Bonuses: None (Professional Player)")).colspan(2).left().padTop(UiTheme.space("xs"));
         }
         
-        contentTable.add(modifiersTable).left().pad(10);
+        contentTable.add(modifiersTable).left().pad(UiTheme.space("sm"));
     }
     
     /**
@@ -511,16 +512,16 @@ public class PlayerDetailScreenTable extends VisTable {
         }
         
         table.row();
-        table.add(new VisLabel(attributeName + ":")).left().width(150);
+        table.add(new VisLabel(attributeName + ":")).left().width(UiTheme.size("col.label"));
         
         String modifierText = modifier > 0 ? "+" + modifier : String.valueOf(modifier);
         VisLabel modifierLabel = new VisLabel(modifierText);
         
         // Color coding: green for positive, red for negative
         if (modifier > 0) {
-            modifierLabel.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green
+            modifierLabel.setColor(UiTheme.color("modifier.up")); // Green
         } else {
-            modifierLabel.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red
+            modifierLabel.setColor(UiTheme.color("modifier.down")); // Red
         }
         
         table.add(modifierLabel).left();
@@ -533,7 +534,7 @@ public class PlayerDetailScreenTable extends VisTable {
         physicalAttributesTable.clear();
         
         physicalAttributesTable.row();
-        physicalAttributesTable.add(new VisLabel("Physical Attributes")).colspan(3).left().padBottom(5);
+        physicalAttributesTable.add(new VisLabel("Physical Attributes")).colspan(3).left().padBottom(UiTheme.space("xs"));
         physicalAttributesTable.row();
         
         addAttributeRow(physicalAttributesTable, "Acceleration", currentPlayer.getAcceleration());
@@ -544,7 +545,7 @@ public class PlayerDetailScreenTable extends VisTable {
         addAttributeRow(physicalAttributesTable, "Jumping", currentPlayer.getJumping());
         addAttributeRow(physicalAttributesTable, "Dexterity", currentPlayer.getDexterity());
         
-        contentTable.add(physicalAttributesTable).left().pad(10);
+        contentTable.add(physicalAttributesTable).left().pad(UiTheme.space("sm"));
     }
     
     /**
@@ -554,7 +555,7 @@ public class PlayerDetailScreenTable extends VisTable {
         mentalAttributesTable.clear();
         
         mentalAttributesTable.row();
-        mentalAttributesTable.add(new VisLabel("Mental Attributes")).colspan(3).left().padBottom(5);
+        mentalAttributesTable.add(new VisLabel("Mental Attributes")).colspan(3).left().padBottom(UiTheme.space("xs"));
         mentalAttributesTable.row();
         
         addAttributeRow(mentalAttributesTable, "Concentration", currentPlayer.getConcentration());
@@ -565,7 +566,7 @@ public class PlayerDetailScreenTable extends VisTable {
         addAttributeRow(mentalAttributesTable, "Positioning", currentPlayer.getPositioning());
         addAttributeRow(mentalAttributesTable, "Teamwork", currentPlayer.getTeamwork());
         
-        contentTable.add(mentalAttributesTable).left().pad(10);
+        contentTable.add(mentalAttributesTable).left().pad(UiTheme.space("sm"));
     }
     
     /**
@@ -575,7 +576,7 @@ public class PlayerDetailScreenTable extends VisTable {
         technicalAttributesTable.clear();
         
         technicalAttributesTable.row();
-        technicalAttributesTable.add(new VisLabel("Technical Attributes")).colspan(3).left().padBottom(5);
+        technicalAttributesTable.add(new VisLabel("Technical Attributes")).colspan(3).left().padBottom(UiTheme.space("xs"));
         technicalAttributesTable.row();
         
         addAttributeRow(technicalAttributesTable, "Passing", currentPlayer.getPassing());
@@ -591,7 +592,7 @@ public class PlayerDetailScreenTable extends VisTable {
         addAttributeRow(technicalAttributesTable, "Marking", currentPlayer.getMarking());
         addAttributeRow(technicalAttributesTable, "Tackling", currentPlayer.getTackling());
         
-        contentTable.add(technicalAttributesTable).left().pad(10);
+        contentTable.add(technicalAttributesTable).left().pad(UiTheme.space("sm"));
     }
     
     /**
@@ -601,7 +602,7 @@ public class PlayerDetailScreenTable extends VisTable {
         goalkeeperAttributesTable.clear();
         
         goalkeeperAttributesTable.row();
-        goalkeeperAttributesTable.add(new VisLabel("Goalkeeper Attributes")).colspan(3).left().padBottom(5);
+        goalkeeperAttributesTable.add(new VisLabel("Goalkeeper Attributes")).colspan(3).left().padBottom(UiTheme.space("xs"));
         goalkeeperAttributesTable.row();
         
         addAttributeRow(goalkeeperAttributesTable, "Shot Stopping", currentPlayer.getShotStopping());
@@ -611,7 +612,7 @@ public class PlayerDetailScreenTable extends VisTable {
         addAttributeRow(goalkeeperAttributesTable, "Rushing Out", currentPlayer.getRushingOut());
         addAttributeRow(goalkeeperAttributesTable, "Area Positioning", currentPlayer.getAreaPositioning());
         
-        contentTable.add(goalkeeperAttributesTable).left().pad(10);
+        contentTable.add(goalkeeperAttributesTable).left().pad(UiTheme.space("sm"));
     }
     
     /**
@@ -621,7 +622,7 @@ public class PlayerDetailScreenTable extends VisTable {
         table.row();
         
         // Attribute name
-        table.add(new VisLabel(attributeName + ":")).left().width(150);
+        table.add(new VisLabel(attributeName + ":")).left().width(UiTheme.size("col.label"));
         
         // Current value (v2.0 - 3d6 system: display as integer)
         String valueText;
@@ -636,20 +637,20 @@ public class PlayerDetailScreenTable extends VisTable {
         
         // Color coding for exceptional attributes (20+)
         if (currentValue != null && currentValue >= 20) {
-            valueLabel.setColor(1.0f, 0.84f, 0.0f, 1.0f); // Gold for exceptional (20+)
+            valueLabel.setColor(UiTheme.color("rating.exceptional")); // Gold for exceptional (20+)
         } else if (currentValue != null && currentValue >= 18) {
-            valueLabel.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green for excellent (18-19)
+            valueLabel.setColor(UiTheme.color("rating.excellent")); // Green for excellent (18-19)
         } else if (currentValue != null && currentValue >= 15) {
-            valueLabel.setColor(0.5f, 1.0f, 0.5f, 1.0f); // Light green for good (15-17)
+            valueLabel.setColor(UiTheme.color("rating.good")); // Light green for good (15-17)
         } else if (currentValue != null && currentValue >= 12) {
-            valueLabel.setColor(1.0f, 1.0f, 1.0f, 1.0f); // White for average (12-14)
+            valueLabel.setColor(UiTheme.color("rating.average")); // White for average (12-14)
         } else if (currentValue != null && currentValue >= 9) {
-            valueLabel.setColor(1.0f, 0.8f, 0.5f, 1.0f); // Orange for below average (9-11)
+            valueLabel.setColor(UiTheme.color("rating.below")); // Orange for below average (9-11)
         } else if (currentValue != null) {
-            valueLabel.setColor(1.0f, 0.5f, 0.5f, 1.0f); // Red for poor (3-8)
+            valueLabel.setColor(UiTheme.color("rating.poor")); // Red for poor (3-8)
         }
         
-        table.add(valueLabel).left().width(80);
+        table.add(valueLabel).left().width(UiTheme.size("col.value"));
         
         // Change indicator (30-day tracking)
         String changeText = formatAttributeChange(attributeName, currentValue);
@@ -657,14 +658,14 @@ public class PlayerDetailScreenTable extends VisTable {
         
         // Color coding based on trend
         if (changeText.contains("↑↑") || changeText.contains("↑")) {
-            changeLabel.setColor(0.0f, 1.0f, 0.0f, 1.0f); // Green for improvement
+            changeLabel.setColor(UiTheme.color("trend.up")); // Green for improvement
         } else if (changeText.contains("↓↓") || changeText.contains("↓")) {
-            changeLabel.setColor(1.0f, 0.0f, 0.0f, 1.0f); // Red for decline
+            changeLabel.setColor(UiTheme.color("trend.down")); // Red for decline
         } else if (changeText.contains("=")) {
-            changeLabel.setColor(0.8f, 0.8f, 0.8f, 1.0f); // Gray for stable
+            changeLabel.setColor(UiTheme.color("trend.flat")); // Gray for stable
         }
         
-        table.add(changeLabel).left().width(120);
+        table.add(changeLabel).left().width(UiTheme.size("col.long"));
     }
     
     /**

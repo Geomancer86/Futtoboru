@@ -263,7 +263,12 @@ public final class UiTheme {
 
     /** Clears the screen with {@code bg.screen}. Needs a GL context. */
     public static void clearScreen() {
-        Color bg = get().getColor("bg.screen");
+        clearScreen("bg.screen");
+    }
+
+    /** Clears the screen with the given colour token (e.g. {@code bg.splash}). Needs a GL context. */
+    public static void clearScreen(String token) {
+        Color bg = get().getColor(token);
         Gdx.gl.glClearColor(bg.r, bg.g, bg.b, bg.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }

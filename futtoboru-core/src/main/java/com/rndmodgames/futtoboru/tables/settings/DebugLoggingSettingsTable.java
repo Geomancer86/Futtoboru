@@ -12,6 +12,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
  * Debug Logging Settings Table v1.0
@@ -37,13 +38,13 @@ public class DebugLoggingSettingsTable extends VisTable {
     private void buildUI() {
         // Title
         VisLabel titleLabel = new VisLabel("DEBUG LOGGING SETTINGS");
-        titleLabel.setFontScale(1.2f);
-        this.add(titleLabel).colspan(2).pad(10).row();
+        titleLabel.setFontScale(UiTheme.fontScale("heading"));
+        this.add(titleLabel).colspan(2).pad(UiTheme.space("sm")).row();
         
         // Remove redundant "Enable All Debug Logging" checkbox - use buttons instead
         // Master switch functionality is handled by "Enable All" / "Disable All" buttons
         
-        this.row().pad(5);
+        this.row().pad(UiTheme.space("xs"));
         
         // Engine Systems Section
         addSection("Engine Systems", 
@@ -82,7 +83,7 @@ public class DebugLoggingSettingsTable extends VisTable {
             DebugLogManager.CATEGORY_SYSTEM_CONFIG);
         
         // Buttons row
-        this.row().pad(10);
+        this.row().pad(UiTheme.space("sm"));
         
         VisTextButton enableAllButton = new VisTextButton("Enable All");
         enableAllButton.addListener(new ChangeListener() {
@@ -100,8 +101,8 @@ public class DebugLoggingSettingsTable extends VisTable {
             }
         });
         
-        this.add(enableAllButton).pad(5);
-        this.add(disableAllButton).pad(5);
+        this.add(enableAllButton).pad(UiTheme.space("xs"));
+        this.add(disableAllButton).pad(UiTheme.space("xs"));
     }
     
     /**
@@ -109,8 +110,8 @@ public class DebugLoggingSettingsTable extends VisTable {
      */
     private void addSection(String sectionTitle, String... categories) {
         VisLabel sectionLabel = new VisLabel(sectionTitle + ":");
-        sectionLabel.setFontScale(1.1f);
-        this.add(sectionLabel).colspan(2).pad(5).align(Align.left).row();
+        sectionLabel.setFontScale(UiTheme.fontScale("subheading"));
+        this.add(sectionLabel).colspan(2).pad(UiTheme.space("xs")).align(Align.left).row();
         
         for (String category : categories) {
             VisCheckBox checkBox = new VisCheckBox(logManager.getCategoryDisplayName(category));
@@ -131,10 +132,10 @@ public class DebugLoggingSettingsTable extends VisTable {
             
             categoryCheckBoxes.put(category, checkBox);
             
-            this.add(checkBox).colspan(2).pad(2).align(Align.left).row();
+            this.add(checkBox).colspan(2).pad(UiTheme.space("xxs")).align(Align.left).row();
         }
         
-        this.row().pad(5);
+        this.row().pad(UiTheme.space("xs"));
     }
     
     /**
