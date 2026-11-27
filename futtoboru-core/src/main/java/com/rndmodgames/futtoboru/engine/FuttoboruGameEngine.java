@@ -20,6 +20,7 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.engine.finances.ExpenseCalculator;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
+import com.rndmodgames.futtoboru.engine.simulation.MatchResultRecorder;
 import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
@@ -65,6 +66,9 @@ public class FuttoboruGameEngine {
     // Message Manager (v2.0)
     private MessageManager messageManager;
     
+    // The single match-result path (P2-2)
+    private MatchResultRecorder resultRecorder;
+    
     //
     public static final int CONTINUE_GAME_ACTION = 1;
     public static final int MATCH_PREVIEW_ACTION = 2;
@@ -85,6 +89,7 @@ public class FuttoboruGameEngine {
         this.competitionScheduler = new CompetitionScheduler(gameInstance);
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
+        this.resultRecorder = new MatchResultRecorder(gameInstance, messageManager);
         this.expenseCalculator = new ExpenseCalculator();
     }
     
@@ -256,53 +261,12 @@ public class FuttoboruGameEngine {
         // Create match simulator
         MatchSimulator simulator = new MatchSimulator(gameInstance);
         
-        // Simulate the match
-        boolean simulated = simulator.simulateMatch(nextMatch);
-        
-        if (!simulated) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Failed to simulate match");
+        // Simulate and record through the single result path (P2-2): table, cup, lists, message, draw blocker
+        if (!resultRecorder.play(nextMatch, simulator)) {
+            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Match not played: " + nextMatch.getId());
             return;
         }
-        
-        // Get both clubs (home and away) to update their match lists
-        Club homeClub = gameInstance.getCurrentGame().getClubById(nextMatch.getHomeClubId());
-        Club awayClub = gameInstance.getCurrentGame().getClubById(nextMatch.getAwayClubId());
-        
-        // Update home club's match lists
-        if (homeClub != null) {
-            homeClub.getScheduledMatches().remove(nextMatch);
-            if (!homeClub.getPlayedMatches().contains(nextMatch)) {
-                homeClub.getPlayedMatches().add(nextMatch);
-            }
-        }
-        
-        // Update away club's match lists
-        if (awayClub != null) {
-            awayClub.getScheduledMatches().remove(nextMatch);
-            if (!awayClub.getPlayedMatches().contains(nextMatch)) {
-                awayClub.getPlayedMatches().add(nextMatch);
-            }
-        }
-        
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "Match simulated: " + (homeClub != null ? homeClub.getName() : "Unknown") + 
-                          " " + nextMatch.getHomeGoals() + " - " + nextMatch.getAwayGoals() + 
-                          " " + (awayClub != null ? awayClub.getName() : "Unknown"));
-        
-        // Create match result message for both clubs
-        if (messageManager != null && homeClub != null && awayClub != null) {
-            com.rndmodgames.futtoboru.data.Message matchResultMessage = 
-                messageManager.createMatchResultMessage(nextMatch, homeClub, awayClub);
-            
-            if (matchResultMessage != null) {
-                // Deliver immediately to both clubs' inboxes
-                // For now, we'll send to current club if they're involved
-                // TODO: In future, each club should have their own inbox or we filter by club
-                messageManager.deliverMessage(matchResultMessage);
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine", "Created match result message for " + 
-                           homeClub.getName() + " vs " + awayClub.getName());
-            }
-        }
-        
+
         // Update UI
         if (mainMenuManager != null) {
             mainMenuManager.updateDynamicComponents();
@@ -694,64 +658,13 @@ public class FuttoboruGameEngine {
      * @return true if there are mandatory unread draw messages, false otherwise
      */
     private boolean hasMandatoryUnreadDrawMessages() {
-        SaveGame currentGame = gameInstance.getCurrentGame();
-        if (currentGame == null) {
-            return false;
+        boolean blocked = MatchResultRecorder.hasMandatoryDrawBlocker(gameInstance.getCurrentGame());
+        if (blocked) {
+            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Mandatory draw message pending (delivered or scheduled)");
         }
-        
-        LocalDateTime currentDate = currentGame.getGameDate();
-        
-        // Check delivered messages first
-        if (currentGame.getAllMessages() != null) {
-            for (com.rndmodgames.futtoboru.data.Message message : currentGame.getAllMessages()) {
-                if (message != null) {
-                    boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
-                    boolean isUnread = message.getIsRead() == null || !message.getIsRead();
-                    boolean isNotDeleted = message.getIsDeleted() == null || !message.getIsDeleted();
-                    String messageType = message.getMessageType();
-                    
-                    if (isMandatory && isUnread && isNotDeleted) {
-                        if (messageType != null && 
-                            (messageType.equals("LEAGUE_DRAW") || 
-                             messageType.equals("CUP_DRAW") ||
-                             messageType.equals("FIXTURE_DRAW"))) {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Found mandatory unread draw message in getAllMessages: " + message.getTitle());
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        
-        // CRITICAL: Also check scheduled messages for ANY mandatory draw messages
-        // This ensures league matches are NEVER simulated if there's ANY mandatory draw message scheduled,
-        // regardless of when it's scheduled. The draw must be completed before ANY league matches can be played.
-        if (currentGame.getScheduledMessages() != null) {
-            for (com.rndmodgames.futtoboru.data.Message message : currentGame.getScheduledMessages()) {
-                if (message != null) {
-                    boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
-                    String messageType = message.getMessageType();
-                    
-                    // Block if it's a mandatory draw message, regardless of scheduled date
-                    // This ensures league matches are NEVER simulated before the draw is completed
-                    if (isMandatory) {
-                        if (messageType != null && 
-                            (messageType.equals("LEAGUE_DRAW") || 
-                             messageType.equals("CUP_DRAW") ||
-                             messageType.equals("FIXTURE_DRAW"))) {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Found mandatory draw message in scheduledMessages: " + message.getTitle() + 
-                                         " (scheduled: " + message.getScheduledDate() + ", current: " + currentDate + 
-                                         ") - blocking ALL league match simulation until draw is completed");
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        
-        return false;
+        return blocked;
     }
-    
+
     /**
      * Simulate all matches scheduled for a specific date
      * 
@@ -840,16 +753,11 @@ public class FuttoboruGameEngine {
                     }
                     
                     if (shouldSimulate) {
-                        // CRITICAL: Skip LEAGUE matches if there's a mandatory unread LEAGUE_DRAW message
-                        // Draws must ALWAYS be performed from the draw screen, never automatically
-                        if (match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH) {
-                            if (hasMandatoryUnreadDrawMessages()) {
-                                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: SKIPPING league match " + match.getId() + 
-                                    " - mandatory unread draw message exists. Draw must be completed from draw screen first.");
-                                continue; // Skip this league match - draw must be completed first
-                            }
+                        // League matches are refused while a mandatory draw is pending (MatchResultRecorder.isPlayable)
+                        if (!resultRecorder.isPlayable(match)) {
+                            continue;
                         }
-                        
+
                         // Add to list if not already there (prevent duplicates by ID)
                         if (!matchIdsAdded.contains(match.getId())) {
                             matchesToSimulate.add(match);
@@ -886,48 +794,16 @@ public class FuttoboruGameEngine {
         
         // Second pass: Simulate matches and update lists
         for (Match match : matchesToSimulate) {
-            // Simulate the match
-            boolean success = simulator.simulateMatch(match);
-            
-            if (success) {
+            // Simulate and record through the single result path (P2-2)
+            if (resultRecorder.play(match, simulator)) {
                 simulatedToday.add(match);
                 matchesSimulated++;
-                
                 DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine: Simulated match " + match.getId() + " on " + targetDate);
-                
-                // Update match lists for both clubs (now safe to modify)
-                Club homeClub = game.getClubById(match.getHomeClubId());
-                Club awayClub = game.getClubById(match.getAwayClubId());
-                
-                if (homeClub != null) {
-                    homeClub.getScheduledMatches().remove(match);
-                    if (!homeClub.getPlayedMatches().contains(match)) {
-                        homeClub.getPlayedMatches().add(match);
-                    }
-                }
-                
-                if (awayClub != null) {
-                    awayClub.getScheduledMatches().remove(match);
-                    if (!awayClub.getPlayedMatches().contains(match)) {
-                        awayClub.getPlayedMatches().add(match);
-                    }
-                }
-                
-                // Create match result message
-                if (messageManager != null && homeClub != null && awayClub != null) {
-                    com.rndmodgames.futtoboru.data.Message matchResultMessage = 
-                        messageManager.createMatchResultMessage(match, homeClub, awayClub);
-                    if (matchResultMessage != null) {
-                        messageManager.deliverMessage(matchResultMessage);
-                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_MATCH, "FuttoboruGameEngine: Created match result message for " + 
-                                         homeClub.getName() + " vs " + awayClub.getName());
-                    }
-                }
             } else {
                 DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Failed to simulate match " + match.getId());
             }
         }
-        
+
         // Reschedule matches with passed dates that aren't ready (teams not determined)
         for (Match match : matchesToReschedule) {
             if (match != null && match.getMatchDateTime() != null) {
