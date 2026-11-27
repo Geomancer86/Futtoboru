@@ -12,6 +12,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.system.DebugLogManager;
+import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 
 /**
@@ -215,7 +216,7 @@ public class DebugLoggingSettingsTable extends VisTable {
      * Call this when settings screen is shown to ensure UI matches current settings
      */
     public void refreshSettings() {
-        System.out.println("DEBUG: refreshSettings() called");
+        Log.debug(Log.SYSTEM_CONFIG, "refreshSettings() called");
         logManager.reloadSettings();
         
         // Master switch checkbox removed - no need to update it
@@ -226,7 +227,7 @@ public class DebugLoggingSettingsTable extends VisTable {
             // Use getCategoryState() to show actual saved state for UI display
             // This shows the true state regardless of master switch, so users can see what they've configured
             boolean enabled = logManager.getCategoryState(category);
-            System.out.println("DEBUG: Refreshing checkbox for " + category + " - setting to " + enabled + " (raw state)");
+            Log.debug(Log.SYSTEM_CONFIG, "Refreshing checkbox for " + category + " - setting to " + enabled + " (raw state)");
             entry.getValue().setChecked(enabled);
         }
     }

@@ -22,9 +22,9 @@ import com.rndmodgames.futtoboru.data.jobs.JobOpening;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
-import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Job Board Screen Table v1
@@ -47,15 +47,15 @@ public class JobBoardScreenTable extends VisTable {
         super(true);
         
         // Force output immediately
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "===== CONSTRUCTOR CALLED =====");
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "===== CONSTRUCTOR CALLED =====");
         
         this.game = parent;
         this.currentGame = ((Futtoboru)game).getCurrentGame();
         this.jobManager = ((Futtoboru)game).getJobManager();
         
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Game: " + (game != null ? "OK" : "NULL"));
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "CurrentGame: " + (currentGame != null ? "OK" : "NULL"));
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "JobManager: " + (jobManager != null ? "OK" : "NULL"));
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Game: " + (game != null ? "OK" : "NULL"));
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "CurrentGame: " + (currentGame != null ? "OK" : "NULL"));
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "JobManager: " + (jobManager != null ? "OK" : "NULL"));
         
         // Title
         this.row();
@@ -65,40 +65,40 @@ public class JobBoardScreenTable extends VisTable {
         
         // Jobs list
         jobsListTable = new VisTable(true);
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Created jobsListTable");
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Created jobsListTable");
         
         jobsScrollPane = new VisScrollPane(jobsListTable);
         jobsScrollPane.setFadeScrollBars(false);
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Created jobsScrollPane");
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Created jobsScrollPane");
         
         this.row();
         this.add(jobsScrollPane).grow().colspan(2);
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Added jobsScrollPane to main table");
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Added jobsScrollPane to main table");
         
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Calling updateDynamicComponents from constructor...");
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Calling updateDynamicComponents from constructor...");
         updateDynamicComponents();
         
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "=== CONSTRUCTOR COMPLETE ===");
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "=== CONSTRUCTOR COMPLETE ===");
     }
     
     public void updateDynamicComponents() {
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "=== updateDynamicComponents START ===");
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "=== updateDynamicComponents START ===");
         
         if (jobManager == null) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "jobManager is NULL!");
+            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "jobManager is NULL!");
             return;
         }
         
         if (currentGame == null) {
-            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "currentGame is NULL!");
+            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "currentGame is NULL!");
             return;
         }
         
         jobsListTable.clear();
         
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Getting available jobs...");
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Getting available jobs...");
         List<JobOpening> jobs = jobManager.getAvailableJobs();
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Found " + (jobs != null ? jobs.size() : 0) + " available jobs");
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Found " + (jobs != null ? jobs.size() : 0) + " available jobs");
         
         if (jobs.isEmpty()) {
             jobsListTable.row();
@@ -144,17 +144,17 @@ public class JobBoardScreenTable extends VisTable {
             ApplicationStatus applicationStatus = null;
             if (owner != null && jobManager != null) {
                 List<JobApplication> playerApps = jobManager.getPlayerApplications(owner);
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Checking " + playerApps.size() + " existing applications for job ID: " + jobId);
+                Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Checking " + playerApps.size() + " existing applications for job ID: " + jobId);
                 for (JobApplication app : playerApps) {
                     if (app != null && app.getJobOpeningId() != null && app.getJobOpeningId().equals(jobId) && app.isActive()) {
                         alreadyApplied = true;
                         applicationStatus = app.getStatus();
-                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
+                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
                         break;
                     }
                 }
             }
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Already applied: " + alreadyApplied + ", Status: " + applicationStatus);
+            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Already applied: " + alreadyApplied + ", Status: " + applicationStatus);
             
             VisTextButton applyButton;
             if (alreadyApplied) {
@@ -172,53 +172,53 @@ public class JobBoardScreenTable extends VisTable {
             } else {
                 applyButton = new VisTextButton("Apply");
             }
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Creating Apply button for job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
+            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Creating Apply button for job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
             
             // Verify button is not null
             if (applyButton == null) {
-                DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "CRITICAL: applyButton is NULL after creation!");
+                Log.error(Log.UI_JOBS, "JobBoardScreenTable", "CRITICAL: applyButton is NULL after creation!");
                 continue; // Skip this job
             }
             
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Button created successfully, adding listener...");
+            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Button created successfully, adding listener...");
             
             // Only add listener if not already applied
             if (!alreadyApplied) {
                 applyButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                 @Override
                 public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
-                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "*** TOUCH DOWN on Apply button! Job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
+                    Log.info(Log.UI_JOBS, "JobBoardScreenTable", "*** TOUCH DOWN on Apply button! Job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
                     return true; // Return true to indicate we want to receive the touchUp event
                 }
                 
                 @Override
                 public void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
-                    DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "touchUp called, checking isPressed...");
+                    Log.debug(Log.UI_JOBS, "JobBoardScreenTable", "touchUp called, checking isPressed...");
                     if (!applyButton.isPressed()) {
-                        DebugLogManager.getInstance().debug(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Button not pressed, ignoring");
+                        Log.debug(Log.UI_JOBS, "JobBoardScreenTable", "Button not pressed, ignoring");
                         return; // Button was released outside, ignore
                     }
-                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Button IS pressed, processing click!");
+                    Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Button IS pressed, processing click!");
                     try {
-                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "*** CLICKED EVENT FIRED *** Job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
+                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "*** CLICKED EVENT FIRED *** Job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
                         
                         if (jobManager == null) {
-                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "jobManager is NULL!");
+                            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "jobManager is NULL!");
                             return;
                         }
                         
                         if (currentGame == null) {
-                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "currentGame is NULL!");
+                            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "currentGame is NULL!");
                             return;
                         }
                         
                         Person owner = currentGame.getOwner();
                         if (owner == null) {
-                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "currentGame.getOwner() is NULL!");
+                            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "currentGame.getOwner() is NULL!");
                             return;
                         }
                         
-                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Calling applyForJob for: " + owner.getName());
+                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Calling applyForJob for: " + owner.getName());
                         
                         // Get the job opening object again (using the captured jobId)
                         JobOpening jobToApply = null;
@@ -233,55 +233,55 @@ public class JobBoardScreenTable extends VisTable {
                         }
                         
                         if (jobToApply == null) {
-                            DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Could not find job opening with ID: " + jobId);
+                            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "Could not find job opening with ID: " + jobId);
                             return;
                         }
                         
-                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Found job opening, calling applyForJob for job ID: " + jobId);
+                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Found job opening, calling applyForJob for job ID: " + jobId);
                         JobApplication result = jobManager.applyForJob(owner, jobToApply);
                         
                         if (result != null) {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Application successful: ID=" + result.getId() + ", Status=" + result.getStatus());
+                            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Application successful: ID=" + result.getId() + ", Status=" + result.getStatus());
                             
                             // Show success message
                             showMessage("Application Submitted", 
                                       "Your application for " + jobClub.getName() + " (" + jobProfession.getName() + ") has been submitted successfully.");
                             
                             // Force immediate refresh to show updated status
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Forcing immediate screen refresh...");
+                            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Forcing immediate screen refresh...");
                             
                             // Post to main thread to ensure UI update happens
                             Gdx.app.postRunnable(new Runnable() {
                                 @Override
                                 public void run() {
-                                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Refreshing screen in postRunnable...");
+                                    Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Refreshing screen in postRunnable...");
                                     updateDynamicComponents();
-                                    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Screen refresh completed in postRunnable");
+                                    Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Screen refresh completed in postRunnable");
                                 }
                             });
                         } else {
-                            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Application returned null (may be rejected or already exists)");
+                            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Application returned null (may be rejected or already exists)");
                             
                             // Show error message
                             showMessage("Application Failed", 
                                       "Unable to submit application. The position may no longer be available or you may have already applied.");
                         }
                         
-                        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "=== Apply button click completed ===");
+                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "=== Apply button click completed ===");
                         
                     } catch (Exception e) {
-                        DebugLogManager.getInstance().error(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "CRITICAL ERROR in Apply button click!", e);
+                        Log.error(Log.UI_JOBS, "JobBoardScreenTable", "CRITICAL ERROR in Apply button click!", e);
                     }
                 }
                 });
             } // End if (!alreadyApplied)
             
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Listener added to button, now adding button to table...");
+            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Listener added to button, now adding button to table...");
             jobsListTable.add(applyButton).width(UiTheme.size("col.number"));
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "Button added to table successfully for job ID: " + jobId);
+            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Button added to table successfully for job ID: " + jobId);
         }
         
-        DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", "=== updateDynamicComponents COMPLETE === Total buttons created: " + (jobs != null ? jobs.size() : 0));
+        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "=== updateDynamicComponents COMPLETE === Total buttons created: " + (jobs != null ? jobs.size() : 0));
     }
     
     /**
@@ -296,7 +296,7 @@ public class JobBoardScreenTable extends VisTable {
             dialog.show(stage);
         } else {
             // Fallback to console if stage not available
-            DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_JOBS, "JobBoardScreenTable", title + ": " + message);
+            Log.info(Log.UI_JOBS, "JobBoardScreenTable", title + ": " + message);
         }
     }
 }

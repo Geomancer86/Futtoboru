@@ -33,6 +33,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * New Manager Screen v1
@@ -91,7 +92,6 @@ public class NewManagerScreen implements Screen {
                 // When you press 'enter', do something
 
 //                  if (key == 13) {
-                // System.out.println("You have typed " + worldSeedTextField.getText());
 //                  }
             }
         });
@@ -114,7 +114,6 @@ public class NewManagerScreen implements Screen {
                 // When you press 'enter', do something
 
 //                  if (key == 13) {
-                // System.out.println("You have typed " + worldSeedTextField.getText());
 //                  }
             }
         });
@@ -137,7 +136,6 @@ public class NewManagerScreen implements Screen {
                 // When you press 'enter', do something
 
 //                  if (key == 13) {
-                // System.out.println("You have typed " + worldSeedTextField.getText());
 //                  }
             }
         });
@@ -237,14 +235,14 @@ public class NewManagerScreen implements Screen {
                     
                 } catch (ParseException e) {
                     
-                    e.printStackTrace();
+                    Log.error(Log.UI_MENU, e);
                 }
 
                 //
                 manager.setCountry(placeOfBirthSelectBox.getSelectedCountry());
                 manager.setState(placeOfBirthSelectBox.getSelectedState());
 
-                System.out.println(manager.toString());
+                Log.info(Log.UI_MENU, manager.toString());
                 
                 /**
                  * After creating the New Manager, we save it to file and switch to the New Game Screen
@@ -254,7 +252,7 @@ public class NewManagerScreen implements Screen {
                  */
                 SaveLoadSystem.saveManagerDataFile(manager, manager.getLastname().toLowerCase());
                 
-                System.out.println(manager.toString());
+                Log.info(Log.UI_MENU, manager.toString());
                 
                 /**
                  * Redirect/Go Back to New Game Screen
@@ -339,7 +337,7 @@ public class NewManagerScreen implements Screen {
 	@Override
 	public void hide() {
 
-	    System.out.println("HIDE WAS CALLED ON NEW MANAGER SCREEN - DISPOSE");
+	    Log.info(Log.UI_MENU, "HIDE WAS CALLED ON NEW MANAGER SCREEN - DISPOSE");
 	    
 	 // Hide will be called after switching to a separate screen
 	    this.dispose();

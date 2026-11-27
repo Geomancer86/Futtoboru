@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.kotcrab.vis.ui.widget.LinkLabel;
@@ -21,6 +20,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Players List Table v1
@@ -192,7 +192,7 @@ public class PlayersListTable extends VisTable {
                         menuManager.setSelectedPlayer(player);
                         menuManager.setActiveMainScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.PLAYER_DETAIL_SCREEN);
                     } else {
-                        Gdx.app.error("PlayersListTable", "MainMenuManager is null, cannot open player detail");
+                        Log.error(Log.UI_CLUB, "PlayersListTable", "MainMenuManager is null, cannot open player detail");
                     }
                 }
             });
@@ -277,7 +277,7 @@ public class PlayersListTable extends VisTable {
                         currentSortColumn = columnName;
                         sortAscending = true;
                     }
-                    Gdx.app.log("PlayersListTable", "Sorting by: " + columnName + " (" + (sortAscending ? "ASC" : "DESC") + ")");
+                    Log.info(Log.UI_CLUB, "PlayersListTable", "Sorting by: " + columnName + " (" + (sortAscending ? "ASC" : "DESC") + ")");
                     updateDynamicComponents();
                 }
             }

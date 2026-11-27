@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Cup Playoffs Table v1.0
@@ -95,7 +96,7 @@ public class CupPlayoffsTable extends VisTable {
         int maxRound = 0;
         
         List<Match> allMatches = getEditionMatches();
-        System.out.println("CupPlayoffsTable: Found " + allMatches.size() + " matches for edition ID: " + currentEdition.getId());
+        Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable: Found " + allMatches.size() + " matches for edition ID: " + currentEdition.getId());
         
         for (Match m : allMatches) {
             if (m.getRound() == null) continue;
@@ -106,7 +107,7 @@ public class CupPlayoffsTable extends VisTable {
         
         if (maxRound == 0) {
             bracketContainer.add(new VisLabel("The draw has not been conducted yet.")).pad(UiTheme.space("lg")).row();
-            System.out.println("CupPlayoffsTable: No matches found - edition ID: " + currentEdition.getId() + ", currentGame: " + (currentGame != null ? "not null" : "null"));
+            Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable: No matches found - edition ID: " + currentEdition.getId() + ", currentGame: " + (currentGame != null ? "not null" : "null"));
             return;
         }
         
@@ -256,22 +257,22 @@ public class CupPlayoffsTable extends VisTable {
     private List<Match> getEditionMatches() {
         List<Match> matches = new ArrayList<>();
         if (currentEdition == null) {
-            System.out.println("CupPlayoffsTable.getEditionMatches: currentEdition is null");
+            Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable.getEditionMatches: currentEdition is null");
             return matches;
         }
         
         if (currentGame == null) {
-            System.out.println("CupPlayoffsTable.getEditionMatches: currentGame is null");
+            Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable.getEditionMatches: currentGame is null");
             return matches;
         }
         
         if (currentGame.getAllClubs() == null) {
-            System.out.println("CupPlayoffsTable.getEditionMatches: getAllClubs() is null");
+            Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable.getEditionMatches: getAllClubs() is null");
             return matches;
         }
         
-        System.out.println("CupPlayoffsTable.getEditionMatches: Looking for matches with edition ID: " + currentEdition.getId());
-        System.out.println("CupPlayoffsTable.getEditionMatches: Checking " + currentGame.getAllClubs().size() + " clubs");
+        Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable.getEditionMatches: Looking for matches with edition ID: " + currentEdition.getId());
+        Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable.getEditionMatches: Checking " + currentGame.getAllClubs().size() + " clubs");
         
         // Use Set to track added match IDs (more reliable than contains())
         java.util.Set<Long> matchIdsAdded = new java.util.HashSet<>();
@@ -301,7 +302,7 @@ public class CupPlayoffsTable extends VisTable {
                             matches.add(match);
                             matchIdsAdded.add(match.getId());
                             fromScheduled++;
-                            System.out.println("CupPlayoffsTable: Found match in scheduled - ID: " + match.getId() + 
+                            Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable: Found match in scheduled - ID: " + match.getId() + 
                                 " - Round: " + match.getRound() + 
                                 ", Home: " + match.getHomeClubId() + ", Away: " + match.getAwayClubId() +
                                 ", Played: " + (match.getIsPlayed() != null && match.getIsPlayed()));
@@ -324,7 +325,7 @@ public class CupPlayoffsTable extends VisTable {
                             matches.add(match);
                             matchIdsAdded.add(match.getId());
                             fromPlayed++;
-                            System.out.println("CupPlayoffsTable: Found match in played - ID: " + match.getId() + 
+                            Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable: Found match in played - ID: " + match.getId() + 
                                 " - Round: " + match.getRound() + 
                                 ", Home: " + match.getHomeClubId() + ", Away: " + match.getAwayClubId() +
                                 ", Played: " + (match.getIsPlayed() != null && match.getIsPlayed()));
@@ -334,7 +335,7 @@ public class CupPlayoffsTable extends VisTable {
             }
         }
         
-        System.out.println("CupPlayoffsTable.getEditionMatches: Total matches checked: " + totalMatchesChecked + 
+        Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable.getEditionMatches: Total matches checked: " + totalMatchesChecked + 
             ", with edition ID: " + matchesWithEditionId + ", matching this edition: " + matchesMatchingEdition +
             " (from scheduled: " + fromScheduled + ", from played: " + fromPlayed + ")");
         

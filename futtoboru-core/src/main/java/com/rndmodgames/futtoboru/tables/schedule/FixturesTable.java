@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.EngineParameters;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Fixtures Table v1
@@ -78,7 +79,7 @@ public class FixturesTable extends VisTable {
      */
     public void updateDynamicComponents() {
         
-        System.out.println("SHOWING CLUB SCHEDULED MATCH LIST!");
+        Log.info(Log.UI_SCHEDULE, "SHOWING CLUB SCHEDULED MATCH LIST!");
         
         //
         matchListTable.clear();
@@ -138,11 +139,11 @@ public class FixturesTable extends VisTable {
         
         // Debug logging
         if (currentClub != null) {
-            System.out.println("FixturesTable: Current club: " + currentClub.getName());
-            System.out.println("FixturesTable: Proposed matches: " + (currentClub.getProposedMatches() != null ? currentClub.getProposedMatches().size() : 0));
-            System.out.println("FixturesTable: Scheduled matches: " + (currentClub.getScheduledMatches() != null ? currentClub.getScheduledMatches().size() : 0));
+            Log.info(Log.UI_SCHEDULE, "FixturesTable: Current club: " + currentClub.getName());
+            Log.info(Log.UI_SCHEDULE, "FixturesTable: Proposed matches: " + (currentClub.getProposedMatches() != null ? currentClub.getProposedMatches().size() : 0));
+            Log.info(Log.UI_SCHEDULE, "FixturesTable: Scheduled matches: " + (currentClub.getScheduledMatches() != null ? currentClub.getScheduledMatches().size() : 0));
         } else {
-            System.out.println("FixturesTable: Current club is null (unemployed player)");
+            Log.info(Log.UI_SCHEDULE, "FixturesTable: Current club is null (unemployed player)");
         }
         
         // Get all league matches if player is in a league
@@ -185,7 +186,7 @@ public class FixturesTable extends VisTable {
             }
         }
         
-        System.out.println("FixturesTable: Found " + allLeagueMatches.size() + " league matches");
+        Log.info(Log.UI_SCHEDULE, "FixturesTable: Found " + allLeagueMatches.size() + " league matches");
         
         // Iterate Season Dates
         // Keep count of days for Week Rendering
@@ -264,7 +265,6 @@ public class FixturesTable extends VisTable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 
-//                System.out.println("CLICKED DATE: " + formatter.format(date));
                 
                 // Set to be retrieved on other components
                 selectedDate = date;

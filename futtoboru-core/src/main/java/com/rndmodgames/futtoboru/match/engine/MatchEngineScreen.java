@@ -45,6 +45,7 @@ import com.rndmodgames.futtoboru.match.engine.systems.RenderingSystem;
 import com.rndmodgames.futtoboru.match.engine.utils.LocationAdapter;
 import com.badlogic.ashley.core.Entity;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * MatchEngineScreen - 2D Football Match Engine using Ashley ECS and Box2D
@@ -145,7 +146,7 @@ public class MatchEngineScreen implements Screen {
         
         // Log match configuration
         if (config != null) {
-            Gdx.app.log("MatchEngine", "Match: " + 
+            Log.info(Log.UI_MATCH, "MatchEngine", "Match: " + 
                 (config.homeTeam != null ? config.homeTeam.getName() : "Unknown") + " vs " +
                 (config.awayTeam != null ? config.awayTeam.getName() : "Unknown"));
         }
@@ -161,7 +162,7 @@ public class MatchEngineScreen implements Screen {
         engine.addSystem(new PhysicsSystem(physicsWorld));
         engine.addSystem(new RenderingSystem(batch, camera));
         
-        Gdx.app.log("MatchEngine", "Match Engine initialized");
+        Log.info(Log.UI_MATCH, "MatchEngine", "Match Engine initialized");
     }
     
     /**
@@ -421,7 +422,7 @@ public class MatchEngineScreen implements Screen {
             @Override public boolean mouseMoved(int screenX, int screenY) { return false; }
             @Override public boolean scrolled(float amountX, float amountY) { return false; }
         });
-        Gdx.app.log("MatchEngine", "Match Engine Screen shown");
+        Log.info(Log.UI_MATCH, "MatchEngine", "Match Engine Screen shown");
     }
     
     @Override
@@ -499,6 +500,6 @@ public class MatchEngineScreen implements Screen {
         if (physicsWorld != null) physicsWorld.dispose();
         if (uiStage != null) uiStage.dispose();
         if (font != null) font.dispose();
-        Gdx.app.log("MatchEngine", "Match Engine disposed");
+        Log.info(Log.UI_MATCH, "MatchEngine", "Match Engine disposed");
     }
 }

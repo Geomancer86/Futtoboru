@@ -20,6 +20,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * League Draw Screen Table v1.0
@@ -299,12 +300,12 @@ public class LeagueDrawScreenTable extends VisTable {
      */
     private void markDrawMessageAsComplete() {
         if (currentGame == null || currentGame.getAllMessages() == null) {
-            System.out.println("LeagueDrawScreenTable: ERROR - currentGame or getAllMessages is null");
+            Log.info(Log.UI_DRAW, "LeagueDrawScreenTable: ERROR - currentGame or getAllMessages is null");
             return;
         }
         
-        System.out.println("LeagueDrawScreenTable: Searching for draw message to mark as complete...");
-        System.out.println("Total messages: " + currentGame.getAllMessages().size());
+        Log.info(Log.UI_DRAW, "LeagueDrawScreenTable: Searching for draw message to mark as complete...");
+        Log.info(Log.UI_DRAW, "Total messages: " + currentGame.getAllMessages().size());
         
         // Find the draw message and mark it as read and non-mandatory
         boolean found = false;
@@ -313,7 +314,7 @@ public class LeagueDrawScreenTable extends VisTable {
                 String messageType = message.getMessageType();
                 boolean isMandatory = message.getIsMandatory() != null && message.getIsMandatory();
                 
-                System.out.println("Checking message: Type=" + messageType + ", Mandatory=" + isMandatory + 
+                Log.info(Log.UI_DRAW, "Checking message: Type=" + messageType + ", Mandatory=" + isMandatory + 
                                  ", Read=" + message.getIsRead() + ", Title=" + message.getTitle());
                 
                 if (messageType != null && 
@@ -325,13 +326,13 @@ public class LeagueDrawScreenTable extends VisTable {
                     message.setIsMandatory(false);  // No longer blocks time advancement
                     found = true;
                     
-                    System.out.println("========================================");
-                    System.out.println("LeagueDrawScreenTable: Marked draw message as complete!");
-                    System.out.println("Message ID: " + message.getId());
-                    System.out.println("Message Title: " + message.getTitle());
-                    System.out.println("IsRead: " + message.getIsRead());
-                    System.out.println("IsMandatory: " + message.getIsMandatory());
-                    System.out.println("========================================");
+                    Log.info(Log.UI_DRAW, "========================================");
+                    Log.info(Log.UI_DRAW, "LeagueDrawScreenTable: Marked draw message as complete!");
+                    Log.info(Log.UI_DRAW, "Message ID: " + message.getId());
+                    Log.info(Log.UI_DRAW, "Message Title: " + message.getTitle());
+                    Log.info(Log.UI_DRAW, "IsRead: " + message.getIsRead());
+                    Log.info(Log.UI_DRAW, "IsMandatory: " + message.getIsMandatory());
+                    Log.info(Log.UI_DRAW, "========================================");
                     
                     // Create post-draw message with league info
                     createPostDrawMessage(selectedLeague);
@@ -340,7 +341,7 @@ public class LeagueDrawScreenTable extends VisTable {
                     if (game != null && game.getGameEngine() != null) {
                         // Force refresh of button state
                         int nextAction = game.getGameEngine().getNextGameAction();
-                        System.out.println("LeagueDrawScreenTable: Next game action after marking complete: " + nextAction);
+                        Log.info(Log.UI_DRAW, "LeagueDrawScreenTable: Next game action after marking complete: " + nextAction);
                     }
                     
                     // Update top menu button immediately
@@ -349,13 +350,13 @@ public class LeagueDrawScreenTable extends VisTable {
                         com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable topMenu = 
                             menuManager.getTopMenu();
                         if (topMenu != null) {
-                            System.out.println("LeagueDrawScreenTable: Refreshing top menu button state");
+                            Log.info(Log.UI_DRAW, "LeagueDrawScreenTable: Refreshing top menu button state");
                             topMenu.setMainContainerButton();
                         } else {
-                            System.out.println("LeagueDrawScreenTable: WARNING - topMenu is null, button state may not refresh");
+                            Log.info(Log.UI_DRAW, "LeagueDrawScreenTable: WARNING - topMenu is null, button state may not refresh");
                         }
                     } else {
-                        System.out.println("LeagueDrawScreenTable: WARNING - menuManager is null, button state may not refresh");
+                        Log.info(Log.UI_DRAW, "LeagueDrawScreenTable: WARNING - menuManager is null, button state may not refresh");
                     }
                     
                     break;
@@ -364,7 +365,7 @@ public class LeagueDrawScreenTable extends VisTable {
         }
         
         if (!found) {
-            System.out.println("LeagueDrawScreenTable: WARNING - No mandatory draw message found to mark as complete!");
+            Log.info(Log.UI_DRAW, "LeagueDrawScreenTable: WARNING - No mandatory draw message found to mark as complete!");
         }
     }
     
@@ -433,7 +434,7 @@ public class LeagueDrawScreenTable extends VisTable {
         // Deliver immediately
         messageManager.deliverMessage(postDrawMessage);
         
-        System.out.println("LeagueDrawScreenTable: Created post-draw message with " + totalFixtures + " fixtures");
+        Log.info(Log.UI_DRAW, "LeagueDrawScreenTable: Created post-draw message with " + totalFixtures + " fixtures");
     }
 }
 

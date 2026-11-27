@@ -10,6 +10,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.localization.Language;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Mods Settings Table v1
@@ -40,7 +41,7 @@ public class ModsSettingsTable extends VisTable {
 	        	
 	        	if (language != null) {
 	        	
-	        		System.out.println("SELECTED LANGUAGE: " + language.getName());
+	        		Log.info(Log.UI_MENU, "SELECTED LANGUAGE: " + language.getName());
 	        		
 //	        		((DarkBlade) game).updateLanguage(language.getId());
 	        		

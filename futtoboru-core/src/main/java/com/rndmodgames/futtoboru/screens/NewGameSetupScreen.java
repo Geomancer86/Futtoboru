@@ -25,6 +25,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * New Game Setup Screen v1
@@ -89,7 +90,6 @@ public class NewGameSetupScreen implements Screen {
          */
         for (Continent continent : DatabaseLoader.getInstance().getContinents()) {
 
-//          System.out.println("Continent Details: " + continent.getName());
             
             // An active Continent will have Countries with active Clubs
             boolean activeContinent = false;
@@ -103,14 +103,13 @@ public class NewGameSetupScreen implements Screen {
                 //
                 if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
                     
-                    // System.out.println("Country don't have active Clubs!");
                     
                 } else {
                     
                     // ADD COMPONENTS
-                    System.out.println("Continent Details: " + continent.getName());
-                    System.out.println("Country Details: " + country.getCommonName());
-                    System.out.println("Adding " + DatabaseLoader.getInstance().getClubsByCountry(country).size() + " Country Clubs!");
+                    Log.info(Log.UI_MENU, "Continent Details: " + continent.getName());
+                    Log.info(Log.UI_MENU, "Country Details: " + country.getCommonName());
+                    Log.info(Log.UI_MENU, "Adding " + DatabaseLoader.getInstance().getClubsByCountry(country).size() + " Country Clubs!");
                  
                     // Set Continent as active
                     activeContinent = true;
@@ -131,7 +130,6 @@ public class NewGameSetupScreen implements Screen {
                 
                 if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
                     
-                    // System.out.println("Country don't have active Clubs!");
                     
                 } else {
                     
@@ -201,7 +199,7 @@ public class NewGameSetupScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
  
-                System.out.println("SELECTED COUNTRIES SIZE: " + selectedCountries.size());
+                Log.info(Log.UI_MENU, "SELECTED COUNTRIES SIZE: " + selectedCountries.size());
                 
                 /**
                  * Move to New Game Overview Screen
@@ -290,7 +288,7 @@ public class NewGameSetupScreen implements Screen {
     @Override
     public void hide() {
         
-        System.out.println("HIDE WAS CALLED ON NEW GAME SETUP SCREEN - DISPOSE");
+        Log.info(Log.UI_MENU, "HIDE WAS CALLED ON NEW GAME SETUP SCREEN - DISPOSE");
         
         // Hide will be called after switching to a separate screen
         dispose();

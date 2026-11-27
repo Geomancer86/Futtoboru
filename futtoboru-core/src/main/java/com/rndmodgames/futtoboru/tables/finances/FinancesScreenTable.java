@@ -16,6 +16,7 @@ import com.rndmodgames.futtoboru.data.MatchIncome;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Finances Screen Table v1
@@ -340,7 +341,7 @@ public class FinancesScreenTable extends VisTable {
         List<MatchIncome> matchIncomes = club.getMatchIncomes();
         
         if (matchIncomes == null) {
-            System.out.println("FinancesScreenTable: No match incomes found for club");
+            Log.info(Log.UI_CLUB, "FinancesScreenTable: No match incomes found for club");
             return stats;
         }
         

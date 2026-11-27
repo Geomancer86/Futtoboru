@@ -11,6 +11,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Authority Screen Table v1
@@ -145,7 +146,7 @@ public class AuthorityScreenTable extends VisTable {
         // TODO: unhardcode active season
         Season activeSeason = DatabaseLoader.getInstance().getSeasons().get(0);
         
-        System.out.println("LISTING SEASON " + activeSeason.getClubs().size() + " ACTIVE TEAMS");
+        Log.info(Log.UI_COMPETITIONS, "LISTING SEASON " + activeSeason.getClubs().size() + " ACTIVE TEAMS");
         
         //
         teamsListTable.clear();

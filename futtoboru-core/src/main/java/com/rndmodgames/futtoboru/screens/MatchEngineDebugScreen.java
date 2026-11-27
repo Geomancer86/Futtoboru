@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Match Engine Debug Screen - Prototype v1.0
@@ -340,7 +341,7 @@ public class MatchEngineDebugScreen implements Screen {
         // Try SaveGame first (preferred - has game state)
         if (currentGame != null && currentGame.getAllClubs() != null && !currentGame.getAllClubs().isEmpty()) {
             clubs.addAll(currentGame.getAllClubs());
-            Gdx.app.log("MatchEngineDebug", "Loaded " + clubs.size() + " clubs from SaveGame");
+            Log.info(Log.UI_MATCH, "MatchEngineDebug", "Loaded " + clubs.size() + " clubs from SaveGame");
         } else {
             // Fallback to DatabaseLoader (static data)
             try {
@@ -355,11 +356,11 @@ public class MatchEngineDebugScreen implements Screen {
                                 clubs.addAll(countryClubs);
                             }
                         }
-                        Gdx.app.log("MatchEngineDebug", "Loaded " + clubs.size() + " clubs from DatabaseLoader");
+                        Log.info(Log.UI_MATCH, "MatchEngineDebug", "Loaded " + clubs.size() + " clubs from DatabaseLoader");
                     }
                 }
             } catch (Exception e) {
-                Gdx.app.error("MatchEngineDebug", "Error loading clubs from DatabaseLoader: " + e.getMessage());
+                Log.error(Log.UI_MATCH, "MatchEngineDebug", "Error loading clubs from DatabaseLoader: " + e.getMessage());
             }
         }
         
@@ -618,11 +619,11 @@ public class MatchEngineDebugScreen implements Screen {
                 List<Season> dbSeasons = DatabaseLoader.getInstance().getSeasons();
                 if (dbSeasons != null && !dbSeasons.isEmpty()) {
                     seasons.addAll(dbSeasons);
-                    Gdx.app.log("MatchEngineDebug", "Loaded " + seasons.size() + " seasons from DatabaseLoader");
+                    Log.info(Log.UI_MATCH, "MatchEngineDebug", "Loaded " + seasons.size() + " seasons from DatabaseLoader");
                 }
             }
         } catch (Exception e) {
-            Gdx.app.error("MatchEngineDebug", "Error loading seasons from DatabaseLoader: " + e.getMessage());
+            Log.error(Log.UI_MATCH, "MatchEngineDebug", "Error loading seasons from DatabaseLoader: " + e.getMessage());
         }
         
         // If no seasons found, create a placeholder
@@ -631,7 +632,7 @@ public class MatchEngineDebugScreen implements Screen {
             placeholder.setDataId("1888-89");
             placeholder.setName("1888-1889 Season");
             seasons.add(placeholder);
-            Gdx.app.log("MatchEngineDebug", "Using placeholder season");
+            Log.info(Log.UI_MATCH, "MatchEngineDebug", "Using placeholder season");
         }
         
         return seasons;
@@ -1198,12 +1199,12 @@ public class MatchEngineDebugScreen implements Screen {
                     Club awayTeam = awayTeamSelectBox.getSelected();
                     
                     if (homeTeam == null || awayTeam == null) {
-                        Gdx.app.error("MatchEngineDebug", "Please select both teams");
+                        Log.error(Log.UI_MATCH, "MatchEngineDebug", "Please select both teams");
                         return;
                     }
                     
                     if (homeTeam == awayTeam) {
-                        Gdx.app.error("MatchEngineDebug", "Home and away teams must be different");
+                        Log.error(Log.UI_MATCH, "MatchEngineDebug", "Home and away teams must be different");
                         return;
                     }
                     
@@ -1234,7 +1235,7 @@ public class MatchEngineDebugScreen implements Screen {
                     futtoboru.setMatchConfiguration(config);
                     
                     // Launch match engine screen
-                    Gdx.app.log("MatchEngineDebug", "Starting match: " + homeTeam.getName() + " vs " + awayTeam.getName());
+                    Log.info(Log.UI_MATCH, "MatchEngineDebug", "Starting match: " + homeTeam.getName() + " vs " + awayTeam.getName());
                     ((Futtoboru)game).changeScreen(Futtoboru.MATCH_ENGINE_SCREEN);
                 }
             }

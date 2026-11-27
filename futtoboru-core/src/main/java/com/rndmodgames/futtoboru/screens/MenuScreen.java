@@ -18,9 +18,9 @@ import com.rndmodgames.components.SocialNetworkLinksComponent;
 import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.match.engine.MatchEngineVersion;
-import com.rndmodgames.futtoboru.system.DebugLogManager;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 public class MenuScreen implements Screen {
 
@@ -226,7 +226,7 @@ public class MenuScreen implements Screen {
 	@Override
 	public void hide() {
         
-	    DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_UI_MENU, "HIDE WAS CALLED ON MENU SCREEN - DISPOSE");
+	    Log.info(Log.UI_MENU, "HIDE WAS CALLED ON MENU SCREEN - DISPOSE");
 	    
         // Hide will be called after switching to a separate screen
         dispose();

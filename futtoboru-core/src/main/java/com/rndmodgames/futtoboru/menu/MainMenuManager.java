@@ -1,7 +1,6 @@
 package com.rndmodgames.futtoboru.menu;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
@@ -33,6 +32,7 @@ import com.rndmodgames.futtoboru.tables.match.result.MatchResultScreenTable;
 import com.rndmodgames.futtoboru.tables.person.PersonDetailsScreenTable;
 import com.rndmodgames.futtoboru.tables.schedule.ScheduleScreenTable;
 import com.rndmodgames.futtoboru.tables.squad.SquadScreenTable;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Main Menu Manager v1
@@ -409,8 +409,8 @@ public class MainMenuManager {
             
             // Ensure selected league is set before showing draw screen
             if (selectedLeague == null) {
-                System.out.println("MainMenuManager: WARNING - selectedLeague is null, attempting to recover from draw message");
-                Gdx.app.log("MainMenuManager", "Cannot show draw screen: selectedLeague is null, attempting recovery");
+                Log.info(Log.UI_MENU, "MainMenuManager: WARNING - selectedLeague is null, attempting to recover from draw message");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Cannot show draw screen: selectedLeague is null, attempting recovery");
                 
                 // Try to recover league from mandatory draw message
                 com.rndmodgames.futtoboru.data.League recoveredLeague = null;
@@ -426,12 +426,12 @@ public class MainMenuManager {
                                 (messageType.equals("LEAGUE_DRAW") || 
                                  messageType.equals("FIXTURE_DRAW"))) {
                                 
-                                System.out.println("MainMenuManager: Found mandatory draw message: " + message.getTitle());
+                                Log.info(Log.UI_MENU, "MainMenuManager: Found mandatory draw message: " + message.getTitle());
                                 
                                 // Method 1: Get league ID from actionData (preferred method)
                                 if (message.getActionData() instanceof Long) {
                                     Long leagueId = (Long) message.getActionData();
-                                    System.out.println("MainMenuManager: Recovering league ID from actionData: " + leagueId);
+                                    Log.info(Log.UI_MENU, "MainMenuManager: Recovering league ID from actionData: " + leagueId);
                                     
                                     // Find league in SaveGame
                                     if (currentGame.getMainAuthority() != null && 
@@ -440,7 +440,7 @@ public class MainMenuManager {
                                              currentGame.getMainAuthority().getLeagues()) {
                                             if (l != null && l.getId() != null && l.getId().equals(leagueId)) {
                                                 recoveredLeague = l;
-                                                System.out.println("MainMenuManager: Recovered league by ID: " + recoveredLeague.getName());
+                                                Log.info(Log.UI_MENU, "MainMenuManager: Recovered league by ID: " + recoveredLeague.getName());
                                                 break;
                                             }
                                         }
@@ -451,7 +451,7 @@ public class MainMenuManager {
                                     String title = message.getTitle();
                                     if (title != null && title.contains(" - ")) {
                                         String leagueName = title.substring(title.lastIndexOf(" - ") + 3).trim();
-                                        System.out.println("MainMenuManager: Attempting to recover league by name from title: " + leagueName);
+                                        Log.info(Log.UI_MENU, "MainMenuManager: Attempting to recover league by name from title: " + leagueName);
                                         
                                         // Find league by name
                                         if (currentGame.getMainAuthority() != null && 
@@ -460,7 +460,7 @@ public class MainMenuManager {
                                                  currentGame.getMainAuthority().getLeagues()) {
                                                 if (l != null && l.getName() != null && l.getName().equals(leagueName)) {
                                                     recoveredLeague = l;
-                                                    System.out.println("MainMenuManager: Recovered league by name: " + recoveredLeague.getName() + " (ID: " + recoveredLeague.getId() + ")");
+                                                    Log.info(Log.UI_MENU, "MainMenuManager: Recovered league by name: " + recoveredLeague.getName() + " (ID: " + recoveredLeague.getId() + ")");
                                                     break;
                                                 }
                                             }
@@ -468,12 +468,12 @@ public class MainMenuManager {
                                         
                                         // If exact match failed, try partial match
                                         if (recoveredLeague == null) {
-                                            System.out.println("MainMenuManager: Exact name match failed, trying partial match");
+                                            Log.info(Log.UI_MENU, "MainMenuManager: Exact name match failed, trying partial match");
                                             for (com.rndmodgames.futtoboru.data.League l : 
                                                  currentGame.getMainAuthority().getLeagues()) {
                                                 if (l != null && l.getName() != null && l.getName().contains(leagueName)) {
                                                     recoveredLeague = l;
-                                                    System.out.println("MainMenuManager: Recovered league by partial name match: " + recoveredLeague.getName() + " (ID: " + recoveredLeague.getId() + ")");
+                                                    Log.info(Log.UI_MENU, "MainMenuManager: Recovered league by partial name match: " + recoveredLeague.getName() + " (ID: " + recoveredLeague.getId() + ")");
                                                     break;
                                                 }
                                             }
@@ -489,7 +489,7 @@ public class MainMenuManager {
                                             int endIdx = content.indexOf(" is", startIdx);
                                             if (endIdx > startIdx) {
                                                 String leagueName = content.substring(startIdx, endIdx).trim();
-                                                System.out.println("MainMenuManager: Attempting to recover league by name from content: " + leagueName);
+                                                Log.info(Log.UI_MENU, "MainMenuManager: Attempting to recover league by name from content: " + leagueName);
                                                 
                                                 if (currentGame.getMainAuthority() != null && 
                                                     currentGame.getMainAuthority().getLeagues() != null) {
@@ -497,7 +497,7 @@ public class MainMenuManager {
                                                          currentGame.getMainAuthority().getLeagues()) {
                                                         if (l != null && l.getName() != null && l.getName().equals(leagueName)) {
                                                             recoveredLeague = l;
-                                                            System.out.println("MainMenuManager: Recovered league by name from content: " + recoveredLeague.getName() + " (ID: " + recoveredLeague.getId() + ")");
+                                                            Log.info(Log.UI_MENU, "MainMenuManager: Recovered league by name from content: " + recoveredLeague.getName() + " (ID: " + recoveredLeague.getId() + ")");
                                                             break;
                                                         }
                                                     }
@@ -519,17 +519,17 @@ public class MainMenuManager {
                 if (recoveredLeague != null) {
                     // Successfully recovered league, set it and continue
                     this.selectedLeague = recoveredLeague;
-                    System.out.println("MainMenuManager: Successfully recovered league, showing draw screen");
+                    Log.info(Log.UI_MENU, "MainMenuManager: Successfully recovered league, showing draw screen");
                 } else {
                     // Failed to recover league, fallback to inbox
-                    System.out.println("MainMenuManager: ERROR - Could not recover league from message, falling back to inbox");
-                    Gdx.app.error("MainMenuManager", "Cannot show draw screen: selectedLeague is null and recovery failed");
+                    Log.info(Log.UI_MENU, "MainMenuManager: ERROR - Could not recover league from message, falling back to inbox");
+                    Log.error(Log.UI_MENU, "MainMenuManager", "Cannot show draw screen: selectedLeague is null and recovery failed");
                     setActiveMainScreen(INBOX_SCREEN);
                     return;
                 }
             }
             
-            System.out.println("MainMenuManager: Showing draw screen for league: " + selectedLeague.getName() + " (ID: " + selectedLeague.getId() + ")");
+            Log.info(Log.UI_MENU, "MainMenuManager: Showing draw screen for league: " + selectedLeague.getName() + " (ID: " + selectedLeague.getId() + ")");
             
             // Set selected league in draw screen
             leagueDrawScreenTable.setSelectedLeague(selectedLeague);
@@ -543,7 +543,7 @@ public class MainMenuManager {
             break;
             
         case CUP_DRAW_SCREEN:
-            System.out.println("MainMenuManager: Showing cup draw screen");
+            Log.info(Log.UI_MENU, "MainMenuManager: Showing cup draw screen");
             
             // Try to find edition ID from draw message
             com.rndmodgames.futtoboru.data.CompetitionEdition edition = null;
@@ -576,7 +576,7 @@ public class MainMenuManager {
                 cupDrawScreenTable.setCompetitionEdition(edition);
                 parentTable.add(cupDrawScreenTable).grow().fill();
             } else {
-                Gdx.app.error("MainMenuManager", "Could not find competition edition for cup draw");
+                Log.error(Log.UI_MENU, "MainMenuManager", "Could not find competition edition for cup draw");
                 setActiveMainScreen(INBOX_SCREEN);
             }
             
@@ -606,7 +606,7 @@ public class MainMenuManager {
             // Set the Squad that player controls to show on Squad Screen
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
-                Gdx.app.log("MainMenuManager", "Cannot access Squad screen: player is unemployed (no club)");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Squad screen: player is unemployed (no club)");
                 setActiveMainScreen(HOME_SCREEN);
                 return;
             }
@@ -630,7 +630,7 @@ public class MainMenuManager {
             // Set the Club for the Schedule Screen
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
-                Gdx.app.log("MainMenuManager", "Cannot access Schedule screen: player is unemployed (no club)");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Schedule screen: player is unemployed (no club)");
                 setActiveMainScreen(HOME_SCREEN);
                 return;
             }
@@ -672,7 +672,7 @@ public class MainMenuManager {
             // Set Match History Current Club
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
-                Gdx.app.log("MainMenuManager", "Cannot access Match History screen: player is unemployed (no club)");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Match History screen: player is unemployed (no club)");
                 setActiveMainScreen(HOME_SCREEN);
                 return;
             }
@@ -709,13 +709,13 @@ public class MainMenuManager {
             
             // Ensure selected league is set before showing league detail screen
             if (selectedLeague == null) {
-                System.out.println("MainMenuManager: WARNING - selectedLeague is null for league detail screen");
-                Gdx.app.log("MainMenuManager", "No league selected for detail view, redirecting to competitions");
+                Log.info(Log.UI_MENU, "MainMenuManager: WARNING - selectedLeague is null for league detail screen");
+                Log.info(Log.UI_MENU, "MainMenuManager", "No league selected for detail view, redirecting to competitions");
                 setActiveMainScreen(COMPETITIONS_SCREEN);
                 return;
             }
             
-            System.out.println("MainMenuManager: Showing league detail screen for league: " + selectedLeague.getName() + " (ID: " + selectedLeague.getId() + ")");
+            Log.info(Log.UI_MENU, "MainMenuManager: Showing league detail screen for league: " + selectedLeague.getName() + " (ID: " + selectedLeague.getId() + ")");
             
             // Set selected league in league detail screen (this calls updateDynamicComponents internally)
             leagueDetailScreenTable.setSelectedLeague(selectedLeague);
@@ -766,7 +766,7 @@ public class MainMenuManager {
             // Update dynamic components
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
-                Gdx.app.log("MainMenuManager", "Cannot access Club Info screen: player is unemployed (no club)");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Club Info screen: player is unemployed (no club)");
                 setActiveMainScreen(HOME_SCREEN);
                 return;
             }
@@ -782,7 +782,7 @@ public class MainMenuManager {
             // Update dynamic components
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
-                Gdx.app.log("MainMenuManager", "Cannot access Finances screen: player is unemployed (no club)");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Finances screen: player is unemployed (no club)");
                 setActiveMainScreen(HOME_SCREEN);
                 return;
             }
@@ -800,51 +800,51 @@ public class MainMenuManager {
             break;
             
         case CLUB_DETAIL_SCREEN:
-            Gdx.app.log("MainMenuManager", "=== Switching to CLUB_DETAIL_SCREEN ===");
-            System.out.println("[MainMenuManager] ===== Switching to CLUB_DETAIL_SCREEN =====");
-            System.out.println("[MainMenuManager] clubDetailScreenTable: " + (clubDetailScreenTable != null ? "OK" : "NULL"));
-            System.out.println("[MainMenuManager] selectedClubForDetail: " + (selectedClubForDetail != null ? selectedClubForDetail.getName() : "NULL"));
+            Log.info(Log.UI_MENU, "MainMenuManager", "=== Switching to CLUB_DETAIL_SCREEN ===");
+            Log.info(Log.UI_MENU, "[MainMenuManager] ===== Switching to CLUB_DETAIL_SCREEN =====");
+            Log.info(Log.UI_MENU, "[MainMenuManager] clubDetailScreenTable: " + (clubDetailScreenTable != null ? "OK" : "NULL"));
+            Log.info(Log.UI_MENU, "[MainMenuManager] selectedClubForDetail: " + (selectedClubForDetail != null ? selectedClubForDetail.getName() : "NULL"));
             
             if (selectedClubForDetail != null) {
-                Gdx.app.log("MainMenuManager", "Calling updateDynamicComponents with club: " + selectedClubForDetail.getName());
-                System.out.println("[MainMenuManager] Calling updateDynamicComponents...");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Calling updateDynamicComponents with club: " + selectedClubForDetail.getName());
+                Log.info(Log.UI_MENU, "[MainMenuManager] Calling updateDynamicComponents...");
                 clubDetailScreenTable.updateDynamicComponents(selectedClubForDetail);
                 
-                Gdx.app.log("MainMenuManager", "Adding clubDetailScreenTable to parentTable...");
-                System.out.println("[MainMenuManager] Adding clubDetailScreenTable to parentTable...");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Adding clubDetailScreenTable to parentTable...");
+                Log.info(Log.UI_MENU, "[MainMenuManager] Adding clubDetailScreenTable to parentTable...");
                 parentTable.add(clubDetailScreenTable).grow();
                 
-                Gdx.app.log("MainMenuManager", "Screen added successfully");
-                System.out.println("[MainMenuManager] CLUB_DETAIL_SCREEN added to parentTable");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Screen added successfully");
+                Log.info(Log.UI_MENU, "[MainMenuManager] CLUB_DETAIL_SCREEN added to parentTable");
             } else {
-                Gdx.app.error("MainMenuManager", "No club selected for detail view");
-                System.err.println("[MainMenuManager] ERROR: No club selected, redirecting to CLUB_BROWSER_SCREEN");
+                Log.error(Log.UI_MENU, "MainMenuManager", "No club selected for detail view");
+                Log.error(Log.UI_MENU, "[MainMenuManager] ERROR: No club selected, redirecting to CLUB_BROWSER_SCREEN");
                 setActiveMainScreen(CLUB_BROWSER_SCREEN);
             }
             break;
             
         case JOB_BOARD_SCREEN:
-            System.err.println("[MainMenuManager] ===== Switching to JOB_BOARD_SCREEN =====");
-            System.err.println("[MainMenuManager] jobBoardScreenTable: " + (jobBoardScreenTable != null ? "OK" : "NULL"));
+            Log.error(Log.UI_MENU, "[MainMenuManager] ===== Switching to JOB_BOARD_SCREEN =====");
+            Log.error(Log.UI_MENU, "[MainMenuManager] jobBoardScreenTable: " + (jobBoardScreenTable != null ? "OK" : "NULL"));
             System.err.flush();
-            System.out.println("[MainMenuManager] ===== Switching to JOB_BOARD_SCREEN =====");
+            Log.info(Log.UI_MENU, "[MainMenuManager] ===== Switching to JOB_BOARD_SCREEN =====");
             System.out.flush();
-            Gdx.app.log("MainMenuManager", "=== Switching to JOB_BOARD_SCREEN ===");
+            Log.info(Log.UI_MENU, "MainMenuManager", "=== Switching to JOB_BOARD_SCREEN ===");
             
             if (jobBoardScreenTable != null) {
-                Gdx.app.log("MainMenuManager", "Calling updateDynamicComponents...");
-                System.out.println("[MainMenuManager] Calling updateDynamicComponents...");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Calling updateDynamicComponents...");
+                Log.info(Log.UI_MENU, "[MainMenuManager] Calling updateDynamicComponents...");
                 jobBoardScreenTable.updateDynamicComponents();
                 
-                Gdx.app.log("MainMenuManager", "Adding jobBoardScreenTable to parentTable...");
-                System.out.println("[MainMenuManager] Adding jobBoardScreenTable to parentTable...");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Adding jobBoardScreenTable to parentTable...");
+                Log.info(Log.UI_MENU, "[MainMenuManager] Adding jobBoardScreenTable to parentTable...");
                 parentTable.add(jobBoardScreenTable).grow();
                 
-                Gdx.app.log("MainMenuManager", "Screen added successfully");
-                System.out.println("[MainMenuManager] JOB_BOARD_SCREEN added to parentTable");
+                Log.info(Log.UI_MENU, "MainMenuManager", "Screen added successfully");
+                Log.info(Log.UI_MENU, "[MainMenuManager] JOB_BOARD_SCREEN added to parentTable");
             } else {
-                Gdx.app.error("MainMenuManager", "jobBoardScreenTable is NULL!");
-                System.err.println("[MainMenuManager] ERROR: jobBoardScreenTable is NULL!");
+                Log.error(Log.UI_MENU, "MainMenuManager", "jobBoardScreenTable is NULL!");
+                Log.error(Log.UI_MENU, "[MainMenuManager] ERROR: jobBoardScreenTable is NULL!");
             }
             break;
             
@@ -871,14 +871,14 @@ public class MainMenuManager {
                 playerDetailScreenTable.updateDynamicComponents(selectedPlayer);
                 parentTable.add(playerDetailScreenTable).grow();
             } else {
-                Gdx.app.error("MainMenuManager", "No player selected for detail view");
+                Log.error(Log.UI_MENU, "MainMenuManager", "No player selected for detail view");
                 setActiveMainScreen(MAIN_SQUAD_SCREEN);
             }
             break;
         
         //
         default:
-            System.out.println("SCREEN NOT SET UP");
+            Log.info(Log.UI_MENU, "SCREEN NOT SET UP");
             break;
         }
         
@@ -940,7 +940,7 @@ public class MainMenuManager {
                 leagueDetailScreenTable.updateDynamicComponents();
             } else {
                 // If selectedLeague is null, redirect to competitions screen
-                System.out.println("MainMenuManager: selectedLeague is null during updateDynamicComponents, redirecting to competitions");
+                Log.info(Log.UI_MENU, "MainMenuManager: selectedLeague is null during updateDynamicComponents, redirecting to competitions");
                 setActiveMainScreen(COMPETITIONS_SCREEN);
             }
             

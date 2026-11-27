@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -22,6 +21,7 @@ import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.system.Log;
 
 /**
  * Job Offer Screen Table v1
@@ -156,16 +156,16 @@ public class JobOfferScreenTable extends VisTable {
                     if (acceptButton.isPressed() && jobManager != null) {
                         boolean success = jobManager.acceptOffer(offer);
                         if (success) {
-                            Gdx.app.log("JobOfferScreenTable", "Accepted offer: " + offer.getId());
-                            System.out.println("[JobOfferScreenTable] Offer accepted successfully");
+                            Log.info(Log.UI_JOBS, "JobOfferScreenTable", "Accepted offer: " + offer.getId());
+                            Log.info(Log.UI_JOBS, "[JobOfferScreenTable] Offer accepted successfully");
                             // Refresh menu to show manager screens
                             if (menuManager != null) {
                                 menuManager.setDynamicButtonsMenu();
                             }
                             updateDynamicComponents();
                         } else {
-                            Gdx.app.error("JobOfferScreenTable", "Failed to accept offer: " + offer.getId());
-                            System.err.println("[JobOfferScreenTable] ERROR: Failed to accept offer!");
+                            Log.error(Log.UI_JOBS, "JobOfferScreenTable", "Failed to accept offer: " + offer.getId());
+                            Log.error(Log.UI_JOBS, "[JobOfferScreenTable] ERROR: Failed to accept offer!");
                         }
                     }
                 }
@@ -184,7 +184,7 @@ public class JobOfferScreenTable extends VisTable {
                 public void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
                     if (rejectButton.isPressed() && jobManager != null) {
                         jobManager.rejectOffer(offer);
-                        Gdx.app.log("JobOfferScreenTable", "Rejected offer: " + offer.getId());
+                        Log.info(Log.UI_JOBS, "JobOfferScreenTable", "Rejected offer: " + offer.getId());
                         updateDynamicComponents();
                     }
                 }
