@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.engine.messages;
 
 import java.time.LocalDateTime;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -721,9 +722,8 @@ public class MessageManager {
         
         // Match revenue (v1.0)
         if (match.getMatchRevenue() != null && match.getMatchRevenue().compareTo(java.math.BigDecimal.ZERO) > 0) {
-            content.append("Match Revenue: $");
-            java.text.DecimalFormat df = new java.text.DecimalFormat("#,###.00");
-            content.append(df.format(match.getMatchRevenue()));
+            content.append("Match Revenue: ");
+            content.append(Money.format(match.getMatchRevenue()));
             content.append("\n");
         }
         

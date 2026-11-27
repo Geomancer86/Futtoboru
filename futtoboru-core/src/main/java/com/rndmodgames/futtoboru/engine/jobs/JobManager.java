@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.engine.jobs;
 
 import java.math.BigDecimal;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -1109,7 +1110,7 @@ public class JobManager {
         message.setMessageTime(currentGame.getGameDate());
         message.setTitle("Job Offer Received");
         message.setPlainTextMessage("You have received a job offer from " + club.getName() + 
-                                   ".\n\nSalary: $" + offer.getSalary() + 
+                                   ".\n\nSalary: " + Money.format(offer.getSalary()) + 
                                    "\nContract Length: " + offer.getContractLengthMonths() + " months" +
                                    "\n\nPlease respond within 7 days.");
         message.setIsRead(false);

@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.engine;
 
 import java.time.LocalDate;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -554,8 +555,8 @@ public class FuttoboruGameEngine {
                 club.setSeasonExpenditure(club.getSeasonExpenditure().add(totalExpenses));
                 club.setMonthExpenditure(club.getMonthExpenditure().add(totalExpenses));
                 
-                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Deducted weekly expenses: $" + totalExpenses + 
-                           " from " + club.getName() + " (New balance: $" + club.getClubBalance() + ")");
+                DebugLogManager.getInstance().log(DebugLogManager.CATEGORY_ENGINE_GAME, "FuttoboruGameEngine", "Deducted weekly expenses: " + Money.format(totalExpenses) + 
+                           " from " + club.getName() + " (New balance: " + Money.format(club.getClubBalance()) + ")");
                 expensesCalculated++;
             }
         }

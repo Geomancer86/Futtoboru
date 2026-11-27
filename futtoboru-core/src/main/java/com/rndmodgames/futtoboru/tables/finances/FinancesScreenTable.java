@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.tables.finances;
 
 import java.math.BigDecimal;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,13 +70,13 @@ public class FinancesScreenTable extends VisTable {
         // Overall Balance
         this.row();
         this.add(new VisLabel("Overall Balance:"));
-        this.add(new VisLabel("$" + df.format(club.getClubBalance()))).left().row();
+        this.add(new VisLabel(Money.format(club.getClubBalance()))).left().row();
         
         // Profit/Loss (This Month)
         BigDecimal monthProfitLoss = club.getMonthIncome().subtract(club.getMonthExpenditure());
         this.row().padTop(5);
         this.add(new VisLabel("Profit/Loss (This Month):"));
-        VisLabel profitLossLabel = new VisLabel("$" + df.format(monthProfitLoss));
+        VisLabel profitLossLabel = new VisLabel(Money.format(monthProfitLoss));
         if (monthProfitLoss.compareTo(BigDecimal.ZERO) >= 0) {
             profitLossLabel.setColor(0.2f, 1.0f, 0.2f, 1.0f); // Green for profit
         } else {
@@ -87,7 +88,7 @@ public class FinancesScreenTable extends VisTable {
         BigDecimal seasonProfitLoss = club.getSeasonIncome().subtract(club.getSeasonExpenditure());
         this.row().padTop(5);
         this.add(new VisLabel("Profit/Loss (This Season):"));
-        VisLabel seasonProfitLossLabel = new VisLabel("$" + df.format(seasonProfitLoss));
+        VisLabel seasonProfitLossLabel = new VisLabel(Money.format(seasonProfitLoss));
         if (seasonProfitLoss.compareTo(BigDecimal.ZERO) >= 0) {
             seasonProfitLossLabel.setColor(0.2f, 1.0f, 0.2f, 1.0f); // Green for profit
         } else {
@@ -138,7 +139,7 @@ public class FinancesScreenTable extends VisTable {
         this.addSeparator().colspan(4).pad(2).row();
         VisTable matchIncomeTotalTable = new VisTable(true);
         matchIncomeTotalTable.add(new VisLabel("Total Match Day Income:")).width(150);
-        matchIncomeTotalTable.add(new VisLabel("$" + df.format(matchDayIncome))).width(120);
+        matchIncomeTotalTable.add(new VisLabel(Money.format(matchDayIncome))).width(120);
         matchIncomeTotalTable.add(new VisLabel("")).width(120); // Empty for avg attendance
         matchIncomeTotalTable.add(new VisLabel("")).width(80); // Empty for match count
         this.add(matchIncomeTotalTable).colspan(4).pad(2).row();
@@ -148,7 +149,7 @@ public class FinancesScreenTable extends VisTable {
         this.addSeparator().colspan(2).pad(2).row();
         this.row();
         this.add(new VisLabel("Total Income:"));
-        this.add(new VisLabel("$" + df.format(totalIncome))).left().row();
+        this.add(new VisLabel(Money.format(totalIncome))).left().row();
         
         this.add().height(20).colspan(2).row();
         
@@ -192,7 +193,7 @@ public class FinancesScreenTable extends VisTable {
         this.addSeparator().colspan(2).pad(2).row();
         VisTable expenseTotalTable = new VisTable(true);
         expenseTotalTable.add(new VisLabel("Total Expenditure:")).width(200);
-        VisLabel totalLabel = new VisLabel("$" + df.format(totalExpenditure));
+        VisLabel totalLabel = new VisLabel(Money.format(totalExpenditure));
         totalLabel.setColor(1.0f, 0.2f, 0.2f, 1.0f); // Red for expenses
         expenseTotalTable.add(totalLabel).width(120);
         this.add(expenseTotalTable).colspan(2).pad(2).row();
@@ -202,7 +203,7 @@ public class FinancesScreenTable extends VisTable {
         if (totalExpenditure.compareTo(seasonExpenditure) != 0) {
             // Show both for debugging
             this.row();
-            this.add(new VisLabel("(Season Total: $" + df.format(seasonExpenditure) + ")")).colspan(2).left().padTop(2);
+            this.add(new VisLabel("(Season Total: " + Money.format(seasonExpenditure) + ")")).colspan(2).left().padTop(2);
         }
     }
     
@@ -279,7 +280,7 @@ public class FinancesScreenTable extends VisTable {
             categoryLabel.setColor(0.7f, 0.7f, 0.7f, 1.0f); // Gray if not implemented
         }
         rowTable.add(categoryLabel).width(200);
-        rowTable.add(new VisLabel("$" + df.format(amount))).width(120);
+        rowTable.add(new VisLabel(Money.format(amount))).width(120);
         this.add(rowTable).colspan(2).pad(2).row();
     }
     
@@ -399,7 +400,7 @@ public class FinancesScreenTable extends VisTable {
     private void displayMatchIncomeRow(String matchTypeLabel, MatchIncomeStats stats) {
         VisTable rowTable = new VisTable(true);
         rowTable.add(new VisLabel(matchTypeLabel)).width(150);
-        rowTable.add(new VisLabel("$" + df.format(stats.totalRevenue))).width(120);
+        rowTable.add(new VisLabel(Money.format(stats.totalRevenue))).width(120);
         
         // Average attendance
         if (stats.matchCount > 0) {

@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.tables.club;
 
 import java.math.BigDecimal;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
 
 import com.badlogic.gdx.Game;
@@ -23,7 +24,6 @@ public class ClubInfoScreenTable extends VisTable {
     Futtoboru game;
     SaveGame currentGame;
     
-    DecimalFormat currencyFormat = new DecimalFormat("$#,##0.00");
     
     //
     public ClubInfoScreenTable(Game parent) {
@@ -115,7 +115,7 @@ public class ClubInfoScreenTable extends VisTable {
             // Value
             if (club.getStadium().getValue() != null && club.getStadium().getValue().compareTo(BigDecimal.ZERO) > 0) {
                 this.add(new VisLabel("Estimated Value:")).left();
-                this.add(new VisLabel(currencyFormat.format(club.getStadium().getValue()))).left().expandX();
+                this.add(new VisLabel(Money.format(club.getStadium().getValue()))).left().expandX();
                 this.row();
             }
             
@@ -129,7 +129,7 @@ public class ClubInfoScreenTable extends VisTable {
             if (club.getStadium().isOwned() && club.getStadium().getLandValue() != null && 
                 club.getStadium().getLandValue().compareTo(BigDecimal.ZERO) > 0) {
                 this.add(new VisLabel("Land Value:")).left();
-                this.add(new VisLabel(currencyFormat.format(club.getStadium().getLandValue()))).left().expandX();
+                this.add(new VisLabel(Money.format(club.getStadium().getLandValue()))).left().expandX();
                 this.row();
             }
             
@@ -137,7 +137,7 @@ public class ClubInfoScreenTable extends VisTable {
             if (!club.getStadium().isOwned() && club.getStadium().getAnnualRent() != null && 
                 club.getStadium().getAnnualRent().compareTo(BigDecimal.ZERO) > 0) {
                 this.add(new VisLabel("Annual Rent:")).left();
-                this.add(new VisLabel(currencyFormat.format(club.getStadium().getAnnualRent()) + "/year")).left().expandX();
+                this.add(new VisLabel(Money.format(club.getStadium().getAnnualRent()) + "/year")).left().expandX();
                 this.row();
             }
             
@@ -146,7 +146,7 @@ public class ClubInfoScreenTable extends VisTable {
                 BigDecimal totalAssetValue = club.getStadium().getTotalAssetValue();
                 if (totalAssetValue.compareTo(BigDecimal.ZERO) > 0) {
                     this.add(new VisLabel("Total Asset Value:")).left();
-                    VisLabel assetValueLabel = new VisLabel(currencyFormat.format(totalAssetValue));
+                    VisLabel assetValueLabel = new VisLabel(Money.format(totalAssetValue));
                     assetValueLabel.setColor(0.2f, 1.0f, 0.2f, 1.0f); // Green for asset value
                     this.add(assetValueLabel).left().expandX();
                     this.row();
@@ -213,7 +213,7 @@ public class ClubInfoScreenTable extends VisTable {
             this.add(financesHeader).colspan(2).left().padTop(10);
             this.row();
             this.add(new VisLabel("Balance:")).left();
-            this.add(new VisLabel(currencyFormat.format(club.getClubBalance()))).left().expandX();
+            this.add(new VisLabel(Money.format(club.getClubBalance()))).left().expandX();
             this.row();
         }
     }

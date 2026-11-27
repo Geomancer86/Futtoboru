@@ -1,6 +1,6 @@
 
 tixel.png
-size: 512,128
+size: 512,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -43,9 +43,9 @@ cursor
 droid-sans-13
   rotate: false
   xy: 1, 58
-  size: 255, 69
+  size: 255, 80
   orig: 256, 256
-  offset: 0, 187
+  offset: 0, 176
   index: -1
 icon-arrow-left
   rotate: false

@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.MessageCategory;
 import com.rndmodgames.futtoboru.data.MessagePriority;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator;
@@ -49,6 +50,10 @@ import com.rndmodgames.futtoboru.system.SaveGame;
  * @author Geomancer86
  */
 public class AuthorityManager {
+
+    // League prize money, historical estimate (P2-7: one place, the messages format it with Money)
+    public static final java.math.BigDecimal LEAGUE_CHAMPION_PRIZE = new java.math.BigDecimal("500.00");
+    public static final java.math.BigDecimal LEAGUE_RUNNER_UP_PRIZE = new java.math.BigDecimal("250.00");
 
     // for quick reference
     Futtoboru game;
@@ -276,8 +281,8 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         String seasonName = edition != null && edition.getName() != null ? edition.getName() : league.getName();
         
         // Give prize money (historical estimation)
-        java.math.BigDecimal championPrize = new java.math.BigDecimal("500.00");
-        java.math.BigDecimal runnerUpPrize = new java.math.BigDecimal("250.00");
+        java.math.BigDecimal championPrize = LEAGUE_CHAMPION_PRIZE;
+        java.math.BigDecimal runnerUpPrize = LEAGUE_RUNNER_UP_PRIZE;
         
         if (champion.getClubBalance() != null) {
             champion.setClubBalance(champion.getClubBalance().add(championPrize));
@@ -535,7 +540,8 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         StringBuilder content = new StringBuilder();
         content.append(champion.getName()).append(" have been declared champions of the ").append(league.getName()).append("!\n\n");
         content.append("After a grueling season, they have emerged at the top of the table.\n\n");
-        content.append("The club has been awarded a prize of $500.00 for their achievement.");
+        content.append("The club has been awarded a prize of ").append(Money.format(LEAGUE_CHAMPION_PRIZE))
+               .append(" for their achievement.");
         
         message.setPlainTextMessage(content.toString());
         message.setIsRead(false);
@@ -1075,6 +1081,9 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                 if (edition == null) {
                     continue; // No active edition
                 }
+                if (edition.getChampionsId() != null) {
+                    continue; // already won (the bracket path completes it when the final is recorded)
+                }
                 
                 // Check if current round is complete
                 if (isCupRoundComplete(edition)) {
@@ -1399,24 +1408,21 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
             return;
         }
         
+        // Once only: the bracket path (CupBracketManager) and checkCupRoundProgression can both get here
+        if (edition.getChampionsId() != null) {
+            Gdx.app.log("AuthorityManager", "Cup already complete: " + edition.getName());
+            return;
+        }
+
         // Store winner
         edition.setChampionsId(winner.getId());
-        
-        // Find runner-up (loser of final)
-        List<Match> finalMatches = getMatchesForEdition(edition, gameToUse);
-        Integer finalRound = getCurrentRound(finalMatches);
-        if (finalRound != null) {
-            for (Match match : finalMatches) {
-                if (match.getRound() != null && match.getRound().equals(finalRound) &&
-                    match.getIsPlayed() != null && match.getIsPlayed()) {
-                    Club runnerUp = getMatchLoser(match, winner, gameToUse);
-                    if (runnerUp != null) {
-                        edition.setRunnersUpId(runnerUp.getId());
-                        Gdx.app.log("AuthorityManager", "Cup runner-up saved: " + runnerUp.getName() + " (ID: " + runnerUp.getId() + ")");
-                        break;
-                    }
-                }
-            }
+
+        // Runner-up: the other finalist of the bracket final (P2-7)
+        Match finalMatch = findPlayedFinal(edition, winner, gameToUse);
+        Club runnerUp = finalMatch != null ? getMatchLoser(finalMatch, winner, gameToUse) : null;
+        if (runnerUp != null) {
+            edition.setRunnersUpId(runnerUp.getId());
+            Gdx.app.log("AuthorityManager", "Cup runner-up saved: " + runnerUp.getName() + " (ID: " + runnerUp.getId() + ")");
         }
         
         // Log completion details
@@ -1425,7 +1431,7 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         
         // Create cup completion message
         MessageManager messageManager = game.getGameEngine().getMessageManager();
-        Message completionMessage = createCupCompletionMessage(cup, winner);
+        Message completionMessage = createCupCompletionMessage(cup, edition, winner);
         if (completionMessage != null) {
             messageManager.deliverMessage(completionMessage);
         }
@@ -1433,6 +1439,29 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
         Gdx.app.log("AuthorityManager", "Cup complete: " + cup.getName() + " won by " + winner.getName());
     }
     
+    /**
+     * The played final of a cup edition: the last round of the bracket, the latest played match of that round
+     * that the winner took part in (a replay of the final if there was one). Null if not found.
+     */
+    private Match findPlayedFinal(CompetitionEdition edition, Club winner, SaveGame saveGame) {
+        List<Match> matches = getMatchesForEdition(edition, saveGame);
+        Integer finalRound = getCurrentRound(matches);
+        Match found = null;
+        if (finalRound == null) {
+            return null;
+        }
+        for (Match match : matches) {
+            if (finalRound.equals(match.getRound()) && match.getIsPlayed() != null && match.getIsPlayed()
+                    && (winner.getId().equals(match.getHomeClubId()) || winner.getId().equals(match.getAwayClubId()))) {
+                if (found == null || (match.getMatchDateTime() != null && found.getMatchDateTime() != null
+                        && match.getMatchDateTime().isAfter(found.getMatchDateTime()))) {
+                    found = match;
+                }
+            }
+        }
+        return found;
+    }
+
     /**
      * Get loser of a match (opposite of winner)
      */
@@ -1463,12 +1492,13 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
     /**
      * Create cup completion message
      */
-    private Message createCupCompletionMessage(Competition cup, Club winner) {
+    private Message createCupCompletionMessage(Competition cup, CompetitionEdition edition, Club winner) {
         Message message = new Message();
         message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_COMPLETE");
         message.setPriority(MessagePriority.URGENT);
-        message.setTitle(cup.getName() + " Complete");
+        // edition name in the title: MessageManager drops a second message with the same type and title
+        message.setTitle((edition != null && edition.getName() != null ? edition.getName() : cup.getName()) + " Complete");
         
         StringBuilder content = new StringBuilder();
         content.append("The ").append(cup.getName()).append(" has concluded.\n\n");
@@ -1512,6 +1542,9 @@ Gdx.app.log("AuthorityManager", "Updated league edition " + edition.getName() + 
                 List<Match> editionMatches = getMatchesForEdition(edition);
                 
                 for (Match match : editionMatches) {
+                    if (match.getBracketPath() != null) {
+                        continue; // bracket ties: replays come from the result path (CupBracketManager), not from here
+                    }
                     // Check if match is played and ended in a draw
                     if (match.getIsPlayed() != null && match.getIsPlayed() &&
                         match.getHomeGoals() != null && match.getAwayGoals() != null &&
