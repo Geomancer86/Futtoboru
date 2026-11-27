@@ -61,29 +61,5 @@ pipeline {
                 }
             }
         }
-
-        // stage('Sonar') {
-            
-        //         steps {
-        //             echo 'Sonar Analysis'
-                    
-        //             //wrap([$class: 'Xvfb', screen: '1920x1080x32']) {
-        //             wrap([$class: 'Xvfb']) {
-        //                 // Run Sonar (URL and token come from Jenkins credentials, never literals)
-        //                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN'),
-        //                                  string(credentialsId: 'sonar-host-url', variable: 'SONAR_HOST_URL')]) {
-        //                     sh 'mvn clean verify -Djacoco.skip=false sonar:sonar -Dsonar.projectKey=FuttoboruDEV -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.token=$SONAR_TOKEN'
-        //                 }
-        //             }        
-        //         }
-                       
-        //     post {
-        //         // If Maven was able to run the tests, even if some of the test
-        //         // failed, record the test results and archive the jar file.
-        //         success {
-        //             echo "Sonar Gateway Passed"
-        //         }
-        //     }
-        // }    
     }
 }

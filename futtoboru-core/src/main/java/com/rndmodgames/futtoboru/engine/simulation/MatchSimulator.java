@@ -32,10 +32,12 @@ public class MatchSimulator {
     private static final int MAX_GOALS = 5; // Cap goals at 5 for v1.0
     
     private SaveGame currentGame;
+    private Futtoboru gameInstance;
     private Random random;
     
     public MatchSimulator(Futtoboru gameInstance) {
         this.currentGame = gameInstance.getCurrentGame();
+        this.gameInstance = gameInstance;
         this.random = new Random();
     }
     
@@ -50,11 +52,21 @@ public class MatchSimulator {
             return false; // Match already played or invalid
         }
         
+        // CRITICAL: Validate teams exist before simulation
+        if (match.getHomeClubId() == null || match.getAwayClubId() == null) {
+            Gdx.app.error("MatchSimulator", "Cannot simulate match - missing teams (Home: " + 
+                match.getHomeClubId() + ", Away: " + match.getAwayClubId() + ")");
+            System.err.println("MatchSimulator: Cannot simulate match - missing teams");
+            return false;
+        }
+        
         // Get clubs
         Club homeClub = currentGame.getClubById(match.getHomeClubId());
         Club awayClub = currentGame.getClubById(match.getAwayClubId());
         
         if (homeClub == null || awayClub == null) {
+            Gdx.app.error("MatchSimulator", "Cannot simulate match - club not found (Home ID: " + 
+                match.getHomeClubId() + ", Away ID: " + match.getAwayClubId() + ")");
             System.err.println("MatchSimulator: Cannot simulate match - club not found");
             return false;
         }
@@ -109,8 +121,9 @@ public class MatchSimulator {
                 (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                 " (Round " + match.getRound() + ", ID: " + match.getId() + ")");
             
+            // Pass gameInstance to CupBracketManager so it can trigger cup completion
             com.rndmodgames.futtoboru.engine.cup.CupBracketManager bracketManager = 
-                new com.rndmodgames.futtoboru.engine.cup.CupBracketManager(currentGame);
+                new com.rndmodgames.futtoboru.engine.cup.CupBracketManager(currentGame, gameInstance);
             Match nextRoundMatch = bracketManager.advanceWinner(match);
             
             if (nextRoundMatch == null) {
@@ -199,9 +212,15 @@ public class MatchSimulator {
             return;
         }
         
-        // Update matches played
-        homeClub.setMatchesPlayed(homeClub.getMatchesPlayed() + 1);
-        awayClub.setMatchesPlayed(awayClub.getMatchesPlayed() + 1);
+        // CRITICAL FIX: Only count league matches in matchesPlayed for league standings
+        // Cup matches and friendlies should not be counted in league table
+        boolean isLeagueMatch = match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH;
+        
+        // Update matches played (only for league matches)
+        if (isLeagueMatch) {
+            homeClub.setMatchesPlayed(homeClub.getMatchesPlayed() + 1);
+            awayClub.setMatchesPlayed(awayClub.getMatchesPlayed() + 1);
+        }
         
         // Update goals scored and conceded
         homeClub.setGoalsScored(homeClub.getGoalsScored() + homeScore);
@@ -211,7 +230,7 @@ public class MatchSimulator {
         
         // Determine result and update wins/draws/losses
         // Points are only awarded for league matches, not friendlies or cups
-        boolean isLeagueMatch = match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH;
+        // Note: isLeagueMatch was already determined above for matchesPlayed counting
         
         // Get competition rules if this is a league match
         CompetitionRules rules = null;

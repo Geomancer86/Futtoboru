@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futtoboru — State of the project &amp; plan (2026-11-27)</title>
+<style>
+:root{
+  --bg:#f6f4ee; --panel:#fffdf8; --ink:#1d2321; --muted:#5e6762; --line:#d9d4c7;
+  --pitch:#2f6b45; --pitch-soft:#e3efe6; --warn:#a4521b; --warn-soft:#f7e7da;
+  --bad:#9b2c2c; --bad-soft:#f6e0e0; --ok:#2f6b45; --accent:#7a5c1e; --accent-soft:#f3ead6;
+  --mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#141816; --panel:#1c211f; --ink:#e6e8e3; --muted:#9aa39e; --line:#333b37;
+    --pitch:#6fbf8a; --pitch-soft:#1f3328; --warn:#e3a06b; --warn-soft:#3a2a1d;
+    --bad:#e38b8b; --bad-soft:#3a2222; --ok:#6fbf8a; --accent:#d8b56a; --accent-soft:#332b1a; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Georgia, "Iowan Old Style", "Palatino Linotype", serif}
+header{padding:48px 24px 28px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--pitch-soft),transparent)}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+header .wrap{padding:0}
+h1{font-size:2.3rem;margin:0 0 6px;letter-spacing:-.01em}
+h2{font-size:1.55rem;margin:48px 0 12px;padding-top:12px;border-top:2px solid var(--ink)}
+h3{font-size:1.12rem;margin:26px 0 8px}
+.kicker{font:600 .78rem/1 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--pitch)}
+.sub{color:var(--muted);max-width:760px}
+nav{font:500 .9rem system-ui,sans-serif;margin-top:18px;display:flex;flex-wrap:wrap;gap:6px 16px}
+nav a{color:var(--ink)}
+code,.mono{font-family:var(--mono);font-size:.86em}
+code{background:var(--accent-soft);padding:1px 5px;border-radius:3px}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.stat b{display:block;font:700 2rem/1.1 system-ui,sans-serif}
+.stat span{font:500 .88rem system-ui,sans-serif;color:var(--muted)}
+.tag{display:inline-block;font:600 .7rem/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:4px 7px;border-radius:3px;vertical-align:2px}
+.t-ok{background:var(--pitch-soft);color:var(--ok)} .t-warn{background:var(--warn-soft);color:var(--warn)}
+.t-bad{background:var(--bad-soft);color:var(--bad)} .t-neu{background:var(--accent-soft);color:var(--accent)}
+table{width:100%;border-collapse:collapse;font:15px/1.45 system-ui,sans-serif;background:var(--panel);border:1px solid var(--line)}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+.callout{border-left:4px solid var(--warn);background:var(--warn-soft);padding:12px 16px;border-radius:0 6px 6px 0;margin:14px 0}
+.callout.bad{border-color:var(--bad);background:var(--bad-soft)}
+.callout.ok{border-color:var(--pitch);background:var(--pitch-soft)}
+ul{padding-left:20px} li{margin:3px 0}
+.dec{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin:14px 0}
+.dec h3{margin-top:0}
+.opt{display:grid;grid-template-columns:34px 1fr;gap:4px 10px;padding:8px 0;border-top:1px dashed var(--line);font-family:system-ui,sans-serif;font-size:.94rem}
+.opt .k{font:700 1rem system-ui;color:var(--muted)}
+.opt.rec .k{color:var(--pitch)}
+.opt.rec{background:linear-gradient(90deg,var(--pitch-soft),transparent 70%)}
+.phase{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.phase .when{font:700 .85rem system-ui,sans-serif;color:var(--pitch)}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;overflow:auto;font:13px/1.5 var(--mono)}
+svg text{font-family:system-ui,sans-serif}
+.svgbox{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;overflow:auto}
+footer{color:var(--muted);font:.85rem system-ui,sans-serif;padding:40px 24px 60px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="kicker">Futtoboru · project audit · 27 Nov 2026</div>
+  <h1>Where the Futtoboru work really is, and how to move forward</h1>
+  <p class="sub">An open-source football manager that starts with the first official league, the 1888–89 Football League. This page lists every folder of earlier AI-assisted work, separates real code from documents, proposes a plan, and sets out the choices for you to make. It also covers running the project in parallel on BOOK3PRO.</p>
+  <nav><a href="#tldr">Summary</a><a href="#map">Repo map</a><a href="#code">Game code</a><a href="#engine">Match engine</a><a href="#docs">Docs &amp; research</a><a href="#book3pro">BOOK3PRO setup</a><a href="#plan">Plan</a><a href="#decisions">Decisions</a></nav>
+</div></header>
+
+<main class="wrap">
+
+<div class="callout ok" style="margin-top:28px"><b>Decisions taken 27 Nov 2026:</b> D1 fast-forward <code>G:\git\futtoboru</code> (done) · D2 public-safe docs in <code>docs/archive/</code>; business drafts + full history in private Bitbucket repo <code>futtoboru-private</code> · D3 root docs moved to <code>docs/archive/2025-12-ai/</code> · D4 competition-completion code re-applied cleanly · D5 event/possession engine · D6 key events · D7 <b>fully era-accurate</b> 1888 rules (engine phase now 3–5 weeks) · D8 both machines <b>equal</b> · D9 light coordination (<code>docs/HANDOFF.md</code> + CI). Living plan: <code>docs/ROADMAP.md</code>.</div>
+<h2 id="tldr">Summary</h2>
+<div class="grid g4">
+  <div class="card stat"><b>1</b><span>real codebase: <code>G:\git\futtoboru_cursor\futtoboru</code> (develop, v0.4.0, 46k Java lines)</span></div>
+  <div class="card stat"><b>155</b><span>commits that the checkout you opened (<code>G:\git\futtoboru</code>, July 2023) is behind GitHub</span></div>
+  <div class="card stat"><b>4</b><span>repos that exist <em>only</em> on this PC (no remote): PM, match engine, marketing, darkblade port</span></div>
+  <div class="card stat"><b>~170</b><span>AI-written markdown files across all folders; roughly a third are summaries of other summaries</span></div>
+</div>
+<div class="callout ok"><b>The good news.</b> There is a working game loop: day advance, inbox, league fixtures, FA Cup with replays, a simple results simulator, standings, weekly finances, generated contracts, and a working job-hunting system for unemployed managers. The core module's 24 unit tests pass. The real 1888–89 rosters for the 12 founding clubs ship with the game.</div>
+<div class="callout"><b>The bad news.</b> The "match engine" is mostly documents: about 740 KB of them. The only code that decides results is a 444-line random scoreline generator in which team strength barely matters. The 2D prototype has 2 players and a ball. The "141 years of history researched" is 1 season of rosters plus 14 prose summaries of decades. Cost estimates of $95K–200K and "partnership proposals" are AI role-play.</div>
+<div class="callout bad"><b>Fix now, whatever else you decide.</b> (1) A Sonar login token sits in plaintext in the <code>Jenkinsfile</code> (commented stage, commits <code>eb6ca89</code>/<code>24f81fe</code>) on GitHub. Update: the token no longer works and the stage was removed from the <code>Jenkinsfile</code>. (2) With a current Maven (3.9) a fresh clone <b>does not build</b>: resource filtering corrupts the PDFs and fonts under resources. It only builds with the hard-coded <code>C:\apache-maven-3.6.3</code>. That blocks BOOK3PRO until it's fixed.</div>
+
+<h2 id="map">Repo map: every folder that holds Futtoboru work</h2>
+<div class="svgbox">
+<svg viewBox="0 0 1000 400" width="100%" role="img" aria-label="Map of Futtoboru folders and their git remotes">
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>
+  <g style="color:var(--muted)">
+  <rect x="380" y="14" width="240" height="56" rx="8" fill="var(--pitch-soft)" stroke="var(--pitch)"/>
+  <text x="500" y="38" text-anchor="middle" font-weight="700" fill="var(--ink)">GitHub: Geomancer86/Futtoboru</text>
+  <text x="500" y="57" text-anchor="middle" font-size="12" fill="var(--muted)">develop @ 8fe6f7e (22 Dec 2025) · main @ 2023</text>
+
+  <rect x="30" y="130" width="280" height="96" rx="8" fill="var(--bad-soft)" stroke="var(--bad)"/>
+  <text x="170" y="154" text-anchor="middle" font-weight="700" fill="var(--ink)">G:\git\futtoboru</text>
+  <text x="170" y="174" text-anchor="middle" font-size="12" fill="var(--ink)">STALE: July 2023, 155 commits behind</text>
+  <text x="170" y="192" text-anchor="middle" font-size="12" fill="var(--muted)">branch feature/daily_aggregate_report_parameters</text>
+  <text x="170" y="210" text-anchor="middle" font-size="12" fill="var(--muted)">(= old develop, no own commits)</text>
+
+  <rect x="360" y="130" width="280" height="96" rx="8" fill="var(--pitch-soft)" stroke="var(--pitch)" stroke-width="2"/>
+  <text x="500" y="154" text-anchor="middle" font-weight="700" fill="var(--ink)">futtoboru_cursor\futtoboru</text>
+  <text x="500" y="174" text-anchor="middle" font-size="12" fill="var(--ink)">REAL CODE · develop in sync · 429 commits</text>
+  <text x="500" y="192" text-anchor="middle" font-size="12" fill="var(--muted)">local main +1 release merge (unpushed)</text>
+  <text x="500" y="210" text-anchor="middle" font-size="12" fill="var(--muted)">competition-completion-v1: 1 unmerged commit</text>
+
+  <rect x="690" y="130" width="280" height="96" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+  <text x="830" y="154" text-anchor="middle" font-weight="700" fill="var(--ink)">futtoboru_cursor\ArtEvolver</text>
+  <text x="830" y="174" text-anchor="middle" font-size="12" fill="var(--muted)">separate project (own GitHub repo)</text>
+  <text x="830" y="192" text-anchor="middle" font-size="12" fill="var(--muted)">not Futtoboru: ignore here</text>
+
+  <line x1="170" y1="128" x2="440" y2="72" stroke="currentColor" stroke-dasharray="4 4" marker-end="url(#ar)"/>
+  <line x1="500" y1="128" x2="500" y2="72" stroke="var(--pitch)" stroke-width="2" marker-end="url(#ar)"/>
+
+  <text x="500" y="268" text-anchor="middle" font-size="13" font-weight="700" fill="var(--bad)">NO REMOTE: these exist only on this workstation</text>
+  <rect x="20" y="284" width="230" height="96" rx="8" fill="var(--panel)" stroke="var(--bad)" stroke-dasharray="5 3"/>
+  <text x="135" y="308" text-anchor="middle" font-weight="700" fill="var(--ink)">futtoboru_match_engine</text>
+  <text x="135" y="328" text-anchor="middle" font-size="12" fill="var(--muted)">42 docs, 0 code</text>
+  <text x="135" y="346" text-anchor="middle" font-size="12" fill="var(--muted)">text / 2D designs, fake quotes</text>
+  <rect x="265" y="284" width="230" height="96" rx="8" fill="var(--panel)" stroke="var(--bad)" stroke-dasharray="5 3"/>
+  <text x="380" y="308" text-anchor="middle" font-weight="700" fill="var(--ink)">darkblade_match_engine_port</text>
+  <text x="380" y="328" text-anchor="middle" font-size="12" fill="var(--muted)">4 docs: 16-week port plan</text>
+  <text x="380" y="346" text-anchor="middle" font-size="12" fill="var(--muted)">(DarkBlade = your D:\ libGDX RPG)</text>
+  <rect x="510" y="284" width="230" height="96" rx="8" fill="var(--panel)" stroke="var(--bad)" stroke-dasharray="5 3"/>
+  <text x="625" y="308" text-anchor="middle" font-weight="700" fill="var(--ink)">futtoboru_cursor_pm</text>
+  <text x="625" y="328" text-anchor="middle" font-size="12" fill="var(--muted)">PM docs + 1888-89 rosters</text>
+  <text x="625" y="346" text-anchor="middle" font-size="12" fill="var(--muted)">18 trivial uncommitted edits</text>
+  <rect x="755" y="284" width="230" height="96" rx="8" fill="var(--panel)" stroke="var(--bad)" stroke-dasharray="5 3"/>
+  <text x="870" y="308" text-anchor="middle" font-weight="700" fill="var(--ink)">futtoboru_mkt</text>
+  <text x="870" y="328" text-anchor="middle" font-size="12" fill="var(--muted)">marketing/ROI drafts</text>
+  <text x="870" y="346" text-anchor="middle" font-size="12" fill="var(--muted)">6 untracked files (useful ones)</text>
+  </g>
+</svg>
+</div>
+<p style="font-family:system-ui;font-size:.9rem;color:var(--muted)">Not related: <code>living-world-rpg-darkblade*</code> (AI Game Master platform; not the engine the port docs mean).</p>
+
+<h2 id="code">Game code: what actually works</h2>
+<p>Stack: <b>Java 17</b>, Maven multi-module (<code>futtoboru-core</code>, <code>futtoboru-desktop</code>), <b>libGDX 1.12 + VisUI</b>, JSON save games under <code>~/Documents/RndModGames/Futtuboru/</code>, game data as hand-written CSV-like <code>.txt</code> mods under <code>resources/mods/seasons/18/</code>. No database.</p>
+<table>
+<tr><th>System</th><th>Status</th><th>Notes / key class</th></tr>
+<tr><td>Day advance &amp; game flow</td><td><span class="tag t-ok">working</span></td><td><code>FuttoboruGameEngine.continueGame()</code>. Bug: a double-click on Continue advances two days.</td></tr>
+<tr><td>Inbox / messages</td><td><span class="tag t-ok">working</span></td><td><code>MessageManager</code> (936 lines): scheduled, mandatory draw messages</td></tr>
+<tr><td>League fixtures &amp; standings</td><td><span class="tag t-ok">working</span></td><td>Round-robin generator, standings, champion (hard-coded £500 prize)</td></tr>
+<tr><td>FA Cup</td><td><span class="tag t-warn">partial</span></td><td>Draws, replays work; completion/runner-up bugs, fixed on the unmerged <code>feature/competition-completion-v1</code></td></tr>
+<tr><td>Match simulation</td><td><span class="tag t-warn">crude</span></td><td>Average of all squad attributes, ±30% random factor, fixed goal distribution. Random scorers (keepers too), no seed, no events, no tests</td></tr>
+<tr><td>Job system (unemployed manager)</td><td><span class="tag t-ok">mostly working</span></td><td>v0.4.0 feature, <code>JobManager</code> (1117 lines); offer and refresh bugs listed</td></tr>
+<tr><td>Finances</td><td><span class="tag t-warn">partial</span></td><td>Weekly expenses and gate income; no real budget/board loop</td></tr>
+<tr><td>Contracts</td><td><span class="tag t-warn">partial</span></td><td>Generated at new game; no expiry, renewal, transfers</td></tr>
+<tr><td>New season</td><td><span class="tag t-bad">hacky</span></td><td>Fires on <code>month == 7</code>, resets nothing; no 1889 re-election process</td></tr>
+<tr><td>Save / load</td><td><span class="tag t-warn">partial</span></td><td>One fixed slot; integer map keys come back as strings</td></tr>
+<tr><td>Tactics, Training, Transfers, Scouting, Staff, Board…</td><td><span class="tag t-bad">stub</span></td><td>About 34-line empty screens</td></tr>
+</table>
+<h3>Quality red flags left by the earlier AI work</h3>
+<ul>
+<li><b>God classes:</b> <code>AuthorityManager</code> 1668 lines (leagues, cups, prizes, seasons, messages), <code>MatchEngineDebugScreen</code> 1324, <code>JobManager</code> 1117, <code>MainMenuManager</code> 1081.</li>
+<li><b>Two match-result paths</b>, each creating its own simulator. <b>Two <code>SquadScreenTable</code></b> classes.</li>
+<li><b>Three logging styles</b> (585 <code>System.out</code>, 330 <code>Gdx.app.log</code>, 362 <code>DebugLogManager</code>). About 60 "CRITICAL FIX" comments.</li>
+<li><b>About 3.5k lines of dead 3D demo code</b> plus unused bullet/box2d deps and PDFs inside <code>resources/</code> (the PDFs are what breaks Maven 3.9 filtering).</li>
+<li><b>63 markdown files in the repo root</b> (25k lines, all written 14–21 Dec 2025), several outdated or contradicting the code.</li>
+<li>Static singletons (<code>DatabaseLoader</code>) causing test-order problems, the same issue as the 2023 Jenkins commits.</li>
+</ul>
+
+<h2 id="engine">Match engine: documents vs reality</h2>
+<table>
+<tr><th>Option in the docs</th><th>Claimed effort</th><th>Reality check</th></tr>
+<tr><td><b>A. Statistical result generator</b></td><td>about 3 weeks</td><td><span class="tag t-ok">exists</span> as <code>MatchSimulator</code>, but strength barely matters (random ±30% swamps the 0.4/0.6 thresholds)</td></tr>
+<tr><td><b>B. Event / possession text engine</b></td><td>2–3, 4–6 or 8 weeks (same phase, different docs)</td><td>Not started. Needs lineups and positions, which the data model lacks</td></tr>
+<tr><td><b>C. 2D physics simulation</b> (22 players, Box2D)</td><td>5–12 weeks; "$60K"</td><td>Prototype: 2 players + ball, debug screen only. Too slow to simulate a whole league every day</td></tr>
+<tr><td><b>D. DarkBlade port</b></td><td>16 weeks</td><td>In practice "use Ashley + Box2D + gdx-ai", which Futtoboru already depends on. Same as C</td></tr>
+</table>
+<div class="callout"><b>Historical errors to fix before reusing any design doc.</b> About 12 docs say the offside rule was "2 opponents (changed from 3 in 1888)". In fact the <b>3-player rule ran 1866–1925</b>. Several docs also list penalty-area fouls (no penalty kick until 1891) and yellow/red cards (1970). None mention that 1888 used <b>one umpire per side plus a referee on the touchline</b>.</div>
+<h3>Recommended engine shape (option B-lite)</h3>
+<div class="svgbox">
+<svg viewBox="0 0 1000 150" width="100%" role="img" aria-label="Proposed match engine pipeline">
+  <g font-size="13">
+  <rect x="10" y="40" width="160" height="66" rx="8" fill="var(--pitch-soft)" stroke="var(--pitch)"/><text x="90" y="68" text-anchor="middle" font-weight="700" fill="var(--ink)">Pick XI</text><text x="90" y="88" text-anchor="middle" fill="var(--muted)">positions, 2-3-5</text>
+  <rect x="205" y="40" width="170" height="66" rx="8" fill="var(--pitch-soft)" stroke="var(--pitch)"/><text x="290" y="68" text-anchor="middle" font-weight="700" fill="var(--ink)">Possession chances</text><text x="290" y="88" text-anchor="middle" fill="var(--muted)">18–30 per match, seeded</text>
+  <rect x="410" y="40" width="170" height="66" rx="8" fill="var(--pitch-soft)" stroke="var(--pitch)"/><text x="495" y="68" text-anchor="middle" font-weight="700" fill="var(--ink)">Resolve</text><text x="495" y="88" text-anchor="middle" fill="var(--muted)">attack vs defence vs GK</text>
+  <rect x="615" y="40" width="170" height="66" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="700" y="68" text-anchor="middle" font-weight="700" fill="var(--ink)">List&lt;MatchEvent&gt;</text><text x="700" y="88" text-anchor="middle" fill="var(--muted)">goals, chances, injuries</text>
+  <rect x="820" y="10" width="170" height="54" rx="8" fill="var(--panel)" stroke="var(--line)"/><text x="905" y="42" text-anchor="middle" fill="var(--ink)">Text commentary</text>
+  <rect x="820" y="84" width="170" height="54" rx="8" fill="var(--panel)" stroke="var(--line)" stroke-dasharray="4 3"/><text x="905" y="108" text-anchor="middle" fill="var(--ink)">2D replay (later)</text><text x="905" y="125" text-anchor="middle" font-size="11" fill="var(--muted)">reuses prototype</text>
+  <g stroke="var(--muted)" fill="none"><path d="M170 73H203"/><path d="M375 73H408"/><path d="M580 73H613"/><path d="M785 66L818 40"/><path d="M785 80L818 110"/></g>
+  </g>
+</svg>
+</div>
+<p>Headless, unit-testable, reproducible from a seed, fast enough to simulate a full matchday instantly. Calibrate it against the <b>real 1888–89 results</b>: the full fixture list is public, and the game doesn't hold it yet. 2D becomes a viewer of the event list, not the source of truth. Estimate: <b>2–4 weeks</b> of focused work.</p>
+
+<h2 id="docs">Docs, research and marketing</h2>
+<div class="grid g2">
+<div class="card"><h3 style="margin-top:0">Historical research (<code>futtoboru_cursor_pm</code>)</h3>
+<ul>
+<li><b>Real data:</b> 1888–89 rosters only. Files 1–12 are identical to what the game already ships. The game's own copies of files 13–35 (cup clubs) are <em>better</em>.</li>
+<li><b>Padding:</b> Burnley has 25 of 31 players with a placeholder 1865 birth year, "added to meet minimum 11", some from later seasons. Pat Gallocher is listed at two clubs. These are in the shipped game data too.</li>
+<li><b>"1888–2029":</b> 14 decade essays with zero data rows. Several wrong facts (for example Napoli 1989 title, Gillingham founded 1889), and invented "future" history.</li>
+<li><b>Keep:</b> season-scripting / "seasons as releases" idea, 1889–90 design, writing guidelines.</li>
+</ul></div>
+<div class="card"><h3 style="margin-top:0">Marketing (<code>futtoboru_mkt</code>)</h3>
+<ul>
+<li>"Investor-ready" analysis with 75–522% ROI, "zero competition", "70–80% success probability": invented numbers.</li>
+<li>Commit messages describe files that were never committed. Dates say 2024/Jan 2025 instead of Dec 2025.</li>
+<li><b>Useful later:</b> GitHub growth plan (README polish, Reddit/HN), Reddit/Twitter templates, competitive analysis, "no campaign until matches work" go/no-go rule. These are currently <b>untracked</b> files.</li>
+<li><code>ONLINE_PRESENCE_ANALYSIS_2025.md</code> profiles your personal accounts. Keep it private or delete it.</li>
+</ul></div>
+</div>
+<div class="callout"><b>Unmerged branches worth a look.</b> <code>feature/competition-completion-v1</code> (Jun 2026, fast-forwards on develop) has real fixes: cup completion and runner-up, next season generated when a league ends, null-team guard, 3 tests. It also has junk: a 77 KB UTF-16 <code>temp_develop.java</code>, a duplicated test, 22 more markdown files. <code>cursor/startup-fixes-and-logging</code> is obsolete (develop already has the null checks). Every other branch is merged.</div>
+
+<h2 id="book3pro">Running Futtoboru in parallel on BOOK3PRO</h2>
+<p>BOOK3PRO is a Windows laptop (12 threads, 11 GB, WSL2) and is already your second darkblade machine. Unlike darkblade's LAN/Bitbucket setup, Futtoboru lives on <b>GitHub</b>, so it works the same from any network.</p>
+<div class="svgbox">
+<svg viewBox="0 0 1000 210" width="100%" role="img" aria-label="Two-machine git flow">
+  <g font-size="13">
+  <rect x="20" y="60" width="250" height="90" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+  <text x="145" y="88" text-anchor="middle" font-weight="700" fill="var(--ink)">WORKSTATION</text>
+  <text x="145" y="108" text-anchor="middle" fill="var(--muted)">PM · integrator · reviews</text>
+  <text x="145" y="126" text-anchor="middle" fill="var(--muted)">branches ws/&lt;item&gt;</text>
+  <rect x="375" y="40" width="250" height="130" rx="8" fill="var(--pitch-soft)" stroke="var(--pitch)" stroke-width="2"/>
+  <text x="500" y="70" text-anchor="middle" font-weight="700" fill="var(--ink)">GitHub · develop</text>
+  <text x="500" y="92" text-anchor="middle" fill="var(--muted)">single source of truth</text>
+  <text x="500" y="112" text-anchor="middle" fill="var(--muted)">docs/HANDOFF.md · claims</text>
+  <text x="500" y="132" text-anchor="middle" fill="var(--muted)">CI: GitHub Actions (mvn verify)</text>
+  <text x="500" y="152" text-anchor="middle" fill="var(--muted)">main = tagged releases only</text>
+  <rect x="730" y="60" width="250" height="90" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+  <text x="855" y="88" text-anchor="middle" font-weight="700" fill="var(--ink)">BOOK3PRO</text>
+  <text x="855" y="108" text-anchor="middle" fill="var(--muted)">dev lane · its own items</text>
+  <text x="855" y="126" text-anchor="middle" fill="var(--muted)">branches b3/&lt;item&gt;</text>
+  <g stroke="var(--muted)" fill="none" stroke-width="1.5">
+   <path d="M270 90H372" marker-end="url(#ar)"/><path d="M372 120H270" marker-end="url(#ar)"/>
+   <path d="M730 90H628" marker-end="url(#ar)"/><path d="M628 120H730" marker-end="url(#ar)"/>
+  </g>
+  <text x="321" y="82" text-anchor="middle" font-size="11" fill="var(--muted)">push branch</text>
+  <text x="321" y="138" text-anchor="middle" font-size="11" fill="var(--muted)">fetch first</text>
+  <text x="679" y="82" text-anchor="middle" font-size="11" fill="var(--muted)">push branch</text>
+  <text x="679" y="138" text-anchor="middle" font-size="11" fill="var(--muted)">fetch first</text>
+  <text x="500" y="196" text-anchor="middle" font-size="12" fill="var(--muted)">Rules: never force-push · fetch + merge develop before every push · one item = one branch · merge only green builds</text>
+  </g>
+</svg>
+</div>
+<h3>One-time setup on BOOK3PRO (PowerShell)</h3>
+<pre># 0. Prereqs: Git for Windows (with Git Credential Manager), Temurin JDK 17, Maven 3.9 (after the filtering fix)
+java -version ; mvn -v ; git --version
+
+# 1. Clone the real repo (GitHub works from any network)
+git clone https://github.com/Geomancer86/Futtoboru.git C:\git\futtoboru
+cd C:\git\futtoboru
+git checkout develop
+git config user.name  "Nicolas Alvargonzalez"
+git config pull.rebase false
+git config core.autocrlf true        # until a .gitattributes is committed
+
+# 2. Build &amp; run (works after task P1-1 lands; before that, install Maven 3.6.3)
+mvn -DskipTests package
+java -jar futtoboru-desktop\target\futtoboru-desktop-0.4.0-SNAPSHOT-jar-with-dependencies.jar
+
+# 3. The formerly local-only docs come with the clone: docs/archive/
+
+# 4. Daily routine on either machine
+git fetch origin ; git switch develop ; git pull
+git switch -c b3/ENG-02-pick-xi      # ws/... on the workstation
+# ... work, commit small slices ...
+git fetch origin ; git merge origin/develop ; mvn verify ; git push -u origin HEAD</pre>
+<h3>One-time setup on WORKSTATION (before BOOK3PRO starts)</h3>
+<ul>
+<li>Make one canonical checkout. The quickest: in <code>G:\git\futtoboru</code> run <code>git switch develop &amp;&amp; git pull</code> (fast-forwards 155 commits; no local work is lost because the current branch has no commits of its own). Then treat <code>futtoboru_cursor\</code> as a read-only archive.</li>
+<li>Push the v0.4.0 release so <code>main</code> on GitHub stops showing 2023: <code>git push origin main</code> from the futtoboru_cursor copy (you run this; agents don't push to main).</li>
+<li>Commit a short <code>CLAUDE.md</code> + <code>docs/HANDOFF.md</code> to develop so both machines' Claude sessions follow the same rules (fetch first, claim item, never force, no push to main).</li>
+<li>For parallel agents on one machine, use <code>git worktree add .worktrees/&lt;item&gt; -b ws/&lt;item&gt; origin/develop</code>. This is the same model as darkblade.</li>
+<li><code>gh</code> CLI isn't installed on the workstation; install it (<code>winget install GitHub.cli</code>) if you want agents to open PRs and create the private archive repo.</li>
+</ul>
+
+<h2 id="plan">Proposed plan</h2>
+<div class="phase"><div class="when">Phase 0<br>½ day</div><div><b>Consolidate git.</b> Canonical checkout, push v0.4.0 to main, revoke Sonar token, move the 4 local-only repos into their chosen home, delete merged/obsolete branches, drop the 18 blank-line edits.</div></div>
+<div class="phase"><div class="when">Phase 1<br>2–3 days</div><div><b>Make it build anywhere.</b> P1-1 filter only <code>build.properties</code> (fixes Maven 3.9), add Maven wrapper (<code>mvnw</code>), <code>.gitattributes</code>, GitHub Actions <code>mvn verify</code>, remove dead 3D code, unused deps and PDFs from resources. Move the 63 root docs to <code>docs/archive/2025-12-ai/</code>; keep <code>README</code>, <code>docs/STATUS.md</code>, <code>docs/ROADMAP.md</code>, <code>docs/BUILD.md</code>.</div></div>
+<div class="phase"><div class="when">Phase 2<br>~1 week</div><div><b>Finish one full season cleanly.</b> Land the competition-completion code and tests (cleaned). Fix the Continue double-click, merge the two match-result paths, fix the save slot and keys. Add a headless "simulate a whole 1888–89 season" test. Fix Burnley padding and the duplicate player.</div></div>
+<div class="phase"><div class="when">Phase 3<br>2–4 weeks</div><div><b>Match engine v2 (B-lite).</b> Add a <code>Position</code> field and a 2-3-5 XI picker. Seeded event simulation and <code>MatchEvent</code> list. Position-weighted scorers. Calibrate against the real 1888–89 results table. Simple period commentary templates. A match report screen.</div></div>
+<div class="phase"><div class="when">Phase 4<br>later</div><div><b>Season 2 (1889–90).</b> Re-election vote instead of relegation, Football Alliance flavour, contract expiry and free agents. Then the "seasons as releases" roadmap. Then the 2D replay viewer. Marketing only once a season plays end-to-end.</div></div>
+<p style="font-family:system-ui;font-size:.92rem">Lanes for two machines: <b>WORKSTATION</b> takes Phase 0 + reviews + data/history fixes; <b>BOOK3PRO</b> takes Phase 1 build work, then the engine (Phase 3) as soon as Phase 2's season test exists to protect it.</p>
+
+<h2 id="decisions">Decisions for you to pick</h2>
+<p style="font-family:system-ui;font-size:.92rem;color:var(--muted)">Recommended option marked in green. The same questions are asked as multiple choice in the Claude session.</p>
+
+<div class="dec"><h3>D1 · Which folder is the canonical checkout on WORKSTATION?</h3>
+<div class="opt rec"><span class="k">A</span><span><b>Fast-forward <code>G:\git\futtoboru</code> to develop and work there</b>; archive <code>futtoboru_cursor\</code> read-only. Short, expected path; nothing is lost.</span></div>
+<div class="opt"><span class="k">B</span><span>Keep working in <code>futtoboru_cursor\futtoboru</code>; delete or archive the stale one.</span></div></div>
+
+<div class="dec"><h3>D2 · What happens to the 4 local-only repos (match engine, darkblade port, PM, marketing)?</h3>
+<div class="opt rec"><span class="k">A</span><span><b>One private GitHub repo <code>futtoboru-archive</code></b> with the four as subfolders (history kept, labelled "unverified AI drafts"). A few curated docs (commentary design, 1888 rules after the offside fix, season scripting) get copied into the game repo's <code>docs/</code>.</span></div>
+<div class="opt"><span class="k">B</span><span>Four separate private repos (one per folder).</span></div>
+<div class="opt"><span class="k">C</span><span>Curate the keepers into the game repo, zip the rest locally, no new repos.</span></div>
+<div class="opt"><span class="k">D</span><span>Leave them local-only (BOOK3PRO won't see them).</span></div></div>
+
+<div class="dec"><h3>D3 · The 63 AI markdown files in the game repo root</h3>
+<div class="opt rec"><span class="k">A</span><span><b>Move to <code>docs/archive/2025-12-ai/</code></b> and write 4 short living docs (STATUS, ROADMAP, BUILD, HANDOFF).</span></div>
+<div class="opt"><span class="k">B</span><span>Delete them (git history keeps them).</span></div>
+<div class="opt"><span class="k">C</span><span>Leave as is.</span></div></div>
+
+<div class="dec"><h3>D4 · <code>feature/competition-completion-v1</code></h3>
+<div class="opt rec"><span class="k">A</span><span><b>Take the code + tests on a clean branch</b> (drop the temp dump, duplicate test, most docs), build, test, merge.</span></div>
+<div class="opt"><span class="k">B</span><span>Fast-forward merge as is.</span></div>
+<div class="opt"><span class="k">C</span><span>Drop it and redo cup completion later.</span></div></div>
+
+<div class="dec"><h3>D5 · Match engine: the source of truth for results</h3>
+<div class="opt rec"><span class="k">A</span><span><b>Event/possession simulation (B-lite)</b>: headless, seeded, testable; 2D later as a replay viewer. About 2–4 weeks.</span></div>
+<div class="opt"><span class="k">B</span><span>Keep the current random simulator, just tune it so strength matters (about 2 days), and defer the engine.</span></div>
+<div class="opt"><span class="k">C</span><span>2D physics simulation decides results (extend the prototype to 22 players).</span></div>
+<div class="opt"><span class="k">D</span><span>DarkBlade-style ECS port (16-week plan).</span></div></div>
+
+<div class="dec"><h3>D6 · Match detail level for v1</h3>
+<div class="opt rec"><span class="k">A</span><span><b>Key events</b>: goals with minute and scorer, big chances, injuries, plus a short period-flavoured report.</span></div>
+<div class="opt"><span class="k">B</span><span>Result and scorers only.</span></div>
+<div class="opt"><span class="k">C</span><span>Full minute-by-minute commentary.</span></div></div>
+
+<div class="dec"><h3>D7 · 1888 rules in the engine v1</h3>
+<div class="opt rec"><span class="k">A</span><span><b>Flavour plus the cheap ones</b>: 2-3-5, no substitutes (injury = play with 10), no penalties until 1891, umpires in commentary. Offside only as a statistical modifier.</span></div>
+<div class="opt"><span class="k">B</span><span>Model everything era-accurate from day 1, including the 3-player offside rule.</span></div>
+<div class="opt"><span class="k">C</span><span>Ignore era rules for now.</span></div></div>
+
+<div class="dec"><h3>D8 · Two-machine roles</h3>
+<div class="opt rec"><span class="k">A</span><span><b>WORKSTATION = PM/integrator + data fixes; BOOK3PRO = dev lane</b> (build fixes, then engine). Each pushes its own branches; the integrator merges green ones. Same model as darkblade.</span></div>
+<div class="opt"><span class="k">B</span><span>BOOK3PRO primary/integrator; WORKSTATION secondary.</span></div>
+<div class="opt"><span class="k">C</span><span>Both equal; each merges its own green branches to develop.</span></div></div>
+
+<div class="dec"><h3>D9 · Coordination weight between machines</h3>
+<div class="opt rec"><span class="k">A</span><span><b>Light</b>: <code>docs/HANDOFF.md</code> + branch-name claims + GitHub Actions CI.</span></div>
+<div class="opt"><span class="k">B</span><span>Reuse darkblade's full protocol (backlog, <code>work.py</code> claims, council decisions).</span></div>
+<div class="opt"><span class="k">C</span><span>GitHub Issues + Projects board as the backlog.</span></div></div>
+
+</main>
+<footer><div class="wrap">Generated 2026-11-27 on WORKSTATION from read-only analysis of: G:\git\futtoboru, G:\git\futtoboru_cursor\{futtoboru, darkblade_match_engine_port}, G:\git\futtoboru_cursor_pm, G:\git\futtoboru_match_engine, G:\git\futtoboru_mkt. Nothing was modified, committed or pushed. Build check: core tests 24/24 green with Maven 3.6.3; package fails with Maven 3.9.12 (resource filtering).</div></footer>
+</body>
+</html>

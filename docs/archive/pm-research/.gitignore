@@ -1,0 +1,26 @@
+# PM/CM Repository .gitignore
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Drafts (optional - uncomment if you don't want to track drafts)
+# community-management/patreon/drafts/*.md
+# !community-management/patreon/drafts/.gitkeep
+
+# Personal notes (optional)
+notes/
+personal/

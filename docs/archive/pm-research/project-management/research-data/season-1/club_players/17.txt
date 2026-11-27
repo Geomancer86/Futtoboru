@@ -1,0 +1,26 @@
+# Nottingham Forest FC - Players File for 1888-89 FA Cup
+#
+# NOTE: no club id data, and no contract data, initially the contracts will be generated at runtime on new game setup
+#
+# Source: https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup
+#
+# Additional Sources:
+#   - https://en.wikipedia.org/wiki/Charles_Caborn
+#   - https://www.thecityground.com/
+#   - https://www.rsssf.org/tablese/engcup1889.html
+#
+# NOTE: Historical records for this season are limited. This file contains players known to have played
+#       for Nottingham Forest during the 1888-89 season. The squad may be incomplete.
+#
+# Birthdate format: yyyy-MM-dd
+#
+# NOTE: some players don't have a known birthdate so the game generates month and day on new game
+#
+# NOTE 2: this is only the known players name, common name or nickname, it doesn't include the players full name
+#
+# COLUMNS
+# id, name, lastname, country, birthdate 
+1,Charles,Caborn,1000,1856-10-25
+2,Fred,Beardsley,1000,1860
+3,Sam,Widdowson,1000,1860
+4,Edwin,Luntley,1000,1860

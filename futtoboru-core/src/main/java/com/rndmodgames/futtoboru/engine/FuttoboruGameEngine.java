@@ -92,6 +92,10 @@ public class FuttoboruGameEngine {
         return messageManager;
     }
     
+    public AuthorityManager getAuthorityManager() {
+        return authorityManager;
+    }
+    
     public MainMenuManager getMainMenuManager() {
         return mainMenuManager;
     }
