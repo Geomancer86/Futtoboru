@@ -34,6 +34,7 @@ class PlayersLoaderTests {
         application.setPersonGenerator(new PersonGenerator(application));
         
         new HeadlessApplication(application , config);
+        com.rndmodgames.futtoboru.BaseTest.awaitHeadlessCreate(); // create() must finish: DatabaseLoader publishes its instance before loading
     }
     
     @Test
