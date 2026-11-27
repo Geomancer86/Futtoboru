@@ -24,8 +24,11 @@ git config user.name "Nicolas Alvargonzalez"
 git config user.email "<your email>"
 git config core.autocrlf true
 mvn -B verify
+
+# private companion repo (business drafts, full history of the old local repos), OUTSIDE the clone
+git clone https://bitbucket.org/Geomancer/futtoboru-private.git C:\git\futtoboru-private
 ```
-Then read `CLAUDE.md` and `docs/HANDOFF.md`, claim an item, and branch: `git switch -c b3/<item> origin/develop`.
+Then read `CLAUDE.md`, `PRIVACY.md` and `docs/HANDOFF.md`, claim an item, and branch: `git switch -c b3/<item> origin/develop`.
 
 ## Daily routine (both machines)
 ```

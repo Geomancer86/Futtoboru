@@ -18,6 +18,8 @@ Game data lives in `futtoboru-core/src/main/resources/mods/seasons/18/` (CSV-lik
 - Record a handover line in `docs/HANDOFF.md` when you stop mid-item.
 
 ## Content rules
+- This repo is **public**: follow `PRIVACY.md`. Business-private material goes to the private Bitbucket repo
+  `Geomancer/futtoboru-private`, cloned outside this clone (`C:\git\futtoboru-private`).
 - `docs/archive/` holds unverified AI drafts from 2025. Do not treat them as facts or specs.
   Known errors: offside in 1888 was the **3-player rule (1866-1925)**, not 2; no penalty kicks before 1891;
   no cards; one umpire per side plus a referee off the pitch.

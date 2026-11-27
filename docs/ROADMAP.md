@@ -6,7 +6,7 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 | Id | Decision |
 |---|---|
 | D1 | Canonical WORKSTATION checkout: `G:\git\futtoboru` (fast-forwarded to develop). `G:\git\futtoboru_cursor\` is a read-only archive. |
-| D2 | No new repos. The 4 former local-only repos live in `docs/archive/` of this repo, which stays **public** (producer, 2026-11-27); the personal online-presence profile was left out. |
+| D2 | The 4 former local-only repos: public-safe docs in `docs/archive/` of this public repo; business material (marketing, ROI, cost quotes, personal profile) and their full history in the **private Bitbucket repo `Geomancer/futtoboru-private`** (producer, 2026-11-27, following `PRIVACY.md`). |
 | D3 | The 62 AI root docs moved to `docs/archive/2025-12-ai/`; short living docs replace them. |
 | D4 | `feature/competition-completion-v1`: re-apply code + tests on a clean branch, drop the junk. |
 | D5 | Match results come from an **event/possession simulation** (headless, seeded, testable). 2D only as a replay viewer later. |
