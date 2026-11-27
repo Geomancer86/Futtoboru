@@ -7,7 +7,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | P2-5 saves v1 (= P2-4 slice 3: ids not copies, saveVersion, slots, stable data id registry) | BOOK3PRO | `b3/P2-5-saves-v1` | 2026-11-27 |
-| U-02a setDebug removal + U-04a delete unreachable stubs | WORKSTATION | `ws/U-02a-cleanup` | 2026-11-27 |
 | U-01a UiTheme + theme.json (no visual change) | WORKSTATION | `ws/U-01a-ui-theme` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
@@ -26,6 +25,8 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 **Wait for slice 3 (save files locked):** P1-5 logging (touches `SaveLoadSystem`). P2-3 seeded season test needs P2-0 first.
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · U-02a + U-04a · All 12 `setDebug(true)` gone; deleted the 10 unreachable `tables/main/` stubs, empty `ConfederationsTable`/`LeagueTable`, orphan `NewGameScreen` (kept `HomeScreenTable`, `SplashScreen`). Jenkins #66 green (63 core + 1 desktop, data OK).
+- 2026-11-27 · WORKSTATION · DONE · tests · Jenkins (Linux test order) exposed the DatabaseLoader race in 11 test classes that started a HeadlessApplication without waiting; all now call `BaseTest.awaitHeadlessCreate()`. BOOK3PRO's synchronized `getInstance()` (e76e3ff) is the real fix; both stay.
 - 2026-11-27 · BOOK3PRO · CLAIM · P2-5 · Saves v1 (P2-4 slice 3): data refs saved by id and re-linked on load, mutable state saved once, `saveVersion` + data version, slots, load-path/folder fixes, round-trip test, v1 fixture save; plus an append-only `ids.json` registry so data runtime ids never shift when the data is corrected.
 - 2026-11-27 · BOOK3PRO · DONE · P2-4 slice 2 · Merged: the game reads `gamedata/` JSON (GameData, strict like validate.py, 0 errors / 57 warnings at startup), one `IdAllocator` (data ids < 1,000,000 <= game ids, saved in SaveGame), `dataId` on the models, league founders and cup entrants from `season.json`, legacy loaders + `mods/**/*.txt` data + converter deleted (kept: language bundles, resolutions.txt, states/argentina.txt). 64 tests green, startup OK. Visible changes: FA Cup entrants from data (Small Heath, Walsall, Heeley in; Bolton, Everton, Stoke out), league named "Football League". Lock narrowed to slice 3 (saves). Note: `./mvnw` could not download Maven 3.9.12 from this laptop's session; used installed Maven 3.9.16.
 - 2026-11-27 · WORKSTATION · NOTE · D17 · Producer: real historical results are reference data only (E-05 calibration in test code + history before the start season); never used to decide or schedule a played match. Season 1 keeps the generated schedule. Recorded in ROADMAP (D17) and CLAUDE.md. BOOK3PRO: when `results.json` lands in `gamedata/`, keep it out of match-time code paths.
