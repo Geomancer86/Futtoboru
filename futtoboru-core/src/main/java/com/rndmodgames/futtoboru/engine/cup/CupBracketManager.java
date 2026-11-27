@@ -408,15 +408,15 @@ public class CupBracketManager {
         replayMatch.setParentMatch1Id(originalMatch.getId());
         replayMatch.setParentMatch2Id(null);
         
-        // CRITICAL: Always schedule replay in the future (current date + 7 days minimum)
-        // This ensures the match will be picked up by simulation even if original date was in the past
+        // P2-11: the following Saturday when both clubs are free, else midweek of the week after the tie, before
+        // the next round (the next cup date of the era calendar); never before today
         java.time.LocalDateTime currentDate = currentGame.getGameDate();
-        java.time.LocalDateTime replayDate = currentDate.plusDays(7);
-        
-        // If original match date was in the future, schedule replay 7 days after that
-        if (originalMatch.getMatchDateTime() != null && originalMatch.getMatchDateTime().isAfter(currentDate)) {
-            replayDate = originalMatch.getMatchDateTime().plusDays(7);
-        }
+        java.time.LocalDateTime tieDate = originalMatch.getMatchDateTime() != null
+                ? originalMatch.getMatchDateTime() : currentDate;
+        java.time.LocalDateTime nextRound = com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(tieDate)
+                .nextCupDateAfter(tieDate.toLocalDate());
+        java.time.LocalDateTime replayDate = com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.replayDate(
+                currentGame, originalMatch, currentDate.toLocalDate(), nextRound != null ? nextRound.toLocalDate() : null);
         
         replayMatch.setMatchDateTime(replayDate);
         replayMatch.setIsProposed(false);

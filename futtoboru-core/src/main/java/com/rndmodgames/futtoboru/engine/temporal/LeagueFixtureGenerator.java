@@ -20,13 +20,11 @@ import com.rndmodgames.futtoboru.system.Log;
  * - For N clubs, generates N-1 rounds (home fixtures)
  * - Each club plays every other club once per round
  * - Return fixtures are scheduled in second half of season
- * - Matches are distributed evenly across season dates
+ * - Match days follow the era calendar (SeasonCalendar, P2-11): Saturdays, September to April
  * 
  * @author Geomancer86
  */
 public class LeagueFixtureGenerator {
-    
-    private static final int DAYS_BETWEEN_MATCHDAYS = 7; // One match per week
     
     private SaveGame currentGame;
     private final Futtoboru gameInstance;
@@ -422,87 +420,34 @@ public class LeagueFixtureGenerator {
     }
     
     /**
-     * Schedule matches across the season dates
-     * 
-     * Distributes matches evenly across the season, typically one matchday per week.
-     * 
-     * @param matches List of matches to schedule
+     * Schedule matches on the era calendar (P2-11, {@link SeasonCalendar}): one round of the round robin per
+     * league match day, the match days spread over the Saturdays of September to April of the season that
+     * {@code seasonStart} belongs to, never before {@code seasonStart} and never on a cup date. The season end
+     * passed by the caller is only logged: the calendar decides the last match day.
+     *
+     * @param matches List of matches to schedule, round by round
      * @param numClubs Number of clubs in the league (used to calculate matches per matchday)
-     * @param seasonStart Start date of season
-     * @param seasonEnd End date of season
+     * @param seasonStart Start of the season (any date of it; matches are not scheduled before it)
+     * @param seasonEnd The caller's season end (informative)
      */
     private void scheduleMatchesAcrossSeason(List<Match> matches, int numClubs, LocalDateTime seasonStart, LocalDateTime seasonEnd) {
         if (matches.isEmpty()) {
             return;
         }
-        
-        int totalMatches = matches.size();
-        
-        // Calculate total days in season
-        long totalDays = java.time.temporal.ChronoUnit.DAYS.between(seasonStart, seasonEnd);
-        
-        // For a league with N clubs, all clubs should play on each matchday (if even number)
-        // Matches per matchday = numClubs / 2 (each match has 2 teams)
-        // Example: 12 clubs = 6 matches per matchday (all teams play)
-        // Example: 11 clubs = 5 matches + 1 bye (we'll schedule 5 matches, one team sits out)
-        int matchesPerMatchday = numClubs / 2;
-        
-        // Ensure at least 1 match per matchday
-        if (matchesPerMatchday < 1) {
-            matchesPerMatchday = 1;
-        }
-        
-        Log.info(Log.ENGINE_SCHEDULING, "LeagueFixtureGenerator: Scheduling " + totalMatches + " matches for " + numClubs + " clubs");
-        Log.info(Log.ENGINE_SCHEDULING, "LeagueFixtureGenerator: Matches per matchday: " + matchesPerMatchday);
-        
-        // Calculate number of matchdays needed
-        int numMatchdays = (int) Math.ceil((double) totalMatches / matchesPerMatchday);
-        
-        // Calculate days between matchdays (typically weekly)
-        long daysBetweenMatchdays = Math.max(DAYS_BETWEEN_MATCHDAYS, totalDays / Math.max(1, numMatchdays));
-        
-        // Schedule matches
-        LocalDateTime currentDate = seasonStart;
-        int matchIndex = 0;
-        
-        for (int matchday = 0; matchday < numMatchdays && matchIndex < totalMatches; matchday++) {
-            // Schedule matches for this matchday
-            for (int i = 0; i < matchesPerMatchday && matchIndex < totalMatches; i++) {
-                Match match = matches.get(matchIndex);
-                
-                // Set match date (typically Saturday at 3 PM for historical accuracy)
-                // Adjust to nearest Saturday if not already Saturday
-                LocalDateTime matchDate = currentDate;
-                int dayOfWeek = matchDate.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
-                int daysToSaturday = (6 - dayOfWeek + 7) % 7; // Days until next Saturday
-                if (daysToSaturday > 0) {
-                    matchDate = matchDate.plusDays(daysToSaturday);
-                }
-                
-                matchDate = matchDate.withHour(15).withMinute(0).withSecond(0);
-                match.setMatchDateTime(matchDate);
-                match.setProposeDateTime(matchDate); // Set propose date same as match date for league matches
-                
-                matchIndex++;
-            }
-            
-            // Move to next matchday (weekly)
-            currentDate = currentDate.plusDays(daysBetweenMatchdays);
-            
-            // Don't exceed season end
-            if (currentDate.isAfter(seasonEnd) || matchIndex >= totalMatches) {
-                // Schedule any remaining matches before season end
-                for (; matchIndex < totalMatches; matchIndex++) {
-                    Match match = matches.get(matchIndex);
-                    LocalDateTime matchDate = seasonEnd.minusDays(totalMatches - matchIndex);
-                    if (matchDate.isBefore(seasonStart)) {
-                        matchDate = seasonStart;
-                    }
-                    match.setMatchDateTime(matchDate.withHour(15).withMinute(0).withSecond(0));
-                    match.setProposeDateTime(match.getMatchDateTime());
-                }
-                break;
-            }
+        int matchesPerMatchday = Math.max(1, numClubs / 2);
+        int numMatchdays = (int) Math.ceil((double) matches.size() / matchesPerMatchday);
+
+        SeasonCalendar calendar = SeasonCalendar.forDate(seasonStart);
+        List<LocalDateTime> days = calendar.leagueMatchDays(numMatchdays, seasonStart.toLocalDate());
+        Log.info(Log.ENGINE_SCHEDULING, "LeagueFixtureGenerator", "Season " + calendar.getStartYear() + "-"
+                + (calendar.getStartYear() + 1) % 100 + ": " + numMatchdays + " match days from " + days.get(0)
+                + " to " + days.get(days.size() - 1) + " (caller's window " + seasonStart + " to " + seasonEnd + ")");
+
+        for (int i = 0; i < matches.size(); i++) {
+            Match match = matches.get(i);
+            LocalDateTime matchDate = days.get(i / matchesPerMatchday);
+            match.setMatchDateTime(matchDate);
+            match.setProposeDateTime(matchDate); // propose date same as match date for league matches
         }
     }
     

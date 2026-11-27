@@ -23,6 +23,7 @@ import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.LeagueFixtureGenerator;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -699,8 +700,8 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
      * Get season end date (typically 9 months after start, around May/June)
      */
     private LocalDateTime getSeasonEndDate(LocalDateTime seasonStart) {
-        // Typical season: September to May (9 months)
-        return seasonStart.plusMonths(9);
+        // P2-11: the league's last match day of the era calendar (mid-April)
+        return SeasonCalendar.forDate(seasonStart).leagueEnd();
     }
     
     /**
@@ -755,7 +756,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
                         // FA Cup creation script runs on May 1st
                         if (currentDate.getMonthValue() >= CUP_SEASON_OPENS_MONTH) {
                             edition.setStartDate(currentDate);
-                            edition.setEndDate(currentDate.plusMonths(12)); // Allow a full year
+                            edition.setEndDate(SeasonCalendar.forDate(currentDate).cupEnd()); // P2-11: past the final
                             Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Activated upcoming cup edition: " + edition.getName());
                         } else {
                             continue; // Not yet time to start this cup
@@ -837,7 +838,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         edition.setId(ids().nextId());
         edition.setName(cup.getName() + " " + currentDate.getYear());
         edition.setStartDate(currentDate);
-        edition.setEndDate(currentDate.plusMonths(6)); // Cup typically runs 6 months
+        edition.setEndDate(SeasonCalendar.forDate(currentDate).cupEnd()); // P2-11: past the final
         
         // Get participant clubs (all clubs from leagues)
         List<Long> participantIds = getCupParticipantClubs();
@@ -902,6 +903,32 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
     }
     
     /**
+     * P2-11: the round dates of a cup drawn today, on the era calendar (proper rounds in February and March, the
+     * final on the last Saturday of March). A draw made after the season's first round date plays on the next
+     * season's calendar when its final has passed, else from two weeks on, two weeks apart (never in the past).
+     */
+    static List<LocalDateTime> cupRoundDates(int rounds, LocalDateTime today) {
+        SeasonCalendar calendar = SeasonCalendar.forDate(today);
+        List<LocalDateTime> dates = calendar.cupRoundDates(rounds);
+        if (dates.get(0).toLocalDate().isAfter(today.toLocalDate())) {
+            return dates;
+        }
+        if (!calendar.cupFinal().isAfter(today.toLocalDate())) {
+            return SeasonCalendar.forSeason(calendar.getStartYear() + 1).cupRoundDates(rounds);
+        }
+        Log.warn(Log.ENGINE_SCHEDULING, "AuthorityManager", "Cup drawn on " + today
+                + " after the season's first round date; rounds two weeks apart from two weeks on");
+        List<LocalDateTime> late = new ArrayList<>();
+        LocalDateTime first = today.toLocalDate().plusWeeks(2)
+                .with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SATURDAY))
+                .atTime(SeasonCalendar.KICK_OFF);
+        for (int r = 0; r < rounds; r++) {
+            late.add(first.plusWeeks(2L * r));
+        }
+        return late;
+    }
+
+    /**
      * Generate cup draw and schedule matches
      */
     private void generateCupDraw(Competition cup, CompetitionEdition edition) {
@@ -912,8 +939,6 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         
         // Generate COMPLETE bracket (all rounds) using CupBracketGenerator
         LocalDateTime currentDate = currentGame.getGameDate();
-        LocalDateTime firstRoundDate = currentDate.plusWeeks(2);
-        int weeksBetweenRounds = 2;
         
         com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator bracketGenerator = 
             new com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator(ids(),
@@ -923,8 +948,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
             edition.getParticipantClubsIds(),
             cup.getId(),
             edition.getId(),
-            firstRoundDate,
-            weeksBetweenRounds
+            rounds -> cupRoundDates(rounds, currentDate)
         );
         
         if (allMatches == null || allMatches.isEmpty()) {
@@ -1363,9 +1387,14 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
             return;
         }
         
-        // Schedule next round matches (2 weeks from now)
+        // Schedule next round matches on the next cup date of the era calendar (P2-11), else 2 weeks from now
         LocalDateTime currentDate = currentGame.getGameDate();
-        LocalDateTime nextRoundDate = currentDate.plusWeeks(2);
+        LocalDateTime nextRoundDate = SeasonCalendar.forDate(currentDate).nextCupDateAfter(currentDate.toLocalDate());
+        if (nextRoundDate == null) {
+            nextRoundDate = currentDate.toLocalDate().plusWeeks(2)
+                    .with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SATURDAY))
+                    .atTime(SeasonCalendar.KICK_OFF);
+        }
         
         MessageManager messageManager = game.getGameEngine().getMessageManager();
         String roundName = getRoundName(nextRound, winnerIds.size());
@@ -1678,7 +1707,12 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         replay.setCompetitionId(cup.getId());
         replay.setCompetitionEditionId(edition.getId());
         replay.setRound(originalMatch.getRound());
-        replay.setMatchDateTime(originalMatch.getMatchDateTime().plusDays(7)); // 7 days later
+        // P2-11: the following Saturday, else midweek, when both clubs are free and before the next round
+        java.time.LocalDate today = currentGame.getGameDate().toLocalDate();
+        LocalDateTime nextRound = SeasonCalendar.forDate(originalMatch.getMatchDateTime())
+                .nextCupDateAfter(originalMatch.getMatchDateTime().toLocalDate());
+        replay.setMatchDateTime(SeasonCalendar.replayDate(currentGame, originalMatch, today,
+                nextRound != null ? nextRound.toLocalDate() : null));
         replay.setIsProposed(false);
         replay.setIsAccepted(true);
         replay.setIsPlayed(false);
@@ -1818,7 +1852,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         
         // Start around September 1st
         nextEdition.setStartDate(LocalDateTime.of(startYear, 9, 1, 0, 0));
-        nextEdition.setEndDate(nextEdition.getStartDate().plusMonths(9));
+        nextEdition.setEndDate(SeasonCalendar.forSeason(startYear).leagueEnd()); // P2-11: mid-April
         
         // Copy participants from previous edition if applicable
         if (!league.getEditions().isEmpty()) {
@@ -1882,7 +1916,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         
         // Set dates for cup staging
         nextEdition.setStartDate(currentDate);
-        nextEdition.setEndDate(currentDate.plusMonths(6)); // Cup typically runs 6 months
+        nextEdition.setEndDate(SeasonCalendar.forDate(currentDate).cupEnd()); // P2-11: past the final
         
         // Copy participants from previous edition if applicable
         if (!cup.getEditions().isEmpty()) {
