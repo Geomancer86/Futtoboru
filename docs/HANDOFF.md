@@ -9,7 +9,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | E-10 ECS skeleton + E-11 ball physics (new `match/ecs/**`) | WORKSTATION | `ws/E-10-ecs-skeleton` | 2026-11-27 |
 | E-12 pitch/goal geometry, line crossings, restarts (new `match/ecs/**`) | WORKSTATION | `ws/E-12-pitch` | 2026-11-27 |
 | U-04d Options → U-04b menu/Back/Esc → U-04c Home dashboard | WORKSTATION | `ws/U-04-menus` | 2026-11-27 |
-| History research: clubs + players with fan-love tiers (docs + schema proposal) | WORKSTATION | `ws/H-01-history-research` | 2026-11-27 |
 | Grounds research + generated ground illustrations | WORKSTATION | `ws/H-02-grounds` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
@@ -35,6 +34,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Producer:** push v0.4.0 to `main`; tag v0.5.0-alpha after P2-9..11, v0.5.0 after Phase 3. Engine answers are in D19 (Phase 4 can be designed in parallel).
 
 ## Log
+- 2026-11-27 · WORKSTATION · DONE · H-01 · `docs/data/history/clubs/*.md` (35 clubs; 12 League in depth), `PLAYERS_1888-89.md` (308 players, fan tiers 0 unknown … 5 legend, per club; start values Aug 1888, legacy = balancing note only), `SOURCES.md` (355 URLs), `docs/design/HISTORY_DATA_PROPOSAL.md` (prose in `gamedata/core/text/<lang>/history.json` keyed by data id; facts in data: club `origin`/`nicknames`/`rivals`/`nameHistory`, per-season squad `kit` + `fanTiers`, people `nicknames`/`knownAs`; no ids.json change; tier meter with hysteresis = gameplay, BOOK3PRO). **BOOK3PRO/producer:** approve the proposal before validator/data edits. ~30 sourced data corrections listed (wrong people e.g. Albert vs Arthur Brown, ~20 nationalities, birth years, 1888-89 grounds for Grimsby/Notts Rangers/Chatham/Linfield, founded years) for a slice-4-style data lane.
 - 2026-11-27 · WORKSTATION · CLAIM · E-10/E-11, E-12 · ECS engine foundation per D20/D22, new packages only.
 - 2026-11-27 · WORKSTATION · DONE · P2-11 · `engine/temporal/SeasonCalendar` (code defaults): league Saturdays 8 Sep 1888 – 20 Apr 1889, FA Cup Saturdays fortnightly back from the last Saturday of March (2 Feb … final 30 Mar), extra rounds midweek Dec/Jan, replays next Saturday else midweek before the next round, no clashes; season test asserts it (385 days to rollover). Touched `SaveGameTests` (170 days) and `NewGameFixture.play(readDraws)`. **BOOK3PRO:** optional `calendar` block in `season.json` would make it data-driven (example in the P2-11 commit message / SeasonCalendar javadoc); FA Cup is still activated/drawn in May (real: January).
 - 2026-11-27 · WORKSTATION · DONE · E-00b + U-07 · `seasons/1888-89/results.json` (170 records, from the CSVs via `tools/data/results_csv_to_json.py`) + History screen (champions/cup winners, final tables; real seasons only before the start season; 30 `history_*` labels in all bundles). **BOOK3PRO:** additive changes in your area: `validate.py` (`result` spec, `check_results`), `GameData.java` (6 lines), 4 pytests; `ReferenceDataGuardTest` enforces D17. Menu: one `HistoryButton` in `MainMenuManager.setDynamicButtonsMenu`.
