@@ -211,15 +211,21 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void hide() {
-        // TODO Auto-generated method stub
-        
+        // Nothing keeps a hidden game screen (Settings, Load and Quit all build a new one), so free its stage and
+        // SpriteBatch. Deferred to the next frame: hide() can run inside one of this stage's own listeners (Load).
+        Gdx.app.postRunnable(this::dispose);
     }
 
     @Override
     public void dispose() {
-        // TODO Auto-generated method stub
-        
+        if (disposed) {
+            return;
+        }
+        disposed = true;
+        stage.dispose();
     }
+
+    private boolean disposed = false;
     
     /** @return true while a dialog (save, load, confirm) is on the stage */
     private boolean isDialogOpen() {
