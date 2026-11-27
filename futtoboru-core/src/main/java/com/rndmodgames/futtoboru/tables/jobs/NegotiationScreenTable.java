@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
 import java.math.BigDecimal;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
 
 import com.badlogic.gdx.Game;
@@ -84,7 +85,7 @@ public class NegotiationScreenTable extends VisTable {
         this.row();
         this.add(new VisLabel("Current Offer:")).colspan(2);
         this.row();
-        this.add(new VisLabel("Salary: $" + df.format(currentOffer.getSalary())));
+        this.add(new VisLabel("Salary: " + Money.format(currentOffer.getSalary())));
         this.add(new VisLabel("Contract: " + currentOffer.getContractLengthMonths() + " months"));
         this.row();
         this.add(new VisLabel("Negotiation Round: " + currentOffer.getNegotiationRound() + "/3")).colspan(2);

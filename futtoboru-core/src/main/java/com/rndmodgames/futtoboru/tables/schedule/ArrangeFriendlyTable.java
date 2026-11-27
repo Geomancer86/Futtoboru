@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.tables.schedule;
 
 import java.time.LocalDateTime;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,8 +72,8 @@ public class ArrangeFriendlyTable extends VisTable {
     
     // Dynamic Components
     VisLabel selectedDateLabel = new VisLabel(LanguageModLoader.getValue("select_a_date"));
-    VisLabel feeValueLabel = new VisLabel("$0");
-    VisLabel incomeValueLabel = new VisLabel("$0");
+    VisLabel feeValueLabel = new VisLabel(Money.format(java.math.BigDecimal.ZERO));
+    VisLabel incomeValueLabel = new VisLabel(Money.format(java.math.BigDecimal.ZERO));
     VisSelectBox<Club> opponentSelectBox = new VisSelectBox<Club>();
     VisTextButton confirmFriendlyButton = new VisTextButton(LanguageModLoader.getValue("confirm"));
     

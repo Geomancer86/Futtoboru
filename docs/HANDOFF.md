@@ -6,8 +6,9 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| P2-3 headless seeded 1888-89 season test (+ 12-team bracket, top scorer per season) | WORKSTATION | `ws/P2-3-season-test` | 2026-11-27 |
+| U-02b screens use UiTheme tokens (no visual change; not the save dialogs) | WORKSTATION | `ws/U-02b-tokens` | 2026-11-27 |
 | P2-5 saves v1 (= P2-4 slice 3: ids not copies, saveVersion, slots, stable data id registry) | BOOK3PRO | `b3/P2-5-saves-v1` | 2026-11-27 |
-| P2-2 single match-result path + P2-6 season table reset + P2-7 £/cup final | WORKSTATION | `ws/P2-2-result-path` | 2026-11-27 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -25,6 +26,8 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 **Wait for slice 3 (save files locked):** P1-5 logging (touches `SaveLoadSystem`). P2-3 seeded season test needs P2-0 first.
 
 ## Log
+- 2026-11-27 · WORKSTATION · CLAIM · P2-3 (+ bracket/top-scorer fixes), U-02b · Neither touches the P2-5 lock.
+- 2026-11-27 · WORKSTATION · DONE · P2-2 + P2-6 + P2-7 · One `engine/simulation/MatchResultRecorder` for both engine paths (draw blocker for league only, idempotent; cup ties no longer touch the league table). Season rollover snapshots `CompetitionEdition.finalStandings` and resets the table; seasons after the first now complete (duplicate-title message drop fixed). `Money.format` (£, locale-proof) everywhere; £ glyph added to droid-sans-13 + tixel atlas. Cup final = the bracket tie nothing feeds from; drawn finals replay correctly; completion once. Prizes `LEAGUE_CHAMPION_PRIZE`/`RUNNER_UP`. Jenkins #72 green (96 core + 1 desktop), smoke OK. **BOOK3PRO, for P2-5:** new saved field `CompetitionEdition.finalStandings` (list of `LeagueStandingRow`). Known, not fixed: 12-team bracket generator leaves R2M3 with no next tie; top scorer counts all seasons.
 - 2026-11-27 · WORKSTATION · DONE · P2-0 · `engine/random/RandomSource` (SplittableRandom; `fork(name)` = SplitMix64(seed ^ FNV-1a64(name)), order-independent, formula pinned by a test) owned by `Futtoboru` (`Futtoboru(long seed)`, `-Dfuttoboru.seed`, `getSeed()/setSeed()`). All 12 game-logic RNG uses now fork by entity id + date (matches, gates, draws, tickets, expenses, drift, generators, loader). Jenkins #70 green (81 core + 1 desktop). **BOOK3PRO, for P2-5:** save `game.getSeed()` in SaveGame; on load call `game.setSeed(save.getSeed())`; treat any change to `SplittableRandomSource.forkSeed` as a `saveVersion` break. `BirthDates.complete(String, Random)` left as is (your lock) and fed via `asRandom()`.
 - 2026-11-27 · WORKSTATION · DONE · P2-4 slice 4 (apply) · Sourced fixes in `gamedata/core/*.json`: `witton-albion` → `witton` (alias + rename log), Blackburn at new `leamington-road` for 1888-89, 5 person merges (aliased), invented Belfields/Higgins removed, copied cup squads and Heeley/Burnley rebuilt per the short-squad rule (74 seeded placeholders), Scotland → europe. People 487 → 539; validator 57 → 11 warnings. Jenkins #69 green. **BOOK3PRO:** (1) PM changed one line in your locked area, `GameDataTests.java:39` 487 → 539 (test only); (2) for `ids.json`: new data id `witton` + 5 person aliases. Still open: per-season club names, per-match venues (Castle Cricket Ground), 3 missing first names, mostly-placeholder small cup squads.
 - 2026-11-27 · WORKSTATION · DONE · U-01a · `ui/theme.json` (25 palette, 37 semantic colours, font roles, spacing, sizes, styles, scaling) + strict `UiTheme` (unknown token throws) loaded in `Futtoboru.create()`; no visual change. U-02b note: a few near-equal colours merge (pure 00FF00/FF0000 → state.positive/negative, FFD600 → FFD700, 7F7F7F → 808080). Jenkins #67 green (71 core + 1 desktop).

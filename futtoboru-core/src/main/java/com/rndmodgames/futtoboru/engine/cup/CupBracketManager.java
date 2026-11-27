@@ -68,13 +68,17 @@ public class CupBracketManager {
         
         // Get the original match's round (for final detection) - if this is a replay, we need the original match's round
         Integer originalRound = completedMatch.getRound();
+        Match bracketMatch = completedMatch;
         if (isReplay && completedMatch.getParentMatch1Id() != null) {
             // Try to find the original match to get its round
             Match originalMatch = findMatchByIdInAllMatches(completedMatch.getParentMatch1Id());
             if (originalMatch != null && originalMatch.getRound() != null) {
                 originalRound = originalMatch.getRound();
+                bracketMatch = originalMatch;
             }
         }
+        // P2-7: the final is the bracket's last tie, not "round 5" (a 4-club bracket has its final in round 2)
+        boolean isFinal = isBracketFinal(bracketMatch);
         
         if (winner == null) {
             // Draw - schedule replay (unless this is already a replay, then we need extra time/penalties - for now, pick random winner)
@@ -95,7 +99,7 @@ public class CupBracketManager {
                 
                 // CRITICAL FIX: If this is a final replay that ended in draw, we need to complete the cup
                 // Check if the original match was the final (Round 5+)
-                if (originalRound != null && originalRound >= 5) {
+                if (isFinal) {
                     System.out.println("CupBracketManager: *** FINAL REPLAY DRAW RESOLVED *** Champion: " + winner.getName());
                     Gdx.app.log("CupBracketManager", "Final replay draw resolved! Cup champion: " + winner.getName());
                     
@@ -147,9 +151,8 @@ public class CupBracketManager {
         Match nextRoundMatch = findMatchWithParent(parentMatchId, completedMatch.getCompetitionEditionId());
         
         if (nextRoundMatch == null) {
-            // Check if this is actually the final (Round 5) or if there's a bracket error
-            // Use originalRound to check if the original match was the final
-            if (originalRound != null && originalRound >= 5) {
+            // Check if this is actually the final (the bracket's last tie) or if there's a bracket error
+            if (isFinal) {
                 // This is the final - cup is complete
                 System.out.println("CupBracketManager: *** CUP FINAL COMPLETED *** Champion: " + winner.getName());
                 Gdx.app.log("CupBracketManager", "Final match completed! Cup champion: " + winner.getName());
@@ -315,6 +318,32 @@ public class CupBracketManager {
         return nextRoundMatch;
     }
     
+    /**
+     * True if the match is the final of its bracket: a tie of the edition's last round that no later tie
+     * takes its winner from. Replays are not bracket ties (pass the original tie).
+     */
+    public boolean isBracketFinal(Match bracketMatch) {
+        if (bracketMatch == null || bracketMatch.getRound() == null || bracketMatch.getCompetitionEditionId() == null) {
+            return false;
+        }
+        int lastRound = 0;
+        for (Match m : getAllMatchesForEdition(bracketMatch.getCompetitionEditionId())) {
+            if (m.getRound() != null) {
+                lastRound = Math.max(lastRound, m.getRound());
+            }
+            if (bracketMatch.getId() != null
+                    && (bracketMatch.getId().equals(m.getParentMatch2Id())
+                        || (bracketMatch.getId().equals(m.getParentMatch1Id()) && !isReplayMatch(m)))) {
+                return false; // a later tie takes this tie's winner
+            }
+        }
+        return bracketMatch.getRound() == lastRound;
+    }
+
+    private static boolean isReplayMatch(Match m) {
+        return m.getParentMatch1Id() != null && m.getBracketPath() != null && m.getBracketPath().endsWith("R");
+    }
+
     /**
      * Determine winner of a completed match
      * Returns null if match is a draw (replay needed)
@@ -546,8 +575,8 @@ public class CupBracketManager {
                     }
                     
                     // Check if this match has the parent match
-                    if ((match.getParentMatch1Id() != null && match.getParentMatch1Id().equals(parentMatchId)) ||
-                        (match.getParentMatch2Id() != null && match.getParentMatch2Id().equals(parentMatchId))) {
+                    if (!isReplayMatch(match) && ((match.getParentMatch1Id() != null && match.getParentMatch1Id().equals(parentMatchId)) ||
+                        (match.getParentMatch2Id() != null && match.getParentMatch2Id().equals(parentMatchId)))) {
                         System.out.println("CupBracketManager: Found next round match in scheduled! " + 
                             (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                             " (ID: " + match.getId() + ", Round: " + match.getRound() + 
@@ -570,8 +599,8 @@ public class CupBracketManager {
                     }
                     
                     // Check if this match has the parent match
-                    if ((match.getParentMatch1Id() != null && match.getParentMatch1Id().equals(parentMatchId)) ||
-                        (match.getParentMatch2Id() != null && match.getParentMatch2Id().equals(parentMatchId))) {
+                    if (!isReplayMatch(match) && ((match.getParentMatch1Id() != null && match.getParentMatch1Id().equals(parentMatchId)) ||
+                        (match.getParentMatch2Id() != null && match.getParentMatch2Id().equals(parentMatchId)))) {
                         System.out.println("CupBracketManager: Found next round match in played! " + 
                             (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                             " (ID: " + match.getId() + ", Round: " + match.getRound() + 
@@ -601,8 +630,8 @@ public class CupBracketManager {
                     ") against parent ID: " + parentMatchId);
             }
             
-            if ((match.getParentMatch1Id() != null && match.getParentMatch1Id().equals(parentMatchId)) ||
-                (match.getParentMatch2Id() != null && match.getParentMatch2Id().equals(parentMatchId))) {
+            if (!isReplayMatch(match) && ((match.getParentMatch1Id() != null && match.getParentMatch1Id().equals(parentMatchId)) ||
+                (match.getParentMatch2Id() != null && match.getParentMatch2Id().equals(parentMatchId)))) {
                 System.out.println("CupBracketManager: *** FOUND NEXT ROUND MATCH *** " + 
                     (match.getBracketPath() != null ? match.getBracketPath() : "null") + 
                     " (Round " + match.getRound() + ", ID: " + match.getId() + ")");
