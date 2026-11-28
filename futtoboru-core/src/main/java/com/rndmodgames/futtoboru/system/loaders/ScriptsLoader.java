@@ -32,12 +32,14 @@ public class ScriptsLoader {
     public static final String LEAGUE_FOUNDING_TEAMS    = "LEAGUE_FOUNDING_TEAMS";
     public static final String LEAGUE_RULES             = "LEAGUE_RULES";
     public static final String LEAGUE_COMPETITION       = "LEAGUE_COMPETITION"; // competition runtime id
+    public static final String LEAGUE_EDITION           = "LEAGUE_EDITION"; // the season's edition runtime id (P2-9)
     
     // Cup Support
     public static final String CUP_NAME                 = "CUP_NAME";
     public static final String CUP_COUNTRY              = "CUP_COUNTRY";
     public static final String CUP_PARTICIPANTS         = "CUP_PARTICIPANTS";
     public static final String CUP_COMPETITION          = "CUP_COMPETITION"; // competition runtime id
+    public static final String CUP_EDITION              = "CUP_EDITION"; // the season's edition runtime id (P2-9)
     
     /**
      * Load the Scripts bundled with a Season
@@ -94,6 +96,7 @@ public class ScriptsLoader {
                 theLeagueCreationScript.getScriptValues().put(LEAGUE_CREATION_DATE, creation);
                 theLeagueCreationScript.getScriptValues().put(LEAGUE_COUNTRY, countryId);
                 theLeagueCreationScript.getScriptValues().put(LEAGUE_COMPETITION, competition.getId());
+                theLeagueCreationScript.getScriptValues().put(LEAGUE_EDITION, edition.getId());
                 theLeagueCreationScript.getScriptValues().put(LEAGUE_FOUNDING_TEAMS, clubIds);
                 theLeagueCreationScript.getScriptValues().put(LEAGUE_RULES, null);
                 
@@ -114,6 +117,7 @@ public class ScriptsLoader {
                 theCupCreationScript.getScriptValues().put(CUP_NAME, competition.getName());
                 theCupCreationScript.getScriptValues().put(CUP_COUNTRY, countryId);
                 theCupCreationScript.getScriptValues().put(CUP_COMPETITION, competition.getId());
+                theCupCreationScript.getScriptValues().put(CUP_EDITION, edition.getId());
                 theCupCreationScript.getScriptValues().put(CUP_PARTICIPANTS, clubIds);
                 
                 season.getSeasonScripts().add(theCupCreationScript);

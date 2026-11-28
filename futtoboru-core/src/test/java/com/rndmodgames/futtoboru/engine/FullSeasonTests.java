@@ -251,10 +251,6 @@ class FullSeasonTests extends BaseTest {
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("Known bug, not fixed in P2-3: the cup and league creation scripts "
-            + "(ScriptsManager.createCup/createLeague) add a second 1888-89 edition next to the one from season.json, "
-            + "which is never drawn or finished. The fix (reuse the season's data edition) is small, but "
-            + "system/data/RuntimeIdsTests (P2-5 area, not edited by this lane) asserts the script-made edition.")
     void oneEditionPerCompetitionAndSeason() {
         for (Competition c : first.save.getAllCups()) {
             int editions = 0;
@@ -262,6 +258,24 @@ class FullSeasonTests extends BaseTest {
                 editions += e.getName() != null && e.getName().contains("1888-89") ? 1 : 0;
             }
             assertEquals(1, editions, c.getName() + " has one 1888-89 edition");
+        }
+        // P2-9: the league too; the season's edition is the one from season.json, the next season comes once
+        for (String season : new String[] { "1888-89", "1889-90" }) {
+            int editions = 0;
+            for (CompetitionEdition e : first.league.getEditions()) {
+                editions += e.getName() != null && e.getName().contains(season) ? 1 : 0;
+            }
+            assertEquals(1, editions, first.league.getName() + " has one " + season + " edition");
+        }
+        assertEquals("football-league-1888-89", first.leagueEdition.getDataId());
+        for (Competition c : first.save.getAllLeagues()) {
+            if (Competition.COMPETITION_LEAGUE.equals(c.getCompetitionType())) {
+                int editions = 0;
+                for (CompetitionEdition e : c.getEditions()) {
+                    editions += e.getName() != null && e.getName().contains("1888-89") ? 1 : 0;
+                }
+                assertEquals(1, editions, c.getName() + " has one 1888-89 edition");
+            }
         }
     }
 
