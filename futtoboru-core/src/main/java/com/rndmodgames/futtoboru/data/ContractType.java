@@ -77,6 +77,23 @@ public class ContractType {
         }
     }
     
+    /** G-04: the language-bundle key of the type's name (screens show this, not {@link #getName}) */
+    public static String labelKey(Integer type) {
+        if (type == null) {
+            return "contract_type_unknown";
+        }
+        switch (type) {
+            case AMATEUR:
+                return "contract_type_amateur";
+            case SEMI_PROFESSIONAL:
+                return "contract_type_semi_professional";
+            case PROFESSIONAL:
+                return "contract_type_professional";
+            default:
+                return "contract_type_unknown";
+        }
+    }
+
     /**
      * Check if contract type requires training
      */

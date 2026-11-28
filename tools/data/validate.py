@@ -44,6 +44,9 @@ CLUB_ORIGINS = {"church", "cricket", "works", "school", "old-boys", "rugby", "me
 FAN_TIER_MIN, FAN_TIER_MAX = 0, 5
 LANG_RE = re.compile(r"^[a-z]{2,3}(-[A-Z]{2})?$")
 ATTR_MIN, ATTR_MAX = 3, 23  # the attribute scale (3d6 plus modifiers, PlayerAttributeGenerator)
+# G-04: the wage band a club's men are engaged on (seasons/<id>/contracts.json): a Football League club, any other
+# club, or a club of amateurs only (listed by id in that band's `clubs`)
+CLUB_STANDINGS = {"league", "other", "amateur"}
 # P2-14: the season calendar (season.json `calendar`) and a cup's neutral grounds (edition `neutralVenues`)
 WEEKDAYS = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"}
 CUP_ROUNDS = {"quarter-final", "semi-final", "final"}  # counted back from the final
@@ -100,7 +103,8 @@ ENUMS = {"era_kind": ERA_KINDS, "era_authority": ERA_AUTHORITIES, "era_confidenc
          "rule_kind": RULE_KINDS, "rule_body": RULE_BODIES, "applies_to": APPLIES_TO, "wage_type": WAGE_TYPES,
          "standing": STANDINGS, "source_kind": SOURCE_KINDS, "origin_club_kind": ORIGIN_CLUB_KINDS,
          "weekday": WEEKDAYS, "cup_round": CUP_ROUNDS, "neutral_gate": NEUTRAL_GATES, "later_draws": LATER_DRAWS,
-         "club_origin": CLUB_ORIGINS, "injury_kind": INJURY_KINDS}
+         "club_origin": CLUB_ORIGINS, "injury_kind": INJURY_KINDS,
+         "club_standing": CLUB_STANDINGS}
 SPECS = {
     "era_event": {"id": ("str", True), "kind": ("enum:era_kind", True), "authority": ("enum:era_authority", True),
                   "announced": ("str", True), "effective": ("str", True),
@@ -197,6 +201,13 @@ SPECS = {
                "home": ("ref:club", True), "away": ("ref:club", True), "homeGoals": ("int", False),
                "awayGoals": ("int", False), "walkover": ("ref:club", False), "attendance": ("int", False),
                "venue": ("str", False), "source": ("str", True), "notes": ("str", False)},
+    # G-04: one-season engagements of a season, per club standing; money in shillings a week (docs/DATA_MODEL.md)
+    "contract_band": {"standing": ("enum:club_standing", True), "clubs": ("refs:club", False),
+                      "professionalShare": ("num", True), "seasonWageMin": ("num", True),
+                      "seasonWageMax": ("num", True), "summerWageMin": ("num", True), "summerWageMax": ("num", True),
+                      "summerPayShare": ("num", True), "amateurExpenses": ("num", True),
+                      "minimumSquad": ("int", True), "squadSize": ("int", True),
+                      "confidence": ("enum:confidence", True), "sources": ("strs", True), "notes": ("str", False)},
     # R-02 (docs/design/RECRUITMENT_AND_TRIALS.md §6): registration rules by date, wages, origin backstories and
     # clubs. Money in pence (240 to the pound).
     "rule": {"id": ("str", True), "rule": ("enum:rule_kind", True), "from": ("date", True), "until": ("date", False),
@@ -251,6 +262,7 @@ SEASON_FILES = {
     "squads.json": ("squad", None), "nationality_modifiers.json": ("nationality_modifier", None),
     "region_modifiers.json": ("region", "region"),
     "results.json": ("result", None),
+    "contracts.json": ("contract_band", None),
 }
 
 
@@ -720,6 +732,37 @@ def check_results(data: list, where: str, sid: str, season: dict | None, rep: Re
             rep.error(rw, f"edition `{r['edition']}` is not an edition of season {sid}")
 
 
+def check_contract_bands(data: list, where: str, rep: Report):
+    """G-04: shares are 0-1, money is not negative and min <= max, squads can field eleven, one band per standing;
+    only the `amateur` band lists clubs."""
+    seen = Counter()
+    for i, b in enumerate(data):
+        if not isinstance(b, dict):
+            continue
+        rw = f"{where}[{i}]"
+        seen[b.get("standing")] += 1
+        for f in ("professionalShare", "summerPayShare"):
+            v = b.get(f)
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and not 0 <= v <= 1:
+                rep.error(rw, f"`{f}` {v} is outside 0-1")
+        for f in ("seasonWageMin", "seasonWageMax", "summerWageMin", "summerWageMax", "amateurExpenses"):
+            v = b.get(f)
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and v < 0:
+                rep.error(rw, f"`{f}` {v} is negative")
+        for lo, hi in (("seasonWageMin", "seasonWageMax"), ("summerWageMin", "summerWageMax")):
+            a, z = b.get(lo), b.get(hi)
+            if all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in (a, z)) and a > z:
+                rep.error(rw, f"`{lo}` {a} is above `{hi}` {z}")
+        m, s = b.get("minimumSquad"), b.get("squadSize")
+        if isinstance(m, int) and not isinstance(m, bool) and m < 11:
+            rep.error(rw, f"`minimumSquad` {m} cannot field eleven")
+        if all(isinstance(x, int) and not isinstance(x, bool) for x in (m, s)) and m > s:
+            rep.error(rw, f"`minimumSquad` {m} is above `squadSize` {s}")
+        if b.get("clubs") and b.get("standing") != "amateur":
+            rep.error(rw, "only the `amateur` band lists clubs")
+    for standing, n in seen.items():
+        if n > 1:
+            rep.error(where, f"standing `{standing}` has {n} bands")
 def parse_date(v) -> date | None:
     """A whole calendar date yyyy-mm-dd, or None."""
     if not isinstance(v, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
@@ -1022,6 +1065,8 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
                     check_squad_roles(rec, f"{where}[{i}]", rep)
             if spec_name == "result":
                 results.append((data, where, parts[1]))
+            if spec_name == "contract_band":
+                check_contract_bands(data, where, rep)
             if f in FILE_CHECKS:
                 FILE_CHECKS[f](data, where, rep)
         for sid in manifest.get("seasons", []):

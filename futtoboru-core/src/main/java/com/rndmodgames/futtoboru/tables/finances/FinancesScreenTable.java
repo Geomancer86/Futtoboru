@@ -12,6 +12,11 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ClubExpenses;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.MatchIncome;
+import com.rndmodgames.futtoboru.data.PlayerContract;
+import com.rndmodgames.futtoboru.engine.contracts.ContractCalendar;
+import com.rndmodgames.futtoboru.engine.contracts.ContractManager;
+import com.rndmodgames.futtoboru.engine.contracts.ContractTerms;
+import com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
@@ -207,6 +212,10 @@ public class FinancesScreenTable extends VisTable {
             this.row();
             this.add(new VisLabel(LanguageModLoader.format("finances_season_total", Money.format(seasonExpenditure)))).colspan(2).left().padTop(UiTheme.space("xxs"));
         }
+
+        // G-04: what the engagements cost each week
+        this.add().height(UiTheme.space("lg")).colspan(2).row();
+        displayWageBill(club);
     }
     
     /**
@@ -419,16 +428,44 @@ public class FinancesScreenTable extends VisTable {
     }
     
     /**
-     * Get current season start date
-     * TODO: Get from actual season/competition data
+     * The start of the club's financial season (G-04): the last 1 May rollover of the engagements, or the game's start
+     * in its first season (the club's season totals are reset at the rollover). It used to be the game start forever,
+     * with the machine's clock as a fallback.
      */
     private LocalDateTime getCurrentSeasonStart() {
-        // For now, use game start date or current date minus 9 months
-        LocalDateTime gameStart = currentGame.getGameStartDate();
-        if (gameStart != null) {
-            return gameStart;
+        SaveGame save = game.getCurrentGame();
+        LocalDateTime gameStart = save.getGameStartDate();
+        ContractManager contracts = game.getGameEngine() != null ? game.getGameEngine().getContractManager() : null;
+        if (contracts != null && gameStart != null) {
+            int running = contracts.runningSeason(save);
+            if (running > SeasonCalendar.forDate(gameStart).getStartYear()) {
+                return ContractCalendar.nextSeasonStart(running - 1);
+            }
         }
-        // Default: 9 months ago (typical season length)
-        return LocalDateTime.now().minusMonths(9);
+        return gameStart != null ? gameStart : save.getGameDate();
+    }
+
+    /** G-04: the club's weekly wage bill from its engagements (playing season, close season) and its men by type */
+    private void displayWageBill(Club club) {
+        this.row();
+        VisLabel title = new VisLabel(LanguageModLoader.getValue("finances_wage_bill"));
+        title.setFontScale(UiTheme.fontScale("subheading.minor"));
+        this.add(title).colspan(2).pad(UiTheme.space("xs")).row();
+        int professionals = 0;
+        int amateurs = 0;
+        for (PlayerContract c : club.getPlayerContracts()) {
+            if (c == null || !Boolean.TRUE.equals(c.getIsActive())) {
+                continue;
+            }
+            if (c.isAmateur()) {
+                amateurs++;
+            } else {
+                professionals++;
+            }
+        }
+        displayExpenseRow(LanguageModLoader.getValue("finances_wage_bill_season"), ContractTerms.wageBill(club, false));
+        displayExpenseRow(LanguageModLoader.getValue("finances_wage_bill_summer"), ContractTerms.wageBill(club, true));
+        this.add(new VisLabel(LanguageModLoader.format("finances_wage_bill_men", professionals, amateurs)))
+                .colspan(2).left().pad(UiTheme.space("xxs")).row();
     }
 }

@@ -45,6 +45,8 @@ final class SaveLinks {
         }
         dropNulls(game.getAllPersons());
         dropNulls(game.getAllPlayers());
+        dropNulls(game.getFreeAgents()); // G-04
+        game.getFreeAgents().removeIf(p -> p.getPerson() == null);
         dropNulls(game.getAllCups());
         dropNulls(game.getAllLeagues());
         dropNulls(game.getSelectedCountries());

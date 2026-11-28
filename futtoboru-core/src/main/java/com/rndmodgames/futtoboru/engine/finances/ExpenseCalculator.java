@@ -9,6 +9,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ClubExpenses;
 import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.engine.contracts.ContractTerms;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 
 /**
@@ -300,52 +301,22 @@ public class ExpenseCalculator {
     }
     
     /**
-     * Calculate total player wages for the week (v1.0)
-     * 
-     * Sums weekly wages from all active, non-expired contracts.
-     * 
+     * The week's pay of the club's men (G-04): each engagement running on {@code gameDate} costs its weekly wage
+     * (plus an amateur's expenses) in the playing season and its summer pay in the close season (May-August; nothing
+     * for a man without summer pay), see {@link ContractTerms#weeklyPay}.
+     *
      * @param club The club
-     * @param gameDate Current game date (to check contract expiry)
+     * @param gameDate the first day of the week booked
      * @return Total weekly player wages
      */
-    private BigDecimal calculatePlayerWages(Club club, LocalDateTime gameDate) {
-        if (club == null || club.getPlayerContracts() == null || club.getPlayerContracts().isEmpty()) {
+    static BigDecimal calculatePlayerWages(Club club, LocalDateTime gameDate) {
+        if (club == null || gameDate == null || club.getPlayerContracts() == null) {
             return BigDecimal.ZERO;
         }
-        
         BigDecimal totalWages = BigDecimal.ZERO;
-        
         for (PlayerContract contract : club.getPlayerContracts()) {
-            if (contract == null) {
-                continue;
-            }
-            
-            // Check if contract is active
-            if (contract.getIsActive() == null || !contract.getIsActive()) {
-                continue; // Skip inactive contracts
-            }
-            
-            // Check if contract has expired
-            if (contract.getEndDate() != null) {
-                if (gameDate.isAfter(contract.getEndDate())) {
-                    continue; // Contract expired, skip
-                }
-            }
-            
-            // Check if contract has started
-            if (contract.getStartDate() != null) {
-                if (gameDate.isBefore(contract.getStartDate())) {
-                    continue; // Contract hasn't started yet, skip
-                }
-            }
-            
-            // Add weekly wage to total
-            BigDecimal weeklyWage = contract.getWeeklyWage();
-            if (weeklyWage != null && weeklyWage.compareTo(BigDecimal.ZERO) > 0) {
-                totalWages = totalWages.add(weeklyWage);
-            }
+            totalWages = totalWages.add(ContractTerms.weeklyPay(contract, gameDate.toLocalDate()));
         }
-        
         return totalWages.setScale(2, RoundingMode.HALF_UP);
     }
 }
