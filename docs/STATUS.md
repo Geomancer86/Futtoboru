@@ -1,6 +1,6 @@
 # Status (update in place, don't add new summary files)
 
-_Last updated 2026-11-28 (WORKSTATION, DOC-01)._ Version 0.5.0-SNAPSHOT.
+_Last updated 2026-11-28 (WORKSTATION, DOC-01)._ Version 0.5.0.
 
 | System | Status | Notes |
 |---|---|---|
