@@ -21,6 +21,8 @@ public final class ViewFrame implements FrameContext {
 
     /** Seed of the cosmetic random source unless reseeded (fixed, so screenshots repeat). */
     public static final long DEFAULT_COSMETIC_SEED = 1888L;
+    /** Attendance drawn until the match input gives one (a fair 1888-89 league gate). */
+    public static final int DEFAULT_CROWD = 6000;
 
     private final GraphicsQuality quality;
     private final Random cosmetic = new Random(DEFAULT_COSMETIC_SEED);
@@ -39,6 +41,10 @@ public final class ViewFrame implements FrameContext {
     private long tick;
     private double matchSpeed = 1;
     private boolean paused;
+    private double wetness;
+    private double tickSeconds = 1.0 / 30;
+    private int crowdSize = DEFAULT_CROWD;
+    private double crowdMood;
 
     public ViewFrame(GraphicsQuality quality) {
         if (quality == null) {
@@ -91,6 +97,45 @@ public final class ViewFrame implements FrameContext {
 
     void setPaused(boolean paused) {
         this.paused = paused;
+    }
+
+    /** Pitch wetness 0..1 this frame (the match's {@code PitchConditions}; {@link MatchViewer} copies it). */
+    public double wetness() {
+        return wetness;
+    }
+
+    public void setWetness(double wetness) {
+        this.wetness = wetness;
+    }
+
+    /** Length of one simulation tick (velocities from two captured positions). */
+    public double tickSeconds() {
+        return tickSeconds;
+    }
+
+    void setTickSeconds(double tickSeconds) {
+        this.tickSeconds = tickSeconds;
+    }
+
+    /** Spectators in the ground (crowd density). */
+    public int crowdSize() {
+        return crowdSize;
+    }
+
+    public void setCrowdSize(int crowdSize) {
+        this.crowdSize = Math.max(0, crowdSize);
+    }
+
+    /**
+     * The crowd's mood, -1 (angry, encroaching) .. 0 (calm) .. 1 (cheering). A view-side value for now; the crowd
+     * section simulation (E-18) will drive it.
+     */
+    public double crowdMood() {
+        return crowdMood;
+    }
+
+    public void setCrowdMood(double mood) {
+        this.crowdMood = mood < -1 ? -1 : (mood > 1 ? 1 : mood);
     }
 
     public GraphicsQuality quality() {

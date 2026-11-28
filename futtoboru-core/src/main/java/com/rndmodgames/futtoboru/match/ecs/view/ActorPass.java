@@ -9,6 +9,10 @@ import com.rndmodgames.futtoboru.match.ecs.FrameContext;
 import com.rndmodgames.futtoboru.match.ecs.IdentityComponent;
 import com.rndmodgames.futtoboru.match.ecs.SpawnRole;
 import com.rndmodgames.futtoboru.match.ecs.SystemPriority;
+import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
+import com.rndmodgames.futtoboru.match.ecs.body.BodyComponent;
+import com.rndmodgames.futtoboru.match.ecs.body.InjuryComponent;
+import com.rndmodgames.futtoboru.match.ecs.body.MoveCommand;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
 import com.rndmodgames.futtoboru.ui.gfx.DepthSort;
 
@@ -18,9 +22,13 @@ import com.rndmodgames.futtoboru.ui.gfx.DepthSort;
  * flags. The side-on camera sees the far side of the pitch first, so the depth is {@code -y}; the ball sorts at its
  * shadow point (its ground {@code y}) and is drawn lifted by its height.
  *
- * <p>Pictures come from {@link ActorSprites}; until the sprite sheets land every actor is a placeholder figure in the
- * team's colours (shirt, knickers, socks, head; the keeper with a cap), sized by its depth. {@link #collect()} sorts
- * also headless (tests read the order).
+ * <p>Pictures come from {@link ActorSprites} ({@link IndexActorSprites}: the baked sheets of D26): the pass fills an
+ * {@link ActorSprites.Pose} per actor from its view transform and, read only, its body (team slot, facing, velocity,
+ * down, injury, charge) or ball (velocity, spin, water), and draws the chosen frame with its feet pivot on the
+ * projected ground point (the ball lifted by its height), at the sheet scale and whole-screen-pixel texel size
+ * {@link SpriteScale} picked from the perspective scale, then the mud overlay. Without a sprite an actor is a
+ * placeholder figure in the team's colours (shirt, knickers, socks, head; the keeper with a cap), sized by its depth.
+ * {@link #collect()} sorts also headless (tests read the order).
  */
 public final class ActorPass extends EntitySystem implements DrawPass {
 
@@ -43,6 +51,12 @@ public final class ActorPass extends EntitySystem implements DrawPass {
     private final ViewFrame view;
     private final InterpolationPass interpolation;
     private final ComponentMapper<IdentityComponent> ids = ComponentMapper.getFor(IdentityComponent.class);
+    private final ComponentMapper<BodyComponent> bodies = ComponentMapper.getFor(BodyComponent.class);
+    private final ComponentMapper<InjuryComponent> injuries = ComponentMapper.getFor(InjuryComponent.class);
+    private final ComponentMapper<MoveCommand> commands = ComponentMapper.getFor(MoveCommand.class);
+    private final ComponentMapper<BallComponent> balls = ComponentMapper.getFor(BallComponent.class);
+    private final ActorSprites.Pose pose = new ActorSprites.Pose();
+    private ViewTransform ballView;
     private final DepthSort sort = new DepthSort();
     private int[] kinds = new int[64];
     private int[] refs = new int[64];
@@ -62,6 +76,7 @@ public final class ActorPass extends EntitySystem implements DrawPass {
             return;
         }
         ViewArt art = view.art();
+        art.sprites().begin(view);
         Batch batch = view.batch();
         batch.begin();
         for (int i = 0; i < sort.size(); i++) {
@@ -84,13 +99,18 @@ public final class ActorPass extends EntitySystem implements DrawPass {
         int home = 0;
         int away = 0;
         int officials = 0;
+        ballView = null;
         for (int i = 0; i < interpolation.size(); i++) {
             ViewTransform t = interpolation.get(i);
             IdentityComponent id = ids.get(t.entity);
             if (id == null || id.role == SpawnRole.CROWD_SECTION) {
                 continue;
             }
-            int kit = switch (id.role) {
+            if (id.role == SpawnRole.BALL && ballView == null) {
+                ballView = t;
+            }
+            BodyComponent body = bodies.get(t.entity);
+            int kit = body != null ? body.slot : switch (id.role) {
                 case HOME_PLAYER -> home++;
                 case AWAY_PLAYER -> away++;
                 case OFFICIAL -> officials++;
@@ -138,17 +158,69 @@ public final class ActorPass extends EntitySystem implements DrawPass {
         IdentityComponent id = ids.get(t.entity);
         ViewCamera cam = view.viewCamera();
         double scale = cam.scale(t.y);
-        int direction = direction(t);
-        int step = (int) Math.floor((t.x + t.y) * 2.5);
-        ActorSprites.Frame sprite = art.sprites().frame(id.role, kit, direction, step, scale);
-        float fx = (float) Math.round(cam.screenX(t.x, t.y));
-        float fy = (float) Math.round(cam.screenY(t.y, Math.max(0, t.z)));
+        ActorSprites.Pose p = pose(t, id, kit, scale);
+        double sx = cam.screenX(t.x, t.y);
+        double sy = cam.screenY(t.y, Math.max(0, t.z));
+        ActorSprites.Frame sprite = art.sprites().actor(p);
         if (sprite != null) {
-            batch.setColor(1f, 1f, 1f, 1f);
-            batch.draw(sprite.region, fx - sprite.footX, fy - sprite.footY);
+            drawFrame(batch, sprite, sx, sy, p.magnification);
             return;
         }
-        placeholder(batch, art.white(), id.role, kit, fx, fy, scale, direction, step);
+        int direction = IndexActorSprites.direction(p);
+        int step = (int) Math.floor((t.x + t.y) * 2.5);
+        placeholder(batch, art.white(), id.role, kit, Math.round(sx), Math.round(sy), scale, direction, step);
+    }
+
+    /** Fills the reused pose of one actor: view position, and read-only copies of its body or ball state. */
+    ActorSprites.Pose pose(ViewTransform t, IdentityComponent id, int kit, double scale) {
+        ActorSprites.Pose p = pose.clear();
+        p.key = id.index;
+        p.role = id.role;
+        p.index = kit;
+        p.x = t.x;
+        p.y = t.y;
+        p.z = t.z;
+        p.pixelsPerMetre = scale;
+        p.magnification = view.viewCamera().magnification();
+        if (ballView != null) {
+            p.ballX = ballView.x;
+            p.ballY = ballView.y;
+        }
+        BodyComponent body = bodies.get(t.entity);
+        BallComponent ball = balls.get(t.entity);
+        if (body != null) {
+            p.vx = body.vx;
+            p.vy = body.vy;
+            p.facing = body.facing;
+            p.hasFacing = true;
+            p.down = body.isDown();
+            InjuryComponent injury = injuries.get(t.entity);
+            p.injury = injury == null ? 0 : injury.state;
+            MoveCommand cmd = commands.get(t.entity);
+            p.charge = cmd != null && cmd.charge;
+        } else if (ball != null) {
+            p.vx = ball.vx;
+            p.vy = ball.vy;
+            p.vz = ball.vz;
+            p.spin = ball.spin;
+            p.saturation = ball.saturation;
+        } else {
+            double dt = view.tickSeconds();
+            p.vx = (t.currX() - t.prevX()) / dt;
+            p.vy = (t.currY() - t.prevY()) / dt;
+        }
+        return p;
+    }
+
+    /** A chosen frame (and its overlay) with the feet pivot at (sx, sy), texels on whole screen pixels. */
+    static void drawFrame(Batch batch, ActorSprites.Frame f, double sx, double sy, int magnification) {
+        batch.setColor(1f, 1f, 1f, 1f);
+        SpriteScale.draw(batch, f.sprite, sx, sy, f.texel, magnification);
+        if (f.overlay != null && f.overlayAlpha > 0) {
+            batch.setColor(1f, 1f, 1f, f.overlayAlpha);
+            SpriteScale.draw(batch, f.overlay, sx, sy, f.texel, magnification);
+            batch.setColor(1f, 1f, 1f, 1f);
+        }
     }
 
     /** A blocky figure in the role's colours, feet at (fx, fy). */
@@ -163,7 +235,7 @@ public final class ActorPass extends EntitySystem implements DrawPass {
         int head = Math.max(2, Math.round(h * 0.15f));
         int shirt = h - legs - knickers - head;
         // legs: two socks, apart on alternate steps when running sideways
-        boolean apart = (step & 1) == 1 && direction % 4 != 2;
+        boolean apart = (step & 1) == 1 && direction % 4 != 0;
         int leg = Math.max(1, w / 3);
         ViewColors.set(batch, colours[2], 1f);
         batch.draw(white, x0 - (apart ? 1 : 0), fy, leg, legs);
@@ -188,19 +260,14 @@ public final class ActorPass extends EntitySystem implements DrawPass {
         }
     }
 
-    /** 0..7 from the interpolation step's motion (6 = facing the camera when standing). */
-    static int direction(ViewTransform t) {
-        double dx = t.currX() - t.prevX();
-        double dy = t.currY() - t.prevY();
-        if (dx * dx + dy * dy < 1e-6) {
-            return 6;
-        }
-        int d = (int) Math.round(Math.atan2(dy, dx) / (Math.PI / 4));
-        return Math.floorMod(d, ActorSprites.DIRECTIONS);
-    }
-
     private void ball(Batch batch, ViewArt art, ViewTransform t) {
         ViewCamera cam = view.viewCamera();
+        ActorSprites.Pose p = pose(t, ids.get(t.entity), 0, cam.scale(t.y));
+        ActorSprites.Frame sprite = art.sprites().ball(p);
+        if (sprite != null) {
+            drawFrame(batch, sprite, cam.screenX(t.x, t.y), cam.screenY(t.y, Math.max(0, t.z)), p.magnification);
+            return;
+        }
         double d = BALL_DRAWN_M * cam.scale(t.y);
         TextureRegion ball = art.ball(d);
         int size = ball.getRegionWidth();
