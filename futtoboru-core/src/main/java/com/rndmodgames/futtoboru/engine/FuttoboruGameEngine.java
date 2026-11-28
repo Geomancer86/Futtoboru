@@ -362,6 +362,11 @@ public class FuttoboruGameEngine {
         // Check Competition Schedules
         authorityManager.checkCompetitionsSchedule();
         
+        // G-05: every club's committee (expectations, confidence, letters, dismissal) before the job market's day,
+        // so a dismissed secretary's post is advertised at once
+        com.rndmodgames.futtoboru.engine.committee.CommitteeManager.daily(gameInstance.getCurrentGame(),
+                Futtoboru.randomOf(gameInstance), gameInstance.getClubStaffManager(), messageManager);
+
         // Update Job Openings (v1.0)
         if (gameInstance.getJobManager() != null) {
             gameInstance.getJobManager().updateJobOpenings();

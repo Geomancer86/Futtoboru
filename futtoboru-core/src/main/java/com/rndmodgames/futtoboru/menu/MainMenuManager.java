@@ -78,6 +78,7 @@ public class MainMenuManager {
     public static final int SCHEDULE_SCREEN     = 2000;
     public static final int CLUB_INFO_SCREEN    = 3000;
     public static final int FINANCES_SCREEN     = 4000;
+    public static final int COMMITTEE_SCREEN    = 3001;   // G-05
     public static final int COMPETITIONS_SCREEN = 5000;
     
     //
@@ -136,6 +137,7 @@ public class MainMenuManager {
     private com.rndmodgames.futtoboru.tables.history.HistoryScreenTable historyScreenTable = null;
     private ClubInfoScreenTable clubInfoScreenTable = null;
     private FinancesScreenTable financesScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.club.CommitteeScreenTable committeeScreenTable = null;
     private CompetitionsScreenTable competitionsScreenTable = null;
     private LeagueDetailScreenTable leagueDetailScreenTable = null;
     private CupDetailScreenTable cupDetailScreenTable = null;
@@ -194,6 +196,7 @@ public class MainMenuManager {
         historyScreenTable = new com.rndmodgames.futtoboru.tables.history.HistoryScreenTable(game);
         clubInfoScreenTable = new ClubInfoScreenTable(game);
         financesScreenTable = new FinancesScreenTable(game);
+        committeeScreenTable = new com.rndmodgames.futtoboru.tables.club.CommitteeScreenTable(game);
         competitionsScreenTable = new CompetitionsScreenTable(game);
         competitionsScreenTable.setMenuManager(this);
         leagueDetailScreenTable = new LeagueDetailScreenTable(game);
@@ -251,6 +254,7 @@ public class MainMenuManager {
 
         buttonsMenu.clearChildren();
         entryButtons.clear();
+        menuForClub = isManager();
 
         int lastGroup = -1;
         for (final MenuEntry entry : MenuEntries.forProfession(isManager())) {
@@ -277,6 +281,9 @@ public class MainMenuManager {
 
         syncMenuState();
     }
+
+    /** G-05: whether the left menu was built as the club menu (a dismissal turns it into the job-seeker menu). */
+    private boolean menuForClub;
 
     /** @return true if the owner works at a club (the club menu), false for the job-seeker menu (J-01) */
     private boolean isManager() {
@@ -741,6 +748,16 @@ public class MainMenuManager {
             
             break;
             
+        case COMMITTEE_SCREEN:
+            // G-05: the club's committee (expectations, confidence in words, members)
+            if (currentClub == null) {
+                redirectTo(HOME_SCREEN);
+                return;
+            }
+            committeeScreenTable.updateDynamicComponents();
+            parentTable.add(committeeScreenTable).grow();
+            break;
+
         case FINANCES_SCREEN:
             
             // Update dynamic components
@@ -899,6 +916,17 @@ public class MainMenuManager {
      *  - this is used to automatically update the current screen, as it will have dynamic data
      */
     public void updateDynamicComponents() {
+
+        // G-05: the committee dismissed the secretary (or he took a post): the menu follows, and a club screen
+        // without a club goes Home
+        if (menuForClub != isManager()) {
+            setDynamicButtonsMenu();
+            if (!isManager() && MenuEntries.forProfession(false).stream()
+                    .noneMatch(e -> e.screen() == MenuEntries.entryScreenFor(CURRENT_SCREEN))) {
+                openMenuEntry(HOME_SCREEN);
+                return;
+            }
+        }
         
         switch(CURRENT_SCREEN) {
         
@@ -920,6 +948,10 @@ public class MainMenuManager {
             
         case FINANCES_SCREEN:
             financesScreenTable.updateDynamicComponents();
+            break;
+
+        case COMMITTEE_SCREEN:
+            committeeScreenTable.updateDynamicComponents();
             break;
             
         case PLAYER_DETAIL_SCREEN:
