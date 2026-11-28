@@ -62,7 +62,7 @@ public class InboxScreenTable extends VisTable {
         
         //
         this.game = parent;
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
         
         // Initialize layout components
         filtersTable = new VisTable(true);
@@ -126,7 +126,7 @@ public class InboxScreenTable extends VisTable {
     public void updateDynamicComponents() {
         
         // Refresh currentGame reference to avoid stale references
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
         
         // Clear all tables
         this.clear();

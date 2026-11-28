@@ -129,7 +129,7 @@ public class MainMenuManager {
         
         //
         this.currentGame = currentGame;
-        this.navigation = ((com.rndmodgames.futtoboru.game.Futtoboru) game).getScreenNavigation();
+        this.navigation = ((com.rndmodgames.futtoboru.game.Futtoboru) game).getSession().navigation();
         
         // this will always .grow()
         this.parentTable = parentTable;

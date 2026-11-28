@@ -11,7 +11,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.history.HistoryFacts;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.data.HistoryName;
@@ -28,11 +27,12 @@ public final class ClubHistoryPanel {
     }
 
     /** @return the scrollable panel, or null when the club has no history data */
-    public static VisTable build(Club club, SaveGame game, MainMenuManager menu) {
+    public static VisTable build(Club club, com.rndmodgames.futtoboru.game.GameSession session, MainMenuManager menu) {
+        SaveGame game = session.getGame();
         if (club == null || club.getDataId() == null) {
             return null;
         }
-        HistoryFacts facts = new HistoryFacts(DatabaseLoader.getInstance().getGameData(),
+        HistoryFacts facts = new HistoryFacts(session.database().getGameData(),
                 HistoryFacts.dataLanguage(LanguageModLoader.getCurrentLanguage().getId()));
         HistoryFacts.ClubHistory h = facts.club(club.getDataId());
         if (h.isEmpty()) {

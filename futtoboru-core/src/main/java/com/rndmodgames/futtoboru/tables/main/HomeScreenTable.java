@@ -51,7 +51,7 @@ public class HomeScreenTable extends VisTable {
     public void updateDynamicComponents() {
 
         clearChildren();
-        HomeDashboard dashboard = HomeDashboard.of(((Futtoboru) game).getCurrentGame());
+        HomeDashboard dashboard = HomeDashboard.of(((Futtoboru) game).getSession().getGame());
 
         // header: manager, club, date
         VisLabel title = new VisLabel(dashboard.hasClub() ? dashboard.getClubName() : LanguageModLoader.getValue("dashboard_unemployed"));

@@ -86,8 +86,8 @@ public class PlayersListTable extends VisTable {
         this.game = parent;
         
         // Initialize change calculator
-        if (game != null && game.getCurrentGame() != null) {
-            this.changeCalculator = new AttributeChangeCalculator(game.getCurrentGame());
+        if (game != null && game.getSession().getGame() != null) {
+            this.changeCalculator = new AttributeChangeCalculator(game.getSession().getGame());
         }
         
         //
@@ -182,7 +182,7 @@ public class PlayersListTable extends VisTable {
          * Player Rows
          */
         com.rndmodgames.futtoboru.history.HistoryFacts facts = new com.rndmodgames.futtoboru.history.HistoryFacts(
-                com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getGameData(),
+                game.getSession().database().getGameData(),
                 com.rndmodgames.futtoboru.history.HistoryFacts.dataLanguage(LanguageModLoader.getCurrentLanguage().getId()));
         for (Player player : sortedPlayers) {
             this.row();
@@ -206,7 +206,7 @@ public class PlayersListTable extends VisTable {
             this.add(playerDetailLink).width(UiTheme.size("table.squad.name"));
             
             // Age
-            long yearsOld = ChronoUnit.YEARS.between(player.getPerson().getBirthDate(), game.getCurrentGame().getGameDate());
+            long yearsOld = ChronoUnit.YEARS.between(player.getPerson().getBirthDate(), game.getSession().getGame().getGameDate());
             this.add(new VisLabel(String.valueOf(yearsOld))).width(UiTheme.size("table.squad.age"));
             
             // Country
@@ -313,7 +313,7 @@ public class PlayersListTable extends VisTable {
     
     /** G-02: "Inj. 12d" in the injury colour while he is out, else nothing. */
     private VisLabel injuryCell(Player player) {
-        Availability.Status status = Availability.of(player, game.getCurrentGame().getGameDate());
+        Availability.Status status = Availability.of(player, game.getSession().getGame().getGameDate());
         if (status.isAvailable()) {
             return new VisLabel("");
         }
@@ -334,14 +334,14 @@ public class PlayersListTable extends VisTable {
                 break;
             case "age":
                 comparator = Comparator.comparing(p -> 
-                    ChronoUnit.YEARS.between(p.getPerson().getBirthDate(), game.getCurrentGame().getGameDate()));
+                    ChronoUnit.YEARS.between(p.getPerson().getBirthDate(), game.getSession().getGame().getGameDate()));
                 break;
             case "country":
                 comparator = Comparator.comparing(p -> 
                     p.getPerson().getCountry() != null ? p.getPerson().getCountry().getCommonName() : "");
                 break;
             case "injury":
-                comparator = Comparator.comparing(p -> Availability.of(p, game.getCurrentGame().getGameDate()).getDaysLeft());
+                comparator = Comparator.comparing(p -> Availability.of(p, game.getSession().getGame().getGameDate()).getDaysLeft());
                 break;
             case "strength":
                 comparator = Comparator.comparing(p -> p.getStrength() != null ? p.getStrength() : 0.0f);
@@ -398,8 +398,8 @@ public class PlayersListTable extends VisTable {
     /** G-10: the tier of a player at his club as a small coloured number; empty when he has no data id. */
     private VisLabel fanMarker(Player player, com.rndmodgames.futtoboru.history.HistoryFacts facts) {
         com.rndmodgames.futtoboru.data.Person person = player.getPerson();
-        com.rndmodgames.futtoboru.data.Club club = person.getCurrentClubId() == null || game.getCurrentGame() == null ? null
-                : game.getCurrentGame().getClubById(person.getCurrentClubId());
+        com.rndmodgames.futtoboru.data.Club club = person.getCurrentClubId() == null || game.getSession().getGame() == null ? null
+                : game.getSession().getGame().getClubById(person.getCurrentClubId());
         int tier = facts.fanTier(person.getDataId(), club == null ? null : club.getDataId());
         VisLabel label = new VisLabel(String.valueOf(tier));
         label.setColor(UiTheme.color(com.rndmodgames.futtoboru.tables.player.PlayerDetailScreenTable.fanTierColor(tier)));

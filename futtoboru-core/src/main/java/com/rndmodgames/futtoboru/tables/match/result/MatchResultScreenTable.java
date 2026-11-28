@@ -61,7 +61,7 @@ public class MatchResultScreenTable extends VisTable {
         if (selectedMatch != null) {
             return selectedMatch;
         }
-        Club currentClub = game.getCurrentGame().getCurrentClub();
+        Club currentClub = game.getSession().getGame().getCurrentClub();
         if (currentClub == null || currentClub.getPlayedMatches() == null || currentClub.getPlayedMatches().isEmpty()) {
             return null;
         }
@@ -83,8 +83,8 @@ public class MatchResultScreenTable extends VisTable {
         }
 
         // Get clubs
-        Club homeClub = game.getCurrentGame().getClubById(match.getHomeClubId());
-        Club awayClub = game.getCurrentGame().getClubById(match.getAwayClubId());
+        Club homeClub = game.getSession().getGame().getClubById(match.getHomeClubId());
+        Club awayClub = game.getSession().getGame().getClubById(match.getAwayClubId());
 
         if (homeClub == null || awayClub == null) {
             this.add(LanguageModLoader.getValue("match_load_error"));
@@ -92,7 +92,7 @@ public class MatchResultScreenTable extends VisTable {
             return;
         }
 
-        MatchReport report = MatchReport.of(game.getCurrentGame(), match);
+        MatchReport report = MatchReport.of(game.getSession().getGame(), match);
 
         // Format date
         DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.MEDIUM); // U-12: the game language, not the machine's
@@ -108,7 +108,7 @@ public class MatchResultScreenTable extends VisTable {
 
         // Details: date, ground, type, attendance, capacity. P2-14: the ground played at is the match's neutral
         // venue (a cup semi-final or final), else the home club's, shown with its picture
-        Stadium ground = NeutralVenues.stadiumOf(match, game.getCurrentGame());
+        Stadium ground = NeutralVenues.stadiumOf(match, game.getSession().getGame());
         VisTable details = new VisTable(true);
         details.add(LanguageModLoader.getValue("match_date")).right().padRight(UiTheme.space("sm"));
         details.add(LanguageModLoader.format("match_date_time", matchDate, matchTime)).left().row();
@@ -138,7 +138,7 @@ public class MatchResultScreenTable extends VisTable {
         }
         // P2-14: who took the gate at a neutral ground (1888-89: the Football Association)
         if (NeutralVenues.isNeutral(match)) {
-            NeutralVenues.Gate gate = NeutralVenues.gateOf(match, game.getCurrentGame());
+            NeutralVenues.Gate gate = NeutralVenues.gateOf(match, game.getSession().getGame());
             details.add(LanguageModLoader.getValue("match_gate")).right().padRight(UiTheme.space("sm"));
             details.add(LanguageModLoader.getValue(gate == NeutralVenues.Gate.ASSOCIATION ? "match_gate_association"
                     : gate == NeutralVenues.Gate.SHARED ? "match_gate_shared" : "match_gate_home")).left().row();

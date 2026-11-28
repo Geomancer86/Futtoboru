@@ -63,7 +63,7 @@ public class LeagueDrawScreenTable extends VisTable {
         super(true);
         
         this.game = ((Futtoboru) parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
         
         // Create scrollable content table
         contentTable = new VisTable(true);

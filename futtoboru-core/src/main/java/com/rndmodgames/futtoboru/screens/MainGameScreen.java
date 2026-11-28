@@ -64,7 +64,7 @@ public class MainGameScreen implements Screen {
         this.game = parent;
             
         // set saved game for easier access
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
         
         // Validate that a game is loaded
         if (this.currentGame == null) {

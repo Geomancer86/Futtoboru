@@ -12,7 +12,6 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.history.HistoryEntry;
 import com.rndmodgames.futtoboru.history.HistoryProvider;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiTooltips;
@@ -40,7 +39,7 @@ public class HistoryScreenTable extends VisTable {
 
     /** Reads the history again (a season may have finished) and shows it. */
     public void updateDynamicComponents() {
-        entries = HistoryProvider.forGame(game.getCurrentGame(), DatabaseLoader.getInstance().getGameData());
+        entries = HistoryProvider.forGame(game.getSession().getGame(), game.getSession().database().getGameData());
         if (selected == null || !entries.contains(selected)) {
             selected = firstWithDetail();
         }

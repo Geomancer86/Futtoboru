@@ -21,7 +21,6 @@ import com.rndmodgames.components.MainMenuButton;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.localization.GameFormat;
@@ -78,7 +77,7 @@ public class NewGameSeasonScreen implements Screen {
         VisLabel seasonCountriesLabel = new VisLabel(LanguageModLoader.getValue("season_countries"));
         
         // Get All Available Seasons
-        List<Season> allSeasons = DatabaseLoader.getInstance().getSeasons();
+        List<Season> allSeasons = ((Futtoboru) game).getSession().database().getSeasons();
         
         // Seasons Select Box
         availableSeasonsSelectBox = new VisSelectBox<>();
@@ -249,7 +248,7 @@ public class NewGameSeasonScreen implements Screen {
                 ((Futtoboru) game).setCurrentGame(currentGame);
                 
                 // set game owner
-                ((Futtoboru) game).getCurrentGame().setOwner(selectedManager);
+                ((Futtoboru) game).getSession().getGame().setOwner(selectedManager);
                 
                 // Redirect to New Game Setup Screen
                 ((Futtoboru) game).changeScreen(Futtoboru.NEW_GAME_SETUP_SCREEN, selectedSeason, new ArrayList<>());

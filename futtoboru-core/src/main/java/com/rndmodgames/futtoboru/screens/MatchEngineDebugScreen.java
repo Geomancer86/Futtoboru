@@ -129,7 +129,7 @@ public class MatchEngineDebugScreen implements Screen {
         
         this.game = parent;
         this.futtoboru = (Futtoboru) parent;
-        this.currentGame = futtoboru != null ? futtoboru.getCurrentGame() : null;
+        this.currentGame = futtoboru != null ? futtoboru.getSession().getGame() : null;
         
         stage = new Stage(UiScale.newViewport());
         
@@ -345,11 +345,11 @@ public class MatchEngineDebugScreen implements Screen {
         } else {
             // Fallback to DatabaseLoader (static data)
             try {
-                if (DatabaseLoader.getInstance() != null) {
+                if (futtoboru.getSession().database() != null) {
                     // Try to get clubs from DatabaseLoader
                     // DatabaseLoader doesn't expose getAllClubs directly, but we can get by country
                     // For debug screen, we'll try to get some clubs
-                    java.util.Map<Long, List<Club>> clubsByCountry = DatabaseLoader.getInstance().getClubsByCountry();
+                    java.util.Map<Long, List<Club>> clubsByCountry = futtoboru.getSession().database().getClubsByCountry();
                     if (clubsByCountry != null && !clubsByCountry.isEmpty()) {
                         for (List<Club> countryClubs : clubsByCountry.values()) {
                             if (countryClubs != null) {
@@ -615,8 +615,8 @@ public class MatchEngineDebugScreen implements Screen {
         
         // Try DatabaseLoader first (has all available seasons)
         try {
-            if (DatabaseLoader.getInstance() != null) {
-                List<Season> dbSeasons = DatabaseLoader.getInstance().getSeasons();
+            if (futtoboru.getSession().database() != null) {
+                List<Season> dbSeasons = futtoboru.getSession().database().getSeasons();
                 if (dbSeasons != null && !dbSeasons.isEmpty()) {
                     seasons.addAll(dbSeasons);
                     Log.info(Log.UI_MATCH, "MatchEngineDebug", "Loaded " + seasons.size() + " seasons from DatabaseLoader");

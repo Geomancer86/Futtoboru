@@ -50,7 +50,7 @@ public class FinancesScreenTable extends VisTable {
         
         //
         this.game = ((Futtoboru) parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
     }
     
     /**
@@ -61,7 +61,7 @@ public class FinancesScreenTable extends VisTable {
         //
         this.clear();
         
-        Club club = game.getCurrentGame().getCurrentClub();
+        Club club = game.getSession().getGame().getCurrentClub();
         if (club == null) {
             this.add(new VisLabel(LanguageModLoader.getValue("finances_no_club"))).pad(UiTheme.space("lg")).row();
             return;
@@ -443,7 +443,7 @@ public class FinancesScreenTable extends VisTable {
      * with the machine's clock as a fallback.
      */
     private LocalDateTime getCurrentSeasonStart() {
-        SaveGame save = game.getCurrentGame();
+        SaveGame save = game.getSession().getGame();
         LocalDateTime gameStart = save.getGameStartDate();
         ContractManager contracts = game.getGameEngine() != null ? game.getGameEngine().getContractManager() : null;
         if (contracts != null && gameStart != null) {

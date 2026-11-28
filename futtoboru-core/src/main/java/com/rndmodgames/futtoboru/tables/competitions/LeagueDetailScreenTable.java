@@ -52,7 +52,7 @@ public class LeagueDetailScreenTable extends VisTable {
         super(true);
         
         this.game = ((Futtoboru) parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
         
         // Initialize standings manager
         this.standingsManager = new LeagueStandingsManager();
@@ -86,7 +86,7 @@ public class LeagueDetailScreenTable extends VisTable {
     public void updateDynamicComponents() {
         // Refresh currentGame reference to avoid stale references
         if (game != null) {
-            this.currentGame = game.getCurrentGame();
+            this.currentGame = game.getSession().getGame();
         }
         
         contentTable.clear();

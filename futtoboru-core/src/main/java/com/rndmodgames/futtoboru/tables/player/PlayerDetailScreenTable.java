@@ -60,8 +60,8 @@ public class PlayerDetailScreenTable extends VisTable {
         this.futtoboru = (Futtoboru) parent;
         
         // Initialize change calculator
-        if (futtoboru != null && futtoboru.getCurrentGame() != null) {
-            this.changeCalculator = new AttributeChangeCalculator(futtoboru.getCurrentGame());
+        if (futtoboru != null && futtoboru.getSession().getGame() != null) {
+            this.changeCalculator = new AttributeChangeCalculator(futtoboru.getSession().getGame());
         }
         
         
@@ -101,8 +101,8 @@ public class PlayerDetailScreenTable extends VisTable {
         this.currentPlayer = player;
         
         // Update change calculator if game changed
-        if (changeCalculator == null && futtoboru != null && futtoboru.getCurrentGame() != null) {
-            this.changeCalculator = new AttributeChangeCalculator(futtoboru.getCurrentGame());
+        if (changeCalculator == null && futtoboru != null && futtoboru.getSession().getGame() != null) {
+            this.changeCalculator = new AttributeChangeCalculator(futtoboru.getSession().getGame());
         }
         
         // Clear content table (not the main table - that has the scroll pane)
@@ -170,7 +170,7 @@ public class PlayerDetailScreenTable extends VisTable {
         playerNameLabel.setText(currentPlayer.getPerson().getName() + " " + currentPlayer.getPerson().getLastname());
         
         long age = ChronoUnit.YEARS.between(currentPlayer.getPerson().getBirthDate(), 
-            futtoboru.getCurrentGame().getGameDate());
+            futtoboru.getSession().getGame().getGameDate());
         
         infoTable.row();
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_name"))).left().width(UiTheme.size("col.label"));
@@ -194,7 +194,7 @@ public class PlayerDetailScreenTable extends VisTable {
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_current_club"))).left().width(UiTheme.size("col.label"));
         String clubName = LanguageModLoader.getValue("not_available");
         if (currentPlayer.getPerson().getCurrentClubId() != null) {
-            com.rndmodgames.futtoboru.data.Club club = futtoboru.getCurrentGame().getClubById(
+            com.rndmodgames.futtoboru.data.Club club = futtoboru.getSession().getGame().getClubById(
                 currentPlayer.getPerson().getCurrentClubId());
             if (club != null) {
                 clubName = club.getName();
@@ -206,7 +206,7 @@ public class PlayerDetailScreenTable extends VisTable {
         // G-02: fit, or the injury with the days left and the day he is back
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_fitness"))).left().width(UiTheme.size("col.label"));
         com.rndmodgames.futtoboru.engine.injuries.Availability.Status fitness =
-                com.rndmodgames.futtoboru.engine.injuries.Availability.of(currentPlayer, futtoboru.getCurrentGame().getGameDate());
+                com.rndmodgames.futtoboru.engine.injuries.Availability.of(currentPlayer, futtoboru.getSession().getGame().getGameDate());
         VisLabel fitnessLabel;
         if (fitness.isAvailable()) {
             fitnessLabel = new VisLabel(LanguageModLoader.getValue("player_fit"));
@@ -264,8 +264,8 @@ public class PlayerDetailScreenTable extends VisTable {
         // Contract Information (v1.0)
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_contract"))).left().width(UiTheme.size("col.label"));
         String contractInfo = LanguageModLoader.getValue("player_no_contract");
-        if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getCurrentGame() != null) {
-            com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
+        if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getSession().getGame() != null) {
+            com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getSession().getGame().getClubById(
                 currentPlayer.getPerson().getCurrentClubId());
             if (playerClub != null) {
                 com.rndmodgames.futtoboru.data.PlayerContract contract = playerClub.getContractForPlayer(
@@ -334,8 +334,8 @@ public class PlayerDetailScreenTable extends VisTable {
         
         // Get contract
         com.rndmodgames.futtoboru.data.PlayerContract contract = null;
-        if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getCurrentGame() != null) {
-            com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getCurrentGame().getClubById(
+        if (currentPlayer.getPerson().getCurrentClubId() != null && futtoboru.getSession().getGame() != null) {
+            com.rndmodgames.futtoboru.data.Club playerClub = futtoboru.getSession().getGame().getClubById(
                 currentPlayer.getPerson().getCurrentClubId());
             
             Log.debug(Log.UI_CLUB, "PlayerDetailScreenTable", "Looking for contract - Player ID: " + 
@@ -365,7 +365,7 @@ public class PlayerDetailScreenTable extends VisTable {
         } else {
             Log.error(Log.UI_CLUB, "PlayerDetailScreenTable", "Cannot lookup contract: currentClubId=" + 
                 (currentPlayer.getPerson() != null ? currentPlayer.getPerson().getCurrentClubId() : "null") + 
-                ", currentGame=" + (futtoboru.getCurrentGame() != null ? "not null" : "null"));
+                ", currentGame=" + (futtoboru.getSession().getGame() != null ? "not null" : "null"));
         }
         
         if (contract != null) {
@@ -428,7 +428,7 @@ public class PlayerDetailScreenTable extends VisTable {
                 
                 // Days remaining
                 long daysRemaining = java.time.temporal.ChronoUnit.DAYS.between(
-                    futtoboru.getCurrentGame().getGameDate(), contract.getEndDate());
+                    futtoboru.getSession().getGame().getGameDate(), contract.getEndDate());
                 contractTable.add(new VisLabel(LanguageModLoader.getValue("player_days_remaining"))).left().width(UiTheme.size("col.label"));
                 VisLabel daysLabel = new VisLabel(String.valueOf(daysRemaining));
                 if (daysRemaining < 90) {
@@ -467,7 +467,7 @@ public class PlayerDetailScreenTable extends VisTable {
         if (currentPlayer.getPerson().getCountry() != null && 
             currentPlayer.getPerson().getCountry().getId() != null) {
             Long countryId = currentPlayer.getPerson().getCountry().getId();
-            natMod = com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getNationalityModifier(countryId);
+            natMod = futtoboru.getSession().database().getNationalityModifier(countryId);
             
             // Debug logging
             if (natMod == null) {
@@ -486,7 +486,7 @@ public class PlayerDetailScreenTable extends VisTable {
             currentPlayer.getPerson().getCountry().getId() != null) {
             String stateName = currentPlayer.getPerson().getState().getName();
             Long countryId = currentPlayer.getPerson().getCountry().getId();
-            regMod = com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getRegionModifier(stateName, countryId);
+            regMod = futtoboru.getSession().database().getRegionModifier(stateName, countryId);
             
             // Debug logging
             if (regMod == null) {
@@ -795,7 +795,7 @@ public class PlayerDetailScreenTable extends VisTable {
             return;
         }
         com.rndmodgames.futtoboru.history.HistoryFacts facts = new com.rndmodgames.futtoboru.history.HistoryFacts(
-                com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getGameData(),
+                futtoboru.getSession().database().getGameData(),
                 com.rndmodgames.futtoboru.history.HistoryFacts.dataLanguage(LanguageModLoader.getCurrentLanguage().getId()));
         com.rndmodgames.futtoboru.history.HistoryFacts.PersonHistory h =
                 facts.person(person.getDataId(), club == null ? null : club.getDataId());
@@ -841,10 +841,10 @@ public class PlayerDetailScreenTable extends VisTable {
 
     /** G-01: the club whose squad holds this very player (a person listed twice has a copy per squad). */
     private com.rndmodgames.futtoboru.data.Club squadOf(Player player) {
-        if (futtoboru.getCurrentGame() == null || futtoboru.getCurrentGame().getAllClubs() == null) {
+        if (futtoboru.getSession().getGame() == null || futtoboru.getSession().getGame().getAllClubs() == null) {
             return null;
         }
-        for (com.rndmodgames.futtoboru.data.Club club : futtoboru.getCurrentGame().getAllClubs()) {
+        for (com.rndmodgames.futtoboru.data.Club club : futtoboru.getSession().getGame().getAllClubs()) {
             if (club != null && club.getPlayers() != null) {
                 for (Player p : club.getPlayers()) {
                     if (p == player) {

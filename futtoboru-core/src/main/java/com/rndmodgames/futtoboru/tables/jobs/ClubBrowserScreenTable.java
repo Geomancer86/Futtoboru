@@ -46,7 +46,7 @@ public class ClubBrowserScreenTable extends VisTable {
         super(true);
         
         this.game = parent;
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
         this.jobManager = ((Futtoboru)game).getJobManager();
         this.clubStaffManager = ((Futtoboru)game).getClubStaffManager();
         

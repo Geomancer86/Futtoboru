@@ -31,7 +31,7 @@ public class CommitteeScreenTable extends VisTable {
 
     public void updateDynamicComponents() {
         clear();
-        SaveGame currentGame = game.getCurrentGame();
+        SaveGame currentGame = game.getSession().getGame();
         Club club = currentGame != null ? currentGame.getCurrentClub() : null;
         if (club == null) {
             add(new VisLabel(LanguageModLoader.getValue("club_none_selected"))).pad(UiTheme.space("lg"));

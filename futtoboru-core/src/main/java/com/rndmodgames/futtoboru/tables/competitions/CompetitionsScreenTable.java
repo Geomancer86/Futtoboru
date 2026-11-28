@@ -61,7 +61,7 @@ public class CompetitionsScreenTable extends VisTable {
         
         //
         this.game = ((Futtoboru) parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
     }
     
     public void setMenuManager(com.rndmodgames.futtoboru.menu.MainMenuManager menuManager) {

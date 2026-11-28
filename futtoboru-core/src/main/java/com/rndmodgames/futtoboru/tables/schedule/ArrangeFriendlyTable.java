@@ -157,7 +157,7 @@ public class ArrangeFriendlyTable extends VisTable {
         opponents.add(null);
         List<String> names = new ArrayList<>();
         names.add(text("friendly_choose_opponent"));
-        if (currentClub != null && game.getCurrentGame() != null) {
+        if (currentClub != null && game.getSession().getGame() != null) {
             for (Club club : new FriendlyArranger(game).possibleOpponents(currentClub)) {
                 opponents.add(club);
                 names.add(club.getName());

@@ -74,7 +74,7 @@ public class SquadScreenTable extends VisTable{
         
         //
         this.game = ((Futtoboru)parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
         
         // 
         playersList = new PlayersListTable(game);
@@ -189,7 +189,7 @@ public class SquadScreenTable extends VisTable{
     private void showTab() {
         if (teamSheetTab.isChecked()) {
             if (displayedClub != null) {
-                boolean own = TeamSheets.isManaged(displayedClub, game.getCurrentGame());
+                boolean own = TeamSheets.isManaged(displayedClub, game.getSession().getGame());
                 teamSheetEditor.show(displayedClub, TeamSheets.standing(displayedClub), own, null);
             }
             contentCell.setActor(teamSheetScrollPane);
@@ -228,7 +228,7 @@ public class SquadScreenTable extends VisTable{
             
             for (Player player : displayedClub.getPlayers()) {
                 
-                long yearsOld = ChronoUnit.YEARS.between(player.getPerson().getBirthDate(), game.getCurrentGame().getGameDate());
+                long yearsOld = ChronoUnit.YEARS.between(player.getPerson().getBirthDate(), game.getSession().getGame().getGameDate());
                 
                 // add up players age
                 accumulatedAge += yearsOld;

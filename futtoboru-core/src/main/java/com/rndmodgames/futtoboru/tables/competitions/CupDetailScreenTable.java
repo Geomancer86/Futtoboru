@@ -51,7 +51,7 @@ public class CupDetailScreenTable extends VisTable {
         super(true);
         
         this.game = ((Futtoboru) parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
         
         // Create scrollable content table
         contentTable = new VisTable(true);
@@ -94,7 +94,7 @@ public class CupDetailScreenTable extends VisTable {
     
     public void updateDynamicComponents() {
         if (game != null) {
-            this.currentGame = game.getCurrentGame();
+            this.currentGame = game.getSession().getGame();
         }
         
         contentTable.clear();

@@ -278,7 +278,7 @@ public class MainGameMenuTable extends VisTable {
             /**
              * Pass the reference to the Continue Game button so we can enable that after saving the game once
              */
-            saveGameDialog = new SaveGameDialog(((Futtoboru) (game)).getCurrentGame(), continueGameButton);
+            saveGameDialog = new SaveGameDialog(((Futtoboru) (game)).getSession(), continueGameButton);
         }
         saveGameDialog.showThen(stage, afterSave);
     }
@@ -289,7 +289,7 @@ public class MainGameMenuTable extends VisTable {
      */
     private void confirmUnsavedProgress(Stage stage, Runnable action) {
 
-        if (!UnsavedProgress.isUnsaved(((Futtoboru) game).getCurrentGame())) {
+        if (!((Futtoboru) game).getSession().progress().isUnsaved(((Futtoboru) game).getSession().getGame())) {
             action.run();
             return;
         }
@@ -372,7 +372,7 @@ public class MainGameMenuTable extends VisTable {
                             // Find the mandatory draw message and navigate to draw screen
                             // Check both getAllMessages() (already delivered) and scheduledMessages (not yet delivered)
                             com.rndmodgames.futtoboru.system.SaveGame currentGame = 
-                                ((Futtoboru)(game)).getCurrentGame();
+                                ((Futtoboru)(game)).getSession().getGame();
                             
                             com.rndmodgames.futtoboru.data.Message messageToProcess = null;
                             java.time.LocalDateTime currentDate = currentGame != null ? currentGame.getGameDate() : null;
@@ -608,7 +608,7 @@ public class MainGameMenuTable extends VisTable {
                             
                             // Handle screen transitions
                             com.rndmodgames.futtoboru.menu.ScreenNavigation navigation =
-                                    ((Futtoboru) game).getScreenNavigation();
+                                    ((Futtoboru) game).getSession().navigation();
                             if (navigation.current() == GameScreenId.MATCH_RESULT) {
                                 mainMenuManager.setActiveMainScreen(navigation.beforeMatch());
                             }

@@ -24,6 +24,9 @@ import com.rndmodgames.futtoboru.system.SaveGame;
  */
 class AuthorityScreenTableTest {
 
+    private static final java.util.function.Supplier<java.util.List<com.rndmodgames.futtoboru.data.Season>> DATA_SEASONS =
+            () -> com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getSeasons();
+
     private static Club club(long id, String name) {
         Club club = new Club();
         club.setId(id);
@@ -71,7 +74,7 @@ class AuthorityScreenTableTest {
 
         assertSame(first, AuthorityScreenTable.currentEdition(league));
         assertEquals("1888-89", AuthorityScreenTable.seasonLabel(game));
-        assertEquals(List.of(preston, villa), AuthorityScreenTable.seasonClubs(game));
+        assertEquals(List.of(preston, villa), AuthorityScreenTable.seasonClubs(game, DATA_SEASONS));
 
         // the rollover: 1888-89 keeps its final table, the new season starts
         first.getFinalStandings().add(LeagueStandingRow.of(1, preston));
@@ -79,7 +82,7 @@ class AuthorityScreenTableTest {
 
         assertSame(next, AuthorityScreenTable.currentEdition(league));
         assertEquals("1889-90", AuthorityScreenTable.seasonLabel(game));
-        assertEquals(List.of(villa), AuthorityScreenTable.seasonClubs(game), "the new season's clubs");
+        assertEquals(List.of(villa), AuthorityScreenTable.seasonClubs(game, DATA_SEASONS), "the new season's clubs");
     }
 
     @Test
@@ -106,6 +109,6 @@ class AuthorityScreenTableTest {
         League league = new League();
         league.setLeagueClubs(new ArrayList<>(List.of(stoke)));
         league.getEditions().add(edition("1888-89 Football League", LocalDateTime.of(1888, 9, 8, 15, 0)));
-        assertEquals(List.of(stoke), AuthorityScreenTable.seasonClubs(game(LocalDateTime.of(1888, 9, 1, 0, 0), league, stoke)));
+        assertEquals(List.of(stoke), AuthorityScreenTable.seasonClubs(game(LocalDateTime.of(1888, 9, 1, 0, 0), league, stoke), DATA_SEASONS));
     }
 }

@@ -22,7 +22,6 @@ import com.rndmodgames.futtoboru.data.Continent;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.system.Log;
@@ -88,7 +87,7 @@ public class NewGameSetupScreen implements Screen {
         /**
          * Show only the Continents with Active Countries
          */
-        for (Continent continent : DatabaseLoader.getInstance().getContinents()) {
+        for (Continent continent : ((Futtoboru) game).getSession().database().getContinents()) {
 
             
             // An active Continent will have Countries with active Clubs
@@ -98,10 +97,10 @@ public class NewGameSetupScreen implements Screen {
             /**
              * Show only the Countries with Active Clubs
              */
-            for (final Country country : DatabaseLoader.getInstance().getCountriesByContinent(continent)) {
+            for (final Country country : ((Futtoboru) game).getSession().database().getCountriesByContinent(continent)) {
                 
                 //
-                if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
+                if (((Futtoboru) game).getSession().database().getClubsByCountry(country).isEmpty()) {
                     
                     
                 } else {
@@ -109,7 +108,7 @@ public class NewGameSetupScreen implements Screen {
                     // ADD COMPONENTS
                     Log.info(Log.UI_MENU, "Continent Details: " + continent.getName());
                     Log.info(Log.UI_MENU, "Country Details: " + country.getCommonName());
-                    Log.info(Log.UI_MENU, "Adding " + DatabaseLoader.getInstance().getClubsByCountry(country).size() + " Country Clubs!");
+                    Log.info(Log.UI_MENU, "Adding " + ((Futtoboru) game).getSession().database().getClubsByCountry(country).size() + " Country Clubs!");
                  
                     // Set Continent as active
                     activeContinent = true;
@@ -126,9 +125,9 @@ public class NewGameSetupScreen implements Screen {
             /**
              * Add the Active Countries to Pick
              */
-            for (final Country country : DatabaseLoader.getInstance().getCountriesByContinent(continent)) {
+            for (final Country country : ((Futtoboru) game).getSession().database().getCountriesByContinent(continent)) {
                 
-                if (DatabaseLoader.getInstance().getClubsByCountry(country).isEmpty()) {
+                if (((Futtoboru) game).getSession().database().getClubsByCountry(country).isEmpty()) {
                     
                     
                 } else {

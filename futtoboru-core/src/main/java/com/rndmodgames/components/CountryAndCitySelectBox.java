@@ -15,7 +15,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.City;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.State;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.LanguageModLoader;
 
 public class CountryAndCitySelectBox extends VisTable {
@@ -28,7 +27,7 @@ public class CountryAndCitySelectBox extends VisTable {
      * Creates a Country and City Selector based on SelectBox and Automatic
      *  Loading of Countries and Cities
      */
-    public CountryAndCitySelectBox(){
+    public CountryAndCitySelectBox(List<Country> countries){
 
         // This enables the automatic component spacing
         super(true);
@@ -45,7 +44,7 @@ public class CountryAndCitySelectBox extends VisTable {
          * 
          *  - The City SelectBox will be automatically filled with the right Cities for each Country
          */
-        List<Country> availableCountries = new ArrayList<>(DatabaseLoader.getInstance().getCountries());
+        List<Country> availableCountries = new ArrayList<>(countries);
 
         /**
          * Load Countries Select Box

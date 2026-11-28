@@ -326,13 +326,13 @@ public final class ScreenshotTour extends Futtoboru {
         waitFrames(SETTLE_FRAMES);
         once(null, () -> {
             expect(!UiDialogs.isOpen(), "Esc did not close the unsaved-progress question");
-            expect(getScreenNavigation().current() == GameScreenId.PLAYER_DETAIL,
-                    "Esc on a dialog also went Back (screen " + getScreenNavigation().current() + ")");
+            expect(getSession().navigation().current() == GameScreenId.PLAYER_DETAIL,
+                    "Esc on a dialog also went Back (screen " + getSession().navigation().current() + ")");
             pressEscape(); // no dialog now: Esc is Back again, to the squad
         });
         waitFrames(5);
         once(null, () -> {
-            expect(getScreenNavigation().current() == GameScreenId.MAIN_SQUAD,
+            expect(getSession().navigation().current() == GameScreenId.MAIN_SQUAD,
                     "Esc without a dialog did not go Back to the squad");
             menu().openMenuEntry(GameScreenId.HOME);
             runOption(2);
@@ -384,13 +384,13 @@ public final class ScreenshotTour extends Futtoboru {
         if (welcome != null) {
             getGameEngine().getMessageManager().deliverMessage(welcome);
         }
-        getScreenNavigation().reset();
+        getSession().navigation().reset();
         changeScreen(GAME_SCREEN);
     }
 
     /** a new game screen after days were played outside it (the date widget only updates through Continue) */
     private void refreshGameScreen() {
-        getScreenNavigation().reset();
+        getSession().navigation().reset();
         changeScreen(GAME_SCREEN);
     }
 
