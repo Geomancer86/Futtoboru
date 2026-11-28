@@ -6,9 +6,9 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| E-21f in-game match screen: player's match in the ECS viewer + H2 newspaper ticker from events | WORKSTATION | `ws/E-21f-match-screen` | 2026-11-28 |
+| E-20c ECS goals distribution shape (mode 2-1, histogram ≤ 0.08, 4.45 goals/game) | WORKSTATION | `ws/E-20c-goal-shape` | 2026-11-28 |
 | RF-01 global state refactor (DatabaseLoader singleton, MainMenuManager statics, GameSession), no behaviour change (D34 step 3) | BOOK3PRO | `b3/RF-01-global-state` | 2026-11-28 |
-| E-20b per-club strength factor from the real 1888-89 table (D19-1) → close score-spread gap | WORKSTATION | `ws/E-20b-strength` | 2026-11-28 |
-| E-19a matchday matches on a thread pool (ECS), season wall time down | WORKSTATION | `ws/E-19a-matchday-pool` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 | G-10 history and fan tiers on screen (club facts, prose en+es, fan-tier meter) | BOOK3PRO (parked) | `b3/G-10-history-ui` | 2026-11-28 |
 | G-13 AI-to-AI friendlies and away guarantees | BOOK3PRO (parked) | `b3/G-13-ai-friendlies` | 2026-11-28 |

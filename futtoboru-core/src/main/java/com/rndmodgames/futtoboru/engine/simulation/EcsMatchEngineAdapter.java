@@ -142,11 +142,12 @@ public final class EcsMatchEngineAdapter implements MatchEngine {
             InjuryRules rules = fixture.injuryRules() != null ? fixture.injuryRules() : InjuryRules.DEFAULTS;
             List<AthleteInputs> inputs = new ArrayList<>(TeamShape.SLOTS);
             List<Long> ids = new ArrayList<>(TeamShape.SLOTS);
+            double shift = com.rndmodgames.futtoboru.history.ClubStrength.ratingShift(club.getDataId());
             for (int s = 0; s < TeamShape.SLOTS; s++) {
                 Position pos = shape.slot(s).position();
                 Long playerId = gameSheet.getPlayerId(s);
                 Player p = playerId != null ? squad.get(playerId) : null;
-                AthleteInputs in = p == null ? standIn(pos) : inputs(p, pos, fixture);
+                AthleteInputs in = p == null ? standIn(pos) : shifted(inputs(p, pos, fixture), shift);
                 if (p != null && p.getPerson() != null) {
                     in = weakened(in, hurtShare(injuryOf(injuries, p.getPerson().getId()), rules));
                 }
@@ -205,6 +206,21 @@ public final class EcsMatchEngineAdapter implements MatchEngine {
                 toward(a.dexterity(), k), toward(a.stamina(), k), toward(a.endurance(), k), toward(a.strength(), k),
                 a.age(), a.condition(), a.shinPads(), a.kicking(), a.technique(), a.heading(), a.handling(),
                 a.dribbling());
+    }
+
+    /** D19-1: every rating moved by the club's strength shift (clamped to 3..23); age and condition kept. */
+    static AthleteInputs shifted(AthleteInputs a, double shift) {
+        if (shift == 0) {
+            return a;
+        }
+        return new AthleteInputs(a.position(), sh(a.speed(), shift), sh(a.acceleration(), shift),
+                sh(a.dexterity(), shift), sh(a.stamina(), shift), sh(a.endurance(), shift), sh(a.strength(), shift),
+                a.age(), a.condition(), a.shinPads(), sh(a.kicking(), shift), sh(a.technique(), shift),
+                sh(a.heading(), shift), sh(a.handling(), shift), sh(a.dribbling(), shift));
+    }
+
+    private static double sh(double r, double shift) {
+        return Math.max(STAND_IN_RATING, Math.min(23, r + shift));
     }
 
     private static double toward(double rating, double keep) {
