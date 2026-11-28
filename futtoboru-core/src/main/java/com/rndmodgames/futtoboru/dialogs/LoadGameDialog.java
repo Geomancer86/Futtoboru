@@ -15,6 +15,7 @@ import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.menu.UnsavedProgress;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.futtoboru.system.save.LoadResult;
+import com.rndmodgames.futtoboru.system.save.SaveSlots;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
@@ -90,11 +91,16 @@ public class LoadGameDialog extends VisDialog {
         for (final SaveSummary save : SaveLoadSystem.listSaves()) {
 
             table.row().grow();
-            table.add(new VisLabel(save.getName())).pad(UiTheme.space("xs"));
+            // the autosave row is marked: its localized label in the heading colour (U-06)
+            VisLabel name = save.isAutosave()
+                    ? new VisLabel(save.getName(), UiTheme.color("text.heading"))
+                    : new VisLabel(save.getName());
+            table.add(name).pad(UiTheme.space("xs"));
             table.add(new VisLabel(save.isLoadable() ? describe(save) : reason(save.getStatus()))).pad(UiTheme.space("xs"));
 
             if (!save.isLoadable()) {
                 table.add().pad(UiTheme.space("xs"));
+                table.add(deleteButton(save)).pad(UiTheme.space("xs"));
                 continue;
             }
 
@@ -111,8 +117,9 @@ public class LoadGameDialog extends VisDialog {
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
                     /**
-                     * Load Saved Game From File
+                     * Load Saved Game From File (after the running autosave, if any, is on disk)
                      */
+                    ((Futtoboru) game).awaitAutosave();
                     LoadResult result = SaveLoadSystem.loadGame(save.getFile());
 
                     if (!result.isLoaded()) {
@@ -135,7 +142,50 @@ public class LoadGameDialog extends VisDialog {
             });
 
             table.add(loadGame).pad(UiTheme.space("xs"));
+            table.add(deleteButton(save)).pad(UiTheme.space("xs"));
         }
+    }
+
+    /**
+     * Delete button of a row (U-06): asks first (the question replaces this dialog, one modal at a time), deletes
+     * on Delete, then this dialog opens again with the list read anew. Cancel just brings the list back.
+     */
+    private VisTextButton deleteButton(final SaveSummary save) {
+
+        final VisTextButton delete = new VisTextButton(LanguageModLoader.getValue("delete"));
+
+        delete.addCaptureListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                final Stage stage = getStage();
+                if (stage == null) {
+                    return;
+                }
+                ((Futtoboru) game).awaitAutosave(); // the autosave row's file is not deleted mid-write
+                UiDialogs.confirm(stage,
+                        LanguageModLoader.getValue("delete_save"),
+                        LanguageModLoader.getValue("delete_save_text") + "\n\n" + save.getName(),
+                        new String[] { LanguageModLoader.getValue("delete"), LanguageModLoader.getValue("cancel") },
+                        new Boolean[] { Boolean.TRUE, Boolean.FALSE },
+                        confirmed -> {
+                            if (Boolean.TRUE.equals(confirmed) && !SaveSlots.delete(save)) {
+                                UiDialogs.info(stage, LanguageModLoader.getValue("delete_save"),
+                                        LanguageModLoader.getValue("delete_failed"));
+                                return;
+                            }
+                            show(stage);
+                        });
+            }
+        });
+
+        return delete;
     }
 
     /** @return "manager, club, in-game date" of a save */

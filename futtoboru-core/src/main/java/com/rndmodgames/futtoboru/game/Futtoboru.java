@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.engine.jobs.ClubStaffManager;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.system.save.SaveSlots;
 import com.rndmodgames.futtoboru.screens.MainGameScreen;
 import com.rndmodgames.futtoboru.screens.MatchEngineDebugScreen;
 import com.rndmodgames.futtoboru.screens.MenuScreen;
@@ -251,6 +252,7 @@ public class Futtoboru extends Game {
      */
     public void prepareNewGame() {
         Log.info(Log.SYSTEM_INIT, "Futtoboru", "New game: rebuilding the database from game data");
+        awaitAutosave();
         this.currentGame = null;
         DatabaseLoader.setRandom(random.fork("database"));
         DatabaseLoader.rebuild();
@@ -274,6 +276,7 @@ public class Futtoboru extends Game {
 //            break;
             
         case MENU_SCREEN:
+            awaitAutosave(); // Quit to menu: the running autosave of the game left is finished first (U-06)
             this.setScreen(new MenuScreen(this));
             break;
             
@@ -423,13 +426,25 @@ public class Futtoboru extends Game {
      */
     @Override
     public void dispose () {
-     
+
+        // window close and Quit to desktop (Gdx.app.exit) both end here: never exit mid-autosave (U-06)
+        awaitAutosave();
         groundArt.dispose();
         VisUI.dispose();
     }
 
     /**
-     * 
+     * Waits (at most {@link SaveSlots#QUIT_WAIT_MILLIS}) for an autosave that is still being written (U-06): called
+     * before quitting to the menu or the desktop, closing the window and starting a new game.
+     *
+     * @return false when the write was still running after the wait
+     */
+    public boolean awaitAutosave() {
+        return gameEngine == null || SaveSlots.awaitAutosave(gameEngine.getAutosave(), SaveSlots.QUIT_WAIT_MILLIS);
+    }
+
+    /**
+     *
      */
     public SaveGame getCurrentGame() {
         return currentGame;

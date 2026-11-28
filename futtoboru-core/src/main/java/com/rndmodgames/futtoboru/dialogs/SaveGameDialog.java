@@ -14,6 +14,7 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 import com.rndmodgames.futtoboru.menu.UnsavedProgress;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
+import com.rndmodgames.futtoboru.system.save.SaveSlots;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
@@ -35,6 +36,10 @@ public class SaveGameDialog extends VisDialog {
     private final VisTable savesTable = new VisTable();
     private final VisTextButton saveGameButton = new VisTextButton(LanguageModLoader.getValue("save_game"));
 
+    /** Why the typed name was refused (an empty name, U-06); empty otherwise. */
+    private final VisLabel problemLabel = new VisLabel("", UiTheme.color("state.negative"));
+    private final VisTextButton continueGameButton;
+
     /** Run once after the next successful save (U-04d "save first, then quit"); cleared on every show. */
     private Runnable onSaved;
 
@@ -43,6 +48,7 @@ public class SaveGameDialog extends VisDialog {
         super(LanguageModLoader.getValue("save_game"));
 
         this.saveGame = saveGame;
+        this.continueGameButton = continueGameButton;
 
         final VisTextButton cancelButton = new VisTextButton(LanguageModLoader.getValue("cancel"));
 
@@ -58,30 +64,8 @@ public class SaveGameDialog extends VisDialog {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
-                if (saveGame == null) {
-                    return;
-                }
-                try {
-                    SaveLoadSystem.saveGame(saveGame, nameField.getText());
-                    UnsavedProgress.markSaved(saveGame);
-
-                    // Enable the Continue Game Button
-                    continueGameButton.setDisabled(false);
-
-                    hide();
-
-                    Runnable next = onSaved;
-                    onSaved = null;
-                    if (next != null) {
-                        next.run();
-                    }
-                } catch (IOException | RuntimeException e) {
-                    Log.error(Log.SYSTEM_INIT, "SaveGameDialog",
-                            "save failed: " + e);
-                    if (getStage() != null) {
-                        UiDialogs.info(getStage(), LanguageModLoader.getValue("save_game"),
-                                LanguageModLoader.getValue("save_failed"));
-                    }
+                if (saveGame != null) {
+                    attemptSave();
                 }
             }
         });
@@ -111,6 +95,8 @@ public class SaveGameDialog extends VisDialog {
 
         this.add(nameRow).colspan(2).growX();
         this.row();
+        this.add(problemLabel).colspan(2).pad(UiTheme.space("xs"));
+        this.row();
         this.add(scrollPane).colspan(2).grow();
         this.row();
         this.add(cancelButton);
@@ -133,7 +119,77 @@ public class SaveGameDialog extends VisDialog {
         return super.show(stage);
     }
 
+    /**
+     * The Save button (U-06): an empty name is refused with a message; an existing save's name asks "Overwrite?"
+     * first (the question replaces this dialog; Cancel brings it back with the typed name); a new name is written.
+     */
+    private void attemptSave() {
+        final Stage stage = getStage();
+        final String name = nameField.getText();
+        final Runnable after = onSaved;
+
+        switch (SaveSlots.check(name)) {
+        case EMPTY:
+            problemLabel.setText(LanguageModLoader.getValue("save_name_empty"));
+            return;
+        case OVERWRITE:
+            UiDialogs.confirm(stage,
+                    LanguageModLoader.getValue("overwrite_save"),
+                    LanguageModLoader.getValue("overwrite_save_text") + "\n\n" + name.trim(),
+                    new String[] { LanguageModLoader.getValue("overwrite"), LanguageModLoader.getValue("cancel") },
+                    new Boolean[] { Boolean.TRUE, Boolean.FALSE },
+                    confirmed -> {
+                        if (Boolean.TRUE.equals(confirmed)) {
+                            write(stage, name, after);
+                        } else {
+                            reopen(stage, name, after);
+                        }
+                    });
+            return;
+        default:
+            write(stage, name, after);
+        }
+    }
+
+    /** Writes the save; on success closes the dialog and runs {@code after}, on failure tells the player. */
+    private void write(Stage stage, String name, Runnable after) {
+        try {
+            SaveLoadSystem.saveGame(saveGame, name);
+            UnsavedProgress.markSaved(saveGame);
+
+            // Enable the Continue Game Button
+            if (continueGameButton != null) {
+                continueGameButton.setDisabled(false);
+            }
+
+            onSaved = null;
+            if (hasParent()) {
+                hide();
+            }
+            if (after != null) {
+                after.run();
+            }
+        } catch (IOException | RuntimeException e) {
+            Log.error(Log.SYSTEM_INIT, "SaveGameDialog", "save failed: " + name, e);
+            if (stage != null) {
+                UiDialogs.info(stage, LanguageModLoader.getValue("save_game"),
+                        LanguageModLoader.getValue("save_failed"));
+            }
+        }
+    }
+
+    /** Shows the dialog again after a cancelled overwrite, with the name the player typed. */
+    private void reopen(Stage stage, String name, Runnable after) {
+        if (stage == null) {
+            return;
+        }
+        showThen(stage, after);
+        nameField.setText(name);
+        updateSaveButton();
+    }
+
     private void refresh() {
+        problemLabel.setText("");
         nameField.setText(saveGame != null && saveGame.getSaveName() != null ? saveGame.getSaveName() : defaultName());
 
         savesTable.clearChildren();
@@ -164,7 +220,11 @@ public class SaveGameDialog extends VisDialog {
 
     /** "Save Game" for a new slot, "Overwrite" when that slot's file exists. */
     private void updateSaveButton() {
-        boolean exists = SaveLoadSystem.saveFileFor(nameField.getText()).exists();
+        SaveSlots.NameCheck check = SaveSlots.check(nameField.getText());
+        if (check != SaveSlots.NameCheck.EMPTY) {
+            problemLabel.setText("");
+        }
+        boolean exists = check == SaveSlots.NameCheck.OVERWRITE;
         saveGameButton.setText(LanguageModLoader.getValue(exists ? "overwrite" : "save_game"));
     }
 
