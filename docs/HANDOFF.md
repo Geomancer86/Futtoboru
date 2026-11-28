@@ -12,6 +12,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | V-01 visual check 100%/200% (fix clipping) → U-05 interface guide with screenshots | BOOK3PRO | `b3/V-01-visual-check` | 2026-11-28 |
 | P2-12 gate income: only the home club sells tickets | BOOK3PRO | `b3/P2-12-gate-home-only` | 2026-11-28 |
 | T-01 test tiers + path-aware gates (D27) | BOOK3PRO | `b3/T-01-test-tiers` | 2026-11-28 |
+| R-01 research + design: player recruitment, trials, hidden ratings, scouting (docs only) | BOOK3PRO | `b3/R-01-recruitment-design` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -26,6 +27,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Unclaimed:** nothing for v0.5; Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md` (WORKSTATION).
 
 ## Log
+- 2026-11-28 · BOOK3PRO · CLAIM · R-01 · Research + design (docs only): how clubs found, tried and signed players 1888-1900; hidden ratings per observer; trials as ECS scenes (interface contract for WORKSTATION, no `match/ecs/**` edits). New `docs/design/RECRUITMENT_AND_TRIALS.md`, `docs/data/history/RECRUITMENT_1888-1900.md`, URLs into SOURCES.md.
 - 2026-11-28 · WORKSTATION · DONE · E-13 · `match/ecs/body`: Body/Athlete/Kit/Injury components + `MoveCommand`, `AthleteInputs` (3..23 ratings, uses `data.Position`), shapes 2-3-5/2-2-6/1-2-7, 1888 kick-off spawn, `LocomotionSystem` (accel/brake/turn limits, grip = surface × sole, stamina, wet boots heavier), `ContactSystem` (swept pairs, charges, knock-downs, injuries on a forked stream, keeper charge fair in 1888, `ContactRecord`s for laws/events); `BodyPose` for viewer interpolation. 10 µs/tick for 22 bodies, 0 alloc. Goldens re-pinned (ENGINE_VERSION ecs-0.2) + `BodyWorldTest.GOLDEN_SCRIMMAGE`. Jenkins #99 green (325 core + 1 desktop). Note: on this JDK `StrictMath.sin/cos` allocate; sim code avoids them per tick.
 - 2026-11-28 · BOOK3PRO · DONE · H-04 · Merged 645402c (develop d9ca2ff). Placeholder squad positions 384 -> 208 of 548: League clubs 142 -> 4 (Villa Bob Thomas, Blackburn Duerden, Burnley Midgley + Duckworth not found), FA Cup clubs 242 -> 204 (most cup rosters are the copied/invented ones in REVIEW_1888-89.md: nothing to look up until rebuilt). Sources: clubs' 1888-89 Wikipedia season articles, players' own articles, 1889 FA Cup final line-up; new codes `wp-season-1888-89(-line)`, `wp-player(-line)`, `fa-cup-final-1889` in validate.py + GameData. Every squad still fields a 2-3-5. Per-club counts, URLs, and 4 disagreements with already-sourced entries: `docs/data/history/POSITIONS_1888-89.md`.
 - 2026-11-28 · BOOK3PRO · CLAIM · T-01 · Test tiers (fast default / slow / smoke JUnit tags), `-Pfull`/`-Psmoke` profiles, `tools/dev/check.{sh,ps1}`, tiered CI + Jenkins `TEST_TIER`. Recorded as **D27** (D26 is already the art direction). Slow test classes get `@Tag("slow")` annotations: other lanes expect trivial conflicts on annotation/import lines.
