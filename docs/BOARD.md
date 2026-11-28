@@ -6,15 +6,16 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| E-DET cross-JDK determinism: own Gaussian in RandomSource, re-pin goldens once, guard | WORKSTATION | `ws/E-DET-gaussian` | 2026-11-28 |
 | H-06 era events data (`era/baseline.json` + `events.json` per ERA_EVENTS_PROPOSAL, D30) | WORKSTATION | `ws/H-06-era-events` | 2026-11-28 |
 | E-17a ECS engine behind `-Dfuttoboru.match.engine=instant|ecs` (default instant) + MatchEngine contract test + ECS season soak entry | WORKSTATION | `ws/E-17a-engine-flag` | 2026-11-28 |
-| INF-01 Jenkins: concurrent + branch builds, full+smoke per develop commit, nightly soak (G3), `green/develop` + `playable-latest`, executors 4 day / 8 night | WORKSTATION | `ws/INF-01-jenkins` | 2026-11-28 |
 | E-12b/E-16b realism: ball bounces off posts/bar, forwards run onto passes (offsides happen), foul rate check | WORKSTATION | `ws/E-16b-realism` | 2026-11-28 |
 | H-05 history data into gamedata per HISTORY_DATA_PROPOSAL (D30): history texts, nicknames, fan tiers, kits | WORKSTATION | `ws/H-05-history-data` | 2026-11-28 |
 | U-12 UI polish: Esc closes dialogs, dates/decimals/months from the game language, Authorities season, one link colour, inbox filter, debug button behind a dev flag | BOOK3PRO | `b3/U-12-ui-polish` | 2026-11-28 |
 | P2-14 neutral venues on `Match` + season calendar as data (FA Cup opens/drawn in its real month) | BOOK3PRO | `b3/P2-14-venues-calendar` | 2026-11-28 |
 | G-01 team sheet (XI, shape, style, captain; AI too) on the instant result **(PARKED: WIP pushed, next to finish)** | BOOK3PRO | `b3/G-01-team-sheet` | 2026-11-28 |
 | G-04 contracts through the season (AI clubs too) **(PARKED: WIP pushed, after G-01)** | BOOK3PRO | `b3/G-04-contracts` | 2026-11-28 |
+| G-02 injuries and availability (days out, `Availability` API, recovery; AI too) on the instant result | BOOK3PRO | `b3/G-02-injuries` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
@@ -29,7 +30,6 @@ Model tier per D33: Sonnet for docs/data/research/art tools/merges, Opus for cor
 ## Unblocked, unclaimed
 | Item | Suggested owner | Tier | Notes |
 |---|---|---|---|
-| G-02 injuries and availability | BOOK3PRO (gameplay lead) | Opus | needs G-01 team sheet merged for the XI effect; data part can start |
 | G-05 committee and the secretary's job (sacking, job seeker) | BOOK3PRO | Opus | J-01 job system is merged |
 | R-03..R-07 recruitment without trials | BOOK3PRO | Opus | after R-02 data merges (D28 answered) |
 | G-09 training, G-11 era events in the inbox, G-12 budget and debt | WORKSTATION (D33-7) | Sonnet/Opus | G-11 has data proposal `docs/design/ERA_EVENTS_PROPOSAL.md` |

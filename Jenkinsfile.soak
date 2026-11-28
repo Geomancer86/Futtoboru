@@ -1,0 +1,79 @@
+// Futtoboru nightly soak (D33 / INF-01) on the local Jenkins: job "Futtoboru Soak", Pipeline script from SCM,
+// script path "Jenkinsfile.soak", branch develop. SoakTests (futtoboru-core, tag "soak", profile -Psoak) plays SOAK_SEEDS
+// seeded games for SOAK_SEASONS seasons each and checks the invariants at every rollover; one dynamic test per seed.
+// Red: the build description and target/soak-report.txt (archived) name the first failing seed.
+pipeline {
+
+    agent {
+        label 'EXECUTOR_BACKUP'
+    }
+
+    parameters {
+        string(name: 'BUILD_BRANCH', defaultValue: 'develop', description: 'Branch to soak')
+        string(name: 'SOAK_SEEDS', defaultValue: '16', description: 'Number of seeds')
+        string(name: 'SOAK_SEASONS', defaultValue: '3', description: 'Seasons played per seed')
+        string(name: 'SOAK_FIRST_SEED', defaultValue: '1', description: 'First seed (seeds are consecutive)')
+    }
+
+    tools {
+        jdk 'OpenJDK 17'
+    }
+
+    triggers {
+        cron('H 1 * * *')
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '10'))
+        timeout(time: 90, unit: 'MINUTES')
+        timestamps()
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "*/${params.BUILD_BRANCH}"]],
+                    extensions: [[$class: 'CleanBeforeCheckout']],
+                    userRemoteConfigs: [[
+                        credentialsId: 'GITHUB_GEOMANCER86',
+                        url: 'https://github.com/Geomancer86/Futtoboru.git'
+                    ]]
+                ])
+                script {
+                    env.GIT_COMMIT_SHORT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                    currentBuild.displayName = "#${env.BUILD_NUMBER} soak ${params.BUILD_BRANCH} @ ${env.GIT_COMMIT_SHORT}"
+                }
+            }
+        }
+
+        stage('Soak') {
+            steps {
+                // the soak needs the core module and its test classes only; the desktop module is not built
+                sh '''
+                    chmod +x mvnw
+                    ARGS="-B -ntp test -Psoak -pl futtoboru-core -am -Dsoak.seeds=$SOAK_SEEDS -Dsoak.seasons=$SOAK_SEASONS -Dsoak.firstSeed=$SOAK_FIRST_SEED"
+                    if command -v xvfb-run >/dev/null 2>&1; then
+                        xvfb-run -a ./mvnw $ARGS
+                    else
+                        ./mvnw $ARGS
+                    fi
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            junit testResults: '**/target/surefire-reports/TEST-*.xml', allowEmptyResults: true
+            archiveArtifacts artifacts: 'futtoboru-core/target/soak-report.txt', allowEmptyArchive: true
+            script {
+                if (fileExists('futtoboru-core/target/soak-report.txt')) {
+                    currentBuild.description = readFile('futtoboru-core/target/soak-report.txt').readLines()[0]
+                }
+            }
+        }
+    }
+}

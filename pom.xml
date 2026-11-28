@@ -4,7 +4,7 @@
     
     <groupId>com.rndmodgames</groupId>
     <artifactId>futtoboru</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -34,7 +34,7 @@
             <!-- ./mvnw -B verify -Pfull: fast + slow (before merging into develop; CI on develop/main and PRs) -->
             <id>full</id>
             <properties>
-                <test.excludedGroups>smoke</test.excludedGroups>
+                <test.excludedGroups>smoke,soak</test.excludedGroups>
             </properties>
         </profile>
         <profile>
@@ -42,6 +42,14 @@
             <id>slow</id>
             <properties>
                 <groups>slow,season</groups>
+                <test.excludedGroups>smoke,soak</test.excludedGroups>
+            </properties>
+        </profile>
+        <profile>
+            <!-- -Psoak: the nightly soak (D33, INF-01): SoakTests, seeded multi-season games with invariants (Jenkins "Futtoboru Soak") -->
+            <id>soak</id>
+            <properties>
+                <groups>soak</groups>
                 <test.excludedGroups>smoke</test.excludedGroups>
             </properties>
         </profile>
@@ -91,7 +99,7 @@
    		<maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
 
    		<!-- T-01 test tiers (D27): JUnit tags left out of the default (fast) run; -Pfull keeps only smoke out -->
-   		<test.excludedGroups>slow,season,smoke</test.excludedGroups>
+   		<test.excludedGroups>slow,season,smoke,soak</test.excludedGroups>
    		
    		<!-- Java Source Version -->
    		<java.source.version>17</java.source.version>
