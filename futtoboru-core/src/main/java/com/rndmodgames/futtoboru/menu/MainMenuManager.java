@@ -77,6 +77,7 @@ public class MainMenuManager {
     public static final int MAIN_SQUAD_SCREEN   = 1000;
     public static final int SCHEDULE_SCREEN     = 2000;
     public static final int CLUB_INFO_SCREEN    = 3000;
+    public static final int CANDIDATES_SCREEN   = 3002;   // R-03 (G-05 has 3001)
     public static final int FINANCES_SCREEN     = 4000;
     public static final int COMMITTEE_SCREEN    = 3001;   // G-05
     public static final int COMPETITIONS_SCREEN = 5000;
@@ -166,6 +167,9 @@ public class MainMenuManager {
     // G-04 retained list
     private com.rndmodgames.futtoboru.tables.contracts.RetainedListScreenTable retainedListScreenTable = null;
 
+    // R-03 candidate pools
+    private com.rndmodgames.futtoboru.tables.recruitment.CandidatesScreenTable candidatesScreenTable = null;
+
     // Selected club for detail view and job application
     private Club selectedClubForDetail = null;
     private Club selectedClubForJobApplication = null;
@@ -236,6 +240,9 @@ public class MainMenuManager {
         // G-04 retained list
         retainedListScreenTable = new com.rndmodgames.futtoboru.tables.contracts.RetainedListScreenTable(game);
         retainedListScreenTable.setMenuManager(this);
+
+        // R-03 candidate pools
+        candidatesScreenTable = new com.rndmodgames.futtoboru.tables.recruitment.CandidatesScreenTable(game);
 
         // Set menu manager references
         clubBrowserScreenTable.setMenuManager(this);
@@ -615,6 +622,17 @@ public class MainMenuManager {
             parentTable.add(retainedListScreenTable).grow();
             break;
 
+        case CANDIDATES_SCREEN:
+            // R-03: the candidate pools of the club's region (read-only until R-05/R-07)
+            if (currentClub == null) {
+                redirectTo(HOME_SCREEN);
+                return;
+            }
+            candidatesScreenTable.setCurrentClub(currentClub);
+            candidatesScreenTable.updateDynamicComponents();
+            parentTable.add(candidatesScreenTable).grow();
+            break;
+
         case SCHEDULE_SCREEN:
 
             /**
@@ -961,6 +979,10 @@ public class MainMenuManager {
 
         case RETAINED_LIST_SCREEN:
             retainedListScreenTable.updateDynamicComponents();
+            break;
+
+        case CANDIDATES_SCREEN:
+            candidatesScreenTable.updateDynamicComponents();
             break;
         
         case AUTHORITY_SCREEN:

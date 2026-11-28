@@ -200,6 +200,34 @@ public class ClubInfoScreenTable extends VisTable {
             details.add(new VisLabel(Money.format(club.getClubBalance()))).left().expandX();
             details.row();
         }
+
+        // R-09: the club's secretary (the player) and trainer
+        details.addSeparator().colspan(2).padTop(UiTheme.space("sm")).padBottom(UiTheme.space("xs"));
+        details.row();
+        VisLabel staffHeader = new VisLabel(LanguageModLoader.getValue("club_staff"));
+        staffHeader.setFontScale(UiTheme.fontScale("subheading"));
+        details.add(staffHeader).colspan(2).left().padTop(UiTheme.space("sm"));
+        details.row();
+        if (com.rndmodgames.futtoboru.engine.recruitment.StaffRoles.trainerOf(currentGame, club) == null
+                && currentGame.getGameDate() != null) {
+            // a new game before its first day: the posts it would get on that day
+            com.rndmodgames.futtoboru.engine.recruitment.StaffRoles.ensure(currentGame, currentGame.getGameDate(),
+                    game.random());
+        }
+        com.rndmodgames.futtoboru.data.Person secretary =
+                com.rndmodgames.futtoboru.engine.recruitment.StaffRoles.secretaryOf(currentGame, club);
+        String secretaryName = secretary == null ? LanguageModLoader.getValue("club_post_vacant")
+                : secretary == currentGame.getOwner()
+                        ? LanguageModLoader.format("club_secretary_you", fullName(secretary)) : fullName(secretary);
+        details.add(new VisLabel(LanguageModLoader.getValue("club_secretary"))).left();
+        details.add(new VisLabel(secretaryName)).left().expandX();
+        details.row();
+        com.rndmodgames.futtoboru.data.Person trainer =
+                com.rndmodgames.futtoboru.engine.recruitment.StaffRoles.trainerOf(currentGame, club);
+        details.add(new VisLabel(LanguageModLoader.getValue("club_trainer"))).left();
+        details.add(new VisLabel(trainer == null ? LanguageModLoader.getValue("club_post_vacant") : fullName(trainer)))
+                .left().expandX();
+        details.row();
         this.add(details).top().left().expandX().fillX();
         // G-10: the ground picture with the club's History panel under it
         VisTable side = new VisTable(true);
@@ -212,5 +240,9 @@ public class ClubInfoScreenTable extends VisTable {
         }
         this.add(side).top().right().pad(UiTheme.space("sm"));
 
+    }
+
+    private static String fullName(com.rndmodgames.futtoboru.data.Person p) {
+        return ((p.getName() != null ? p.getName() : "") + " " + (p.getLastname() != null ? p.getLastname() : "")).trim();
     }
 }

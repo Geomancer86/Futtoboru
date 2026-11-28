@@ -1,7 +1,9 @@
 package com.rndmodgames.futtoboru.tables.finances;
 
 import java.math.BigDecimal;
+import com.rndmodgames.futtoboru.engine.finances.BudgetManager;
 import com.rndmodgames.futtoboru.engine.finances.Money;
+import com.rndmodgames.futtoboru.finances.Budget;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -193,6 +195,7 @@ public class FinancesScreenTable extends VisTable {
         displayExpenseRow(LanguageModLoader.getValue("finances_administrative"), breakdown.administrativeExpenses);
         displayExpenseRow(LanguageModLoader.getValue("finances_stadium_rent"), breakdown.stadiumRent);
         displayExpenseRow(LanguageModLoader.getValue("finances_other"), breakdown.otherExpenses);
+        displayExpenseRow(LanguageModLoader.getValue("finances_interest"), breakdown.interest);
         displayExpenseRow(LanguageModLoader.getValue("finances_player_wages"), breakdown.playerWages, true); // Italic if zero (not implemented yet)
         
         // Total Expenditure
@@ -216,6 +219,10 @@ public class FinancesScreenTable extends VisTable {
         // G-04: what the engagements cost each week
         this.add().height(UiTheme.space("lg")).colspan(2).row();
         displayWageBill(club);
+
+        // G-12: the season's budget against what happened, and the debt
+        this.add().height(UiTheme.space("lg")).colspan(2).row();
+        displayBudget(club);
     }
     
     /**
@@ -230,6 +237,7 @@ public class FinancesScreenTable extends VisTable {
         BigDecimal administrativeExpenses = BigDecimal.ZERO;
         BigDecimal stadiumRent = BigDecimal.ZERO;
         BigDecimal otherExpenses = BigDecimal.ZERO;
+        BigDecimal interest = BigDecimal.ZERO;
         
         BigDecimal getTotal() {
             return playerWages.add(staffWages)
@@ -238,7 +246,8 @@ public class FinancesScreenTable extends VisTable {
                              .add(materialsEquipment)
                              .add(administrativeExpenses)
                              .add(stadiumRent)
-                             .add(otherExpenses);
+                             .add(otherExpenses)
+                             .add(interest);
         }
     }
     
@@ -268,6 +277,7 @@ public class FinancesScreenTable extends VisTable {
                 breakdown.administrativeExpenses = breakdown.administrativeExpenses.add(expense.getAdministrativeExpenses());
                 breakdown.stadiumRent = breakdown.stadiumRent.add(expense.getStadiumRent());
                 breakdown.otherExpenses = breakdown.otherExpenses.add(expense.getOtherExpenses());
+                breakdown.interest = breakdown.interest.add(expense.getInterestExpenses());
             }
         }
         
@@ -467,5 +477,94 @@ public class FinancesScreenTable extends VisTable {
         displayExpenseRow(LanguageModLoader.getValue("finances_wage_bill_summer"), ContractTerms.wageBill(club, true));
         this.add(new VisLabel(LanguageModLoader.format("finances_wage_bill_men", professionals, amateurs)))
                 .colspan(2).left().pad(UiTheme.space("xxs")).row();
+    }
+
+    private static final String[] DEBT_LEVEL = { null, "finances_debt_level1", "finances_debt_level2",
+            "finances_debt_level3" };
+
+    /** G-12: budget vs actual (whole season, to date, so far) and the club's debt */
+    private void displayBudget(Club club) {
+        Budget b = club.getBudget();
+        VisLabel title = new VisLabel(LanguageModLoader.getValue("finances_budget"));
+        title.setFontScale(UiTheme.fontScale("subheading"));
+        this.add(title).colspan(2).pad(UiTheme.space("sm")).row();
+        this.addSeparator().colspan(2).pad(UiTheme.space("xs")).row();
+        if (b == null || !b.isPlanned()) {
+            this.add(new VisLabel(LanguageModLoader.getValue("finances_budget_none"))).colspan(2).left()
+                    .pad(UiTheme.space("xxs")).row();
+            return;
+        }
+        this.add(new VisLabel(LanguageModLoader.format("finances_budget_season",
+                ContractCalendar.seasonName(b.getSeason())))).colspan(2).left().pad(UiTheme.space("xxs")).row();
+        budgetRow(LanguageModLoader.getValue("finances_category"),
+                LanguageModLoader.getValue("finances_budget_season_col"),
+                LanguageModLoader.getValue("finances_budget_to_date"),
+                LanguageModLoader.getValue("finances_budget_actual"), null);
+        this.addSeparator().colspan(2).pad(UiTheme.space("xxs")).row();
+        budgetRow(LanguageModLoader.getValue("finances_budget_gates"), Money.format(b.getExpectedGates()),
+                Money.format(b.gatesToDate()), Money.format(b.getActualGates()),
+                b.getActualGates().compareTo(b.gatesToDate()) >= 0);
+        budgetRow(LanguageModLoader.getValue("finances_player_wages"), Money.format(b.getExpectedWages()),
+                Money.format(b.wagesToDate()), Money.format(b.getActualWages()),
+                b.getActualWages().compareTo(b.wagesToDate()) <= 0);
+        budgetRow(LanguageModLoader.getValue("finances_budget_ground"), Money.format(b.getExpectedGround()),
+                Money.format(b.groundToDate()), Money.format(b.getActualGround()),
+                b.getActualGround().compareTo(b.groundToDate()) <= 0);
+        budgetRow(LanguageModLoader.getValue("finances_other"), Money.format(b.getExpectedOther()),
+                Money.format(b.otherToDate()), Money.format(b.getActualOther()),
+                b.getActualOther().compareTo(b.otherToDate()) <= 0);
+        budgetRow(LanguageModLoader.getValue("finances_interest"), Money.format(BigDecimal.ZERO),
+                Money.format(BigDecimal.ZERO), Money.format(b.getActualInterest()), b.getActualInterest().signum() == 0);
+        this.addSeparator().colspan(2).pad(UiTheme.space("xxs")).row();
+        budgetRow(LanguageModLoader.getValue("finances_total_expenditure"), Money.format(b.expectedSpend()),
+                Money.format(b.spendToDate()), Money.format(b.actualSpend()),
+                b.actualSpend().compareTo(b.spendToDate()) <= 0);
+
+        this.add().height(UiTheme.space("lg")).colspan(2).row();
+        VisLabel debtTitle = new VisLabel(LanguageModLoader.getValue("finances_debt"));
+        debtTitle.setFontScale(UiTheme.fontScale("subheading.minor"));
+        this.add(debtTitle).colspan(2).pad(UiTheme.space("xs")).row();
+        BigDecimal debt = BudgetManager.debt(club);
+        if (debt.signum() == 0) {
+            VisLabel none = new VisLabel(LanguageModLoader.getValue("finances_debt_none"));
+            none.setColor(UiTheme.color("state.positive"));
+            this.add(none).colspan(2).left().pad(UiTheme.space("xxs")).row();
+        } else {
+            VisLabel owed = new VisLabel(Money.format(debt));
+            owed.setColor(UiTheme.color("state.negative"));
+            VisTable owedRow = new VisTable(true);
+            owedRow.add(new VisLabel(LanguageModLoader.getValue("finances_debt_owed"))).width(UiTheme.size("col.wide"));
+            owedRow.add(owed).width(UiTheme.size("col.long"));
+            this.add(owedRow).colspan(2).pad(UiTheme.space("xxs")).row();
+            displayExpenseRow(LanguageModLoader.getValue("finances_debt_bank"), BudgetManager.bankDebt(club));
+            displayExpenseRow(LanguageModLoader.getValue("finances_debt_patrons"), BudgetManager.patronDebt(club));
+        }
+        displayExpenseRow(LanguageModLoader.getValue("finances_debt_facility"), b.getFacilityLimit());
+        displayExpenseRow(LanguageModLoader.getValue("finances_debt_interest"), b.getActualInterest());
+        int level = BudgetManager.debtLevel(club);
+        if (level > 0) {
+            VisLabel state = new VisLabel(LanguageModLoader.getValue(DEBT_LEVEL[level]));
+            state.setColor(UiTheme.color(level >= 3 ? "state.negative" : "text.secondary"));
+            this.add(state).colspan(2).left().pad(UiTheme.space("xxs")).row();
+        }
+        if (b.isCommitteeConcern()) {
+            VisLabel concern = new VisLabel(LanguageModLoader.getValue("finances_debt_concern"));
+            concern.setColor(UiTheme.color("state.negative"));
+            this.add(concern).colspan(2).left().pad(UiTheme.space("xxs")).row();
+        }
+    }
+
+    /** One line of the budget table; {@code good} colours the actual column (null: a heading line) */
+    private void budgetRow(String category, String season, String toDate, String actual, Boolean good) {
+        VisTable row = new VisTable(true);
+        row.add(new VisLabel(category)).width(UiTheme.size("col.wide"));
+        row.add(new VisLabel(season)).width(UiTheme.size("col.long"));
+        row.add(new VisLabel(toDate)).width(UiTheme.size("col.long"));
+        VisLabel actualLabel = new VisLabel(actual);
+        if (good != null) {
+            actualLabel.setColor(UiTheme.color(good ? "state.positive" : "state.negative"));
+        }
+        row.add(actualLabel).width(UiTheme.size("col.long"));
+        this.add(row).colspan(2).pad(UiTheme.space("xxs")).row();
     }
 }

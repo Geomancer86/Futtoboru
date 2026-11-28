@@ -89,4 +89,15 @@ public class CommitteeMember implements Serializable {
     public void setGenerosity(Double generosity) {
         this.generosity = generosity;
     }
+
+    /** R-09: how he judges a footballer (character and local knowledge), or null before the staff day gives it */
+    private StaffJudgement judgement;
+
+    public StaffJudgement getJudgement() {
+        return judgement;
+    }
+
+    public void setJudgement(StaffJudgement judgement) {
+        this.judgement = judgement;
+    }
 }

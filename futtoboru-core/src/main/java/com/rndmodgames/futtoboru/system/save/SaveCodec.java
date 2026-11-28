@@ -309,6 +309,14 @@ public final class SaveCodec {
                 com.rndmodgames.futtoboru.system.generators.LanguageGenerator.fillMissing(
                         result.getGame().getAllPersons(), DatabaseLoader.getLanguageData(),
                         DatabaseLoader.getGameData(), DatabaseLoader.getRandom());
+                // R-09 + R-03: a save made before them gets its trainers, secretaries and pools as on its day
+                // (optional fields, no format change), from the game's own root source
+                SaveGame loaded = result.getGame();
+                if (loaded.getCandidatePoolSeason() == null && loaded.getSeed() != null
+                        && loaded.getGameDate() != null) {
+                    com.rndmodgames.futtoboru.engine.recruitment.Recruitment.afterDay(loaded, loaded.getGameDate(),
+                            RandomSource.seeded(loaded.getSeed()));
+                }
             }
             return result;
         } catch (RuntimeException e) {

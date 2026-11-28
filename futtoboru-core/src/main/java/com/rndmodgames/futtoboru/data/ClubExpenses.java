@@ -56,6 +56,9 @@ public class ClubExpenses implements Serializable {
     // Other Expenses
     private BigDecimal otherExpenses = BigDecimal.ZERO; // Medical, insurance, training, entertainment
     
+    // Interest on the overdraft (G-12)
+    private BigDecimal interestExpenses = BigDecimal.ZERO;
+    
     // Calculated Total
     private BigDecimal totalExpenses = BigDecimal.ZERO;
 
@@ -97,11 +100,20 @@ public class ClubExpenses implements Serializable {
             .add(getMatchdayExpenses())
             .add(getAdministrativeExpenses())
             .add(getStadiumRent())
-            .add(getOtherExpenses());
+            .add(getOtherExpenses())
+            .add(getInterestExpenses());
         return totalExpenses;
     }
     
     // Getters and Setters
+    public BigDecimal getInterestExpenses() {
+        return interestExpenses != null ? interestExpenses : BigDecimal.ZERO;
+    }
+
+    public void setInterestExpenses(BigDecimal interestExpenses) {
+        this.interestExpenses = interestExpenses != null ? interestExpenses : BigDecimal.ZERO;
+    }
+
     public Long getId() {
         return id;
     }

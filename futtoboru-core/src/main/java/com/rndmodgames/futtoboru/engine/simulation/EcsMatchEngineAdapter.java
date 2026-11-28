@@ -7,9 +7,13 @@ import java.util.Map;
 
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.ClubStyle;
+import com.rndmodgames.futtoboru.data.InjuryKind;
+import com.rndmodgames.futtoboru.data.MatchInjury;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.Position;
 import com.rndmodgames.futtoboru.data.TeamShape;
+import com.rndmodgames.futtoboru.engine.injuries.InjuryRules;
+import com.rndmodgames.futtoboru.engine.injuries.MatchInjuries;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.engine.team.TeamSheets;
 import com.rndmodgames.futtoboru.match.ecs.EcsMatchEngine;
@@ -20,6 +24,8 @@ import com.rndmodgames.futtoboru.match.ecs.ai.TeamStyle;
 import com.rndmodgames.futtoboru.match.ecs.body.AthleteInputs;
 import com.rndmodgames.futtoboru.match.ecs.body.Shape;
 import com.rndmodgames.futtoboru.match.ecs.body.TeamSheet;
+import com.rndmodgames.futtoboru.match.ecs.events.MatchEvent;
+import com.rndmodgames.futtoboru.match.ecs.events.MatchEventType;
 import com.rndmodgames.futtoboru.match.ecs.pitch.Team;
 
 /**
@@ -33,8 +39,12 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.Team;
  *   stand-in at the bottom of the rating scale who never scores (interim, until the engine can play with ten).
  * - Ground and weather: {@link MatchFixture#weather()}; home side defends west and kicks off; 2 x 45 minutes.
  * - Scorers: the last player of the scoring side to play the ball; an own goal has no scorer.
- * - Injuries: the G-02 injuries {@link MatchSimulator} rolls are recorded on the match for both engines, but the ECS
- *   play does not weaken the hurt men yet (its own contact injuries, E-13, are the later source; E-17 wires them).
+ * - Injuries (G-02, E-17): a man on the fixture's injury list starts weakened, by the share of the match he is worth
+ *   less ({@link #hurtShare}: a passenger from his minute on, a man carried off nothing while off and a passenger if
+ *   he came back; a knock costs nothing); his body ratings (speed, acceleration, dexterity, stamina, endurance,
+ *   strength) slide toward the bottom of the scale by that share. The engine's own contact injuries come on top.
+ * - Events (E-17): the engine's event log goes on the outcome in its compact saved form, and each goal's minute comes
+ *   from its GOAL event, so the match keeps the engine's own timing (no G-03 draw).
  */
 public final class EcsMatchEngineAdapter implements MatchEngine {
 
@@ -65,6 +75,15 @@ public final class EcsMatchEngineAdapter implements MatchEngine {
                 new UniformPitch(fixture.weather().surface(), fixture.weather().wetness()), 0.0, HALF_MINUTES,
                 new EcsMatchInput.Side(home.sheet, home.style), new EcsMatchInput.Side(away.sheet, away.style));
         EcsMatchResult r = engine.play(input, rng);
+        List<Integer> homeMinutes = new ArrayList<>();
+        List<Integer> awayMinutes = new ArrayList<>();
+        for (MatchEvent e : r.events().of(MatchEventType.GOAL)) {
+            (e.side() == Team.HOME ? homeMinutes : awayMinutes).add(e.minute());
+        }
+        if (homeMinutes.size() != r.homeGoals() || awayMinutes.size() != r.awayGoals()) {
+            homeMinutes.clear(); // a goal the log missed: let the simulator draw the minutes
+            awayMinutes.clear();
+        }
         List<Long> homeScorers = new ArrayList<>();
         List<Long> awayScorers = new ArrayList<>();
         for (EcsMatchResult.Goal g : r.goals()) {
@@ -77,7 +96,8 @@ public final class EcsMatchEngineAdapter implements MatchEngine {
                 (g.scoringTeam() == Team.HOME ? homeScorers : awayScorers).add(id);
             }
         }
-        return new MatchOutcome(r.homeGoals(), r.awayGoals(), homeScorers, awayScorers);
+        return new MatchOutcome(r.homeGoals(), r.awayGoals(), homeScorers, awayScorers, homeMinutes, awayMinutes,
+                r.events().encode());
     }
 
     /** {@link Shape} of the engine for a sheet's {@link TeamShape} (same label, same slot positions). */
@@ -111,17 +131,78 @@ public final class EcsMatchEngineAdapter implements MatchEngine {
         static Eleven of(com.rndmodgames.futtoboru.data.TeamSheet gameSheet, Club club, MatchFixture fixture) {
             Shape shape = shapeOf(gameSheet.getShape());
             Map<Long, Player> squad = TeamSheets.squadById(club);
+            List<MatchInjury> injuries = club == fixture.home() ? fixture.homeInjuries()
+                    : club == fixture.away() ? fixture.awayInjuries() : List.of();
+            InjuryRules rules = fixture.injuryRules() != null ? fixture.injuryRules() : InjuryRules.DEFAULTS;
             List<AthleteInputs> inputs = new ArrayList<>(TeamShape.SLOTS);
             List<Long> ids = new ArrayList<>(TeamShape.SLOTS);
             for (int s = 0; s < TeamShape.SLOTS; s++) {
                 Position pos = shape.slot(s).position();
                 Long playerId = gameSheet.getPlayerId(s);
                 Player p = playerId != null ? squad.get(playerId) : null;
-                inputs.add(p == null ? standIn(pos) : inputs(p, pos, fixture));
+                AthleteInputs in = p == null ? standIn(pos) : inputs(p, pos, fixture);
+                if (p != null && p.getPerson() != null) {
+                    in = weakened(in, hurtShare(injuryOf(injuries, p.getPerson().getId()), rules));
+                }
+                inputs.add(in);
                 ids.add(p != null && p.getPerson() != null ? p.getPerson().getId() : null);
             }
             return new Eleven(new TeamSheet(shape, inputs), styleOf(gameSheet.getStyle()), ids);
         }
+    }
+
+    /** The man's injury of this match, null when he was not hurt. */
+    static MatchInjury injuryOf(List<MatchInjury> injuries, Long personId) {
+        if (injuries == null || personId == null) {
+            return null;
+        }
+        for (MatchInjury i : injuries) {
+            if (i != null && personId.equals(i.getPersonId())) {
+                return i;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Share of the match (0..1) a hurt man is lost to his side, as the instant result weighs him
+     * ({@link MatchInjuries#effectiveMen}): a passenger loses {@code 1 - strengthWhileHurt} from his minute on; a man
+     * carried off is lost while off and a passenger after he comes back; a knock costs nothing.
+     */
+    static double hurtShare(MatchInjury injury, InjuryRules rules) {
+        if (injury == null || injury.getMinute() == null) {
+            return 0;
+        }
+        InjuryKind kind = injury.getKindEnum();
+        if (kind == null || kind == InjuryKind.KNOCK) {
+            return 0;
+        }
+        double minutes = MatchInjuries.MINUTES;
+        int from = Math.max(0, Math.min(MatchInjuries.MINUTES, injury.getMinute()));
+        double s = rules.get(kind).strengthWhileHurt;
+        if (kind == InjuryKind.PASSENGER) {
+            return Math.max(0, Math.min(1, (1 - s) * (minutes - from) / minutes));
+        }
+        int back = injury.getReturnedMinute() != null
+                ? Math.max(from, Math.min(MatchInjuries.MINUTES, injury.getReturnedMinute()))
+                : MatchInjuries.MINUTES;
+        return Math.max(0, Math.min(1, (back - from) / minutes + (1 - s) * (minutes - back) / minutes));
+    }
+
+    /** The body ratings slid toward the stand-in rating by {@code share} (0 = unchanged); ball skills kept. */
+    static AthleteInputs weakened(AthleteInputs a, double share) {
+        if (!(share > 0)) {
+            return a;
+        }
+        double k = 1 - Math.min(1, share);
+        return new AthleteInputs(a.position(), toward(a.speed(), k), toward(a.acceleration(), k),
+                toward(a.dexterity(), k), toward(a.stamina(), k), toward(a.endurance(), k), toward(a.strength(), k),
+                a.age(), a.condition(), a.shinPads(), a.kicking(), a.technique(), a.heading(), a.handling(),
+                a.dribbling());
+    }
+
+    private static double toward(double rating, double keep) {
+        return rating <= STAND_IN_RATING ? rating : STAND_IN_RATING + (rating - STAND_IN_RATING) * keep;
     }
 
     static AthleteInputs standIn(Position pos) {
