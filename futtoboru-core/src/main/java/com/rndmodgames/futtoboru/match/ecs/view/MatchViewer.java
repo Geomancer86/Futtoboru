@@ -25,6 +25,11 @@ public final class MatchViewer {
     }
 
     public MatchViewer(MatchWorld world, ViewFrame frame, ViewerClock clock) {
+        this(world, frame, clock, new PoseSource[0]);
+    }
+
+    /** With extra pose sources (bodies without a simulation pose source yet; the debug viewer's stand-ins). */
+    public MatchViewer(MatchWorld world, ViewFrame frame, ViewerClock clock, PoseSource... extraPoses) {
         if (world == null || frame == null || clock == null) {
             throw new IllegalArgumentException("world, frame and clock are required");
         }
@@ -34,7 +39,7 @@ public final class MatchViewer {
         this.world = world;
         this.frame = frame;
         this.clock = clock;
-        MatchSystems.installDrawPasses(world, frame);
+        MatchSystems.installDrawPasses(world, frame, extraPoses);
         this.interpolation = world.engine().getSystem(InterpolationPass.class);
         if (interpolation == null) {
             throw new IllegalStateException("MatchSystems.installDrawPasses must install the InterpolationPass");
@@ -87,5 +92,10 @@ public final class MatchViewer {
 
     public InterpolationPass interpolation() {
         return interpolation;
+    }
+
+    /** Frees the viewer's GPU art (render thread). */
+    public void dispose() {
+        frame.disposeArt();
     }
 }

@@ -32,6 +32,8 @@ public final class SystemPriority {
     public static final int DRAW_EVENTS = 1010;
     /** Light sources gathered for the light map. */
     public static final int DRAW_LIGHTS = 1015;
+    /** Skyline backdrop behind the far side of the ground (K1), with chimney smoke. */
+    public static final int DRAW_SKYLINE = 1090;
     public static final int DRAW_PITCH = 1100;
     /** Mud, divots, footprints, wear overlay. */
     public static final int DRAW_MARKS = 1120;
