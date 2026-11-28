@@ -33,7 +33,9 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.GroundArt;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiTooltips;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -66,6 +68,9 @@ public class NewGameOverviewScreen implements Screen {
     
     // Selected Starting Club
     Club startingClub = null;
+
+    // Thumbnail of the selected club's season ground (U-11)
+    final VisTable startingClubThumb = new VisTable();
     
     // Globally available components
     final VisLabel estimatedPlayerCountValueLabel = new VisLabel();
@@ -284,6 +289,7 @@ public class NewGameOverviewScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 
                 startingClub = startingClubSelectBox.getSelected();
+                updateStartingClubThumb();
             }
         });
         
@@ -327,6 +333,8 @@ public class NewGameOverviewScreen implements Screen {
         gameStartConfigurationTable.row();
         gameStartConfigurationTable.add(startingClubLabel);
         gameStartConfigurationTable.add(startingClubSelectBox);
+        gameStartConfigurationTable.add(startingClubThumb).left();
+        updateStartingClubThumb();
         
         /**
          * Back to Setup Button
@@ -882,6 +890,21 @@ public class NewGameOverviewScreen implements Screen {
      * 
      * TODO: fix
      */
+    /** Shows the selected club's ground thumbnail (nothing while no club can be picked). */
+    private void updateStartingClubThumb() {
+        startingClubThumb.clearChildren();
+        Club club = startingClubSelectBox.isDisabled() ? null : startingClubSelectBox.getSelected();
+        if (club == null) {
+            return;
+        }
+        Actor thumb = ((Futtoboru) game).getGroundArt().picture(GroundArt.groundId(club), true,
+                UiTheme.size("art.thumb.w"), UiTheme.size("art.thumb.h"));
+        if (club.getStadium() != null) {
+            UiTooltips.tipText(thumb, club.getStadium().getName());
+        }
+        startingClubThumb.add(thumb);
+    }
+
     private void updateSelectableTeamsByLeagueAndCountry() {
         
         /**
@@ -906,6 +929,7 @@ public class NewGameOverviewScreen implements Screen {
             // set starting club to UNAVAILABLE and DISABLE
             startingClubSelectBox.setItems(new Club("UNAVAILABLE"));
             startingClubSelectBox.setDisabled(true);
+            updateStartingClubThumb();
             break;
             
         // Selectable Clubs
@@ -924,6 +948,7 @@ public class NewGameOverviewScreen implements Screen {
                     .toArray(new Club[DatabaseLoader.getInstance().getClubsByCountry(startingCountry).size()]));
             
             startingClubSelectBox.setDisabled(false);
+            updateStartingClubThumb();
             break;
         
         // deault to No Selectable club

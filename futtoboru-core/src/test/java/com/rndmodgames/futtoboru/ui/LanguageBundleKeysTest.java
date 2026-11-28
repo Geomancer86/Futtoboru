@@ -35,7 +35,9 @@ public class LanguageBundleKeysTest {
             "com/rndmodgames/futtoboru/tables/main",
             "com/rndmodgames/futtoboru/dialogs",
             "com/rndmodgames/futtoboru/screens/MainGameScreen.java",
-            "com/rndmodgames/futtoboru/screens/SettingsScreen.java");
+            "com/rndmodgames/futtoboru/screens/SettingsScreen.java",
+            "com/rndmodgames/futtoboru/ui",
+            "com/rndmodgames/futtoboru/tables/match/preview");
 
     private static final Pattern GET_VALUE = Pattern.compile("LanguageModLoader\\.getValue\\(\\s*\"([^\"]+)\"\\s*\\)");
 
