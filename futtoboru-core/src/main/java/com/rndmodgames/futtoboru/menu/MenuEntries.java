@@ -61,6 +61,7 @@ public final class MenuEntries {
 
             new MenuEntry("club_info", MainMenuManager.CLUB_INFO_SCREEN, Audience.MANAGER, GROUP_CLUB),
             new MenuEntry("finances", MainMenuManager.FINANCES_SCREEN, Audience.MANAGER, GROUP_CLUB),
+            new MenuEntry("committee", MainMenuManager.COMMITTEE_SCREEN, Audience.MANAGER, GROUP_CLUB),
 
             new MenuEntry("club_browser", MainMenuManager.CLUB_BROWSER_SCREEN, Audience.UNEMPLOYED, GROUP_JOBS),
             new MenuEntry("job_board", MainMenuManager.JOB_BOARD_SCREEN, Audience.UNEMPLOYED, GROUP_JOBS),

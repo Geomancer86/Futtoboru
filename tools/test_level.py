@@ -220,7 +220,7 @@ def affected(base, offline):
     print("run: " + " ".join(command))
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import suite_lock
-    code = subprocess.call(suite_lock.runnable(command), cwd=ROOT, shell=os.name == "nt")
+    code = suite_lock.run_locked(command, cwd=ROOT)  # every Maven run takes turns, small ones too (T-03)
     print("tests " + ("OK" if code == 0 else "FAILED"))
     return code
 

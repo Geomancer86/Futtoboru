@@ -73,6 +73,12 @@ public class Club implements Serializable {
      * sheet of its last match. Null until first needed ({@code engine.team.TeamSheets#standing}); optional in saves.
      */
     private TeamSheet teamSheet;
+
+    /**
+     * G-05: the club's committee (members, the season's expectations, its confidence in the secretary). Null until
+     * the first game day ({@code engine.committee.CommitteeManager}); optional in saves.
+     */
+    private ClubCommittee committee;
     
     /**
      * Proposed Matches (this will be almost always clean/empty)
@@ -316,6 +322,15 @@ public class Club implements Serializable {
 
     public void setTeamSheet(TeamSheet teamSheet) {
         this.teamSheet = teamSheet;
+    }
+
+    /** G-05: the committee, or null before the first game day. */
+    public ClubCommittee getCommittee() {
+        return committee;
+    }
+
+    public void setCommittee(ClubCommittee committee) {
+        this.committee = committee;
     }
 
     public BigDecimal getClubBalance() {
