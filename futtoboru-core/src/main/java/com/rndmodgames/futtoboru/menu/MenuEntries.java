@@ -75,6 +75,7 @@ public final class MenuEntries {
             Map.entry(MainMenuManager.CUP_DETAIL_SCREEN, MainMenuManager.COMPETITIONS_SCREEN),
             Map.entry(MainMenuManager.CUP_PLAYOFFS_SCREEN, MainMenuManager.COMPETITIONS_SCREEN),
             Map.entry(MainMenuManager.PLAYER_DETAIL_SCREEN, MainMenuManager.MAIN_SQUAD_SCREEN),
+            Map.entry(MainMenuManager.RETAINED_LIST_SCREEN, MainMenuManager.MAIN_SQUAD_SCREEN),
             Map.entry(MainMenuManager.CLUB_DETAIL_SCREEN, MainMenuManager.CLUB_BROWSER_SCREEN),
             Map.entry(MainMenuManager.JOB_OFFER_SCREEN, MainMenuManager.MY_APPLICATIONS_SCREEN),
             Map.entry(MainMenuManager.NEGOTIATION_SCREEN, MainMenuManager.MY_APPLICATIONS_SCREEN),

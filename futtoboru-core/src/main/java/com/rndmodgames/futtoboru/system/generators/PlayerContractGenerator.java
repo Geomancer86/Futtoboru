@@ -1,282 +1,92 @@
 package com.rndmodgames.futtoboru.system.generators;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.ContractBand;
 import com.rndmodgames.futtoboru.data.ContractType;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerContract;
+import com.rndmodgames.futtoboru.engine.contracts.ContractCalendar;
+import com.rndmodgames.futtoboru.engine.contracts.ContractTerms;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
-import com.rndmodgames.futtoboru.system.data.IdAllocator;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.futtoboru.system.data.IdAllocator;
 
 /**
- * Player Contract Generator v1.0
- * 
- * Generates random contracts for players based on:
- * - Player skill level (attributes)
- * - Club financial status
- * - Historical 1888-89 wage ranges
- * - Contract type distribution
- * 
- * For Season 1, contracts are randomly generated.
- * Future seasons will load from scripts with researched historical data.
- * 
+ * G-04: the engagement a man starts the game with. One season ("signed articles to play ... during the forthcoming
+ * season", docs/data/history/RECRUITMENT_1888-1900.md 4.1), to 30 April (D28 Q8), on the terms of his club's wage band
+ * ({@code seasons/<id>/contracts.json}): a professional (the band's share) at about his asking wage, some with summer
+ * pay; an amateur takes no wage, only weekly expenses in the playing season (4.5). No bonuses: none is sourced for
+ * 1888 (the signing-on present is from the 1890s).
+ *
  * @author Geomancer86
  */
 public class PlayerContractGenerator {
-    
+
     /**
-     * Generate a random contract for a player
-     * 
-     * @param player The player to generate a contract for
-     * @param club The club the player belongs to
-     * @param contractStartDate When the contract starts (typically season start)
-     * @param ids gives the contract its runtime id (the data allocator at load, the game's during play)
-     * @param rng the random terms (a fork of the game's random source for this contract)
-     * @return A new PlayerContract with random terms
+     * @param player     the man (his attributes and birth date set the wage he asks)
+     * @param club       his club
+     * @param startDate  when the engagement starts (the data season's start)
+     * @param season     the season it is for (1888 = 1888-89); it ends on 30 April of the next year
+     * @param band       his club's wage band
+     * @param ids        gives the contract its runtime id (the data allocator at load, the game's during play)
+     * @param rng        the terms' dice (a fork of the game's random source for this contract)
+     * @return the engagement, or null when the player or the club has no id
      */
-    public static PlayerContract generateRandomContract(Player player, Club club, LocalDateTime contractStartDate,
-            IdAllocator ids, RandomSource rng) {
-        if (player == null || club == null || contractStartDate == null) {
-            Log.error(Log.DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: player=" + (player != null) + 
-                ", club=" + (club != null) + ", date=" + (contractStartDate != null));
+    public static PlayerContract generateSeasonContract(Player player, Club club, LocalDateTime startDate, int season,
+            ContractBand band, IdAllocator ids, RandomSource rng) {
+        if (player == null || club == null || startDate == null || band == null) {
+            Log.error(Log.DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: player=" + (player != null)
+                    + ", club=" + (club != null) + ", date=" + (startDate != null) + ", band=" + (band != null));
             return null;
         }
-        
-        Log.debug(Log.DATA_GENERATION, "PlayerContractGenerator", "Generating contract for player ID: " + 
-            (player.getId() != null ? player.getId() : (player.getPerson() != null ? player.getPerson().getId() : "NULL")) + 
-            ", club: " + (club.getName() != null ? club.getName() : "NULL"));
-        
+        Long playerId = player.getId() != null ? player.getId()
+                : player.getPerson() != null ? player.getPerson().getId() : null;
+        if (playerId == null || club.getId() == null) {
+            Log.error(Log.DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: player id " + playerId
+                    + ", club id " + club.getId());
+            return null;
+        }
+
         PlayerContract contract = new PlayerContract();
-        
-        // Runtime id from the allocator (P2-4)
         contract.setId(ids.nextId());
-        
-        // Set player and club IDs
-        Long playerIdToUse = null;
-        if (player.getId() != null) {
-            playerIdToUse = player.getId();
-        } else if (player.getPerson() != null && player.getPerson().getId() != null) {
-            // Use person ID if player ID not set
-            playerIdToUse = player.getPerson().getId();
-        }
-        
-        if (playerIdToUse == null) {
-            Log.error(Log.DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: Player has no ID (player ID: " + 
-                player.getId() + ", person ID: " + (player.getPerson() != null ? player.getPerson().getId() : "null") + ")");
-            return null;
-        }
-        
-        contract.setPlayerId(playerIdToUse);
-        
-        if (club.getId() != null) {
-            contract.setClubId(club.getId());
+        contract.setPlayerId(playerId);
+        contract.setClubId(club.getId());
+        contract.setSeason(season);
+        contract.setStartDate(startDate);
+        contract.setEndDate(ContractCalendar.seasonEnd(season));
+        contract.setContractLengthMonths((int) Math.max(1, ChronoUnit.MONTHS.between(startDate, contract.getEndDate())));
+
+        boolean professional = band.getProfessionalShare() > 0 && rng.nextDouble() < band.getProfessionalShare();
+        double noise = rng.nextDouble();
+        boolean summerPay = rng.nextDouble() < band.getSummerPayShare();
+        if (professional) {
+            contract.setContractType(ContractType.PROFESSIONAL);
+            BigDecimal wage = withNoise(ContractTerms.askingWage(player, band, startDate.toLocalDate()), noise, band);
+            contract.setWeeklyWage(wage);
+            contract.setSummerWage(summerPay ? ContractTerms.summerFor(wage, band) : BigDecimal.ZERO);
         } else {
-            Log.error(Log.DATA_GENERATION, "PlayerContractGenerator", "Cannot generate contract: Club has no ID");
-            return null;
+            contract.setContractType(ContractType.AMATEUR);
+            contract.setWeeklyWage(BigDecimal.ZERO);
+            contract.setSummerWage(BigDecimal.ZERO);
+            contract.setWeeklyExpenses(band.getAmateurExpenses());
         }
-        
-        // Determine contract type based on player skill and club size
-        Integer contractType = determineContractType(player, club, rng);
-        contract.setContractType(contractType);
-        
-        // Set contract dates
-        contract.setStartDate(contractStartDate);
-        
-        // Contract length: 1-3 years typically (12-36 months)
-        int contractLengthMonths = 12 + rng.nextInt(25); // 12-36 months
-        contract.setContractLengthMonths(contractLengthMonths);
-        contract.setEndDate(contractStartDate.plusMonths(contractLengthMonths));
-        
-        // Generate financial terms based on contract type
-        generateFinancialTerms(contract, player, club, contractType, rng);
-        
-        // Generate bonuses (only for professional contracts typically)
-        if (contractType == ContractType.PROFESSIONAL || contractType == ContractType.SEMI_PROFESSIONAL) {
-            generateBonuses(contract, player, club, contractType);
-        }
-        
-        // Set contract status
         contract.setIsActive(true);
-        
-        Log.debug(Log.DATA_GENERATION, "PlayerContractGenerator", "Contract generated: ID=" + contract.getId() + 
-            ", PlayerID=" + contract.getPlayerId() + ", ClubID=" + contract.getClubId() + 
-            ", Type=" + ContractType.getName(contract.getContractType()) + 
-            ", Wage=£" + contract.getWeeklyWage());
-        
+
+        Log.debug(Log.DATA_GENERATION, "PlayerContractGenerator", "Contract " + contract.getId() + ": player "
+                + playerId + " at " + club.getName() + ", " + ContractType.getName(contract.getContractType()) + ", wage "
+                + contract.getWeeklyWage() + ", summer " + contract.getSummerWage() + ", to " + contract.getEndDate());
         return contract;
     }
-    
-    /**
-     * Determine contract type based on player skill and club size
-     * 
-     * Distribution (1888-89):
-     * - 30% Amateur (no pay)
-     * - 40% Semi-Professional (low pay)
-     * - 30% Professional (regular pay)
-     */
-    private static Integer determineContractType(Player player, Club club, RandomSource rng) {
-        // Calculate player skill level (average of key attributes)
-        float avgSkill = calculatePlayerSkill(player);
-        
-        // Random factor (70% skill-based, 30% random)
-        float randomFactor = rng.nextFloat();
-        float combinedFactor = (avgSkill * 0.7f) + (randomFactor * 0.3f);
-        
-        // Determine contract type
-        if (combinedFactor < 0.30f) {
-            return ContractType.AMATEUR; // 30% amateur
-        } else if (combinedFactor < 0.70f) {
-            return ContractType.SEMI_PROFESSIONAL; // 40% semi-pro
-        } else {
-            return ContractType.PROFESSIONAL; // 30% professional
-        }
-    }
-    
-    /**
-     * Calculate player skill level (0.0-1.0)
-     * Based on average of key attributes (normalized to 0-1)
-     */
-    private static float calculatePlayerSkill(Player player) {
-        if (player == null) {
-            return 0.5f; // Average
-        }
-        
-        // Average of physical, mental, and technical attributes
-        // Attributes are in 3-23 range, normalize to 0-1
-        float strength = (player.getStrength() != null ? player.getStrength() : 10.5f - 3.0f) / 20.0f;
-        float speed = (player.getSpeed() != null ? player.getSpeed() : 10.5f - 3.0f) / 20.0f;
-        float stamina = (player.getStamina() != null ? player.getStamina() : 10.5f - 3.0f) / 20.0f;
-        float passing = (player.getPassing() != null ? player.getPassing() : 10.5f - 3.0f) / 20.0f;
-        float perception = (player.getPerception() != null ? player.getPerception() : 10.5f - 3.0f) / 20.0f;
-        float determination = (player.getDetermination() != null ? player.getDetermination() : 10.5f - 3.0f) / 20.0f;
-        
-        return (strength + speed + stamina + passing + perception + determination) / 6.0f;
-    }
-    
-    /**
-     * Generate financial terms (wages, bonuses) based on contract type
-     * 
-     * Historical 1888-89 ranges:
-     * - Amateur: £0/week
-     * - Semi-Pro: £0.25-0.50/week (2s 6d - 5s)
-     * - Professional: £0.50-5.00/week (10s - £1+)
-     */
-    private static void generateFinancialTerms(PlayerContract contract, Player player, Club club, Integer contractType,
-            RandomSource rng) {
-        if (contractType == null) {
-            return;
-        }
-        
-        float skillLevel = calculatePlayerSkill(player);
-        
-        switch (contractType) {
-            case ContractType.AMATEUR:
-                contract.setWeeklyWage(BigDecimal.ZERO);
-                break;
-                
-            case ContractType.SEMI_PROFESSIONAL:
-                // £0.25-0.50/week, scaled by skill
-                BigDecimal semiProBase = new BigDecimal("0.25");
-                BigDecimal semiProMax = new BigDecimal("0.50");
-                BigDecimal semiProRange = semiProMax.subtract(semiProBase);
-                BigDecimal semiProWage = semiProBase.add(semiProRange.multiply(BigDecimal.valueOf(skillLevel)));
-                contract.setWeeklyWage(semiProWage.setScale(2, RoundingMode.HALF_UP));
-                break;
-                
-            case ContractType.PROFESSIONAL:
-                // £0.50-5.00/week, scaled by skill and club size
-                BigDecimal proBase = new BigDecimal("0.50");
-                BigDecimal proMax = new BigDecimal("5.00");
-                BigDecimal proRange = proMax.subtract(proBase);
-                
-                // Club size factor (bigger clubs pay more)
-                float clubSizeFactor = 1.0f; // TODO: Calculate based on club balance/stadium capacity
-                float combinedFactor = skillLevel * clubSizeFactor;
-                combinedFactor = Math.min(1.0f, combinedFactor); // Cap at 1.0
-                
-                BigDecimal proWage = proBase.add(proRange.multiply(BigDecimal.valueOf(combinedFactor)));
-                contract.setWeeklyWage(proWage.setScale(2, RoundingMode.HALF_UP));
-                
-                // Signing bonus: 1-4 weeks of wages
-                int signingBonusWeeks = 1 + rng.nextInt(4);
-                contract.setSigningBonus(proWage.multiply(BigDecimal.valueOf(signingBonusWeeks)).setScale(2, RoundingMode.HALF_UP));
-                break;
-                
-            default:
-                contract.setWeeklyWage(BigDecimal.ZERO);
-                break;
-        }
-    }
-    
-    /**
-     * Generate performance and achievement bonuses
-     * Only for professional and semi-professional contracts
-     */
-    private static void generateBonuses(PlayerContract contract, Player player, Club club, Integer contractType) {
-        if (contractType == null || contractType == ContractType.AMATEUR) {
-            return;
-        }
-        
-        float skillLevel = calculatePlayerSkill(player);
-        boolean isProfessional = (contractType == ContractType.PROFESSIONAL);
-        
-        // Performance bonuses (per occurrence)
-        if (isProfessional) {
-            // Appearance fee: £0.05-0.25 per match
-            BigDecimal appearanceBase = new BigDecimal("0.05");
-            BigDecimal appearanceMax = new BigDecimal("0.25");
-            contract.setAppearanceFee(appearanceBase.add(
-                appearanceMax.subtract(appearanceBase).multiply(BigDecimal.valueOf(skillLevel)))
-                .setScale(2, RoundingMode.HALF_UP));
-            
-            // Goal bonus: £0.10-1.00 per goal
-            BigDecimal goalBase = new BigDecimal("0.10");
-            BigDecimal goalMax = new BigDecimal("1.00");
-            contract.setGoalBonus(goalBase.add(
-                goalMax.subtract(goalBase).multiply(BigDecimal.valueOf(skillLevel)))
-                .setScale(2, RoundingMode.HALF_UP));
-            
-            // Assist bonus: £0.05-0.50 per assist
-            BigDecimal assistBase = new BigDecimal("0.05");
-            BigDecimal assistMax = new BigDecimal("0.50");
-            contract.setAssistBonus(assistBase.add(
-                assistMax.subtract(assistBase).multiply(BigDecimal.valueOf(skillLevel)))
-                .setScale(2, RoundingMode.HALF_UP));
-            
-            // Clean sheet bonus: £0.10-0.75 (for goalkeepers/defenders)
-            BigDecimal cleanSheetBase = new BigDecimal("0.10");
-            BigDecimal cleanSheetMax = new BigDecimal("0.75");
-            contract.setCleanSheetBonus(cleanSheetBase.add(
-                cleanSheetMax.subtract(cleanSheetBase).multiply(BigDecimal.valueOf(skillLevel)))
-                .setScale(2, RoundingMode.HALF_UP));
-        }
-        
-        // Achievement bonuses (one-time, only for professionals)
-        if (isProfessional) {
-            // League win bonus: £10-200
-            BigDecimal leagueWinBase = new BigDecimal("10.00");
-            BigDecimal leagueWinMax = new BigDecimal("200.00");
-            contract.setLeagueWinBonus(leagueWinBase.add(
-                leagueWinMax.subtract(leagueWinBase).multiply(BigDecimal.valueOf(skillLevel)))
-                .setScale(2, RoundingMode.HALF_UP));
-            
-            // Cup win bonus: £5-100
-            BigDecimal cupWinBase = new BigDecimal("5.00");
-            BigDecimal cupWinMax = new BigDecimal("100.00");
-            contract.setCupWinBonus(cupWinBase.add(
-                cupWinMax.subtract(cupWinBase).multiply(BigDecimal.valueOf(skillLevel)))
-                .setScale(2, RoundingMode.HALF_UP));
-            
-            // Top 3 finish bonus: £3-50
-            BigDecimal top3Base = new BigDecimal("3.00");
-            BigDecimal top3Max = new BigDecimal("50.00");
-            contract.setTop3FinishBonus(top3Base.add(
-                top3Max.subtract(top3Base).multiply(BigDecimal.valueOf(skillLevel)))
-                .setScale(2, RoundingMode.HALF_UP));
-        }
+
+    /** The asking wage, a few shillings either way (noise 0-1 = -10% to +10%), whole shillings inside the band */
+    public static BigDecimal withNoise(BigDecimal asking, double noise, ContractBand band) {
+        int min = ContractBand.shillings(band.getSeasonWageMin());
+        int max = ContractBand.shillings(band.getSeasonWageMax());
+        int s = (int) Math.round(ContractBand.shillings(asking) * (0.9 + 0.2 * noise));
+        return ContractBand.ofShillings(Math.max(min, Math.min(max, s)));
     }
 }
