@@ -403,6 +403,11 @@ public class FuttoboruGameEngine {
         // Check Competition Schedules
         authorityManager.checkCompetitionsSchedule();
         
+        // G-05: every club's committee (expectations, confidence, letters, dismissal) before the job market's day,
+        // so a dismissed secretary's post is advertised at once
+        com.rndmodgames.futtoboru.engine.committee.CommitteeManager.daily(gameInstance.getCurrentGame(),
+                Futtoboru.randomOf(gameInstance), gameInstance.getClubStaffManager(), messageManager);
+
         // Update Job Openings (v1.0)
         if (gameInstance.getJobManager() != null) {
             gameInstance.getJobManager().updateJobOpenings();
@@ -415,6 +420,10 @@ public class FuttoboruGameEngine {
 
         // G-04: engagements (retained list from 16 April, answers the next day, the 1 May rollover for every club)
         contractManager.afterDay(newDate);
+
+        // R-09 + R-03: trainers and secretaries for every club, the candidate pools (close-season refresh, arrivals)
+        com.rndmodgames.futtoboru.engine.recruitment.Recruitment.afterDay(gameInstance.getCurrentGame(), newDate,
+                gameInstance.random());
 
         /**
          * STEP 5: Deliver scheduled messages AFTER advancing date

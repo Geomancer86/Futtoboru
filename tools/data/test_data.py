@@ -24,7 +24,11 @@ def test_every_person_is_in_a_squad_and_ids_are_unique():
     ids = [p["id"] for p in people]
     assert len(ids) == len(set(ids))
     in_squads = {pid for s in squads for pid in s["players"]}
-    assert set(ids) == in_squads
+    # R-03: a real man outside every squad is in a candidate pool (pools.json `people`), and only then
+    pools = json.loads((ROOT / "core" / "recruitment" / "pools.json").read_text(encoding="utf-8"))
+    in_pools = {p["person"] for r in pools for p in r.get("people", [])}
+    assert not in_squads & in_pools
+    assert set(ids) == in_squads | in_pools
 
 
 @pytest.fixture
@@ -723,3 +727,38 @@ def test_injury_typos_are_errors(pack):
     assert "must be from 0 to 1" in out
     assert "injury kind `knock` is listed twice" in out
     assert "no source" in out
+
+
+# ---------------------------------------------------------------------------------------------- R-03 pools
+def test_shipped_pools_cover_the_league_clubs_and_name_real_men_once():
+    pools = json.loads(ROOT.joinpath(*REC, "pools.json").read_text(encoding="utf-8"))
+    clubs = [c for r in pools for c in r["clubs"]]
+    assert len(clubs) == len(set(clubs))
+    assert {"preston-north-end", "everton", "aston-villa", "stoke", "derby-county", "notts-county"} <= set(clubs)
+    assert any(r["country"] == "scotland" and r["sourceKinds"] == ["scottish-import"] for r in pools)
+    assert all(r["size"] > 0 and "upbringing" in r for r in pools)
+    people = [p["person"] for r in pools for p in r.get("people", [])]
+    assert people and len(people) == len(set(people))
+
+
+def test_pool_checks(pack):
+    def bad(d):
+        with_people = [r for r in d if r.get("people")]
+        d[0]["size"] = 0
+        d[0]["foreignBorn"] = {"ireland": 0.7, "germany": 0.4}
+        d[0]["upbringing"]["chance"] = 1.5
+        d[0]["upbringing"]["tendencies"]["teamwork"] = 3
+        d[1]["clubs"].append(d[0]["clubs"][0])
+        with_people[0]["people"][0]["until"] = 1880
+        with_people[1]["people"].append(dict(with_people[0]["people"][0], person="atlantis-1866"))
+        d[4]["sourceKinds"].append("academy")
+    edit(pack.joinpath(*REC, "pools.json"), bad)
+    out = errors(pack)
+    assert "size: must be at least 1" in out
+    assert "the shares must add up to less than 1" in out
+    assert "upbringing.chance: must be from 0 to 1" in out
+    assert "a tendency is a whole number from -2 to 2" in out
+    assert "is already in pool region `lancashire`" in out
+    assert "`until` 1880 is before `from` 1888" in out
+    assert "unknown person `atlantis-1866`" in out
+    assert "`academy` is not one of" in out

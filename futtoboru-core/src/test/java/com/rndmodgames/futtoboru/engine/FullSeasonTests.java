@@ -319,6 +319,44 @@ class FullSeasonTests extends BaseTest {
         assertTrue(ai > 20, "AI clubs' injuries: " + ai);
     }
 
+    /**
+     * G-05 over a real season: every League club's committee judged 1888-89 when the table was final and met for
+     * 1889-90 after the rollover; the player had one expectations letter and one review for 1888-89; the same seed
+     * gives the same committees.
+     */
+    @Test
+    void everyCommitteeJudgedTheSeasonAndMetForTheNext() {
+        for (Long id : first.leagueClubIds) {
+            Club club = first.save.getClubById(id);
+            com.rndmodgames.futtoboru.data.ClubCommittee c = club.getCommittee();
+            assertNotNull(c, club.getName());
+            assertEquals(1888, c.getReviewedYear(), club.getName() + " judged 1888-89");
+            assertTrue(c.getConfidence() >= 0 && c.getConfidence() <= 100);
+        }
+        for (Club club : first.league.getLeagueClubs()) {
+            assertEquals(1889, club.getCommittee().getSeasonYear(), club.getName() + " met for 1889-90");
+        }
+        long expectations = first.save.getAllMessages().stream().filter(m -> com.rndmodgames.futtoboru.engine.committee
+                .CommitteeManager.MSG_EXPECTATIONS.equals(m.getMessageType())).count();
+        long reviews = first.save.getAllMessages().stream().filter(m -> com.rndmodgames.futtoboru.engine.committee
+                .CommitteeManager.MSG_REVIEW.equals(m.getMessageType())).count();
+        if (first.save.getCurrentClub() != null) {
+            assertEquals(2, expectations, "1888-89 and 1889-90");
+        }
+        assertEquals(1, reviews, "the 1888-89 review");
+        assertEquals(committees(first), committees(second));
+    }
+
+    private static String committees(SeasonRun run) {
+        StringBuilder sb = new StringBuilder();
+        for (Club club : run.save.getAllClubs()) {
+            com.rndmodgames.futtoboru.data.ClubCommittee c = club.getCommittee();
+            sb.append(club.getDataId()).append('=').append(c == null ? "-" : c.getConfidence() + "/"
+                    + c.getWarnings() + "/" + c.getTargetPosition() + "/" + c.getDismissedIds()).append(';');
+        }
+        return sb.toString();
+    }
+
     @Test
     void theGoldenBootGoesToThisSeasonsTopLeagueScorer() {
         Map<Long, Integer> goals = new HashMap<>();

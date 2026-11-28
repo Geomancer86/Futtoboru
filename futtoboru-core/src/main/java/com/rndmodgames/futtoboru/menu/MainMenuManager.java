@@ -77,7 +77,9 @@ public class MainMenuManager {
     public static final int MAIN_SQUAD_SCREEN   = 1000;
     public static final int SCHEDULE_SCREEN     = 2000;
     public static final int CLUB_INFO_SCREEN    = 3000;
+    public static final int CANDIDATES_SCREEN   = 3002;   // R-03 (G-05 has 3001)
     public static final int FINANCES_SCREEN     = 4000;
+    public static final int COMMITTEE_SCREEN    = 3001;   // G-05
     public static final int COMPETITIONS_SCREEN = 5000;
     
     //
@@ -139,6 +141,7 @@ public class MainMenuManager {
     private com.rndmodgames.futtoboru.tables.history.HistoryScreenTable historyScreenTable = null;
     private ClubInfoScreenTable clubInfoScreenTable = null;
     private FinancesScreenTable financesScreenTable = null;
+    private com.rndmodgames.futtoboru.tables.club.CommitteeScreenTable committeeScreenTable = null;
     private CompetitionsScreenTable competitionsScreenTable = null;
     private LeagueDetailScreenTable leagueDetailScreenTable = null;
     private CupDetailScreenTable cupDetailScreenTable = null;
@@ -163,6 +166,9 @@ public class MainMenuManager {
 
     // G-04 retained list
     private com.rndmodgames.futtoboru.tables.contracts.RetainedListScreenTable retainedListScreenTable = null;
+
+    // R-03 candidate pools
+    private com.rndmodgames.futtoboru.tables.recruitment.CandidatesScreenTable candidatesScreenTable = null;
 
     // Selected club for detail view and job application
     private Club selectedClubForDetail = null;
@@ -200,6 +206,7 @@ public class MainMenuManager {
         historyScreenTable = new com.rndmodgames.futtoboru.tables.history.HistoryScreenTable(game);
         clubInfoScreenTable = new ClubInfoScreenTable(game);
         financesScreenTable = new FinancesScreenTable(game);
+        committeeScreenTable = new com.rndmodgames.futtoboru.tables.club.CommitteeScreenTable(game);
         competitionsScreenTable = new CompetitionsScreenTable(game);
         competitionsScreenTable.setMenuManager(this);
         leagueDetailScreenTable = new LeagueDetailScreenTable(game);
@@ -234,6 +241,9 @@ public class MainMenuManager {
         retainedListScreenTable = new com.rndmodgames.futtoboru.tables.contracts.RetainedListScreenTable(game);
         retainedListScreenTable.setMenuManager(this);
 
+        // R-03 candidate pools
+        candidatesScreenTable = new com.rndmodgames.futtoboru.tables.recruitment.CandidatesScreenTable(game);
+
         // Set menu manager references
         clubBrowserScreenTable.setMenuManager(this);
         clubDetailScreenTable.setMenuManager(this);
@@ -261,6 +271,7 @@ public class MainMenuManager {
 
         buttonsMenu.clearChildren();
         entryButtons.clear();
+        menuForClub = isManager();
 
         int lastGroup = -1;
         for (final MenuEntry entry : MenuEntries.forProfession(isManager())) {
@@ -287,6 +298,9 @@ public class MainMenuManager {
 
         syncMenuState();
     }
+
+    /** G-05: whether the left menu was built as the club menu (a dismissal turns it into the job-seeker menu). */
+    private boolean menuForClub;
 
     /** @return true if the owner works at a club (the club menu), false for the job-seeker menu (J-01) */
     private boolean isManager() {
@@ -608,6 +622,17 @@ public class MainMenuManager {
             parentTable.add(retainedListScreenTable).grow();
             break;
 
+        case CANDIDATES_SCREEN:
+            // R-03: the candidate pools of the club's region (read-only until R-05/R-07)
+            if (currentClub == null) {
+                redirectTo(HOME_SCREEN);
+                return;
+            }
+            candidatesScreenTable.setCurrentClub(currentClub);
+            candidatesScreenTable.updateDynamicComponents();
+            parentTable.add(candidatesScreenTable).grow();
+            break;
+
         case SCHEDULE_SCREEN:
 
             /**
@@ -762,6 +787,16 @@ public class MainMenuManager {
             
             break;
             
+        case COMMITTEE_SCREEN:
+            // G-05: the club's committee (expectations, confidence in words, members)
+            if (currentClub == null) {
+                redirectTo(HOME_SCREEN);
+                return;
+            }
+            committeeScreenTable.updateDynamicComponents();
+            parentTable.add(committeeScreenTable).grow();
+            break;
+
         case FINANCES_SCREEN:
             
             // Update dynamic components
@@ -920,6 +955,17 @@ public class MainMenuManager {
      *  - this is used to automatically update the current screen, as it will have dynamic data
      */
     public void updateDynamicComponents() {
+
+        // G-05: the committee dismissed the secretary (or he took a post): the menu follows, and a club screen
+        // without a club goes Home
+        if (menuForClub != isManager()) {
+            setDynamicButtonsMenu();
+            if (!isManager() && MenuEntries.forProfession(false).stream()
+                    .noneMatch(e -> e.screen() == MenuEntries.entryScreenFor(CURRENT_SCREEN))) {
+                openMenuEntry(HOME_SCREEN);
+                return;
+            }
+        }
         
         switch(CURRENT_SCREEN) {
         
@@ -934,6 +980,10 @@ public class MainMenuManager {
         case RETAINED_LIST_SCREEN:
             retainedListScreenTable.updateDynamicComponents();
             break;
+
+        case CANDIDATES_SCREEN:
+            candidatesScreenTable.updateDynamicComponents();
+            break;
         
         case AUTHORITY_SCREEN:
             authorityScreenTable.updateDynamicComponents();
@@ -945,6 +995,10 @@ public class MainMenuManager {
             
         case FINANCES_SCREEN:
             financesScreenTable.updateDynamicComponents();
+            break;
+
+        case COMMITTEE_SCREEN:
+            committeeScreenTable.updateDynamicComponents();
             break;
             
         case PLAYER_DETAIL_SCREEN:

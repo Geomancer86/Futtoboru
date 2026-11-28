@@ -3,7 +3,7 @@
     1,
     99999
   ],
-  "next": 999,
+  "next": 1018,
   "ids": {
     "continent": {
       "africa": 38,
@@ -223,7 +223,10 @@
       "scout": 904,
       "agent": 905,
       "investor": 906,
-      "club-owner": 907
+      "club-owner": 907,
+      "trainer": 1002,
+      "secretary": 1003,
+      "committee-member": 1004
     },
     "occupation": {
       "spinner": 281,
@@ -943,7 +946,10 @@
       "edgar-phillips-1864": 926,
       "timothy-king-1862": 927,
       "noah-carter-1865": 928,
-      "tom-jones-1866": 929
+      "tom-jones-1866": 929,
+      "arthur-wharton-1865": 999,
+      "john-devey-1866": 1000,
+      "ernest-needham-1873": 1001
     },
     "region": {
       "lancashire": 908,
@@ -1038,6 +1044,21 @@
       "knock": 996,
       "passenger": 997,
       "carried-off": 998
+    },
+    "pool-region": {
+      "lancashire": 1005,
+      "liverpool": 1006,
+      "birmingham": 1007,
+      "derby-nottingham": 1008,
+      "stoke": 1009,
+      "sheffield": 1010,
+      "lincolnshire": 1011,
+      "north-east": 1012,
+      "london": 1013,
+      "scotland-west": 1014,
+      "scotland-east": 1015,
+      "north-wales": 1016,
+      "ulster": 1017
     }
   },
   "retired": {

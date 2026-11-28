@@ -253,6 +253,10 @@ public class JobManager {
         int created = advertiseVacancies(clubsById());
         Log.info(Log.ENGINE_JOBS, "JobManager", "Initialized " + created + " job openings for "
                 + clubsById().size() + " clubs");
+        // R-09 + R-03: a new game starts with its trainers, secretaries and candidate pools (not on the first day:
+        // the same in every flow, whatever screen the player opens first)
+        com.rndmodgames.futtoboru.engine.recruitment.Recruitment.afterDay(currentGame, currentGame.getGameDate(),
+                Futtoboru.randomOf(gameInstance));
     }
 
     /**
@@ -583,8 +587,12 @@ public class JobManager {
             return;
         }
         Integer matchPercentage = application.getMatchPercentage();
+        // G-05: a committee does not take back a secretary it dismissed
+        boolean dismissedHere = com.rndmodgames.futtoboru.engine.committee.Committee.hasDismissed(
+                currentGame.getClubById(jobOpening.getClubId()), applicant.getId());
         // v1.0: Simple logic - make offer if match percentage >= 70%
-        if (matchPercentage != null && matchPercentage >= 70 && makeOffer(jobOpening, applicant) != null) {
+        if (!dismissedHere && matchPercentage != null && matchPercentage >= 70
+                && makeOffer(jobOpening, applicant) != null) {
             application.setStatus(ApplicationStatus.OFFER_RECEIVED);
         } else {
             application.setStatus(ApplicationStatus.REJECTED);

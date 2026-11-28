@@ -38,5 +38,20 @@
     "id": "club-owner",
     "name": "Club Owner",
     "playerSelectable": true
+  },
+  {
+    "id": "trainer",
+    "name": "Trainer",
+    "playerSelectable": false
+  },
+  {
+    "id": "secretary",
+    "name": "Secretary",
+    "playerSelectable": false
+  },
+  {
+    "id": "committee-member",
+    "name": "Committee Member",
+    "playerSelectable": false
   }
 ]
