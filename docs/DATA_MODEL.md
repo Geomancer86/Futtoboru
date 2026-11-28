@@ -19,7 +19,7 @@ futtoboru-core/src/main/resources/gamedata/
     ids.json                 data id -> runtime number, per kind, append-only (P2-5)
     seasons/1888-89/
       season.json            start, countries, editions (league + cup, with participants)
-      squads.json            per club this season: ground, balance, players (person ids)
+      squads.json            per club this season: ground, balance, players (person ids), positions, dribbling (E-01)
       nationality_modifiers.json  region_modifiers.json
       results.json           real results of the season: reference data only (D17), see below
 ```
@@ -105,7 +105,7 @@ Warnings: a person in several squads, a squad under 11, no first name, an age ou
   on load to the database's objects. A reference that doesn't resolve is reported and left out, never a crash.
 - Loading rebuilds the database objects from the data, reads the save, then binds the lookups
   (`DatabaseLoader.getClubById` and the rest) to the game's objects: one object per club, person, competition.
-- `SaveMigrations` holds one step per version (empty: v1 is the first); a file without `saveVersion` (v0.4) is
+- `SaveMigrations` holds one step per version (1 -> 2: E-01 position + dribbling); a file without `saveVersion` (v0.4) is
   listed as "older version" and not loaded. The first real v1 save is kept in `src/test/resources/saves/`.
 
 ## Real results: `seasons/<id>/results.json` (E-00b)
@@ -116,6 +116,34 @@ R2r2, SF, F...), `date`, `home`, `away`, `homeGoals`, `awayGoals`, `attendance`,
 `python tools/data/results_csv_to_json.py` (`--check` in the tests); `docs/data/check_results_1888-89.py` recomputes
 the table from it. **Decision D17: reference data only.** Read by the history screens (`history/`, seasons before the
 game's start season) and by calibration tests; never to schedule or decide a match (`ReferenceDataGuardTest`).
+
+## Positions and dribbling (E-01)
+Two optional objects on a **squad entry** (`seasons/<id>/squads.json`), keyed by a person id of that squad's `players`:
+```
+"positions": { "john-goodall-1863": { "position": "centre-forward", "source": "players-1888-89" }, ... },
+"dribbling": { "jack-southworth-1866": { "value": 18, "source": "<doc / URL that says so>" } }
+```
+- **Why the squad entry, not the person:** a position is a fact of one season (D15: what changes per season lives in
+  the season folder). Players changed lines over a career (Drummond "utility man", Weir "centre-half/forward",
+  Hendry a centre-forward at WBA and a defender at Stoke in the same season), and a person in two squads can play
+  different roles in each. The person record stays identity only. Dribbling is a skill as of that season too.
+- **`position`**, the slots of the 2-3-5 (Java `data/Position`, with a `Line` GOAL/BACK/HALF/FORWARD):
+  `goalkeeper`, `full-back`, `half-back`, `right-wing`, `inside-right`, `centre-forward`, `inside-left`, `left-wing`.
+  Backs and halves carry no side (the sources rarely give one); the five forward slots do.
+- **`source`** of a position: `players-1888-89` = the slot is named in `docs/data/history/PLAYERS_1888-89.md` (its
+  bios cite their own pages); `players-1888-89-line` = only the line is named there ("forward", "winger", "inside
+  forward", "defender"), the slot inside it was assigned to complete that squad's 2-3-5; `placeholder` = not in the
+  doc, assigned in squad order to the slot the squad is shortest of (so every squad can field a 2-3-5). 1888-89:
+  117 / 47 / 384 of 548 squad places. Replace placeholders as sources are found (keep the source honest).
+- **`dribbling`** (D19-7): same 3-23 scale as every attribute. Most players have no source: the game **derives** it
+  from his other attributes, `round(0.35 dexterity + 0.25 trickShots + 0.25 acceleration + 0.15 speed)` clamped to
+  3-23 (`PlayerAttributeGenerator.deriveDribbling`, integer maths, no dice: the random stream is unchanged). A squad
+  value overrides that and must cite its source (1888-89: Southworth "Prince of Dribblers", Archie Hunter "a prince
+  of dribblers", both 18).
+- Errors: an unknown field, a bad enum, a key that is not a player of the squad, a dribbling value outside 3-23 or
+  with an empty source. A squad player without a position is a warning. No new ids (no `ids.json` change).
+- **Saves v2:** `Player.position` (enum name) and `Player.dribbling`. The v1 -> v2 step in `SaveMigrations` adds
+  dribbling (sourced, else derived from the saved attributes) and the position from the club's squad entry.
 
 ## Rename log
 | Date | Kind | Old id | New id | Why | Approved by |

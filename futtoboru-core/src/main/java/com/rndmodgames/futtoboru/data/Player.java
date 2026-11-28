@@ -25,7 +25,15 @@ public class Player implements Serializable {
      * Professional players typically don't have a day job (full-time football).
      */
     private PlayerProfession playerProfession;
-    
+
+    /**
+     * E-01: this season's position (from the squad data; null for a generated player or a squad entry without
+     * one) and dribbling (same 3-23 scale as the other attributes: the sourced squad value where there is one,
+     * else derived from the other attributes by {@code PlayerAttributeGenerator.deriveDribbling}).
+     */
+    private Position position;
+    private Float dribbling;
+
     /**
      * Base Physical Attributes (before profession bonuses)
      * These are the player's natural attributes
@@ -100,6 +108,22 @@ public class Player implements Serializable {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public Float getDribbling() {
+        return dribbling;
+    }
+
+    public void setDribbling(Float dribbling) {
+        this.dribbling = dribbling;
     }
 
     public Float getAcceleration() {

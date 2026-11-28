@@ -29,12 +29,20 @@ CONFIDENCE = {"verified", "unverified", "placeholder"}
 OCCUPATION_CATEGORIES = {"TEXTILE", "RAILWAY", "MINING", "CONSTRUCTION", "FACTORY", "TRANSPORT", "EDUCATION",
                          "SKILLED_TRADE", "AGRICULTURE", "SERVICE", "OTHER"}
 COMPETITION_TYPES = {"LEAGUE", "CUP"}
+# E-01: the slots of the 1888 2-3-5 (DATA_MODEL.md "Positions and dribbling"); a squad entry's position this season
+POSITIONS = {"goalkeeper", "full-back", "half-back", "right-wing", "inside-right", "centre-forward", "inside-left",
+             "left-wing"}
+# where a position comes from: the slot named in docs/data/history/PLAYERS_1888-89.md, only the line named there
+# (forward / winger / inside forward / defender; the slot within it assigned), or a placeholder to fill the 2-3-5
+POSITION_SOURCES = {"players-1888-89", "players-1888-89-line", "placeholder"}
+ATTR_MIN, ATTR_MAX = 3, 23  # the attribute scale (3d6 plus modifiers, PlayerAttributeGenerator)
 KINDS = ["continent", "country", "profession", "occupation", "competition", "club", "ground", "person", "region",
          "season", "edition"]
 
 # field spec: name -> (type, required). Types: str, int, num, bool, date, datetime, strs, attrs,
-# ref:<kind>, refs:<kind>, enum:<name>, list:<record spec name>
-ENUMS = {"confidence": CONFIDENCE, "occupation_category": OCCUPATION_CATEGORIES, "competition_type": COMPETITION_TYPES}
+# ref:<kind>, refs:<kind>, enum:<name>, list:<record spec name>, map:<record spec name> (an object: id -> record)
+ENUMS = {"confidence": CONFIDENCE, "occupation_category": OCCUPATION_CATEGORIES, "competition_type": COMPETITION_TYPES,
+         "position": POSITIONS, "position_source": POSITION_SOURCES}
 SPECS = {
     "continent": {"id": ("str", True), "name": ("str", True)},
     "country": {"id": ("str", True), "name": ("str", True), "formalName": ("str", False),
@@ -62,7 +70,11 @@ SPECS = {
                 "name": ("str", True), "participants": ("refs:club", True), "sources": ("strs", True),
                 "notes": ("str", False)},
     "squad": {"club": ("ref:club", True), "ground": ("ref:ground", False), "balance": ("num", False),
-              "players": ("refs:person", True), "notes": ("str", False)},
+              "players": ("refs:person", True), "notes": ("str", False),
+              # E-01, keyed by a person id of `players`: this season's position, and a sourced dribbling value
+              "positions": ("map:squad_position", False), "dribbling": ("map:squad_dribbling", False)},
+    "squad_position": {"position": ("enum:position", True), "source": ("enum:position_source", True)},
+    "squad_dribbling": {"value": ("int", True), "source": ("str", True)},
     "nationality_modifier": {"country": ("ref:country", True), "modifiers": ("attrs", True), "notes": ("str", False),
                              "footballingStrength": ("num", False)},
     "region": {"id": ("str", True), "name": ("str", True), "country": ("ref:country", True),
@@ -162,6 +174,36 @@ def check_value(v, typ: str, where: str, rep: Report, refs: list):
             return bad("a list")
         for i, x in enumerate(v):
             check_record(x, typ[5:], f"{where}[{i}]", rep, refs)
+    elif typ.startswith("map:"):
+        if not isinstance(v, dict):
+            return bad("an object of id -> record")
+        for k, x in v.items():
+            check_record(x, typ[4:], f"{where}.{k}", rep, refs)
+
+
+def check_squad_roles(sq, where: str, rep: Report):
+    """E-01: `positions` / `dribbling` keys are players of this squad; dribbling is on the attribute scale and
+    sourced. A player without a position is a warning (the game then has no position for him)."""
+    if not isinstance(sq, dict):
+        return
+    players = sq.get("players") if isinstance(sq.get("players"), list) else []
+    for field in ("positions", "dribbling"):
+        table = sq.get(field)
+        if not isinstance(table, dict):
+            continue
+        for pid, x in table.items():
+            if pid not in players:
+                rep.error(f"{where}.{field}", f"`{pid}` is not a player of this squad")
+            if field == "dribbling" and isinstance(x, dict):
+                val, src = x.get("value"), x.get("source")
+                if isinstance(val, int) and not isinstance(val, bool) and not ATTR_MIN <= val <= ATTR_MAX:
+                    rep.error(f"{where}.dribbling.{pid}", f"value {val} is outside {ATTR_MIN}-{ATTR_MAX}")
+                if isinstance(src, str) and not src.strip():
+                    rep.error(f"{where}.dribbling.{pid}", "empty source (a sourced value needs its source)")
+    positions = sq.get("positions") if isinstance(sq.get("positions"), dict) else {}
+    for pid in players:
+        if isinstance(pid, str) and pid not in positions:
+            rep.warn(f"{where} `{pid}`", "no position")
 
 
 def check_results(data: list, where: str, sid: str, season: dict | None, rep: Report):
@@ -310,6 +352,8 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
                     register(kind, rec, rw)
             if spec_name == "squad":
                 squads_by_season[parts[1]] = data
+                for i, rec in enumerate(data):
+                    check_squad_roles(rec, f"{where}[{i}]", rep)
             if spec_name == "result":
                 results.append((data, where, parts[1]))
         for sid in manifest.get("seasons", []):

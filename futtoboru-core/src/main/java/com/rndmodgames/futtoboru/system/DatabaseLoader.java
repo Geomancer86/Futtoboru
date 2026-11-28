@@ -27,6 +27,7 @@ import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.data.PlayerProfession;
+import com.rndmodgames.futtoboru.data.Position;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.RegionModifier;
 import com.rndmodgames.futtoboru.data.Season;
@@ -589,14 +590,21 @@ public class DatabaseLoader {
                 club.setStadium(stadium);
             }
 
-            // Players
+            // Players (E-01: this season's position and any sourced dribbling come from the squad entry)
+            Map<String, Position> positions = data.squadPositions(sq);
+            Map<String, Integer> dribbling = data.squadDribbling(sq);
             for (String personId : sq.refs("players")) {
                 Person person = personsByDataId.get(personId);
                 if (!listed.add(personId)) {
                     person = copyOf(person, dataIds.nextId());
                     copies++;
                 }
-                club.getPlayers().add(createPlayer(person, club, season, dataIds, rng));
+                Player player = createPlayer(person, club, season, dataIds, rng);
+                player.setPosition(positions.get(personId));
+                if (dribbling.containsKey(personId)) {
+                    player.setDribbling(dribbling.get(personId).floatValue());
+                }
+                club.getPlayers().add(player);
             }
 
             season.getClubs().add(club);

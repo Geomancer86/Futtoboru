@@ -1,11 +1,17 @@
 package com.rndmodgames.futtoboru.system.save;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.UnaryOperator;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.rndmodgames.futtoboru.data.Position;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.data.DataRecord;
+import com.rndmodgames.futtoboru.system.data.GameData;
+import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 
 /**
  * Save migrations (P2-5, the DarkBlade pattern): one step per save version, each turns the JSON tree of a version
@@ -18,8 +24,11 @@ import com.badlogic.gdx.utils.JsonValue;
  */
 public final class SaveMigrations {
 
-    /** from version -> step to the next version. Empty: v1 is the current and first format. */
+    /** from version -> step to the next version. */
     private static final Map<Integer, UnaryOperator<JsonValue>> STEPS = new TreeMap<>();
+    static {
+        STEPS.put(1, SaveMigrations::addPositionAndDribbling);
+    }
 
     private SaveMigrations() {
     }
@@ -48,5 +57,62 @@ public final class SaveMigrations {
             }
         }
         return tree;
+    }
+
+    /**
+     * v1 -> v2 (E-01): every player gets {@code dribbling} (the squad's sourced value, else derived from his saved
+     * attributes exactly as a new game derives it) and, when the data has one, {@code position} (his club's squad
+     * entry). The random attributes stay as saved.
+     */
+    static JsonValue addPositionAndDribbling(JsonValue root) {
+        GameData data = DatabaseLoader.getGameData();
+        Map<Long, String> personDataId = new HashMap<>();
+        for (JsonValue p = child(root, "persons"); p != null; p = p.next) {
+            if (p.has("id") && p.has("dataId")) {
+                personDataId.put(p.getLong("id"), p.getString("dataId"));
+            }
+        }
+        Map<Long, DataRecord> squadOfPlayer = new HashMap<>();
+        if (data != null) {
+            for (JsonValue c = child(root, "clubs"); c != null; c = c.next) {
+                DataRecord squad = c.has("dataId") ? data.squadOf(c.getString("dataId")) : null;
+                for (JsonValue id = squad == null ? null : child(c, "players"); id != null; id = id.next) {
+                    if (id.isLong()) {
+                        squadOfPlayer.put(id.asLong(), squad);
+                    }
+                }
+            }
+        }
+        for (JsonValue p = child(root, "players"); p != null; p = p.next) {
+            Long id = p.has("id") ? p.getLong("id") : null;
+            Long personId = p.has("person") && p.get("person").isLong() ? p.getLong("person") : null;
+            DataRecord squad = id == null ? null : squadOfPlayer.get(id);
+            String person = data == null || personId == null ? null
+                    : data.resolve(GameData.PERSON, personDataId.get(personId));
+            if (!p.has("dribbling")) {
+                Integer sourced = squad == null || person == null ? null : data.squadDribbling(squad).get(person);
+                float value = sourced != null ? sourced
+                        : PlayerAttributeGenerator.deriveDribbling(attr(p, "dexterity"), attr(p, "acceleration"),
+                                attr(p, "trickShots"), attr(p, "speed"));
+                p.addChild("dribbling", new JsonValue((long) value));
+            }
+            if (!p.has("position") && squad != null && person != null) {
+                Position pos = data.squadPositions(squad).get(person);
+                if (pos != null) {
+                    p.addChild("position", new JsonValue(pos.name()));
+                }
+            }
+        }
+        return root;
+    }
+
+    private static JsonValue child(JsonValue v, String field) {
+        JsonValue list = v == null ? null : v.get(field);
+        return list == null ? null : list.child;
+    }
+
+    private static Float attr(JsonValue player, String field) {
+        JsonValue v = player.get(field);
+        return v == null || !v.isNumber() ? null : v.asFloat();
     }
 }

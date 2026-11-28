@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -195,6 +196,12 @@ public class PlayerDetailScreenTable extends VisTable {
         infoTable.add(new VisLabel(clubName)).left();
         infoTable.row();
         
+        // E-01: this season's position in the 2-3-5
+        infoTable.add(new VisLabel(LanguageModLoader.getValue("player_position"))).left().width(UiTheme.size("col.label"));
+        infoTable.add(new VisLabel(LanguageModLoader.getValue(currentPlayer.getPosition() == null ? "position_unknown"
+                : currentPlayer.getPosition().labelKey()))).left();
+        infoTable.row();
+
         // Player Profession (day job for amateur/semi-pro)
         infoTable.add(new VisLabel("Profession:")).left().width(UiTheme.size("col.label"));
         String professionName = "N/A (Professional Player)";
@@ -561,6 +568,7 @@ public class PlayerDetailScreenTable extends VisTable {
         technicalAttributesTable.add(new VisLabel("Technical Attributes")).colspan(3).left().padBottom(UiTheme.space("xs"));
         technicalAttributesTable.row();
         
+        addAttributeRow(technicalAttributesTable, LanguageModLoader.getValue("player_dribbling"), currentPlayer.getDribbling());
         addAttributeRow(technicalAttributesTable, "Passing", currentPlayer.getPassing());
         addAttributeRow(technicalAttributesTable, "Kicking", currentPlayer.getKicking());
         addAttributeRow(technicalAttributesTable, "Long Shots", currentPlayer.getLongShots());
