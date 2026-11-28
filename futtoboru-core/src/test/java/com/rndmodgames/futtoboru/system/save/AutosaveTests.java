@@ -18,6 +18,7 @@ import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -49,7 +50,7 @@ class AutosaveTests {
         SaveLoadSystem.setGameFolder(folder.toFile());
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         config.updatesPerSecond = 30;
-        application = new Futtoboru();
+        application = new Futtoboru(SeasonMemo.SEED); // T-01: the seed of the shared season memo
         new HeadlessApplication(application, config);
         BaseTest.awaitHeadlessCreate();
     }
@@ -104,6 +105,7 @@ class AutosaveTests {
     }
 
     @Test
+    @Tag("slow")
     void writtenOnTheFirstOfEachMonthOnceAndLoadsAsTheSameGame() throws IOException {
         SaveGame game = newGame();
         SaveLoadSystem.deleteSave(SaveLoadSystem.autosaveFile());
@@ -147,13 +149,14 @@ class AutosaveTests {
         assertTrue(engine().getAutosave().awaitWrite(10_000));
     }
 
+    /** T-01: the seeded season is played once per test JVM ({@link SeasonMemo}), recording the autosave days. */
     @Test
+    @Tag("slow")
     void writtenOnTheSeasonRolloverDay() {
-        SaveGame game = newGame();
-        List<LocalDate> written = playRecording(game, 800,
-                () -> engine().getAuthorityManager().getSeasonRollovers() > 0);
-        assertTrue(engine().getAuthorityManager().getSeasonRollovers() > 0, "the season rolled over");
-        LocalDate rollover = game.getGameDate().toLocalDate();
+        SeasonMemo season = SeasonMemo.get(application);
+        List<LocalDate> written = season.autosaveDates();
+        assertTrue(season.rollovers() > 0, "the season rolled over");
+        LocalDate rollover = season.rolloverDate();
 
         assertEquals(rollover, written.get(written.size() - 1), "autosaved on the rollover day " + written);
         LocalDate first = LocalDate.of(1888, 5, 1);
@@ -168,6 +171,7 @@ class AutosaveTests {
     }
 
     @Test
+    @Tag("slow")
     void aFailedAutosaveIsLoggedAndTheGameGoesOn() throws IOException {
         SaveGame game = newGame();
         // the saves folder can't be made: a file is in its place

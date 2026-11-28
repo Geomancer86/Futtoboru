@@ -44,6 +44,10 @@ public class Autosave {
     private int writes;
     private Future<?> lastWrite;
 
+    /** How a game becomes save text; tests that only count autosave days swap in a cheap one (T-01). */
+    private java.util.function.Function<SaveGame, String> encoder =
+            game -> SaveCodec.encode(game, SaveLoadSystem.AUTOSAVE_NAME, LocalDateTime.now());
+
     /** @return true when an autosave is due on {@code date}: the 1st of a month, or a season rolled over that day */
     public static boolean isDue(LocalDate date, boolean seasonRolledOver) {
         return date != null && (seasonRolledOver || date.getDayOfMonth() == 1);
@@ -83,7 +87,7 @@ public class Autosave {
         rolloverPending = false;
         String text;
         try {
-            text = SaveCodec.encode(game, SaveLoadSystem.AUTOSAVE_NAME, LocalDateTime.now());
+            text = encoder.apply(game);
         } catch (RuntimeException e) {
             Log.error(Log.SYSTEM_INIT, TAG, "autosave for " + date + " could not be encoded", e);
             return false;
@@ -99,6 +103,11 @@ public class Autosave {
             }
         });
         return true;
+    }
+
+    /** Tests only (T-01): replaces the encoder, e.g. to count autosave days without writing 24 MB each time. */
+    void setEncoderForTests(java.util.function.Function<SaveGame, String> encoder) {
+        this.encoder = encoder;
     }
 
     /** @return the game date of the last autosave started, or null */

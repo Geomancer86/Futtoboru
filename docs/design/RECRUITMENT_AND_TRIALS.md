@@ -253,6 +253,12 @@ The order without the engine: R-02 → R-09 → R-03 → R-04 → R-05 → R-07 
 matches and signing; R-06 adds the scenes when the engine is ready (v0.6+).
 
 ## 9. Open questions for the producer
+
+> **Answered 2026-11-28 (ROADMAP D28):** all eleven as recommended, plus Q12 origin nudges, Q13 foreign-born
+> players with family backstories and **per-language speaking / understanding / literacy attributes** feeding
+> cohesion, Q14 football-upbringing effects (not a per-country table), Q15 agents research and convert the era
+> player sources. Slices gain **R-10** (era player sources research + conversion) and **R-11** (languages and
+> literacy: data, attributes, cohesion effect, sourced literacy and migration rates).
 1. **Who is the player at the club?** (a) the secretary(-manager), who recruits and signs alone; (b) the secretary,
    and the committee must approve wages above a band and votes on big signings; (c) the committee is only flavour.
    **Recommend (b)**: historical, and it gives the committee a voice.
@@ -277,3 +283,56 @@ matches and signing; R-06 adds the scenes when the engine is ready (v0.6+).
     keeps August busy and the season about matches.
 11. **Poaching our own men:** (a) the AI may approach our men in the close season (pre-1893) with a news item and a
     chance to counter-offer; (b) never. **Recommend (a).**
+
+## 10. Languages and literacy (R-11)
+D28 Q13. Rates and sources: [`LANGUAGES_LITERACY_1880-1914.md`](../data/history/LANGUAGES_LITERACY_1880-1914.md)
+(`L§n.m`); player data sources (R-10): [`PLAYER_SOURCES.md`](../data/history/PLAYER_SOURCES.md).
+- **Fair, per person:** language comes only from a man's own upbringing (birthplace, parents' origin, schooling
+  cohort), never from a fixed per-country table and never linked to football ability or character (Q14 spirit). Words
+  in the UI describe skills ("reads well", "speaks little English"), not origins.
+
+### 10.1 Fields
+- **Data (pack level, sourced, listed in `pack.json`):** `languages.json` (id, name, sources; ids get `ids.json`
+  numbers): `english`, `welsh`, `scottish-gaelic`, `irish`, `german`, `yiddish`, `italian`, `lithuanian`, more only
+  when a community is sourced (L§4). `language_rates.json`: per region (the `region_modifiers` regions plus Welsh,
+  Scottish and Irish counties or provinces) and birth-year band: share speaking each language at home, share
+  monolingual, and literacy (can sign his name, men / women), each row with `sources` and a confidence (L§1-3).
+- **Person (runtime, saves v3):** `languages`: a list of `{language, speak, understand, readWrite}`, levels 0-4
+  (`none`, `a few words`, `basic`, `good`, `native`; read/write: `none`, `signs his name`, `reads slowly`, `reads well`,
+  `writes well`). Plus `homeLanguage`. `people.json` gets an optional `languages` only when a source says so (e.g. a
+  Welsh speaker named in a bio), with its source; else generated.
+
+### 10.2 Generation (deterministic)
+- On the person's own fork `fork("lang:" + personId)`: home language(s) from the rates of his **birth region and
+  birth-year band** (and the parents' origin for the second generation: an Irish-born father in Liverpool gives a
+  chance of some Irish, L§4.1); English from school (all after 1870/1872 in Britain) and from bilingual rates (Wales
+  L§2, Ireland L§3); literacy from the cohort's signature rate of his birth area (L§1.1-1.7), raised one level for an
+  `amateur` or schoolmaster backstory (Q12), lowered for a pit or mill boy who left school early (only once a source on the
+  1880 attendance exemptions is added; L§1 schooling table).
+- Foreign-born men (Q13): the family backstory sets the home language (German, Yiddish, Italian, ...) and the age he
+  arrived sets English (arrived as a child = native English, as all sourced early cases, L§4.8).
+- Old saves (v2 → v3): the same rule, run in the migration step, so a loaded game equals a new one.
+
+### 10.3 Change over time
+- **Speak/understand** in the dressing-room language rise with months spent at a club and town where it is spoken
+  (faster when young, slower after 30; capped at `good` for a non-native adult). Unused home languages never drop
+  below `basic`.
+- **Read/write** rises only slowly (night school, a literate team-mate's help: a rare event), never by playing.
+
+### 10.4 Effects (small, tunable, all in data)
+| Where | Effect |
+|---|---|
+| **Team cohesion** | the squad's working language is the majority's; a man below `basic` understanding gains familiarity with team-mates more slowly (a cohesion penalty that fades as he learns). Two men sharing a home language bond faster. |
+| **Captain and trainer** | a captain's on-field instruction and the trainer's drills reach a man scaled by his understanding of the speaker's language (ECS engine input, WORKSTATION: one `understanding` value per athlete, 0..1). |
+| **Letters and contracts** | a man who cannot read needs someone to read letters and terms to him: his replies are slower (a day), and a contract signed "with his mark" counts (marks were the norm on marriage registers, L§1; no football source
+  yet) but he misjudges unusual terms more often (summer pay, job found). |
+| **Press** | a man reacts to printed praise or criticism only if he reads (or a team-mate reads it to him, a smaller effect). |
+| **Recruiting** | letters in §3.3 are written "by a friend" for a man who cannot write; an observer's notes on a candidate include his language only if they talked. |
+
+### 10.5 Slices
+| Slice | Content | Depends on | Machine |
+|---|---|---|---|
+| **R-11a** | data: `languages.json`, `language_rates.json` (fill the gaps listed in L§5), validator + pytest, `ids.json` | R-10 note | BOOK3PRO |
+| **R-11b** | generator, `Person.languages`, saves v3 migration, player screen words | R-11a, R-03 | BOOK3PRO |
+| **R-11c** | effects: cohesion, letters and contracts, press | R-11b | BOOK3PRO |
+| **R-11d** | `understanding` input in the ECS engine (captain instructions) | R-11b, E-lanes | **WORKSTATION** |

@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
@@ -43,6 +44,7 @@ import com.rndmodgames.futtoboru.system.save.SaveCodec;
  * is in gamedata (no played fixtures, zeroed tables, starting balances, unexecuted scripts, only data editions) and
  * shares no object with the earlier game; runtime ids stay the same.
  */
+@Tag("slow")
 class NewGameFreshDataTests {
 
     private static final long SEED = 1888L;

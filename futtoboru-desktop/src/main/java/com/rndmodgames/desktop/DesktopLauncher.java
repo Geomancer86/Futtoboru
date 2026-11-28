@@ -38,7 +38,15 @@ public class DesktopLauncher {
         
         try {
             createApplication();
+            if (SmokeRun.enabled()) {
+                // T-01: the window closed; end the JVM (engine threads included) with the smoke result
+                System.exit(SmokeRun.passed() ? 0 : SmokeRun.EXIT_FAILED);
+            }
         } catch (Exception e) {
+            if (SmokeRun.enabled()) {
+                e.printStackTrace();
+                System.exit(SmokeRun.exitCodeFor(e));
+            }
             System.err.println("========================================");
             System.err.println("CRITICAL ERROR DURING APPLICATION STARTUP");
             System.err.println("========================================");
@@ -58,7 +66,9 @@ public class DesktopLauncher {
 
     private static Lwjgl3Application createApplication() {
         
-        return new Lwjgl3Application(new Futtoboru(), getDefaultConfiguration());
+        // getDefaultConfiguration() starts GLFW: no display fails here, before the game exists
+        Lwjgl3ApplicationConfiguration configuration = getDefaultConfiguration();
+        return new Lwjgl3Application(SmokeRun.enabled() ? SmokeRun.game() : new Futtoboru(), configuration);
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {

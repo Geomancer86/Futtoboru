@@ -7,16 +7,18 @@ import com.rndmodgames.futtoboru.match.ecs.IdentityComponent;
 import com.rndmodgames.futtoboru.match.ecs.MatchWorld;
 import com.rndmodgames.futtoboru.match.ecs.SpawnRole;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
+import com.rndmodgames.futtoboru.match.ecs.body.BodyComponent;
 
 /**
- * Debug viewer only: view-side stand-in positions for player and official entities that have no simulated body yet
- * (until the E-13 bodies bring their own pose source). Each side lines up in the 1888 2-3-5, shifts with the ball and
+ * Debug viewer only: view-side stand-in positions for player and official entities that have no simulated body
+ * (officials until E-16; entities with a {@code BodyComponent} are drawn from it and skipped here). Each side lines up in the 1888 2-3-5, shifts with the ball and
  * the nearest forward chases it; officials follow play from the touchlines. Pure view state, stepped once per captured
  * tick at a running pace; it reads the ball and writes nothing of the simulation.
  */
 public final class StandInPlayers implements PoseSource {
 
-    private static final Family FAMILY = Family.all(IdentityComponent.class).exclude(BallComponent.class).get();
+    private static final Family FAMILY = Family.all(IdentityComponent.class)
+            .exclude(BallComponent.class, BodyComponent.class).get();
     /** 2-3-5 (keeper, two backs, three half-backs, five forwards) for the side attacking +x: x, y in metres. */
     private static final double[][] SHAPE = { { -48, 0 }, { -34, -10 }, { -34, 10 }, { -18, -18 }, { -18, 0 },
             { -18, 18 }, { -3, -26 }, { -3, -12 }, { -3, 0 }, { -3, 12 }, { -3, 26 } };
