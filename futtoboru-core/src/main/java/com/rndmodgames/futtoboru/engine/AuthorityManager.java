@@ -25,6 +25,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Authority Manager v1
@@ -515,16 +516,16 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_TOP_SCORER");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Golden Boot " + seasonName + ": " + scorer.getName() + " " + scorer.getLastname());
-        
+        String scorerName = scorer.getName() + " " + scorer.getLastname();
+        message.setTitle(LanguageModLoader.format("msg_golden_boot_title", seasonName, scorerName));
+
         StringBuilder content = new StringBuilder();
-        content.append(scorer.getName()).append(" ").append(scorer.getLastname())
-               .append(" has finished as the top goalscorer in the ").append(league.getName())
-               .append(" with ").append(goals).append(" goals!\n\n");
-        
+        content.append(LanguageModLoader.format("msg_golden_boot_text", scorerName, league.getName(), goals))
+               .append("\n\n");
+
         Club club = currentGame.getClubById(scorer.getCurrentClubId());
         if (club != null) {
-            content.append("His goals were vital for ").append(club.getName()).append(" this season.");
+            content.append(LanguageModLoader.format("msg_golden_boot_club", club.getName()));
         }
         
         message.setPlainTextMessage(content.toString());
@@ -542,13 +543,13 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_BEST_DEFENSE");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Solid Rock " + seasonName + ": " + club.getName() + "'s Defense");
-        
+        message.setTitle(LanguageModLoader.format("msg_best_defence_title", seasonName, club.getName()));
+
         StringBuilder content = new StringBuilder();
-        content.append(club.getName()).append(" has finished the season with the best defensive record in the ")
-               .append(league.getName()).append(".\n\n");
-        content.append("They conceded only ").append(club.getGoalsConceded()).append(" goals in ")
-               .append(club.getMatchesPlayed()).append(" matches.");
+        content.append(LanguageModLoader.format("msg_best_defence_text", club.getName(), league.getName()))
+               .append("\n\n");
+        content.append(LanguageModLoader.format("msg_best_defence_conceded", club.getGoalsConceded(),
+               club.getMatchesPlayed()));
         
         message.setPlainTextMessage(content.toString());
         message.setIsRead(false);
@@ -565,23 +566,24 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_COMPLETE");
         message.setPriority(MessagePriority.URGENT);
-        message.setTitle(seasonName + " - Season Complete");
-        
+        message.setTitle(LanguageModLoader.format("msg_league_complete_title", seasonName));
+
         StringBuilder content = new StringBuilder();
-        content.append("The season for the ").append(league.getName()).append(" has come to an end.\n\n");
-        content.append("FINAL STANDINGS:\n");
-        
+        content.append(LanguageModLoader.format("msg_league_complete_text", league.getName())).append("\n\n");
+        content.append(LanguageModLoader.getValue("msg_final_standings")).append("\n");
+
         for (int i = 0; i < Math.min(5, standings.size()); i++) {
             Club c = standings.get(i);
-            content.append(i + 1).append(". ").append(c.getName())
-                   .append(" (").append(c.getPoints()).append(" pts)\n");
+            content.append(LanguageModLoader.format("msg_standings_row", i + 1, c.getName(), c.getPoints()))
+                   .append("\n");
         }
-        
+
         if (standings.size() > 5) {
-            content.append("... and ").append(standings.size() - 5).append(" more clubs.\n");
+            content.append(LanguageModLoader.format("msg_standings_more", standings.size() - 5)).append("\n");
         }
-        
-        content.append("\nCongratulations to the Champions: ").append(standings.get(0).getName()).append("!");
+
+        content.append("\n").append(LanguageModLoader.format("msg_league_complete_champions",
+                standings.get(0).getName()));
         
         message.setPlainTextMessage(content.toString());
         message.setIsRead(false);
@@ -598,13 +600,11 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_CHAMPION");
         message.setPriority(MessagePriority.URGENT);
-        message.setTitle("CHAMPIONS! " + champion.getName() + " win the " + seasonName);
-        
+        message.setTitle(LanguageModLoader.format("msg_champion_title", champion.getName(), seasonName));
+
         StringBuilder content = new StringBuilder();
-        content.append(champion.getName()).append(" have been declared champions of the ").append(league.getName()).append("!\n\n");
-        content.append("After a grueling season, they have emerged at the top of the table.\n\n");
-        content.append("The club has been awarded a prize of ").append(Money.format(LEAGUE_CHAMPION_PRIZE))
-               .append(" for their achievement.");
+        content.append(LanguageModLoader.format("msg_champion_text", champion.getName(), league.getName(),
+               Money.format(LEAGUE_CHAMPION_PRIZE)));
         
         message.setPlainTextMessage(content.toString());
         message.setIsRead(false);
@@ -1033,7 +1033,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
                     // Create cup draw result message for Round 1 matches
                     if (homeClub != null && awayClub != null) {
                         Message drawResultMessage = messageManager.createCupDrawResultMessage(
-                            cup, homeClub, awayClub, match.getMatchDateTime(), "First Round"
+                            cup, homeClub, awayClub, match.getMatchDateTime(), LanguageModLoader.getValue("msg_round_first")
                         );
                         if (drawResultMessage != null) {
                             messageManager.deliverMessage(drawResultMessage);
@@ -1133,7 +1133,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: FINAL VERIFICATION - Matches by round in clubs: " + finalMatchesByRoundInClubs);
         
         // Create MANDATORY draw message for the user (to reveal the draw)
-        Message mandatoryDrawMessage = messageManager.createCupDrawMessage(cup, edition, 1, "First Round");
+        Message mandatoryDrawMessage = messageManager.createCupDrawMessage(cup, edition, 1, LanguageModLoader.getValue("msg_round_first"));
         if (mandatoryDrawMessage != null) {
             mandatoryDrawMessage.setScheduledDate(currentDate.plusDays(1));
             messageManager.scheduleMessage(mandatoryDrawMessage);
@@ -1455,23 +1455,27 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
      */
     private String getRoundName(Integer roundNumber, int participants) {
         if (roundNumber == null) {
-            return "Round " + roundNumber;
+            return LanguageModLoader.format("msg_round_number", roundNumber);
         }
-        
+
         // Calculate round name based on number of participants
         if (participants == 2) {
-            return "Final";
+            return LanguageModLoader.getValue("msg_round_final");
         } else if (participants == 4) {
-            return "Semi-Final";
+            return LanguageModLoader.getValue("msg_round_semi_final");
         } else if (participants == 8) {
-            return "Quarter-Final";
+            return LanguageModLoader.getValue("msg_round_quarter_final");
         } else {
             // Use ordinal for other rounds
-            String[] ordinals = {"", "First", "Second", "Third", "Fourth", "Fifth", "Sixth"};
-            if (roundNumber > 0 && roundNumber < ordinals.length) {
-                return ordinals[roundNumber] + " Round";
+            switch (roundNumber) {
+            case 1: return LanguageModLoader.getValue("msg_round_first");
+            case 2: return LanguageModLoader.getValue("msg_round_second");
+            case 3: return LanguageModLoader.getValue("msg_round_third");
+            case 4: return LanguageModLoader.getValue("msg_round_fourth");
+            case 5: return LanguageModLoader.getValue("msg_round_fifth");
+            case 6: return LanguageModLoader.getValue("msg_round_sixth");
+            default: return LanguageModLoader.format("msg_round_number", roundNumber);
             }
-            return "Round " + roundNumber;
         }
     }
     
@@ -1595,12 +1599,11 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         message.setMessageType("CUP_COMPLETE");
         message.setPriority(MessagePriority.URGENT);
         // edition name in the title: MessageManager drops a second message with the same type and title
-        message.setTitle((edition != null && edition.getName() != null ? edition.getName() : cup.getName()) + " Complete");
-        
+        message.setTitle(LanguageModLoader.format("msg_cup_complete_title",
+                edition != null && edition.getName() != null ? edition.getName() : cup.getName()));
+
         StringBuilder content = new StringBuilder();
-        content.append("The ").append(cup.getName()).append(" has concluded.\n\n");
-        content.append("Winners: ").append(winner.getName()).append("\n\n");
-        content.append("Congratulations to ").append(winner.getName()).append(" on winning the ").append(cup.getName()).append("!");
+        content.append(LanguageModLoader.format("msg_cup_complete_text", cup.getName(), winner.getName()));
         
         message.setPlainTextMessage(content.toString());
         message.setIsRead(false);
@@ -1766,16 +1769,11 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_REPLAY");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle(cup.getName() + " Replay");
-        
+        message.setTitle(LanguageModLoader.format("msg_cup_replay_title", cup.getName()));
+
         StringBuilder content = new StringBuilder();
-        content.append("The ").append(cup.getName()).append(" match between ");
-        content.append(homeClub.getName()).append(" and ").append(awayClub.getName());
-        content.append(" ended in a draw.\n\n");
-        content.append("A replay has been scheduled for ");
-        content.append(formatDate(replayDate));
-        content.append(".\n\n");
-        content.append("The replay will be played at ").append(homeClub.getName()).append("'s ground.");
+        content.append(LanguageModLoader.format("msg_cup_replay_text", cup.getName(), homeClub.getName(),
+                awayClub.getName(), formatDate(replayDate)));
         
         message.setPlainTextMessage(content.toString());
         message.setIsRead(false);
@@ -1789,9 +1787,9 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
      */
     private String formatDate(LocalDateTime date) {
         if (date == null) {
-            return "TBA";
+            return LanguageModLoader.getValue("msg_tba");
         }
-        return date.getDayOfMonth() + " " + date.getMonth().toString() + " " + date.getYear();
+        return MessageManager.formatDay(date.getDayOfMonth(), date.getMonthValue(), date.getYear());
     }
 
     /**
@@ -1886,8 +1884,8 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         Message msg = new Message();
         msg.setCategory(MessageCategory.SYSTEM);
         msg.setPriority(MessagePriority.NORMAL);
-        msg.setTitle("New Season: " + nextEdition.getName());
-        msg.setPlainTextMessage("The fixture list for the upcoming " + nextEdition.getName() + " season is being prepared.");
+        msg.setTitle(LanguageModLoader.format("msg_new_season_title", nextEdition.getName()));
+        msg.setPlainTextMessage(LanguageModLoader.format("msg_new_season_text", nextEdition.getName()));
         msg.setIsRead(false);
         msg.setIsDeleted(false);
         messageManager.deliverMessage(msg);

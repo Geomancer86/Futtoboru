@@ -1,5 +1,11 @@
 package com.rndmodgames.localization;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
+
 import com.badlogic.gdx.utils.I18NBundle;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -52,8 +58,14 @@ public class LanguageModLoader {
 	 * @return
 	 */
 	public static String getValue(String key) {
-	    
-	    if (baseBundle == null || baseBundle.get(key) == null || baseBundle.get(key).equals("")) {
+
+	    if (baseBundle == null) {
+	        // no bundle loaded yet (headless tests, early statics): the English (US) file from the classpath
+	        String value = fallback().getProperty(key);
+	        return value == null || value.isEmpty() ? key : value.replace("???", "");
+	    }
+
+	    if (baseBundle.get(key) == null || baseBundle.get(key).equals("")) {
             
             /**
              * TODO: this logs as error when initially loading the bundles but shouldn't be
@@ -63,5 +75,34 @@ public class LanguageModLoader {
         }
         
         return baseBundle.get(key).replace("???", "");
+	}
+
+	/**
+	 * The label of {@code key} with {0}, {1}... replaced by {@code args}. The bundles hold plain patterns (no
+	 * MessageFormat quoting, so an apostrophe is just an apostrophe).
+	 */
+	public static String format(String key, Object... args) {
+	    String result = getValue(key);
+	    for (int i = 0; i < args.length; i++) {
+	        result = result.replace("{" + i + "}", String.valueOf(args[i]));
+	    }
+	    return result;
+	}
+
+	private static Properties fallback;
+
+	private static synchronized Properties fallback() {
+	    if (fallback == null) {
+	        Properties properties = new Properties();
+	        try (InputStream in = LanguageModLoader.class.getResourceAsStream("/mods/language/BaseBundle_en_us.properties")) {
+	            if (in != null) {
+	                properties.load(new InputStreamReader(in, StandardCharsets.UTF_8));
+	            }
+	        } catch (IOException e) {
+	            Log.info(Log.DATA_LOADING, "fallback language bundle unreadable: " + e.getMessage());
+	        }
+	        fallback = properties;
+	    }
+	    return fallback;
 	}
 }

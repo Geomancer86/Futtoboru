@@ -115,7 +115,7 @@ public class MenuScreen implements Screen {
 		 * Match Engine Debug Button
 		 * Development/Testing screen for match engine
 		 */
-		final VisTextButton matchEngineDebugButton = new VisTextButton("Match Engine Debug");
+		final VisTextButton matchEngineDebugButton = new VisTextButton(LanguageModLoader.getValue("menu_match_engine_debug"));
 		
 		matchEngineDebugButton.addCaptureListener(new InputListener() {
 			

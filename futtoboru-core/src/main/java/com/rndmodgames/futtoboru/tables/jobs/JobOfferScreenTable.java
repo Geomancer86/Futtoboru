@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.math.BigDecimal;
 import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
@@ -50,7 +51,7 @@ public class JobOfferScreenTable extends VisTable {
         
         // Title
         this.row();
-        this.add(new VisLabel("Job Offers")).colspan(4);
+        this.add(new VisLabel(LanguageModLoader.getValue("jobs_offers"))).colspan(4);
         this.row();
         this.addSeparator();
         
@@ -83,7 +84,8 @@ public class JobOfferScreenTable extends VisTable {
         boolean hasOfferInInbox = false;
         if (currentGame.getAllMessages() != null) {
             for (com.rndmodgames.futtoboru.data.Message msg : currentGame.getAllMessages()) {
-                if (msg.getTitle() != null && msg.getTitle().contains("Job Offer")) {
+                if ("JOB_OFFER".equals(msg.getMessageType()) || (msg.getTitle() != null
+                        && (msg.getTitle().contains("Job Offer") || msg.getTitle().equals(LanguageModLoader.getValue("jobs_msg_offer_title"))))) {
                     hasOfferInInbox = true;
                     break;
                 }
@@ -92,25 +94,25 @@ public class JobOfferScreenTable extends VisTable {
         
         if (offers.isEmpty() && !hasOfferInInbox) {
             offersListTable.row();
-            offersListTable.add(new VisLabel("No pending job offers.")).colspan(4);
+            offersListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_no_offers"))).colspan(4);
             return;
         }
         
         // Show link to inbox if offers exist but not shown here
         if (offers.isEmpty() && hasOfferInInbox) {
             offersListTable.row();
-            offersListTable.add(new VisLabel("Check your Inbox for job offer notifications.")).colspan(4);
+            offersListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_offers_in_inbox"))).colspan(4);
             offersListTable.row();
-            offersListTable.add(new VisLabel("(Offers may have expired or been processed)")).colspan(4);
+            offersListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_offers_expired"))).colspan(4);
             return;
         }
         
         // Header
         offersListTable.row();
-        offersListTable.add(new VisLabel("Club")).width(UiTheme.size("col.wide"));
-        offersListTable.add(new VisLabel("Salary")).width(UiTheme.size("col.label"));
-        offersListTable.add(new VisLabel("Contract")).width(UiTheme.size("col.label"));
-        offersListTable.add(new VisLabel("Actions")).width(UiTheme.size("col.xwide"));
+        offersListTable.add(new VisLabel(LanguageModLoader.getValue("table_club"))).width(UiTheme.size("col.wide"));
+        offersListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_salary"))).width(UiTheme.size("col.label"));
+        offersListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_contract"))).width(UiTheme.size("col.label"));
+        offersListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_actions"))).width(UiTheme.size("col.xwide"));
         offersListTable.row();
         offersListTable.addSeparator();
         
@@ -137,14 +139,14 @@ public class JobOfferScreenTable extends VisTable {
             
             offersListTable.row();
             offersListTable.add(new VisLabel(club.getName())).width(UiTheme.size("col.wide"));
-            offersListTable.add(new VisLabel(Money.format(offer.getSalary()) + "/month")).width(UiTheme.size("col.label"));
-            offersListTable.add(new VisLabel(offer.getContractLengthMonths() + " months")).width(UiTheme.size("col.label"));
+            offersListTable.add(new VisLabel(LanguageModLoader.format("jobs_per_month", Money.format(offer.getSalary())))).width(UiTheme.size("col.label"));
+            offersListTable.add(new VisLabel(LanguageModLoader.format("jobs_months", offer.getContractLengthMonths()))).width(UiTheme.size("col.label"));
             
             // Action buttons
             VisTable buttonsTable = new VisTable(true);
             
             // Accept button
-            VisTextButton acceptButton = new VisTextButton("Accept");
+            VisTextButton acceptButton = new VisTextButton(LanguageModLoader.getValue("jobs_accept"));
             acceptButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                 @Override
                 public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
@@ -173,7 +175,7 @@ public class JobOfferScreenTable extends VisTable {
             buttonsTable.add(acceptButton);
             
             // Reject button
-            VisTextButton rejectButton = new VisTextButton("Reject");
+            VisTextButton rejectButton = new VisTextButton(LanguageModLoader.getValue("jobs_reject"));
             rejectButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                 @Override
                 public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
@@ -194,7 +196,7 @@ public class JobOfferScreenTable extends VisTable {
             // Negotiate button (only if can negotiate)
             LocalDateTime gameDate = currentGame != null ? currentGame.getGameDate() : null;
             if (offer.canNegotiate(gameDate)) {
-                VisTextButton negotiateButton = new VisTextButton("Negotiate");
+                VisTextButton negotiateButton = new VisTextButton(LanguageModLoader.getValue("jobs_negotiate"));
                 negotiateButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                     @Override
                     public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {

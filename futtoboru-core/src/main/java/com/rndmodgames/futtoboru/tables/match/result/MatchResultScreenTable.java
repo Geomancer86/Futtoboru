@@ -9,6 +9,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -47,7 +48,7 @@ public class MatchResultScreenTable extends VisTable {
         Club currentClub = game.getCurrentGame().getCurrentClub();
         
         if (currentClub == null || currentClub.getPlayedMatches() == null || currentClub.getPlayedMatches().isEmpty()) {
-            this.add("No match results available.");
+            this.add(LanguageModLoader.getValue("match_no_results"));
             return;
         }
         
@@ -59,7 +60,7 @@ public class MatchResultScreenTable extends VisTable {
         Club awayClub = game.getCurrentGame().getClubById(match.getAwayClubId());
         
         if (homeClub == null || awayClub == null) {
-            this.add("Error: Could not load match details.");
+            this.add(LanguageModLoader.getValue("match_load_error"));
             Log.error(Log.UI_MATCH, "MatchResultScreenTable", "Home or away club not found for match");
             return;
         }
@@ -67,26 +68,26 @@ public class MatchResultScreenTable extends VisTable {
         // Format date
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        String matchDate = match.getMatchDateTime() != null ? match.getMatchDateTime().format(dateFormatter) : "Unknown";
-        String matchTime = match.getMatchDateTime() != null ? match.getMatchDateTime().format(timeFormatter) : "Unknown";
+        String matchDate = match.getMatchDateTime() != null ? match.getMatchDateTime().format(dateFormatter) : LanguageModLoader.getValue("unknown");
+        String matchTime = match.getMatchDateTime() != null ? match.getMatchDateTime().format(timeFormatter) : LanguageModLoader.getValue("unknown");
         
         // Match Header
         this.row().padTop(UiTheme.space("lg"));
-        VisLabel headerLabel = new VisLabel("MATCH RESULT");
+        VisLabel headerLabel = new VisLabel(LanguageModLoader.getValue("match_result_title"));
         headerLabel.setFontScale(UiTheme.fontScale("display"));
         this.add(headerLabel).colspan(2).padBottom(UiTheme.space("lg"));
         
         // Match Date and Time
         this.row();
-        this.add("Date:").padRight(UiTheme.space("sm"));
-        this.add(matchDate + " at " + matchTime).left();
+        this.add(LanguageModLoader.getValue("match_date")).padRight(UiTheme.space("sm"));
+        this.add(LanguageModLoader.format("match_date_time", matchDate, matchTime)).left();
         
         // Venue
         this.row().padTop(UiTheme.space("xs"));
-        this.add("Venue:").padRight(UiTheme.space("sm"));
+        this.add(LanguageModLoader.getValue("match_venue")).padRight(UiTheme.space("sm"));
         String venueName = homeClub.getStadium() != null && homeClub.getStadium().getName() != null 
             ? homeClub.getStadium().getName() 
-            : "Unknown Stadium";
+            : LanguageModLoader.getValue("match_unknown_ground");
         this.add(venueName).left();
         
         // Separator
@@ -104,7 +105,7 @@ public class MatchResultScreenTable extends VisTable {
         this.add(homeTeamTable).expandX().center();
         
         // VS
-        this.add(new VisLabel("vs")).padLeft(UiTheme.space("lg")).padRight(UiTheme.space("lg"));
+        this.add(new VisLabel(LanguageModLoader.getValue("match_vs"))).padLeft(UiTheme.space("lg")).padRight(UiTheme.space("lg"));
         
         // Away Team
         VisTable awayTeamTable = new VisTable();
@@ -118,14 +119,14 @@ public class MatchResultScreenTable extends VisTable {
         String result;
         if (match.getHomeGoals() != null && match.getAwayGoals() != null) {
             if (match.getHomeGoals() > match.getAwayGoals()) {
-                result = homeClub.getName() + " won";
+                result = LanguageModLoader.format("match_won", homeClub.getName());
             } else if (match.getAwayGoals() > match.getHomeGoals()) {
-                result = awayClub.getName() + " won";
+                result = LanguageModLoader.format("match_won", awayClub.getName());
             } else {
-                result = "Draw";
+                result = LanguageModLoader.getValue("match_draw");
             }
         } else {
-            result = "Result not available";
+            result = LanguageModLoader.getValue("match_no_result");
         }
         VisLabel resultLabel = new VisLabel(result);
         resultLabel.setFontScale(UiTheme.fontScale("heading"));
@@ -137,22 +138,22 @@ public class MatchResultScreenTable extends VisTable {
         
         // Match Details
         this.row().padTop(UiTheme.space("sm"));
-        this.add("Match Type:").padRight(UiTheme.space("sm"));
+        this.add(LanguageModLoader.getValue("match_type_label")).padRight(UiTheme.space("sm"));
         String matchType = match.getMatchType() != null && match.getMatchType() == Match.FRIENDLY_MATCH 
-            ? "Friendly" 
-            : "Competition";
+            ? LanguageModLoader.getValue("match_type_friendly")
+            : LanguageModLoader.getValue("match_type_competition");
         this.add(matchType).left();
         
         // Attendance
         this.row().padTop(UiTheme.space("xs"));
-        this.add("Attendance:").padRight(UiTheme.space("sm"));
-        String attendance = match.getAttendance() != null ? String.valueOf(match.getAttendance()) : "Unknown";
+        this.add(LanguageModLoader.getValue("match_attendance")).padRight(UiTheme.space("sm"));
+        String attendance = match.getAttendance() != null ? String.valueOf(match.getAttendance()) : LanguageModLoader.getValue("unknown");
         this.add(attendance).left();
         
         // Stadium capacity if available
         if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
             this.row().padTop(UiTheme.space("xs"));
-            this.add("Capacity:").padRight(UiTheme.space("sm"));
+            this.add(LanguageModLoader.getValue("match_capacity")).padRight(UiTheme.space("sm"));
             this.add(String.valueOf(homeClub.getStadium().getCapacity())).left();
         }
     }

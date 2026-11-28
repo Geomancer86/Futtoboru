@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.util.List;
 
 import com.badlogic.gdx.Game;
@@ -45,7 +46,7 @@ public class MyApplicationsScreenTable extends VisTable {
         
         // Title
         this.row();
-        this.add(new VisLabel("My Applications")).colspan(3);
+        this.add(new VisLabel(LanguageModLoader.getValue("my_applications"))).colspan(3);
         this.row();
         this.addSeparator();
         
@@ -72,16 +73,16 @@ public class MyApplicationsScreenTable extends VisTable {
         
         if (applications.isEmpty()) {
             applicationsListTable.row();
-            applicationsListTable.add(new VisLabel("No applications submitted.")).colspan(4);
+            applicationsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_no_applications"))).colspan(4);
             return;
         }
         
         // Header
         applicationsListTable.row();
-        applicationsListTable.add(new VisLabel("Club")).width(UiTheme.size("col.wide"));
-        applicationsListTable.add(new VisLabel("Position")).width(UiTheme.size("col.label"));
-        applicationsListTable.add(new VisLabel("Status")).width(UiTheme.size("col.label"));
-        applicationsListTable.add(new VisLabel("Match %")).width(UiTheme.size("col.number"));
+        applicationsListTable.add(new VisLabel(LanguageModLoader.getValue("table_club"))).width(UiTheme.size("col.wide"));
+        applicationsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_position"))).width(UiTheme.size("col.label"));
+        applicationsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_status"))).width(UiTheme.size("col.label"));
+        applicationsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_match_percent"))).width(UiTheme.size("col.number"));
         applicationsListTable.row();
         applicationsListTable.addSeparator();
         
@@ -112,7 +113,7 @@ public class MyApplicationsScreenTable extends VisTable {
             applicationsListTable.add(new VisLabel(profession.getName())).width(UiTheme.size("col.label"));
             
             // Status with color
-            String statusText = application.getStatus().toString();
+            String statusText = statusName(application.getStatus());
             VisLabel statusLabel = new VisLabel(statusText);
             if (application.getStatus() == ApplicationStatus.OFFER_RECEIVED) {
                 statusLabel.setColor(UiTheme.color("application.offer")); // Green
@@ -122,14 +123,14 @@ public class MyApplicationsScreenTable extends VisTable {
             applicationsListTable.add(statusLabel).width(UiTheme.size("col.label"));
             
             applicationsListTable.add(new VisLabel(
-                application.getMatchPercentage() != null ? application.getMatchPercentage() + "%" : "N/A"
+                application.getMatchPercentage() != null ? application.getMatchPercentage() + "%" : LanguageModLoader.getValue("not_available")
             )).width(UiTheme.size("col.number"));
             
             // If offer received, add button to view offer
             if (application.getStatus() == ApplicationStatus.OFFER_RECEIVED) {
                 final com.rndmodgames.futtoboru.data.jobs.JobOpening finalJobOpening = jobOpening; // Make final for inner class
                 applicationsListTable.row();
-                VisTextButton viewOfferButton = new VisTextButton("View Offer");
+                VisTextButton viewOfferButton = new VisTextButton(LanguageModLoader.getValue("jobs_view_offer"));
                 viewOfferButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
                     @Override
                     public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
@@ -158,6 +159,25 @@ public class MyApplicationsScreenTable extends VisTable {
     
     public void setMenuManager(MainMenuManager menuManager) {
         this.menuManager = menuManager;
+    }
+
+    /** The application status as the player reads it. */
+    private static String statusName(ApplicationStatus status) {
+        if (status == null) {
+            return LanguageModLoader.getValue("unknown");
+        }
+        switch (status) {
+        case PENDING:
+            return LanguageModLoader.getValue("jobs_status_pending");
+        case REJECTED:
+            return LanguageModLoader.getValue("jobs_status_rejected");
+        case OFFER_RECEIVED:
+            return LanguageModLoader.getValue("jobs_status_offer_received");
+        case ACCEPTED:
+            return LanguageModLoader.getValue("jobs_status_accepted");
+        default:
+            return LanguageModLoader.getValue("jobs_status_withdrawn");
+        }
     }
 }
 
