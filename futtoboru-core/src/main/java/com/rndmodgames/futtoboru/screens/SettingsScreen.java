@@ -26,7 +26,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.MainMenuButton;
 import com.rndmodgames.darkblade.screens.tables.ModsSettingsTable;
-import com.rndmodgames.darkblade.screens.tables.SoundSettingsTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.tables.settings.DebugLoggingSettingsTable;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -92,7 +91,6 @@ public class SettingsScreen implements Screen {
         mainContainer.pad(UiTheme.space("xl")).setFillParent(true);
 
         VisTable graphicsSettings = new VisTable();
-        VisTable soundSettings = new SoundSettingsTable(this.game);
         VisTable gameplaySettings = new VisTable();
         VisTable modSettings = new ModsSettingsTable(this.game);
         this.debugLoggingSettings = new DebugLoggingSettingsTable(this.game);
@@ -390,8 +388,7 @@ public class SettingsScreen implements Screen {
         // so the Back button below stays on screen (D18)
         VisTable panels = new VisTable();
         panels.add(graphicsSettings).pad(UiTheme.space("sm")).align(Align.top);
-        panels.add(soundSettings).pad(UiTheme.space("sm")).align(Align.top);
-        panels.add(gameplaySettings).pad(UiTheme.space("sm")).align(Align.top);
+        // U-08 / D18: no sound panel until the game has audio, no gameplay panel until it has a setting
         panels.add(modSettings).pad(UiTheme.space("sm")).align(Align.top);
         panels.add(debugLoggingSettings).pad(UiTheme.space("sm")).align(Align.top);
         VisScrollPane panelsScroll = new com.rndmodgames.components.AutoFocusScrollPane(panels);

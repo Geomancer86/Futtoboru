@@ -25,7 +25,8 @@ import org.junit.jupiter.api.Test;
  * D18 / U-10 guard for the language files.
  * <ul>
  * <li>Every key the code asks {@code LanguageModLoader.getValue("...")} / {@code LanguageModLoader.format("...", ...)}
- * for exists, non-empty, in all four bundles (a missing key draws the raw key, "continue_game", on screen).</li>
+ * for (and, in the UI packages, a class's own {@code text("...")} / {@code t("...")} helper) exists, non-empty, in all
+ * four bundles (a missing key draws the raw key, "continue_game", on screen).</li>
  * <li>No hard-coded text in the UI packages ({@link #UI}): a string literal with a letter in it, given to a label,
  * button, text field, check box, dialog or tooltip ({@link #TEXT_CALL}), fails. Empty strings and symbols (":" "-"
  * "%" " / ") are fine. Put the text in the four bundles and use {@code LanguageModLoader.getValue("key")}.</li>
@@ -60,9 +61,7 @@ public class LanguageBundleKeysTest {
      * Sources another lane is converting right now: skipped by both checks until it merges. Remove the entry then
      * (the guard covers them from that moment).
      */
-    static final Map<String, String> PENDING = Map.of(
-            "com/rndmodgames/futtoboru/tables/schedule/",
-            "U-08 (b3/U-08-friendlies) converts the schedule tables and adds their keys");
+    static final Map<String, String> PENDING = Map.of();
 
     /** A call that puts its text argument on screen. The literal must come after it on the same line. */
     static final Pattern TEXT_CALL = Pattern.compile("new\\s+(VisLabel|VisTextButton|VisTextField|VisTextArea"
@@ -76,8 +75,12 @@ public class LanguageBundleKeysTest {
     private static final Pattern KEY_CALL = Pattern
             .compile("LanguageModLoader\\.(?:getValue|format)\\(\\s*\"([^\"]+)\"");
 
+    /** A UI class's own lookup helper ({@code text("key")}, {@code t("key")}): its keys are checked too. */
+    private static final Pattern LOCAL_KEY_CALL = Pattern.compile("(?<![\\w.])(?:text|t)\\(\\s*\"([^\"]+)\"");
+
     /** Literals that are not text: a key, a skin/theme token, a colour or size name. */
-    private static final Pattern NOT_TEXT = Pattern.compile("(?:LanguageModLoader\\.)?(?:getValue|format)\\(\\s*\"[^\"]*\""
+    private static final Pattern NOT_TEXT = Pattern.compile("(?<![\\w.])(?:text|t)\\(\\s*\"[^\"]*\""
+            + "|(?:LanguageModLoader\\.)?(?:getValue|format)\\(\\s*\"[^\"]*\""
             + "|UiTheme\\.\\w+\\(\\s*\"[^\"]*\"|UiTooltips\\.\\w+\\([^)]*\\)|getDrawable\\(\\s*\"[^\"]*\"|style\\s*\\(\\s*\"[^\"]*\"");
 
     private static final Pattern LITERAL = Pattern.compile("\"((?:[^\"\\\\]|\\\\.)*)\"");
@@ -145,15 +148,27 @@ public class LanguageBundleKeysTest {
         }
         List<String> missing = new ArrayList<>();
         for (Path file : javaFiles(src)) {
-            if (pending(rel(src, file))) {
+            String relative = rel(src, file);
+            if (pending(relative)) {
                 continue;
             }
-            Matcher m = KEY_CALL.matcher(Files.readString(file));
-            while (m.find()) {
+            String code = Files.readString(file);
+            List<String> keys = new ArrayList<>();
+            Matcher k = KEY_CALL.matcher(code);
+            while (k.find()) {
+                keys.add(k.group(1));
+            }
+            if (UI.stream().anyMatch(relative::startsWith)) {
+                Matcher local = LOCAL_KEY_CALL.matcher(code);
+                while (local.find()) {
+                    keys.add(local.group(1));
+                }
+            }
+            for (String key : keys) {
                 for (Map.Entry<String, Properties> bundle : bundles().entrySet()) {
-                    String value = bundle.getValue().getProperty(m.group(1));
+                    String value = bundle.getValue().getProperty(key);
                     if (value == null || value.isBlank()) {
-                        missing.add(rel(src, file) + ": '" + m.group(1) + "' missing in " + bundle.getKey());
+                        missing.add(relative + ": '" + key + "' missing in " + bundle.getKey());
                     }
                 }
             }
