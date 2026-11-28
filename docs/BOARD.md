@@ -6,6 +6,7 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| G-10 history + fan tiers on screen (club detail history/nicknames/rivals; player tier badge + bio) | WORKSTATION | `ws/G-10-history-ui` | 2026-11-28 |
 | G-04 contracts through the season (AI clubs too) **(PARKED: WIP pushed, after G-01)** | BOOK3PRO | `b3/G-04-contracts` | 2026-11-28 |
 | E-DET cross-JDK determinism: own Gaussian in RandomSource, re-pin goldens once, guard | WORKSTATION | `ws/E-DET-gaussian` | 2026-11-28 |
 | H-06 era events data (`era/baseline.json` + `events.json` per ERA_EVENTS_PROPOSAL, D30) | WORKSTATION | `ws/H-06-era-events` | 2026-11-28 |
