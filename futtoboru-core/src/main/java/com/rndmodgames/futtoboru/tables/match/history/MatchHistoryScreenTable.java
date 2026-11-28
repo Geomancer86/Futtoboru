@@ -4,8 +4,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -131,58 +129,30 @@ public class MatchHistoryScreenTable extends VisTable {
                 : LanguageModLoader.getValue("unknown");
             this.add(new VisLabel(matchDate)).width(UiTheme.size("col.number"));
             
-            // Home team (clickable)
-            String homeTeamName = homeClub.getName();
-            LinkLabel homeTeamLink = new LinkLabel(homeTeamName);
-            homeTeamLink.addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    return true;
-                }
-                
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    viewMatchDetails(match);
-                }
-            });
-            this.add(homeTeamLink).expandX().left();
-            
-            // Score (clickable)
+            // Home team, score and away team open the match result and report (G-03)
+            this.add(matchLink(homeClub.getName(), match)).expandX().left();
             int homeGoals = match.getHomeGoals() != null ? match.getHomeGoals() : 0;
             int awayGoals = match.getAwayGoals() != null ? match.getAwayGoals() : 0;
-            String scoreText = homeGoals + " - " + awayGoals;
-            LinkLabel scoreLink = new LinkLabel(scoreText);
-            scoreLink.addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    return true;
-                }
-                
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    viewMatchDetails(match);
-                }
-            });
-            this.add(scoreLink).width(UiTheme.size("col.value"));
-            
-            // Away team (clickable)
-            String awayTeamName = awayClub.getName();
-            LinkLabel awayTeamLink = new LinkLabel(awayTeamName);
-            awayTeamLink.addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    return true;
-                }
-                
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    viewMatchDetails(match);
-                }
-            });
-            this.add(awayTeamLink).expandX().left();
+            this.add(matchLink(homeGoals + " - " + awayGoals, match)).width(UiTheme.size("col.value"));
+            this.add(matchLink(awayClub.getName(), match)).expandX().left();
         }
     }
     
+    /**
+     * A link that opens the match. A LinkLabel without its own listener opens its text as a web address (VisUI's
+     * default), so the row's links used to send "Preston North End" to the browser as well.
+     */
+    private LinkLabel matchLink(String text, Match match) {
+        LinkLabel link = new LinkLabel(text);
+        link.setListener(new LinkLabel.LinkLabelListener() {
+            @Override
+            public void clicked(String url) {
+                viewMatchDetails(match);
+            }
+        });
+        return link;
+    }
+
     /**
      * View match details by navigating to match result screen
      */
@@ -191,17 +161,11 @@ public class MatchHistoryScreenTable extends VisTable {
             return;
         }
         
-        // Store selected match (we'll need to add a setSelectedMatch method to MatchResultScreenTable)
         selectedMatch = match;
-        
-        // TODO: For now, we can only show the most recent match in MatchResultScreenTable
-        // In the future, we should add setSelectedMatch() to MatchResultScreenTable
-        Log.info(Log.UI_MATCH, "MatchHistoryScreenTable", "Match clicked: " + 
-            (match.getHomeGoals() != null ? match.getHomeGoals() : 0) + " - " + 
-            (match.getAwayGoals() != null ? match.getAwayGoals() : 0));
-        
-        // For now, just log - we'll need to enhance MatchResultScreenTable to accept a specific match
-        // mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_RESULT_SCREEN);
+        Log.info(Log.UI_MATCH, "MatchHistoryScreenTable", "Match clicked: " + match.getId());
+
+        // G-03: the result screen shows this match, its goals with minutes and its report
+        mainMenuManager.showMatchResult(match);
     }
 
     public Club getCurrentClub() {

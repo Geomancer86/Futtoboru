@@ -61,7 +61,12 @@ public class Match implements Serializable {
     // Scorers tracking (v1.0 - Awards System)
     private java.util.List<Long> homeScorerIds = new java.util.ArrayList<>();
     private java.util.List<Long> awayScorerIds = new java.util.ArrayList<>();
-    
+
+    // Goal minutes (G-03): one minute (1-90, half-time after 45) per goal of that side, ascending, so goal i of the
+    // side was scored by its scorer i. Empty for a goalless side and for matches played before G-03 (old saves).
+    private java.util.List<Integer> homeGoalMinutes = new java.util.ArrayList<>();
+    private java.util.List<Integer> awayGoalMinutes = new java.util.ArrayList<>();
+
     // Basic attendance stats to avoid overselling a Match
     private Integer attendance = 0;
     
@@ -184,6 +189,30 @@ public class Match implements Serializable {
 
     public void setAwayScorerIds(java.util.List<Long> awayScorerIds) {
         this.awayScorerIds = awayScorerIds;
+    }
+
+    /** G-03: the minute of each home goal, ascending (empty when unknown). Never null. */
+    public java.util.List<Integer> getHomeGoalMinutes() {
+        if (homeGoalMinutes == null) {
+            homeGoalMinutes = new java.util.ArrayList<>();
+        }
+        return homeGoalMinutes;
+    }
+
+    public void setHomeGoalMinutes(java.util.List<Integer> homeGoalMinutes) {
+        this.homeGoalMinutes = homeGoalMinutes;
+    }
+
+    /** G-03: the minute of each away goal, ascending (empty when unknown). Never null. */
+    public java.util.List<Integer> getAwayGoalMinutes() {
+        if (awayGoalMinutes == null) {
+            awayGoalMinutes = new java.util.ArrayList<>();
+        }
+        return awayGoalMinutes;
+    }
+
+    public void setAwayGoalMinutes(java.util.List<Integer> awayGoalMinutes) {
+        this.awayGoalMinutes = awayGoalMinutes;
     }
 
     public Integer getAttendance() {
