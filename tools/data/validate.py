@@ -33,8 +33,11 @@ COMPETITION_TYPES = {"LEAGUE", "CUP"}
 POSITIONS = {"goalkeeper", "full-back", "half-back", "right-wing", "inside-right", "centre-forward", "inside-left",
              "left-wing"}
 # where a position comes from: the slot named in docs/data/history/PLAYERS_1888-89.md, only the line named there
-# (forward / winger / inside forward / defender; the slot within it assigned), or a placeholder to fill the 2-3-5
-POSITION_SOURCES = {"players-1888-89", "players-1888-89-line", "placeholder"}
+# (forward / winger / inside forward / defender; the slot within it assigned), or a placeholder to fill the 2-3-5.
+# H-04: the club's 1888-89 Wikipedia season article (slot / line), the player's own Wikipedia article (slot / line),
+# the 1889 FA Cup final line-up; docs/data/history/POSITIONS_1888-89.md lists each with its URLs
+POSITION_SOURCES = {"players-1888-89", "players-1888-89-line", "placeholder", "wp-season-1888-89",
+                    "wp-season-1888-89-line", "wp-player", "wp-player-line", "fa-cup-final-1889"}
 ATTR_MIN, ATTR_MAX = 3, 23  # the attribute scale (3d6 plus modifiers, PlayerAttributeGenerator)
 KINDS = ["continent", "country", "profession", "occupation", "competition", "club", "ground", "person", "region",
          "season", "edition"]

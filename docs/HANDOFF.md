@@ -8,15 +8,14 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 |---|---|---|---|
 | E-21b viewer: side-on camera V3, pitch P1/A1, skyline K1, RuntimeAtlas/ShelfPacker/DepthSort port, actor pass | WORKSTATION | `ws/E-21b-viewer-pitch` | 2026-11-28 |
 | E-21s sprite baker + art (doll players A2, keeper G2, ball BA2, officials O2, crowd CR1 figures, touchline T1) per D26 | WORKSTATION | `ws/E-21s-sprites` | 2026-11-27 |
-| H-04 source the 384 placeholder positions (period line-ups) in `seasons/1888-89/squads.json` | BOOK3PRO | `b3/H-04-positions-sources` | 2026-11-28 |
 | U-10 hard-coded labels → language files + guard test | BOOK3PRO | `b3/U-10-labels` | 2026-11-28 |
 | V-01 visual check 100%/200% (fix clipping) → U-05 interface guide with screenshots | BOOK3PRO | `b3/V-01-visual-check` | 2026-11-28 |
 | P2-12 gate income: only the home club sells tickets | BOOK3PRO | `b3/P2-12-gate-home-only` | 2026-11-28 |
+| T-01 test tiers + path-aware gates (D27) | BOOK3PRO | `b3/T-01-test-tiers` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
 |---|---|---|
-| BOOK3PRO | H-04 | `seasons/1888-89/squads.json` positions |
 | BOOK3PRO | U-10, V-01 | label lines in screens/tables + 4 language bundles (U-10), small layout fixes (V-01), new `docs/design/INTERFACE_GUIDE.md` + `docs/design/img/` |
 | WORKSTATION | Engine (E-10..E-22) | `match/ecs/**` (new ECS engine; BOOK3PRO: E-01 `Position`/`dribbling` data is yours, ask before editing `match/ecs`) |
 
@@ -28,6 +27,8 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 
 ## Log
 - 2026-11-28 · WORKSTATION · DONE · E-13 · `match/ecs/body`: Body/Athlete/Kit/Injury components + `MoveCommand`, `AthleteInputs` (3..23 ratings, uses `data.Position`), shapes 2-3-5/2-2-6/1-2-7, 1888 kick-off spawn, `LocomotionSystem` (accel/brake/turn limits, grip = surface × sole, stamina, wet boots heavier), `ContactSystem` (swept pairs, charges, knock-downs, injuries on a forked stream, keeper charge fair in 1888, `ContactRecord`s for laws/events); `BodyPose` for viewer interpolation. 10 µs/tick for 22 bodies, 0 alloc. Goldens re-pinned (ENGINE_VERSION ecs-0.2) + `BodyWorldTest.GOLDEN_SCRIMMAGE`. Jenkins #99 green (325 core + 1 desktop). Note: on this JDK `StrictMath.sin/cos` allocate; sim code avoids them per tick.
+- 2026-11-28 · BOOK3PRO · DONE · H-04 · Merged 645402c (develop d9ca2ff). Placeholder squad positions 384 -> 208 of 548: League clubs 142 -> 4 (Villa Bob Thomas, Blackburn Duerden, Burnley Midgley + Duckworth not found), FA Cup clubs 242 -> 204 (most cup rosters are the copied/invented ones in REVIEW_1888-89.md: nothing to look up until rebuilt). Sources: clubs' 1888-89 Wikipedia season articles, players' own articles, 1889 FA Cup final line-up; new codes `wp-season-1888-89(-line)`, `wp-player(-line)`, `fa-cup-final-1889` in validate.py + GameData. Every squad still fields a 2-3-5. Per-club counts, URLs, and 4 disagreements with already-sourced entries: `docs/data/history/POSITIONS_1888-89.md`.
+- 2026-11-28 · BOOK3PRO · CLAIM · T-01 · Test tiers (fast default / slow / smoke JUnit tags), `-Pfull`/`-Psmoke` profiles, `tools/dev/check.{sh,ps1}`, tiered CI + Jenkins `TEST_TIER`. Recorded as **D27** (D26 is already the art direction). Slow test classes get `@Tag("slow")` annotations: other lanes expect trivial conflicts on annotation/import lines.
 - 2026-11-28 · WORKSTATION · DONE · E-21a · Viewer scaffold ported from DarkBlade (origin line per class): `ui.gfx` GraphicsQuality (`gfx/quality.json`, live levels, per-module/master/`-D` switches, software renderer → low), VfxSwitches, TickGate, CameraZoom, ArtGuard (sim ticks run in a no-art scope), test NoGl; `match.ecs.view` ViewFrame, MatchViewer, ViewerClock (step cap + time budget, carry), InterpolationPass/BallPose; `FrameContext`; `SystemPriority` draw bands (DRAW_* replaced by ACTORS/PARTICLES/…); `MatchSystems.installDrawPasses`. Jenkins #96 green (288 core + 1 desktop).
 - 2026-11-28 · WORKSTATION · NOTE · D26 · Producer picked the match art (side-on V3 camera, horizontal pitch, 5 px/m, procedural doll players in 8 dirs, hand-drawn officials, individual crowd figures, newspaper HUD, no GPT art). CLAIM E-21s (sprite baker + art) and E-21b (viewer pitch/camera/atlas).
 - 2026-11-28 · BOOK3PRO · CLAIM · P2-12 · Gate income for league/cup matches: only the home club sells tickets (as U-08 did for friendlies); `MatchScheduler` + finances + tests.

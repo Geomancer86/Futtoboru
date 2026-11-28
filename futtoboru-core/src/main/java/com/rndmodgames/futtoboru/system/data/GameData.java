@@ -87,8 +87,10 @@ public class GameData {
             positions.add(p.getDataId());
         }
         ENUMS.put("position", positions);
+        // H-04 sources: docs/data/history/POSITIONS_1888-89.md (same list as tools/data/validate.py)
         ENUMS.put("position_source", new TreeSet<>(Arrays.asList("players-1888-89", "players-1888-89-line",
-                "placeholder")));
+                "placeholder", "wp-season-1888-89", "wp-season-1888-89-line", "wp-player", "wp-player-line",
+                "fa-cup-final-1889")));
     }
 
     /** The attribute scale (3d6 plus modifiers, PlayerAttributeGenerator): a sourced dribbling value is inside. */

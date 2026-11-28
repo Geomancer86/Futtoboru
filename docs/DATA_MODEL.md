@@ -133,8 +133,12 @@ Two optional objects on a **squad entry** (`seasons/<id>/squads.json`), keyed by
 - **`source`** of a position: `players-1888-89` = the slot is named in `docs/data/history/PLAYERS_1888-89.md` (its
   bios cite their own pages); `players-1888-89-line` = only the line is named there ("forward", "winger", "inside
   forward", "defender"), the slot inside it was assigned to complete that squad's 2-3-5; `placeholder` = not in the
-  doc, assigned in squad order to the slot the squad is shortest of (so every squad can field a 2-3-5). 1888-89:
-  117 / 47 / 384 of 548 squad places. Replace placeholders as sources are found (keep the source honest).
+  doc, assigned in squad order to the slot the squad is shortest of (so every squad can field a 2-3-5). H-04 added
+  `wp-season-1888-89` / `wp-season-1888-89-line` (the club's 1888-89 Wikipedia season article), `wp-player` /
+  `wp-player-line` (the player's own Wikipedia article) and `fa-cup-final-1889`; their meaning and every URL are in
+  `docs/data/history/POSITIONS_1888-89.md`. A new code goes in both `tools/data/validate.py` and `GameData`.
+  1888-89 now: 117 / 47 / 81 / 40 / 41 / 12 / 2 sourced, 208 `placeholder` of 548 squad places (League clubs: 4).
+  Replace placeholders as sources are found (keep the source honest).
 - **`dribbling`** (D19-7): same 3-23 scale as every attribute. Most players have no source: the game **derives** it
   from his other attributes, `round(0.35 dexterity + 0.25 trickShots + 0.25 acceleration + 0.15 speed)` clamped to
   3-23 (`PlayerAttributeGenerator.deriveDribbling`, integer maths, no dice: the random stream is unchanged). A squad
