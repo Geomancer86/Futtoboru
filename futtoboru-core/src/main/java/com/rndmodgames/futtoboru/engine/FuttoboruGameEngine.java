@@ -302,6 +302,12 @@ public class FuttoboruGameEngine {
             if (match.getIsPlayed() != null && match.getIsPlayed()) {
                 continue;
             }
+
+            // A-01: a later cup round every entrant lists is not the club's match unless it plays in it
+            if (!currentClub.getId().equals(match.getHomeClubId())
+                    && !currentClub.getId().equals(match.getAwayClubId())) {
+                continue;
+            }
             
             // Skip if match day is in the future (by date: the game clock stays before the 15:00 kick-off, V-01)
             if (match.getMatchDateTime() != null

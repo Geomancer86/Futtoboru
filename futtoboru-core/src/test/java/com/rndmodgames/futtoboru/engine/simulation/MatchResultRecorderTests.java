@@ -120,6 +120,39 @@ public class MatchResultRecorderTests extends BaseTest {
         assertEquals(away.getId(), cup.byPath("R2M1").getHomeClubId());
     }
 
+    /**
+     * A-01 (PlayerBot, mid scenario seed 1888): a later round is listed by every entrant; a club knocked out kept the
+     * tie in its fixtures after it was played, and on its day the knocked-out club's Match Preview and Match Result
+     * offered a tie between two other clubs.
+     */
+    @Test
+    void aLaterRoundTieIsOnlyTheMatchOfItsTwoClubsAndLeavesEveryListOncePlayed() {
+        EngineTestWorld.Cup cup = world.cup(world.clubs);
+        Match first = cup.byPath("R1M1");
+        Match second = cup.byPath("R1M2");
+        Match fin = cup.byPath("R2M1");
+        EngineTestWorld.score(first, 2, 0);
+        recorder.record(first);
+        EngineTestWorld.score(second, 2, 0);
+        recorder.record(second);
+        Club loser = world.game.getClubById(first.getAwayClubId());
+        assertNotNull(fin.getHomeClubId());
+        assertNotNull(fin.getAwayClubId());
+        assertTrue(loser.getScheduledMatches().contains(fin), "the knocked-out club still lists the final");
+
+        world.game.setGameDate(fin.getMatchDateTime().withHour(9));
+        com.rndmodgames.futtoboru.engine.temporal.MatchScheduler scheduler =
+                new com.rndmodgames.futtoboru.engine.temporal.MatchScheduler(application);
+        assertFalse(scheduler.checkClubMatchDay(loser), "not his match day: he is out of the cup");
+        assertTrue(scheduler.checkClubMatchDay(world.game.getClubById(fin.getHomeClubId())));
+
+        EngineTestWorld.score(fin, 1, 0);
+        recorder.record(fin);
+        for (Club c : world.clubs) {
+            assertFalse(c.getScheduledMatches().contains(fin), c.getName() + " still lists the played final");
+        }
+    }
+
     @Test
     void leagueMatchBlockedByPendingDrawButCupMatchIsNot() {
         Message draw = new Message();
