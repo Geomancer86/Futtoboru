@@ -90,7 +90,7 @@ In game: top bar Options = Save | Load | Settings | Quit to menu | Quit to deskt
   manager:    Home, Inbox, Squad | Schedule, Match History, Competitions, History | Club Info, Finances |
               Personal Details, Authorities
   job seeker: Home, Inbox | History | Club Browser, Job Board, My Applications | Personal Details, Authorities
-  drill-downs: Competitions → League / Cup detail → Cup bracket; Squad → Player; Club Browser → Club detail;
+  drill-downs: Competitions → League / Cup detail → Cup bracket; Squad (tabs Players | Team Sheet) → Player; Club Browser → Club detail;
                My Applications → Job offers ⇄ Negotiation; Inbox / top bar → League or Cup draw;
                Schedule ← Match Preview → Match Result (top bar)
 ```

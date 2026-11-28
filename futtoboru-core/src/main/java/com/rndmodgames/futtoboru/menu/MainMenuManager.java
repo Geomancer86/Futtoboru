@@ -288,7 +288,18 @@ public class MainMenuManager {
     /** A menu entry was picked: its screen starts a new Back history. */
     public void openMenuEntry(int screen) {
         history.reset(screen);
+        if (screen == MAIN_SQUAD_SCREEN && squadScreenTable != null) {
+            squadScreenTable.showPlayers(); // G-01: the menu entry opens on the players list
+        }
         setActiveMainScreen(screen);
+    }
+
+    /** G-01: the Squad screen on its Team Sheet tab. */
+    public void openTeamSheet() {
+        openMenuEntry(MAIN_SQUAD_SCREEN);
+        if (CURRENT_SCREEN == MAIN_SQUAD_SCREEN) {
+            squadScreenTable.showTeamSheet();
+        }
     }
 
     /**

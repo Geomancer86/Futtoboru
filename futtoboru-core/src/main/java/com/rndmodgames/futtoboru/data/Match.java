@@ -62,6 +62,10 @@ public class Match implements Serializable {
     private java.util.List<Long> homeScorerIds = new java.util.ArrayList<>();
     private java.util.List<Long> awayScorerIds = new java.util.ArrayList<>();
     
+    // G-01: the team sheet each side played with, frozen at kick-off (null until played; optional in saves)
+    private TeamSheet homeSheet;
+    private TeamSheet awaySheet;
+    
     // Basic attendance stats to avoid overselling a Match
     private Integer attendance = 0;
     
@@ -184,6 +188,27 @@ public class Match implements Serializable {
 
     public void setAwayScorerIds(java.util.List<Long> awayScorerIds) {
         this.awayScorerIds = awayScorerIds;
+    }
+
+    /**
+     * G-01: the home side's team sheet as it stood at kick-off (who played, in which place, shape, style, captain);
+     * null before the match is played. The line-up the match engines read (see {@link TeamSheet}).
+     */
+    public TeamSheet getHomeSheet() {
+        return homeSheet;
+    }
+
+    public void setHomeSheet(TeamSheet homeSheet) {
+        this.homeSheet = homeSheet;
+    }
+
+    /** G-01: the away side's team sheet as it stood at kick-off; null before the match is played. */
+    public TeamSheet getAwaySheet() {
+        return awaySheet;
+    }
+
+    public void setAwaySheet(TeamSheet awaySheet) {
+        this.awaySheet = awaySheet;
     }
 
     public Integer getAttendance() {

@@ -256,6 +256,7 @@ public final class ScreenshotTour extends Futtoboru {
         waitFrames(40);
         once("game-squad-tooltip", () -> {
         });
+        once("game-squad-team-sheet", () -> menu().openTeamSheet());
         once("game-player-detail", () -> {
             menu().openMenuEntry(MainMenuManager.MAIN_SQUAD_SCREEN);
             menu().setSelectedPlayer(game.getCurrentClub().getPlayers().get(0));

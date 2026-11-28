@@ -202,6 +202,22 @@ public class PlayerDetailScreenTable extends VisTable {
                 : LanguageModLoader.getValue(currentPlayer.getPosition().labelKey()))).left();
         infoTable.row();
 
+        // G-01: his place on his club's team sheet
+        com.rndmodgames.futtoboru.data.Club sheetClub = squadOf(currentPlayer);
+        if (sheetClub != null) {
+            com.rndmodgames.futtoboru.data.TeamSheet sheet =
+                    com.rndmodgames.futtoboru.engine.team.TeamSheets.standing(sheetClub);
+            int slot = sheet.slotOf(currentPlayer.getId());
+            String place = slot < 0 ? LanguageModLoader.getValue("team_sheet_not_selected")
+                    : LanguageModLoader.getValue(sheet.position(slot).labelKey());
+            if (slot >= 0 && currentPlayer.getId().equals(sheet.getCaptainId())) {
+                place = LanguageModLoader.format("team_sheet_place_captain", place);
+            }
+            infoTable.add(new VisLabel(LanguageModLoader.getValue("team_sheet"))).left().width(UiTheme.size("col.label"));
+            infoTable.add(new VisLabel(place)).left();
+            infoTable.row();
+        }
+
         // Player Profession (day job for amateur/semi-pro)
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_profession"))).left().width(UiTheme.size("col.label"));
         String professionName = LanguageModLoader.getValue("player_profession_none");
@@ -695,5 +711,21 @@ public class PlayerDetailScreenTable extends VisTable {
     public void setMenuManager(MainMenuManager menuManager) {
         this.menuManager = menuManager;
     }
-}
 
+    /** G-01: the club whose squad holds this very player (a person listed twice has a copy per squad). */
+    private com.rndmodgames.futtoboru.data.Club squadOf(Player player) {
+        if (futtoboru.getCurrentGame() == null || futtoboru.getCurrentGame().getAllClubs() == null) {
+            return null;
+        }
+        for (com.rndmodgames.futtoboru.data.Club club : futtoboru.getCurrentGame().getAllClubs()) {
+            if (club != null && club.getPlayers() != null) {
+                for (Player p : club.getPlayers()) {
+                    if (p == player) {
+                        return club;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+}

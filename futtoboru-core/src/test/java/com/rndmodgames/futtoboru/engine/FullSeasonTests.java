@@ -225,6 +225,46 @@ class FullSeasonTests extends BaseTest {
                 "checking the competitions again pays no prize twice");
     }
 
+    /**
+     * G-01: every league match and cup tie of the season was played by two frozen team sheets (the player's club
+     * and every AI club alike): eleven squad men each (no club of 1888-89 had to play short), a captain among them,
+     * and every goal scored by a man on his side's sheet.
+     */
+    @Test
+    void everyMatchIsPlayedByTwoTeamSheetsAndOnlyTheElevenScore() {
+        List<Match> all = new ArrayList<>(first.leagueMatches);
+        all.addAll(first.cupMatches);
+        Set<Long> clubsWithSheets = new HashSet<>();
+        int played = 0;
+        for (Match m : all) {
+            if (m.getIsPlayed() == null || !m.getIsPlayed()) {
+                continue;
+            }
+            played++;
+            for (boolean home : new boolean[] { true, false }) {
+                com.rndmodgames.futtoboru.data.TeamSheet sheet = home ? m.getHomeSheet() : m.getAwaySheet();
+                Long clubId = home ? m.getHomeClubId() : m.getAwayClubId();
+                assertNotNull(sheet, "match " + m.getId() + (home ? " home" : " away") + " sheet");
+                assertEquals(clubId, sheet.getClubId());
+                Club club = first.save.getClubById(clubId);
+                Set<Long> squad = new HashSet<>();
+                for (com.rndmodgames.futtoboru.data.Player p : club.getPlayers()) {
+                    squad.add(p.getId());
+                }
+                assertEquals(11, sheet.selectedCount(), club.getName() + " in match " + m.getId());
+                assertTrue(squad.containsAll(sheet.selectedIds()), club.getName() + ": squad men only");
+                assertTrue(sheet.isSelected(sheet.getCaptainId()), club.getName() + ": the captain plays");
+                for (Long scorer : home ? m.getHomeScorerIds() : m.getAwayScorerIds()) {
+                    assertTrue(sheet.isSelected(scorer), "scorer " + scorer + " of match " + m.getId() + " played");
+                }
+                clubsWithSheets.add(clubId);
+            }
+        }
+        assertTrue(played > 132, "league and cup matches played: " + played);
+        assertTrue(clubsWithSheets.containsAll(first.leagueClubIds), "every league club picked its sheets");
+        assertNotNull(first.save.getCurrentClub().getTeamSheet(), "the player's club has a standing sheet");
+    }
+
     @Test
     void theGoldenBootGoesToThisSeasonsTopLeagueScorer() {
         Map<Long, Integer> goals = new HashMap<>();
