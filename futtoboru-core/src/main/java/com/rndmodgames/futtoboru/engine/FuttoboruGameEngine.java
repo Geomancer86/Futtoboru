@@ -925,15 +925,36 @@ public class FuttoboruGameEngine {
             }
         }
         
-        // Second pass: Simulate matches and update lists
-        for (Match match : matchesToSimulate) {
-            // Simulate and record through the single result path (P2-2)
-            if (resultRecorder().play(match, simulator)) {
+        // Second pass: simulate matches and update lists. On the ECS engine the day's outcomes are computed in
+        // parallel (E-19a, pure per match); results are applied one by one in the original order
+        if (matchesToSimulate.size() > 1 && com.rndmodgames.futtoboru.engine.simulation.MatchEngine.ECS
+                .equals(simulator.engine().id())) {
+            List<MatchSimulator.Prepared> prepared = new ArrayList<>();
+            for (Match match : matchesToSimulate) {
+                MatchSimulator.Prepared p = resultRecorder().isPlayable(match) ? simulator.prepare(match) : null;
+                if (p != null) {
+                    prepared.add(p);
+                }
+            }
+            List<com.rndmodgames.futtoboru.engine.simulation.MatchOutcome> outcomes = simulator.computeAll(prepared);
+            for (int i = 0; i < prepared.size(); i++) {
+                Match match = prepared.get(i).match();
+                simulator.apply(prepared.get(i), outcomes.get(i));
+                resultRecorder().record(match);
                 simulatedToday.add(match);
                 matchesSimulated++;
                 Log.info(Log.ENGINE_GAME, "FuttoboruGameEngine: Simulated match " + match.getId() + " on " + targetDate);
-            } else {
-                Log.error(Log.ENGINE_GAME, "FuttoboruGameEngine", "Failed to simulate match " + match.getId());
+            }
+        } else {
+            for (Match match : matchesToSimulate) {
+                // Simulate and record through the single result path (P2-2)
+                if (resultRecorder().play(match, simulator)) {
+                    simulatedToday.add(match);
+                    matchesSimulated++;
+                    Log.info(Log.ENGINE_GAME, "FuttoboruGameEngine: Simulated match " + match.getId() + " on " + targetDate);
+                } else {
+                    Log.error(Log.ENGINE_GAME, "FuttoboruGameEngine", "Failed to simulate match " + match.getId());
+                }
             }
         }
 
