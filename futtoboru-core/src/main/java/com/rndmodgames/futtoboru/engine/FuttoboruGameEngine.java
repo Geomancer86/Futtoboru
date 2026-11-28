@@ -92,6 +92,15 @@ public class FuttoboruGameEngine {
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
         this.expenseCalculator = new ExpenseCalculator(gameInstance);
+        this.contractManager = new com.rndmodgames.futtoboru.engine.contracts.ContractManager(gameInstance,
+                messageManager);
+    }
+
+    /** G-04: engagements through the season (retained list, answers, the 1 May rollover), every club */
+    private final com.rndmodgames.futtoboru.engine.contracts.ContractManager contractManager;
+
+    public com.rndmodgames.futtoboru.engine.contracts.ContractManager getContractManager() {
+        return contractManager;
     }
 
     /** U-06 / D18: the rotating autosave slot (1st of each month and season rollover) */
@@ -111,6 +120,35 @@ public class FuttoboruGameEngine {
         return resultRecorder;
     }
     
+    private com.rndmodgames.futtoboru.system.data.EraProfile eraProfile;
+    private com.rndmodgames.futtoboru.engine.era.EraEventScheduler eraScheduler;
+
+    private com.rndmodgames.futtoboru.engine.era.EraEventScheduler eraScheduler() {
+        if (eraScheduler == null) {
+            eraScheduler = new com.rndmodgames.futtoboru.engine.era.EraEventScheduler(era(), messageManager);
+        }
+        return eraScheduler;
+    }
+
+    /** The era events and baseline (H-06), loaded on first use. */
+    public com.rndmodgames.futtoboru.system.data.EraProfile era() {
+        if (eraProfile == null) {
+            eraProfile = com.rndmodgames.futtoboru.system.data.EraProfile.loadDefault();
+        }
+        return eraProfile;
+    }
+
+    /** The rules, ball, kit and league parameters in force on {@code date} (G-11). */
+    public com.rndmodgames.futtoboru.system.data.EraProfile.Resolved currentEra(LocalDate date) {
+        return era().at(date);
+    }
+
+    /** The era of the game's current date; null when no game is loaded. */
+    public com.rndmodgames.futtoboru.system.data.EraProfile.Resolved currentEra() {
+        return gameInstance.getCurrentGame() == null || gameInstance.getCurrentGame().getGameDate() == null ? null
+                : currentEra(gameInstance.getCurrentGame().getGameDate().toLocalDate());
+    }
+
     public MessageManager getMessageManager() {
         return messageManager;
     }
@@ -351,7 +389,10 @@ public class FuttoboruGameEngine {
          */
         LocalDateTime newDate = current.plusDays(1);
         gameInstance.getCurrentGame().setGameDate(newDate);
-        
+
+        // G-11: the authorities and the press announce era changes (never twice; ids kept in the save)
+        eraScheduler().announce(gameInstance.getCurrentGame(), current.toLocalDate(), newDate.toLocalDate());
+
         // G-02: the day's injury recovery, every club (a man fit again is available for today's matches)
         com.rndmodgames.futtoboru.engine.injuries.InjuryManager.recoverDaily(gameInstance.getCurrentGame(), newDate,
                 messageManager);
@@ -371,7 +412,15 @@ public class FuttoboruGameEngine {
         if (gameInstance.getJobManager() != null) {
             gameInstance.getJobManager().updateJobOpenings();
         }
-        
+
+        // G-04: a new month's money starts from nothing (the Finances screen's "this month"; it never reset)
+        if (newDate.getDayOfMonth() == 1) {
+            resetMonthTotals();
+        }
+
+        // G-04: engagements (retained list from 16 April, answers the next day, the 1 May rollover for every club)
+        contractManager.afterDay(newDate);
+
         /**
          * STEP 5: Deliver scheduled messages AFTER advancing date
          * This catches messages scheduled for the new date (same day events)
@@ -601,6 +650,16 @@ public class FuttoboruGameEngine {
         }
     }
     
+    /** G-04: the month's income and expenditure of every club start again on the 1st */
+    private void resetMonthTotals() {
+        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+            if (club != null) {
+                club.setMonthIncome(BigDecimal.ZERO);
+                club.setMonthExpenditure(BigDecimal.ZERO);
+            }
+        }
+    }
+
     /**
      * Get the date of the most recent expense calculation
      */

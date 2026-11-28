@@ -72,16 +72,19 @@ public class PersonGenerator {
          */
         
         LocalDateTime randomBirthDate = null;
-        
+
         // Randomize
         int randomYears = 16 + rng.nextInt(30);
         int randomDays = rng.nextInt(365);
-        
-        if (currentGame != null) {
-            
+
+        // G-04 fix: the `currentGame` field was never set, so people made during play took their age from the
+        // season start (a year off from 1889-90 on) or, without a season, from the machine's clock
+        SaveGame running = currentGame != null ? currentGame : game != null ? game.getCurrentGame() : null;
+        if (running != null && running.getGameDate() != null) {
+
             // Set the relative birth date to the Current Game Date
             // Used in Real Time Person Generation
-            randomBirthDate = currentGame.getGameDate();
+            randomBirthDate = running.getGameDate();
             
         } else if (season != null) {    
         

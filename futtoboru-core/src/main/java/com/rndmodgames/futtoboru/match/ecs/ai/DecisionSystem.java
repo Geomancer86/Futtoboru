@@ -62,9 +62,18 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.RestartType;
  * the kicker slot; throw-in and free kick: the nearest outfielder; goal kick: the nearest back; corner: the nearest
  * forward) goes to the ball and plays it once the laws say the restart is ready (a throw-in with
  * {@code THROW_IN}); everybody else takes position (kick-off: own half, the other side ten yards off; corner: forwards
- * in the goalmouth) and plays nothing. In play, forwards keep onside of the third-last opponent as they believe him,
- * passes to a man believed offside score low, and a man the laws hold in an offside position leaves the ball to
- * others. Ends follow the laws ({@link PlayStateComponent#attackSign}); at full time everybody stops.
+ * in the goalmouth) and plays nothing. In play, forwards hold just onside of the third-last opponent as they believe
+ * him, passes to a man believed offside score low, and a man in the laws' offside snapshot judges himself once per
+ * snapshot (true margin plus perception error and a forward's optimism, {@link AiParams#offsideJudgeSigmaM}): he leaves
+ * the ball to others only if he believes he was offside (E-16b; before, the AI read the laws' truth and offsides were
+ * never given). Ends follow the laws ({@link PlayStateComponent#attackSign}); at full time everybody stops.
+ *
+ * <p><b>Runs in behind (E-16b).</b> A forward whose side has the ball behind him may set off beyond the line he
+ * believes in ({@link AiParams#runStartChance}); the man on the ball scores a through ball into his path. A run started
+ * a moment early, or a line misread, is what the umpires are appealed to on.
+ *
+ * <p><b>The keeper</b> is whoever holds the keeper slot ({@link AthleteComponent#isKeeper()} follows it): an outfielder
+ * who goes in goal for a keeper gone off handles where the season's law allows.
  *
  * <p>Pacing: chasing is a sprint (less when short-term stamina is low); everything else runs at most at a cruising
  * pace below the aerobic level, lower as the match reserve empties. Determinism: doubles, no trig, a fixed number of
@@ -109,6 +118,11 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
     private SkillComponent[] skill = new SkillComponent[0];
     private PerceptionComponent[] perception = new PerceptionComponent[0];
     private RandomSource[] whims = new RandomSource[0];
+    /** The offside snapshot tick each player last judged himself on, and what he concluded (E-16b). */
+    private long[] judgedSnapshot = new long[0];
+    private boolean[] believesOffside = new boolean[0];
+    /** A forward's run beyond the line lasts until this tick. */
+    private long[] runUntil = new long[0];
     private int[] index = new int[0];
     private int[] side = new int[0];
     /** [team][original slot] -> AI player order, -1 none. */
@@ -206,9 +220,27 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
                     tc.goneOff(k, tc.slotOf[k] == 0 ? bestHandler(side[i], i) : -1);
                     move[i].stop();
                     act[i].cancel();
+                    syncKeepers(side[i]);
                 }
             } else if ((tc.passengerMask & (1 << k)) == 0) {
                 tc.passenger(k);
+            }
+        }
+    }
+
+    /**
+     * The holder of the keeper slot is the goalkeeper and may handle (within the season's law); nobody else is. An
+     * outfielder who takes over from a keeper gone off thus keeps goal with his hands (E-16b).
+     */
+    private void syncKeepers(int team) {
+        TeamTacticsComponent tc = tactics[team];
+        if (tc == null) {
+            return;
+        }
+        for (int k = 0; k < 11; k++) {
+            int j = member[team][k];
+            if (j >= 0) {
+                athlete[j].setKeeper(tc.slotOf[k] == 0);
             }
         }
     }
@@ -374,13 +406,13 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             return;
         }
         boolean ourBall = poss.lastTouchTeam == side[i];
-        ranking(i, slot == 0);
-        if (slot == 0 && athlete[i].isKeeper()) {
-            keeper(i, ourBall);
-            return;
+        if (!ourBall) {
+            runUntil[i] = 0; // the ball is lost: no more run in behind
         }
+        judgeOffside(i);
+        ranking(i, slot == 0);
         if (slot == 0) {
-            keeperPosition(i); // an outfielder in goal: may not handle, keeps the line
+            keeper(i, ourBall); // the keeper, or the outfielder who took over in goal
             return;
         }
         boolean passenger = injury[i] != null && injury[i].state == InjuryComponent.PASSENGER;
@@ -422,8 +454,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
                 if (!keeper && sj == 0) {
                     continue;
                 }
-                if (injury[j] != null && injury[j].state == InjuryComponent.PASSENGER
-                        || play.offsidePosition(index[j])) {
+                if (injury[j] != null && injury[j].state == InjuryComponent.PASSENGER || holdsOff(j)) {
                     continue;
                 }
                 if (t < tMe - p.rankMarginS || t <= tMe + p.rankMarginS && j < i) {
@@ -436,9 +467,34 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
                 tOppBest = t;
             }
         }
-        if (play.offsidePosition(index[i])) {
-            rank = cached; // the laws hold him offside: he leaves the ball to others
+        if (holdsOff(i)) {
+            rank = cached; // he believes he was offside when the ball was played: he leaves it to others
         }
+    }
+
+    /**
+     * When a team-mate has played the ball with player i in the offside snapshot, i judges once whether he was
+     * offside: the true margin plus his misjudgement (perception noise growing with the distance to the third-last
+     * defender, and a forward's optimism), so he sometimes goes for a ball he should leave and the umpires give it.
+     */
+    private void judgeOffside(int i) {
+        int q = index[i];
+        if (play.snapshotTeam != side[i] || play.snapshotTick == judgedSnapshot[i] || q < 0
+                || q >= PlayStateComponent.MAX_TRACKED || (play.snapshotMask & (1L << q)) == 0) {
+            return;
+        }
+        judgedSnapshot[i] = play.snapshotTick;
+        PerceptionComponent pc = perception[i];
+        int s = tactics[side[i]].attackSign;
+        double toLine = Math.abs(onside - s * pc.x[i]);
+        double sigma = p.offsideJudgeSigmaM + p.playerSigmaPerM * toLine;
+        double believed = play.margin[q] + sigma * whims[i].nextGaussian() - p.offsideJudgeLeanM;
+        believesOffside[i] = believed > 0;
+    }
+
+    /** Player j leaves the ball alone because he believes he was offside when it was last played. */
+    private boolean holdsOff(int j) {
+        return believesOffside[j] && judgedSnapshot[j] == play.snapshotTick && play.snapshotTeam == side[j];
     }
 
     // ---- with the ball, or going for it ---------------------------------------------------------------------------
@@ -586,13 +642,28 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             double tech = 0.6 + 0.4 * sk.technique;
             double len = dp <= shortM ? 1 : shortM / dp;
             double lane = clamp01(laneClearance(pc, side[i], bx, by, mx, my) / 3);
-            double offside = s * pc.x[j] > onside + 0.3 ? p.offsidePassFactor : 1;
-            tech *= offside;
-            double u = p.wPass * style * progress * open * lane * len * tech;
+            boolean believedOnside = s * pc.x[j] <= onside + p.passOffsideToleranceM;
+            double u = p.wPass * style * progress * open * lane * len * tech
+                    * (believedOnside ? 1 : p.offsidePassFactor);
             consider(u + wGround, ActionIntent.PASS, mx, my, 0, 0.5);
             if (dp > 15) {
-                double ul = p.wLoft * style * progress * open * tech * (dp <= 40 ? 1 : 40 / dp);
+                double ul = p.wLoft * style * progress * open * tech * (dp <= 40 ? 1 : 40 / dp)
+                        * (believedOnside ? 1 : p.offsidePassFactor);
                 consider(ul + wLofted, ActionIntent.PASS, mx, my, 1.0, 0.5);
+            }
+            // through ball: into the path of a man running in behind who is onside as the passer sees him
+            if (believedOnside && s * pc.vx[j] > p.throughMinSpeedMps && s * (pc.x[j] - bx) > 0) {
+                double lx = pc.x[j] + pc.vx[j] * p.throughLeadS;
+                double ly = pc.y[j] + pc.vy[j] * p.throughLeadS;
+                double dl = dist(bx, by, lx, ly);
+                if (dl >= 8 && dl <= 45 && Math.abs(lx) < hl - 3 && Math.abs(ly) < hw - 1) {
+                    double gainT = dg < p.shotRangeM + 8 ? dg - dist(lx, ly, gx, 0) : s * (lx - bx);
+                    double ut = p.wThrough * style * clamp(0.5 + gainT / 30, 0.1, 1.5)
+                            * clamp01(nearestOpponent(pc, side[i], lx, ly) / 8)
+                            * clamp01(laneClearance(pc, side[i], bx, by, lx, ly) / 3) * tech
+                            * (dl <= shortM ? 1 : shortM / dl);
+                    consider(ut + wGround, ActionIntent.PASS, lx, ly, 0, 0.5);
+                }
             }
         }
 
@@ -740,10 +811,40 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             double sideY = ay >= pc.ballY ? 1 : -1;
             tx = pc.ballX + s * p.shortOptionM * 0.6;
             ty = clampY(pc.ballY + sideY * p.shortOptionM * 0.8);
+        } else if (line == Position.Line.FORWARD && forwardRun(i, dBall)) {
+            // a run in behind the third-last man for a through ball, in his own lane
+            tx = s * Math.min(onside + p.runBeyondM, hl - 8);
+            ty = clampY(ay);
+            go(i, clampX(tx), ty, sprint(i));
+            return;
         }
         tx = clampX(tx);
         double far = dist(b.x, b.y, tx, ty);
         go(i, tx, ty, far > 12 && athlete[i].stamina > 0.5 ? 0.85 * athlete[i].topSpeed : cruise(i));
+    }
+
+    /**
+     * A forward off the ball times a run beyond the offside line (E-16b): when his side has the ball behind him within
+     * {@link AiParams#runCarrierRangeM}, at each think he may set off ({@link AiParams#runStartChance}) as long as he
+     * believes he is onside now; the run lasts {@link AiParams#runSeconds}. Early starts and a misread line are what
+     * the umpires then judge. True while he is running.
+     */
+    private boolean forwardRun(int i, double dBall) {
+        long tick = world.tickCount();
+        if (tick < runUntil[i]) {
+            return true;
+        }
+        PerceptionComponent pc = perception[i];
+        int s = tactics[side[i]].attackSign;
+        double draw = whims[i].nextDouble();
+        double me = s * pc.x[i];
+        double ballT = s * pc.ballX;
+        if (dBall > p.runCarrierRangeM || ballT > me || me < onside - p.runFromBehindM || me > onside
+                || onside > hl - 12 || draw >= p.runStartChance) {
+            return false;
+        }
+        runUntil[i] = tick + Math.round(p.runSeconds * world.params().tickHz);
+        return true;
     }
 
     private void defend(int i, int slot) {
@@ -822,6 +923,9 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
                 lo = -hl + 14;
                 hi = hl - 7;
                 break;
+        }
+        if (attacking && line == Position.Line.FORWARD) {
+            x = Math.max(x, onside - p.forwardsUpBehindM); // forwards play up against the backs (E-16b)
         }
         x = clamp(x, lo, hi);
         if (line == Position.Line.FORWARD && x > onside - p.onsideMarginM) {
@@ -916,7 +1020,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             takeRestart(i, s, tick);
             return;
         }
-        if (slot == 0 && athlete[i].isKeeper()) {
+        if (slot == 0) {
             keeperPosition(i);
             return;
         }
@@ -1268,6 +1372,10 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
         skill = new SkillComponent[n];
         perception = new PerceptionComponent[n];
         whims = new RandomSource[n];
+        judgedSnapshot = new long[n];
+        java.util.Arrays.fill(judgedSnapshot, -1);
+        believesOffside = new boolean[n];
+        runUntil = new long[n];
         index = new int[n];
         side = new int[n];
         for (int t = 0; t < 2; t++) {
@@ -1302,5 +1410,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
         }
         cached = n;
         cachedTeams = teams.size();
+        syncKeepers(0);
+        syncKeepers(1);
     }
 }

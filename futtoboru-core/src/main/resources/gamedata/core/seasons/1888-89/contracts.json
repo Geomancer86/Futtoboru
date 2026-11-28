@@ -1,0 +1,61 @@
+[
+  {
+    "standing": "league",
+    "professionalShare": 0.85,
+    "seasonWageMin": 20,
+    "seasonWageMax": 50,
+    "summerWageMin": 10,
+    "summerWageMax": 20,
+    "summerPayShare": 0.5,
+    "amateurExpenses": 2,
+    "minimumSquad": 16,
+    "squadSize": 20,
+    "confidence": "placeholder",
+    "sources": [
+      "https://bluecorrespondent.co.uk/1888-89/august1888.html",
+      "https://bluecorrespondent.co.uk/1888-89/september1888.html"
+    ],
+    "notes": "Shillings a week. Season wage 20-50s and summer pay 20s for a good man are sourced (docs/data/history/RECRUITMENT_1888-1900.md 4.2: Everton offered Holt 45s a week in the season and 20s in the summer, Aug 1888; Ross's retaining fee implies about 50s). Amateurs take no wage (4.5); their weekly expenses, the summer lower bound, the shares and the squad sizes are placeholders (D30 A3)."
+  },
+  {
+    "standing": "other",
+    "professionalShare": 0.5,
+    "seasonWageMin": 10,
+    "seasonWageMax": 35,
+    "summerWageMin": 5,
+    "summerWageMax": 15,
+    "summerPayShare": 0.25,
+    "amateurExpenses": 2,
+    "minimumSquad": 12,
+    "squadSize": 16,
+    "confidence": "placeholder",
+    "sources": [
+      "https://bluecorrespondent.co.uk/1888-89/august1888.html"
+    ],
+    "notes": "Clubs outside the Football League (FA Cup entrants): lower wages than a League club. Every figure is a placeholder scaled down from the League band (D30 A3)."
+  },
+  {
+    "standing": "amateur",
+    "clubs": [
+      "old-carthusians",
+      "old-westminsters",
+      "old-brightonians"
+    ],
+    "professionalShare": 0,
+    "seasonWageMin": 0,
+    "seasonWageMax": 0,
+    "summerWageMin": 0,
+    "summerWageMax": 0,
+    "summerPayShare": 0,
+    "amateurExpenses": 2,
+    "minimumSquad": 12,
+    "squadSize": 16,
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Old_Carthusians_F.C.",
+      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C.",
+      "https://en.wikipedia.org/wiki/Old_Brightonians_F.C."
+    ],
+    "notes": "Public-school old boys' clubs: amateurs only, no professional forms. Expenses and squad sizes are placeholders."
+  }
+]

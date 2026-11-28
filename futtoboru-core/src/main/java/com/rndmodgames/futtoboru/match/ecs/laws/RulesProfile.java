@@ -43,6 +43,23 @@ public record RulesProfile(int seasonStartYear, int offsideOpponents, boolean of
                 y >= 1912 ? KeeperHandling.PENALTY_AREA : KeeperHandling.OWN_HALF, RestartLaws.forSeason(y));
     }
 
+    /**
+     * The Laws from an era profile (G-11: {@code EraProfile.at(date)}). Only parameters whose meaning matches are
+     * read; the restart laws still come from the season. TODO (era names not yet mapped): rules.offsideFromThrowIn
+     * and goalFromCorner/goalFromGoalKick/directFreeKicks (RestartLaws), keeperHandlingPurpose, keeperSteps,
+     * refereeActsWithoutAppeal, refereeFreeKickWithoutAppeal, refereeDecisionFinal, advantage, maxSubstitutes,
+     * minutes, addedTime, and all of ball.* / kit.* (grams vs kg in PhysicsParams).
+     */
+    public static RulesProfile fromEra(com.rndmodgames.futtoboru.system.data.EraProfile.Resolved era,
+            int seasonStartYear) {
+        return new RulesProfile(seasonStartYear, era.getInt("rules.offsideOpponents"),
+                !era.getBoolean("rules.offsideOwnHalf"), !"UMPIRES_AND_REFEREE".equals(era.getString("rules.officials")),
+                era.getBoolean("rules.penaltyKick"), era.getBoolean("rules.keeperChargeProtected"),
+                "PENALTY_AREA".equals(era.getString("rules.keeperHandling")) ? KeeperHandling.PENALTY_AREA
+                        : KeeperHandling.OWN_HALF,
+                RestartLaws.forSeason(seasonStartYear));
+    }
+
     /** 1888-89, the starting season. */
     public static RulesProfile season1888() {
         return forSeason(1888);

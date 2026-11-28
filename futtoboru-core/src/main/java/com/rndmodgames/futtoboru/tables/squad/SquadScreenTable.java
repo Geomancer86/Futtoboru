@@ -151,6 +151,19 @@ public class SquadScreenTable extends VisTable{
         teamSheetScrollPane.setFadeScrollBars(false);
         teamSheetScrollPane.setScrollingDisabled(false, false);
 
+        // G-04: the retained list (engagements for next season; open from 16 April), beside the tabs
+        VisTextButton retainedListButton = new VisTextButton(LanguageModLoader.getValue("contracts_retained_list"));
+        retainedListButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (game.getGameEngine() != null && game.getGameEngine().getMainMenuManager() != null) {
+                    game.getGameEngine().getMainMenuManager().setActiveMainScreen(
+                            com.rndmodgames.futtoboru.menu.MainMenuManager.RETAINED_LIST_SCREEN);
+                }
+            }
+        });
+        tabRow.add(retainedListButton);
+
         // Players List Component (wrapped in scroll pane for horizontal scrolling)
         this.addSeparator().colspan(2);
         this.row();

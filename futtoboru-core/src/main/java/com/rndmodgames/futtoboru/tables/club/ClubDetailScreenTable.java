@@ -490,8 +490,16 @@ public class ClubDetailScreenTable extends VisTable {
         
 
         this.add(details).top().left().expandX().fillX();
-        this.add(game.getGroundArt().panel(club.getStadium(), UiTheme.size("art.ground.panel.w"),
-                UiTheme.size("art.ground.panel.h"))).top().right().pad(UiTheme.space("sm"));
+        // G-10: the ground picture with the club's History panel under it
+        VisTable side = new VisTable(true);
+        side.add(game.getGroundArt().panel(club.getStadium(), UiTheme.size("art.ground.panel.w"),
+                UiTheme.size("art.ground.panel.h"))).top().right();
+        VisTable historyPanel = ClubHistoryPanel.build(club, game.getCurrentGame(), menuManager);
+        if (historyPanel != null) {
+            side.row();
+            side.add(historyPanel).top().left();
+        }
+        this.add(side).top().right().pad(UiTheme.space("sm"));
         Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "=== updateDynamicComponents COMPLETE ===");
         Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] ===== updateDynamicComponents COMPLETE =====");
         

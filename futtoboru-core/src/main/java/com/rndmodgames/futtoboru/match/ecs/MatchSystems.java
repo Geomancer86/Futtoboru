@@ -94,7 +94,7 @@ public final class MatchSystems {
         world.addSimulation(new OfficialSystem(world));
         world.addSimulation(new LocomotionSystem(world));
         world.addSimulation(new ActionSystem(world));
-        world.addSimulation(new BallSystem(world));
+        world.addSimulation(new BallSystem(world)).setPitch(pitch);
         world.addSimulation(new ContactSystem(world));
         world.addSimulation(new LawsSystem(world)).setPitch(pitch);
         world.engine().getSystem(ActionSystem.class).setPitch(pitch);
