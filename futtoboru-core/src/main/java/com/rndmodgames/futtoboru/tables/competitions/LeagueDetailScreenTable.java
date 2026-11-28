@@ -3,7 +3,6 @@ package com.rndmodgames.futtoboru.tables.competitions;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -21,6 +20,7 @@ import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiTooltips;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -46,7 +46,7 @@ public class LeagueDetailScreenTable extends VisTable {
     
     private LeagueStandingsManager standingsManager;
     
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
+    private DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.MEDIUM); // U-12: the game language
     
     public LeagueDetailScreenTable(Game parent) {
         super(true);

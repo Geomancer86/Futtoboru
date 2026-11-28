@@ -9,6 +9,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -66,8 +67,8 @@ public class MatchResultScreenTable extends VisTable {
         }
         
         // Format date
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.MEDIUM); // U-12: the game language, not the machine's
+        DateTimeFormatter timeFormatter = GameFormat.formatter(GameFormat.TIME);
         String matchDate = match.getMatchDateTime() != null ? match.getMatchDateTime().format(dateFormatter) : LanguageModLoader.getValue("unknown");
         String matchTime = match.getMatchDateTime() != null ? match.getMatchDateTime().format(timeFormatter) : LanguageModLoader.getValue("unknown");
         
@@ -147,14 +148,14 @@ public class MatchResultScreenTable extends VisTable {
         // Attendance
         this.row().padTop(UiTheme.space("xs"));
         this.add(LanguageModLoader.getValue("match_attendance")).padRight(UiTheme.space("sm"));
-        String attendance = match.getAttendance() != null ? String.valueOf(match.getAttendance()) : LanguageModLoader.getValue("unknown");
+        String attendance = match.getAttendance() != null ? GameFormat.integer(match.getAttendance()) : LanguageModLoader.getValue("unknown");
         this.add(attendance).left();
         
         // Stadium capacity if available
         if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
             this.row().padTop(UiTheme.space("xs"));
             this.add(LanguageModLoader.getValue("match_capacity")).padRight(UiTheme.space("sm"));
-            this.add(String.valueOf(homeClub.getStadium().getCapacity())).left();
+            this.add(GameFormat.integer(homeClub.getStadium().getCapacity())).left();
         }
     }
 }

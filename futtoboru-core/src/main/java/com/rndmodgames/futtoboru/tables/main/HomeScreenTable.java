@@ -1,8 +1,6 @@
 package com.rndmodgames.futtoboru.tables.main;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -16,6 +14,7 @@ import com.rndmodgames.futtoboru.engine.finances.Money;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -29,9 +28,6 @@ import com.rndmodgames.localization.LanguageModLoader;
  * @author Geomancer86
  */
 public class HomeScreenTable extends VisTable {
-
-    private static final DateTimeFormatter LONG_DATE = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy", Locale.ENGLISH);
-    private static final DateTimeFormatter SHORT_DATE = DateTimeFormatter.ofPattern("EEE d MMM yyyy", Locale.ENGLISH);
 
     private final Game game;
     private MainMenuManager menuManager;
@@ -65,7 +61,7 @@ public class HomeScreenTable extends VisTable {
             subtitle.append(dashboard.getManagerName());
         }
         if (dashboard.getDate() != null) {
-            subtitle.append(subtitle.length() > 0 ? "  -  " : "").append(LONG_DATE.format(dashboard.getDate()));
+            subtitle.append(subtitle.length() > 0 ? "  -  " : "").append(GameFormat.longDate(dashboard.getDate()));
         }
         VisLabel subtitleLabel = new VisLabel(subtitle.toString());
         subtitleLabel.setColor(UiTheme.color("text.secondary"));
@@ -108,7 +104,7 @@ public class HomeScreenTable extends VisTable {
             line(card, format("dashboard_fixture_line", opponent, text(fixture.home() ? "dashboard_home" : "dashboard_away")),
                     "text.primary");
             String competition = fixture.competition() != null ? fixture.competition() : matchType(fixture.matchType());
-            line(card, competition + ", " + SHORT_DATE.format(fixture.date()), "text.secondary");
+            line(card, competition + ", " + GameFormat.weekdayDate(fixture.date()), "text.secondary");
             String when = fixture.daysUntil() <= 0 ? text("dashboard_today")
                     : fixture.daysUntil() == 1 ? text("dashboard_tomorrow")
                     : format("dashboard_in_days", fixture.daysUntil());
@@ -172,7 +168,7 @@ public class HomeScreenTable extends VisTable {
             }
             String opponent = result.opponent() != null ? result.opponent() : "?";
             line(card, format("dashboard_result_line", outcome, result.goalsFor(), result.goalsAgainst(), opponent), color);
-            line(card, text(result.home() ? "dashboard_home" : "dashboard_away") + ", " + SHORT_DATE.format(result.date()),
+            line(card, text(result.home() ? "dashboard_home" : "dashboard_away") + ", " + GameFormat.weekdayDate(result.date()),
                     "text.secondary");
         }
         link(card, "match_history", MainMenuManager.MATCH_HISTORY_SCREEN);

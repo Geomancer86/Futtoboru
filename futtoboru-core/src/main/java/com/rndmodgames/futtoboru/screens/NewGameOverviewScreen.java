@@ -32,6 +32,7 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.GroundArt;
 import com.rndmodgames.futtoboru.ui.UiTheme;
@@ -317,7 +318,7 @@ public class NewGameOverviewScreen implements Screen {
 
         //
         gameStartConfigurationTable.add(gameStartDateLabel);
-        gameStartConfigurationTable.add(DatabaseLoader.formatter.format(startingSeason.getStartDate()));
+        gameStartConfigurationTable.add(GameFormat.longDate(startingSeason.getStartDate())); // U-12: the game language
         
         //
         gameStartConfigurationTable.row();

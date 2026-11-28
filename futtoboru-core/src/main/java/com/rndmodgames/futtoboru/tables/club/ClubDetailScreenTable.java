@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -211,32 +212,9 @@ public class ClubDetailScreenTable extends VisTable {
                 details.row();
                 details.add(new VisLabel(LanguageModLoader.getValue("club_source"))).left();
                 
+                // U-12: a VisUI LinkLabel like every other link (skin colour, hand cursor, opens the browser)
                 final String url = club.getStadium().getUrlSource();
-                final VisLabel urlLabel = new VisLabel(url);
-                urlLabel.setColor(UiTheme.color("link.normal")); // Blue for link
-                
-                // Make URL clickable and add hover feedback
-                urlLabel.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
-                    @Override
-                    public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
-                        com.badlogic.gdx.Gdx.net.openURI(url);
-                        return true;
-                    }
-                    
-                    @Override
-                    public void enter(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor fromActor) {
-                        urlLabel.setColor(UiTheme.color("link.hover")); // Brighter blue on hover
-                        com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Hand);
-                    }
-                    
-                    @Override
-                    public void exit(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor toActor) {
-                        urlLabel.setColor(UiTheme.color("link.normal")); // Original blue
-                        com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Arrow);
-                    }
-                });
-                
-                details.add(urlLabel).left().expandX();
+                details.add(new LinkLabel(url, url)).left().expandX();
                 details.row();
             }
         }

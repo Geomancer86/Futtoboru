@@ -402,6 +402,21 @@ public class Futtoboru extends Game {
     }
 
     /**
+     * U-12: switches the game language ({@code en_US}, {@code en_UK}, {@code sp_SP}, {@code sp_LA}): saves it and loads
+     * its bundle at once, so labels, dates and numbers of every screen built from now on use it (the caller rebuilds
+     * the screen it is on). Letters already in the inbox keep the language they were written in.
+     */
+    public void updateLanguage(String languageId) {
+
+        Locale locale = new Locale(languageId);
+        if (preferences != null) {
+            preferences.saveLocale(locale);
+        }
+        LanguageModLoader.setBundle(I18NBundle.createBundle(Gdx.files.internal("mods/language/BaseBundle"), locale));
+        Log.info(Log.SYSTEM_CONFIG, "language " + languageId + " (dates and numbers: " + com.rndmodgames.localization.GameFormat.locale() + ")");
+    }
+
+    /**
      * Utility method used to toggle Fullscreen and Windowed Mode
      */
     public void toggleFullscreen() {

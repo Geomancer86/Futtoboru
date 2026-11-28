@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -106,9 +105,6 @@ public class DatabaseLoader {
 
     // the data the database was built from
     private static GameData gameData;
-
-    //
-    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
 
     // singleton
     private static DatabaseLoader instance;

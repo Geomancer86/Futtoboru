@@ -299,6 +299,7 @@ public class MainGameMenuTable extends VisTable {
                                LanguageModLoader.getValue("discard_progress"),
                                LanguageModLoader.getValue("cancel") },
                 new Integer[] { CONFIRM_SAVE_FIRST, CONFIRM_DISCARD, CONFIRM_CANCEL },
+                CONFIRM_CANCEL, // Esc = Cancel, never Do Not Save
                 result -> {
                     if (result == CONFIRM_SAVE_FIRST) {
                         showSaveDialog(stage, action);

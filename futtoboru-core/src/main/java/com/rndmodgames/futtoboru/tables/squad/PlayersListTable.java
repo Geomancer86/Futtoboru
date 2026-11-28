@@ -1,13 +1,11 @@
 package com.rndmodgames.futtoboru.tables.squad;
 
-import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,6 +16,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiTooltips;
@@ -73,8 +72,7 @@ public class PlayersListTable extends VisTable {
     VisTable mainTable;
     
     //
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-    DecimalFormat attributeFormat = new DecimalFormat("#0.0");
+    DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.NUMERIC); // U-12: the game language
     
     public PlayersListTable(Futtoboru parent) {
         
@@ -395,7 +393,7 @@ public class PlayersListTable extends VisTable {
      * Add an attribute cell with value and change indicator
      */
     private void addAttributeCell(Player player, String attributeName, Float value) {
-        String valueText = value != null ? attributeFormat.format(value) : LanguageModLoader.getValue("not_available");
+        String valueText = value != null ? GameFormat.decimal(value, 1) : LanguageModLoader.getValue("not_available");
         
         // Get change indicator
         String changeText = "";

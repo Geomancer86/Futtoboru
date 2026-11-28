@@ -14,6 +14,7 @@ import com.rndmodgames.futtoboru.data.MessagePriority;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -680,7 +681,7 @@ public class MessageManager {
         }
 
         if (match.getAttendance() != null) {
-            content.append(LanguageModLoader.format("msg_match_attendance", match.getAttendance()));
+            content.append(LanguageModLoader.format("msg_match_attendance", GameFormat.integer(match.getAttendance()))); // U-12: "12,000"
             content.append("\n");
         }
 
