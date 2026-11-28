@@ -21,6 +21,7 @@ import com.rndmodgames.futtoboru.BaseTest;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.TeamSheet;
 import com.rndmodgames.futtoboru.engine.simulation.MatchEngine;
 import com.rndmodgames.futtoboru.engine.simulation.MatchEngines;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
@@ -28,7 +29,7 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
 /**
  * E-17a soak entry point (D33-1): plays the whole 1888-89 season headless on the ECS engine with the
  * {@link FullSeasonTests} machinery (new game, Continue, the manager's match days, draws read, rollover) and prints
- * the invariants: every league fixture once, the table adds up, scorers play for their side, no errors; plus season
+ * the invariants: every league fixture once, the table adds up, scorers play for their side (in that match's kick-off sheet), no errors; plus season
  * runtime and goals per game against 1888-89's 4.45. One ECS match takes about 2.5 s, so a season takes tens of
  * minutes: it only runs when asked for.
  *
@@ -94,8 +95,8 @@ class EcsSeasonSoakTests extends BaseTest {
         int allGoals = 0;
         for (Match m : all.values()) {
             allGoals += m.getHomeGoals() + m.getAwayGoals();
-            scorerMisplaced += misplaced(run, m.getHomeClubId(), m.getHomeScorerIds())
-                    + misplaced(run, m.getAwayClubId(), m.getAwayScorerIds());
+            scorerMisplaced += misplaced(run, m.getHomeClubId(), m.getHomeSheet(), m.getHomeScorerIds())
+                    + misplaced(run, m.getAwayClubId(), m.getAwaySheet(), m.getAwayScorerIds());
             if (m.getHomeScorerIds().size() > m.getHomeGoals() || m.getAwayScorerIds().size() > m.getAwayGoals()) {
                 broken.add("more scorers than goals in match " + m.getId());
             }
@@ -145,15 +146,20 @@ class EcsSeasonSoakTests extends BaseTest {
         return broken;
     }
 
-    /** Scorer ids that are not players of {@code clubId} (a scorer who left the club since still counts as his). */
-    private static int misplaced(FullSeasonTests.SeasonRun run, Long clubId, List<Long> scorerIds) {
+    /**
+     * Scorer ids (person ids) that are not men of {@code clubId}'s eleven in that match: its sheet frozen at kick-off
+     * (G-01), else the club's 1888-89 squad (G-04). Not the club's squad at the end of the run: the 1 May rollover
+     * released men since, and their goals still count for the side they played for.
+     */
+    private static int misplaced(FullSeasonTests.SeasonRun run, Long clubId, TeamSheet sheet, List<Long> scorerIds) {
         if (scorerIds.isEmpty()) {
             return 0;
         }
-        Club club = run.save.getClubById(clubId);
-        Set<Long> ids = new HashSet<>();
-        for (Player p : club.getPlayers()) {
-            if (p != null && p.getPerson() != null) {
+        Set<Long> playerIds = sheet != null ? new HashSet<>(sheet.selectedIds())
+                : run.seasonMen.getOrDefault(clubId, Set.of());
+        Set<Long> ids = new HashSet<>(playerIds); // a game player's id is his person's (DatabaseLoader, contracts)
+        for (Player p : allPlayers(run)) {
+            if (p != null && p.getPerson() != null && playerIds.contains(p.getId())) {
                 ids.add(p.getPerson().getId());
             }
         }
@@ -162,5 +168,13 @@ class EcsSeasonSoakTests extends BaseTest {
             out += ids.contains(id) ? 0 : 1;
         }
         return out;
+    }
+
+    private static List<Player> allPlayers(FullSeasonTests.SeasonRun run) {
+        List<Player> all = new ArrayList<>(run.save.getFreeAgents());
+        for (Club c : run.save.getAllClubs()) {
+            all.addAll(c.getPlayers());
+        }
+        return all;
     }
 }
