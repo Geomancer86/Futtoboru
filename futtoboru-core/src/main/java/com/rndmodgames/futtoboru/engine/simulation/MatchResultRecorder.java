@@ -145,7 +145,11 @@ public class MatchResultRecorder {
         moveToPlayed(match, homeClub);
         moveToPlayed(match, awayClub);
 
-        if (messageManager != null) {
+        // G-13: the visitors of a friendly get their guarantee or share of the gate (booked once, on the match)
+        com.rndmodgames.futtoboru.engine.finances.FriendlyGuarantee.book(game, match, homeClub, awayClub);
+
+        // G-13: a friendly between two AI clubs sends no result letter (dozens a week would bury the inbox)
+        if (messageManager != null && (!isFriendly(match) || involvesManager(game, homeClub, awayClub))) {
             Message resultMessage = messageManager.createMatchResultMessage(match, homeClub, awayClub);
             if (resultMessage != null) {
                 messageManager.deliverMessage(resultMessage);
@@ -179,6 +183,16 @@ public class MatchResultRecorder {
         if (!isRecorded(match, club)) {
             club.getPlayedMatches().add(match);
         }
+    }
+
+    private static boolean isFriendly(Match match) {
+        return match.getMatchType() != null && match.getMatchType() == Match.FRIENDLY_MATCH;
+    }
+
+    private static boolean involvesManager(SaveGame game, Club home, Club away) {
+        Club current = game.getCurrentClub();
+        return current != null && current.getId() != null
+                && (current.getId().equals(home.getId()) || current.getId().equals(away.getId()));
     }
 
     private static boolean isLeagueMatch(Match match) {

@@ -86,6 +86,12 @@ public class Match implements Serializable {
      */
     private String venue;
 
+    /**
+     * G-13: what the home club of a friendly paid its visitors (their guarantee or share of the gate, in pounds),
+     * booked once when the match is recorded; null before that (and for league and cup matches, older saves).
+     */
+    private java.math.BigDecimal guarantee;
+
     // Match Type Constants
     public static final int FRIENDLY_MATCH = 1;
     public static final int LEAGUE_MATCH = 2;
@@ -357,5 +363,14 @@ public class Match implements Serializable {
 
     public void setVenue(String venue) {
         this.venue = venue;
+    }
+
+    /** G-13: the visitors' guarantee of a played friendly in pounds; null until booked. */
+    public java.math.BigDecimal getGuarantee() {
+        return guarantee;
+    }
+
+    public void setGuarantee(java.math.BigDecimal guarantee) {
+        this.guarantee = guarantee;
     }
 }

@@ -37,6 +37,11 @@ import com.rndmodgames.localization.LanguageModLoader;
  * the same day (cup ties and league fixtures come first).</li>
  * </ol>
  * The answer comes from {@code RandomSource.fork("friendly:<match id>")}, so the same seed gives the same answers.
+ * <p>
+ * G-13: AI clubs write to each other through the same rules ({@link AiFriendlyPlanner}). When an AI club invites the
+ * manager's club, the manager gets an invitation letter ({@link #MESSAGE_INVITATION}) and answers it from the inbox
+ * ({@link #answerInvitation}); an invitation still unanswered two days before the match lapses. The visitors of a
+ * friendly are paid a guarantee or a share of the gate ({@code FriendlyGuarantee}).
  */
 public class FriendlyArranger {
 
@@ -50,6 +55,9 @@ public class FriendlyArranger {
     public static final String MESSAGE_ACCEPTED = "FRIENDLY_ACCEPTED";
     public static final String MESSAGE_DECLINED = "FRIENDLY_DECLINED";
     public static final String MESSAGE_CANCELLED = "FRIENDLY_CANCELLED";
+    /** G-13: an AI club invites the manager's club (actionData = match id); answered from the inbox. */
+    public static final String MESSAGE_INVITATION = "FRIENDLY_INVITATION";
+    public static final String MESSAGE_LAPSED = "FRIENDLY_LAPSED";
 
     /** Why a friendly cannot be proposed (shown on the arrange form) or was declined (sent by letter). */
     public enum Reason {
@@ -153,7 +161,86 @@ public class FriendlyArranger {
         own.getProposedMatches().add(match);
         Log.info(Log.ENGINE_SCHEDULING, "FriendlyArranger", own.getName() + " invite " + opponent.getName()
                 + " to a friendly on " + date + (atHome ? " at home" : " away"));
+        if (awaitsManager(own, opponent)) {
+            invitationLetter(match, own, opponent);
+        }
         return match;
+    }
+
+    /** G-13: an invitation from an AI club to the manager's club waits for the manager's answer. */
+    private boolean awaitsManager(Club proposer, Club opponent) {
+        Club current = game().getCurrentClub();
+        return current != null && current.getId() != null && opponent != null
+                && current.getId().equals(opponent.getId()) && !current.getId().equals(proposer.getId());
+    }
+
+    /** G-13: true while the invitation {@code matchId} to the manager's club can still be answered. */
+    public boolean isOpenInvitation(Long matchId) {
+        return matchId != null && proposerOf(matchId) != null;
+    }
+
+    private Club proposerOf(Long matchId) {
+        if (game() == null || matchId == null) {
+            return null;
+        }
+        for (Club club : game().getAllClubs()) {
+            if (club == null || club.getProposedMatches() == null) {
+                continue;
+            }
+            for (Match m : club.getProposedMatches()) {
+                if (m != null && matchId.equals(m.getId())) {
+                    return club;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * G-13: the manager answers an AI club's invitation from the inbox. Accepting fixes the friendly unless one of
+     * the clubs now has a match that day or the day has come; declining just drops it.
+     *
+     * @return {@link Reason#NONE} when the answer was taken (accepted and fixed, or declined); otherwise why the
+     *         friendly could not be fixed ({@link Reason#TOO_LATE} also when the invitation is no longer open)
+     */
+    public Reason answerInvitation(Long matchId, boolean accept) {
+        Club proposer = proposerOf(matchId);
+        Club manager = game() != null ? game().getCurrentClub() : null;
+        if (proposer == null || manager == null) {
+            return Reason.TOO_LATE;
+        }
+        Match match = null;
+        for (Match m : proposer.getProposedMatches()) {
+            if (m != null && matchId.equals(m.getId())) {
+                match = m;
+            }
+        }
+        proposer.getProposedMatches().remove(match);
+        match.setIsProposed(false);
+        if (!accept) {
+            Log.info(Log.ENGINE_SCHEDULING, "FriendlyArranger", manager.getName() + " decline the invitation of "
+                    + proposer.getName() + " for " + match.getMatchDateTime());
+            return Reason.NONE;
+        }
+        LocalDate today = game().getGameDate().toLocalDate();
+        LocalDate day = match.getMatchDateTime() != null ? match.getMatchDateTime().toLocalDate() : null;
+        Reason reason = Reason.NONE;
+        if (day == null || !day.isAfter(today)) {
+            reason = Reason.TOO_LATE;
+        } else if (hasMatchOn(manager, day, match)) {
+            reason = Reason.OWN_ENGAGED;
+        } else if (hasMatchOn(proposer, day, match)) {
+            reason = Reason.ENGAGED;
+        }
+        if (reason != Reason.NONE) {
+            return reason;
+        }
+        match.setIsAccepted(true);
+        proposer.getScheduledMatches().add(match);
+        manager.getScheduledMatches().add(match);
+        Log.info(Log.ENGINE_SCHEDULING, "FriendlyArranger", manager.getName() + " accept the invitation of "
+                + proposer.getName() + " for " + day);
+        return Reason.NONE;
     }
 
     /**
@@ -175,8 +262,20 @@ public class FriendlyArranger {
             if (match.getProposeDateTime() != null && !match.getProposeDateTime().toLocalDate().isBefore(today)) {
                 continue; // the letter is still in the post
             }
-            club.getProposedMatches().remove(match);
             Club opponent = game().getClubById(otherClubId(match, club));
+            if (opponent != null && awaitsManager(club, opponent)) {
+                // G-13: the manager answers from the inbox; still unanswered two days before the match, it lapses
+                LocalDate day = match.getMatchDateTime() != null ? match.getMatchDateTime().toLocalDate() : null;
+                if (day != null && !day.isBefore(today.plusDays(MIN_NOTICE_DAYS))) {
+                    continue;
+                }
+                club.getProposedMatches().remove(match);
+                match.setIsProposed(false);
+                answers.put(match.getId(), Reason.TOO_LATE);
+                letter(opponent, MESSAGE_LAPSED, "friendly_lapsed_title", "friendly_lapsed_body", match, club, null);
+                continue;
+            }
+            club.getProposedMatches().remove(match);
             if (opponent == null) {
                 Log.warn(Log.ENGINE_SCHEDULING, "FriendlyArranger: dropping friendly " + match.getId()
                         + ", opponent not found");
@@ -356,6 +455,30 @@ public class FriendlyArranger {
         message.setTitle(fill(LanguageModLoader.getValue(titleKey), opponent.getName(), date));
         message.setPlainTextMessage(fill(LanguageModLoader.getValue(bodyKey), opponent.getName(), date, ground,
                 reason != null ? LanguageModLoader.getValue(reason.key) : ""));
+        message.setIsRead(false);
+        message.setIsDeleted(false);
+        messages.deliverMessage(message);
+    }
+
+    /** G-13: the letter inviting the manager's club ({@code to}) to a friendly with {@code from}. */
+    private void invitationLetter(Match match, Club from, Club to) {
+        MessageManager messages = app.getGameEngine() != null ? app.getGameEngine().getMessageManager() : null;
+        if (messages == null) {
+            return;
+        }
+        String date = formatDate(match.getMatchDateTime());
+        boolean away = !to.getId().equals(match.getHomeClubId());
+        String ground = LanguageModLoader.getValue(away ? "friendly_letter_away" : "friendly_letter_home");
+        String terms = LanguageModLoader.getValue(away ? "friendly_invitation_terms_away"
+                : "friendly_invitation_terms_home");
+        Message message = new Message();
+        message.setCategory(MessageCategory.MATCH);
+        message.setMessageType(MESSAGE_INVITATION);
+        message.setPriority(MessagePriority.NORMAL);
+        message.setActionData(match.getId());
+        message.setTitle(fill(LanguageModLoader.getValue("friendly_invitation_title"), from.getName(), date));
+        message.setPlainTextMessage(fill(LanguageModLoader.getValue("friendly_invitation_body"), from.getName(), date,
+                ground, terms));
         message.setIsRead(false);
         message.setIsDeleted(false);
         messages.deliverMessage(message);

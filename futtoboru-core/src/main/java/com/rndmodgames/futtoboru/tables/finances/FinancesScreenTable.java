@@ -311,7 +311,7 @@ public class FinancesScreenTable extends VisTable {
         for (MatchIncome income : matchIncomes) {
             if (income.getMatchDate() != null && 
                 !income.getMatchDate().isBefore(seasonStart)) {
-                total = total.add(income.getTicketRevenue());
+                total = total.add(income.getTotalRevenue()); // G-13: friendly guarantees in or out
             }
         }
         
@@ -391,11 +391,17 @@ public class FinancesScreenTable extends VisTable {
                     
                     if (shouldCount) {
                         // Include in statistics
-                        stats.totalRevenue = stats.totalRevenue.add(income.getTicketRevenue());
-                        if (income.getAttendance() != null) {
-                            stats.totalAttendance += income.getAttendance();
+                        // G-13: the gate net of a friendly's guarantee; a guarantee received away sold no
+                        // tickets, so it is not a gate in the average attendance
+                        stats.totalRevenue = stats.totalRevenue.add(income.getTotalRevenue());
+                        boolean awayGuarantee = income.getGuarantee().signum() > 0
+                                && income.getTicketRevenue().signum() == 0;
+                        if (!awayGuarantee) {
+                            if (income.getAttendance() != null) {
+                                stats.totalAttendance += income.getAttendance();
+                            }
+                            stats.matchCount++;
                         }
-                        stats.matchCount++;
                         countedMatchIds.add(income.getMatchId());
                     }
                 }

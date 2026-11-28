@@ -304,6 +304,37 @@ def test_contract_band_typos_and_bad_ranges_are_errors(pack):
     assert "only the `amateur` band lists clubs" in out
     assert "unknown club `atlantis-fc`" in out
     assert "standing `league` has 2 bands" in out
+FRIENDLIES = ("core", "seasons", "1888-89", "friendlies.json")
+
+
+def test_shipped_friendly_terms_cover_every_standing_and_open_in_september():
+    terms = {t["standing"]: t for t in json.loads(ROOT.joinpath(*FRIENDLIES).read_text(encoding="utf-8"))}
+    assert set(terms) == {"league", "other", "amateur"}
+    for t in terms.values():
+        assert "saturday" in t["days"] and t["firstDay"] == "09-01"
+    # a League club commands a larger guarantee than a club outside it
+    assert terms["league"]["guarantee"] > terms["other"]["guarantee"]
+
+
+def test_friendly_terms_typos_and_bad_values_are_errors(pack):
+    def bad(d):
+        d[0]["weekly"] = 1
+        d[0]["days"].append("caturday")
+        d[1]["chances"] = [1.5, 0.1]
+        d[1]["gateShare"] = 2
+        d[2]["leadDays"] = 1
+        d[2]["firstDay"] = "13-01"
+        d.append(dict(d[0]))
+    edit(pack.joinpath(*FRIENDLIES), bad)
+    out = errors(pack)
+    assert "unknown field `weekly`" in out
+    assert "not a weekday" in out
+    assert "`chances` needs one chance per day of `days`" in out
+    assert "`chances` 1.5 is outside 0-1" in out
+    assert "`gateShare` 2 is outside 0-1" in out
+    assert "`leadDays` 1 is under the two days a letter needs" in out
+    assert "`firstDay` `13-01` is not a day MM-DD" in out
+    assert "standing `league` has 2 records" in out
 # ---- H-06: era events -------------------------------------------------------------------------------------------
 
 def era(pack_root, name):

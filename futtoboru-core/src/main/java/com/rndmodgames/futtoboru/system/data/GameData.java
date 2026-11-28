@@ -257,6 +257,10 @@ public class GameData {
                 "seasonWageMin", "num!", "seasonWageMax", "num!", "summerWageMin", "num!", "summerWageMax", "num!",
                 "summerPayShare", "num!", "amateurExpenses", "num!", "minimumSquad", "int!", "squadSize", "int!",
                 "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
+        // G-13: how often clubs of a standing write for friendlies and their guarantee as visitors (in shillings)
+        spec("friendly_terms", "standing", "enum:club_standing!", "days", "strs!", "chances", "nums!", "leadDays",
+                "int!", "retryDays", "int!", "firstDay", "str!", "lastDay", "str!", "guarantee", "num!", "gateShare",
+                "num!", "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
         spec("pack", "id", "str!", "name", "str!", "version", "int!", "dataVersion", "int!", "seasons", "strs!",
                 "files", "strs!");
         // R-02 (docs/design/RECRUITMENT_AND_TRIALS.md §6): money in pence (240 to the pound)
@@ -315,6 +319,7 @@ public class GameData {
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
         SEASON_FILES.put("results.json", new String[] { "result", null });
         SEASON_FILES.put("contracts.json", new String[] { "contract_band", null });
+        SEASON_FILES.put("friendlies.json", new String[] { "friendly_terms", null });
     }
 
     // ------------------------------------------------------------------------------------------------------------
@@ -890,6 +895,9 @@ public class GameData {
         if ("contract_band".equals(specName)) {
             checkContractBand(v, where);
         }
+        if ("friendly_terms".equals(specName)) {
+            checkFriendlyTerms(v, where);
+        }
         if (SOURCED.contains(specName)) {
             checkHistorySourced(v, specName, where);
         }
@@ -1220,6 +1228,59 @@ public class GameData {
             report.error(where, "only the `amateur` band lists clubs");
         }
     }
+
+    /** G-13: weekdays with a chance each (0-1), notice of 2+ days (the retry no earlier), MM-DD season days. */
+    private void checkFriendlyTerms(JsonValue t, String where) {
+        JsonValue days = t.get("days");
+        JsonValue chances = t.get("chances");
+        if (days != null && days.isArray()) {
+            for (JsonValue d : days) {
+                if (!d.isString() || !WEEKDAYS.contains(d.asString())) {
+                    report.error(where, "`days` has `" + d + "`, not a weekday (monday..sunday)");
+                }
+            }
+            if (chances != null && chances.isArray() && chances.size != days.size) {
+                report.error(where, "`chances` needs one chance per day of `days`");
+            }
+        }
+        if (chances != null && chances.isArray()) {
+            for (JsonValue c : chances) {
+                if (c.isNumber() && (c.asDouble() < 0 || c.asDouble() > 1)) {
+                    report.error(where, "`chances` " + c.asDouble() + " is outside 0-1");
+                }
+            }
+        }
+        JsonValue share = t.get("gateShare");
+        if (share != null && share.isNumber() && (share.asDouble() < 0 || share.asDouble() > 1)) {
+            report.error(where, "`gateShare` " + share.asDouble() + " is outside 0-1");
+        }
+        JsonValue guarantee = t.get("guarantee");
+        if (guarantee != null && guarantee.isNumber() && guarantee.asDouble() < 0) {
+            report.error(where, "`guarantee` " + guarantee.asDouble() + " is negative");
+        }
+        JsonValue lead = t.get("leadDays");
+        JsonValue retry = t.get("retryDays");
+        if (lead != null && lead.isLong() && lead.asLong() < 2) {
+            report.error(where, "`leadDays` " + lead.asLong() + " is under the two days a letter needs");
+        }
+        if (retry != null && retry.isLong() && (retry.asLong() < 2
+                || (lead != null && lead.isLong() && retry.asLong() > lead.asLong()))) {
+            report.error(where, "`retryDays` must be 2 or more and not above `leadDays`");
+        }
+        for (String f : new String[] { "firstDay", "lastDay" }) {
+            JsonValue v = t.get(f);
+            if (v != null && v.isString()) {
+                try {
+                    java.time.MonthDay.parse("--" + v.asString());
+                } catch (java.time.format.DateTimeParseException e) {
+                    report.error(where, "`" + f + "` `" + v.asString() + "` is not a day MM-DD");
+                }
+            }
+        }
+    }
+
+    private static final Set<String> WEEKDAYS = new java.util.HashSet<>(Arrays.asList("monday", "tuesday",
+            "wednesday", "thursday", "friday", "saturday", "sunday"));
 
     /** H-05: sources are non-empty http(s) links, names and prose are not empty, a period runs forwards. */
     private void checkHistorySourced(JsonValue v, String specName, String where) {

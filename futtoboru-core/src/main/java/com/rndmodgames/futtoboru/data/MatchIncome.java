@@ -28,6 +28,8 @@ public class MatchIncome implements Serializable {
     // Additional revenue sources (future expansion)
     private BigDecimal hospitalityRevenue = BigDecimal.ZERO;
     private BigDecimal merchandiseRevenue = BigDecimal.ZERO;
+    /** G-13: a friendly's guarantee: paid to the visitors (positive) or by the home club (negative). */
+    private BigDecimal guarantee = BigDecimal.ZERO;
     
     // Constructors
     public MatchIncome() {
@@ -122,6 +124,16 @@ public class MatchIncome implements Serializable {
     public BigDecimal getTotalRevenue() {
         return getTicketRevenue()
             .add(getHospitalityRevenue())
-            .add(getMerchandiseRevenue());
+            .add(getMerchandiseRevenue())
+            .add(getGuarantee());
+    }
+
+    /** G-13: received as visitors (positive) or paid as the home club (negative); zero for most matches. */
+    public BigDecimal getGuarantee() {
+        return guarantee != null ? guarantee : BigDecimal.ZERO;
+    }
+
+    public void setGuarantee(BigDecimal guarantee) {
+        this.guarantee = guarantee;
     }
 }

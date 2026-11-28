@@ -288,7 +288,7 @@ public final class SeasonCalendar {
         return base.plusDays(7).atTime(KICK_OFF);
     }
 
-    /** No match of the club (as home or away club) on that day */
+    /** No league or cup match of the club (as home or away club) on that day; an unplayed friendly is no bar */
     public static boolean isFree(SaveGame game, Long clubId, LocalDate day) {
         if (game == null || clubId == null) {
             return true;
@@ -305,6 +305,11 @@ public final class SeasonCalendar {
             return false;
         }
         for (Match m : matches) {
+            // G-13: a friendly does not hold a day against a cup tie; FriendlyArranger.cancelClashes calls it off
+            if (m != null && m.getMatchType() != null && m.getMatchType() == Match.FRIENDLY_MATCH
+                    && !Boolean.TRUE.equals(m.getIsPlayed())) {
+                continue;
+            }
             if (m != null && m.getMatchDateTime() != null && m.getMatchDateTime().toLocalDate().equals(day)
                     && (clubId.equals(m.getHomeClubId()) || clubId.equals(m.getAwayClubId()))) {
                 return true;

@@ -706,6 +706,12 @@ public class MessageManager {
             content.append(LanguageModLoader.format("msg_match_revenue", Money.format(match.getMatchRevenue())));
             content.append("\n");
         }
+        // G-13: a friendly's guarantee to the visitors
+        if (match.getGuarantee() != null && match.getGuarantee().signum() > 0) {
+            content.append(LanguageModLoader.format("msg_match_guarantee", awayClub.getName(),
+                    Money.format(match.getGuarantee())));
+            content.append("\n");
+        }
 
         // Match type
         content.append(LanguageModLoader.format("msg_match_type", matchTypeName(match)));

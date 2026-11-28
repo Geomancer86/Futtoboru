@@ -489,6 +489,9 @@ public class FuttoboruGameEngine {
 
         }
 
+        // G-13 (D31): AI clubs write for their friendlies (answered tomorrow through the same rules)
+        new com.rndmodgames.futtoboru.engine.temporal.AiFriendlyPlanner(gameInstance).daily();
+
         // U-06 / D18: autosave on the 1st of a month and on a season rollover day (never blocks; errors logged)
         autosave.afterDay(gameInstance.getCurrentGame(),
                 authorityManager != null ? authorityManager.getSeasonRollovers() : 0);

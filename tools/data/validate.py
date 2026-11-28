@@ -208,6 +208,11 @@ SPECS = {
                       "summerPayShare": ("num", True), "amateurExpenses": ("num", True),
                       "minimumSquad": ("int", True), "squadSize": ("int", True),
                       "confidence": ("enum:confidence", True), "sources": ("strs", True), "notes": ("str", False)},
+    # G-13: how often clubs of a standing write for friendlies, and their guarantee as visitors (in shillings)
+    "friendly_terms": {"standing": ("enum:club_standing", True), "days": ("strs", True), "chances": ("nums", True),
+                       "leadDays": ("int", True), "retryDays": ("int", True), "firstDay": ("str", True),
+                       "lastDay": ("str", True), "guarantee": ("num", True), "gateShare": ("num", True),
+                       "confidence": ("enum:confidence", True), "sources": ("strs", True), "notes": ("str", False)},
     # R-02 (docs/design/RECRUITMENT_AND_TRIALS.md §6): registration rules by date, wages, origin backstories and
     # clubs. Money in pence (240 to the pound).
     "rule": {"id": ("str", True), "rule": ("enum:rule_kind", True), "from": ("date", True), "until": ("date", False),
@@ -263,6 +268,7 @@ SEASON_FILES = {
     "region_modifiers.json": ("region", "region"),
     "results.json": ("result", None),
     "contracts.json": ("contract_band", None),
+    "friendlies.json": ("friendly_terms", None),
 }
 
 
@@ -763,6 +769,58 @@ def check_contract_bands(data: list, where: str, rep: Report):
     for standing, n in seen.items():
         if n > 1:
             rep.error(where, f"standing `{standing}` has {n} bands")
+WEEKDAYS = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
+
+
+def is_num(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def check_friendly_terms(data: list, where: str, rep: Report):
+    """G-13: one record per standing; weekdays with a chance each (0-1); 2+ days' notice, the retry no earlier;
+    a guarantee not negative, a gate share 0-1, MM-DD season days."""
+    seen = Counter()
+    for i, t in enumerate(data):
+        if not isinstance(t, dict):
+            continue
+        rw = f"{where}[{i}]"
+        seen[t.get("standing")] += 1
+        days, chances = t.get("days"), t.get("chances")
+        if isinstance(days, list):
+            for d in days:
+                if d not in WEEKDAYS:
+                    rep.error(rw, f"`days` has `{d}`, not a weekday (monday..sunday)")
+            if isinstance(chances, list) and len(chances) != len(days):
+                rep.error(rw, "`chances` needs one chance per day of `days`")
+        if isinstance(chances, list):
+            for c in chances:
+                if is_num(c) and not 0 <= c <= 1:
+                    rep.error(rw, f"`chances` {c} is outside 0-1")
+        g, share = t.get("guarantee"), t.get("gateShare")
+        if is_num(g) and g < 0:
+            rep.error(rw, f"`guarantee` {g} is negative")
+        if is_num(share) and not 0 <= share <= 1:
+            rep.error(rw, f"`gateShare` {share} is outside 0-1")
+        lead, retry = t.get("leadDays"), t.get("retryDays")
+        if is_int(lead) and lead < 2:
+            rep.error(rw, f"`leadDays` {lead} is under the two days a letter needs")
+        if is_int(retry) and (retry < 2 or (is_int(lead) and retry > lead)):
+            rep.error(rw, "`retryDays` must be 2 or more and not above `leadDays`")
+        for f in ("firstDay", "lastDay"):
+            v = t.get(f)
+            if isinstance(v, str):
+                try:
+                    date.fromisoformat("2000-" + v)
+                    ok = re.fullmatch(r"\d{2}-\d{2}", v) is not None
+                except ValueError:
+                    ok = False
+                if not ok:
+                    rep.error(rw, f"`{f}` `{v}` is not a day MM-DD")
+    for standing, n in seen.items():
+        if n > 1:
+            rep.error(where, f"standing `{standing}` has {n} records")
+
+
 def parse_date(v) -> date | None:
     """A whole calendar date yyyy-mm-dd, or None."""
     if not isinstance(v, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
@@ -1067,6 +1125,8 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
                 results.append((data, where, parts[1]))
             if spec_name == "contract_band":
                 check_contract_bands(data, where, rep)
+            if spec_name == "friendly_terms":
+                check_friendly_terms(data, where, rep)
             if f in FILE_CHECKS:
                 FILE_CHECKS[f](data, where, rep)
         for sid in manifest.get("seasons", []):

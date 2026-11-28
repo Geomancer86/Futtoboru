@@ -674,6 +674,11 @@ public class ContractManager {
         return bandOf(game(), club, season);
     }
 
+    /** G-13: the standing of a club for a season (league, other, amateur), the one its wage band is chosen by. */
+    public static String standingOf(SaveGame g, Club club, int season) {
+        return bandOf(g, club, season).getStanding();
+    }
+
     static ContractBand bandOf(SaveGame g, Club club, int season) {
         return ContractBand.forClub(DatabaseLoader.getContractBands(season), club != null ? club.getDataId() : null,
                 isLeagueClub(g, club));

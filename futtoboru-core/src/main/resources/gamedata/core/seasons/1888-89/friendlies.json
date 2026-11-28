@@ -1,0 +1,67 @@
+[
+  {
+    "standing": "league",
+    "days": [
+      "saturday",
+      "monday"
+    ],
+    "chances": [
+      0.5,
+      0.1
+    ],
+    "leadDays": 14,
+    "retryDays": 7,
+    "firstDay": "09-01",
+    "lastDay": "04-30",
+    "guarantee": 60,
+    "gateShare": 0.5,
+    "confidence": "placeholder",
+    "sources": [
+      "https://bluecorrespondent.co.uk/1888-89/september1888.html",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League"
+    ],
+    "notes": "Football League clubs. Sourced: friendlies were played from early September (Liverpool Mercury, 3 Sep 1888, docs/data/history/RECRUITMENT_1888-1900.md 2.1) and filled the Saturdays the 22 League fixtures left free. Estimates (D30 A3): the chance per free Saturday (and holiday Monday) that the secretary writes, the 14- and 7-day notice, and the visitors' guarantee of 60s or half the gate, whichever is larger. Guarantee in shillings."
+  },
+  {
+    "standing": "other",
+    "days": [
+      "saturday",
+      "monday"
+    ],
+    "chances": [
+      0.6,
+      0.05
+    ],
+    "leadDays": 14,
+    "retryDays": 7,
+    "firstDay": "09-01",
+    "lastDay": "04-30",
+    "guarantee": 20,
+    "gateShare": 0.5,
+    "confidence": "placeholder",
+    "sources": [
+      "https://bluecorrespondent.co.uk/1888-89/september1888.html"
+    ],
+    "notes": "Clubs outside the Football League: friendlies were nearly all their calendar besides the cup ties. Every figure is an estimate (D30 A3): a smaller guarantee (20s) than a League club commands."
+  },
+  {
+    "standing": "amateur",
+    "days": [
+      "saturday"
+    ],
+    "chances": [
+      0.4
+    ],
+    "leadDays": 14,
+    "retryDays": 7,
+    "firstDay": "09-01",
+    "lastDay": "04-30",
+    "guarantee": 10,
+    "gateShare": 0.5,
+    "confidence": "placeholder",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Old_Carthusians_F.C."
+    ],
+    "notes": "Old boys' clubs of amateurs only (the amateur band of contracts.json): fewer fixtures, Saturdays only, their travelling expenses as the guarantee. Every figure is an estimate (D30 A3)."
+  }
+]

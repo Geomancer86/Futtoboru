@@ -108,6 +108,9 @@ public class DatabaseLoader {
     // G-04: the wage bands of each data season, by the year it starts (1888 = 1888-89)
     private static java.util.TreeMap<Integer, List<com.rndmodgames.futtoboru.data.ContractBand>> contractBands =
             new java.util.TreeMap<>();
+    // G-13: the friendly terms of each data season, by the year it starts
+    private static java.util.TreeMap<Integer, List<com.rndmodgames.futtoboru.data.FriendlyTerms>> friendlyTerms =
+            new java.util.TreeMap<>();
 
     // keep track of main/top authority
     private static Authority mainAuthority;
@@ -349,6 +352,7 @@ public class DatabaseLoader {
         lastNamesByCountry = new HashMap<>();
         personCopies = 0;
         contractBands = new java.util.TreeMap<>();
+        friendlyTerms = new java.util.TreeMap<>();
         mainAuthority = null;
     }
 
@@ -601,6 +605,10 @@ public class DatabaseLoader {
             if (!bands.isEmpty()) {
                 contractBands.put(startYear, bands);
             }
+            List<com.rndmodgames.futtoboru.data.FriendlyTerms> terms = loadFriendlyTerms(data, season.getDataId());
+            if (!terms.isEmpty()) {
+                friendlyTerms.put(startYear, terms);
+            }
             Set<String> leagueClubs = new HashSet<>();
             for (DataRecord e : r.children()) {
                 Competition competition = competitionsByDataId.get(e.ref("competition"));
@@ -646,6 +654,30 @@ public class DatabaseLoader {
      * keeps today's gameplay: the first squad gets the canonical Person, later squads a runtime copy with the same
      * data id. Lookups by data id return the canonical one.
      */
+    /** G-13: the friendly terms of a season's {@code friendlies.json} (the guarantee read in shillings). */
+    private static List<com.rndmodgames.futtoboru.data.FriendlyTerms> loadFriendlyTerms(GameData data, String season) {
+        List<com.rndmodgames.futtoboru.data.FriendlyTerms> out = new ArrayList<>();
+        for (DataRecord r : data.records("friendly_terms", season)) {
+            com.rndmodgames.futtoboru.data.FriendlyTerms t = new com.rndmodgames.futtoboru.data.FriendlyTerms();
+            t.setStanding(r.str("standing"));
+            List<String> days = r.strs("days");
+            com.badlogic.gdx.utils.JsonValue chances = r.raw("chances");
+            for (int i = 0; i < days.size() && chances != null && i < chances.size; i++) {
+                t.getChances().put(java.time.DayOfWeek.valueOf(days.get(i).toUpperCase(java.util.Locale.ROOT)),
+                        chances.get(i).asDouble());
+            }
+            t.setLeadDays(r.integer("leadDays"));
+            t.setRetryDays(r.integer("retryDays"));
+            t.setFirstDay(java.time.MonthDay.parse("--" + r.str("firstDay")));
+            t.setLastDay(java.time.MonthDay.parse("--" + r.str("lastDay")));
+            t.setGuarantee(com.rndmodgames.futtoboru.data.ContractBand.pounds(r.decimal("guarantee")));
+            t.setGateShare(r.decimal("gateShare").doubleValue());
+            t.setConfidence(r.str("confidence"));
+            out.add(t);
+        }
+        return out;
+    }
+
     /** G-04: the wage bands of a season's {@code contracts.json} (money read in shillings, kept in pounds). */
     private static List<com.rndmodgames.futtoboru.data.ContractBand> loadContractBands(GameData data, String season) {
         List<com.rndmodgames.futtoboru.data.ContractBand> bands = new ArrayList<>();
@@ -856,6 +888,15 @@ public class DatabaseLoader {
             e = contractBands.firstEntry();
         }
         return e != null ? e.getValue() : com.rndmodgames.futtoboru.data.ContractBand.defaults();
+    }
+
+    /** G-13: the friendly terms for the season starting in {@code startYear} (as {@link #getContractBands}). */
+    public static synchronized List<com.rndmodgames.futtoboru.data.FriendlyTerms> getFriendlyTerms(int startYear) {
+        Map.Entry<Integer, List<com.rndmodgames.futtoboru.data.FriendlyTerms>> e = friendlyTerms.floorEntry(startYear);
+        if (e == null) {
+            e = friendlyTerms.firstEntry();
+        }
+        return e != null ? e.getValue() : com.rndmodgames.futtoboru.data.FriendlyTerms.defaults();
     }
 
     /**
