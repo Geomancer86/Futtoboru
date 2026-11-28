@@ -66,6 +66,9 @@ public class Match implements Serializable {
     // side was scored by its scorer i. Empty for a goalless side and for matches played before G-03 (old saves).
     private java.util.List<Integer> homeGoalMinutes = new java.util.ArrayList<>();
     private java.util.List<Integer> awayGoalMinutes = new java.util.ArrayList<>();
+    /** G-02: the men hurt in this match, per side (optional: an older save or an unplayed match has none). */
+    private java.util.List<MatchInjury> homeInjuries = new java.util.ArrayList<>();
+    private java.util.List<MatchInjury> awayInjuries = new java.util.ArrayList<>();
 
     // Basic attendance stats to avoid overselling a Match
     private Integer attendance = 0;
@@ -179,6 +182,28 @@ public class Match implements Serializable {
 
     public void setAwayGoals(Integer awayGoals) {
         this.awayGoals = awayGoals;
+    }
+
+    public java.util.List<MatchInjury> getHomeInjuries() {
+        if (homeInjuries == null) {
+            homeInjuries = new java.util.ArrayList<>();
+        }
+        return homeInjuries;
+    }
+
+    public void setHomeInjuries(java.util.List<MatchInjury> homeInjuries) {
+        this.homeInjuries = homeInjuries;
+    }
+
+    public java.util.List<MatchInjury> getAwayInjuries() {
+        if (awayInjuries == null) {
+            awayInjuries = new java.util.ArrayList<>();
+        }
+        return awayInjuries;
+    }
+
+    public void setAwayInjuries(java.util.List<MatchInjury> awayInjuries) {
+        this.awayInjuries = awayInjuries;
     }
 
     public java.util.List<Long> getHomeScorerIds() {

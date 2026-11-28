@@ -3,7 +3,7 @@
     1,
     99999
   ],
-  "next": 996,
+  "next": 999,
   "ids": {
     "continent": {
       "africa": 38,
@@ -1033,6 +1033,11 @@
       "yiddish": 952,
       "italian": 953,
       "lithuanian": 954
+    },
+    "injury": {
+      "knock": 996,
+      "passenger": 997,
+      "carried-off": 998
     }
   },
   "retired": {
