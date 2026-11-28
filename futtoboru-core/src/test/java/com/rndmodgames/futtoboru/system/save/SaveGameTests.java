@@ -332,13 +332,15 @@ class SaveGameTests {
             for (Player p : club.getPlayers()) {
                 assertNotNull(p.getDribbling(), p.getPerson().getDataId());
                 // a person retired or moved to another club in the data since the fixture was written has no
-                // entry in that club's squad, so no position
+                // entry in that club's squad: E-01b gives him the slot his squad is shortest of after the load
                 withoutPosition += p.getPosition() == null ? 1 : 0;
                 players++;
             }
+            assertTrue(com.rndmodgames.futtoboru.system.generators.PositionAssigner.canFieldTwoThreeFive(
+                    club.getPlayers()), club.getDataId() + " fields a 2-3-5");
         }
         assertTrue(players > 500, "players: " + players);
-        assertTrue(withoutPosition < players / 20, withoutPosition + " of " + players + " without a position");
+        assertEquals(0, withoutPosition, withoutPosition + " of " + players + " without a position");
         Player southworth = player(game, "blackburn-rovers", "jack-southworth-1866");
         assertEquals(com.rndmodgames.futtoboru.data.Position.CENTRE_FORWARD, southworth.getPosition());
         assertEquals(18f, southworth.getDribbling());

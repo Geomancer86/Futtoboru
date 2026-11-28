@@ -606,6 +606,13 @@ public class DatabaseLoader {
                 }
                 club.getPlayers().add(player);
             }
+            // E-01b: a squad player without a positions entry (a validator warning) gets the slot the squad is
+            // shortest of, so every squad can field a 2-3-5
+            int filled = com.rndmodgames.futtoboru.system.generators.PositionAssigner.fillMissing(club.getPlayers());
+            if (filled > 0) {
+                Log.warn(Log.DATA_LOADING, "GameData", "season " + season.getDataId() + ": " + filled
+                        + " players of " + club.getDataId() + " have no position in the data; assigned a 2-3-5 slot");
+            }
 
             season.getClubs().add(club);
             clubs.add(club);

@@ -468,7 +468,7 @@ public class PlayerAttributeGenerator {
         }
         
         // Randomly change one technical attribute (v2.0 - 3d6 system)
-        int technicalAttr = rng.nextInt(12);
+        int technicalAttr = rng.nextInt(13); // E-01b: 12 = dribbling
         change = rng.nextInt(3) - 1; // -1, 0, or +1
         
         switch (technicalAttr) {
@@ -484,6 +484,7 @@ public class PlayerAttributeGenerator {
             case 9: player.setThrowIns(clampAttribute3d6((int)(player.getThrowIns() + change))); break;
             case 10: player.setMarking(clampAttribute3d6((int)(player.getMarking() + change))); break;
             case 11: player.setTackling(clampAttribute3d6((int)(player.getTackling() + change))); break;
+            case 12: if (player.getDribbling() != null) player.setDribbling(clampAttribute3d6((int)(player.getDribbling() + change))); break;
         }
         
         // Apply age-based decline (v1.0)
@@ -559,6 +560,7 @@ public class PlayerAttributeGenerator {
         if (player.getThrowIns() != null) player.setThrowIns(clampAttribute3d6((int)(player.getThrowIns() - declineSteps)));
         if (player.getMarking() != null) player.setMarking(clampAttribute3d6((int)(player.getMarking() - declineSteps)));
         if (player.getTackling() != null) player.setTackling(clampAttribute3d6((int)(player.getTackling() - declineSteps)));
+        if (player.getDribbling() != null) player.setDribbling(clampAttribute3d6((int)(player.getDribbling() - declineSteps)));
         
         // Goalkeeper attributes also decline
         if (player.getShotStopping() != null) player.setShotStopping(clampAttribute3d6((int)(player.getShotStopping() - declineSteps)));

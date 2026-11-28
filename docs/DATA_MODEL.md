@@ -146,6 +146,9 @@ Two optional objects on a **squad entry** (`seasons/<id>/squads.json`), keyed by
   of dribblers", both 18).
 - Errors: an unknown field, a bad enum, a key that is not a player of the squad, a dribbling value outside 3-23 or
   with an empty source. A squad player without a position is a warning. No new ids (no `ids.json` change).
+- **No position in the data** (generated players, a squad player without an entry, an old save): the game assigns
+  one without dice (`PositionAssigner`): a squad gap takes the line, then slot, the squad is shortest of; a generated
+  player the line his seeded attributes suit best. Dribbling then drifts and ages like every other attribute.
 - **Saves v2:** `Player.position` (enum name) and `Player.dribbling`. The v1 -> v2 step in `SaveMigrations` adds
   dribbling (sourced, else derived from the saved attributes) and the position from the club's squad entry.
 
