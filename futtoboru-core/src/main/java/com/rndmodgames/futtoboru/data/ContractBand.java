@@ -57,7 +57,7 @@ public class ContractBand {
     public static List<ContractBand> defaults() {
         List<ContractBand> out = new ArrayList<>();
         out.add(band(LEAGUE, 0.85, 20, 50, 10, 20, 0.5, 2, 16, 20));
-        out.add(band(OTHER, 0.5, 10, 35, 5, 15, 0.25, 2, 12, 16));
+        out.add(band(OTHER, 0.5, 5, 25, 2, 10, 0.25, 2, 12, 16));
         out.add(band(AMATEUR, 0, 0, 0, 0, 0, 0, 2, 12, 16));
         return Collections.unmodifiableList(out);
     }

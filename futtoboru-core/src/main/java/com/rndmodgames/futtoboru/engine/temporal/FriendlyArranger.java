@@ -44,6 +44,8 @@ public class FriendlyArranger {
     public static final double DEFAULT_ACCEPT_CHANCE = 0.8;
     /** The letter needs a day to arrive and a day to be answered. */
     public static final int MIN_NOTICE_DAYS = 2;
+    /** AI friendlies are fixed on a Monday for the Saturday after next (placeholder, D30). */
+    public static final int AI_NOTICE_DAYS = 12;
     /** Saturday afternoon kick-off. */
     public static final int KICK_OFF_HOUR = 15;
 
@@ -202,6 +204,88 @@ public class FriendlyArranger {
             }
         }
         return answers;
+    }
+
+    /**
+     * AI friendlies (D31, G-12a): every Monday of the playing season (September to April) the AI clubs fix their
+     * friendlies for the Saturday after next, the way the secretaries wrote to each other. Each club free that day
+     * (no match, no possible cup tie, no invitation out) seeks one with its standing's chance (economy.json
+     * {@code friendlyChance}); the seekers, in a seeded order ({@code fork("ai-friendlies:<day>")}), pair off, a club
+     * preferring one of its own country; a coin decides the ground. The player's club is never paired: its
+     * friendlies are his to arrange. A match fixed later for that day calls the friendly off ({@link #cancelClashes}).
+     *
+     * @return the friendlies fixed today
+     */
+    public List<Match> arrangeAiFriendlies() {
+        List<Match> fixed = new ArrayList<>();
+        SaveGame g = game();
+        if (g == null || g.getGameDate() == null) {
+            return fixed;
+        }
+        LocalDate today = g.getGameDate().toLocalDate();
+        if (today.getDayOfWeek() != java.time.DayOfWeek.MONDAY) {
+            return fixed;
+        }
+        LocalDate day = today.plusDays(AI_NOTICE_DAYS);
+        if (com.rndmodgames.futtoboru.engine.contracts.ContractCalendar.isCloseSeason(day)) {
+            return fixed;
+        }
+        Club player = g.getCurrentClub();
+        RandomSource random = Futtoboru.randomOf(app).fork("ai-friendlies:" + day);
+        List<Club> seekers = new ArrayList<>();
+        for (Club club : com.rndmodgames.futtoboru.engine.contracts.ContractManager.uniqueClubs(g)) {
+            if (club.getId() == null || (player != null && club.getId().equals(player.getId()))
+                    || club.getStadium() == null || club.getStadium().getCapacity() == null
+                    || club.getPlayers() == null || club.getPlayers().size() < 11
+                    || hasMatchOn(club, day, null) || hasProposalOn(club, day)) {
+                continue;
+            }
+            double chance = com.rndmodgames.futtoboru.engine.finances.ClubEconomies.of(g, club, day)
+                    .getFriendlyChance();
+            if (random.nextDouble() < chance) {
+                seekers.add(club);
+            }
+        }
+        java.util.Collections.shuffle(seekers, random.asRandom());
+        while (seekers.size() >= 2) {
+            Club own = seekers.remove(0);
+            int pick = 0;
+            for (int i = 0; i < seekers.size(); i++) {
+                Club other = seekers.get(i);
+                if (own.getCountry() != null && other.getCountry() != null
+                        && java.util.Objects.equals(own.getCountry().getDataId(), other.getCountry().getDataId())) {
+                    pick = i;
+                    break;
+                }
+            }
+            Club opponent = seekers.remove(pick);
+            boolean atHome = random.nextBoolean();
+            Match match = new Match();
+            match.setId(g.getIdAllocator().nextId());
+            match.setMatchType(Match.FRIENDLY_MATCH);
+            match.setHomeClubId(atHome ? own.getId() : opponent.getId());
+            match.setAwayClubId(atHome ? opponent.getId() : own.getId());
+            match.setProposeDateTime(g.getGameDate());
+            match.setMatchDateTime(day.atTime(KICK_OFF_HOUR, 0));
+            match.setIsProposed(false);
+            match.setIsAccepted(true);
+            own.getScheduledMatches().add(match);
+            opponent.getScheduledMatches().add(match);
+            fixed.add(match);
+        }
+        if (!fixed.isEmpty()) {
+            Log.info(Log.ENGINE_SCHEDULING, "FriendlyArranger", fixed.size() + " AI friendlies fixed for " + day);
+        }
+        return fixed;
+    }
+
+    private static boolean hasProposalOn(Club club, LocalDate day) {
+        for (Match proposed : club.getProposedMatches()) {
+            if (proposed != null && sameDay(proposed, day)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Calls off {@code club}'s friendlies on a day it now has a league or cup match. */

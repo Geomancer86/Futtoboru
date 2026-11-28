@@ -2,7 +2,6 @@
   {
     "club": "preston-north-end",
     "ground": "deepdale",
-    "balance": 10000,
     "players": [
       "fred-dewhurst-1863",
       "george-drummond-1865",
@@ -67,7 +66,6 @@
   {
     "club": "aston-villa",
     "ground": "wellington-road",
-    "balance": 10000,
     "players": [
       "albert-allen-1867",
       "walter-ashmore-1861",
@@ -140,7 +138,6 @@
   {
     "club": "wolverhampton-wanderers",
     "ground": "dudley-road",
-    "balance": 10000,
     "players": [
       "harry-wood-1868",
       "john-brodie-1862",
@@ -208,7 +205,6 @@
   {
     "club": "blackburn-rovers",
     "ground": "leamington-road",
-    "balance": 10000,
     "players": [
       "willie-almond-1868",
       "herby-arthur-1863",
@@ -295,7 +291,6 @@
   {
     "club": "bolton-wanderers",
     "ground": "pikes-lane",
-    "balance": 10000,
     "players": [
       "james-brogan-1864",
       "kenny-davenport-1862",
@@ -378,7 +373,6 @@
   {
     "club": "west-bromwich-albion",
     "ground": "stoney-lane",
-    "balance": 10000,
     "players": [
       "billy-bassett-1869",
       "jem-bayliss-1865",
@@ -449,7 +443,6 @@
   {
     "club": "accrington",
     "ground": "thorneyholme-road",
-    "balance": 10000,
     "players": [
       "billy-barbour-1865",
       "jim-bonar-1866",
@@ -526,7 +519,6 @@
   {
     "club": "everton",
     "ground": "anfield",
-    "balance": 10000,
     "players": [
       "edgar-chadwick-1869",
       "johnny-holt-1865",
@@ -640,7 +632,6 @@
   {
     "club": "burnley",
     "ground": "turf-moor",
-    "balance": 10000,
     "players": [
       "dan-friel-1860",
       "john-yates-1861",
@@ -708,7 +699,6 @@
   {
     "club": "derby-county",
     "ground": "racecourse-ground",
-    "balance": 10000,
     "players": [
       "george-bakewell-1865",
       "ew-bellhouse-1865",
@@ -793,7 +783,6 @@
   {
     "club": "notts-county",
     "ground": "trent-bridge",
-    "balance": 10000,
     "players": [
       "thomas-allin-1865",
       "lf-bailey-1865",
@@ -898,7 +887,6 @@
   {
     "club": "stoke",
     "ground": "victoria-ground",
-    "balance": 10000,
     "players": [
       "bill-rowley-1863",
       "wilf-merritt-1865",
@@ -995,7 +983,6 @@
   {
     "club": "old-westminsters",
     "ground": "vincent-square",
-    "balance": 0,
     "players": [
       "william-moon-1868",
       "rupert-sandilands-1868",
@@ -1029,7 +1016,6 @@
   {
     "club": "swifts",
     "ground": "dolphin-ground",
-    "balance": 0,
     "players": [
       "bambridge-charles-1858",
       "bambridge-arthur-1861",
@@ -1063,7 +1049,6 @@
   {
     "club": "old-brightonians",
     "ground": "brighton-college-grounds",
-    "balance": 0,
     "players": [
       "nc-cooper-1864",
       "gh-cotterill-1868",
@@ -1094,7 +1079,6 @@
   {
     "club": "wrexham",
     "ground": "racecourse-ground-wrexham",
-    "balance": 0,
     "players": [
       "george-owen-1865",
       "bob-roberts-1859-2",
@@ -1125,7 +1109,6 @@
   {
     "club": "nottingham-forest",
     "ground": "gregory-ground",
-    "balance": 0,
     "players": [
       "billy-gunn-1858",
       "tinsley-lindley-1865",
@@ -1159,7 +1142,6 @@
   {
     "club": "linfield",
     "ground": "the-meadow-belfast",
-    "balance": 0,
     "players": [
       "jack-peden-1863",
       "sam-johnston-1866",
@@ -1193,7 +1175,6 @@
   {
     "club": "witton",
     "ground": "redlam-brow",
-    "balance": 0,
     "players": [
       "morgan-cooper-1861",
       "phillip-moore-1864",
@@ -1224,7 +1205,6 @@
   {
     "club": "bootle",
     "ground": "hawthorne-road",
-    "balance": 0,
     "players": [
       "andrew-watson-1856",
       "bob-mcfarlane-1866",
@@ -1260,7 +1240,6 @@
   {
     "club": "chatham-town",
     "ground": "great-lines-chatham",
-    "balance": 0,
     "players": [
       "charles-miller-1865",
       "george-miller-1866",
@@ -1291,7 +1270,6 @@
   {
     "club": "south-shore",
     "ground": "south-shore-ground",
-    "balance": 0,
     "players": [
       "john-bond-1865",
       "bob-birket-1866",
@@ -1322,7 +1300,6 @@
   {
     "club": "grimsby-town",
     "ground": "clee-park",
-    "balance": 0,
     "players": [
       "chris-short-1865",
       "tom-frith-1866",
@@ -1353,7 +1330,6 @@
   {
     "club": "sunderland-albion",
     "ground": "blue-house-field",
-    "balance": 0,
     "players": [
       "james-allan-1857",
       "john-angus-1867",
@@ -1387,7 +1363,6 @@
   {
     "club": "halliwell",
     "ground": "halliwell-road-ground",
-    "balance": 0,
     "players": [
       "john-smith-1865",
       "bob-smith-1866",
@@ -1418,7 +1393,6 @@
   {
     "club": "crewe-alexandra",
     "ground": "alexandra-recreation-ground",
-    "balance": 0,
     "players": [
       "william-bell-1860",
       "john-pearson-1868",
@@ -1453,7 +1427,6 @@
   {
     "club": "old-carthusians",
     "ground": "charterhouse-school-grounds",
-    "balance": 0,
     "players": [
       "charles-wreford-brown-1866",
       "william-cobbold-1863",
@@ -1487,7 +1460,6 @@
   {
     "club": "derby-junction",
     "ground": "derby-junction-ground",
-    "balance": 0,
     "players": [
       "s-smith-1865",
       "w-hopkins-1865",
@@ -1518,7 +1490,6 @@
   {
     "club": "notts-rangers",
     "ground": "meadow-lane-1886",
-    "balance": 0,
     "players": [
       "fred-geary-1868",
       "arthur-elliott-1870",
@@ -1552,7 +1523,6 @@
   {
     "club": "sheffield-wednesday",
     "ground": "olive-grove",
-    "balance": 0,
     "players": [
       "jim-smith-1865",
       "teddy-brayshaw-1864",
@@ -1590,7 +1560,6 @@
   {
     "club": "birmingham-st-georges",
     "ground": "cape-hill",
-    "balance": 0,
     "players": [
       "billy-siddons-1864",
       "jack-devey-1866",
@@ -1621,7 +1590,6 @@
   {
     "club": "long-eaton-rangers",
     "ground": "recreation-ground",
-    "balance": 0,
     "players": [
       "william-smith-1868-2",
       "morris-james-1862",
@@ -1652,7 +1620,6 @@
   {
     "club": "small-heath",
     "ground": "muntz-street",
-    "balance": 0,
     "players": [
       "chris-charsley-1864",
       "fred-speller-1863",
@@ -1687,7 +1654,6 @@
   {
     "club": "walsall",
     "ground": "chuckery-ground",
-    "balance": 0,
     "players": [
       "albert-aldridge-1863",
       "alf-jones-1861",
@@ -1722,7 +1688,6 @@
   {
     "club": "heeley",
     "ground": "heeley-ground",
-    "balance": 0,
     "players": [
       "reuben-jones-1865",
       "israel-hall-1868",

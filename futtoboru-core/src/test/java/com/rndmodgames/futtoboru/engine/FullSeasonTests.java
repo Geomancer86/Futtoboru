@@ -286,10 +286,16 @@ class FullSeasonTests extends BaseTest {
             for (com.rndmodgames.futtoboru.data.MatchInjury i : home ? m.getHomeInjuries() : m.getAwayInjuries()) {
                 int days = i.getDaysOut() != null ? i.getDaysOut() : 0;
                 if (m.getMatchDateTime().toLocalDate().plusDays(days).isAfter(day)) {
+                    boolean found = false;
                     for (com.rndmodgames.futtoboru.data.Player p : club.getPlayers()) {
                         if (p.getPerson() != null && p.getPerson().getId().equals(i.getPersonId())) {
                             out.add(p.getId());
+                            found = true;
                         }
+                    }
+                    if (!found && i.getPersonId() != null) {
+                        // a man released at the 1 May rollover since: still out that day (a marker, not a player id)
+                        out.add(-i.getPersonId());
                     }
                 }
             }

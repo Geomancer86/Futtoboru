@@ -36,45 +36,19 @@ public class MatchScheduler {
     private Futtoboru game;
     
     /**
-     * Historical Ticket Prices (1888-89)
-     * 
-     * 1888 Currency:
-     *  - 1 pound = 20 shillings = 240 pence
-     *  - 1 penny = 1/240 pounds = £0.00416666666
-     *  - 2 pence = 2/240 pounds = £0.00833333333
-     *  - 3 pence = 3/240 pounds = £0.0125
-     *  
-     * Historical Research:
-     *  - Friendly matches: 1 penny (modest, accessible to working-class)
-     *  - League matches: 2-3 pence (higher interest, competitive)
-     *  - Cup matches: 2-3 pence (similar to league)
+     * G-12a: the admission a club charges, by its standing and the kind of match (economy.json; before, a fixed 1d
+     * friendly, 2d League, 2.5d Cup for every club).
      */
-    private static BigDecimal FRIENDLY_TICKET_PRICE = new BigDecimal("0.00416666666"); // 1 penny
-    private static BigDecimal LEAGUE_TICKET_PRICE = new BigDecimal("0.00833333333"); // 2 pence
-    private static BigDecimal CUP_TICKET_PRICE = new BigDecimal("0.01041666666"); // 2.5 pence (average of 2-3)
-    
-    /**
-     * Get ticket price based on match type (v1.0)
-     */
-    private static BigDecimal getTicketPrice(Integer matchType) {
-        if (matchType == null) {
-            return FRIENDLY_TICKET_PRICE; // Default
-        }
-        
-        switch (matchType) {
-            case Match.FRIENDLY_MATCH:
-                return FRIENDLY_TICKET_PRICE; // 1 penny
-            case Match.LEAGUE_MATCH:
-                return LEAGUE_TICKET_PRICE; // 2 pence
-            case Match.CUP_MATCH:
-                return CUP_TICKET_PRICE; // 2.5 pence
-            default:
-                return FRIENDLY_TICKET_PRICE; // Default to friendly price
-        }
+    private BigDecimal ticketPrice(Club seller, Match match) {
+        return economyOf(seller, match).admission(match.getMatchType());
     }
-    
-    //
-    
+
+    private com.rndmodgames.futtoboru.data.ClubEconomy economyOf(Club seller, Match match) {
+        java.time.LocalDate day = match.getMatchDateTime() != null ? match.getMatchDateTime().toLocalDate()
+                : game.getCurrentGame().getGameDate().toLocalDate();
+        return com.rndmodgames.futtoboru.engine.finances.ClubEconomies.of(game.getCurrentGame(), seller, day);
+    }
+
     //
     public MatchScheduler(Futtoboru parent) {
         
@@ -244,6 +218,13 @@ public class MatchScheduler {
             }
             NeutralVenues.Gate gateRule = NeutralVenues.gateOf(scheduled, game.getCurrentGame());
             int maxTickets = ground.getCapacity() - currentAttendance;
+            if (scheduled.getMatchType() != null && scheduled.getMatchType() == Match.FRIENDLY_MATCH) {
+                // G-12a: a friendly draws its local following, not a full ground (economy.json friendlyCrowdMax)
+                int most = economyOf(club, scheduled).getFriendlyCrowdMax();
+                if (most > 0) {
+                    maxTickets = Math.min(maxTickets, most - currentAttendance);
+                }
+            }
 
             // CRITICAL FIX: Add null checks to prevent NullPointerException
             Club homeClub = game.getCurrentGame().getClubById(scheduled.getHomeClubId());
@@ -276,8 +257,8 @@ public class MatchScheduler {
                 int baseMinPerDay = 20;
                 
                 if (scheduled.getMatchType() != null && scheduled.getMatchType() == Match.FRIENDLY_MATCH) {
-                    // Friendly matches: 15% of league match attendance (historical accuracy)
-                    attendanceMultiplier = 0.15;
+                    // Friendly matches: a share of a league match's sale, by the club's standing (G-12a, economy.json)
+                    attendanceMultiplier = economyOf(club, scheduled).getFriendlyCrowd();
                     baseMinPerDay = 5; // Lower minimum for friendlies
                 }
                 // League and Cup matches use full multiplier (1.0)
@@ -327,7 +308,7 @@ public class MatchScheduler {
                 scheduled.setAttendance(scheduled.getAttendance() + randomTickets);
                 
                 // Get ticket price based on match type (v1.0)
-                BigDecimal ticketPrice = getTicketPrice(scheduled.getMatchType());
+                BigDecimal ticketPrice = ticketPrice(club, scheduled);
                 BigDecimal dayCash = new BigDecimal(randomTickets).multiply(ticketPrice);
                 
                 Log.info(Log.ENGINE_SCHEDULING, "SOLD TICKETS: " + randomTickets);

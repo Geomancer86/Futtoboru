@@ -18,12 +18,14 @@ import com.rndmodgames.futtoboru.engine.random.RandomSource;
  * so the hash now pins a full match with goals. Re-pinned by E-16b (ecs-0.6): AthleteComponent keeper flag hashed,
  * the ball bounces off posts and bars, forwards play up and run in behind, offsides are given. Re-pinned by E-DET
  * (ecs-0.7): RandomSource has its own Gaussian, so these hashes are the same on every JDK (17.0.2, 25, ...).
+ * Re-pinned by E-20 (ecs-0.8) calibration: home advantage (the away side's noise x 1.3 on the home ground) and the
+ * contact injury rate cut to a fifth; the dry match went from 7-6 to 4-2, the wet one is 6-2.
  */
 @Tag("slow")
 class EcsPlayGoldenTest {
 
-    static final long GOLDEN_PLAY_DRY = 0x0fea6e1ba940f97fL;
-    static final long GOLDEN_PLAY_RAIN = 0x77a5d7e4a8864a8bL;
+    static final long GOLDEN_PLAY_DRY = 0x08d98fef44e958a6L;
+    static final long GOLDEN_PLAY_RAIN = 0x9b390a7c66fdaca2L;
 
     @Test
     void playIsDeterministicAndPinnedByAGoldenHash() {

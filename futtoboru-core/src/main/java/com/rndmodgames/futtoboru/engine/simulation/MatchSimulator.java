@@ -118,8 +118,16 @@ public class MatchSimulator {
         match.getHomeScorerIds().addAll(outcome.homeScorerIds());
         match.getAwayScorerIds().addAll(outcome.awayScorerIds());
 
-        // Goal minutes (G-03): after the scorers, on their own stream, so scores and scorers never depend on them
-        GoalMinutes.assign(match, root.fork("minutes:" + matchKey));
+        // Goal minutes: the engine's own (E-17, ECS events) when it timed its goals, else drawn (G-03) after the
+        // scorers, on their own stream, so scores and scorers never depend on them
+        if (outcome.hasGoalMinutes()) {
+            match.setHomeGoalMinutes(new java.util.ArrayList<>(outcome.homeGoalMinutes()));
+            match.setAwayGoalMinutes(new java.util.ArrayList<>(outcome.awayGoalMinutes()));
+        } else {
+            GoalMinutes.assign(match, root.fork("minutes:" + matchKey));
+        }
+        // E-17 (D19-9): every event, compact, for the ticker and the report (null from the instant engine)
+        match.setEventLog(outcome.eventLog());
 
         // Calculate attendance (simple: based on the capacity of the ground played at, P2-14: a neutral venue)
         Stadium ground = neutral ? DatabaseLoader.getGroundByDataId(match.getVenue()) : null;

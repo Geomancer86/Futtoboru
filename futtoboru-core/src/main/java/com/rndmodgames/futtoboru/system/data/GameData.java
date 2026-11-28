@@ -73,10 +73,12 @@ public class GameData {
     public static final String LANGUAGE = "language";
     // G-02 injury kinds
     public static final String INJURY = "injury";
+    // R-03 candidate pool regions
+    public static final String POOL_REGION = "pool-region";
 
     static final List<String> KINDS = Arrays.asList(CONTINENT, COUNTRY, PROFESSION, OCCUPATION, COMPETITION, CLUB,
             GROUND, PERSON, REGION, SEASON, EDITION, RULE, WAGE, ORIGIN, ORIGIN_CLUB, AREA, LANGUAGE,
-            INJURY);
+            INJURY, POOL_REGION);
 
     /** R-02 / R-11a: the grades that may have no source (validate.py UNSOURCED_OK). */
     static final Set<String> UNSOURCED_OK = new HashSet<>(Arrays.asList("estimate", "placeholder"));
@@ -257,6 +259,12 @@ public class GameData {
                 "seasonWageMin", "num!", "seasonWageMax", "num!", "summerWageMin", "num!", "summerWageMax", "num!",
                 "summerPayShare", "num!", "amateurExpenses", "num!", "minimumSquad", "int!", "squadSize", "int!",
                 "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
+        // G-12a: a club standing's money outside its players' wages: starting balance and subscriptions in pounds,
+        // admission in pence, shares 0-1 (DATA_MODEL.md)
+        spec("economy", "standing", "enum:club_standing!", "startingBalance", "num!", "leagueAdmissionPence", "num!",
+                "cupAdmissionPence", "num!", "friendlyAdmissionPence", "num!", "friendlyCrowd", "num!",
+                "friendlyCrowdMax", "int!", "subscriptions", "num!", "overheads", "num!", "friendlyChance", "num!",
+                "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
         spec("pack", "id", "str!", "name", "str!", "version", "int!", "dataVersion", "int!", "seasons", "strs!",
                 "files", "strs!");
         // R-02 (docs/design/RECRUITMENT_AND_TRIALS.md §6): money in pence (240 to the pound)
@@ -282,6 +290,17 @@ public class GameData {
         spec("injury", "id", "str!", "kind", "enum:injury_kind!", "chancePerMatch", "num!", "minDays", "int!",
                 "maxDays", "int!", "returnChance", "num", "strengthWhileHurt", "num", "confidence",
                 "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        // R-03 (RECRUITMENT_AND_TRIALS.md 3.2): a candidate pool region, its upbringing (Q14) and real men (Q2)
+        spec("pool_region", "id", "str!", "name", "str!", "country", "ref:country!", "area", "ref:area", "places",
+                "strs!", "clubs", "refs:club!", "size", "int!", "monthly", "int!", "sourceKinds", "enums:source_kind!",
+                "originClubs", "refs:origin-club", "localClubs", "strs!", "foreignBorn", "shares:country",
+                "upbringing", "obj:upbringing!", "people", "list:pool_person", "confidence", "enum:data_confidence!",
+                "sources", "strs!", "notes", "str");
+        spec("upbringing", "style", "str!", "tendencies", "attrs!", "chance", "num!", "confidence",
+                "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        spec("pool_person", "person", "ref:person!", "from", "int!", "until", "int", "kind", "enum:source_kind!",
+                "playsFor", "str!", "position", "enum:position", "confidence", "enum:confidence!", "sources", "strs!",
+                "notes", "str");
         spec("language_rate", "area", "ref:area", "countries", "refs:country", "bornFrom", "int!", "bornUntil",
                 "int!", "speaks", "shares:language", "only", "shares:language", "signsMen", "num", "signsWomen",
                 "num", "parentsBorn", "shares:country", "readWriteIfSigns", "nums", "confidence",
@@ -310,11 +329,13 @@ public class GameData {
         PACK_FILES.put("areas.json", new String[] { "area", AREA });
         PACK_FILES.put("language_rates.json", new String[] { "language_rate", null });
         PACK_FILES.put("injuries.json", new String[] { "injury", INJURY });
+        PACK_FILES.put("recruitment/pools.json", new String[] { "pool_region", POOL_REGION });
         SEASON_FILES.put("squads.json", new String[] { "squad", null });
         SEASON_FILES.put("nationality_modifiers.json", new String[] { "nationality_modifier", null });
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
         SEASON_FILES.put("results.json", new String[] { "result", null });
         SEASON_FILES.put("contracts.json", new String[] { "contract_band", null });
+        SEASON_FILES.put("economy.json", new String[] { "economy", null });
     }
 
     // ------------------------------------------------------------------------------------------------------------
@@ -890,6 +911,9 @@ public class GameData {
         if ("contract_band".equals(specName)) {
             checkContractBand(v, where);
         }
+        if ("economy".equals(specName)) {
+            checkEconomy(v, where);
+        }
         if (SOURCED.contains(specName)) {
             checkHistorySourced(v, specName, where);
         }
@@ -1186,6 +1210,23 @@ public class GameData {
      * G-04 (same rules as tools/data/validate.py): shares 0-1, money not negative and min &lt;= max, squads that can
      * field eleven; only the {@code amateur} band lists clubs. (One band per standing is checked by validate.py.)
      */
+    /** G-12a: money and admission are not negative; the crowd, overheads and friendly chance are shares 0-1. */
+    private void checkEconomy(JsonValue b, String where) {
+        for (String f : new String[] { "startingBalance", "leagueAdmissionPence", "cupAdmissionPence",
+                "friendlyAdmissionPence", "subscriptions", "friendlyCrowdMax" }) {
+            JsonValue v = b.get(f);
+            if (v != null && v.isNumber() && v.asDouble() < 0) {
+                report.error(where, "`" + f + "` " + v.asDouble() + " is negative");
+            }
+        }
+        for (String f : new String[] { "friendlyCrowd", "overheads", "friendlyChance" }) {
+            JsonValue v = b.get(f);
+            if (v != null && v.isNumber() && (v.asDouble() < 0 || v.asDouble() > 1)) {
+                report.error(where, "`" + f + "` " + v.asDouble() + " is outside 0-1");
+            }
+        }
+    }
+
     private void checkContractBand(JsonValue b, String where) {
         for (String f : new String[] { "professionalShare", "summerPayShare" }) {
             JsonValue v = b.get(f);
@@ -1269,6 +1310,12 @@ public class GameData {
         case "injury":
             checkSourced(v, where);
             checkInjury(v, where);
+            return;
+        case "pool_region":
+        case "upbringing":
+        case "pool_person":
+            checkSourced(v, where);
+            checkPoolRecord(specName, v, where);
             return;
         case "rule":
         case "wage":
@@ -1471,6 +1518,39 @@ public class GameData {
     }
 
     /** G-02: 0 <= minDays <= maxDays; chances and strengthWhileHurt in 0..1 (each kind once: validate.py). */
+    /** R-03, same checks as validate.py check_pools (the cross-record ones stay in validate.py). */
+    private void checkPoolRecord(String specName, JsonValue v, String where) {
+        if ("pool_region".equals(specName)) {
+            if (v.has("size") && v.get("size").isLong() && v.getLong("size") < 1) {
+                report.error(where + ".size", "must be at least 1");
+            }
+            if (v.has("monthly") && v.get("monthly").isLong() && v.getLong("monthly") < 0) {
+                report.error(where + ".monthly", "must not be negative");
+            }
+            if (v.has("foreignBorn") && sum(v.get("foreignBorn")) >= 1) {
+                report.error(where + ".foreignBorn", "the shares must add up to less than 1");
+            }
+        } else if ("upbringing".equals(specName)) {
+            JsonValue c = v.get("chance");
+            if (c != null && c.isNumber() && (c.asDouble() < 0 || c.asDouble() > 1)) {
+                report.error(where + ".chance", "must be from 0 to 1");
+            }
+            JsonValue t = v.get("tendencies");
+            for (JsonValue x = t == null || !t.isObject() ? null : t.child; x != null; x = x.next) {
+                if (x.isNumber() && (x.asDouble() != Math.rint(x.asDouble()) || Math.abs(x.asDouble()) > NUDGE_MAX)) {
+                    report.error(where + ".tendencies." + x.name,
+                            "a tendency is a whole number from -" + NUDGE_MAX + " to " + NUDGE_MAX);
+                }
+            }
+        } else {
+            JsonValue from = v.get("from");
+            JsonValue until = v.get("until");
+            if (from != null && until != null && from.isLong() && until.isLong() && until.asLong() < from.asLong()) {
+                report.error(where, "`until` " + until.asLong() + " is before `from` " + from.asLong());
+            }
+        }
+    }
+
     private void checkInjury(JsonValue v, String where) {
         int lo = v.getInt("minDays", 0);
         int hi = v.getInt("maxDays", 0);

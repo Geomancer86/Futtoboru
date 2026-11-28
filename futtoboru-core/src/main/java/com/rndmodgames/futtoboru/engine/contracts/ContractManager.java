@@ -679,6 +679,30 @@ public class ContractManager {
                 isLeagueClub(g, club));
     }
 
+    /**
+     * G-12a: the club's standing for a season ({@link ContractBand#LEAGUE}, {@link ContractBand#OTHER},
+     * {@link ContractBand#AMATEUR}): a League club once the game's League has its clubs; before that (a new game in
+     * the close season) the data season's League clubs.
+     */
+    public static String standingOf(SaveGame g, Club club, int season) {
+        boolean league = hasLeagueClubs(g) ? isLeagueClub(g, club)
+                : club != null && DatabaseLoader.getSeasonLeagueClubs(season).contains(club.getDataId());
+        return ContractBand.forClub(DatabaseLoader.getContractBands(season), club != null ? club.getDataId() : null,
+                league).getStanding();
+    }
+
+    static boolean hasLeagueClubs(SaveGame g) {
+        if (g == null || g.getMainAuthority() == null || g.getMainAuthority().getLeagues() == null) {
+            return false;
+        }
+        for (League league : g.getMainAuthority().getLeagues()) {
+            if (league != null && league.getLeagueClubs() != null && !league.getLeagueClubs().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     static boolean isLeagueClub(SaveGame g, Club club) {
         if (g == null || club == null || club.getId() == null || g.getMainAuthority() == null) {
             return false;

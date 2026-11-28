@@ -106,6 +106,10 @@ public class DatabaseLoader {
     private static int personCopies;
 
     // G-04: the wage bands of each data season, by the year it starts (1888 = 1888-89)
+    /** G-12a: each data season's club economies ({@code economy.json}) and League clubs, by its start year */
+    private static java.util.TreeMap<Integer, List<com.rndmodgames.futtoboru.data.ClubEconomy>> economies =
+            new java.util.TreeMap<>();
+    private static java.util.TreeMap<Integer, Set<String>> seasonLeagueClubs = new java.util.TreeMap<>();
     private static java.util.TreeMap<Integer, List<com.rndmodgames.futtoboru.data.ContractBand>> contractBands =
             new java.util.TreeMap<>();
 
@@ -349,6 +353,8 @@ public class DatabaseLoader {
         lastNamesByCountry = new HashMap<>();
         personCopies = 0;
         contractBands = new java.util.TreeMap<>();
+        economies = new java.util.TreeMap<>();
+        seasonLeagueClubs = new java.util.TreeMap<>();
         mainAuthority = null;
     }
 
@@ -609,6 +615,9 @@ public class DatabaseLoader {
                 }
             }
 
+            economies.put(startYear, loadEconomies(data, season.getDataId()));
+            seasonLeagueClubs.put(startYear, leagueClubs);
+
             loadSquads(data, season, dataIds, rng, startYear, leagueClubs);
 
             // Editions of this season (participants by runtime club id)
@@ -668,6 +677,27 @@ public class DatabaseLoader {
         return bands;
     }
 
+    /** G-12a: the club economies of a season's {@code economy.json} (admission in pence, money in pounds). */
+    private static List<com.rndmodgames.futtoboru.data.ClubEconomy> loadEconomies(GameData data, String season) {
+        List<com.rndmodgames.futtoboru.data.ClubEconomy> out = new ArrayList<>();
+        for (DataRecord r : data.records("economy", season)) {
+            com.rndmodgames.futtoboru.data.ClubEconomy e = new com.rndmodgames.futtoboru.data.ClubEconomy();
+            e.setStanding(r.str("standing"));
+            e.setStartingBalance(r.decimal("startingBalance"));
+            e.setLeagueAdmissionPence(r.decimal("leagueAdmissionPence").doubleValue());
+            e.setCupAdmissionPence(r.decimal("cupAdmissionPence").doubleValue());
+            e.setFriendlyAdmissionPence(r.decimal("friendlyAdmissionPence").doubleValue());
+            e.setFriendlyCrowd(r.decimal("friendlyCrowd").doubleValue());
+            e.setFriendlyCrowdMax(r.integer("friendlyCrowdMax"));
+            e.setSubscriptions(r.decimal("subscriptions"));
+            e.setOverheads(r.decimal("overheads").doubleValue());
+            e.setFriendlyChance(r.decimal("friendlyChance").doubleValue());
+            e.setConfidence(r.str("confidence"));
+            out.add(e);
+        }
+        return out;
+    }
+
     private static void loadSquads(GameData data, Season season, IdAllocator dataIds, RandomSource rng, int startYear,
             Set<String> leagueClubs) {
         Set<String> listed = new HashSet<>();
@@ -689,7 +719,9 @@ public class DatabaseLoader {
             club.setUrlSource(clubRecord.first("sources"));
             club.setYear(clubRecord.integer("founded"));
             club.setCountry(countriesByDataId.get(clubRecord.ref("country")));
-            club.setClubBalance(sq.has("balance") ? sq.decimal("balance") : BigDecimal.ZERO);
+            // G-12a: a squad's own balance, else its standing's starting balance (economy.json)
+            club.setClubBalance(sq.has("balance") ? sq.decimal("balance")
+                    : startingBalance(startYear, club.getDataId(), leagueClubs.contains(club.getDataId())));
 
             // Ground
             if (sq.ref("ground") != null) {
@@ -850,6 +882,32 @@ public class DatabaseLoader {
      * on or before it (1889-90 plays on 1888-89's until the data has its own), else the earliest data season's, else
      * the built-in bands.
      */
+    /** G-12a: the starting balance of a club of the season starting in {@code startYear}, by its standing */
+    private static BigDecimal startingBalance(int startYear, String clubDataId, boolean leagueClub) {
+        String standing = com.rndmodgames.futtoboru.data.ContractBand.forClub(getContractBands(startYear), clubDataId,
+                leagueClub).getStanding();
+        return com.rndmodgames.futtoboru.data.ClubEconomy.forStanding(getEconomies(startYear), standing)
+                .getStartingBalance();
+    }
+
+    /** G-12a: the club economies of the latest data season starting on or before {@code startYear} (may be empty) */
+    public static synchronized List<com.rndmodgames.futtoboru.data.ClubEconomy> getEconomies(int startYear) {
+        Map.Entry<Integer, List<com.rndmodgames.futtoboru.data.ClubEconomy>> e = economies.floorEntry(startYear);
+        if (e == null) {
+            e = economies.firstEntry();
+        }
+        return e != null ? e.getValue() : java.util.Collections.emptyList();
+    }
+
+    /** G-12a: the League clubs (data ids) of the latest data season starting on or before {@code startYear} */
+    public static synchronized Set<String> getSeasonLeagueClubs(int startYear) {
+        Map.Entry<Integer, Set<String>> e = seasonLeagueClubs.floorEntry(startYear);
+        if (e == null) {
+            e = seasonLeagueClubs.firstEntry();
+        }
+        return e != null ? e.getValue() : java.util.Collections.emptySet();
+    }
+
     public static synchronized List<com.rndmodgames.futtoboru.data.ContractBand> getContractBands(int startYear) {
         Map.Entry<Integer, List<com.rndmodgames.futtoboru.data.ContractBand>> e = contractBands.floorEntry(startYear);
         if (e == null) {

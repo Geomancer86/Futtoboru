@@ -253,6 +253,10 @@ public class JobManager {
         int created = advertiseVacancies(clubsById());
         Log.info(Log.ENGINE_JOBS, "JobManager", "Initialized " + created + " job openings for "
                 + clubsById().size() + " clubs");
+        // R-09 + R-03: a new game starts with its trainers, secretaries and candidate pools (not on the first day:
+        // the same in every flow, whatever screen the player opens first)
+        com.rndmodgames.futtoboru.engine.recruitment.Recruitment.afterDay(currentGame, currentGame.getGameDate(),
+                Futtoboru.randomOf(gameInstance));
     }
 
     /**

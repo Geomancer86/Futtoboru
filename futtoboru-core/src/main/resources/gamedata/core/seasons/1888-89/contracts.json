@@ -20,10 +20,10 @@
   {
     "standing": "other",
     "professionalShare": 0.5,
-    "seasonWageMin": 10,
-    "seasonWageMax": 35,
-    "summerWageMin": 5,
-    "summerWageMax": 15,
+    "seasonWageMin": 5,
+    "seasonWageMax": 25,
+    "summerWageMin": 2,
+    "summerWageMax": 10,
     "summerPayShare": 0.25,
     "amateurExpenses": 2,
     "minimumSquad": 12,
@@ -32,7 +32,7 @@
     "sources": [
       "https://bluecorrespondent.co.uk/1888-89/august1888.html"
     ],
-    "notes": "Clubs outside the Football League (FA Cup entrants): lower wages than a League club. Every figure is a placeholder scaled down from the League band (D30 A3)."
+    "notes": "Clubs outside the Football League (FA Cup entrants): lower wages than a League club. Every figure is a placeholder (D30 A3); G-12a: the season wage follows R-02 band-small in recruitment/wages.json (5s-25s, a few shillings a match plus a job found; South Shore paid half-a-crown a match, docs/data/history/clubs/south-shore.md), summer pay below it."
   },
   {
     "standing": "amateur",

@@ -195,6 +195,14 @@ public class PlayerAttributeGenerator {
     }
     
     /**
+     * R-03 (D28 Q12, Q14): adds a small whole-number nudge (an origin backstory, an upbringing tendency) to one of the
+     * physical or mental attributes, kept on the 3-23 scale; an unknown name changes nothing.
+     */
+    public void applyNudge(Player player, String attributeName, int bonus) {
+        applyAttributeBonus3d6(player, attributeName, bonus);
+    }
+
+    /**
      * Get attribute value by name (helper method)
      */
     private Float getAttributeValue(Player player, String attributeName) {

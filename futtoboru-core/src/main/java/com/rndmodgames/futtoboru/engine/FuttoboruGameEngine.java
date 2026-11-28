@@ -54,6 +54,8 @@ public class FuttoboruGameEngine {
     
     // Expense Calculator (v1.0)
     private ExpenseCalculator expenseCalculator;
+    /** G-12: season budget and debt of every club */
+    private com.rndmodgames.futtoboru.engine.finances.BudgetManager budgetManager;
     
     //
     private MainMenuManager mainMenuManager;
@@ -92,6 +94,8 @@ public class FuttoboruGameEngine {
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
         this.expenseCalculator = new ExpenseCalculator(gameInstance);
+        this.budgetManager = new com.rndmodgames.futtoboru.engine.finances.BudgetManager(
+                () -> gameInstance.getCurrentGame(), messageManager);
         this.contractManager = new com.rndmodgames.futtoboru.engine.contracts.ContractManager(gameInstance,
                 messageManager);
     }
@@ -427,6 +431,10 @@ public class FuttoboruGameEngine {
         // G-04: engagements (retained list from 16 April, answers the next day, the 1 May rollover for every club)
         contractManager.afterDay(newDate);
 
+        // R-09 + R-03: trainers and secretaries for every club, the candidate pools (close-season refresh, arrivals)
+        com.rndmodgames.futtoboru.engine.recruitment.Recruitment.afterDay(gameInstance.getCurrentGame(), newDate,
+                gameInstance.random());
+
         /**
          * STEP 5: Deliver scheduled messages AFTER advancing date
          * This catches messages scheduled for the new date (same day events)
@@ -478,6 +486,9 @@ public class FuttoboruGameEngine {
          * P2-13: the game lists each club once (NewGameClubs for a new game, SaveGame.removeDuplicateClubs on
          * load), so this and every other per-club step runs once per club a day.
          */
+        // D31 / G-12a: the AI clubs fix their friendlies (Mondays of the playing season), before the clashes check
+        new com.rndmodgames.futtoboru.engine.temporal.FriendlyArranger(gameInstance).arrangeAiFriendlies();
+
         for (Club currentClub : gameInstance.getCurrentGame().getAllClubs()) {
 
             //
@@ -632,9 +643,23 @@ public class FuttoboruGameEngine {
                 continue;
             }
             
+            // G-12: plan the season's budget, charge the overdraft's interest
+            if (budgetManager != null) {
+                budgetManager.beforeBooking(club, expenses, currentDate);
+            }
+
             // Add to expense history
             club.addExpense(expenses);
             
+            // G-12a: the week's subscriptions come in with the week's books (income, not an expense)
+            BigDecimal subscriptions = expenses.getSubscriptions();
+            if (subscriptions.signum() > 0) {
+                BigDecimal balanceBefore = club.getClubBalance() != null ? club.getClubBalance() : BigDecimal.ZERO;
+                club.setClubBalance(balanceBefore.add(subscriptions));
+                club.setSeasonIncome(club.getSeasonIncome().add(subscriptions));
+                club.setMonthIncome(club.getMonthIncome().add(subscriptions));
+            }
+
             // Deduct from club balance
             BigDecimal totalExpenses = expenses.getTotalExpenses();
             if (totalExpenses.compareTo(BigDecimal.ZERO) > 0) {
@@ -649,6 +674,9 @@ public class FuttoboruGameEngine {
                            " from " + club.getName() + " (New balance: " + Money.format(club.getClubBalance()) + ")");
                 expensesCalculated++;
             }
+            if (budgetManager != null) {
+                budgetManager.afterBooking(club, expenses, currentDate);
+            }
         }
         
         if (expensesCalculated > 0) {
@@ -656,6 +684,10 @@ public class FuttoboruGameEngine {
         }
     }
     
+    public com.rndmodgames.futtoboru.engine.finances.BudgetManager getBudgetManager() {
+        return budgetManager;
+    }
+
     /** G-04: the month's income and expenditure of every club start again on the 1st */
     private void resetMonthTotals() {
         for (Club club : gameInstance.getCurrentGame().getAllClubs()) {

@@ -25,6 +25,10 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.Position;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.match.ecs.Surface;
+import com.rndmodgames.futtoboru.match.ecs.body.AthleteInputs;
+import com.rndmodgames.futtoboru.data.InjuryKind;
+import com.rndmodgames.futtoboru.data.MatchInjury;
+import com.rndmodgames.futtoboru.engine.injuries.InjuryRules;
 
 /**
  * E-17a: both match engines satisfy the {@link MatchEngine} contract on the same fixture: a valid score, scorers who
@@ -120,7 +124,75 @@ class MatchEngineContractTests {
 
     @Test
     void theEcsEngineKeepsTheContract() {
-        assertContract(new EcsMatchEngineAdapter(), fixture(new MatchWeather(Surface.WET, 0.36)));
+        MatchFixture f = fixture(new MatchWeather(Surface.WET, 0.36));
+        assertContract(new EcsMatchEngineAdapter(), f);
+        // E-17: the outcome carries the event log and the engine's own goal minutes, one per goal, ascending
+        MatchOutcome o = new EcsMatchEngineAdapter().play(f, RandomSource.seeded(1888).fork("match:" + f.matchKey()));
+        com.rndmodgames.futtoboru.match.ecs.events.MatchEventLog log =
+                com.rndmodgames.futtoboru.match.ecs.events.MatchEventLog.decode(o.eventLog());
+        assertTrue(log != null && log.size() > 0, String.valueOf(o.eventLog()));
+        assertTrue(o.hasGoalMinutes(), o.toString());
+        assertEquals(o.homeGoals() + o.awayGoals(),
+                log.count(com.rndmodgames.futtoboru.match.ecs.events.MatchEventType.GOAL));
+        for (List<Integer> minutes : List.of(o.homeGoalMinutes(), o.awayGoalMinutes())) {
+            for (int i = 0; i < minutes.size(); i++) {
+                assertTrue(minutes.get(i) >= 1 && minutes.get(i) <= 90 && (i == 0 || minutes.get(i - 1) <= minutes.get(i)),
+                        minutes.toString());
+            }
+        }
+    }
+
+    @Test
+    void hurtMenStartTheEcsMatchWeakened() {
+        MatchFixture plain = fixture(MatchWeather.DRY);
+        TeamSheet sheet = plain.homeSheet();
+        Club home = plain.home();
+        Long passengerId = null;
+        Long offId = null;
+        Long knockId = null;
+        int passengerSlot = -1;
+        int offSlot = -1;
+        int knockSlot = -1;
+        for (int s = 1; s < TeamShape.SLOTS && offSlot < 0; s++) {
+            Long playerId = sheet.getPlayerId(s);
+            for (Player p : home.getPlayers()) {
+                if (p.getId().equals(playerId)) {
+                    if (passengerSlot < 0) {
+                        passengerSlot = s;
+                        passengerId = p.getPerson().getId();
+                    } else if (knockSlot < 0) {
+                        knockSlot = s;
+                        knockId = p.getPerson().getId();
+                    } else {
+                        offSlot = s;
+                        offId = p.getPerson().getId();
+                    }
+                }
+            }
+        }
+        List<MatchInjury> hurt = List.of(new MatchInjury(passengerId, InjuryKind.PASSENGER, 1, null, 3),
+                new MatchInjury(knockId, InjuryKind.KNOCK, 10, null, 0),
+                new MatchInjury(offId, InjuryKind.CARRIED_OFF, 30, null, 10));
+        MatchFixture injured = new MatchFixture(plain.matchKey(), home, plain.away(), plain.kickOff(),
+                plain.weather(), false, sheet, plain.awaySheet(), hurt, List.of(), InjuryRules.DEFAULTS);
+        EcsMatchEngineAdapter.Eleven fit = EcsMatchEngineAdapter.Eleven.of(sheet, home, plain);
+        EcsMatchEngineAdapter.Eleven weak = EcsMatchEngineAdapter.Eleven.of(sheet, home, injured);
+        AthleteInputs fitPassenger = fit.sheet.players().get(passengerSlot);
+        AthleteInputs passenger = weak.sheet.players().get(passengerSlot);
+        assertTrue(passenger.speed() < fitPassenger.speed() && passenger.strength() < fitPassenger.strength(),
+                passenger + " vs " + fitPassenger);
+        assertEquals(fitPassenger.kicking(), passenger.kicking(), "ball skills kept");
+        assertEquals(fit.sheet.players().get(knockSlot), weak.sheet.players().get(knockSlot), "a knock costs nothing");
+        AthleteInputs off = weak.sheet.players().get(offSlot);
+        assertTrue(off.speed() < fit.sheet.players().get(offSlot).speed());
+        assertTrue(off.speed() >= EcsMatchEngineAdapter.STAND_IN_RATING);
+        assertEquals(fit.sheet.players().get(0), weak.sheet.players().get(0), "the keeper was not hurt");
+
+        double s = InjuryRules.DEFAULTS.get(InjuryKind.PASSENGER).strengthWhileHurt;
+        assertEquals((1 - s) * 89 / 90.0, EcsMatchEngineAdapter.hurtShare(hurt.get(0), InjuryRules.DEFAULTS), 1e-9);
+        assertEquals(0, EcsMatchEngineAdapter.hurtShare(hurt.get(1), InjuryRules.DEFAULTS));
+        assertEquals(60 / 90.0, EcsMatchEngineAdapter.hurtShare(hurt.get(2), InjuryRules.DEFAULTS), 1e-9);
+        assertEquals(0, EcsMatchEngineAdapter.hurtShare(null, InjuryRules.DEFAULTS));
     }
 
     @Test
@@ -145,6 +217,14 @@ class MatchEngineContractTests {
                 assertEquals(expected, xi.personIds.get(s), "slot " + s + " is the sheet's man");
             }
         }
+
+        // E-20: home advantage on the home ground only, none at a neutral one
+        EcsMatchEngineAdapter.Eleven h = EcsMatchEngineAdapter.Eleven.of(f.homeSheet(), f.home(), f);
+        EcsMatchEngineAdapter.Eleven a = EcsMatchEngineAdapter.Eleven.of(f.awaySheet(), f.away(), f);
+        assertTrue(!EcsMatchEngineAdapter.input(f, h, a).neutral(), "home ground");
+        MatchFixture neutral = new MatchFixture("n", f.home(), f.away(), KICK_OFF, MatchWeather.DRY, true,
+                f.homeSheet(), f.awaySheet());
+        assertTrue(EcsMatchEngineAdapter.input(neutral, h, a).neutral(), "neutral ground");
 
         TeamSheet shortSheet = sheet(f.away());
         shortSheet.setPlayerId(9, null);
