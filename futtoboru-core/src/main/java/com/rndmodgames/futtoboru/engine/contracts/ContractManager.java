@@ -552,9 +552,9 @@ public class ContractManager {
     private Player localMan(SaveGame g, Club club, int season, int n, LocalDate day) {
         RandomSource rng = random().fork("contracts:local:" + season + ":" + club.getId() + ":" + n);
         Country country = club.getCountry();
-        if (country == null || DatabaseLoader.getFirstNames(country).size() < 2
-                || DatabaseLoader.getLastNames(country).size() < 2) {
-            country = DatabaseLoader.getCountryByDataId("england");
+        if (country == null || DatabaseLoader.getInstance().getFirstNames(country).size() < 2
+                || DatabaseLoader.getInstance().getLastNames(country).size() < 2) {
+            country = DatabaseLoader.getInstance().getCountryByDataId("england");
         }
         Person person = new Person();
         person.setId(g.getIdAllocator().nextId());
@@ -675,7 +675,7 @@ public class ContractManager {
     }
 
     static ContractBand bandOf(SaveGame g, Club club, int season) {
-        return ContractBand.forClub(DatabaseLoader.getContractBands(season), club != null ? club.getDataId() : null,
+        return ContractBand.forClub(DatabaseLoader.getInstance().getContractBands(season), club != null ? club.getDataId() : null,
                 isLeagueClub(g, club));
     }
 
@@ -686,8 +686,8 @@ public class ContractManager {
      */
     public static String standingOf(SaveGame g, Club club, int season) {
         boolean league = hasLeagueClubs(g) ? isLeagueClub(g, club)
-                : club != null && DatabaseLoader.getSeasonLeagueClubs(season).contains(club.getDataId());
-        return ContractBand.forClub(DatabaseLoader.getContractBands(season), club != null ? club.getDataId() : null,
+                : club != null && DatabaseLoader.getInstance().getSeasonLeagueClubs(season).contains(club.getDataId());
+        return ContractBand.forClub(DatabaseLoader.getInstance().getContractBands(season), club != null ? club.getDataId() : null,
                 league).getStanding();
     }
 

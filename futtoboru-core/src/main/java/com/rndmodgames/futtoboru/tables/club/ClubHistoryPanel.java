@@ -30,7 +30,7 @@ public final class ClubHistoryPanel {
         if (club == null || club.getDataId() == null) {
             return null;
         }
-        HistoryFacts facts = new HistoryFacts(DatabaseLoader.getGameData(),
+        HistoryFacts facts = new HistoryFacts(DatabaseLoader.getInstance().getGameData(),
                 HistoryFacts.dataLanguage(LanguageModLoader.getCurrentLanguage().getId()));
         HistoryFacts.ClubHistory h = facts.club(club.getDataId());
         if (h.isEmpty()) {

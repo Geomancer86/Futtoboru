@@ -826,9 +826,9 @@ class FullSeasonTests extends BaseTest {
             game.setScriptsManager(scripts);
             game.setGameEngine(engine);
 
-            Season season = DatabaseLoader.getSeasonByDataId("1888-89");
-            Profession manager = DatabaseLoader.getProfessionByDataId(Profession.MANAGER);
-            Club startingClub = DatabaseLoader.getClubByDataId(STARTING_CLUB);
+            Season season = DatabaseLoader.getInstance().getSeasonByDataId("1888-89");
+            Profession manager = DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER);
+            Club startingClub = DatabaseLoader.getInstance().getClubByDataId(STARTING_CLUB);
             assertNotNull(season);
             assertNotNull(manager);
             assertNotNull(startingClub);
@@ -838,7 +838,7 @@ class FullSeasonTests extends BaseTest {
             owner.setLastname("Manager");
             owner.setBirthDate(LocalDateTime.of(1850, 1, 1, 0, 0));
             save.setOwner(owner);
-            save.setMainAuthority(DatabaseLoader.getMainAuthority());
+            save.setMainAuthority(DatabaseLoader.getInstance().getMainAuthority());
             save.setSelectedCountries(new ArrayList<>(season.getCountries()));
             save.assignId(owner);
             save.getAllPersons().add(owner);
@@ -849,7 +849,7 @@ class FullSeasonTests extends BaseTest {
 
             save.setAllClubs(new ArrayList<>());
             // the screen's step 6 (P2-13: each club once; it listed the selected countries' clubs twice)
-            com.rndmodgames.futtoboru.system.NewGameClubs.addTo(save, DatabaseLoader.getCompetitions(),
+            com.rndmodgames.futtoboru.system.NewGameClubs.addTo(save, DatabaseLoader.getInstance().getCompetitions(),
                     save.getSelectedCountries());
             clubsAtStart = save.getAllClubs().size();
             owner.setCurrentClubId(startingClub.getId());

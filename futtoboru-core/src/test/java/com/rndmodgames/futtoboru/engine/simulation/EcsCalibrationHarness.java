@@ -110,7 +110,7 @@ class EcsCalibrationHarness extends BaseTest {
         for (Pairing p : pairings) {
             for (String id : new String[] { p.home(), p.away() }) {
                 clubs.computeIfAbsent(id, k -> {
-                    Club c = DatabaseLoader.getClubByDataId(k);
+                    Club c = DatabaseLoader.getInstance().getClubByDataId(k);
                     if (c == null) {
                         throw new IllegalStateException("no club " + k);
                     }

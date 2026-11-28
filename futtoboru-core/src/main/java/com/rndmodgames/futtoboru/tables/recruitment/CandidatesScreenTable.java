@@ -55,7 +55,7 @@ public class CandidatesScreenTable extends VisTable {
     public void updateDynamicComponents() {
         this.clear();
         SaveGame save = game.getCurrentGame();
-        RecruitmentData data = DatabaseLoader.getRecruitmentData();
+        RecruitmentData data = DatabaseLoader.getInstance().getRecruitmentData();
         if (currentClub == null || save == null || data == null || data.getPools().isEmpty()) {
             this.add(new VisLabel(text("finances_no_club"))).pad(UiTheme.space("lg"));
             return;

@@ -40,7 +40,7 @@ public class HistoryScreenTable extends VisTable {
 
     /** Reads the history again (a season may have finished) and shows it. */
     public void updateDynamicComponents() {
-        entries = HistoryProvider.forGame(game.getCurrentGame(), DatabaseLoader.getGameData());
+        entries = HistoryProvider.forGame(game.getCurrentGame(), DatabaseLoader.getInstance().getGameData());
         if (selected == null || !entries.contains(selected)) {
             selected = firstWithDetail();
         }

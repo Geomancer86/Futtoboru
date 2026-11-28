@@ -103,7 +103,7 @@ public class JobBoardScreenTable extends VisTable {
         Person owner = currentGame.getOwner();
         for (JobOpening job : jobs) {
             Club club = currentGame.getClubById(job.getClubId());
-            Profession profession = DatabaseLoader.getProfessionById(job.getProfessionId());
+            Profession profession = DatabaseLoader.getInstance().getProfessionById(job.getProfessionId());
             if (club == null || profession == null) {
                 continue;
             }

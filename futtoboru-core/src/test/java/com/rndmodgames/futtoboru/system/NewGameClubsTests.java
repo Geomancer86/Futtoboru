@@ -59,15 +59,15 @@ class NewGameClubsTests extends BaseTest {
         SaveGame game = NewGameFixture.newGameInSession(application);
         assertEachClubOnce(game.getAllClubs());
 
-        for (Competition comp : DatabaseLoader.getCompetitions()) {
+        for (Competition comp : DatabaseLoader.getInstance().getCompetitions()) {
             for (CompetitionEdition edition : comp.getEditions()) {
                 for (Long id : edition.getParticipantClubsIds()) {
-                    assertSame(DatabaseLoader.getClubById(id), game.getClubById(id), "participant " + id);
+                    assertSame(DatabaseLoader.getInstance().getClubById(id), game.getClubById(id), "participant " + id);
                 }
             }
         }
-        Country england = DatabaseLoader.getCountryByDataId("england");
-        List<Club> english = DatabaseLoader.getClubsByCountry().get(england.getId());
+        Country england = DatabaseLoader.getInstance().getCountryByDataId("england");
+        List<Club> english = DatabaseLoader.getInstance().getClubsByCountry().get(england.getId());
         assertTrue(english.size() > 12);
         for (Club club : english) {
             assertSame(club, game.getClubById(club.getId()), club.getName());
@@ -86,8 +86,8 @@ class NewGameClubsTests extends BaseTest {
     @Test
     void theParticipantsComeFirstAndAClubAlreadyListedIsNotAddedAgain() {
         DatabaseLoader.getInstance();
-        List<Competition> competitions = DatabaseLoader.getCompetitions();
-        List<Country> england = List.of(DatabaseLoader.getCountryByDataId("england"));
+        List<Competition> competitions = DatabaseLoader.getInstance().getCompetitions();
+        List<Country> england = List.of(DatabaseLoader.getInstance().getCountryByDataId("england"));
 
         SaveGame game = new SaveGame();
         int clubs = NewGameClubs.addTo(game, competitions, england);
@@ -96,7 +96,7 @@ class NewGameClubsTests extends BaseTest {
         Long firstParticipant = competitions.get(0).getEditions().get(0).getParticipantClubsIds().get(0);
         assertEquals(firstParticipant, game.getAllClubs().get(0).getId(), "the data's order, participants first");
 
-        Club preston = game.getClubById(DatabaseLoader.getClubByDataId("preston-north-end").getId());
+        Club preston = game.getClubById(DatabaseLoader.getInstance().getClubByDataId("preston-north-end").getId());
         Club copy = new Club(preston.getName());
         copy.setId(preston.getId());
         assertFalse(game.addClub(preston), "the same club");
@@ -170,8 +170,8 @@ class NewGameClubsTests extends BaseTest {
 
         String text = SaveCodec.encode(game, "Before P2-13", SAVED_AT);
         StringBuilder english = new StringBuilder();
-        Country england = DatabaseLoader.getCountryByDataId("england");
-        for (Club club : DatabaseLoader.getClubsByCountry().get(england.getId())) {
+        Country england = DatabaseLoader.getInstance().getCountryByDataId("england");
+        for (Club club : DatabaseLoader.getInstance().getClubsByCountry().get(england.getId())) {
             english.append(", ").append(club.getId());
         }
         // both arrays hold no nested array: the first ']' closes them
@@ -195,10 +195,10 @@ class NewGameClubsTests extends BaseTest {
         for (League league : loaded.getMainAuthority().getLeagues()) {
             for (Club c : league.getLeagueClubs()) {
                 assertSame(c, loaded.getClubById(c.getId()), "league club " + c.getName());
-                assertSame(c, DatabaseLoader.getClubById(c.getId()), "database lookup " + c.getName());
+                assertSame(c, DatabaseLoader.getInstance().getClubById(c.getId()), "database lookup " + c.getName());
             }
         }
-        assertSame(loaded.getCurrentClub(), DatabaseLoader.getClubByDataId("preston-north-end"));
+        assertSame(loaded.getCurrentClub(), DatabaseLoader.getInstance().getClubByDataId("preston-north-end"));
         assertEquals(snapshots, loaded.getPlayerAttributeSnapshots().size(), "each snapshot once");
 
         NewGameFixture.bind(application, loaded);

@@ -43,13 +43,13 @@ public final class NewGameFixture {
 
     private static SaveGame setUp(Futtoboru application) {
         DatabaseLoader.getInstance(); // the data, loaded
-        Season season = DatabaseLoader.getSeasonByDataId("1888-89");
+        Season season = DatabaseLoader.getInstance().getSeasonByDataId("1888-89");
 
         SaveGame game = new SaveGame();
         bind(application, game);
 
-        game.setMainAuthority(DatabaseLoader.getMainAuthority());
-        Country england = DatabaseLoader.getCountryByDataId("england");
+        game.setMainAuthority(DatabaseLoader.getInstance().getMainAuthority());
+        Country england = DatabaseLoader.getInstance().getCountryByDataId("england");
         List<Country> selected = new ArrayList<>();
         selected.add(england);
         game.setSelectedCountries(selected);
@@ -61,14 +61,14 @@ public final class NewGameFixture {
         game.setOwner(owner);
         game.assignId(owner);
         game.getAllPersons().add(owner);
-        owner.setPrimaryProfession(DatabaseLoader.getProfessionByDataId(Profession.MANAGER));
+        owner.setPrimaryProfession(DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER));
         owner.setCurrentCountry(england);
         game.setGameStartDate(season.getStartDate());
         game.setGameDate(season.getStartDate());
 
         // the screen's step 6 (P2-13: each club once)
-        NewGameClubs.addTo(game, DatabaseLoader.getCompetitions(), selected);
-        owner.setCurrentClubId(DatabaseLoader.getClubByDataId("preston-north-end").getId());
+        NewGameClubs.addTo(game, DatabaseLoader.getInstance().getCompetitions(), selected);
+        owner.setCurrentClubId(DatabaseLoader.getInstance().getClubByDataId("preston-north-end").getId());
         game.getGameScripts().addAll(season.getSeasonScripts());
 
         // a person generated during play

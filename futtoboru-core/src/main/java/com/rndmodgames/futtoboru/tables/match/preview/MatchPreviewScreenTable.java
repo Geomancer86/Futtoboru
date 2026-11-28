@@ -124,9 +124,9 @@ public class MatchPreviewScreenTable extends VisTable {
         
         // Get clubs with null checks
         Club homeClub = match.getHomeClubId() != null ? 
-            DatabaseLoader.getClubById(match.getHomeClubId()) : null;
+            DatabaseLoader.getInstance().getClubById(match.getHomeClubId()) : null;
         Club awayClub = match.getAwayClubId() != null ? 
-            DatabaseLoader.getClubById(match.getAwayClubId()) : null;
+            DatabaseLoader.getInstance().getClubById(match.getAwayClubId()) : null;
         
         if (homeClub == null || awayClub == null) {
             this.row();

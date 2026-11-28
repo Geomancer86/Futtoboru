@@ -122,7 +122,7 @@ public class NewGameOverviewScreen implements Screen {
         int activeTeams = 0;
         int activePlayers = 0;
         
-        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        List<Competition> allCompetitions = DatabaseLoader.getInstance().getCompetitions();
         
         for (Competition competition : allCompetitions) {
             
@@ -145,7 +145,7 @@ public class NewGameOverviewScreen implements Screen {
         for (Country country : selectedCountries) {
             
             // Count Active Teams
-            activeTeams += DatabaseLoader.getClubsByCountry().get(country.getId()).size();
+            activeTeams += DatabaseLoader.getInstance().getClubsByCountry().get(country.getId()).size();
             
             // Iterate country clubs and count players
             List<Club> allClubs = DatabaseLoader.getInstance().getClubsByCountry(country);
@@ -403,11 +403,11 @@ public class NewGameOverviewScreen implements Screen {
                     
                     // Game Authority
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 2: Setting main authority...");
-                    if (DatabaseLoader.getMainAuthority() == null) {
+                    if (DatabaseLoader.getInstance().getMainAuthority() == null) {
                         Log.error(Log.UI_MENU, "NewGameOverviewScreen", "MainAuthority is NULL!");
                         throw new IllegalStateException("MainAuthority is null. Database may not be loaded correctly.");
                     }
-                    currentGame.setMainAuthority(DatabaseLoader.getMainAuthority());
+                    currentGame.setMainAuthority(DatabaseLoader.getInstance().getMainAuthority());
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 2: OK - main authority set");
                     
                     //
@@ -486,8 +486,8 @@ public class NewGameOverviewScreen implements Screen {
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: Loading clubs database...");
                     currentGame.setAllClubs(new ArrayList<>());
                     
-                    if (DatabaseLoader.getClubsByCountry() == null) {
-                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "DatabaseLoader.getClubsByCountry() is NULL!");
+                    if (DatabaseLoader.getInstance().getClubsByCountry() == null) {
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "DatabaseLoader.getInstance().getClubsByCountry() is NULL!");
                         throw new IllegalStateException("Clubs by country map is null. Database may not be loaded correctly.");
                     }
                     
@@ -502,7 +502,7 @@ public class NewGameOverviewScreen implements Screen {
                     // P2-13: the participants first, then the clubs of the selected countries not listed yet: each
                     // club once (it was twice for the selected countries, so the daily club steps ran twice)
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6a: Adding competitions, their participants and the selected countries' clubs...");
-                    NewGameClubs.addTo(currentGame, DatabaseLoader.getCompetitions(), selectedCountries);
+                    NewGameClubs.addTo(currentGame, DatabaseLoader.getInstance().getCompetitions(), selectedCountries);
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: OK - Total cups: " + currentGame.getAllCups().size() + ", leagues: " + currentGame.getAllLeagues().size() + ", total clubs: " + currentGame.getAllClubs().size());
 
                     /**

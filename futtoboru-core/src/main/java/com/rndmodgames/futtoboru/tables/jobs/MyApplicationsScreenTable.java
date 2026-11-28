@@ -94,7 +94,7 @@ public class MyApplicationsScreenTable extends VisTable {
             }
             
             Club club = currentGame.getClubById(jobOpening.getClubId());
-            Profession profession = DatabaseLoader.getProfessionById(jobOpening.getProfessionId());
+            Profession profession = DatabaseLoader.getInstance().getProfessionById(jobOpening.getProfessionId());
             
             if (club == null || profession == null) {
                 continue;

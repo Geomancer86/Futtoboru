@@ -90,7 +90,7 @@ public class NegotiationScreenTable extends VisTable {
 
         JobOpening jobOpening = jobManager != null ? jobManager.getJobOpeningById(currentOffer.getJobOpeningId()) : null;
         Club club = jobOpening != null ? currentGame.getClubById(jobOpening.getClubId()) : null;
-        Profession profession = jobOpening != null ? DatabaseLoader.getProfessionById(jobOpening.getProfessionId()) : null;
+        Profession profession = jobOpening != null ? DatabaseLoader.getInstance().getProfessionById(jobOpening.getProfessionId()) : null;
 
         // Title
         this.row();

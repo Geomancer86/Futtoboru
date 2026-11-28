@@ -419,7 +419,7 @@ class ContractsTests extends BaseTest {
         assertTrue(ContractTerms.ageFactor(35) < ContractTerms.ageFactor(25));
         // an amateur band pays nothing
         assertEquals(0, ContractTerms.askingWage(p, ContractBand.forClub(
-                com.rndmodgames.futtoboru.system.DatabaseLoader.getContractBands(1888), "old-carthusians", false),
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getContractBands(1888), "old-carthusians", false),
                 day).signum());
     }
 }

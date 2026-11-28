@@ -109,7 +109,7 @@ public class JobOfferScreenTable extends VisTable {
         for (JobOffer offer : offers) {
             JobOpening jobOpening = jobManager.getJobOpeningById(offer.getJobOpeningId());
             Club club = jobOpening != null ? currentGame.getClubById(jobOpening.getClubId()) : null;
-            Profession profession = jobOpening != null ? DatabaseLoader.getProfessionById(jobOpening.getProfessionId()) : null;
+            Profession profession = jobOpening != null ? DatabaseLoader.getInstance().getProfessionById(jobOpening.getProfessionId()) : null;
             if (club == null || profession == null) {
                 continue;
             }

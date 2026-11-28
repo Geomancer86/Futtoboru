@@ -348,7 +348,7 @@ public final class ScreenshotTour extends Futtoboru {
         }
         once("jobs-club-detail", () -> {
             menu().openMenuEntry(MainMenuManager.CLUB_BROWSER_SCREEN);
-            menu().setSelectedClubForDetail(DatabaseLoader.getClubByDataId("preston-north-end"));
+            menu().setSelectedClubForDetail(DatabaseLoader.getInstance().getClubByDataId("preston-north-end"));
             menu().setActiveMainScreen(MainMenuManager.CLUB_DETAIL_SCREEN);
         });
         once("jobs-my-applications-offer", () -> {
@@ -368,7 +368,7 @@ public final class ScreenshotTour extends Futtoboru {
         game = NewGameFixture.newGameInSession(this);
         game.getOwner().setBirthDate(java.time.LocalDateTime.of(1850, 6, 1, 0, 0)); // the fixture's owner has none
         if (!manager) {
-            game.getOwner().setPrimaryProfession(DatabaseLoader.getProfessionByDataId(Profession.RETIRED_PLAYER));
+            game.getOwner().setPrimaryProfession(DatabaseLoader.getInstance().getProfessionByDataId(Profession.RETIRED_PLAYER));
             game.getOwner().setCurrentClubId(null);
         }
         // what NewGameOverviewScreen's Start does after the fixture's part
@@ -533,12 +533,12 @@ public final class ScreenshotTour extends Futtoboru {
     }
 
     private Season season() {
-        return DatabaseLoader.getSeasonByDataId("1888-89");
+        return DatabaseLoader.getInstance().getSeasonByDataId("1888-89");
     }
 
     private List<Country> england() {
         List<Country> countries = new ArrayList<>();
-        countries.add(DatabaseLoader.getCountryByDataId("england"));
+        countries.add(DatabaseLoader.getInstance().getCountryByDataId("england"));
         return countries;
     }
 

@@ -130,7 +130,7 @@ public class MatchSimulator {
         match.setEventLog(outcome.eventLog());
 
         // Calculate attendance (simple: based on the capacity of the ground played at, P2-14: a neutral venue)
-        Stadium ground = neutral ? DatabaseLoader.getGroundByDataId(match.getVenue()) : null;
+        Stadium ground = neutral ? DatabaseLoader.getInstance().getGroundByDataId(match.getVenue()) : null;
         if (ground == null || ground.getCapacity() == null) {
             ground = homeClub.getStadium();
         }

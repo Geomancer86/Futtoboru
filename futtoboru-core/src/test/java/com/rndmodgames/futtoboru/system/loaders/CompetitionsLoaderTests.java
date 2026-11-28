@@ -67,7 +67,7 @@ class CompetitionsLoaderTests {
         assertNotNull(dbLoader);
         
         // FA Cup should be loaded
-        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        List<Competition> allCompetitions = DatabaseLoader.getInstance().getCompetitions();
         
         assertNotNull(allCompetitions);
         
@@ -90,7 +90,7 @@ class CompetitionsLoaderTests {
         /**
          * The Competition FA Cup should Exist
          */
-        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        List<Competition> allCompetitions = DatabaseLoader.getInstance().getCompetitions();
         
         Competition faCup = allCompetitions.get(0);
         
@@ -135,7 +135,7 @@ class CompetitionsLoaderTests {
         assertNotNull(dbLoader);
         
         //
-        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        Competition faCup = DatabaseLoader.getInstance().getCompetitions().get(0);
         
         assertNotNull(faCup.getEditions());
         
@@ -145,7 +145,7 @@ class CompetitionsLoaderTests {
         //
         for (Long clubId : faCup.getEditions().get(0).getParticipantClubsIds()) {
             
-            Club club = DatabaseLoader.getClubById(clubId);
+            Club club = DatabaseLoader.getInstance().getClubById(clubId);
             
             //
             assertNotNull(club, "Club ID: " + clubId + " doesn't exist on Database");
@@ -182,7 +182,7 @@ class CompetitionsLoaderTests {
         assertNotNull(dbLoader);
         
         //
-        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        Competition faCup = DatabaseLoader.getInstance().getCompetitions().get(0);
         
         assertNotNull(faCup.getEditions());
         
@@ -199,8 +199,8 @@ class CompetitionsLoaderTests {
         
         for (Match match : competitionMatches) {
             
-            Club homeClub = DatabaseLoader.getClubById(match.getHomeClubId());
-            Club awayClub = DatabaseLoader.getClubById(match.getAwayClubId());
+            Club homeClub = DatabaseLoader.getInstance().getClubById(match.getHomeClubId());
+            Club awayClub = DatabaseLoader.getInstance().getClubById(match.getAwayClubId());
             
             Gdx.app.debug("CompetitionsLoaderTests", "Competition Match: " + homeClub.getName() + " v " + awayClub.getName());
         }

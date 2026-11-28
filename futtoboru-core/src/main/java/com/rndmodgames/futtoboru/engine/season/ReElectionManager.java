@@ -431,14 +431,14 @@ public class ReElectionManager {
             }
         }
         if (dataId == null) {
-            for (Competition c : DatabaseLoader.getCompetitions()) {
+            for (Competition c : DatabaseLoader.getInstance().getCompetitions()) {
                 if (c != null && c.getDataId() != null && c.getName() != null && c.getName().equals(league.getName())) {
                     dataId = c.getDataId();
                     break;
                 }
             }
         }
-        return ReElectionRule.of(DatabaseLoader.getGameData(), dataId);
+        return ReElectionRule.of(DatabaseLoader.getInstance().getGameData(), dataId);
     }
 
     // ------------------------------------------------------------------------------------------------ messages

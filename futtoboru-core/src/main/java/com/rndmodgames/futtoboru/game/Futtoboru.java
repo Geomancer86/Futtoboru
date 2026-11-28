@@ -178,6 +178,11 @@ public class Futtoboru extends Game {
         this.random = RandomSource.seeded(seed);
     }
     
+    /** RF-01: the game's database (one object, rebuilt in place for a new or a loaded game). */
+    public DatabaseLoader getDatabase() {
+        return DatabaseLoader.getInstance();
+    }
+
     /** The game's root source, or the database loader's when there is no game (headless tools and tests). */
     public static RandomSource randomOf(Futtoboru game) {
         if (game != null && game.random() != null) {

@@ -467,7 +467,7 @@ public class PlayerDetailScreenTable extends VisTable {
         if (currentPlayer.getPerson().getCountry() != null && 
             currentPlayer.getPerson().getCountry().getId() != null) {
             Long countryId = currentPlayer.getPerson().getCountry().getId();
-            natMod = com.rndmodgames.futtoboru.system.DatabaseLoader.getNationalityModifier(countryId);
+            natMod = com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getNationalityModifier(countryId);
             
             // Debug logging
             if (natMod == null) {
@@ -486,7 +486,7 @@ public class PlayerDetailScreenTable extends VisTable {
             currentPlayer.getPerson().getCountry().getId() != null) {
             String stateName = currentPlayer.getPerson().getState().getName();
             Long countryId = currentPlayer.getPerson().getCountry().getId();
-            regMod = com.rndmodgames.futtoboru.system.DatabaseLoader.getRegionModifier(stateName, countryId);
+            regMod = com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getRegionModifier(stateName, countryId);
             
             // Debug logging
             if (regMod == null) {
@@ -795,7 +795,7 @@ public class PlayerDetailScreenTable extends VisTable {
             return;
         }
         com.rndmodgames.futtoboru.history.HistoryFacts facts = new com.rndmodgames.futtoboru.history.HistoryFacts(
-                com.rndmodgames.futtoboru.system.DatabaseLoader.getGameData(),
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getGameData(),
                 com.rndmodgames.futtoboru.history.HistoryFacts.dataLanguage(LanguageModLoader.getCurrentLanguage().getId()));
         com.rndmodgames.futtoboru.history.HistoryFacts.PersonHistory h =
                 facts.person(person.getDataId(), club == null ? null : club.getDataId());

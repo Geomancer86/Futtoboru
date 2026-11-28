@@ -45,7 +45,7 @@ public class CountryAndCitySelectBox extends VisTable {
          * 
          *  - The City SelectBox will be automatically filled with the right Cities for each Country
          */
-        List<Country> availableCountries = new ArrayList<>(DatabaseLoader.getCountries());
+        List<Country> availableCountries = new ArrayList<>(DatabaseLoader.getInstance().getCountries());
 
         /**
          * Load Countries Select Box

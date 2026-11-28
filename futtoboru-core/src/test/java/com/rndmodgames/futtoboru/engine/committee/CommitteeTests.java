@@ -59,7 +59,7 @@ class CommitteeTests extends BaseTest {
         jobs = application.getJobManager();
         staff = application.getClubStaffManager();
         owner = game.getOwner();
-        manager = DatabaseLoader.getProfessionByDataId(Profession.MANAGER);
+        manager = DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER);
         jobs.setStaffDeparturePerDay(0.0);
     }
 
@@ -79,7 +79,7 @@ class CommitteeTests extends BaseTest {
     }
 
     private static Club club(String dataId) {
-        return DatabaseLoader.getClubByDataId(dataId);
+        return DatabaseLoader.getInstance().getClubByDataId(dataId);
     }
 
     /** Days pass until the League is formed and its clubs' committees have met for 1888-89. */

@@ -180,7 +180,7 @@ public class PlayersListTable extends VisTable {
          * Player Rows
          */
         com.rndmodgames.futtoboru.history.HistoryFacts facts = new com.rndmodgames.futtoboru.history.HistoryFacts(
-                com.rndmodgames.futtoboru.system.DatabaseLoader.getGameData(),
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getGameData(),
                 com.rndmodgames.futtoboru.history.HistoryFacts.dataLanguage(LanguageModLoader.getCurrentLanguage().getId()));
         for (Player player : sortedPlayers) {
             this.row();

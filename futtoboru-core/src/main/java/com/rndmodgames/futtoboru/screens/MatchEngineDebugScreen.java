@@ -349,7 +349,7 @@ public class MatchEngineDebugScreen implements Screen {
                     // Try to get clubs from DatabaseLoader
                     // DatabaseLoader doesn't expose getAllClubs directly, but we can get by country
                     // For debug screen, we'll try to get some clubs
-                    java.util.Map<Long, List<Club>> clubsByCountry = DatabaseLoader.getClubsByCountry();
+                    java.util.Map<Long, List<Club>> clubsByCountry = DatabaseLoader.getInstance().getClubsByCountry();
                     if (clubsByCountry != null && !clubsByCountry.isEmpty()) {
                         for (List<Club> countryClubs : clubsByCountry.values()) {
                             if (countryClubs != null) {

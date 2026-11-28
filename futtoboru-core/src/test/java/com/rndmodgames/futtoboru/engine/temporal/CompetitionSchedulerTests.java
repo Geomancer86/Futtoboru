@@ -28,7 +28,7 @@ public class CompetitionSchedulerTests extends BaseTest {
         assertNotNull(dbLoader.getSeasons().get(0).getSeasonScripts());
         
         // Base Country
-        Country england = DatabaseLoader.getCountryByDataId("england");
+        Country england = DatabaseLoader.getInstance().getCountryByDataId("england");
         
         // Initialize savegame
         BaseTestTools tools = new BaseTestTools();
@@ -42,7 +42,7 @@ public class CompetitionSchedulerTests extends BaseTest {
         // BUT NO A SEASON
         Gdx.app.debug("CompetitionSchedulerTests", "All Clubs: " + application.getCurrentGame().getAllClubs().size());
         
-        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        Competition faCup = DatabaseLoader.getInstance().getCompetitions().get(0);
         
         //
         assertNotNull(faCup);
@@ -69,17 +69,17 @@ public class CompetitionSchedulerTests extends BaseTest {
          */
         
         // Base Country
-        Country england = DatabaseLoader.getCountryByDataId("england");
+        Country england = DatabaseLoader.getInstance().getCountryByDataId("england");
         
         assertNotNull(england);
         
         // Base Club
-        Club preston = DatabaseLoader.getClubByDataId("preston-north-end");
+        Club preston = DatabaseLoader.getInstance().getClubByDataId("preston-north-end");
         
         assertNotNull(preston);
         
         // Base Competition
-        Competition faCup = DatabaseLoader.getCompetitions().get(0);
+        Competition faCup = DatabaseLoader.getInstance().getCompetitions().get(0);
         
         assertNotNull(faCup);
 
