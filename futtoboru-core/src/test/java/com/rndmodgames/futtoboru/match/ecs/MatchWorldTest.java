@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.ashley.core.ComponentMapper;
@@ -249,6 +250,7 @@ class MatchWorldTest {
     static final long GOLDEN_PLAY_RAIN = 0x1626d130f3919c52L;
 
     @Test
+    @Tag("slow") // the dry and wet golden plays with the E-16 laws: 5.3 s on BOOK3PRO, over the fast tier's 5 s (T-01)
     void playIsDeterministicAndPinnedByAGoldenHash() {
         EcsMatchEngine engine = new EcsMatchEngine();
         RandomSource game = RandomSource.seeded(1888L);
