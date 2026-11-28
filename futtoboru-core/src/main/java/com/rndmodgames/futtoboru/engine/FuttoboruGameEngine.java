@@ -54,6 +54,8 @@ public class FuttoboruGameEngine {
     
     // Expense Calculator (v1.0)
     private ExpenseCalculator expenseCalculator;
+    /** G-12: season budget and debt of every club */
+    private com.rndmodgames.futtoboru.engine.finances.BudgetManager budgetManager;
     
     //
     private MainMenuManager mainMenuManager;
@@ -92,6 +94,8 @@ public class FuttoboruGameEngine {
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
         this.expenseCalculator = new ExpenseCalculator(gameInstance);
+        this.budgetManager = new com.rndmodgames.futtoboru.engine.finances.BudgetManager(
+                () -> gameInstance.getCurrentGame(), messageManager);
         this.contractManager = new com.rndmodgames.futtoboru.engine.contracts.ContractManager(gameInstance,
                 messageManager);
     }
@@ -403,6 +407,11 @@ public class FuttoboruGameEngine {
         // Check Competition Schedules
         authorityManager.checkCompetitionsSchedule();
         
+        // G-05: every club's committee (expectations, confidence, letters, dismissal) before the job market's day,
+        // so a dismissed secretary's post is advertised at once
+        com.rndmodgames.futtoboru.engine.committee.CommitteeManager.daily(gameInstance.getCurrentGame(),
+                Futtoboru.randomOf(gameInstance), gameInstance.getClubStaffManager(), messageManager);
+
         // Update Job Openings (v1.0)
         if (gameInstance.getJobManager() != null) {
             gameInstance.getJobManager().updateJobOpenings();
@@ -415,6 +424,10 @@ public class FuttoboruGameEngine {
 
         // G-04: engagements (retained list from 16 April, answers the next day, the 1 May rollover for every club)
         contractManager.afterDay(newDate);
+
+        // R-09 + R-03: trainers and secretaries for every club, the candidate pools (close-season refresh, arrivals)
+        com.rndmodgames.futtoboru.engine.recruitment.Recruitment.afterDay(gameInstance.getCurrentGame(), newDate,
+                gameInstance.random());
 
         /**
          * STEP 5: Deliver scheduled messages AFTER advancing date
@@ -621,6 +634,11 @@ public class FuttoboruGameEngine {
                 continue;
             }
             
+            // G-12: plan the season's budget, charge the overdraft's interest
+            if (budgetManager != null) {
+                budgetManager.beforeBooking(club, expenses, currentDate);
+            }
+
             // Add to expense history
             club.addExpense(expenses);
             
@@ -638,6 +656,9 @@ public class FuttoboruGameEngine {
                            " from " + club.getName() + " (New balance: " + Money.format(club.getClubBalance()) + ")");
                 expensesCalculated++;
             }
+            if (budgetManager != null) {
+                budgetManager.afterBooking(club, expenses, currentDate);
+            }
         }
         
         if (expensesCalculated > 0) {
@@ -645,6 +666,10 @@ public class FuttoboruGameEngine {
         }
     }
     
+    public com.rndmodgames.futtoboru.engine.finances.BudgetManager getBudgetManager() {
+        return budgetManager;
+    }
+
     /** G-04: the month's income and expenditure of every club start again on the 1st */
     private void resetMonthTotals() {
         for (Club club : gameInstance.getCurrentGame().getAllClubs()) {

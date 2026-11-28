@@ -46,7 +46,8 @@ import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
  * E-20 calibration harness (docs/design/MATCH_ENGINE_ECS.md §7): plays the 132 real 1888-89 league pairings (home,
  * away, date from {@code docs/data/results_1888-89.csv}, reference data only, D17) on the ECS engine through
  * {@link EcsMatchEngineAdapter}'s input, with the clubs' real squads, their committee's best sheets and the seeded
- * weather of the ground and day, once per seed; matches run on a thread pool (a result depends only on its fork).
+ * weather of the ground and day and the G-02 men hurt in the match (as {@link MatchSimulator} rolls them), once per
+ * seed; matches run on a thread pool (a result depends only on its fork).
  * Prints goals per game, home and away goals, H/D/A, 0-0s, the score histogram and its distance to the real one,
  * injuries, offsides and fouls per match. Prints only: the acceptance bands are the calibration's job, not a gate.
  *
@@ -134,8 +135,17 @@ class EcsCalibrationHarness extends BaseTest {
             Club away = clubs.get(p.away());
             String key = "cal:" + p.date() + ":" + p.home() + "-" + p.away();
             MatchWeather weather = MatchWeather.of(root, p.date(), MatchWeather.groundOf(home));
+            // G-02 men hurt in the match, rolled as MatchSimulator does (the adapter weakens them, E-17)
+            com.rndmodgames.futtoboru.engine.injuries.InjuryRules rules =
+                    com.rndmodgames.futtoboru.engine.injuries.InjuryRules.current();
+            RandomSource hurt = root.fork("injuries:" + key);
             MatchFixture f = new MatchFixture(key, home, away, p.date().atTime(15, 30), weather, false,
-                    sheets.get(p.home()), sheets.get(p.away()));
+                    sheets.get(p.home()), sheets.get(p.away()),
+                    com.rndmodgames.futtoboru.engine.injuries.MatchInjuries.roll(
+                            InstantMatchEngine.onField(sheets.get(p.home()), home), rules, hurt.fork("home")),
+                    com.rndmodgames.futtoboru.engine.injuries.MatchInjuries.roll(
+                            InstantMatchEngine.onField(sheets.get(p.away()), away), rules, hurt.fork("away")),
+                    rules);
             EcsMatchEngineAdapter.Eleven h = EcsMatchEngineAdapter.Eleven.of(f.homeSheet(), home, f);
             EcsMatchEngineAdapter.Eleven a = EcsMatchEngineAdapter.Eleven.of(f.awaySheet(), away, f);
             RandomSource rng = root.fork("match:" + key);

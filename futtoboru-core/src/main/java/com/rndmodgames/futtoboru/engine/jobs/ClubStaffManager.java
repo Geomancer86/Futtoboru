@@ -200,8 +200,9 @@ public class ClubStaffManager {
         for (Person person : currentGame.getAllPersons()) {
             if (person != null && person != owner && person.getId() != null && person.getCurrentClubId() == null
                     && person.getPrimaryProfession() != null
-                    && profession.getId().equals(person.getPrimaryProfession().getId())) {
-                pool.add(person);
+                    && profession.getId().equals(person.getPrimaryProfession().getId())
+                    && !com.rndmodgames.futtoboru.engine.committee.Committee.hasDismissed(club, person.getId())) {
+                pool.add(person); // G-05: never the man this club's committee dismissed
             }
         }
         pool.sort((a, b) -> Long.compare(a.getId(), b.getId()));
