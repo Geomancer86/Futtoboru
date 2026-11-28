@@ -1,356 +1,188 @@
 package com.rndmodgames.futtoboru.tables.schedule;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.kotcrab.vis.ui.widget.VisCheckBox;
+import com.badlogic.gdx.utils.Align;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.temporal.FriendlyArranger;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
-import com.rndmodgames.futtoboru.system.EngineParameters;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.localization.LanguageModLoader;
-import com.rndmodgames.futtoboru.system.Log;
 
 /**
- * Fixtures Table v1
- * 
- * @author Geomancer86
+ * The club's calendar (U-08): {@link #WEEKS} weeks from the Monday of the current week, one cell per day with the
+ * club's matches (played with the score, fixed, or a friendly invitation waiting for an answer). A click on a day
+ * selects it for {@link ArrangeFriendlyTable}.
  */
 public class FixturesTable extends VisTable {
 
-    //
-    Futtoboru game;
-    SaveGame currentGame;
-    
-    //
-    ScheduleScreenTable parentTable;
-    
-    //
+    static final int WEEKS = 12;
+    private static final String[] DAY_KEYS = { "schedule_mon", "schedule_tue", "schedule_wed", "schedule_thu",
+            "schedule_fri", "schedule_sat", "schedule_sun" };
+
+    private final Futtoboru game;
+    private final ScheduleScreenTable parentTable;
+
     private Club currentClub;
     private LocalDateTime selectedDate;
-    
-    // Dynamic Components
-    VisTable matchListTable = null;
-    
-    //
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-    DateTimeFormatter shortFormatter = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH);
-    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
-    
-    //
+
+    private final VisTable matchListTable = new VisTable(true);
+
     public FixturesTable(Futtoboru parent, ScheduleScreenTable scheduleScreenTable) {
-        
-        // vis ui default spacing
         super(true);
-        
-        //
         this.game = parent;
-        this.currentGame = game.getCurrentGame();
-        
-        //
         this.parentTable = scheduleScreenTable;
-        
-        /**
-         * Club Current Matches
-         */
-//        this.add("FIXTURES");
-//        this.row();
-        
-        /**
-         * Match List Table
-         */
-        matchListTable = new VisTable(true);
-        
-        //
         this.add(matchListTable);
     }
 
-    /**
-     * 
-     */
     public void updateDynamicComponents() {
-        
-        Log.info(Log.UI_SCHEDULE, "SHOWING CLUB SCHEDULED MATCH LIST!");
-        
-        //
         matchListTable.clear();
-        
-        /**
-         * Automatic Days By Current Date & Current Season Start Date
-         */
-        int renderWeeks = 10;
-        int renderDays = renderWeeks * 12; // TODO: render until the end of season or until no more schedules can be done
-        
-//        LocalDateTime seasonStartDate = currentGame.getGameStartDate();
-        LocalDateTime currentDate = currentGame.getGameDate();
-        
-        // Calculated Earlier Monday (Start of Week)
-        LocalDateTime firstMonday = LocalDateTime.from(currentDate).with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
-        
-        // Calculated Season End (Number of Weeks)
-        LocalDateTime seasonEnd = firstMonday.plusDays(renderDays);
-        
-        //
-//        matchListTable.row();
-//        matchListTable.add("Season Start Date");
-//        matchListTable.add(formatter.format(seasonStartDate));
-//        
-//        //
-//        matchListTable.row();
-//        matchListTable.add("Current Date");
-//        matchListTable.add(formatter.format(currentDate));
-//        
-//        //
-//        matchListTable.row();
-//        matchListTable.add("First Season Monday");
-//        matchListTable.add(formatter.format(firstMonday));
-        
-        /**
-         * WEEKLY CALENDAR PROTOTYPE
-         */
-        matchListTable.row();
-        matchListTable.add(LanguageModLoader.getValue("MONDAY"));
-        matchListTable.add(LanguageModLoader.getValue("TUESDAY"));
-        matchListTable.add(LanguageModLoader.getValue("WEDNESDAY"));
-        matchListTable.add(LanguageModLoader.getValue("THURSDAY"));
-        matchListTable.add(LanguageModLoader.getValue("FRIDAY"));
-        matchListTable.add(LanguageModLoader.getValue("SATURDAY"));
-        matchListTable.add(LanguageModLoader.getValue("SUNDAY"));
-        
-        /**
-         * Iterate days starting from firstMonday
-         */
-        int renderedDays = 0;
-        boolean isCurrentDay = false;
-        
-        //
-        matchListTable.row();
-        
-        Club currentClub = currentGame.getCurrentClub();
-        
-        // Debug logging
-        if (currentClub != null) {
-            Log.info(Log.UI_SCHEDULE, "FixturesTable: Current club: " + currentClub.getName());
-            Log.info(Log.UI_SCHEDULE, "FixturesTable: Proposed matches: " + (currentClub.getProposedMatches() != null ? currentClub.getProposedMatches().size() : 0));
-            Log.info(Log.UI_SCHEDULE, "FixturesTable: Scheduled matches: " + (currentClub.getScheduledMatches() != null ? currentClub.getScheduledMatches().size() : 0));
-        } else {
-            Log.info(Log.UI_SCHEDULE, "FixturesTable: Current club is null (unemployed player)");
+        SaveGame save = game.getCurrentGame();
+        if (save == null) {
+            return;
         }
-        
-        // Get all league matches if player is in a league
-        java.util.List<Match> allLeagueMatches = new java.util.ArrayList<>();
-        if (currentClub != null && currentGame.getMainAuthority() != null && currentGame.getMainAuthority().getLeagues() != null) {
-            for (com.rndmodgames.futtoboru.data.League league : currentGame.getMainAuthority().getLeagues()) {
-                if (league != null && league.getLeagueClubs() != null) {
-                    // Check if current club is in this league
-                    boolean isInLeague = false;
-                    for (Club club : league.getLeagueClubs()) {
-                        if (club != null && club.getId() != null && club.getId().equals(currentClub.getId())) {
-                            isInLeague = true;
-                            break;
-                        }
-                    }
-                    
-                    if (isInLeague) {
-                        // Get all matches from all clubs in this league
-                        for (Club club : league.getLeagueClubs()) {
-                            if (club != null && club.getScheduledMatches() != null) {
-                                for (Match match : club.getScheduledMatches()) {
-                                    if (match != null && match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH) {
-                                        // Check if not already in list
-                                        boolean alreadyAdded = false;
-                                        for (Match existing : allLeagueMatches) {
-                                            if (existing.getId() != null && existing.getId().equals(match.getId())) {
-                                                alreadyAdded = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!alreadyAdded) {
-                                            allLeagueMatches.add(match);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        LocalDate today = save.getGameDate().toLocalDate();
+        LocalDate firstMonday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+        matchListTable.row();
+        for (String key : DAY_KEYS) {
+            matchListTable.add(text(key));
         }
-        
-        Log.info(Log.UI_SCHEDULE, "FixturesTable: Found " + allLeagueMatches.size() + " league matches");
-        
-        // Iterate Season Dates
-        // Keep count of days for Week Rendering
-        for (LocalDateTime renderDate = firstMonday; renderDate.isBefore(seasonEnd); renderDate = renderDate.plusDays(1)) {
-            
-            // Current Day will be selected by default
-            isCurrentDay = renderDate.isEqual(currentDate);
-            
-            /**
-             * Find matches for this day
-             */
-            Match match = null;
-            
-            // First, check league matches
-            for (Match leagueMatch : allLeagueMatches) {
-                if (leagueMatch != null && leagueMatch.getMatchDateTime() != null && 
-                    leagueMatch.getMatchDateTime().toLocalDate().equals(renderDate.toLocalDate())) {
-                    match = leagueMatch;
-                    break; // Found a match for this day
-                }
-            }
-            
-            // If no league match, check current club's proposed matches
-            if (match == null && currentClub != null && currentClub.getProposedMatches() != null) {
-                for (Match proposed : currentClub.getProposedMatches()) {
-                    if (proposed != null && proposed.getMatchDateTime() != null &&
-                        proposed.getMatchDateTime().toLocalDate().equals(renderDate.toLocalDate())) {
-                        match = proposed;
-                        break;
-                    }
-                }
-            }
-            
-            // If still no match, check current club's scheduled matches
-            if (match == null && currentClub != null && currentClub.getScheduledMatches() != null) {
-                for (Match scheduled : currentClub.getScheduledMatches()) {
-                    if (scheduled != null && scheduled.getMatchDateTime() != null &&
-                        scheduled.getMatchDateTime().toLocalDate().equals(renderDate.toLocalDate())) {
-                        match = scheduled;
-                        break;
-                    }
-                }
-            }
-            
-            // Add Calendar Cell
-            matchListTable.add(getDailyCalendarTable(renderDate, shortFormatter.format(renderDate), match, isCurrentDay));
-
-            // Keep track of rendered days for weekly breaks / new rows
-            renderedDays++;
-
-            // New Week, New Row
-            if (renderedDays % 7 == 0) {
-
-                // new week
+        matchListTable.row();
+        for (int i = 0; i < WEEKS * 7; i++) {
+            LocalDate day = firstMonday.plusDays(i);
+            matchListTable.add(dayCell(day, today, matchesOn(day))).top().left();
+            if ((i + 1) % 7 == 0) {
                 matchListTable.row();
             }
         }
-        
-//        matchListTable.pack();
     }
-    
-    /**
-     * Clickable Table / Cell
-     * 
-     *  - Selected Day Checkbox or Button (for quick ID).
-     *  - 
-     */
-    public VisTable getDailyCalendarTable(LocalDateTime date, String dateLabel, Match match, Boolean selected) {
-        
-        VisTable table = new VisTable(true);
-        
-        table.setTouchable(Touchable.enabled); 
-        
-        table.addListener(new ClickListener(){
-            
+
+    /** The club's matches on {@code day}: played, fixed and proposed. */
+    private List<Match> matchesOn(LocalDate day) {
+        List<Match> found = new ArrayList<>();
+        if (currentClub == null) {
+            return found;
+        }
+        addOn(found, currentClub.getPlayedMatches(), day);
+        addOn(found, currentClub.getScheduledMatches(), day);
+        addOn(found, currentClub.getProposedMatches(), day);
+        return found;
+    }
+
+    private void addOn(List<Match> found, List<Match> matches, LocalDate day) {
+        if (matches == null) {
+            return;
+        }
+        for (Match m : matches) {
+            if (m != null && m.getMatchDateTime() != null && m.getMatchDateTime().toLocalDate().equals(day)
+                    && FriendlyArranger.isClubFixture(currentClub, m) && !found.contains(m)) {
+                found.add(m);
+            }
+        }
+    }
+
+    private VisTable dayCell(LocalDate day, LocalDate today, List<Match> matches) {
+        VisTable cell = new VisTable(true);
+        cell.setTouchable(Touchable.enabled);
+        cell.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                
-                
-                // Set to be retrieved on other components
-                selectedDate = date;
-                
-                //
+                selectedDate = day.atStartOfDay();
                 parentTable.updateDynamicComponents();
             }
         });
-        
-        /**
-         * Calendar Cell Component
-         * 
-         *  Date
-         *  Selected
-         *  Match TYpe
-         *  Vs Team
-         *  Venue
-         *  
-         */
-        table.add(dateLabel);
-        
-        /**
-         * SELECTED DATE CHECK
-         * 
-         * defaults to Current Game Date on unselected
-         */
-        table.row();
-        
-        if (selectedDate == null) {
-            if (date.isEqual(currentGame.getGameDate())) {
-                
-                table.add(new VisCheckBox("TODAY", true));
-                
-            }
-        } else {
-            if (selectedDate.isEqual(date)) {
-                
-                table.add(new VisCheckBox("SELECTED", true));
-            }
+
+        VisLabel dateLabel = new VisLabel(dayFormatter().format(day));
+        boolean selected = selectedDate != null && selectedDate.toLocalDate().equals(day);
+        if (selected) {
+            dateLabel.setColor(UiTheme.color("selection"));
+        } else if (day.equals(today)) {
+            dateLabel.setColor(UiTheme.color("accent"));
+        } else if (day.isBefore(today)) {
+            dateLabel.setColor(UiTheme.color("text.muted"));
         }
-        
-        //
-        if (match != null) {
-            
-            // Match Type
-            table.row();
-            table.add(EngineParameters.getMatchType(match.getMatchType()));
-            
-            // Vs Team
-            table.row();
-            
-            if (match.getHomeClubId().equals(currentClub.getId())) {
-                
-                // Show Away Team
-                // TODO get club by id
-                table.add(DatabaseLoader.getClubById(match.getAwayClubId()).getName());
-                
-                // Home Venue
-                table.row();
-                table.add("Home");
-            } else {
-                
-                // Show Home Team
-                // TODO get club by id
-                table.add(DatabaseLoader.getClubById(match.getHomeClubId()).getName());
-                
-                // Away Venue
-                table.row();
-                table.add("Away");
-            }
-            
-            // REQUEST v SCHEDULED
-            if (match.getIsAccepted()) {
-                
-                table.row();
-                table.add("SCHEDULED");
-            } else {
-                
-                table.row();
-                table.add("PROPOSED");
-            }
+        cell.add(dateLabel).left();
+        if (selected || day.equals(today)) {
+            cell.row();
+            cell.add(new VisLabel(text(selected ? "schedule_selected" : "schedule_today"))).left();
         }
-        
-        return table;
+
+        for (Match match : matches) {
+            cell.row();
+            cell.add(new VisLabel(typeLabel(match))).left();
+            cell.row();
+            cell.add(new VisLabel(opponentLine(match))).left();
+            cell.row();
+            cell.add(new VisLabel(stateLabel(match))).left();
+        }
+        cell.align(Align.topLeft);
+        return cell;
     }
-    
+
+    /** The day in a cell ({@code schedule_day_pattern}: "d MMM", numeric in Spanish). */
+    private static DateTimeFormatter dayFormatter() {
+        try {
+            return DateTimeFormatter.ofPattern(text("schedule_day_pattern"), Locale.ENGLISH);
+        } catch (RuntimeException e) { // a bad pattern in a language file
+            return DateTimeFormatter.ofPattern("d MMM", Locale.ENGLISH);
+        }
+    }
+
+    private static String typeLabel(Match match) {
+        Integer type = match.getMatchType();
+        if (type != null && type == Match.LEAGUE_MATCH) {
+            return text("match_type_league");
+        }
+        if (type != null && type == Match.CUP_MATCH) {
+            return text("match_type_cup");
+        }
+        return text("match_type_friendly");
+    }
+
+    private String opponentLine(Match match) {
+        boolean home = currentClub.getId().equals(match.getHomeClubId());
+        boolean away = currentClub.getId().equals(match.getAwayClubId());
+        if (!home && !away) {
+            return text("schedule_opponent_tbd");
+        }
+        Long opponentId = home ? match.getAwayClubId() : match.getHomeClubId();
+        Club opponent = opponentId != null ? game.getCurrentGame().getClubById(opponentId) : null;
+        String name = opponent != null ? opponent.getName() : text("schedule_opponent_tbd");
+        return FriendlyArranger.fill(text(home ? "schedule_vs_home" : "schedule_vs_away"), name);
+    }
+
+    private String stateLabel(Match match) {
+        if (Boolean.TRUE.equals(match.getIsPlayed())) {
+            boolean home = currentClub.getId().equals(match.getHomeClubId());
+            int own = home ? match.getHomeGoals() : match.getAwayGoals();
+            int other = home ? match.getAwayGoals() : match.getHomeGoals();
+            return FriendlyArranger.fill(text("schedule_played"), own, other);
+        }
+        if (Boolean.TRUE.equals(match.getIsAccepted())) {
+            return text("schedule_fixed");
+        }
+        return text("schedule_awaiting_answer");
+    }
+
+    private static String text(String key) {
+        return LanguageModLoader.getValue(key);
+    }
+
     public Club getCurrentClub() {
         return currentClub;
     }
