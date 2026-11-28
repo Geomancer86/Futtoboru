@@ -71,9 +71,12 @@ public class GameData {
     public static final String ORIGIN_CLUB = "origin-club";
     public static final String AREA = "area";
     public static final String LANGUAGE = "language";
+    // G-02 injury kinds
+    public static final String INJURY = "injury";
 
     static final List<String> KINDS = Arrays.asList(CONTINENT, COUNTRY, PROFESSION, OCCUPATION, COMPETITION, CLUB,
-            GROUND, PERSON, REGION, SEASON, EDITION, RULE, WAGE, ORIGIN, ORIGIN_CLUB, AREA, LANGUAGE);
+            GROUND, PERSON, REGION, SEASON, EDITION, RULE, WAGE, ORIGIN, ORIGIN_CLUB, AREA, LANGUAGE,
+            INJURY);
 
     /** R-02 / R-11a: the grades that may have no source (validate.py UNSOURCED_OK). */
     static final Set<String> UNSOURCED_OK = new HashSet<>(Arrays.asList("estimate", "placeholder"));
@@ -111,11 +114,15 @@ public class GameData {
             positions.add(p.getDataId());
         }
         ENUMS.put("position", positions);
+        // H-05: what kind of body a club grew out of (same list as tools/data/validate.py)
+        ENUMS.put("club_origin", new TreeSet<>(Arrays.asList("church", "cricket", "works", "school", "old-boys",
+                "rugby", "merger", "other")));
         // H-04 sources: docs/data/history/POSITIONS_1888-89.md (same list as tools/data/validate.py)
         ENUMS.put("position_source", new TreeSet<>(Arrays.asList("players-1888-89", "players-1888-89-line",
                 "placeholder", "wp-season-1888-89", "wp-season-1888-89-line", "wp-player", "wp-player-line",
                 "fa-cup-final-1889")));
         // R-02 / R-11a (same lists as tools/data/validate.py)
+        ENUMS.put("injury_kind", new TreeSet<>(Arrays.asList("knock", "passenger", "carried-off")));
         ENUMS.put("data_confidence", new TreeSet<>(Arrays.asList("high", "medium", "low", "estimate", "placeholder")));
         ENUMS.put("rule_kind", new TreeSet<>(Arrays.asList("registration", "residence", "second-registration-consent",
                 "registration-wait", "scottish-professional-ban", "retain-and-transfer", "max-wage")));
@@ -134,6 +141,14 @@ public class GameData {
         ENUMS.put("neutral_gate", new TreeSet<>(Arrays.asList("association", "shared", "home")));
         ENUMS.put("later_draws", new TreeSet<>(Arrays.asList("open-draw", "bracket")));
     }
+
+    /** H-05: the fan-love scale of a squad entry. */
+    static final int FAN_TIER_MIN = 0;
+    static final int FAN_TIER_MAX = 5;
+    /** H-05: specs whose records need links as sources (and a forward period). */
+    static final Set<String> SOURCED = new HashSet<>(Arrays.asList("nickname", "club_name", "history_club",
+            "history_person"));
+    static final Pattern LANG_RE = Pattern.compile("^[a-z]{2,3}(-[A-Z]{2})?$");
 
     /** The attribute scale (3d6 plus modifiers, PlayerAttributeGenerator): a sourced dribbling value is inside. */
     static final int ATTR_MIN = 3;
@@ -188,14 +203,20 @@ public class GameData {
                 "sources", "strs!", "notes", "str", "reElectionPlaces", "int", "reElectionFrom", "int",
                 "reElectionUntil", "int", "annualMeetingAfterDays", "int", "annualMeetingConfidence",
                 "enum:confidence");
+        // H-05: origin, nicknames, rivals, nameHistory (the prose is in text/<lang>/history.json)
         spec("club", "id", "str!", "name", "str!", "fullName", "str", "founded", "int", "country", "ref:country!",
-                "sources", "strs!", "notes", "str");
+                "sources", "strs!", "notes", "str", "origin", "enum:club_origin", "nicknames", "list:nickname",
+                "rivals", "refs:club", "nameHistory", "list:club_name");
+        spec("nickname", "name", "str!", "from", "int", "to", "int", "period", "bool", "sources", "strs!");
+        spec("club_name", "name", "str!", "from", "int!", "to", "int", "sources", "strs!");
+        spec("history_club", "hook", "str!", "history", "strs!", "seasons", "seasontexts", "sources", "strs!");
+        spec("history_person", "bio", "str!", "sources", "strs!");
         spec("ground", "id", "str!", "name", "str!", "opened", "int", "capacity", "int", "value", "num",
                 "description", "str", "landValue", "num", "ownedByClub", "bool", "annualRent", "num",
                 "sources", "strs!", "notes", "str");
         spec("person", "id", "str!", "firstName", "str!", "lastName", "str!", "born", "date!", "country",
                 "ref:country!", "confidence", "enum:confidence!", "sources", "strs!", "notes", "str",
-                "birthArea", "ref:area");
+                "birthArea", "ref:area", "nicknames", "list:nickname", "knownAs", "str");
         spec("season", "id", "str!", "name", "str!", "description", "str", "start", "datetime!", "sources", "strs!",
                 "countries", "refs:country!", "editions", "list:edition!", "calendar", "obj:calendar");
         spec("edition", "id", "str!", "competition", "ref:competition!", "name", "str!", "participants",
@@ -217,7 +238,7 @@ public class GameData {
                 "notes", "str");
         // E-01 positions / dribbling: keyed by a person id of `players` (checked in checkSquadRoles)
         spec("squad", "club", "ref:club!", "ground", "ref:ground", "balance", "num", "players", "refs:person!",
-                "notes", "str", "positions", "map:squad_position", "dribbling", "map:squad_dribbling");
+                "notes", "str", "positions", "map:squad_position", "dribbling", "map:squad_dribbling", "fanTiers", "tiers:person");
         spec("squad_position", "position", "enum:position!", "source", "enum:position_source!");
         spec("squad_dribbling", "value", "int!", "source", "str!");
         spec("nationality_modifier", "country", "ref:country!", "modifiers", "attrs!", "notes", "str",
@@ -250,6 +271,10 @@ public class GameData {
                 "str");
         spec("area", "id", "str!", "name", "str!", "country", "ref:country!", "weight", "num!", "places", "strs",
                 "confidence", "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        // G-02 (D19-3): one record per injury kind
+        spec("injury", "id", "str!", "kind", "enum:injury_kind!", "chancePerMatch", "num!", "minDays", "int!",
+                "maxDays", "int!", "returnChance", "num", "strengthWhileHurt", "num", "confidence",
+                "enum:data_confidence!", "sources", "strs!", "notes", "str");
         spec("language_rate", "area", "ref:area", "countries", "refs:country", "bornFrom", "int!", "bornUntil",
                 "int!", "speaks", "shares:language", "only", "shares:language", "signsMen", "num", "signsWomen",
                 "num", "parentsBorn", "shares:country", "readWriteIfSigns", "nums", "confidence",
@@ -277,6 +302,7 @@ public class GameData {
         PACK_FILES.put("languages.json", new String[] { "language", LANGUAGE });
         PACK_FILES.put("areas.json", new String[] { "area", AREA });
         PACK_FILES.put("language_rates.json", new String[] { "language_rate", null });
+        PACK_FILES.put("injuries.json", new String[] { "injury", INJURY });
         SEASON_FILES.put("squads.json", new String[] { "squad", null });
         SEASON_FILES.put("nationality_modifiers.json", new String[] { "nationality_modifier", null });
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
@@ -298,6 +324,10 @@ public class GameData {
     /** spec name -> live records in load order (squads, names, modifiers...). */
     private final Map<String, List<DataRecord>> bySpec = new HashMap<>();
     private final List<String> packs = new ArrayList<>();
+    /** H-05: text entries read, waiting for their keys to be resolved. */
+    private final List<PendingText> pendingTexts = new ArrayList<>();
+    /** H-05: language -> kind (club, person) -> canonical id -> text. */
+    private final Map<String, Map<String, Map<String, HistoryText>>> texts = new HashMap<>();
     /** Pack id -> {version, dataVersion} from its pack.json, in load order. */
     private final Map<String, int[]> packVersions = new LinkedHashMap<>();
     /** Registry ({@code ids.json}) of each pack that has one. */
@@ -397,6 +427,62 @@ public class GameData {
         return out;
     }
 
+    /**
+     * H-05: a squad's fan-love tiers (0-5) at the start of the season, by canonical person id. A player without an
+     * entry has the derived default (the proposal: 1 for a sourced person, 0 for a placeholder).
+     */
+    public Map<String, Integer> squadFanTiers(DataRecord squad) {
+        Map<String, Integer> out = new LinkedHashMap<>();
+        JsonValue t = squad == null ? null : squad.json.get("fanTiers");
+        for (JsonValue x = t == null || !t.isObject() ? null : t.child; x != null; x = x.next) {
+            String person = resolve(PERSON, x.name);
+            if (person != null && x.isLong()) {
+                out.put(person, x.asInt());
+            }
+        }
+        return out;
+    }
+
+    /** H-05: the nicknames of a club or a person (all of them; filter on {@link HistoryName#isPeriod()}). */
+    public List<HistoryName> nicknames(DataRecord record) {
+        return names(record, "nicknames");
+    }
+
+    /** H-05: the names a club carried (a name by season), oldest first as in the file. */
+    public List<HistoryName> nameHistory(DataRecord club) {
+        return names(club, "nameHistory");
+    }
+
+    private static List<HistoryName> names(DataRecord record, String field) {
+        List<HistoryName> out = new ArrayList<>();
+        JsonValue v = record == null ? null : record.json.get(field);
+        for (JsonValue x = v == null || !v.isArray() ? null : v.child; x != null; x = x.next) {
+            out.add(new HistoryName(x.getString("name", ""), x.getInt("from", 0), x.getInt("to", 0),
+                    x.getBoolean("period", false), strings(x.get("sources"))));
+        }
+        return out;
+    }
+
+    /**
+     * H-05: the history text of a club or a person ({@link #CLUB} / {@link #PERSON}) in a language, falling back to
+     * English; null when there is none.
+     */
+    public HistoryText historyText(String kind, String id, String lang) {
+        String canonical = resolve(kind, id);
+        if (canonical == null) {
+            return null;
+        }
+        for (String l : new String[] { lang, "en" }) {
+            Map<String, Map<String, HistoryText>> byKind = l == null ? null : texts.get(l);
+            Map<String, HistoryText> table = byKind == null ? null : byKind.get(kind);
+            HistoryText t = table == null ? null : table.get(canonical);
+            if (t != null) {
+                return t;
+            }
+        }
+        return null;
+    }
+
     /** @return the first live squad of a club (any season, load order), or null */
     public DataRecord squadOf(String clubId) {
         String club = resolve(CLUB, clubId);
@@ -494,6 +580,7 @@ public class GameData {
         }
         checkAliases();
         resolveReferences();
+        resolveTexts();
         checkLanguageTables();
         warnings();
         assignRuntimeIds();
@@ -540,6 +627,13 @@ public class GameData {
                 readRegistry(data, where, pack);
                 continue;
             }
+            if (f.startsWith("era/")) {
+                continue; // era events (H-06): read by EraProfile, checked by validate.py
+            }
+            if (parts.length == 3 && parts[0].equals("text")) {
+                readText(data, where, parts[1], parts[2]);
+                continue;
+            }
             String season = null;
             String[] spec;
             if (parts.length == 3 && parts[0].equals("seasons")) {
@@ -575,6 +669,101 @@ public class GameData {
         for (JsonValue s = manifest.get("seasons").child; s != null; s = s.next) {
             if (source.read(pack + "/seasons/" + s.asString() + "/season.json") == null) {
                 report.error(manifestWhere, "season `" + s.asString() + "` has no seasons/" + s.asString() + "/season.json");
+            }
+        }
+    }
+
+    /** A text entry read from {@code text/<lang>/history.json}, waiting for its key to be resolved. */
+    private static final class PendingText {
+        final String lang;
+        final String kind;
+        final String key;
+        final JsonValue entry;
+        final String where;
+
+        PendingText(String lang, String kind, String key, JsonValue entry, String where) {
+            this.lang = lang;
+            this.kind = kind;
+            this.key = key;
+            this.entry = entry;
+            this.where = where;
+        }
+    }
+
+    private void readText(JsonValue data, String where, String lang, String name) {
+        if (!name.equals("history.json")) {
+            report.error(where, "unknown text file (only history.json)");
+            return;
+        }
+        if (!LANG_RE.matcher(lang).matches()) {
+            report.error(where, "`" + lang + "` is not a language code (like `en`, `es`, `pt-BR`)");
+        }
+        if (!data.isObject()) {
+            report.error(where, "expected an object of kinds (club, person)");
+            return;
+        }
+        for (JsonValue kind = data.child; kind != null; kind = kind.next) {
+            String spec = CLUB.equals(kind.name) ? "history_club" : PERSON.equals(kind.name) ? "history_person" : null;
+            if (spec == null) {
+                report.error(where, "unknown kind `" + kind.name + "` (allowed: club, person)");
+                continue;
+            }
+            if (!kind.isObject()) {
+                report.error(where + "." + kind.name, "expected an object of data id -> entry");
+                continue;
+            }
+            for (JsonValue e = kind.child; e != null; e = e.next) {
+                String w = where + "." + kind.name + "." + e.name;
+                if (checkRecord(e, spec, w, null)) {
+                    pendingTexts.add(new PendingText(lang, kind.name, e.name, e, w));
+                }
+            }
+        }
+    }
+
+    private static List<String> strings(JsonValue list) {
+        List<String> out = new ArrayList<>();
+        for (JsonValue x = list == null ? null : list.child; x != null; x = x.next) {
+            out.add(x.asString());
+        }
+        return out;
+    }
+
+    /** Resolves the keys of the text entries after aliases; an unknown key is an error and the entry is dropped. */
+    private void resolveTexts() {
+        for (PendingText t : pendingTexts) {
+            String canonical = resolve(t.kind, t.key);
+            if (canonical == null) {
+                report.error(t.where, "unknown " + t.kind + " `" + t.key + "`");
+                continue;
+            }
+            Map<String, String> seasons = new LinkedHashMap<>();
+            JsonValue st = t.entry.get("seasons");
+            for (JsonValue x = st == null ? null : st.child; x != null; x = x.next) {
+                String season = resolve(SEASON, x.name);
+                if (season == null) {
+                    report.error(t.where + ".seasons." + x.name, "unknown season `" + x.name + "`");
+                } else {
+                    seasons.put(season, x.asString());
+                }
+            }
+            texts.computeIfAbsent(t.lang, k -> new HashMap<>()).computeIfAbsent(t.kind, k -> new HashMap<>()).put(
+                    canonical, new HistoryText(t.entry.getString("hook", null), strings(t.entry.get("history")),
+                            seasons, t.entry.getString("bio", null), strings(t.entry.get("sources"))));
+        }
+        Map<String, HistoryText> none = new HashMap<>();
+        for (Map.Entry<String, Map<String, Map<String, HistoryText>>> lang : texts.entrySet()) {
+            if ("en".equals(lang.getKey())) {
+                continue;
+            }
+            for (Map.Entry<String, Map<String, HistoryText>> kind : lang.getValue().entrySet()) {
+                for (String key : kind.getValue().keySet()) {
+                    if (!texts.getOrDefault("en", Collections.emptyMap()).getOrDefault(kind.getKey(), none)
+                            .containsKey(key)) {
+                        report.error("text/" + lang.getKey() + "/history.json." + kind.getKey(),
+                                "`" + key + "` has no entry in text/en (orphan translation)");
+                    }
+                }
             }
         }
     }
@@ -689,6 +878,9 @@ public class GameData {
         }
         if ("squad".equals(specName)) {
             checkSquadRoles(v, where);
+        }
+        if (SOURCED.contains(specName)) {
+            checkHistorySourced(v, specName, where);
         }
         checkRecruitmentRecord(specName, v, where);
         checkRules(v, specName, where);
@@ -831,6 +1023,28 @@ public class GameData {
             } else if (type.startsWith("obj:")) {
                 // one nested object (P2-14: a season's calendar, an edition's neutral grounds)
                 checkRecord(v, type.substring(4), where, rec);
+            } else if (type.startsWith("tiers:")) {
+                // H-05: an object person id -> fan tier 0-5; the keys are checked against the players of the squad
+                if (!v.isObject()) {
+                    expect(false, v, where, "an object of id -> tier");
+                    break;
+                }
+                for (JsonValue x = v.child; x != null; x = x.next) {
+                    if (!x.isLong() || x.asLong() < FAN_TIER_MIN || x.asLong() > FAN_TIER_MAX) {
+                        report.error(where + "." + x.name,
+                                "tier must be a whole number " + FAN_TIER_MIN + "-" + FAN_TIER_MAX);
+                    }
+                }
+            } else if (type.equals("seasontexts")) {
+                if (!v.isObject()) {
+                    expect(false, v, where, "an object of season id -> text");
+                    break;
+                }
+                for (JsonValue x = v.child; x != null; x = x.next) {
+                    if (!x.isString() || x.asString().trim().isEmpty()) {
+                        report.error(where + "." + x.name, "expected a non-empty text");
+                    }
+                }
             } else if (type.startsWith("map:")) {
                 // an object id -> small record (a squad's positions): each value is checked against its spec
                 if (!v.isObject()) {
@@ -927,7 +1141,7 @@ public class GameData {
                 players.add(x.asString());
             }
         }
-        for (String field : new String[] { "positions", "dribbling" }) {
+        for (String field : new String[] { "positions", "dribbling", "fanTiers" }) {
             JsonValue table = sq.get(field);
             if (table == null || !table.isObject()) {
                 continue;
@@ -957,6 +1171,43 @@ public class GameData {
         }
     }
 
+    /** H-05: sources are non-empty http(s) links, names and prose are not empty, a period runs forwards. */
+    private void checkHistorySourced(JsonValue v, String specName, String where) {
+        JsonValue src = v.get("sources");
+        if (src != null && src.isArray()) {
+            if (src.size == 0) {
+                report.error(where + ".sources", "empty (every history fact and text needs a source)");
+            }
+            int i = 0;
+            for (JsonValue x = src.child; x != null; x = x.next, i++) {
+                if (x.isString() && !x.asString().startsWith("http://") && !x.asString().startsWith("https://")) {
+                    report.error(where + ".sources[" + i + "]", "`" + x.asString() + "` is not a link");
+                }
+            }
+        }
+        for (String f : new String[] { "name", "hook", "bio" }) {
+            JsonValue x = v.get(f);
+            if (x != null && x.isString() && x.asString().trim().isEmpty()) {
+                report.error(where + "." + f, "empty");
+            }
+        }
+        JsonValue h = v.get("history");
+        if ("history_club".equals(specName) && h != null && h.isArray()) {
+            boolean bad = h.size == 0;
+            for (JsonValue x = h.child; x != null; x = x.next) {
+                bad |= x.isString() && x.asString().trim().isEmpty();
+            }
+            if (bad) {
+                report.error(where + ".history", "needs at least one non-empty paragraph");
+            }
+        }
+        JsonValue a = v.get("from");
+        JsonValue b = v.get("to");
+        if (a != null && b != null && a.isLong() && b.isLong() && a.asLong() > b.asLong()) {
+            report.error(where, "`from` " + a.asLong() + " is after `to` " + b.asLong());
+        }
+    }
+
     /**
      * R-02 / R-11a record checks beyond the field spec (same as validate.py): a source unless {@code estimate} or
      * {@code placeholder}; {@code until} not before {@code from}; a rule's value fields; a wage example's wage and a
@@ -965,6 +1216,10 @@ public class GameData {
      */
     private void checkRecruitmentRecord(String specName, JsonValue v, String where) {
         switch (specName) {
+        case "injury":
+            checkSourced(v, where);
+            checkInjury(v, where);
+            return;
         case "rule":
         case "wage":
         case "origin":
@@ -1163,6 +1418,24 @@ public class GameData {
             }
         }
         return out;
+    }
+
+    /** G-02: 0 <= minDays <= maxDays; chances and strengthWhileHurt in 0..1 (each kind once: validate.py). */
+    private void checkInjury(JsonValue v, String where) {
+        int lo = v.getInt("minDays", 0);
+        int hi = v.getInt("maxDays", 0);
+        if (lo < 0) {
+            report.error(where + ".minDays", "must not be negative");
+        }
+        if (lo > hi) {
+            report.error(where, "minDays " + lo + " is above maxDays " + hi);
+        }
+        for (String f : new String[] { "chancePerMatch", "returnChance", "strengthWhileHurt" }) {
+            JsonValue x = v.get(f);
+            if (x != null && x.isNumber() && (x.asDouble() < 0 || x.asDouble() > 1)) {
+                report.error(where + "." + f, "must be from 0 to 1");
+            }
+        }
     }
 
     private void checkSourced(JsonValue v, String where) {

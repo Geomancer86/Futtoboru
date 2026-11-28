@@ -16,6 +16,16 @@
     "lastName": "Drummond",
     "born": "1865-01-09",
     "country": "scotland",
+    "nicknames": [
+      {
+        "name": "Geordie",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/George_Drummond_(footballer,_born_1865)"
+        ]
+      }
+    ],
+    "knownAs": "Geordie Drummond",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season",
@@ -119,6 +129,16 @@
     "lastName": "Holmes",
     "born": "1867-06-23",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "last of the Invincibles",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Bob_Holmes_(footballer)"
+        ]
+      }
+    ],
+    "knownAs": "Bob Holmes",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
@@ -180,6 +200,15 @@
     "lastName": "Ross",
     "born": "1866-03-28",
     "country": "scotland",
+    "nicknames": [
+      {
+        "name": "Little Demon",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Jimmy_Ross_(footballer,_born_1866)"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
@@ -205,6 +234,7 @@
     "lastName": "Thomson",
     "born": "1862-02-14",
     "country": "scotland",
+    "knownAs": "Sammy Thomson",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
@@ -577,6 +607,15 @@
     "lastName": "Hodgetts",
     "born": "1863-11-28",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Denny",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Dennis_Hodgetts"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season",
@@ -606,6 +645,15 @@
     "lastName": "Hunter",
     "born": "1859-09-23",
     "country": "scotland",
+    "nicknames": [
+      {
+        "name": "The Old Warhorse",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Archie_Hunter"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season",
@@ -690,6 +738,15 @@
     "lastName": "Yates",
     "born": "1861-10-14",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Tubby",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Harry_Yates_(footballer,_born_1861)"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season",
@@ -718,6 +775,15 @@
     "lastName": "Wood",
     "born": "1868-06-26",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "the wolf",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Harry_Wood_(footballer,_born_1868)"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Wolverhampton_Wanderers_F.C._season",
@@ -1502,6 +1568,22 @@
     "lastName": "Southworth",
     "born": "1866-12-11",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Skimmy",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Jack_Southworth"
+        ]
+      },
+      {
+        "name": "Prince of Dribblers",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Jack_Southworth"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Blackburn_Rovers_F.C._season",
@@ -1743,6 +1825,7 @@
     "lastName": "Weir",
     "born": "1863",
     "country": "england",
+    "knownAs": "Davie Weir",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season",
@@ -2324,6 +2407,15 @@
     "lastName": "Horton",
     "born": "1861-08-20",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Ironsides",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Ezra_Horton"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season",
@@ -2476,6 +2568,22 @@
     "lastName": "Roberts",
     "born": "1859-04-09",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Long Bob",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Bob_Roberts_(footballer,_born_1859)"
+        ]
+      },
+      {
+        "name": "The Prince of Goalkeepers",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Bob_Roberts_(footballer,_born_1859)"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season",
@@ -2571,6 +2679,15 @@
     "lastName": "Woodhall",
     "born": "1863-09-05",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Spry",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/George_Woodhall"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season",
@@ -2652,6 +2769,15 @@
     "lastName": "Gallocher",
     "born": "1865-04-25",
     "country": "scotland",
+    "nicknames": [
+      {
+        "name": "The Artful Dodger",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Pat_Gallocher"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season",
@@ -2705,6 +2831,7 @@
     "lastName": "Kirkham",
     "born": "1869-02-26",
     "country": "england",
+    "knownAs": "Johnny Kirkham",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season"
@@ -2862,6 +2989,15 @@
     "lastName": "Chadwick",
     "born": "1869-06-14",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Hooky",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Edgar_Chadwick"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
@@ -2876,6 +3012,15 @@
     "lastName": "Holt",
     "born": "1865-04-10",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Little Everton Devil",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Johnny_Holt"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season",
@@ -3395,6 +3540,7 @@
     "lastName": "Yates",
     "born": "1861-01-03",
     "country": "england",
+    "knownAs": "Jack Yates",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season",
@@ -3610,6 +3756,15 @@
     "lastName": "Cooper",
     "born": "1864",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Kid",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Lewis_Cooper"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
@@ -3822,6 +3977,16 @@
     "lastName": "Plackett",
     "born": "1869-01-16",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Lol",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Lawrence_Plackett"
+        ]
+      }
+    ],
+    "knownAs": "Lol Plackett",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
@@ -3880,6 +4045,7 @@
     "lastName": "Spilsbury",
     "born": "1864-08-01",
     "country": "england",
+    "knownAs": "Ben Spilsbury",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season",
@@ -4040,6 +4206,7 @@
     "lastName": "Cursham",
     "born": "1859-11-27",
     "country": "england",
+    "knownAs": "Harry Cursham",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Notts_County_F.C._season",
@@ -4301,6 +4468,16 @@
     "lastName": "May",
     "born": "1865",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Teddy",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Teddy_May"
+        ]
+      }
+    ],
+    "knownAs": "Teddy May",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Notts_County_F.C._season",
@@ -4689,6 +4866,15 @@
     "lastName": "Smith",
     "born": "1860",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Father Smith",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Elijah_Smith_(footballer)"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
@@ -4843,6 +5029,15 @@
     "lastName": "Sayer",
     "born": "1862",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Greyhound",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Jimmy_Sayer"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season",
@@ -5015,6 +5210,7 @@
     "lastName": "Moon",
     "born": "1868-06-07",
     "country": "england",
+    "knownAs": "Billy Moon",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Old_Westminsters_F.C."
@@ -5120,6 +5316,15 @@
     "lastName": "Bambridge",
     "born": "1858-07-30",
     "country": "england",
+    "nicknames": [
+      {
+        "name": "Charlie Bam",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Charles_Bambridge"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Swifts_F.C."
@@ -6643,6 +6848,22 @@
     "lastName": "Jenkyns",
     "born": "1866-08-24",
     "country": "wales",
+    "nicknames": [
+      {
+        "name": "Jumbo",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Caesar_Jenkyns"
+        ]
+      },
+      {
+        "name": "The Mighty Caesar",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Caesar_Jenkyns"
+        ]
+      }
+    ],
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/Birmingham_St_George%27s_F.C.",
@@ -6669,6 +6890,7 @@
     "lastName": "McKay",
     "born": "1865",
     "country": "scotland",
+    "knownAs": "Willie McKay",
     "confidence": "unverified",
     "sources": [
       "https://en.wikipedia.org/wiki/William_McKay_(footballer)",

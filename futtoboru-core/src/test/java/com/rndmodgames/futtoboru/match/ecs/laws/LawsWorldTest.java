@@ -199,7 +199,7 @@ class LawsWorldTest {
      * update only in a PR that changes laws, officials, action, ball or body physics on purpose (and bump
      * EcsMatchEngine.ENGINE_VERSION).
      */
-    static final long GOLDEN_LAWS_MATCH = 0x8688ade850349a32L; // E-DET (ecs-0.6): own Gaussian, same on every JDK
+    static final long GOLDEN_LAWS_MATCH = 0x8688ade850349a32L; // E-DET (ecs-0.7): own Gaussian, same on every JDK
 
     @Test
     void scriptedMatchUnderTheLawsIsDeterministicAndPinned() {

@@ -229,6 +229,98 @@ class FullSeasonTests extends BaseTest {
                 "checking the competitions again pays no prize twice");
     }
 
+    /**
+     * G-01: every league match and cup tie of the season was played by two frozen team sheets (the player's club
+     * and every AI club alike): eleven squad men each, a captain among them, and every goal scored by a man on his
+     * side's sheet. G-02: a side is short only when men hurt in an earlier match were still out that day, and no man
+     * plays while out.
+     */
+    @Test
+    void everyMatchIsPlayedByTwoTeamSheetsAndOnlyTheElevenScore() {
+        List<Match> all = new ArrayList<>(first.leagueMatches);
+        all.addAll(first.cupMatches);
+        Set<Long> clubsWithSheets = new HashSet<>();
+        int played = 0;
+        for (Match m : all) {
+            if (m.getIsPlayed() == null || !m.getIsPlayed()) {
+                continue;
+            }
+            played++;
+            for (boolean home : new boolean[] { true, false }) {
+                com.rndmodgames.futtoboru.data.TeamSheet sheet = home ? m.getHomeSheet() : m.getAwaySheet();
+                Long clubId = home ? m.getHomeClubId() : m.getAwayClubId();
+                assertNotNull(sheet, "match " + m.getId() + (home ? " home" : " away") + " sheet");
+                assertEquals(clubId, sheet.getClubId());
+                Club club = first.save.getClubById(clubId);
+                Set<Long> squad = new HashSet<>();
+                for (com.rndmodgames.futtoboru.data.Player p : club.getPlayers()) {
+                    squad.add(p.getId());
+                }
+                Set<Long> out = outOn(club, m);
+                for (Long id : sheet.selectedIds()) {
+                    assertFalse(out.contains(id), club.getName() + ": man " + id + " played while injured, match "
+                            + m.getId());
+                }
+                assertEquals(Math.min(11, squad.size() - out.size()), sheet.selectedCount(),
+                        club.getName() + " in match " + m.getId() + " (" + out.size() + " injured)");
+                assertTrue(squad.containsAll(sheet.selectedIds()), club.getName() + ": squad men only");
+                assertTrue(sheet.isSelected(sheet.getCaptainId()), club.getName() + ": the captain plays");
+                for (Long scorer : home ? m.getHomeScorerIds() : m.getAwayScorerIds()) {
+                    assertTrue(sheet.isSelected(scorer), "scorer " + scorer + " of match " + m.getId() + " played");
+                }
+                clubsWithSheets.add(clubId);
+            }
+        }
+        assertTrue(played > 132, "league and cup matches played: " + played);
+        assertTrue(clubsWithSheets.containsAll(first.leagueClubIds), "every league club picked its sheets");
+        assertNotNull(first.save.getCurrentClub().getTeamSheet(), "the player's club has a standing sheet");
+    }
+
+    /** G-02: the club's men (player ids) still out on the day of {@code match} from injuries in earlier matches. */
+    private static Set<Long> outOn(Club club, Match match) {
+        Set<Long> out = new HashSet<>();
+        LocalDate day = match.getMatchDateTime().toLocalDate();
+        for (Match m : club.getPlayedMatches()) {
+            if (m == match || m.getMatchDateTime() == null || !m.getMatchDateTime().toLocalDate().isBefore(day)) {
+                continue;
+            }
+            boolean home = club.getId().equals(m.getHomeClubId());
+            for (com.rndmodgames.futtoboru.data.MatchInjury i : home ? m.getHomeInjuries() : m.getAwayInjuries()) {
+                int days = i.getDaysOut() != null ? i.getDaysOut() : 0;
+                if (m.getMatchDateTime().toLocalDate().plusDays(days).isAfter(day)) {
+                    for (com.rndmodgames.futtoboru.data.Player p : club.getPlayers()) {
+                        if (p.getPerson() != null && p.getPerson().getId().equals(i.getPersonId())) {
+                            out.add(p.getId());
+                        }
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
+    /** G-02: over a season every kind of injury happens, at the player's club and at AI clubs alike. */
+    @Test
+    void injuriesHappenAtEveryKindOfClubOverASeason() {
+        Set<String> kinds = new HashSet<>();
+        int ai = 0;
+        Long mine = first.save.getCurrentClub().getId();
+        List<Match> all = new ArrayList<>(first.leagueMatches);
+        all.addAll(first.cupMatches);
+        for (Match m : all) {
+            for (com.rndmodgames.futtoboru.data.MatchInjury i : m.getHomeInjuries()) {
+                kinds.add(i.getKind());
+                ai += mine.equals(m.getHomeClubId()) ? 0 : 1;
+            }
+            for (com.rndmodgames.futtoboru.data.MatchInjury i : m.getAwayInjuries()) {
+                kinds.add(i.getKind());
+                ai += mine.equals(m.getAwayClubId()) ? 0 : 1;
+            }
+        }
+        assertEquals(Set.of("knock", "passenger", "carried-off"), kinds);
+        assertTrue(ai > 20, "AI clubs' injuries: " + ai);
+    }
+
     @Test
     void theGoldenBootGoesToThisSeasonsTopLeagueScorer() {
         Map<Long, Integer> goals = new HashMap<>();

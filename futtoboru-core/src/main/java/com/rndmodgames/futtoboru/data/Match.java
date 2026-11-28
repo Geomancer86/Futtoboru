@@ -62,10 +62,17 @@ public class Match implements Serializable {
     private java.util.List<Long> homeScorerIds = new java.util.ArrayList<>();
     private java.util.List<Long> awayScorerIds = new java.util.ArrayList<>();
 
+    // G-01: the team sheet each side played with, frozen at kick-off (null until played; optional in saves)
+    private TeamSheet homeSheet;
+    private TeamSheet awaySheet;
+
     // Goal minutes (G-03): one minute (1-90, half-time after 45) per goal of that side, ascending, so goal i of the
     // side was scored by its scorer i. Empty for a goalless side and for matches played before G-03 (old saves).
     private java.util.List<Integer> homeGoalMinutes = new java.util.ArrayList<>();
     private java.util.List<Integer> awayGoalMinutes = new java.util.ArrayList<>();
+    /** G-02: the men hurt in this match, per side (optional: an older save or an unplayed match has none). */
+    private java.util.List<MatchInjury> homeInjuries = new java.util.ArrayList<>();
+    private java.util.List<MatchInjury> awayInjuries = new java.util.ArrayList<>();
 
     // Basic attendance stats to avoid overselling a Match
     private Integer attendance = 0;
@@ -181,6 +188,28 @@ public class Match implements Serializable {
         this.awayGoals = awayGoals;
     }
 
+    public java.util.List<MatchInjury> getHomeInjuries() {
+        if (homeInjuries == null) {
+            homeInjuries = new java.util.ArrayList<>();
+        }
+        return homeInjuries;
+    }
+
+    public void setHomeInjuries(java.util.List<MatchInjury> homeInjuries) {
+        this.homeInjuries = homeInjuries;
+    }
+
+    public java.util.List<MatchInjury> getAwayInjuries() {
+        if (awayInjuries == null) {
+            awayInjuries = new java.util.ArrayList<>();
+        }
+        return awayInjuries;
+    }
+
+    public void setAwayInjuries(java.util.List<MatchInjury> awayInjuries) {
+        this.awayInjuries = awayInjuries;
+    }
+
     public java.util.List<Long> getHomeScorerIds() {
         return homeScorerIds;
     }
@@ -195,6 +224,27 @@ public class Match implements Serializable {
 
     public void setAwayScorerIds(java.util.List<Long> awayScorerIds) {
         this.awayScorerIds = awayScorerIds;
+    }
+
+    /**
+     * G-01: the home side's team sheet as it stood at kick-off (who played, in which place, shape, style, captain);
+     * null before the match is played. The line-up the match engines read (see {@link TeamSheet}).
+     */
+    public TeamSheet getHomeSheet() {
+        return homeSheet;
+    }
+
+    public void setHomeSheet(TeamSheet homeSheet) {
+        this.homeSheet = homeSheet;
+    }
+
+    /** G-01: the away side's team sheet as it stood at kick-off; null before the match is played. */
+    public TeamSheet getAwaySheet() {
+        return awaySheet;
+    }
+
+    public void setAwaySheet(TeamSheet awaySheet) {
+        this.awaySheet = awaySheet;
     }
 
     /** G-03: the minute of each home goal, ascending (empty when unknown). Never null. */

@@ -203,11 +203,44 @@ public class PlayerDetailScreenTable extends VisTable {
         infoTable.add(new VisLabel(clubName)).left();
         infoTable.row();
         
+        // G-02: fit, or the injury with the days left and the day he is back
+        infoTable.add(new VisLabel(LanguageModLoader.getValue("player_fitness"))).left().width(UiTheme.size("col.label"));
+        com.rndmodgames.futtoboru.engine.injuries.Availability.Status fitness =
+                com.rndmodgames.futtoboru.engine.injuries.Availability.of(currentPlayer, futtoboru.getCurrentGame().getGameDate());
+        VisLabel fitnessLabel;
+        if (fitness.isAvailable()) {
+            fitnessLabel = new VisLabel(LanguageModLoader.getValue("player_fit"));
+        } else {
+            com.rndmodgames.futtoboru.data.InjuryKind kind = fitness.getInjury().getKindEnum();
+            fitnessLabel = new VisLabel(LanguageModLoader.format("player_injured_days",
+                    LanguageModLoader.getValue(kind != null ? kind.labelKey() : "availability_injured"),
+                    fitness.getDaysLeft(), dateFormatter.format(fitness.getUntil())));
+            fitnessLabel.setColor(UiTheme.color("state.injured"));
+        }
+        infoTable.add(fitnessLabel).left();
+        infoTable.row();
+
         // E-01: this season's position in the 2-3-5
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_position"))).left().width(UiTheme.size("col.label"));
         infoTable.add(new VisLabel(currentPlayer.getPosition() == null ? LanguageModLoader.getValue("position_unknown")
                 : LanguageModLoader.getValue(currentPlayer.getPosition().labelKey()))).left();
         infoTable.row();
+
+        // G-01: his place on his club's team sheet
+        com.rndmodgames.futtoboru.data.Club sheetClub = squadOf(currentPlayer);
+        if (sheetClub != null) {
+            com.rndmodgames.futtoboru.data.TeamSheet sheet =
+                    com.rndmodgames.futtoboru.engine.team.TeamSheets.standing(sheetClub);
+            int slot = sheet.slotOf(currentPlayer.getId());
+            String place = slot < 0 ? LanguageModLoader.getValue("team_sheet_not_selected")
+                    : LanguageModLoader.getValue(sheet.position(slot).labelKey());
+            if (slot >= 0 && currentPlayer.getId().equals(sheet.getCaptainId())) {
+                place = LanguageModLoader.format("team_sheet_place_captain", place);
+            }
+            infoTable.add(new VisLabel(LanguageModLoader.getValue("team_sheet"))).left().width(UiTheme.size("col.label"));
+            infoTable.add(new VisLabel(place)).left();
+            infoTable.row();
+        }
 
         // Player Profession (day job for amateur/semi-pro)
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_profession"))).left().width(UiTheme.size("col.label"));
@@ -739,5 +772,21 @@ public class PlayerDetailScreenTable extends VisTable {
     public void setMenuManager(MainMenuManager menuManager) {
         this.menuManager = menuManager;
     }
-}
 
+    /** G-01: the club whose squad holds this very player (a person listed twice has a copy per squad). */
+    private com.rndmodgames.futtoboru.data.Club squadOf(Player player) {
+        if (futtoboru.getCurrentGame() == null || futtoboru.getCurrentGame().getAllClubs() == null) {
+            return null;
+        }
+        for (com.rndmodgames.futtoboru.data.Club club : futtoboru.getCurrentGame().getAllClubs()) {
+            if (club != null && club.getPlayers() != null) {
+                for (Player p : club.getPlayers()) {
+                    if (p == player) {
+                        return club;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+}

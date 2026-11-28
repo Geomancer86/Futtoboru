@@ -88,10 +88,24 @@ public class Player implements Serializable {
      * 
      * TODO
      */
+
+    /**
+     * G-02: the injury that keeps him out, or null when fit (an older save has none). Read through
+     * {@link com.rndmodgames.futtoboru.engine.injuries.Availability}; set after a match, cleared by the daily recovery.
+     */
+    private PlayerInjury injury;
     
     //
     public Player() {
         
+    }
+
+    public PlayerInjury getInjury() {
+        return injury;
+    }
+
+    public void setInjury(PlayerInjury injury) {
+        this.injury = injury;
     }
 
     public Long getId() {
