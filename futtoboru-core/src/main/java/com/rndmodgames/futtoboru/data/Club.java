@@ -128,6 +128,9 @@ public class Club implements Serializable {
     private BigDecimal seasonExpenditure = BigDecimal.ZERO;
     private BigDecimal monthIncome = BigDecimal.ZERO;
     private BigDecimal monthExpenditure = BigDecimal.ZERO;
+
+    /** G-12: this season's budget and debt state (null until the first weekly count) */
+    private com.rndmodgames.futtoboru.finances.Budget budget;
     
     /**
      * Club Staff Tracking (v1.0)
@@ -591,6 +594,14 @@ public class Club implements Serializable {
     /**
      * Current Period Financial Tracking Getters and Setters (v1.0)
      */
+    public com.rndmodgames.futtoboru.finances.Budget getBudget() {
+        return budget;
+    }
+
+    public void setBudget(com.rndmodgames.futtoboru.finances.Budget budget) {
+        this.budget = budget;
+    }
+
     public BigDecimal getSeasonIncome() {
         return seasonIncome != null ? seasonIncome : BigDecimal.ZERO;
     }
