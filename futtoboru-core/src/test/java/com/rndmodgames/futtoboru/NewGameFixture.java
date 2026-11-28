@@ -3,9 +3,6 @@ package com.rndmodgames.futtoboru;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rndmodgames.futtoboru.data.Club;
-import com.rndmodgames.futtoboru.data.Competition;
-import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.Country;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
@@ -16,6 +13,7 @@ import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.NewGameClubs;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
@@ -44,7 +42,7 @@ public final class NewGameFixture {
     }
 
     private static SaveGame setUp(Futtoboru application) {
-        DatabaseLoader db = DatabaseLoader.getInstance();
+        DatabaseLoader.getInstance(); // the data, loaded
         Season season = DatabaseLoader.getSeasonByDataId("1888-89");
 
         SaveGame game = new SaveGame();
@@ -68,25 +66,8 @@ public final class NewGameFixture {
         game.setGameStartDate(season.getStartDate());
         game.setGameDate(season.getStartDate());
 
-        for (Competition comp : DatabaseLoader.getCompetitions()) {
-            if (Competition.COMPETITION_CUP.equals(comp.getCompetitionType())) {
-                game.getAllCups().add(comp);
-            } else {
-                game.getAllLeagues().add(comp);
-            }
-            for (CompetitionEdition edition : comp.getEditions()) {
-                for (Long clubId : edition.getParticipantClubsIds()) {
-                    if (game.getClubById(clubId) == null) {
-                        game.getAllClubs().add(DatabaseLoader.getClubById(clubId));
-                    }
-                }
-            }
-        }
-        for (Club club : db.getClubsByCountry(england)) {
-            if (game.getClubById(club.getId()) == null) {
-                game.getAllClubs().add(club);
-            }
-        }
+        // the screen's step 6 (P2-13: each club once)
+        NewGameClubs.addTo(game, DatabaseLoader.getCompetitions(), selected);
         owner.setCurrentClubId(DatabaseLoader.getClubByDataId("preston-north-end").getId());
         game.getGameScripts().addAll(season.getSeasonScripts());
 

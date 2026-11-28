@@ -91,26 +91,14 @@ def test_a_nested_run_of_the_same_lock_runs_directly(tmp_path, monkeypatch):
     assert suite_lock.run_locked([sys.executable, "-c", "pass"], wait_min=0, cwd=str(tmp_path)) == suite_lock.NOT_TAKEN
 
 
-def test_ci_remote_reads_failing_tests_from_the_reports(tmp_path, monkeypatch):
-    import ci_remote
-    reports = tmp_path / "core" / "target" / "surefire-reports"
-    reports.mkdir(parents=True)
-    (reports / "TEST-a.xml").write_text(
-        '<testsuite><testcase classname="com.x.SeasonTests" name="plays"/>'
-        '<testcase classname="com.x.ArtTests" name="loads"><failure type="org.opentest4j.AssertionFailedError" '
-        'message="expected: 3 but was: 2">trace</failure></testcase>'
-        '<testcase classname="com.x.ArtTests" name="reads"><error type="java.io.FileNotFoundException">'
-        'art/match/Index.json\nat ...</error></testcase></testsuite>', encoding="utf-8")
-    monkeypatch.setattr(ci_remote, "ROOT", str(tmp_path))
-    assert ci_remote.failures() == [("ArtTests.loads", "AssertionFailedError: expected: 3 but was: 2"),
-                                    ("ArtTests.reads", "FileNotFoundException: art/match/Index.json")]
-
-
-def test_ci_remote_request_branches_name_the_tier():
-    import datetime as dt
-    import ci_remote
-    when = dt.datetime(2026, 11, 28, 3, 4, 5, tzinfo=dt.timezone.utc)
-    assert ci_remote.request_branch("full", "b3", when) == "ci/full/b3-20261128-030405"
+def test_ci_jenkins_reads_the_credentials_from_a_second_file(tmp_path):
+    import ci_jenkins
+    secret = tmp_path / "shared.properties"
+    secret.write_text("user=bot\ntoken=abc\n", encoding="utf-8")
+    conf = tmp_path / "jenkins.properties"
+    conf.write_text("# comment\nurl=http://jenkins.example:8080/\ncredentials=%s\n" % secret.as_posix(), encoding="utf-8")
+    assert ci_jenkins.properties(str(conf)) == {"url": "http://jenkins.example:8080/", "credentials": secret.as_posix(),
+                                                "user": "bot", "token": "abc"}
 
 
 @pytest.mark.skipif(os.name != "nt", reason="the mvnw -> mvnw.cmd mapping is Windows only")
