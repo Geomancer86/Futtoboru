@@ -297,8 +297,10 @@ class BallPhysicsTest {
      * Doubles (strict since Java 17) and StrictMath must give the same bits on Windows x64, macOS arm64 and Linux CI.
      * If this fails on one machine only, the determinism premise is broken there: do not just update the number. Update
      * it only in a PR that intentionally changes the physics (and bump EcsMatchEngine.ENGINE_VERSION).
+     * Re-pinned by E-14 (ecs-0.3): the full simulation now includes the action system, which adds a
+     * {@code PossessionComponent} to the ball (hashed); the ball's flight is unchanged.
      */
-    static final long GOLDEN = 0xa094bfa410cf8fb7L;
+    static final long GOLDEN = 0x374bc8c5e47bad57L;
 
     @Test
     void sameInputGivesTheSameBitsOnEveryMachine() {

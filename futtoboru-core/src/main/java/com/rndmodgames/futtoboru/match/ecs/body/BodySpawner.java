@@ -3,6 +3,8 @@ package com.rndmodgames.futtoboru.match.ecs.body;
 import com.badlogic.ashley.core.Entity;
 import com.rndmodgames.futtoboru.match.ecs.MatchWorld;
 import com.rndmodgames.futtoboru.match.ecs.SpawnRole;
+import com.rndmodgames.futtoboru.match.ecs.action.ActionCommand;
+import com.rndmodgames.futtoboru.match.ecs.action.SkillComponent;
 import com.rndmodgames.futtoboru.match.ecs.pitch.MatchEnds;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchEnd;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
@@ -11,7 +13,8 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.Team;
 
 /**
  * Creates the 22 player bodies at their kick-off spots (E-13): home 1..11 then away 1..11 ({@link SpawnRole} order),
- * each with body, athlete, kit, injury and an idle {@link MoveCommand}.
+ * each with body, athlete, kit, injury, an idle {@link MoveCommand}, ball skills and an idle {@link ActionCommand}
+ * (E-14).
  *
  * <p>Kick-off (Laws 1888-89, V2 §1): every player in his own half; the side kicking off has its kicker at the ball
  * on the centre spot and its forwards just behind halfway; the other side stays at least 10 yards from the ball.
@@ -95,6 +98,8 @@ public final class BodySpawner {
         e.add(kitComponent);
         e.add(new InjuryComponent());
         e.add(new MoveCommand());
+        e.add(SkillComponent.from(in, p));
+        e.add(new ActionCommand());
         return e;
     }
 }

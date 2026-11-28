@@ -85,8 +85,15 @@ public final class BallPhysics {
      * than a 400 g dry one for the same swing.
      */
     public double footImpulse(double footSpeedMps, double ballMassKg) {
-        double bigM = p.footEffectiveMassKg;
-        return ballMassKg * footSpeedMps * bigM * (1.0 + p.footKickRestitution) / (bigM + ballMassKg);
+        return footImpulse(footSpeedMps, ballMassKg, p.footEffectiveMassKg);
+    }
+
+    /**
+     * As {@link #footImpulse(double, double)} with the kicker's effective foot mass {@code footMassKg} (E-14: the
+     * boot's {@code KitComponent.kickEffectiveMassKg}; a heavy wet boot kicks harder).
+     */
+    public double footImpulse(double footSpeedMps, double ballMassKg, double footMassKg) {
+        return ballMassKg * footSpeedMps * footMassKg * (1.0 + p.footKickRestitution) / (footMassKg + ballMassKg);
     }
 
     // ---- stepping ------------------------------------------------------------------------------------------------

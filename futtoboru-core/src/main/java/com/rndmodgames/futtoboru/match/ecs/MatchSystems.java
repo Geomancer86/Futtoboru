@@ -3,6 +3,10 @@ package com.rndmodgames.futtoboru.match.ecs;
 import java.util.List;
 
 import com.badlogic.ashley.core.Component;
+import com.rndmodgames.futtoboru.match.ecs.action.ActionCommand;
+import com.rndmodgames.futtoboru.match.ecs.action.ActionSystem;
+import com.rndmodgames.futtoboru.match.ecs.action.PossessionComponent;
+import com.rndmodgames.futtoboru.match.ecs.action.SkillComponent;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallSystem;
 import com.rndmodgames.futtoboru.match.ecs.view.ActorPass;
@@ -46,7 +50,11 @@ public final class MatchSystems {
             AthleteComponent.class,
             KitComponent.class,
             InjuryComponent.class,
-            MoveCommand.class);
+            MoveCommand.class,
+            // E-14 ball actions
+            ActionCommand.class,
+            SkillComponent.class,
+            PossessionComponent.class);
 
     private MatchSystems() {
     }
@@ -54,6 +62,7 @@ public final class MatchSystems {
     /** Adds every simulation system to {@code world}. */
     public static void installSimulation(MatchWorld world) {
         world.addSimulation(new LocomotionSystem(world));
+        world.addSimulation(new ActionSystem(world));
         world.addSimulation(new BallSystem(world));
         world.addSimulation(new ContactSystem(world));
     }
