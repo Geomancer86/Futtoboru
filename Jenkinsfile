@@ -65,13 +65,13 @@ pipeline {
                         sh '''
                             chmod +x mvnw
                             if command -v xvfb-run >/dev/null 2>&1; then
-                                xvfb-run -a ./mvnw -B -ntp clean verify
+                                xvfb-run -a ./mvnw -B -ntp -Pcoverage clean verify
                             else
-                                ./mvnw -B -ntp clean verify
+                                ./mvnw -B -ntp -Pcoverage clean verify
                             fi
                         '''
                     } else {
-                        bat 'mvnw.cmd -B -ntp clean verify'
+                        bat 'mvnw.cmd -B -ntp -Pcoverage clean verify'
                     }
                 }
             }
