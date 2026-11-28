@@ -189,7 +189,7 @@ class ActionDrillTest {
      * Two minutes of the drill in rain. Same rule as BallPhysicsTest.GOLDEN: identical on every machine; update only
      * in a PR that changes action, ball or body physics on purpose (and bump EcsMatchEngine.ENGINE_VERSION).
      */
-    static final long GOLDEN_DRILL = 0x875d0939ac2edbd6L;
+    static final long GOLDEN_DRILL = 0xcd1a5328d58194abL; // E-DET (ecs-0.7): own Gaussian, drill script fixed
 
     @Test
     void drillIsDeterministicAndPinnedByAGoldenHash() {

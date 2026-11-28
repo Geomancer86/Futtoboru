@@ -16,13 +16,14 @@ import com.rndmodgames.futtoboru.engine.random.RandomSource;
  * officials and the laws' play state, nobody kicks off. Re-pinned by E-15 (ecs-0.5): the player AI plays the match
  * (TeamTacticsComponent on two TEAM entities and a PerceptionComponent per player appended to the hashed components),
  * so the hash now pins a full match with goals. Re-pinned by E-16b (ecs-0.6): AthleteComponent keeper flag hashed,
- * the ball bounces off posts and bars, forwards play up and run in behind, offsides are given.
+ * the ball bounces off posts and bars, forwards play up and run in behind, offsides are given. Re-pinned by E-DET
+ * (ecs-0.7): RandomSource has its own Gaussian, so these hashes are the same on every JDK (17.0.2, 25, ...).
  */
 @Tag("slow")
 class EcsPlayGoldenTest {
 
-    static final long GOLDEN_PLAY_DRY = 0xc7738c06ac143f0bL;
-    static final long GOLDEN_PLAY_RAIN = 0xbd39b390beacaceeL;
+    static final long GOLDEN_PLAY_DRY = 0x0fea6e1ba940f97fL;
+    static final long GOLDEN_PLAY_RAIN = 0x77a5d7e4a8864a8bL;
 
     @Test
     void playIsDeterministicAndPinnedByAGoldenHash() {
