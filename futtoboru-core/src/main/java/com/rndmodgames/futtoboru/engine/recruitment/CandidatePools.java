@@ -142,11 +142,27 @@ public final class CandidatePools {
         return DatabaseLoader.getInstance().getRecruitmentData();
     }
 
-    /** Rebuilds every region's pool for {@code season}: last season's men leave (none is signed or watched yet). */
+    /**
+     * Rebuilds every region's pool for {@code season}: last season's men leave, except those a club still has an open
+     * entry for (R-05: a shortlisted man, an advert reply on its way), who stay on top of the new pool.
+     */
     public static void build(SaveGame game, int season, LocalDateTime now, RandomSource root) {
         RecruitmentData data = data();
+        Set<Long> held = Shortlists.held(game);
+        List<Candidate> kept = new ArrayList<>();
+        for (Candidate c : game.getCandidates()) {
+            if (c != null && c.getPlayer() != null && held.contains(c.getPlayer().getId())) {
+                kept.add(c);
+            }
+        }
         game.getCandidates().clear();
+        game.getCandidates().addAll(kept);
         Set<String> inSquads = peopleInSquads(game);
+        for (Candidate c : kept) {
+            if (c.getPlayer().getPerson() != null && c.getPlayer().getPerson().getDataId() != null) {
+                inSquads.add(c.getPlayer().getPerson().getDataId()); // a kept real man is not drawn twice
+            }
+        }
         for (PoolRegion region : data.getPools().values()) {
             game.getCandidates().addAll(buildRegion(game, region, season, now, root, inSquads));
         }
@@ -180,6 +196,7 @@ public final class CandidatePools {
     /** The month's arrivals: {@code monthly} new men per region, and as many of its longest-waiting generated men go. */
     public static void arrivals(SaveGame game, int season, LocalDateTime now, RandomSource root) {
         String month = month(now.toLocalDate());
+        Set<Long> held = Shortlists.held(game); // R-05: a man some club is looking at does not leave
         for (PoolRegion region : data().getPools().values()) {
             for (int n = 0; n < region.monthly(); n++) {
                 game.getCandidates().add(generated(game, region, season, now,
@@ -188,7 +205,8 @@ public final class CandidatePools {
             int over = inRegion(game, region.dataId()).size() - region.size();
             for (Iterator<Candidate> it = game.getCandidates().iterator(); it.hasNext() && over > 0;) {
                 Candidate c = it.next();
-                if (region.dataId().equals(c.getRegion()) && !c.isReal()) {
+                if (region.dataId().equals(c.getRegion()) && !c.isReal()
+                        && (c.getPlayer() == null || !held.contains(c.getPlayer().getId()))) {
                     it.remove();
                     over--;
                 }

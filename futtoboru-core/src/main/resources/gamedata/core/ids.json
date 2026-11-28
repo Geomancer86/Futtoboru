@@ -3,7 +3,7 @@
     1,
     99999
   ],
-  "next": 1018,
+  "next": 1036,
   "ids": {
     "continent": {
       "africa": 38,
@@ -1059,6 +1059,28 @@
       "scotland-east": 1015,
       "north-wales": 1016,
       "ulster": 1017
+    },
+    "newspaper": {
+      "athletic-news": 1022,
+      "lancashire-evening-post": 1023,
+      "liverpool-mercury": 1024,
+      "birmingham-daily-post": 1025,
+      "nottingham-evening-post": 1026,
+      "staffordshire-sentinel": 1027,
+      "sheffield-daily-telegraph": 1028,
+      "lincolnshire-chronicle": 1029,
+      "northern-echo": 1030,
+      "sporting-life": 1031,
+      "scottish-referee": 1032,
+      "glasgow-herald": 1033,
+      "the-scotsman": 1034,
+      "belfast-news-letter": 1035
+    },
+    "agent": {
+      "agent-glasgow-mcintyre": 1018,
+      "agent-glasgow-rankin": 1019,
+      "agent-dumbarton-gillies": 1020,
+      "agent-edinburgh-forbes": 1021
     }
   },
   "retired": {

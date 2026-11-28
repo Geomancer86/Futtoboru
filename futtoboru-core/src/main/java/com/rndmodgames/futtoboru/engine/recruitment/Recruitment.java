@@ -7,7 +7,9 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
  * R-09 + R-03: the recruitment day, run by the game engine after the contracts' day (so a 1 May rollover has settled
- * the squads before the new pools leave out the men in them). Every club, AI clubs too (D31).
+ * the squads before the new pools leave out the men in them). Every club, AI clubs too (D31). The engine then runs
+ * R-05's {@link CandidateSources#daily} (how men reach the clubs), which is not part of this call: the Candidates
+ * screen and a save's load also call {@link #afterDay}.
  */
 public final class Recruitment {
 

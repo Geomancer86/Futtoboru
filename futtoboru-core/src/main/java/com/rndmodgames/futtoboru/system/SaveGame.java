@@ -203,6 +203,16 @@ public class SaveGame implements Serializable {
     private transient java.util.Map<String, com.rndmodgames.futtoboru.data.recruitment.Knowledge> knowledgeIndex;
 
     /**
+     * R-05: the men who reached each club (letters, adverts, tips, agents, "not retained" lists) and its shortlist
+     * (engine/recruitment/Shortlists). Optional in saves.
+     */
+    private List<com.rndmodgames.futtoboru.data.recruitment.ShortlistEntry> shortlist = new ArrayList<>();
+    /** R-05: the adverts clubs placed (engine/recruitment/CandidateSources). Optional in saves. */
+    private List<com.rndmodgames.futtoboru.data.recruitment.Advert> adverts = new ArrayList<>();
+    /** R-05: the season (start year) whose May "not retained" lists went out */
+    private Integer notRetainedListSeason;
+
+    /**
      * Proposed Matches
      */
     
@@ -428,6 +438,30 @@ public class SaveGame implements Serializable {
 
     public void setKnowledgeCounted(boolean knowledgeCounted) {
         this.knowledgeCounted = knowledgeCounted;
+    }
+
+    /** @return every club's shortlist entries (never null) */
+    public List<com.rndmodgames.futtoboru.data.recruitment.ShortlistEntry> getShortlist() {
+        if (shortlist == null) {
+            shortlist = new ArrayList<>();
+        }
+        return shortlist;
+    }
+
+    /** @return the adverts placed (never null) */
+    public List<com.rndmodgames.futtoboru.data.recruitment.Advert> getAdverts() {
+        if (adverts == null) {
+            adverts = new ArrayList<>();
+        }
+        return adverts;
+    }
+
+    public Integer getNotRetainedListSeason() {
+        return notRetainedListSeason;
+    }
+
+    public void setNotRetainedListSeason(Integer notRetainedListSeason) {
+        this.notRetainedListSeason = notRetainedListSeason;
     }
 
     public String getCandidateArrivalsMonth() {

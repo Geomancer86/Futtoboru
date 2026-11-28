@@ -35,7 +35,8 @@ screens the current `SaveGame` (`getGame()`), `database()` (`DatabaseLoader`), `
 2. `simulateMatchesForDate(today)`: every match of the day through `MatchResultRecorder.play`.
 3. Date + 1 day, then in order: `EraEventScheduler.announce`, `InjuryManager.recoverDaily`, `ScriptsManager.checkGameScripts`,
    `AuthorityManager.checkCompetitionsSchedule`, `CommitteeManager.daily`, `JobManager.updateJobOpenings`,
-   month reset (1st), `ContractManager.afterDay`, `Recruitment.afterDay`, `deliverScheduledMessages(newDate)`.
+   month reset (1st), `ContractManager.afterDay`, `Recruitment.afterDay`, `CandidateSources.daily` (R-05),
+   `deliverScheduledMessages(newDate)`.
 4. Daily attributes, weekly snapshots, weekly expenses; `FriendlyArranger.arrangeAiFriendlies`; per club
    `CompetitionScheduler` proposed/scheduled matches; `Autosave.afterDay`; `MainMenuManager.updateDynamicComponents()` (null in tests).
 Add a daily system as a static `X.daily/afterDay(game, date, random)` call at the right place here, not inside a screen.
@@ -108,7 +109,7 @@ Stream names contain what makes the draw unique (club, day). Same seed = same ga
 | Contracts, wages | `engine/contracts/ContractManager`, `seasons/<id>/contracts.json` |
 | Money | `engine/finances/`, `seasons/<id>/economy.json` |
 | Committee, jobs, staff | `engine/committee/CommitteeManager`, `engine/jobs/JobManager`, `ClubStaffManager` |
-| Recruitment | `engine/recruitment/Recruitment`, `CandidatePools`, `gamedata/core/recruitment/` |
+| Recruitment | `engine/recruitment/Recruitment`, `CandidatePools`, `CandidateSources`, `Shortlists`; UI `tables/recruitment/ShortlistScreenTable`; `gamedata/core/recruitment/` |
 | Hidden ratings, perception | `engine/recruitment/Perception`, `Observers`; UI `tables/recruitment/PerceptionCard` |
 | Inbox letters | `engine/messages/MessageManager`, `data/Message` |
 | World build | `system/DatabaseLoader`, `system/data/GameData`, `system/generators/` |

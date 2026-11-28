@@ -42,6 +42,8 @@ public class Person implements Serializable {
      *          and then we load the transient objects if/when needed
      */
     private Long currentClubId;
+    /** R-05: the club he last left (G-04 rollover), for the May "not retained" lists; optional in saves */
+    private Long previousClubId;
     
     private Profession primaryProfession;
     private Country currentCountry;
@@ -164,6 +166,14 @@ public class Person implements Serializable {
 
     public Long getCurrentClubId() {
         return currentClubId;
+    }
+
+    public Long getPreviousClubId() {
+        return previousClubId;
+    }
+
+    public void setPreviousClubId(Long previousClubId) {
+        this.previousClubId = previousClubId;
     }
 
     public void setCurrentClubId(Long currentClubId) {

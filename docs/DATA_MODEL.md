@@ -241,6 +241,15 @@ facts: `docs/data/history/RECRUITMENT_1888-1900.md`, `LANGUAGES_LITERACY_1880-19
   (what the player's club's observers have watched: `p<personId>` or `c:<club>:<name>`), `knowledgeCounted`. The
   per-attribute error is not saved: it is drawn from `fork("perceive:<observer>:<player>:<attribute>")`. A save
   without them counts the club's played matches once (`Perception.ensure`).
+- `recruitment/newspapers.json` (R-05, kind `newspaper`): papers that take adverts: `name`, `place`, `region` (the
+  pool the replies come from), `founded`, `costPence`, `replies` (expected per advert), `replyMinDays`..`replyMaxDays`.
+  `recruitment/agents.json` (kind `agent`, fictional, placeholder): `region`, `feePence` (per man), `names` (men a
+  letter), `inflate` (points he talks them up, 0-2).
+- **Shortlists (R-05, saves, optional, saveVersion stays 3):** `SaveGame.shortlist` = `[{club, player, source,
+  suggestedRole, suggestedBy, detail, status, since, due, letter, feePence}]` (one per club and man; source letter /
+  advert / tip / agent / released / own; status due / offered / unpaid / listed / ignored), `adverts` = `[{club,
+  newspaper, wanted, placed, costPence, replies}]`, `notRetainedListSeason`; `Person.previousClubId` (the club he last
+  left). An advert or an agent's fee is one `ClubExpenses` record of period type `ONE_OFF`.
 - Java: `GameData` checks the same rules; `RecruitmentData` and `LanguageData` (from `DatabaseLoader`) are the
   read-only lookups.
 

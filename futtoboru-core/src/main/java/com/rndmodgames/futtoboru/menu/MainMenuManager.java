@@ -111,6 +111,8 @@ public class MainMenuManager {
 
     // R-03 candidate pools
     private com.rndmodgames.futtoboru.tables.recruitment.CandidatesScreenTable candidatesScreenTable = null;
+    // R-05 shortlist
+    private com.rndmodgames.futtoboru.tables.recruitment.ShortlistScreenTable shortlistScreenTable = null;
 
     // Selected club for detail view and job application
     private Club selectedClubForDetail = null;
@@ -187,6 +189,8 @@ public class MainMenuManager {
 
         // R-03 candidate pools
         candidatesScreenTable = new com.rndmodgames.futtoboru.tables.recruitment.CandidatesScreenTable(game);
+        shortlistScreenTable = new com.rndmodgames.futtoboru.tables.recruitment.ShortlistScreenTable(game);
+        shortlistScreenTable.setMenuManager(this);
 
         // Set menu manager references
         clubBrowserScreenTable.setMenuManager(this);
@@ -574,6 +578,17 @@ public class MainMenuManager {
             parentTable.add(candidatesScreenTable).grow();
             break;
 
+        case SHORTLIST:
+            // R-05: the club's shortlist and adverts (from Candidates or a recruitment letter)
+            if (currentClub == null) {
+                redirectTo(GameScreenId.HOME);
+                return;
+            }
+            shortlistScreenTable.setCurrentClub(currentClub);
+            shortlistScreenTable.updateDynamicComponents();
+            parentTable.add(shortlistScreenTable).grow();
+            break;
+
         case SCHEDULE:
 
             /**
@@ -924,6 +939,10 @@ public class MainMenuManager {
 
         case CANDIDATES:
             candidatesScreenTable.updateDynamicComponents();
+            break;
+
+        case SHORTLIST:
+            shortlistScreenTable.updateDynamicComponents();
             break;
         
         case AUTHORITY:

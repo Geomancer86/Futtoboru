@@ -61,7 +61,9 @@ KINDS = ["continent", "country", "profession", "occupation", "competition", "clu
          # G-02 injury kinds (DATA_MODEL.md "Injuries")
          "injury",
          # R-03 candidate pool regions (DATA_MODEL.md "Recruitment and languages")
-         "pool-region"]
+         "pool-region",
+         # R-05 candidate sources: newspapers for adverts, Scottish agents (DATA_MODEL.md "Recruitment and languages")
+         "newspaper", "agent"]
 # R-02 / R-11a: research grade of a rule, wage, origin, area or rate row (RECRUITMENT_1888-1900.md H/M/L; `estimate` =
 # no direct source, the reasoning is in `sources`; `placeholder` = gameplay tuning, D30 A3)
 DATA_CONFIDENCE = {"high", "medium", "low", "estimate", "placeholder"}
@@ -262,6 +264,16 @@ SPECS = {
                     "foreignBorn": ("shares:country", False), "upbringing": ("obj:upbringing", True),
                     "people": ("list:pool_person", False), "confidence": ("enum:data_confidence", True),
                     "sources": ("strs", True), "notes": ("str", False)},
+    # R-05 (RECRUITMENT_AND_TRIALS.md 3.3): a paper the secretary may advertise in (cost in pence, expected replies,
+    # replies arriving replyMinDays..replyMaxDays later) and an agent who sells names (fee per man, men a letter, how
+    # many attribute points he talks them up)
+    "newspaper": {"id": ("str", True), "name": ("str", True), "place": ("str", True),
+                  "region": ("ref:pool-region", True), "founded": ("int", True), "costPence": ("int", True),
+                  "replies": ("num", True), "replyMinDays": ("int", True), "replyMaxDays": ("int", True),
+                  "confidence": ("enum:data_confidence", True), "sources": ("strs", True), "notes": ("str", False)},
+    "agent": {"id": ("str", True), "name": ("str", True), "place": ("str", True), "region": ("ref:pool-region", True),
+              "feePence": ("int", True), "names": ("int", True), "inflate": ("int", True),
+              "confidence": ("enum:data_confidence", True), "sources": ("strs", True), "notes": ("str", False)},
     "upbringing": {"style": ("str", True), "tendencies": ("attrs", True), "chance": ("num", True),
                    "confidence": ("enum:data_confidence", True), "sources": ("strs", True), "notes": ("str", False)},
     "pool_person": {"person": ("ref:person", True), "from": ("int", True), "until": ("int", False),
@@ -282,6 +294,7 @@ PACK_FILES = {
     "language_rates.json": ("language_rate", None),
     "injuries.json": ("injury", "injury"),
     "recruitment/pools.json": ("pool_region", "pool-region"),
+    "recruitment/newspapers.json": ("newspaper", "newspaper"), "recruitment/agents.json": ("agent", "agent"),
 }
 SEASON_FILES = {
     "squads.json": ("squad", None), "nationality_modifiers.json": ("nationality_modifier", None),
@@ -772,11 +785,39 @@ def check_pools(data, where: str, rep: Report):
                 people[pid] = r.get("id")
 
 
+def check_newspapers(data, where: str, rep: Report):
+    """R-05 newspapers: a cost and replies above 0, 1 <= replyMinDays <= replyMaxDays; sourced unless a placeholder."""
+    for r, w in recs(data, where):
+        check_sourced(r, w, rep)
+        if is_int(r.get("costPence")) and r["costPence"] < 1:
+            rep.error(f"{w}.costPence", "must be at least 1")
+        if is_num(r.get("replies")) and r["replies"] <= 0:
+            rep.error(f"{w}.replies", "must be above 0")
+        lo, hi = r.get("replyMinDays"), r.get("replyMaxDays")
+        if is_int(lo) and lo < 1:
+            rep.error(f"{w}.replyMinDays", "must be at least 1")
+        if is_int(lo) and is_int(hi) and hi < lo:
+            rep.error(w, f"`replyMaxDays` {hi} is before `replyMinDays` {lo}")
+
+
+def check_agents(data, where: str, rep: Report):
+    """R-05 agents: a fee and men offered of at least 1, a small inflation 0..NUDGE_MAX."""
+    for r, w in recs(data, where):
+        check_sourced(r, w, rep)
+        if is_int(r.get("feePence")) and r["feePence"] < 1:
+            rep.error(f"{w}.feePence", "must be at least 1")
+        if is_int(r.get("names")) and r["names"] < 1:
+            rep.error(f"{w}.names", "must be at least 1")
+        if is_int(r.get("inflate")) and not 0 <= r["inflate"] <= NUDGE_MAX:
+            rep.error(f"{w}.inflate", f"must be from 0 to {NUDGE_MAX}")
+
+
 # pack file -> its extra checks (beyond the field spec)
 FILE_CHECKS = {"recruitment/rules.json": check_rule_records, "recruitment/wages.json": check_wages,
                "recruitment/origins.json": check_origins, "recruitment/origin_clubs.json": check_sources_listed,
                "languages.json": check_sources_listed, "areas.json": check_areas, "language_rates.json": check_rates,
-               "injuries.json": check_injuries, "recruitment/pools.json": check_pools}
+               "injuries.json": check_injuries, "recruitment/pools.json": check_pools,
+               "recruitment/newspapers.json": check_newspapers, "recruitment/agents.json": check_agents}
 
 
 def check_results(data: list, where: str, sid: str, season: dict | None, rep: Report):

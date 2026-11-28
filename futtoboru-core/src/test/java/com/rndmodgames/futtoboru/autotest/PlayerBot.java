@@ -94,6 +94,7 @@ public final class PlayerBot {
         public int injuryLetters;
         public int committeeLetters;
         public int reElectionLetters;
+        public int recruitmentLetters;
         public int unemployedDays;
     }
 
@@ -286,9 +287,39 @@ public final class PlayerBot {
                 }
             } else if (type.startsWith("REELECTION_")) {
                 actions.reElectionLetters++;
+            } else if (type.startsWith("RECRUIT_")) {
+                actions.recruitmentLetters++;
+                answerRecruitment(g, m);
             }
         }
     }
+
+    /**
+     * R-05, the inbox's letter buttons (RecruitmentLetterActions): the first man offered goes on the shortlist, the
+     * others are ignored, an agent is never paid; the Shortlist screen's Remove keeps the list at {@link #SHORTLIST_MAX}.
+     */
+    void answerRecruitment(SaveGame g, Message m) {
+        Club club = g.getCurrentClub();
+        if (club == null) {
+            return;
+        }
+        boolean first = true;
+        for (com.rndmodgames.futtoboru.data.recruitment.ShortlistEntry e
+                : com.rndmodgames.futtoboru.engine.recruitment.Shortlists.ofLetter(g, m.getId())) {
+            if (first && com.rndmodgames.futtoboru.engine.recruitment.Shortlists.accept(e, g.getGameDate())) {
+                first = false;
+            } else {
+                com.rndmodgames.futtoboru.engine.recruitment.Shortlists.ignore(e);
+            }
+        }
+        List<com.rndmodgames.futtoboru.data.recruitment.ShortlistEntry> list =
+                com.rndmodgames.futtoboru.engine.recruitment.Shortlists.listed(g, club);
+        for (int i = 0; i < list.size() - SHORTLIST_MAX; i++) {
+            com.rndmodgames.futtoboru.engine.recruitment.Shortlists.remove(g, club, list.get(i).getPlayer());
+        }
+    }
+
+    static final int SHORTLIST_MAX = 15;
 
     static boolean isDraw(Message m) {
         String t = m.getMessageType();

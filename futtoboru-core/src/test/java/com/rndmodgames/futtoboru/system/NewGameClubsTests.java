@@ -274,6 +274,9 @@ class NewGameClubsTests extends BaseTest {
         for (Club c : game.getAllClubs()) {
             Set<LocalDateTime> periods = new HashSet<>();
             for (ClubExpenses e : c.getExpensesHistory()) {
+                if (com.rndmodgames.futtoboru.engine.recruitment.Shortlists.ONE_OFF.equals(e.getPeriodType())) {
+                    continue; // R-05: an advert or an agent's fee, booked on its day
+                }
                 assertTrue(periods.add(e.getPeriodStart()), c.getName() + ": week of " + e.getPeriodStart() + " once");
             }
             assertEquals(weeks, periods.size(), c.getName() + " weekly expense entries");

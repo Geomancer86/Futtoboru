@@ -24,6 +24,8 @@
     "occupations.json",
     "people.json",
     "professions.json",
+    "recruitment/agents.json",
+    "recruitment/newspapers.json",
     "recruitment/origin_clubs.json",
     "recruitment/origins.json",
     "recruitment/pools.json",

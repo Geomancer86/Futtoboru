@@ -471,6 +471,9 @@ public class ContractManager {
         if (p.getPerson() != null && club.getId() != null && club.getId().equals(p.getPerson().getCurrentClubId())) {
             p.getPerson().setCurrentClubId(null);
         }
+        if (p.getPerson() != null) {
+            p.getPerson().setPreviousClubId(club.getId()); // R-05: the May "not retained" lists name his late club
+        }
         if (!containsSame(g.getFreeAgents(), p)) {
             g.getFreeAgents().add(p);
         }

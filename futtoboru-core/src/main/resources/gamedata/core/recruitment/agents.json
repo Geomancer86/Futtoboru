@@ -1,0 +1,50 @@
+[
+  {
+    "id": "agent-glasgow-mcintyre",
+    "name": "Mr J. McIntyre",
+    "place": "Glasgow",
+    "region": "scotland-west",
+    "feePence": 240,
+    "names": 3,
+    "inflate": 2,
+    "confidence": "placeholder",
+    "sources": ["https://en.wikipedia.org/wiki/Scotch_Professors"],
+    "notes": "A fictional agent. English clubs used go-betweens to bring Scots south in the 1880s, a risk while the SFA banned professionals (until 1893). Name, fee per man, men offered and how far he talks them up (inflate, attribute points) are placeholders (D30 A3)."
+  },
+  {
+    "id": "agent-glasgow-rankin",
+    "name": "Mr W. Rankin",
+    "place": "Glasgow",
+    "region": "scotland-west",
+    "feePence": 180,
+    "names": 2,
+    "inflate": 1,
+    "confidence": "placeholder",
+    "sources": ["https://en.wikipedia.org/wiki/Scotch_Professors"],
+    "notes": "A fictional agent; values are placeholders (D30 A3)."
+  },
+  {
+    "id": "agent-dumbarton-gillies",
+    "name": "Mr A. Gillies",
+    "place": "Dumbarton",
+    "region": "scotland-west",
+    "feePence": 120,
+    "names": 2,
+    "inflate": 2,
+    "confidence": "placeholder",
+    "sources": ["https://en.wikipedia.org/wiki/Scotch_Professors"],
+    "notes": "A fictional agent; values are placeholders (D30 A3)."
+  },
+  {
+    "id": "agent-edinburgh-forbes",
+    "name": "Mr D. Forbes",
+    "place": "Edinburgh",
+    "region": "scotland-east",
+    "feePence": 200,
+    "names": 2,
+    "inflate": 1,
+    "confidence": "placeholder",
+    "sources": ["https://en.wikipedia.org/wiki/Scotch_Professors"],
+    "notes": "A fictional agent; values are placeholders (D30 A3)."
+  }
+]

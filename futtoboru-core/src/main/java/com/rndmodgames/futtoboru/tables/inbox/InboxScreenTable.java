@@ -454,6 +454,8 @@ public class InboxScreenTable extends VisTable {
             return LanguageModLoader.getValue("inbox_category_match");
         case JOB:
             return LanguageModLoader.getValue("inbox_category_job");
+        case RECRUITMENT:
+            return LanguageModLoader.getValue("inbox_category_recruitment");
         default:
             return LanguageModLoader.getValue("inbox_category_system");
         }
@@ -505,7 +507,16 @@ public class InboxScreenTable extends VisTable {
         VisLabel contentLabel = new VisLabel(message.getPlainTextMessage() != null ? message.getPlainTextMessage() : LanguageModLoader.getValue("inbox_no_content"));
         contentLabel.setWrap(true);
         messageDetailTable.add(contentLabel).growX().pad(UiTheme.space("xs")).row();
-        
+
+        // R-05: a recruitment letter's men (Add to shortlist / Ignore, an agent's Pay / Ignore)
+        if (message.getCategory() == MessageCategory.RECRUITMENT) {
+            VisTable actions = com.rndmodgames.futtoboru.tables.recruitment.RecruitmentLetterActions.of(currentGame,
+                    message, ((Futtoboru) game).random(), () -> displayMessageDetail(message));
+            if (actions != null) {
+                messageDetailTable.add(actions).left().pad(UiTheme.space("xs")).row();
+            }
+        }
+
         // Action button (if applicable)
         if (message.getActionScreen() != null) {
             messageDetailTable.add().height(UiTheme.space("sm")).row();
@@ -784,6 +795,8 @@ public class InboxScreenTable extends VisTable {
                 return UiTheme.color("category.match");
             case JOB:
                 return UiTheme.color("category.job");
+            case RECRUITMENT:
+                return UiTheme.color("category.recruitment");
             case SYSTEM:
             default:
                 return UiTheme.color("category.system");

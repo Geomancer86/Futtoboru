@@ -78,6 +78,7 @@ public final class MenuEntries {
             Map.entry(GameScreenId.CUP_PLAYOFFS, GameScreenId.COMPETITIONS),
             Map.entry(GameScreenId.PLAYER_DETAIL, GameScreenId.MAIN_SQUAD),
             Map.entry(GameScreenId.RETAINED_LIST, GameScreenId.MAIN_SQUAD),
+            Map.entry(GameScreenId.SHORTLIST, GameScreenId.CANDIDATES),
             Map.entry(GameScreenId.CLUB_DETAIL, GameScreenId.CLUB_BROWSER),
             Map.entry(GameScreenId.JOB_OFFER, GameScreenId.MY_APPLICATIONS),
             Map.entry(GameScreenId.NEGOTIATION, GameScreenId.MY_APPLICATIONS),

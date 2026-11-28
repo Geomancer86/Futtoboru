@@ -25,6 +25,7 @@ public enum GameScreenId {
     CLUB_INFO(3000),
     COMMITTEE(3001),   // G-05
     CANDIDATES(3002),  // R-03
+    SHORTLIST(3003),   // R-05 (from Candidates)
     FINANCES(4000),
     COMPETITIONS(5000),
 

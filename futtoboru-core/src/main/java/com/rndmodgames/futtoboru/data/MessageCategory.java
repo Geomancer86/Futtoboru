@@ -57,6 +57,14 @@ public enum MessageCategory {
      * - General notifications
      * - Game events
      */
-    SYSTEM
+    SYSTEM,
+
+    /**
+     * R-05 recruitment letters
+     * - Men asking for a trial, replies to adverts
+     * - Tips from the trainer, captain, committee
+     * - Agents' offers, "not retained" lists
+     */
+    RECRUITMENT
 }
 

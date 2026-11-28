@@ -75,10 +75,13 @@ public class GameData {
     public static final String INJURY = "injury";
     // R-03 candidate pool regions
     public static final String POOL_REGION = "pool-region";
+    // R-05 candidate sources
+    public static final String NEWSPAPER = "newspaper";
+    public static final String AGENT = "agent";
 
     static final List<String> KINDS = Arrays.asList(CONTINENT, COUNTRY, PROFESSION, OCCUPATION, COMPETITION, CLUB,
             GROUND, PERSON, REGION, SEASON, EDITION, RULE, WAGE, ORIGIN, ORIGIN_CLUB, AREA, LANGUAGE,
-            INJURY, POOL_REGION);
+            INJURY, POOL_REGION, NEWSPAPER, AGENT);
 
     /** R-02 / R-11a: the grades that may have no source (validate.py UNSOURCED_OK). */
     static final Set<String> UNSOURCED_OK = new HashSet<>(Arrays.asList("estimate", "placeholder"));
@@ -296,6 +299,13 @@ public class GameData {
                 "originClubs", "refs:origin-club", "localClubs", "strs!", "foreignBorn", "shares:country",
                 "upbringing", "obj:upbringing!", "people", "list:pool_person", "confidence", "enum:data_confidence!",
                 "sources", "strs!", "notes", "str");
+        // R-05 (RECRUITMENT_AND_TRIALS.md 3.3): a paper to advertise in, an agent who sells names
+        spec("newspaper", "id", "str!", "name", "str!", "place", "str!", "region", "ref:pool-region!", "founded",
+                "int!", "costPence", "int!", "replies", "num!", "replyMinDays", "int!", "replyMaxDays", "int!",
+                "confidence", "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        spec("agent", "id", "str!", "name", "str!", "place", "str!", "region", "ref:pool-region!", "feePence",
+                "int!", "names", "int!", "inflate", "int!", "confidence", "enum:data_confidence!", "sources", "strs!",
+                "notes", "str");
         spec("upbringing", "style", "str!", "tendencies", "attrs!", "chance", "num!", "confidence",
                 "enum:data_confidence!", "sources", "strs!", "notes", "str");
         spec("pool_person", "person", "ref:person!", "from", "int!", "until", "int", "kind", "enum:source_kind!",
@@ -330,6 +340,8 @@ public class GameData {
         PACK_FILES.put("language_rates.json", new String[] { "language_rate", null });
         PACK_FILES.put("injuries.json", new String[] { "injury", INJURY });
         PACK_FILES.put("recruitment/pools.json", new String[] { "pool_region", POOL_REGION });
+        PACK_FILES.put("recruitment/newspapers.json", new String[] { "newspaper", NEWSPAPER });
+        PACK_FILES.put("recruitment/agents.json", new String[] { "agent", AGENT });
         SEASON_FILES.put("squads.json", new String[] { "squad", null });
         SEASON_FILES.put("nationality_modifiers.json", new String[] { "nationality_modifier", null });
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
@@ -1322,6 +1334,8 @@ public class GameData {
         case "origin":
         case "area":
         case "language_rate":
+        case "newspaper":
+        case "agent":
             checkSourced(v, where);
             break;
         case "origin_club":

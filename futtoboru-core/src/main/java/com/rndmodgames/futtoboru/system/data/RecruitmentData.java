@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.rndmodgames.futtoboru.data.recruitment.Agent;
+import com.rndmodgames.futtoboru.data.recruitment.Newspaper;
 import com.rndmodgames.futtoboru.data.recruitment.Origin;
 import com.rndmodgames.futtoboru.data.recruitment.OriginClub;
 import com.rndmodgames.futtoboru.data.recruitment.PoolRegion;
@@ -26,6 +28,8 @@ public final class RecruitmentData {
     private final Map<String, Origin> origins = new LinkedHashMap<>();
     private final Map<String, OriginClub> originClubs = new LinkedHashMap<>();
     private final Map<String, PoolRegion> pools = new LinkedHashMap<>();
+    private final Map<String, Newspaper> newspapers = new LinkedHashMap<>();
+    private final Map<String, Agent> agents = new LinkedHashMap<>();
 
     private RecruitmentData() {
     }
@@ -84,7 +88,38 @@ public final class RecruitmentData {
                     r.strs("places"), r.refs("clubs"), r.integer("size"), r.integer("monthly"), r.strs("sourceKinds"),
                     r.refs("originClubs"), r.strs("localClubs"), foreign, upbringing, people));
         }
+        // R-05 candidate sources
+        for (DataRecord r : data.all(GameData.NEWSPAPER)) {
+            out.newspapers.put(r.id(), new Newspaper(r.id(), r.runtimeId(), r.str("name"), r.str("place"),
+                    r.ref("region"), r.integer("founded"), r.integer("costPence"), r.decimal("replies").doubleValue(),
+                    r.integer("replyMinDays"), r.integer("replyMaxDays")));
+        }
+        for (DataRecord r : data.all(GameData.AGENT)) {
+            out.agents.put(r.id(), new Agent(r.id(), r.runtimeId(), r.str("name"), r.str("place"), r.ref("region"),
+                    r.integer("feePence"), r.integer("names"), r.integer("inflate")));
+        }
         return out;
+    }
+
+    /** R-05: the papers, in file order */
+    public Map<String, Newspaper> getNewspapers() {
+        return Collections.unmodifiableMap(newspapers);
+    }
+
+    /** R-05: the papers taking adverts in that year (founded by then), in file order */
+    public List<Newspaper> newspapersIn(int year) {
+        List<Newspaper> out = new ArrayList<>();
+        for (Newspaper n : newspapers.values()) {
+            if (n.founded() <= year) {
+                out.add(n);
+            }
+        }
+        return out;
+    }
+
+    /** R-05: the agents, in file order */
+    public Map<String, Agent> getAgents() {
+        return Collections.unmodifiableMap(agents);
     }
 
     /** yyyy, yyyy-mm or yyyy-mm-dd as its first day; null stays null. */

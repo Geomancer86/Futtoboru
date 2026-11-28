@@ -788,3 +788,34 @@ def test_pool_checks(pack):
     assert "`until` 1880 is before `from` 1888" in out
     assert "unknown person `atlantis-1866`" in out
     assert "`academy` is not one of" in out
+
+
+# ---------------------------------------------------------------------------------------------- R-05 sources
+def test_shipped_newspapers_and_agents_point_at_pools():
+    pools = {r["id"] for r in json.loads(ROOT.joinpath(*REC, "pools.json").read_text(encoding="utf-8"))}
+    papers = json.loads(ROOT.joinpath(*REC, "newspapers.json").read_text(encoding="utf-8"))
+    agents = json.loads(ROOT.joinpath(*REC, "agents.json").read_text(encoding="utf-8"))
+    assert papers and agents
+    assert all(p["region"] in pools and p["founded"] <= 1888 for p in papers)
+    assert any(p["region"].startswith("scotland") for p in papers), "adverts in Scottish papers (design 3.3)"
+    assert all(a["region"].startswith("scotland") for a in agents), "the agents of D28 Q3 are Scottish"
+
+
+def test_newspaper_and_agent_checks(pack):
+    def bad_papers(d):
+        d[0]["costPence"] = 0
+        d[1]["replyMinDays"] = 6
+        d[1]["replyMaxDays"] = 2
+        d[2]["region"] = "atlantis"
+
+    def bad_agents(d):
+        d[0]["inflate"] = 5
+        d[1]["names"] = 0
+    edit(pack.joinpath(*REC, "newspapers.json"), bad_papers)
+    edit(pack.joinpath(*REC, "agents.json"), bad_agents)
+    out = errors(pack)
+    assert "costPence: must be at least 1" in out
+    assert "`replyMaxDays` 2 is before `replyMinDays` 6" in out
+    assert "`atlantis`" in out
+    assert "inflate: must be from 0 to 2" in out
+    assert "names: must be at least 1" in out

@@ -517,6 +517,9 @@ public class FuttoboruGameEngine {
         // R-09 + R-03: trainers and secretaries for every club, the candidate pools (close-season refresh, arrivals)
         com.rndmodgames.futtoboru.engine.recruitment.Recruitment.afterDay(gameInstance.getCurrentGame(), newDate,
                 gameInstance.random());
+        // R-05: letters, advert replies, tips, agents, "not retained" lists reach every club's shortlist
+        com.rndmodgames.futtoboru.engine.recruitment.CandidateSources.daily(gameInstance.getCurrentGame(), newDate,
+                gameInstance.random());
 
         /**
          * STEP 5: Deliver scheduled messages AFTER advancing date
@@ -796,7 +799,9 @@ public class FuttoboruGameEngine {
             }
             
             for (ClubExpenses expense : club.getExpensesHistory()) {
-                if (expense != null && expense.getPeriodStart() != null) {
+                // R-05: a one-off cost (an advert, an agent's fee) does not move the weekly books' clock
+                if (expense != null && expense.getPeriodStart() != null
+                        && !com.rndmodgames.futtoboru.engine.recruitment.Shortlists.ONE_OFF.equals(expense.getPeriodType())) {
                     if (lastDate == null || expense.getPeriodStart().isAfter(lastDate)) {
                         lastDate = expense.getPeriodStart();
                     }

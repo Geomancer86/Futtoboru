@@ -15,14 +15,18 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.recruitment.Candidate;
 import com.rndmodgames.futtoboru.data.recruitment.PoolRegion;
+import com.rndmodgames.futtoboru.data.recruitment.ShortlistEntry;
 import com.rndmodgames.futtoboru.engine.recruitment.CandidatePools;
 import com.rndmodgames.futtoboru.engine.recruitment.Perception;
 import com.rndmodgames.futtoboru.engine.recruitment.Recruitment;
+import com.rndmodgames.futtoboru.engine.recruitment.Shortlists;
+import com.rndmodgames.futtoboru.menu.GameScreenId;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.data.RecruitmentData;
@@ -33,7 +37,7 @@ import com.rndmodgames.localization.LanguageModLoader;
  * R-03: the candidate pools, read-only (name, age, origin, position, where he plays). Opens on the club's own region;
  * the region box shows the others (the Scottish pools are where the imports come from). R-04: the club's view of each
  * man (period words, or ranges behind the toggle); a click on a man opens his card (club view, each observer).
- * Letters are R-05, signing R-07.
+ * R-05: Add puts a man on the club's shortlist; the Shortlist button opens it. Signing is R-07.
  */
 public class CandidatesScreenTable extends VisTable {
 
@@ -111,6 +115,18 @@ public class CandidatesScreenTable extends VisTable {
         top.add(count).left();
         top.add(PerceptionCard.toggle(game.getSession(), this::updateDynamicComponents)).left()
                 .padLeft(UiTheme.space("lg"));
+        // R-05: the club's shortlist
+        VisTextButton shortlist = new VisTextButton(LanguageModLoader.format("candidates_shortlist",
+                Shortlists.listed(save, currentClub).size()));
+        shortlist.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (game.getGameEngine() != null && game.getGameEngine().getMainMenuManager() != null) {
+                    game.getGameEngine().getMainMenuManager().setActiveMainScreen(GameScreenId.SHORTLIST);
+                }
+            }
+        });
+        top.add(shortlist).left().padLeft(UiTheme.space("lg"));
         this.add(top).left().row();
 
         Perception.ensure(save);
@@ -138,7 +154,7 @@ public class CandidatesScreenTable extends VisTable {
     private void buildRows(SaveGame save, List<Candidate> men) {
         rows.clear();
         String[] headers = { "candidates_col_name", "candidates_col_age", "candidates_col_origin",
-                "candidates_col_position", "candidates_col_plays_for", "candidates_col_view" };
+                "candidates_col_position", "candidates_col_plays_for", "candidates_col_view", "shortlist_col_action" };
         for (String h : headers) {
             VisLabel l = new VisLabel(text(h));
             l.setColor(UiTheme.color("text.heading"));
@@ -183,6 +199,23 @@ public class CandidatesScreenTable extends VisTable {
                     .consensus(), p, game.getSession().isPerceptionNumbers()));
             view.setColor(UiTheme.color("text.secondary"));
             rows.add(view).left();
+            // R-05: on the shortlist, or Add
+            ShortlistEntry entry = Shortlists.entry(save, currentClub.getId(), p.getId());
+            if (entry != null && entry.isListed()) {
+                VisLabel listed = new VisLabel(text("candidates_listed"));
+                listed.setColor(UiTheme.color("text.secondary"));
+                rows.add(listed).left();
+            } else {
+                VisTextButton add = new VisTextButton(text("candidates_add"));
+                add.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        Shortlists.add(save, currentClub, p, today);
+                        updateDynamicComponents();
+                    }
+                });
+                rows.add(add).left();
+            }
             rows.row();
         }
     }

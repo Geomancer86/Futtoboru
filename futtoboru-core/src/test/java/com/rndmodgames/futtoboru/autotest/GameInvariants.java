@@ -463,6 +463,30 @@ final class GameInvariants {
         }
     }
 
+    /**
+     * R-05: no man is twice on one club's shortlist (one entry per club and man, whatever its status), and every man
+     * an entry names exists: a candidate of the pools or a free agent, at no club.
+     */
+    static void shortlistsAreSound(String where, SaveGame game) {
+        Map<Long, Player> men = com.rndmodgames.futtoboru.engine.recruitment.Shortlists.men(game);
+        Set<Long> atClubs = new HashSet<>();
+        for (Club c : game.getAllClubs()) {
+            for (Player p : c.getPlayers()) {
+                if (p != null && p.getId() != null) {
+                    atClubs.add(p.getId());
+                }
+            }
+        }
+        Set<String> seen = new HashSet<>();
+        for (com.rndmodgames.futtoboru.data.recruitment.ShortlistEntry e : game.getShortlist()) {
+            check(seen.add(e.getClub() + ":" + e.getPlayer()), where, "player " + e.getPlayer()
+                    + " is on club " + e.getClub() + "'s shortlist twice");
+            check(men.containsKey(e.getPlayer()), where, e + ": the man is neither a candidate nor a free agent");
+            check(!atClubs.contains(e.getPlayer()), where, e + ": the man is in a squad");
+            check(game.getClubById(e.getClub()) != null, where, e + ": no such club");
+        }
+    }
+
     /** No man at a club is still out after his last day. */
     static void injuriesHeal(String where, SaveGame game, LocalDate today) {
         for (Club c : game.getAllClubs()) {
