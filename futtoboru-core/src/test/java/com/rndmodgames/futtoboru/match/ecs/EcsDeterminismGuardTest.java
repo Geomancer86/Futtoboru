@@ -68,6 +68,36 @@ class EcsDeterminismGuardTest {
         assertTrue(hits.isEmpty(), "non-deterministic or non-headless code in match/ecs:\n" + String.join("\n", hits));
     }
 
+    /**
+     * E-21a: simulation code does not depend on the viewer. Only {@code MatchSystems} (the one registration point)
+     * imports {@code match.ecs.view}; from {@code ui.gfx} only {@code ArtGuard} (the tick scope) is allowed.
+     */
+    @Test
+    void simulationCodeDoesNotDependOnTheViewer() throws IOException {
+        if (!Files.isDirectory(ROOT)) {
+            return;
+        }
+        Pattern view = Pattern.compile("\\bimport\\s+com\\.rndmodgames\\.futtoboru\\.match\\.ecs\\.view\\.");
+        Pattern gfx = Pattern.compile("\\bimport\\s+com\\.rndmodgames\\.futtoboru\\.ui\\.gfx\\.(?!ArtGuard;)");
+        List<String> hits = new ArrayList<>();
+        try (Stream<Path> files = Files.walk(ROOT)) {
+            for (Path file : (Iterable<Path>) files.filter(p -> p.toString().endsWith(".java"))::iterator) {
+                String rel = ROOT.relativize(file).toString().replace('\\', '/');
+                if (rel.startsWith("view/")) {
+                    continue;
+                }
+                String code = blankCommentsAndStrings(Files.readString(file));
+                if (view.matcher(code).find() && !rel.equals("MatchSystems.java")) {
+                    hits.add(rel + " imports match.ecs.view");
+                }
+                if (gfx.matcher(code).find()) {
+                    hits.add(rel + " imports ui.gfx (only ArtGuard allowed)");
+                }
+            }
+        }
+        assertTrue(hits.isEmpty(), String.join("\n", hits));
+    }
+
     @Test
     void detectorFindsCodeButNotCommentsOrStrings() {
         String src = String.join("\n",

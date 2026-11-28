@@ -44,9 +44,24 @@ public final class FixedStepClock {
         return steps;
     }
 
+    /**
+     * Gives back steps that {@link #advance(double)} granted but the caller did not run (its time budget ran out);
+     * they are due again on the next frame, still subject to the cap.
+     */
+    public void carry(int steps) {
+        if (steps < 0) {
+            throw new IllegalArgumentException("steps " + steps);
+        }
+        accumulator += steps * stepSeconds;
+    }
+
     /** Share of a step left over after the last {@link #advance(double)}, for interpolation (0..1). */
     public double alpha() {
-        return accumulator / stepSeconds;
+        return Math.min(1.0, accumulator / stepSeconds);
+    }
+
+    public double speed() {
+        return speed;
     }
 
     public double stepSeconds() {
