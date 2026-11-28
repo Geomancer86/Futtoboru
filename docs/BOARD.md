@@ -6,11 +6,11 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| G-11 era events in the inbox (EraProfile → AUTHORITY messages on announce dates; rules applied on effective dates) | WORKSTATION | `ws/G-11-era-inbox` | 2026-11-28 |
 | G-10 history + fan tiers on screen (club detail history/nicknames/rivals; player tier badge + bio) | WORKSTATION | `ws/G-10-history-ui` | 2026-11-28 |
 | G-04 contracts through the season (AI clubs too) **(PARKED: WIP pushed, after G-01)** | BOOK3PRO | `b3/G-04-contracts` | 2026-11-28 |
 | E-DET cross-JDK determinism: own Gaussian in RandomSource, re-pin goldens once, guard | WORKSTATION | `ws/E-DET-gaussian` | 2026-11-28 |
 | E-17a ECS engine behind `-Dfuttoboru.match.engine=instant|ecs` (default instant) + MatchEngine contract test + ECS season soak entry | WORKSTATION | `ws/E-17a-engine-flag` | 2026-11-28 |
-| E-12b/E-16b realism: ball bounces off posts/bar, forwards run onto passes (offsides happen), foul rate check | WORKSTATION | `ws/E-16b-realism` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
