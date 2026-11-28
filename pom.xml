@@ -22,6 +22,63 @@
             	
             </properties>
         </profile>
+        <!-- T-01 test tiers (D27, docs/BUILD.md "Test tiers"): the default build runs the fast tier only -->
+        <profile>
+            <!-- ./mvnw -B verify -Pfull: fast + slow (before merging into develop; CI on develop/main and PRs) -->
+            <id>full</id>
+            <properties>
+                <test.excludedGroups>smoke</test.excludedGroups>
+            </properties>
+        </profile>
+        <profile>
+            <!-- ./mvnw -B verify -Pslow: the slow tier alone (Jenkins after each develop commit) -->
+            <id>slow</id>
+            <properties>
+                <test.groups>slow,season</test.groups>
+                <test.excludedGroups>smoke</test.excludedGroups>
+            </properties>
+        </profile>
+        <profile>
+            <!-- -Pcoverage: JaCoCo agent + report (Jenkins nightly); never in the default or fast runs -->
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco.version}</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- -Dtest=SomeTests runs that test whatever its tier (a slow test on its own is not skipped) -->
+            <id>single-test</id>
+            <activation>
+                <property>
+                    <name>test</name>
+                </property>
+            </activation>
+            <properties>
+                <test.excludedGroups></test.excludedGroups>
+            </properties>
+        </profile>
+        <!-- -Psmoke (futtoboru-desktop/pom.xml) adds the smoke tier: the real desktop jar, started for a few seconds -->
     </profiles>
     
     <properties>
@@ -51,6 +108,10 @@
    		
    		<!-- Maven Surefire Plugin -->
    		<maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
+
+   		<!-- T-01 test tiers (D27): JUnit tags left out of the default (fast) run; -Pfull keeps only smoke out -->
+   		<test.excludedGroups>slow,season,smoke</test.excludedGroups>
+   		<test.groups></test.groups>
    		
    		<!-- Java Source Version -->
    		<java.source.version>17</java.source.version>
@@ -58,6 +119,27 @@
    		<!-- Java Target Version -->
    		<java.target.version>17</java.target.version>
     </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                    <configuration>
+                        <excludedGroups>${test.excludedGroups}</excludedGroups>
+                        <groups>${test.groups}</groups>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 	<repositories>
 		<repository>
