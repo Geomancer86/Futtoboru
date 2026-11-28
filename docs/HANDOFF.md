@@ -9,7 +9,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Match-engine art direction: sprite / pixel-art prototypes for producer choice (players, ball, goals, pitch, crowd, officials, weather, sidelines) → then E-21 viewer sprites | WORKSTATION | (prototypes local/private; code later on `ws/E-21-sprites`) | 2026-11-27 |
 | U-03a UI scale (port only the scaling from `feature/ui-auto-scale`, not its July history) | BOOK3PRO | `b3/U-03a-ui-scale` | 2026-11-27 |
 | P2-9 one edition per competition and season | BOOK3PRO | `b3/P2-9-one-edition` | 2026-11-27 |
-| P2-10 new game after a load starts from fresh data | BOOK3PRO | `b3/P2-10-fresh-new-game` | 2026-11-27 |
 | U-06 saves backend: autosave slot (monthly + rollover), delete, overwrite API (dialog UI after WORKSTATION's U-11 lock) | BOOK3PRO | `b3/U-06-saves` | 2026-11-27 |
 | E-01 data: `position` + `dribbling` on people (data, validator, ids, saves; no `match/ecs` edits) | BOOK3PRO | `b3/E-01-position-dribbling` | 2026-11-27 |
 
@@ -17,7 +16,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Machine | Item | Paths |
 |---|---|---|
 | BOOK3PRO | U-03a | `ui/UiScale` (new), `PreferencesManager` (UI scale), `SettingsScreen` (scale row), `DesktopLauncher`, `mods/resolutions.txt`, `new Stage(...)`/`resize` lines in screens (one-line viewport swap) |
-| BOOK3PRO | P2-9, P2-10 | `ScriptsManager` (createCup/createLeague), new-game setup path in `DatabaseLoader`/`NewGame*` start, `RuntimeIdsTests`, `FullSeasonTests` (un-@Disable) |
+| BOOK3PRO | P2-9 | `ScriptsManager` (createCup/createLeague), `RuntimeIdsTests`, `FullSeasonTests` (un-@Disable) |
 | BOOK3PRO | U-06, E-01 | `SaveLoadSystem`/`SaveGame` (autosave, delete), `tools/data/validate.py` + `GameData` + people JSON (`position`, `dribbling`) |
 | WORKSTATION | Engine (E-10..E-22) | `match/ecs/**` (new ECS engine; BOOK3PRO: E-01 `Position`/`dribbling` data is yours, ask before editing `match/ecs`) |
 
@@ -26,7 +25,6 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 
 **Suggested for BOOK3PRO** (saves / ids / data area):
 - **P2-9** one edition per competition and season (`RuntimeIdsTests` ~130, re-enable `FullSeasonTests.oneEditionPerCompetitionAndSeason`)
-- **P2-10** new game after a load starts from fresh data
 - **U-06** saves: name, overwrite confirm, delete, autosave slot (monthly + rollover)
 - **U-03a** UI scale Auto/1×/2×, default 1280×720, drop sub-720p from `mods/resolutions.txt`
 
@@ -39,6 +37,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Producer:** push v0.4.0 to `main`; tag v0.5.0-alpha after P2-9..11, v0.5.0 after Phase 3. Engine answers are in D19 (Phase 4 can be designed in parallel).
 
 ## Log
+- 2026-11-27 · BOOK3PRO · DONE · P2-10 · Cause: the New Game screens set the new game up from the `DatabaseLoader` objects (clubs, players, competitions, editions, season scripts) that the game played or loaded before had changed; only a load rebuilt them. Now the main menu's New Game calls `Futtoboru.prepareNewGame()`: drops the current game, `DatabaseLoader.rebuild()` from the data already read, new engine managers. Also fixed: every rebuild (also the one before each load) shifted the derived ids (contracts, squad copies, shared grounds, the IFAB, 900000+); `load` now uses a copy of the data allocator, so they are the same on every build. `NewGameFreshDataTests` (play 170 days or load the v1 fixture and play, then a new game: no played fixtures, zeroed tables, starting balances, unexecuted scripts, only data editions, no shared objects, same ids, and B replays A's 170 days exactly); `NewGameFixture.newGameInSession`. `./mvnw -B verify` green (245 core, 1 skipped + 1 desktop). No lock left for P2-10.
 - 2026-11-28 · WORKSTATION · DONE · U-11 + U-09 · `ui/GroundArt` (cache via `Futtoboru.getGroundArt()`, Nearest, integer scale, placeholder panel) on Club Info, Club Detail, Match Preview header (2×) and the new-game picker; `ui/UiTooltips` (league/history table headers, squad attribute abbreviations) and `ui/UiDialogs` (one modal at a time; unsaved-progress, Load/Save and their errors, application messages); save/load dialog pads → tokens (allow-list now only `UiTheme`); `MainGameScreen.hide()` disposes next frame (Settings leak fixed). 36 labels. Jenkins #91 green (243 core + 1 desktop). **BOOK3PRO:** neutral cup venues need a venue field on `Match` (saves/schedule area) for the preview to show them.
 - 2026-11-27 · BOOK3PRO · CLAIM · U-03a, P2-9, P2-10, U-06 (backend), E-01 (data) · Five parallel lanes. U-03a claims the orphan `feature/ui-auto-scale` (BOOK3PRO's): only its scaling is ported onto develop; the branch's July history (A-11..A-15, PU-10) is **not** merged, as WORKSTATION asked. U-06 leaves `SaveGameDialog`/`LoadGameDialog` alone until U-11 releases them. BOOK3PRO network: Windows now IPv4-only on Wi-Fi (Starlink IPv6 is unreliable).
 - 2026-11-27 · WORKSTATION · NOTE · branch check · All `ws/*` branches are merged into develop (e0d6b2a). **Unclaimed remote branch `feature/ui-auto-scale`** (469 files, ~400k lines; 544b56d "Auto UI scale…" today on top of July 2026 commits A-11..A-15: Home dashboard, tooltip fix, cup-draw soft-lock, New Game keys). It overlaps U-03a (BOOK3PRO), U-04c Home dashboard (done on develop) and U-09 tooltips (WORKSTATION, in progress). Whoever owns it: please claim here and rebase only the auto-scale commit onto develop rather than merging the July history.
