@@ -151,7 +151,10 @@ public class PersonGenerator {
         if (game != null && game.getCurrentGame() != null) {
             game.getCurrentGame().assignId(person);
         }
-        
+
+        // R-11a: languages on the person's own fork of the people stream (a fork draws nothing from it)
+        LanguageGenerator.assign(person, DatabaseLoader.getLanguageData(), null, rng);
+
         return person;
     }
 

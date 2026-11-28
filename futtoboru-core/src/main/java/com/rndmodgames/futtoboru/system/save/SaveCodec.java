@@ -72,8 +72,11 @@ import com.rndmodgames.futtoboru.system.Log;
  */
 public final class SaveCodec {
 
-    /** The format written by this version of the game (2: players have {@code position} and {@code dribbling}, E-01). */
-    public static final int SAVE_VERSION = 2;
+    /**
+     * The format written by this version of the game (2: players have {@code position} and {@code dribbling}, E-01;
+     * 3: persons have {@code languages}, {@code homeLanguage}, {@code birthArea}, {@code parentsOrigin}, R-11a).
+     */
+    public static final int SAVE_VERSION = 3;
 
     static final String SAVE_VERSION_FIELD = "saveVersion";
 
@@ -302,6 +305,10 @@ public final class SaveCodec {
                 // G-04: an engagement saved before G-04 gets its season, its 30 April end and no summer pay (no
                 // format change: the new contract fields are optional)
                 com.rndmodgames.futtoboru.engine.contracts.ContractManager.deriveOldContracts(result.getGame());
+                // R-11a: a person the save gives no languages (no seed to migrate with) gets them as a new game would
+                com.rndmodgames.futtoboru.system.generators.LanguageGenerator.fillMissing(
+                        result.getGame().getAllPersons(), DatabaseLoader.getLanguageData(),
+                        DatabaseLoader.getGameData(), DatabaseLoader.getRandom());
             }
             return result;
         } catch (RuntimeException e) {

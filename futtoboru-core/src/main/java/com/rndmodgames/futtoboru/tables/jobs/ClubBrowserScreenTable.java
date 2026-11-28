@@ -90,9 +90,10 @@ public class ClubBrowserScreenTable extends VisTable {
         clubsListTable.row();
         clubsListTable.addSeparator().colspan(4); // V-01: full width, not the first column only
         
-        // Clubs
+        // Clubs (J-01: each club once, also in a game whose club list has it twice)
+        java.util.Set<Long> listed = new java.util.HashSet<>();
         for (Club club : allClubs) {
-            if (club == null || club.getId() == null) {
+            if (club == null || club.getId() == null || !listed.add(club.getId())) {
                 continue;
             }
             

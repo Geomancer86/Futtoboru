@@ -1,9 +1,17 @@
 package com.rndmodgames.futtoboru.engine.simulation;
 
+import java.util.Map;
+
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.TeamSheet;
+import com.rndmodgames.futtoboru.data.MatchInjury;
+import com.rndmodgames.futtoboru.engine.injuries.InjuryRules;
+import com.rndmodgames.futtoboru.engine.injuries.MatchInjuries;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.engine.team.TeamSheets;
+import com.rndmodgames.futtoboru.engine.team.TeamStrength;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.Log;
@@ -13,8 +21,10 @@ import com.rndmodgames.futtoboru.system.Log;
  * 
  * Simulates football matches and generates results.
  * 
- * Algorithm (v1.0 - Simple):
- * - Calculate team strength based on average player attributes
+ * Algorithm (v1.0 - Simple; G-01 team sheets):
+ * - Each side's team sheet is frozen on the match at kick-off ({@link TeamSheets#kickOff}: the player's XI, an AI
+ *   club's own pick); strength comes from the eleven who play ({@link TeamStrength}: attack and defence by place,
+ *   out of position and playing short cost, small shape / style / captain modifiers)
  * - Apply home advantage (15% boost)
  * - Add randomness (20-30%)
  * - Generate scores based on strength difference
@@ -39,7 +49,9 @@ public class MatchSimulator {
     }
     
     /**
-     * @param root each match draws from {@code root.fork("match:" + id)} and its gate from {@code fork("gate:" + id)},
+     * @param root each match draws from {@code root.fork("match:" + id)}, its gate from {@code fork("gate:" + id)} and
+     *             its goal minutes from {@code fork("minutes:" + id)} (G-03), its injuries from
+     *             {@code fork("injuries:" + id)} (G-02),
      *             so a result depends on the seed and the match, not on the order the day's matches are played
      */
     public MatchSimulator(Futtoboru gameInstance, RandomSource root) {
@@ -84,23 +96,39 @@ public class MatchSimulator {
         this.random = root.fork("match:" + matchKey);
         RandomSource gate = root.fork("gate:" + matchKey);
         
-        // Calculate team strengths
-        double homeStrength = calculateTeamStrength(homeClub);
-        double awayStrength = calculateTeamStrength(awayClub);
+        // G-01: the team sheets at kick-off, frozen on the match; strength from the eleven who play
+        TeamSheet homeSheet = TeamSheets.kickOff(match, homeClub, true, currentGame, root);
+        TeamSheet awaySheet = TeamSheets.kickOff(match, awayClub, false, currentGame, root);
+        TeamStrength homeStrength = TeamStrength.of(homeSheet, TeamSheets.squadById(homeClub));
+        TeamStrength awayStrength = TeamStrength.of(awaySheet, TeamSheets.squadById(awayClub));
+
+        // G-02 (D19-3): men hurt during the match, on their own stream (the other draws stay the same); a passenger
+        // is worth less from his minute on, a man carried off nothing while off (no substitutes)
+        InjuryRules injuryRules = InjuryRules.current();
+        RandomSource injuries = root.fork("injuries:" + matchKey);
+        java.util.List<Player> homeMen = onField(homeSheet, homeClub);
+        java.util.List<Player> awayMen = onField(awaySheet, awayClub);
+        match.setHomeInjuries(MatchInjuries.roll(homeMen, injuryRules, injuries.fork("home")));
+        match.setAwayInjuries(MatchInjuries.roll(awayMen, injuryRules, injuries.fork("away")));
+        double homeHurt = hurtFactor(homeMen.size(), match.getHomeInjuries(), injuryRules);
+        double awayHurt = hurtFactor(awayMen.size(), match.getAwayInjuries(), injuryRules);
         
-        // Apply home advantage
-        homeStrength *= HOME_ADVANTAGE_MULTIPLIER;
+        // Apply home advantage (P2-14: none at a neutral ground, a cup semi-final or final)
+        double homeAdvantage = com.rndmodgames.futtoboru.engine.cup.NeutralVenues.isNeutral(match)
+                ? 1.0 : HOME_ADVANTAGE_MULTIPLIER;
         
         // Add randomness
         double homeRandom = RANDOMNESS_MIN + (random.nextDouble() * (RANDOMNESS_MAX - RANDOMNESS_MIN));
         double awayRandom = RANDOMNESS_MIN + (random.nextDouble() * (RANDOMNESS_MAX - RANDOMNESS_MIN));
         
-        double homeFinal = homeStrength * homeRandom;
-        double awayFinal = awayStrength * awayRandom;
+        double homeAttack = homeStrength.attack() * homeAdvantage * homeRandom * homeHurt;
+        double homeDefence = homeStrength.defence() * homeAdvantage * homeRandom * homeHurt;
+        double awayAttack = awayStrength.attack() * awayRandom * awayHurt;
+        double awayDefence = awayStrength.defence() * awayRandom * awayHurt;
         
-        // Generate scores
-        int homeScore = generateScore(homeFinal, awayFinal, true);
-        int awayScore = generateScore(awayFinal, homeFinal, false);
+        // Generate scores: each side's attack against the other side's defence
+        int homeScore = generateScore(homeAttack, awayDefence, true);
+        int awayScore = generateScore(awayAttack, homeDefence, false);
         
         // Update match with results
         match.setHomeGoals(homeScore);
@@ -109,11 +137,19 @@ public class MatchSimulator {
         
         // Generate scorers (v1.0 - Awards System)
         generateScorers(match, homeClub, awayClub, homeScore, awayScore);
-        
-        // Calculate attendance (simple: based on stadium capacity if available)
-        if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
+
+        // Goal minutes (G-03): after the scorers, on their own stream, so scores and scorers never depend on them
+        GoalMinutes.assign(match, root.fork("minutes:" + matchKey));
+
+        // Calculate attendance (simple: based on the capacity of the ground played at, P2-14: a neutral venue)
+        com.rndmodgames.futtoboru.data.Stadium ground = com.rndmodgames.futtoboru.engine.cup.NeutralVenues.isNeutral(match)
+                ? com.rndmodgames.futtoboru.system.DatabaseLoader.getGroundByDataId(match.getVenue()) : null;
+        if (ground == null || ground.getCapacity() == null) {
+            ground = homeClub.getStadium();
+        }
+        if (ground != null && ground.getCapacity() != null) {
             // 60-90% attendance for v1.0
-            int capacity = homeClub.getStadium().getCapacity();
+            int capacity = ground.getCapacity();
             int attendance = (int)(capacity * (0.6 + gate.nextDouble() * 0.3));
             match.setAttendance(attendance);
         } else {
@@ -140,7 +176,7 @@ public class MatchSimulator {
         // Generate home scorers
         if (homeScore > 0 && homeClub.getPlayers() != null && !homeClub.getPlayers().isEmpty()) {
             for (int i = 0; i < homeScore; i++) {
-                Player scorer = pickRandomScorer(homeClub.getPlayers());
+                Player scorer = pickScorer(match.getHomeSheet(), homeClub, match.getHomeInjuries());
                 if (scorer != null && scorer.getPerson() != null) {
                     match.getHomeScorerIds().add(scorer.getPerson().getId());
                 }
@@ -150,7 +186,7 @@ public class MatchSimulator {
         // Generate away scorers
         if (awayScore > 0 && awayClub.getPlayers() != null && !awayClub.getPlayers().isEmpty()) {
             for (int i = 0; i < awayScore; i++) {
-                Player scorer = pickRandomScorer(awayClub.getPlayers());
+                Player scorer = pickScorer(match.getAwaySheet(), awayClub, match.getAwayInjuries());
                 if (scorer != null && scorer.getPerson() != null) {
                     match.getAwayScorerIds().add(scorer.getPerson().getId());
                 }
@@ -159,98 +195,44 @@ public class MatchSimulator {
     }
     
     /**
-     * Pick a random player to score a goal
-     * Future: Weight by position and attributes
+     * G-01: one of the eleven who played scores, weighted by the position of his place (forwards most, the keeper
+     * almost never) and his finishing; one draw per goal ({@link TeamStrength#pickScorer}).
      */
-    private Player pickRandomScorer(java.util.List<Player> players) {
-        if (players == null || players.isEmpty()) return null;
-        
-        // Simple weight system: 
-        // Forwards (if we had positions) would have higher weight
-        // For now, just pick any random player
-        return players.get(random.nextInt(players.size()));
+    private Player pickScorer(TeamSheet sheet, Club club, java.util.List<MatchInjury> injuries) {
+        Map<Long, Player> squad = TeamSheets.squadById(club);
+        // G-02: a man carried off for good scores no more (kept simple: not at all in this match)
+        if (injuries != null && !injuries.isEmpty()) {
+            squad.values().removeIf(p -> p.getPerson() != null && injuries.stream().anyMatch(
+                    i -> MatchInjuries.leftForGood(i) && p.getPerson().getId().equals(i.getPersonId())));
+        }
+        return TeamStrength.pickScorer(sheet, squad, random);
     }
-    
+
+    /** G-02: the men on the sheet's places, in slot order (empty places: the side plays short). */
+    private static java.util.List<Player> onField(TeamSheet sheet, Club club) {
+        java.util.List<Player> out = new java.util.ArrayList<>();
+        if (sheet == null) {
+            return out;
+        }
+        Map<Long, Player> squad = TeamSheets.squadById(club);
+        for (int s = 0; s < com.rndmodgames.futtoboru.data.TeamShape.SLOTS; s++) {
+            Player p = sheet.getPlayerId(s) != null ? squad.get(sheet.getPlayerId(s)) : null;
+            if (p != null) {
+                out.add(p);
+            }
+        }
+        return out;
+    }
+
     /**
-     * Calculate team strength based on average player attributes
-     * 
-     * For v1.0: Simple average of key attributes
-     * Future: More sophisticated calculation with position weights
+     * G-02: what the side is worth over the match next to the same men unhurt (1 when nobody is hurt; playing short
+     * from kick-off is already in {@link TeamStrength}).
      */
-    private double calculateTeamStrength(Club club) {
-        if (club == null || club.getPlayers() == null || club.getPlayers().isEmpty()) {
-            // Default strength if no players
-            return 50.0;
+    static double hurtFactor(int menOnField, java.util.List<MatchInjury> injuries, InjuryRules rules) {
+        if (menOnField == 0 || injuries == null || injuries.isEmpty()) {
+            return 1.0;
         }
-        
-        double totalStrength = 0.0;
-        int playerCount = 0;
-        
-        for (Player player : club.getPlayers()) {
-            if (player == null) continue;
-            
-            // Calculate player strength from key attributes
-            // Using average of physical, mental, and technical attributes
-            double playerStrength = 0.0;
-            int attributeCount = 0;
-            
-            // Physical attributes
-            if (player.getAcceleration() != null) {
-                playerStrength += player.getAcceleration();
-                attributeCount++;
-            }
-            if (player.getSpeed() != null) {
-                playerStrength += player.getSpeed();
-                attributeCount++;
-            }
-            if (player.getStrength() != null) {
-                playerStrength += player.getStrength();
-                attributeCount++;
-            }
-            if (player.getStamina() != null) {
-                playerStrength += player.getStamina();
-                attributeCount++;
-            }
-            
-            // Mental attributes
-            if (player.getDetermination() != null) {
-                playerStrength += player.getDetermination();
-                attributeCount++;
-            }
-            if (player.getPositioning() != null) {
-                playerStrength += player.getPositioning();
-                attributeCount++;
-            }
-            if (player.getTeamwork() != null) {
-                playerStrength += player.getTeamwork();
-                attributeCount++;
-            }
-            
-            // Technical attributes
-            if (player.getPassing() != null) {
-                playerStrength += player.getPassing();
-                attributeCount++;
-            }
-            if (player.getKicking() != null) {
-                playerStrength += player.getKicking();
-                attributeCount++;
-            }
-            if (player.getTackling() != null) {
-                playerStrength += player.getTackling();
-                attributeCount++;
-            }
-            
-            if (attributeCount > 0) {
-                totalStrength += (playerStrength / attributeCount);
-                playerCount++;
-            }
-        }
-        
-        if (playerCount == 0) {
-            return 50.0; // Default strength
-        }
-        
-        return totalStrength / playerCount;
+        return MatchInjuries.effectiveMen(menOnField, injuries, rules) / menOnField;
     }
     
     /**

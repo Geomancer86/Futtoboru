@@ -73,7 +73,100 @@
       ],
       "sources": [
         "https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup"
-      ]
+      ],
+      "neutralVenues": {
+        "rounds": [
+          {
+            "round": "semi-final",
+            "grounds": [
+              "bramall-lane",
+              "alexandra-recreation-ground"
+            ],
+            "confidence": "unverified",
+            "notes": "The 1889 semi-finals were played at Bramall Lane, Sheffield, and the Alexandra Recreation Ground, Crewe (the replay there too). The game draws a ground for each semi-final from these, never a finalist's own ground and not one the other semi-final uses that day."
+          },
+          {
+            "round": "final",
+            "grounds": [
+              "kennington-oval"
+            ],
+            "confidence": "unverified",
+            "notes": "The 1889 final was played at Kennington Oval, London, as nearly every final up to 1892."
+          }
+        ],
+        "gate": "association",
+        "gateConfidence": "unverified",
+        "sources": [
+          "https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup",
+          "https://en.wikipedia.org/wiki/1889_FA_Cup_final",
+          "https://dspace.stir.ac.uk/bitstream/1893/2976/1/Beyond20Altruism1.pdf"
+        ],
+        "notes": "Semi-finals and the final were the Association's matches: the FA took the gate, so neither club books it (Vamplew, 'Beyond Altruism: British Football and Charity 1877-1914', University of Stirling: in 1882 the FA gave part of a semi-final gate to the charities of the two towns; from 1885 it gave donations to the towns where Association matches drew the highest receipts). What the clubs got back (travel expenses, a share) was not found. A replay of a neutral tie stays at its ground."
+      }
     }
-  ]
+  ],
+  "calendar": {
+    "league": {
+      "opens": {
+        "onOrAfter": "09-08",
+        "weekday": "saturday",
+        "confidence": "unverified",
+        "source": "https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League",
+        "notes": "The first League Saturday was 8 Sep 1888."
+      },
+      "closes": {
+        "onOrBefore": "04-20",
+        "weekday": "saturday",
+        "confidence": "unverified",
+        "source": "https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League",
+        "notes": "The last League matches were played in April 1889 (20 Apr the last Saturday)."
+      },
+      "midweek": "wednesday",
+      "noMatchOn": [
+        "12-25"
+      ],
+      "sources": [
+        "https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League"
+      ],
+      "notes": "P2-11 rules as data (P2-14). The game spreads its own fixtures over these Saturdays (D17: the real fixture list is reference data). Wednesdays only when the Saturdays run out; none on Christmas Day or on a cup date (and the midweek after a cup Saturday, kept for replays)."
+    },
+    "cups": [
+      {
+        "competition": "fa-cup",
+        "opens": {
+          "onOrAfter": "10-01",
+          "weekday": "saturday",
+          "confidence": "unverified",
+          "source": "https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup_qualifying_rounds",
+          "notes": "The cup opens with the qualifying competition: the first qualifying round was played on Saturday 6 Oct 1888 (the first season with qualifying rounds). The game's entrants are the 32 clubs of the first round proper, so the edition is shown from then and drawn later."
+        },
+        "firstDraw": {
+          "onOrAfter": "01-01",
+          "weekday": "monday",
+          "confidence": "placeholder",
+          "notes": "Not found: the date the first round proper was drawn. It can only follow the fourth qualifying round (8 Dec 1888, last replay 25 Dec 1888) and precede the first round proper (2 Feb 1889): the first Monday of January is a placeholder."
+        },
+        "laterDraws": "open-draw",
+        "drawDaysAfterRound": 2,
+        "final": {
+          "onOrBefore": "03-31",
+          "weekday": "saturday",
+          "confidence": "unverified",
+          "source": "https://en.wikipedia.org/wiki/1889_FA_Cup_final",
+          "notes": "The 1889 final was on Saturday 30 Mar 1889, the last Saturday of March."
+        },
+        "properFrom": "02-01",
+        "daysBetweenRounds": 14,
+        "earlyRoundsOn": "wednesday",
+        "maxEarlyRounds": 8,
+        "sources": [
+          "https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup",
+          "https://en.wikipedia.org/wiki/1888%E2%80%9389_FA_Cup_qualifying_rounds",
+          "https://en.wikipedia.org/wiki/1889_FA_Cup_final"
+        ],
+        "notes": "P2-11 rules as data (P2-14). Proper rounds on Saturdays two weeks apart back from the final (1888-89: 2 and 16 Feb, 2 and 16 Mar, final 30 Mar), from the first Saturday on or after `properFrom`; a bigger bracket plays its extra rounds midweek before them. Each round is drawn after the round before is decided (`open-draw`), `drawDaysAfterRound` days after its date at the earliest (2 = the Monday after a Saturday round: a placeholder, the real draw days were not found). The dates come from these rules, never from the real fixture list (D17)."
+      }
+    ],
+    "notes": "P2-14 (D30 A9): the calendar of the generated schedule. A later season without a calendar keeps these rules, one year on per season."
+  }
 }

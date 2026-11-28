@@ -13,7 +13,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.AutoFocusScrollPane;
 import com.rndmodgames.futtoboru.data.Club;
-import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.menu.MenuEntries.MenuEntry;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
@@ -289,16 +288,26 @@ public class MainMenuManager {
         syncMenuState();
     }
 
-    /** @return true if the owner works as a manager (the manager menu), false for the job-seeker menu */
+    /** @return true if the owner works at a club (the club menu), false for the job-seeker menu (J-01) */
     private boolean isManager() {
-        return currentGame.getOwner() != null && currentGame.getOwner().getPrimaryProfession() != null
-                && currentGame.getOwner().getPrimaryProfession().is(Profession.MANAGER);
+        return MenuEntries.hasClub(currentGame);
     }
 
     /** A menu entry was picked: its screen starts a new Back history. */
     public void openMenuEntry(int screen) {
         history.reset(screen);
+        if (screen == MAIN_SQUAD_SCREEN && squadScreenTable != null) {
+            squadScreenTable.showPlayers(); // G-01: the menu entry opens on the players list
+        }
         setActiveMainScreen(screen);
+    }
+
+    /** G-01: the Squad screen on its Team Sheet tab. */
+    public void openTeamSheet() {
+        openMenuEntry(MAIN_SQUAD_SCREEN);
+        if (CURRENT_SCREEN == MAIN_SQUAD_SCREEN) {
+            squadScreenTable.showTeamSheet();
+        }
     }
 
     /**
@@ -1015,6 +1024,33 @@ public class MainMenuManager {
             
             break;
 
+        // J-01: the job screens follow the day too (offers lapse, posts are filled and advertised)
+        case CLUB_BROWSER_SCREEN:
+            clubBrowserScreenTable.updateDynamicComponents();
+            break;
+
+        case CLUB_DETAIL_SCREEN:
+            if (selectedClubForDetail != null) {
+                clubDetailScreenTable.updateDynamicComponents(selectedClubForDetail);
+            }
+            break;
+
+        case JOB_BOARD_SCREEN:
+            jobBoardScreenTable.updateDynamicComponents();
+            break;
+
+        case MY_APPLICATIONS_SCREEN:
+            myApplicationsScreenTable.updateDynamicComponents();
+            break;
+
+        case JOB_OFFER_SCREEN:
+            jobOfferScreenTable.updateDynamicComponents();
+            break;
+
+        case NEGOTIATION_SCREEN:
+            negotiationScreenTable.updateDynamicComponents();
+            break;
+
         default:
             //ignore
             break;
@@ -1077,6 +1113,45 @@ public class MainMenuManager {
      */
     public com.rndmodgames.futtoboru.data.League getSelectedLeague() {
         return selectedLeague;
+    }
+
+    /**
+     * G-03: opens the result and report of a played match (any club's: Match History, a cup's schedule, a league's
+     * latest results, an inbox result). Continue on the result screen comes back to the screen it was opened from.
+     */
+    public void showMatchResult(com.rndmodgames.futtoboru.data.Match match) {
+        if (match == null || match.getIsPlayed() == null || !match.getIsPlayed()) {
+            return;
+        }
+        matchResultScreenTable.setSelectedMatch(match);
+        if (CURRENT_SCREEN != MATCH_RESULT_SCREEN) {
+            BEFORE_MATCH_SCREEN = CURRENT_SCREEN;
+        }
+        setActiveMainScreen(MATCH_RESULT_SCREEN);
+    }
+
+    /** The result screen shows the current club's latest played match again (the top bar's Match Result). */
+    public void showLatestMatchResult() {
+        matchResultScreenTable.setSelectedMatch(null);
+        setActiveMainScreen(MATCH_RESULT_SCREEN);
+    }
+
+    /** @return the played match with this id (any club's), or null */
+    public com.rndmodgames.futtoboru.data.Match findPlayedMatch(Long matchId) {
+        if (matchId == null || currentGame == null || currentGame.getAllClubs() == null) {
+            return null;
+        }
+        for (Club club : currentGame.getAllClubs()) {
+            if (club == null || club.getPlayedMatches() == null) {
+                continue;
+            }
+            for (com.rndmodgames.futtoboru.data.Match m : club.getPlayedMatches()) {
+                if (m != null && matchId.equals(m.getId())) {
+                    return m;
+                }
+            }
+        }
+        return null;
     }
 
     public void setSelectedCup(com.rndmodgames.futtoboru.data.Competition cup) {

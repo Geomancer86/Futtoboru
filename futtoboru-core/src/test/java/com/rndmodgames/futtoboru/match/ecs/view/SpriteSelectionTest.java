@@ -179,6 +179,25 @@ class SpriteSelectionTest {
     }
 
     @Test
+    void theBallUsesTheSmallOneXFrameAtThePlayersTexelSoItStaysInProportion() {
+        double view = ViewCamera.PIXELS_PER_METRE;
+        for (double p : new double[] { 6.6, 10, 20.7 }) {
+            for (int m = 1; m <= 4; m++) {
+                int player = SpriteScale.choose(p, m, 2, view);
+                int ball = SpriteScale.chooseBall(p, m, view);
+                assertEquals(1, SpriteScale.sheet(ball), "the small BA2 frame");
+                assertEquals(SpriteScale.texel(player), SpriteScale.texel(ball), "same screen pixels per texel");
+                // 5 px ground frame: about half a metre drawn (~22 cm ball plus its outline), never the 2x metre ball
+                double drawnM = 5.0 * SpriteScale.texel(ball) / m / p;
+                assertTrue(drawnM < 0.8, p + " @" + m + ": " + drawnM + " m");
+            }
+        }
+        // the wide view keeps the closest-sheet rule
+        assertEquals(SpriteScale.choose(5, 1, 1, ViewCamera.WIDE_PIXELS_PER_METRE),
+                SpriteScale.chooseBall(5, 1, ViewCamera.WIDE_PIXELS_PER_METRE));
+    }
+
+    @Test
     void snapPutsPivotsOnTheScreenPixelGrid() {
         assertEquals(10.5f, SpriteScale.snap(10.4, 2), 1e-6);
         assertEquals(10f, SpriteScale.snap(10.2, 2), 1e-6);

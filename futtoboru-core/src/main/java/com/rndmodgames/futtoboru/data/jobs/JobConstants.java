@@ -18,6 +18,16 @@ public class JobConstants {
     
     // Job opening expiration
     public static final int JOB_OPENING_DEFAULT_DEADLINE_DAYS = 30;
+
+    /** J-01: an advert runs 21 to 42 days (seeded per opening); at its deadline the club appoints someone (D31) */
+    public static final int JOB_OPENING_MIN_DEADLINE_DAYS = 21;
+    public static final int JOB_OPENING_MAX_DEADLINE_DAYS = 42;
+
+    /**
+     * J-01 (D31): the daily chance that an AI club's staff member leaves his post (about three seasons in a post on
+     * average). Placeholder, not researched (D30).
+     */
+    public static final double AI_STAFF_DEPARTURE_PER_DAY = 1.0 / (3 * 365);
     
     // Application processing delay (v1.0: simplified - instant for MVP, can add delay later)
     public static final int APPLICATION_PROCESSING_DELAY_DAYS = 0; // 0 = instant

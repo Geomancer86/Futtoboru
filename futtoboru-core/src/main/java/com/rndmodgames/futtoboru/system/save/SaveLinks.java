@@ -34,6 +34,15 @@ final class SaveLinks {
         List<String> problems = reading.problems;
 
         dropNulls(game.getAllClubs());
+        // P2-13: a save made before the fix lists the clubs of the selected countries twice (each entry is the one
+        // saved club object); the daily and weekly club steps ran twice for them
+        int duplicateClubs = game.removeDuplicateClubs();
+        int duplicateSnapshots = game.removeDuplicateSnapshots();
+        if (duplicateClubs > 0 || duplicateSnapshots > 0) {
+            com.rndmodgames.futtoboru.system.Log.info(com.rndmodgames.futtoboru.system.Log.SYSTEM_INIT, "SaveLinks",
+                    "clubs listed twice: " + duplicateClubs + ", attribute snapshots taken twice: "
+                            + duplicateSnapshots + " (dropped)");
+        }
         dropNulls(game.getAllPersons());
         dropNulls(game.getAllPlayers());
         dropNulls(game.getFreeAgents()); // G-04

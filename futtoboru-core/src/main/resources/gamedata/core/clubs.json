@@ -5,6 +5,31 @@
     "fullName": "Preston North End Football Club",
     "founded": 1880,
     "country": "england",
+    "origin": "cricket",
+    "nicknames": [
+      {
+        "name": "The Invincibles",
+        "from": 1883,
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/The_Invincibles_(English_football)"
+        ]
+      },
+      {
+        "name": "The Lilywhites",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Preston_North_End_F.C.",
+          "https://www.oldfootballshirts.com/en/teams/p/preston-north-end/old-preston-north-end-football-shirts-t37.html",
+          "https://www.vintagefootballshirts.com/teams/preston-north-end/78"
+        ]
+      }
+    ],
+    "rivals": [
+      "blackburn-rovers",
+      "bolton-wanderers",
+      "burnley"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Preston_North_End_F.C."
     ]
@@ -15,6 +40,28 @@
     "fullName": "Aston Villa Football Club",
     "founded": 1874,
     "country": "england",
+    "origin": "church",
+    "nicknames": [
+      {
+        "name": "The Villans",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Aston_Villa_F.C."
+        ]
+      },
+      {
+        "name": "The Lions",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Aston_Villa_F.C."
+        ]
+      }
+    ],
+    "rivals": [
+      "wolverhampton-wanderers",
+      "west-bromwich-albion",
+      "small-heath"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Aston_Villa_F.C."
     ]
@@ -25,6 +72,37 @@
     "fullName": "Wolverhampton Wanderers Football Club",
     "founded": 1877,
     "country": "england",
+    "origin": "school",
+    "nicknames": [
+      {
+        "name": "Wolves",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Wolverhampton_Wanderers_F.C."
+        ]
+      },
+      {
+        "name": "The Old Gold",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Wolverhampton_Wanderers_F.C."
+        ]
+      }
+    ],
+    "rivals": [
+      "aston-villa",
+      "west-bromwich-albion"
+    ],
+    "nameHistory": [
+      {
+        "name": "St Luke's",
+        "from": 1877,
+        "to": 1879,
+        "sources": [
+          "https://en.wikipedia.org/wiki/History_of_Wolverhampton_Wanderers_F.C."
+        ]
+      }
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Wolverhampton_Wanderers_F.C."
     ]
@@ -35,6 +113,36 @@
     "fullName": "Blackburn Rovers Football Club",
     "founded": 1875,
     "country": "england",
+    "origin": "old-boys",
+    "nicknames": [
+      {
+        "name": "Rovers",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Blackburn_Rovers_F.C."
+        ]
+      },
+      {
+        "name": "The Blue and Whites",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Blackburn_Rovers_F.C."
+        ]
+      },
+      {
+        "name": "The Riversiders",
+        "from": 1890,
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Blackburn_Rovers_F.C."
+        ]
+      }
+    ],
+    "rivals": [
+      "preston-north-end",
+      "accrington",
+      "burnley"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Blackburn_Rovers_F.C."
     ]
@@ -45,6 +153,37 @@
     "fullName": "Bolton Wanderers Football Club",
     "founded": 1874,
     "country": "england",
+    "origin": "church",
+    "nicknames": [
+      {
+        "name": "The Spots",
+        "from": 1884,
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Bolton_Wanderers_F.C."
+        ]
+      },
+      {
+        "name": "The Trotters",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Bolton_Wanderers_F.C."
+        ]
+      }
+    ],
+    "rivals": [
+      "preston-north-end"
+    ],
+    "nameHistory": [
+      {
+        "name": "Christ Church",
+        "from": 1874,
+        "to": 1877,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Bolton_Wanderers_F.C."
+        ]
+      }
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Bolton_Wanderers_F.C."
     ]
@@ -55,6 +194,38 @@
     "fullName": "West Bromwich Albion Football Club",
     "founded": 1878,
     "country": "england",
+    "origin": "works",
+    "nicknames": [
+      {
+        "name": "The Throstles",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/West_Bromwich_Albion_F.C."
+        ]
+      },
+      {
+        "name": "The Baggies",
+        "from": 1900,
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/West_Bromwich_Albion_F.C."
+        ]
+      }
+    ],
+    "rivals": [
+      "aston-villa",
+      "wolverhampton-wanderers"
+    ],
+    "nameHistory": [
+      {
+        "name": "West Bromwich Strollers",
+        "from": 1878,
+        "to": 1880,
+        "sources": [
+          "https://en.wikipedia.org/wiki/West_Bromwich_Albion_F.C."
+        ]
+      }
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/West_Bromwich_Albion_F.C."
     ]
@@ -65,6 +236,19 @@
     "fullName": "Accrington Football Club",
     "founded": 1878,
     "country": "england",
+    "origin": "other",
+    "nicknames": [
+      {
+        "name": "The Owd Reds",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Accrington_F.C."
+        ]
+      }
+    ],
+    "rivals": [
+      "blackburn-rovers"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Accrington_F.C."
     ]
@@ -75,6 +259,38 @@
     "fullName": "Everton Football Club",
     "founded": 1878,
     "country": "england",
+    "origin": "church",
+    "nicknames": [
+      {
+        "name": "The Black Watch",
+        "from": 1881,
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Everton_F.C.",
+          "https://www.footballkitarchive.com/everton-fc-1881-82-home-kit/159690"
+        ]
+      },
+      {
+        "name": "The Toffees",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Everton_F.C."
+        ]
+      }
+    ],
+    "rivals": [
+      "bootle"
+    ],
+    "nameHistory": [
+      {
+        "name": "St Domingo's",
+        "from": 1878,
+        "to": 1879,
+        "sources": [
+          "https://en.wikipedia.org/wiki/History_of_Everton_F.C."
+        ]
+      }
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Everton_F.C."
     ]
@@ -85,6 +301,48 @@
     "fullName": "Burnley Football Club",
     "founded": 1882,
     "country": "england",
+    "origin": "rugby",
+    "nicknames": [
+      {
+        "name": "The Turfites",
+        "from": 1889,
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Burnley_F.C.",
+          "https://en.wikipedia.org/wiki/History_of_Burnley_F.C."
+        ]
+      },
+      {
+        "name": "The Moorites",
+        "from": 1889,
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Burnley_F.C.",
+          "https://en.wikipedia.org/wiki/History_of_Burnley_F.C."
+        ]
+      },
+      {
+        "name": "The Royalites",
+        "from": 1889,
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Burnley_F.C.",
+          "https://en.wikipedia.org/wiki/History_of_Burnley_F.C."
+        ]
+      },
+      {
+        "name": "The Clarets",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Burnley_F.C.",
+          "https://en.wikipedia.org/wiki/History_of_Burnley_F.C."
+        ]
+      }
+    ],
+    "rivals": [
+      "preston-north-end",
+      "blackburn-rovers"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Burnley_F.C."
     ]
@@ -95,6 +353,10 @@
     "fullName": "Derby County Football Club",
     "founded": 1884,
     "country": "england",
+    "origin": "cricket",
+    "rivals": [
+      "derby-junction"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Derby_County_F.C."
     ]
@@ -105,6 +367,36 @@
     "fullName": "Notts County Football Club",
     "founded": 1862,
     "country": "england",
+    "origin": "other",
+    "nicknames": [
+      {
+        "name": "The Lambs",
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Notts_County_F.C."
+        ]
+      },
+      {
+        "name": "The Patricians",
+        "from": 1883,
+        "to": 1883,
+        "period": true,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Notts_County_F.C."
+        ]
+      },
+      {
+        "name": "The Magpies",
+        "from": 1890,
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Notts_County_F.C."
+        ]
+      }
+    ],
+    "rivals": [
+      "nottingham-forest"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Notts_County_F.C"
     ]
@@ -115,6 +407,16 @@
     "fullName": "Stoke City Football Club",
     "founded": 1863,
     "country": "england",
+    "origin": "other",
+    "nicknames": [
+      {
+        "name": "The Potters",
+        "period": false,
+        "sources": [
+          "https://en.wikipedia.org/wiki/Stoke_City_F.C."
+        ]
+      }
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Stoke_City_F.C.",
       "https://en.wikipedia.org/wiki/History_of_Stoke_City_F.C."
@@ -168,6 +470,9 @@
     "fullName": "Nottingham Forest Football Club",
     "founded": 1865,
     "country": "england",
+    "rivals": [
+      "notts-county"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Nottingham_Forest_F.C."
     ]
@@ -200,6 +505,9 @@
     "fullName": "Bootle Football Club",
     "founded": 1879,
     "country": "england",
+    "rivals": [
+      "everton"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
     ]
@@ -280,6 +588,9 @@
     "fullName": "Derby Junction Football Club",
     "founded": 1870,
     "country": "england",
+    "rivals": [
+      "derby-county"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Derby_Junction_F.C."
     ]
@@ -330,6 +641,9 @@
     "fullName": "Small Heath Football Club",
     "founded": 1875,
     "country": "england",
+    "rivals": [
+      "aston-villa"
+    ],
     "sources": [
       "https://en.wikipedia.org/wiki/Birmingham_City_F.C."
     ]

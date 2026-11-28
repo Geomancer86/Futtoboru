@@ -25,7 +25,7 @@ public final class ContactRecord {
     public boolean aHitFromBehind, bHitFromBehind;
     /** This side is a goalkeeper (charging the keeper: fair in 1888-89 unless {@link #keeperProtected}). */
     public boolean aKeeper, bKeeper;
-    /** {@link BodyParams#keeperChargeProtected} at the time. */
+    /** {@code RulesProfile.keeperChargeProtected} of the season (1892 onward). */
     public boolean keeperProtected;
     /** {@link #NONE}, {@link #STUMBLE} or {@link #DOWN}. */
     public int aFall, bFall;

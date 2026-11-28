@@ -1,11 +1,11 @@
 package com.rndmodgames.futtoboru.tables.draw;
 
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -55,7 +55,7 @@ public class LeagueDrawScreenTable extends VisTable {
     private VisTextButton drawAllButton;
     private VisTextButton continueButton;
     
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
+    private DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.MEDIUM); // U-12: the game language
     
     public LeagueDrawScreenTable(Game parent) {
         super(true);

@@ -1,13 +1,11 @@
 package com.rndmodgames.futtoboru.tables.squad;
 
-import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,7 +16,9 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.engine.injuries.Availability;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiTooltips;
 import com.rndmodgames.futtoboru.system.Log;
@@ -73,8 +73,7 @@ public class PlayersListTable extends VisTable {
     VisTable mainTable;
     
     //
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-    DecimalFormat attributeFormat = new DecimalFormat("#0.0");
+    DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.NUMERIC); // U-12: the game language
     
     public PlayersListTable(Futtoboru parent) {
         
@@ -125,6 +124,7 @@ public class PlayersListTable extends VisTable {
         this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_name"), "name")).width(UiTheme.size("table.squad.name"));
         this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_age"), "age")).width(UiTheme.size("table.squad.age"));
         this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_country"), "country")).width(UiTheme.size("table.squad.country"));
+        this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_injury"), "injury")).width(UiTheme.size("table.squad.injury"));
         
         // Physical attribute columns
         if (showAcceleration) {
@@ -207,6 +207,9 @@ public class PlayersListTable extends VisTable {
             String countryName = player.getPerson().getCountry() != null ? 
                 player.getPerson().getCountry().getCommonName() : LanguageModLoader.getValue("not_available");
             this.add(new VisLabel(countryName)).width(UiTheme.size("table.squad.country"));
+
+            // G-02: injury mark + days out (empty when available)
+            this.add(injuryCell(player)).width(UiTheme.size("table.squad.injury"));
             
             // Physical attributes (with change indicators)
             if (showAcceleration) {
@@ -290,12 +293,26 @@ public class PlayersListTable extends VisTable {
         
         // Add visual indicator if this is the current sort column
         if (columnName.equals(currentSortColumn)) {
-            header.setText(text + (sortAscending ? " ↑" : " ↓"));
+            // U-12: "^" / "v" from the bundles (the font has no arrow glyphs)
+            String mark = sortAscending ? LanguageModLoader.getValue("sort_ascending_mark")
+                    : LanguageModLoader.getValue("sort_descending_mark");
+            header.setText(text + " " + mark);
         }
         
         return header;
     }
     
+    /** G-02: "Inj. 12d" in the injury colour while he is out, else nothing. */
+    private VisLabel injuryCell(Player player) {
+        Availability.Status status = Availability.of(player, game.getCurrentGame().getGameDate());
+        if (status.isAvailable()) {
+            return new VisLabel("");
+        }
+        VisLabel label = new VisLabel(LanguageModLoader.format("squad_injury_mark", status.getDaysLeft()));
+        label.setColor(UiTheme.color("state.injured"));
+        return label;
+    }
+
     /**
      * Sort players by column
      */
@@ -313,6 +330,9 @@ public class PlayersListTable extends VisTable {
             case "country":
                 comparator = Comparator.comparing(p -> 
                     p.getPerson().getCountry() != null ? p.getPerson().getCountry().getCommonName() : "");
+                break;
+            case "injury":
+                comparator = Comparator.comparing(p -> Availability.of(p, game.getCurrentGame().getGameDate()).getDaysLeft());
                 break;
             case "strength":
                 comparator = Comparator.comparing(p -> p.getStrength() != null ? p.getStrength() : 0.0f);
@@ -367,7 +387,7 @@ public class PlayersListTable extends VisTable {
      * Calculates the total number of columns currently displayed.
      */
     private int getColumnCount() {
-        int count = 3; // Name, Age, Country (always shown)
+        int count = 4; // Name, Age, Country, Injury (always shown)
         
         // Physical
         if (showAcceleration) count++;
@@ -395,7 +415,7 @@ public class PlayersListTable extends VisTable {
      * Add an attribute cell with value and change indicator
      */
     private void addAttributeCell(Player player, String attributeName, Float value) {
-        String valueText = value != null ? attributeFormat.format(value) : LanguageModLoader.getValue("not_available");
+        String valueText = value != null ? GameFormat.decimal(value, 1) : LanguageModLoader.getValue("not_available");
         
         // Get change indicator
         String changeText = "";
@@ -411,9 +431,9 @@ public class PlayersListTable extends VisTable {
         VisLabel label = new VisLabel(valueText + changeText);
         
         // Color coding based on change
-        if (changeText.contains("↑↑") || changeText.contains("↑")) {
+        if (changeText.contains("[+")) { // U-12: the font has no arrows; the sign and the colour say it
             label.setColor(UiTheme.color("trend.up")); // Green for improvement
-        } else if (changeText.contains("↓↓") || changeText.contains("↓")) {
+        } else if (changeText.contains("[-")) {
             label.setColor(UiTheme.color("trend.down")); // Red for decline
         }
         

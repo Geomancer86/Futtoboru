@@ -1,16 +1,14 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
-import com.rndmodgames.localization.LanguageModLoader;
-import java.math.BigDecimal;
-import com.rndmodgames.futtoboru.engine.finances.Money;
-import java.text.DecimalFormat;
 import java.util.List;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
@@ -19,94 +17,78 @@ import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.data.jobs.ApplicationStatus;
 import com.rndmodgames.futtoboru.data.jobs.JobApplication;
 import com.rndmodgames.futtoboru.data.jobs.JobOpening;
+import com.rndmodgames.futtoboru.engine.finances.Money;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
-import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.futtoboru.ui.UiTheme;
-import com.rndmodgames.futtoboru.ui.UiDialogs;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiDialogs;
+import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Job Board Screen Table v1
- * 
+ *
  * Displays all available job openings with apply functionality.
- * 
+ *
+ * <p>J-01: the openings taking applications (before their deadline, the post still vacant), the salary through
+ * {@link Money#format}, the deadline as a date, and for a post the player applied to the state of his
+ * application (one per post) instead of Apply.
+ *
  * @author Geomancer86
  */
 public class JobBoardScreenTable extends VisTable {
 
+    private static final int COLUMNS = 6;
+
     Game game;
     SaveGame currentGame;
     JobManager jobManager;
-    
+
     VisTable jobsListTable;
     VisScrollPane jobsScrollPane;
-    DecimalFormat df = new DecimalFormat("#,###.00");
-    
+
     public JobBoardScreenTable(Game parent) {
         super(true);
-        
-        // Force output immediately
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "===== CONSTRUCTOR CALLED =====");
-        
+
         this.game = parent;
         this.currentGame = ((Futtoboru)game).getCurrentGame();
         this.jobManager = ((Futtoboru)game).getJobManager();
-        
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Game: " + (game != null ? "OK" : "NULL"));
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "CurrentGame: " + (currentGame != null ? "OK" : "NULL"));
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "JobManager: " + (jobManager != null ? "OK" : "NULL"));
-        
+
         // Title
         this.row();
         this.add(new VisLabel(LanguageModLoader.getValue("job_board"))).colspan(2);
         this.row();
         this.addSeparator();
-        
+
         // Jobs list
         jobsListTable = new VisTable(true);
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Created jobsListTable");
-        
+        jobsListTable.top();
+
         jobsScrollPane = new VisScrollPane(jobsListTable);
         jobsScrollPane.setFadeScrollBars(false);
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Created jobsScrollPane");
-        
+
         this.row();
         this.add(jobsScrollPane).grow().colspan(2);
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Added jobsScrollPane to main table");
-        
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Calling updateDynamicComponents from constructor...");
+
         updateDynamicComponents();
-        
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "=== CONSTRUCTOR COMPLETE ===");
     }
-    
+
     public void updateDynamicComponents() {
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "=== updateDynamicComponents START ===");
-        
-        if (jobManager == null) {
-            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "jobManager is NULL!");
+        if (jobManager == null || currentGame == null) {
             return;
         }
-        
-        if (currentGame == null) {
-            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "currentGame is NULL!");
-            return;
-        }
-        
+
         jobsListTable.clear();
-        
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Getting available jobs...");
+
         List<JobOpening> jobs = jobManager.getAvailableJobs();
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Found " + (jobs != null ? jobs.size() : 0) + " available jobs");
-        
         if (jobs.isEmpty()) {
             jobsListTable.row();
-            jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_no_openings"))).colspan(3);
+            jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_no_openings"))).colspan(COLUMNS);
             return;
         }
-        
+
         // Header
         jobsListTable.row();
         jobsListTable.add(new VisLabel(LanguageModLoader.getValue("table_club"))).width(UiTheme.size("col.wide"));
@@ -116,175 +98,90 @@ public class JobBoardScreenTable extends VisTable {
         jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_deadline"))).width(UiTheme.size("col.label"));
         jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_action"))).width(UiTheme.size("col.number"));
         jobsListTable.row();
-        jobsListTable.addSeparator().colspan(6); // V-01: full width, not the first column only
-        
-        // Jobs
+        jobsListTable.addSeparator().colspan(COLUMNS); // V-01: full width, not the first column only
+
+        Person owner = currentGame.getOwner();
         for (JobOpening job : jobs) {
             Club club = currentGame.getClubById(job.getClubId());
             Profession profession = DatabaseLoader.getProfessionById(job.getProfessionId());
-            
             if (club == null || profession == null) {
                 continue;
             }
-            
+
             jobsListTable.row();
             jobsListTable.add(new VisLabel(club.getName())).width(UiTheme.size("col.wide"));
             jobsListTable.add(new VisLabel(profession.getName())).width(UiTheme.size("col.label"));
             jobsListTable.add(new VisLabel(Money.format(job.getSalary()))).width(UiTheme.size("col.number"));
             jobsListTable.add(new VisLabel(LanguageModLoader.format("jobs_months", job.getContractLengthMonths()))).width(UiTheme.size("col.number"));
-            jobsListTable.add(new VisLabel(job.getApplicationDeadline().toString())).width(UiTheme.size("col.label"));
-            
-            // Apply button - Check if already applied
-            final Long jobId = job.getId(); // Make final for inner class
-            final Club jobClub = club; // Make final for inner class
-            final Profession jobProfession = profession; // Make final for inner class
-            
-            // Check if player has already applied for this job
-            Person owner = currentGame.getOwner();
-            boolean alreadyApplied = false;
-            ApplicationStatus applicationStatus = null;
-            if (owner != null && jobManager != null) {
-                List<JobApplication> playerApps = jobManager.getPlayerApplications(owner);
-                Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Checking " + playerApps.size() + " existing applications for job ID: " + jobId);
-                for (JobApplication app : playerApps) {
-                    if (app != null && app.getJobOpeningId() != null && app.getJobOpeningId().equals(jobId) && app.isActive()) {
-                        alreadyApplied = true;
-                        applicationStatus = app.getStatus();
-                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
-                        break;
-                    }
-                }
-            }
-            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Already applied: " + alreadyApplied + ", Status: " + applicationStatus);
-            
+            jobsListTable.add(new VisLabel(job.getApplicationDeadline() != null
+                    ? JobOfferScreenTable.DATE.format(job.getApplicationDeadline())
+                    : LanguageModLoader.getValue("not_available"))).width(UiTheme.size("col.label"));
+
+            JobApplication application = owner != null ? jobManager.getApplicationFor(owner, job) : null;
             VisTextButton applyButton;
-            if (alreadyApplied) {
-                // Show status instead of Apply button
-                String statusText = LanguageModLoader.getValue("jobs_status_applied");
-                if (applicationStatus == ApplicationStatus.OFFER_RECEIVED) {
-                    statusText = LanguageModLoader.getValue("jobs_status_offer_received");
-                } else if (applicationStatus == ApplicationStatus.REJECTED) {
-                    statusText = LanguageModLoader.getValue("jobs_status_rejected");
-                } else if (applicationStatus == ApplicationStatus.PENDING) {
-                    statusText = LanguageModLoader.getValue("jobs_status_pending");
-                }
-                applyButton = new VisTextButton(statusText);
-                applyButton.setDisabled(true); // Disable the button
+            if (application != null) {
+                // one application per post: its state instead of Apply
+                applyButton = new VisTextButton(statusName(application.getStatus()));
+                applyButton.setDisabled(true);
             } else {
                 applyButton = new VisTextButton(LanguageModLoader.getValue("jobs_apply"));
-            }
-            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Creating Apply button for job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
-            
-            // Verify button is not null
-            if (applyButton == null) {
-                Log.error(Log.UI_JOBS, "JobBoardScreenTable", "CRITICAL: applyButton is NULL after creation!");
-                continue; // Skip this job
-            }
-            
-            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Button created successfully, adding listener...");
-            
-            // Only add listener if not already applied
-            if (!alreadyApplied) {
-                applyButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
-                @Override
-                public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
-                    Log.info(Log.UI_JOBS, "JobBoardScreenTable", "*** TOUCH DOWN on Apply button! Job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
-                    return true; // Return true to indicate we want to receive the touchUp event
-                }
-                
-                @Override
-                public void touchUp(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
-                    Log.debug(Log.UI_JOBS, "JobBoardScreenTable", "touchUp called, checking isPressed...");
-                    if (!applyButton.isPressed()) {
-                        Log.debug(Log.UI_JOBS, "JobBoardScreenTable", "Button not pressed, ignoring");
-                        return; // Button was released outside, ignore
+                final Long jobId = job.getId();
+                applyButton.addCaptureListener(new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        return true;
                     }
-                    Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Button IS pressed, processing click!");
-                    try {
-                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "*** CLICKED EVENT FIRED *** Job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
-                        
-                        if (jobManager == null) {
-                            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "jobManager is NULL!");
-                            return;
+
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                        if (applyButton.isPressed()) {
+                            apply(jobId, club, profession);
                         }
-                        
-                        if (currentGame == null) {
-                            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "currentGame is NULL!");
-                            return;
-                        }
-                        
-                        Person owner = currentGame.getOwner();
-                        if (owner == null) {
-                            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "currentGame.getOwner() is NULL!");
-                            return;
-                        }
-                        
-                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Calling applyForJob for: " + owner.getName());
-                        
-                        // Get the job opening object again (using the captured jobId)
-                        JobOpening jobToApply = null;
-                        List<JobOpening> allJobs = jobManager.getAvailableJobs();
-                        if (allJobs != null) {
-                            for (JobOpening j : allJobs) {
-                                if (j != null && j.getId() != null && j.getId().equals(jobId)) {
-                                    jobToApply = j;
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        if (jobToApply == null) {
-                            Log.error(Log.UI_JOBS, "JobBoardScreenTable", "Could not find job opening with ID: " + jobId);
-                            return;
-                        }
-                        
-                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Found job opening, calling applyForJob for job ID: " + jobId);
-                        JobApplication result = jobManager.applyForJob(owner, jobToApply);
-                        
-                        if (result != null) {
-                            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Application successful: ID=" + result.getId() + ", Status=" + result.getStatus());
-                            
-                            // Show success message
-                            showMessage(LanguageModLoader.getValue("jobs_application_submitted"), 
-                                      LanguageModLoader.format("jobs_application_submitted_text", jobClub.getName(), jobProfession.getName()));
-                            
-                            // Force immediate refresh to show updated status
-                            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Forcing immediate screen refresh...");
-                            
-                            // Post to main thread to ensure UI update happens
-                            Gdx.app.postRunnable(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Refreshing screen in postRunnable...");
-                                    updateDynamicComponents();
-                                    Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Screen refresh completed in postRunnable");
-                                }
-                            });
-                        } else {
-                            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Application returned null (may be rejected or already exists)");
-                            
-                            // Show error message
-                            showMessage(LanguageModLoader.getValue("jobs_application_failed"), 
-                                      LanguageModLoader.getValue("jobs_application_failed_text"));
-                        }
-                        
-                        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "=== Apply button click completed ===");
-                        
-                    } catch (Exception e) {
-                        Log.error(Log.UI_JOBS, "JobBoardScreenTable", "CRITICAL ERROR in Apply button click!", e);
                     }
-                }
                 });
-            } // End if (!alreadyApplied)
-            
-            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Listener added to button, now adding button to table...");
+            }
             jobsListTable.add(applyButton).width(UiTheme.size("col.number"));
-            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Button added to table successfully for job ID: " + jobId);
         }
-        
-        Log.info(Log.UI_JOBS, "JobBoardScreenTable", "=== updateDynamicComponents COMPLETE === Total buttons created: " + (jobs != null ? jobs.size() : 0));
     }
-    
+
+    private void apply(Long jobId, Club club, Profession profession) {
+        Person owner = currentGame.getOwner();
+        JobOpening job = jobManager.getJobOpeningById(jobId);
+        JobApplication result = owner != null && job != null ? jobManager.applyForJob(owner, job) : null;
+        if (result != null) {
+            Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Applied: " + result.getId() + " " + result.getStatus());
+            showMessage(LanguageModLoader.getValue("jobs_application_submitted"),
+                    LanguageModLoader.format("jobs_application_submitted_text", club.getName(), profession.getName()));
+        } else {
+            showMessage(LanguageModLoader.getValue("jobs_application_failed"),
+                    LanguageModLoader.getValue("jobs_application_failed_text"));
+        }
+        Gdx.app.postRunnable(this::updateDynamicComponents);
+    }
+
+    /** The state of an application as the player reads it (also used by My Applications and Club detail). */
+    public static String statusName(ApplicationStatus status) {
+        if (status == null) {
+            return LanguageModLoader.getValue("unknown");
+        }
+        switch (status) {
+        case PENDING:
+            return LanguageModLoader.getValue("jobs_status_pending");
+        case REJECTED:
+            return LanguageModLoader.getValue("jobs_status_rejected");
+        case OFFER_RECEIVED:
+            return LanguageModLoader.getValue("jobs_status_offer_received");
+        case ACCEPTED:
+            return LanguageModLoader.getValue("jobs_status_accepted");
+        case DECLINED:
+            return LanguageModLoader.getValue("jobs_status_declined");
+        case EXPIRED:
+            return LanguageModLoader.getValue("jobs_status_expired");
+        default:
+            return LanguageModLoader.getValue("jobs_status_withdrawn");
+        }
+    }
+
     /**
      * Show a message dialog to the user
      */
@@ -293,9 +190,7 @@ public class JobBoardScreenTable extends VisTable {
         if (stage != null) {
             UiDialogs.info(stage, title, message);
         } else {
-            // Fallback to console if stage not available
             Log.info(Log.UI_JOBS, "JobBoardScreenTable", title + ": " + message);
         }
     }
 }
-

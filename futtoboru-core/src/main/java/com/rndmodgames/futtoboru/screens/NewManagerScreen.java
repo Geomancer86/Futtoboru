@@ -215,7 +215,7 @@ public class NewManagerScreen implements Screen {
                 /**
                  * TODO: make sure date format is right
                  */
-                DateFormat birthDateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+                DateFormat birthDateFormatter = new SimpleDateFormat("dd/MM/yyyy", java.util.Locale.ROOT); // typed input, same in every language
                 
                 try {
                     

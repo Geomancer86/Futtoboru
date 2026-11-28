@@ -92,7 +92,7 @@ public class SettingsScreen implements Screen {
 
         VisTable graphicsSettings = new VisTable();
         VisTable gameplaySettings = new VisTable();
-        VisTable modSettings = new ModsSettingsTable(this.game);
+        VisTable modSettings = new ModsSettingsTable(this.game, this::reopenInNewLanguage);
         this.debugLoggingSettings = new DebugLoggingSettingsTable(this.game);
         
         VisLabel graphicsSettingsLabel = new VisLabel(LanguageModLoader.getValue("graphic_settings"));
@@ -421,6 +421,15 @@ public class SettingsScreen implements Screen {
             }
         }
         return 0;
+    }
+
+    /** U-12: a new language was picked: Settings is built again in it (same screen to go back to). */
+    private void reopenInNewLanguage() {
+        if (leaving) {
+            return;
+        }
+        leaving = true;
+        Gdx.app.postRunnable(() -> ((Futtoboru) game).setScreen(new SettingsScreen(game, returnScreen)));
     }
 
     /** Leaves Settings for the screen it was opened from (after the current frame's input is handled). */

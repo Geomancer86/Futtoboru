@@ -1,0 +1,65 @@
+{
+  "date": "1888-09-08",
+  "description": "Every era parameter at its value on the first match day of the 1888-89 season. Events change these by set/scale/add; see docs/design/ERA_EVENTS_PROPOSAL.md. 0 in massMinG/massMaxG means no rule; 0 in maxWagePerWeek/transferFeeCap means no cap.",
+  "parameters": {
+    "rules": {
+      "offsideOpponents": 3,
+      "offsideOwnHalf": true,
+      "offsideFromThrowIn": true,
+      "penaltyKick": false,
+      "goalNets": false,
+      "keeperHandling": "OWN_HALF",
+      "keeperHandlingPurpose": "DEFENCE",
+      "keeperChargeProtected": false,
+      "keeperSteps": 2,
+      "officials": "UMPIRES_AND_REFEREE",
+      "refereeActsWithoutAppeal": false,
+      "refereeFreeKickWithoutAppeal": false,
+      "refereeDecisionFinal": false,
+      "directFreeKicks": false,
+      "advantage": false,
+      "goalFromCorner": false,
+      "goalFromGoalKick": true,
+      "maxSubstitutes": 0,
+      "minutes": 90,
+      "addedTime": false
+    },
+    "ball": {
+      "radiusM": 0.111,
+      "massDryG": 400,
+      "massMinG": 0,
+      "massMaxG": 0,
+      "laced": true,
+      "waterUptakeMax": 0.56,
+      "uptakeTauMin": 39,
+      "restitution": 0.8,
+      "wetRestitutionScale": 0.875,
+      "laceStrikeShare": 0.125
+    },
+    "kit": {
+      "bootMassG": 500,
+      "bootWetGain": 0.3,
+      "toecap": true,
+      "studMaxIn": 0.5,
+      "shinPadShare": 0.6,
+      "shinPadInjuryScale": 0.6,
+      "shirtWetMassKg": 1.0,
+      "kneesCovered": true,
+      "keeperDistinct": false,
+      "numbers": false
+    },
+    "league": {
+      "pointsWin": 2,
+      "pointsDraw": 1,
+      "tieBreak": "GOAL_AVERAGE",
+      "divisions": 1,
+      "topDivisionClubs": 12,
+      "promotion": "NONE",
+      "reElectionBottom": 4,
+      "maxWagePerWeek": 0,
+      "retainAndTransfer": false,
+      "transferFeeCap": 0,
+      "suspended": false
+    }
+  }
+}

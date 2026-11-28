@@ -1,8 +1,10 @@
 package com.rndmodgames.futtoboru.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -36,7 +38,9 @@ import com.rndmodgames.futtoboru.data.MatchIncome;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Profession;
+import com.rndmodgames.futtoboru.data.ReElection;
 import com.rndmodgames.futtoboru.data.Season;
+import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -225,6 +229,96 @@ class FullSeasonTests extends BaseTest {
                 "checking the competitions again pays no prize twice");
     }
 
+    /**
+     * G-01: every league match and cup tie of the season was played by two frozen team sheets (the player's club
+     * and every AI club alike): eleven squad men each, a captain among them, and every goal scored by a man on his
+     * side's sheet. G-02: a side is short only when men hurt in an earlier match were still out that day, and no man
+     * plays while out.
+     */
+    @Test
+    void everyMatchIsPlayedByTwoTeamSheetsAndOnlyTheElevenScore() {
+        List<Match> all = new ArrayList<>(first.leagueMatches);
+        all.addAll(first.cupMatches);
+        Set<Long> clubsWithSheets = new HashSet<>();
+        int played = 0;
+        for (Match m : all) {
+            if (m.getIsPlayed() == null || !m.getIsPlayed()) {
+                continue;
+            }
+            played++;
+            for (boolean home : new boolean[] { true, false }) {
+                com.rndmodgames.futtoboru.data.TeamSheet sheet = home ? m.getHomeSheet() : m.getAwaySheet();
+                Long clubId = home ? m.getHomeClubId() : m.getAwayClubId();
+                assertNotNull(sheet, "match " + m.getId() + (home ? " home" : " away") + " sheet");
+                assertEquals(clubId, sheet.getClubId());
+                Club club = first.save.getClubById(clubId);
+                // G-04: the 1888-89 squad (the 1 May rollover changed the squads since)
+                Set<Long> squad = first.seasonMen.getOrDefault(clubId, Set.of());
+                Set<Long> out = outOn(club, m);
+                for (Long id : sheet.selectedIds()) {
+                    assertFalse(out.contains(id), club.getName() + ": man " + id + " played while injured, match "
+                            + m.getId());
+                }
+                assertEquals(Math.min(11, squad.size() - out.size()), sheet.selectedCount(),
+                        club.getName() + " in match " + m.getId() + " (" + out.size() + " injured)");
+                assertTrue(squad.containsAll(sheet.selectedIds()), club.getName() + ": squad men only");
+                assertTrue(sheet.isSelected(sheet.getCaptainId()), club.getName() + ": the captain plays");
+                for (Long scorer : home ? m.getHomeScorerIds() : m.getAwayScorerIds()) {
+                    assertTrue(sheet.isSelected(scorer), "scorer " + scorer + " of match " + m.getId() + " played");
+                }
+                clubsWithSheets.add(clubId);
+            }
+        }
+        assertTrue(played > 132, "league and cup matches played: " + played);
+        assertTrue(clubsWithSheets.containsAll(first.leagueClubIds), "every league club picked its sheets");
+        assertNotNull(first.save.getCurrentClub().getTeamSheet(), "the player's club has a standing sheet");
+    }
+
+    /** G-02: the club's men (player ids) still out on the day of {@code match} from injuries in earlier matches. */
+    private static Set<Long> outOn(Club club, Match match) {
+        Set<Long> out = new HashSet<>();
+        LocalDate day = match.getMatchDateTime().toLocalDate();
+        for (Match m : club.getPlayedMatches()) {
+            if (m == match || m.getMatchDateTime() == null || !m.getMatchDateTime().toLocalDate().isBefore(day)) {
+                continue;
+            }
+            boolean home = club.getId().equals(m.getHomeClubId());
+            for (com.rndmodgames.futtoboru.data.MatchInjury i : home ? m.getHomeInjuries() : m.getAwayInjuries()) {
+                int days = i.getDaysOut() != null ? i.getDaysOut() : 0;
+                if (m.getMatchDateTime().toLocalDate().plusDays(days).isAfter(day)) {
+                    for (com.rndmodgames.futtoboru.data.Player p : club.getPlayers()) {
+                        if (p.getPerson() != null && p.getPerson().getId().equals(i.getPersonId())) {
+                            out.add(p.getId());
+                        }
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
+    /** G-02: over a season every kind of injury happens, at the player's club and at AI clubs alike. */
+    @Test
+    void injuriesHappenAtEveryKindOfClubOverASeason() {
+        Set<String> kinds = new HashSet<>();
+        int ai = 0;
+        Long mine = first.save.getCurrentClub().getId();
+        List<Match> all = new ArrayList<>(first.leagueMatches);
+        all.addAll(first.cupMatches);
+        for (Match m : all) {
+            for (com.rndmodgames.futtoboru.data.MatchInjury i : m.getHomeInjuries()) {
+                kinds.add(i.getKind());
+                ai += mine.equals(m.getHomeClubId()) ? 0 : 1;
+            }
+            for (com.rndmodgames.futtoboru.data.MatchInjury i : m.getAwayInjuries()) {
+                kinds.add(i.getKind());
+                ai += mine.equals(m.getAwayClubId()) ? 0 : 1;
+            }
+        }
+        assertEquals(Set.of("knock", "passenger", "carried-off"), kinds);
+        assertTrue(ai > 20, "AI clubs' injuries: " + ai);
+    }
+
     @Test
     void theGoldenBootGoesToThisSeasonsTopLeagueScorer() {
         Map<Long, Integer> goals = new HashMap<>();
@@ -293,6 +387,42 @@ class FullSeasonTests extends BaseTest {
             assertEquals(0, club.getPoints(), club.getName() + " points in the new table");
             assertEquals(0, club.getGoalsScored() + club.getGoalsConceded(), club.getName() + " goals");
         }
+    }
+
+    /**
+     * G-08: with the real data the bottom four of 1888-89 went to the vote at the annual meeting, exactly four places
+     * were filled, and the 1889-90 season has the League's clubs after the vote (twelve, the losers gone).
+     */
+    @Test
+    void theBottomFourWentToTheVoteAndTheNextSeasonHasTheElectedClubs() {
+        ReElection vote = first.leagueEdition.getReElection();
+        assertNotNull(vote, "re-election opened for 1888-89");
+        assertTrue(vote.isHeld(), "the annual meeting voted");
+        List<LeagueStandingRow> table = first.leagueEdition.getFinalStandings();
+        List<Long> bottomFour = new ArrayList<>();
+        for (int i = 8; i < 12; i++) {
+            bottomFour.add(table.get(i).getClubId());
+        }
+        assertEquals(bottomFour, vote.getRetiringIds(), "the bottom four retire");
+        assertEquals(4, vote.getElectedIds().size(), "four places filled");
+        assertEquals(4, new HashSet<>(vote.getElectedIds()).size(), "four different clubs");
+        assertTrue(vote.getMeeting().isAfter(first.leagueEdition.getEndDate().minusDays(1)), "meeting after the season");
+
+        Set<Long> expected = new HashSet<>();
+        for (int i = 0; i < 8; i++) {
+            expected.add(table.get(i).getClubId());
+        }
+        expected.addAll(vote.getElectedIds());
+        Set<Long> members = new HashSet<>();
+        for (Club c : first.league.getLeagueClubs()) {
+            members.add(c.getId());
+        }
+        assertEquals(expected, members, "the League after the vote");
+        CompetitionEdition next = first.league.getEditions().get(first.league.getEditions().indexOf(first.leagueEdition) + 1);
+        assertEquals(expected, new HashSet<>(next.getParticipantClubsIds()), "1889-90 participants");
+        assertFalse(next.getStartDate().isBefore(vote.getMeeting()), "the next season after the meeting");
+        assertEquals(second.leagueEdition.getReElection().getElectedIds(), vote.getElectedIds(), "same seed, same vote");
+        assertEquals(second.leagueEdition.getReElection().getVotes(), vote.getVotes(), "same seed, same votes");
     }
 
     /**
@@ -367,6 +497,72 @@ class FullSeasonTests extends BaseTest {
                 + " to " + cupLast + ", final " + finalDay + ", " + first.cupMatches.size() + " cup matches");
     }
 
+    /**
+     * P2-14 (D30 A9): the FA Cup opens on the calendar's day in October (the qualifying rounds), its first round is
+     * drawn in January and each later round a few days after the round before is decided, before its own date. The
+     * semi-finals are played at one of the season's neutral grounds each (never a semi-finalist's own) and the
+     * final at Kennington Oval; a replay stays at its tie's ground; earlier rounds at the home club's ground.
+     */
+    @Test
+    void theFaCupOpensInOctoberIsDrawnRoundByRoundAndEndsAtNeutralGrounds() {
+        assertEquals(LocalDate.of(1888, 10, 6), first.cupOpenedOn, "opened with the qualifying rounds");
+        assertEquals(LocalDate.of(1888, 10, 6), first.cupEdition.getStartDate().toLocalDate());
+        assertEquals(LocalDate.of(1889, 1, 7), first.roundDrawnOn.get(1), "first round drawn in January");
+
+        Map<Integer, LocalDate> roundDay = new HashMap<>();
+        int lastRound = 0;
+        for (Match m : first.cupMatches) {
+            if (!m.getBracketPath().endsWith("R")) {
+                roundDay.put(m.getRound(), m.getMatchDateTime().toLocalDate());
+                lastRound = Math.max(lastRound, m.getRound());
+            }
+        }
+        assertEquals(5, lastRound, "32 clubs: five rounds");
+        for (int r = 2; r <= lastRound; r++) {
+            LocalDate drawn = first.roundDrawnOn.get(r);
+            assertNotNull(drawn, "round " + r + " drawn");
+            assertTrue(!drawn.isBefore(roundDay.get(r - 1).plusDays(2)), "round " + r + " drawn on " + drawn
+                    + ", two days after round " + (r - 1) + " (" + roundDay.get(r - 1) + ") at the earliest");
+            assertTrue(drawn.isBefore(roundDay.get(r)), "round " + r + " drawn on " + drawn + " before its date "
+                    + roundDay.get(r));
+        }
+        assertEquals(Integer.valueOf(lastRound), first.cupEdition.getDrawnRounds());
+
+        List<String> semiGrounds = List.of("bramall-lane", "alexandra-recreation-ground");
+        Set<String> semisAt = new HashSet<>();
+        Map<String, String> tieVenue = new HashMap<>();
+        for (Match m : first.cupMatches) {
+            if (!m.getBracketPath().endsWith("R")) {
+                tieVenue.put(m.getBracketPath(), m.getVenue());
+            }
+        }
+        for (Match m : first.cupMatches) {
+            String path = m.getBracketPath();
+            boolean replay = path.endsWith("R");
+            int round = m.getRound();
+            if (round == lastRound) {
+                assertEquals("kennington-oval", m.getVenue(), "the final " + path + " at the Oval");
+            } else if (round == lastRound - 1) {
+                assertTrue(semiGrounds.contains(m.getVenue()), "semi-final " + path + " at " + m.getVenue());
+                for (Long club : new Long[] { m.getHomeClubId(), m.getAwayClubId() }) {
+                    Club c = first.save.getClubById(club);
+                    assertNotEquals(m.getVenue(), c.getStadium() != null ? c.getStadium().getDataId() : null,
+                            "never a semi-finalist's own ground: " + c.getName());
+                }
+                if (!replay) {
+                    semisAt.add(m.getVenue());
+                }
+            } else {
+                assertNull(m.getVenue(), path + " at the home club's ground");
+            }
+            if (replay) {
+                assertEquals(tieVenue.get(path.substring(0, path.length() - 1)), m.getVenue(),
+                        "replay " + path + " at its tie's ground");
+            }
+        }
+        assertEquals(2, semisAt.size(), "the two semi-finals at different grounds");
+    }
+
     @Test
     void everySquadCanFieldATwoThreeFiveAtTheStartAndAfterTheRollover() {
         assertTrue(first.save.getAllClubs().size() > 20, "clubs: " + first.save.getAllClubs().size());
@@ -419,9 +615,7 @@ class FullSeasonTests extends BaseTest {
     @Test
     void onlyTheHomeClubBooksTheGateOfLeagueAndCupMatches() {
         Map<Long, List<Long>> gateClubsByMatch = new HashMap<>();
-        // the game lists the clubs of the selected countries twice (as NewGameOverviewScreen does): count each once
-        Set<Club> clubs = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
-        clubs.addAll(first.save.getAllClubs());
+        List<Club> clubs = first.save.getAllClubs(); // each club once (P2-13)
         Map<Long, BigDecimal> gateByMatch = new HashMap<>();
         for (Club c : clubs) {
             for (MatchIncome income : c.getMatchIncomes()) {
@@ -433,14 +627,26 @@ class FullSeasonTests extends BaseTest {
         played.addAll(first.cupMatches);
         assertTrue(played.size() > 132, "league + cup matches: " + played.size());
         Map<Long, BigDecimal> homeRevenueByClub = new HashMap<>();
+        int neutral = 0;
         for (Match m : played) {
-            assertEquals(List.of(m.getHomeClubId()), gateClubsByMatch.get(m.getId()),
-                    "gate entries of match " + m.getId() + " (" + m.getBracketPath() + ", home " + m.getHomeClubId()
-                            + ", away " + m.getAwayClubId() + ")");
+            // P2-14: at a neutral ground (1888-89 semi-finals and final) the Football Association takes the gate:
+            // no club's entry; everywhere else the home club's, once
+            List<Long> expected = new ArrayList<>(NeutralVenues.gateClubs(m, first.save));
+            List<Long> actual = new ArrayList<>(gateClubsByMatch.getOrDefault(m.getId(), List.of()));
+            java.util.Collections.sort(expected);
+            java.util.Collections.sort(actual);
+            assertEquals(expected, actual, "gate entries of match " + m.getId() + " (" + m.getBracketPath()
+                    + ", home " + m.getHomeClubId() + ", away " + m.getAwayClubId() + ", venue " + m.getVenue() + ")");
             assertTrue(m.getMatchRevenue().signum() > 0, "gate of match " + m.getId());
+            if (NeutralVenues.isNeutral(m)) {
+                neutral++;
+                assertEquals(List.of(), expected, "1888-89: the Association's gate at " + m.getVenue());
+                continue;
+            }
             assertEquals(0, m.getMatchRevenue().compareTo(gateByMatch.get(m.getId())), "gate of match " + m.getId());
             homeRevenueByClub.merge(m.getHomeClubId(), m.getMatchRevenue(), BigDecimal::add);
         }
+        assertTrue(neutral >= 3, "two semi-finals and the final at neutral grounds: " + neutral);
         Set<Long> playedIds = new HashSet<>();
         for (Match m : played) {
             playedIds.add(m.getId());
@@ -454,6 +660,52 @@ class FullSeasonTests extends BaseTest {
             }
             assertEquals(0, homeRevenueByClub.getOrDefault(c.getId(), BigDecimal.ZERO).compareTo(booked),
                     c.getName() + ": gate total = sum over its home matches");
+        }
+    }
+
+    /**
+     * P2-13: the game lists every club once from the new game to the rollover (the screen listed the selected
+     * countries' clubs twice), so the weekly expenses were booked once a week per club for the whole season.
+     */
+    @Test
+    void everyClubIsListedOnceAndPaysItsWeeklyExpensesOnce() {
+        List<Club> clubs = first.save.getAllClubs();
+        Set<Long> ids = new HashSet<>();
+        Set<Club> objects = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        for (Club c : clubs) {
+            assertTrue(ids.add(c.getId()), c.getName() + " listed once by id");
+            assertTrue(objects.add(c), c.getName() + " listed once");
+        }
+        assertTrue(clubs.size() >= first.clubsAtStart, "clubs at the start " + first.clubsAtStart + ", now " + clubs.size());
+        int weeks = -1;
+        for (Club c : clubs) {
+            Set<LocalDateTime> periods = new HashSet<>();
+            for (com.rndmodgames.futtoboru.data.ClubExpenses e : c.getExpensesHistory()) {
+                assertTrue(periods.add(e.getPeriodStart()), c.getName() + ": one expense entry for the week of "
+                        + e.getPeriodStart());
+            }
+            if (weeks < 0) {
+                weeks = periods.size();
+            }
+            assertEquals(weeks, periods.size(), c.getName() + ": as many weekly expense entries as every club");
+        }
+        assertTrue(weeks > 50, "a season of weekly expenses: " + weeks);
+    }
+
+    /** P2-13: the league's creation and fixture-list letters name the first league day of the generated schedule. */
+    @Test
+    void theLeagueLettersNameTheFirstLeagueDayOfTheSchedule() {
+        LocalDate firstDay = null;
+        for (Match m : first.leagueMatches) {
+            LocalDate d = m.getMatchDateTime().toLocalDate();
+            firstDay = firstDay == null || d.isBefore(firstDay) ? d : firstDay;
+        }
+        String day = com.rndmodgames.futtoboru.engine.messages.MessageManager.formatDay(firstDay.getDayOfMonth(),
+                firstDay.getMonthValue(), firstDay.getYear());
+        for (String type : new String[] { "LEAGUE_CREATION", "FIXTURE_RELEASE" }) {
+            assertEquals(1, first.messages(type), type);
+            String text = first.message(type).getPlainTextMessage();
+            assertTrue(text.contains(day), type + " names " + day + ": " + text);
         }
     }
 
@@ -481,6 +733,8 @@ class FullSeasonTests extends BaseTest {
         List<Match> cupMatches = new ArrayList<>();
         int drawnReplays;
         int drawsRead;
+        /** P2-13: clubs the new game lists (each once). */
+        int clubsAtStart;
         int days;
         long millis;
         List<String> errors = new ArrayList<>();
@@ -489,6 +743,11 @@ class FullSeasonTests extends BaseTest {
         /** E-01b: clubs of the game that cannot field a 2-3-5, at the new game and after the rollover. */
         List<String> shortAtStart;
         List<String> shortAfterRollover;
+        /** G-04: every man of each club's squad (player ids by club id) before the 1 May contract rollover */
+        Map<Long, Set<Long>> seasonMen = new HashMap<>();
+        /** P2-14: the day the 1888-89 FA Cup opened, and the day each of its rounds was drawn */
+        LocalDate cupOpenedOn;
+        Map<Integer, LocalDate> roundDrawnOn = new HashMap<>();
 
         static SeasonRun play(long seed) {
             SeasonRun run = new SeasonRun();
@@ -545,26 +804,10 @@ class FullSeasonTests extends BaseTest {
             save.setGameDate(season.getStartDate());
 
             save.setAllClubs(new ArrayList<>());
-            for (Competition comp : DatabaseLoader.getCompetitions()) {
-                if (Competition.COMPETITION_CUP.equals(comp.getCompetitionType())) {
-                    save.getAllCups().add(comp);
-                } else if (Competition.COMPETITION_LEAGUE.equals(comp.getCompetitionType())) {
-                    save.getAllLeagues().add(comp);
-                }
-                for (CompetitionEdition edition : comp.getEditions()) {
-                    for (Long clubId : edition.getParticipantClubsIds()) {
-                        if (save.getClubById(clubId) == null && DatabaseLoader.getClubById(clubId) != null) {
-                            save.getAllClubs().add(DatabaseLoader.getClubById(clubId));
-                        }
-                    }
-                }
-            }
-            for (com.rndmodgames.futtoboru.data.Country country : season.getCountries()) {
-                List<Club> clubs = DatabaseLoader.getClubsByCountry().get(country.getId());
-                if (clubs != null) {
-                    save.getAllClubs().addAll(clubs); // as the screen does (duplicates included)
-                }
-            }
+            // the screen's step 6 (P2-13: each club once; it listed the selected countries' clubs twice)
+            com.rndmodgames.futtoboru.system.NewGameClubs.addTo(save, DatabaseLoader.getCompetitions(),
+                    save.getSelectedCountries());
+            clubsAtStart = save.getAllClubs().size();
             owner.setCurrentClubId(startingClub.getId());
             save.getGameScripts().addAll(season.getSeasonScripts());
 
@@ -619,6 +862,15 @@ class FullSeasonTests extends BaseTest {
                 if (engine.getNextGameAction() == FuttoboruGameEngine.DRAW_ACTION) {
                     readDrawMessages();
                 }
+                watchCup();
+                if (save.getContractsSeason() == null || save.getContractsSeason() < 1889) {
+                    for (Club c : save.getAllClubs()) {
+                        Set<Long> men = seasonMen.computeIfAbsent(c.getId(), k -> new HashSet<>());
+                        for (com.rndmodgames.futtoboru.data.Player p : c.getPlayers()) {
+                            men.add(p.getId());
+                        }
+                    }
+                }
                 if (isRolledOver()) {
                     days = (int) java.time.temporal.ChronoUnit.DAYS.between(start, save.getGameDate());
                     return;
@@ -628,6 +880,27 @@ class FullSeasonTests extends BaseTest {
                     + (leagueEdition() != null ? leagueEdition().getFinalStandings().size() + " rows" : "not created")
                     + ", cup winner " + (cupEdition() != null ? cupEdition().getChampionsId() : "no edition")
                     + System.lineSeparator() + diagnostics());
+        }
+
+        /** P2-14: notes the day the FA Cup opens and the day each round first has a tie with both clubs (its draw) */
+        void watchCup() {
+            CompetitionEdition e = cupEdition();
+            if (e == null) {
+                return;
+            }
+            LocalDate today = save.getGameDate().toLocalDate();
+            if (cupOpenedOn == null && e.getStartDate() != null) {
+                cupOpenedOn = today;
+            }
+            for (Club c : save.getAllClubs()) {
+                for (Match m : c.getScheduledMatches()) {
+                    if (e.getId().equals(m.getCompetitionEditionId()) && m.getRound() != null
+                            && m.getHomeClubId() != null && m.getAwayClubId() != null
+                            && (m.getBracketPath() == null || !m.getBracketPath().endsWith("R"))) {
+                        roundDrawnOn.putIfAbsent(m.getRound(), today);
+                    }
+                }
+            }
         }
 
         /**
@@ -759,8 +1032,9 @@ class FullSeasonTests extends BaseTest {
             league = league();
             leagueEdition = leagueEdition();
             cupEdition = cupEdition();
-            for (Club c : league.getLeagueClubs()) {
-                leagueClubIds.add(c.getId());
+            // the 1888-89 clubs: the final table (G-08: the League's clubs now are the ones voted in for 1889-90)
+            for (LeagueStandingRow row : leagueEdition.getFinalStandings()) {
+                leagueClubIds.add(row.getClubId());
             }
             Map<Long, Match> league188889 = new LinkedHashMap<>();
             Map<Long, Match> cupTies = new LinkedHashMap<>();

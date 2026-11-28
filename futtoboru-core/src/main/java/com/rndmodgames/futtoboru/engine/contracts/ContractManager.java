@@ -27,7 +27,9 @@ import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.data.Position;
 import com.rndmodgames.futtoboru.engine.finances.Money;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
+import com.rndmodgames.futtoboru.engine.injuries.Availability;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.engine.team.TeamSheets;
 import com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
@@ -66,6 +68,8 @@ public class ContractManager {
     static final double COMMITTEE_WHIM = 0.1;
     /** A committee does not retain men this old outside its best eleven (placeholder) */
     static final int COMMITTEE_VETERAN_AGE = 34;
+    /** The 1 May rollover waits this long at most for a League's re-election vote (a guard) */
+    static final int MAX_VOTE_WAIT_DAYS = 60;
     /** Local men a club may sign in one rollover when the pool is dry (a guard, never reached in play) */
     static final int MAX_SIGNINGS = 40;
 
@@ -96,6 +100,12 @@ public class ContractManager {
         int running = runningSeason(g);
         LocalDate today = now.toLocalDate();
         if (today.isAfter(ContractCalendar.seasonEnd(running).toLocalDate())) {
+            // G-08: a League whose annual meeting is still to come decides its clubs first (the band of a club
+            // elected or voted out follows the vote); never later than MAX_VOTE_WAIT_DAYS after 1 May
+            if (votePending(g) && !today.isAfter(ContractCalendar.nextSeasonStart(running).toLocalDate()
+                    .plusDays(MAX_VOTE_WAIT_DAYS - 1))) {
+                return;
+            }
             rollover(running, now);
             return;
         }
@@ -360,6 +370,12 @@ public class ContractManager {
         }
 
         int signed = fillSquads(g, settled, next, start, day, mine, summary, releasedBy);
+        // G-01: a standing team sheet keeps no man who left (his place, and the captaincy if his, are emptied)
+        for (Club club : settled) {
+            if (club.getTeamSheet() != null) {
+                TeamSheets.standing(club);
+            }
+        }
         g.setContractsSeason(next);
         Log.info(Log.ENGINE_GAME, "ContractManager", "Rollover to " + ContractCalendar.seasonName(next) + ": " + stayed
                 + " re-engaged, " + left + " left their clubs, " + signed + " signed, " + g.getFreeAgents().size()
@@ -520,8 +536,12 @@ public class ContractManager {
                     && (p.getPosition() == null || p.getPosition().getLine() != line))) {
                 continue;
             }
-            if (best == null || ContractTerms.ability(p) > ContractTerms.ability(best)
-                    || (ContractTerms.ability(p) == ContractTerms.ability(best) && idOf(p) < idOf(best))) {
+            // G-02: a fit man before one still out injured, then the best, then the lowest id
+            boolean fit = Availability.isAvailable(p);
+            boolean bestFit = best != null && Availability.isAvailable(best);
+            if (best == null || (fit && !bestFit) || (fit == bestFit
+                    && (ContractTerms.ability(p) > ContractTerms.ability(best)
+                    || (ContractTerms.ability(p) == ContractTerms.ability(best) && idOf(p) < idOf(best))))) {
                 best = p;
             }
         }
@@ -635,6 +655,19 @@ public class ContractManager {
     }
 
     // ---------------------------------------------------------------------------------------------- helpers
+
+    /** @return true while a League of the main authority waits for its annual meeting (G-08) */
+    static boolean votePending(SaveGame g) {
+        if (g == null || g.getMainAuthority() == null || g.getMainAuthority().getLeagues() == null) {
+            return false;
+        }
+        for (League league : g.getMainAuthority().getLeagues()) {
+            if (com.rndmodgames.futtoboru.engine.season.ReElectionManager.hasPendingMeeting(league)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /** The wage band of a club for a season (league clubs: those of a league of the game's main authority). */
     public ContractBand bandOf(Club club, int season) {

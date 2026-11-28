@@ -2,7 +2,6 @@ package com.rndmodgames.futtoboru.tables.finances;
 
 import java.math.BigDecimal;
 import com.rndmodgames.futtoboru.engine.finances.Money;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +20,7 @@ import com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -40,7 +40,6 @@ public class FinancesScreenTable extends VisTable {
     SaveGame currentGame;
     
     // TODO: international formats in Settings Menu saved on User Properties File
-    DecimalFormat df = new DecimalFormat("#,###.00");
     
     public FinancesScreenTable(Game parent) {
         
@@ -417,7 +416,7 @@ public class FinancesScreenTable extends VisTable {
         // Average attendance
         if (stats.matchCount > 0) {
             int avgAttendance = (int)Math.round(stats.getAverageAttendance());
-            rowTable.add(new VisLabel(String.valueOf(avgAttendance))).width(UiTheme.size("col.long"));
+            rowTable.add(new VisLabel(GameFormat.integer(avgAttendance))).width(UiTheme.size("col.long"));
         } else {
             rowTable.add(new VisLabel("-")).width(UiTheme.size("col.long"));
         }

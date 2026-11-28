@@ -246,6 +246,54 @@ class GameDataTests {
         assertNull(data.squadDribbling(blackburn).get("herby-arthur-1863")); // no source: derived in the game
     }
 
+    /** P2-14: the season calendar and the cup's neutral grounds are checked as strictly as validate.py does */
+    @Test
+    void theCalendarAndNeutralGroundsAreReadAndTyposAreErrors() {
+        GameData shipped = GameData.loadDefault();
+        DataRecord season = shipped.get(GameData.SEASON, "1888-89");
+        assertNotNull(season.raw("calendar"), "1888-89 has a calendar");
+        assertEquals(List.of("fa-cup"), season.refs("calendar.cups[0].competition"));
+        DataRecord cup = shipped.get(GameData.EDITION, "fa-cup-1888-89");
+        assertEquals(List.of("kennington-oval"), cup.refs("neutralVenues.rounds[1].grounds"));
+
+        GameData.Source base = new GameData.ClasspathSource("gamedata");
+        String seasonJson = base.read("core/seasons/1888-89/season.json");
+        GameData data = withSeason(base, seasonJson
+                .replace("\"midweek\": \"wednesday\"", "\"midweek\": \"caturday\"")
+                .replace("\"onOrAfter\": \"10-01\",", "") // the cup's opening rule without an anchor
+                .replace("\"properFrom\": \"02-01\"", "\"properFrom\": \"02-30\"")
+                .replace("\"laterDraws\": \"open-draw\"", "\"laterDraws\": \"open-draw\", \"kickOff\": \"15:00\""));
+        assertError(data, "caturday");
+        assertError(data, "exactly one of `onOrAfter` / `onOrBefore`");
+        assertError(data, "a month-day MM-DD");
+        assertError(data, "unknown field `kickOff`");
+
+        // an unknown neutral ground is reported and left out of the round's list (the edition stays)
+        GameData ground = withSeason(base, seasonJson.replace("\"kennington-oval\"", "\"wembley\""));
+        assertError(ground, "unknown ground `wembley`");
+        assertTrue(ground.get(GameData.EDITION, "fa-cup-1888-89").refs("neutralVenues.rounds[1].grounds").isEmpty());
+    }
+
+    /** The shipped data with another 1888-89 season.json */
+    private static GameData withSeason(GameData.Source base, String seasonJson) {
+        return GameData.load(new GameData.Source() {
+            @Override
+            public String read(String path) {
+                return path.equals("core/seasons/1888-89/season.json") ? seasonJson : base.read(path);
+            }
+
+            @Override
+            public List<String> listJson(String folder) {
+                return base.listJson(folder);
+            }
+
+            @Override
+            public List<String> listFolders() {
+                return base.listFolders();
+            }
+        });
+    }
+
     @Test
     void badPositionOrDribblingIsAnErrorAndTheSquadIsSkipped() {
         GameData.Source base = new GameData.ClasspathSource("gamedata");
@@ -277,6 +325,79 @@ class GameDataTests {
         assertTrue(data.getReport().getWarnings().toString().contains("`jack-edwards-1867`: no position"));
         assertNull(data.squadOf("preston-north-end")); // a broken record is skipped, like any other
         assertNotNull(data.squadOf("everton"));
+    }
+
+    /** The shipped pack with some files replaced by a function of their text (tests of broken data). */
+    private static GameData shippedWith(Map<String, java.util.function.UnaryOperator<String>> edits) {
+        GameData.Source base = new GameData.ClasspathSource("gamedata");
+        return GameData.load(new GameData.Source() {
+            @Override
+            public String read(String path) {
+                String text = base.read(path);
+                java.util.function.UnaryOperator<String> edit = edits.get(path);
+                return text == null || edit == null ? text : edit.apply(text);
+            }
+
+            @Override
+            public List<String> listJson(String folder) {
+                return base.listJson(folder);
+            }
+
+            @Override
+            public List<String> listFolders() {
+                return base.listFolders();
+            }
+        });
+    }
+
+    @Test
+    void historyFactsAndTextsAreLoadedAndExposed() {
+        GameData data = GameData.loadDefault();
+
+        DataRecord preston = data.get(GameData.CLUB, "preston-north-end");
+        assertEquals("cricket", preston.str("origin"));
+        assertTrue(preston.refs("rivals").contains("blackburn-rovers"));
+        // symmetric: Blackburn lists Preston back
+        assertTrue(data.get(GameData.CLUB, "blackburn-rovers").refs("rivals").contains("preston-north-end"));
+        List<HistoryName> nicknames = data.nicknames(preston);
+        assertEquals("The Invincibles", nicknames.get(0).getName());
+        assertTrue(nicknames.get(0).isPeriod() && nicknames.get(0).usedIn(1889) && !nicknames.get(0).usedIn(1880));
+        assertFalse(nicknames.get(1).isPeriod());
+        assertEquals("St Luke's", data.nameHistory(data.get(GameData.CLUB, "wolverhampton-wanderers")).get(0).getName());
+        assertEquals("The Old Warhorse",
+                data.nicknames(data.get(GameData.PERSON, "archie-hunter-1859")).get(0).getName());
+
+        DataRecord villa = data.squadOf("aston-villa");
+        assertEquals(5, data.squadFanTiers(villa).get("archie-hunter-1859").intValue());
+
+        HistoryText text = data.historyText(GameData.CLUB, "preston-north-end", "es"); // falls back to English
+        assertNotNull(text.getHook());
+        assertFalse(text.getHistory().isEmpty());
+        assertNotNull(text.getSeason("1888-89"));
+        assertTrue(text.getSources().get(0).startsWith("http"));
+        assertNotNull(data.historyText(GameData.PERSON, "john-goodall-1863", "en").getBio());
+        assertNull(data.historyText(GameData.CLUB, "nobody", "en"));
+    }
+
+    @Test
+    void brokenHistoryDataIsReported() {
+        GameData data = shippedWith(Map.of(
+                "core/text/en/history.json", t -> t.replace("\"preston-north-end\": {", "\"atlantis-fc\": {"),
+                "core/seasons/1888-89/squads.json", t -> t.replace("\"archie-hunter-1859\": 5", "\"archie-hunter-1859\": 7")));
+
+        assertError(data, "unknown club `atlantis-fc`");
+        assertError(data, "tier must be a whole number 0-5");
+        assertNull(data.historyText(GameData.CLUB, "atlantis-fc", "en"));
+    }
+
+    @Test
+    void brokenNicknameAndOriginAreReported() {
+        GameData data = shippedWith(Map.of("core/clubs.json",
+                t -> t.replace("\"name\": \"The Lilywhites\",", "\"name\": \"The Lilywhites\", \"to\": 1800, \"from\": 1900,")
+                        .replace("\"origin\": \"cricket\"", "\"origin\": \"pub\"")));
+
+        assertError(data, "`from` 1900 is after `to` 1800");
+        assertError(data, "expected one of");
     }
 
     @Test

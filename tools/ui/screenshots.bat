@@ -9,4 +9,6 @@ set PASSES=%~2
 if "%PASSES%"=="" set PASSES=1x,2x
 set LOC=%~3
 if "%LOC%"=="" set LOC=en_US
-call mvnw.cmd -B -q -pl futtoboru-core test-compile org.codehaus.mojo:exec-maven-plugin:3.1.0:exec -Dexec.classpathScope=test -Dexec.executable=java "-Dexec.args=-cp %%classpath com.rndmodgames.futtoboru.tools.ScreenshotTour %OUT% %PASSES% %LOC%"
+rem mvnw.cmd by path: with NoDefaultCurrentDirectoryInExePath set, cmd does not look in the current folder.
+rem %%%%classpath: `call` expands percents once more, so the plugin still gets %classpath
+call "%CD%\mvnw.cmd" -B -q -pl futtoboru-core test-compile org.codehaus.mojo:exec-maven-plugin:3.1.0:exec -Dexec.classpathScope=test -Dexec.executable=java "-Dexec.args=-cp %%%%classpath com.rndmodgames.futtoboru.tools.ScreenshotTour %OUT% %PASSES% %LOC%"

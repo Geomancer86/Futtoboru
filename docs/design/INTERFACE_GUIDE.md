@@ -8,6 +8,11 @@ from the screenshot tour (section 8). The audit behind this guide is `docs/desig
 - **Tokens only.** Colours, pads, sizes, font roles and styles come from `ui/theme.json` through `UiTheme`
   (`UiTheme.color("state.positive")`, `space("sm")`, `size("col.club")`). `UiThemeTest` fails on new literals.
 - **Words come from the language files** (`mods/language/BaseBundle_*.properties`, all 4 bundles; `LanguageBundleKeysTest`).
+- **Dates and numbers in the game language, never the machine's** (U-12): `GameFormat.mediumDate / numericDate /
+  longDate / weekdayDate / time / decimal / integer / format` (`com.rndmodgames.localization`). Patterns are bundle keys
+  (`date_*_pattern`, `time_pattern`, `clock_pattern`), month and day names come from the language's locale
+  (en-US, en-GB, es-ES, es-419). Money stays `Money.format`. `GameFormatGuardTest` fails on a new
+  `DateTimeFormatter.ofPattern` / `String.format` / `DecimalFormat` in the UI packages and inbox letters.
 - **1888 tone.** Secretary, committee, ground, gate, umpire, letter. No modern jargon (no scouts' reports,
   no transfer windows, no cards).
 - **1280×720 is the smallest window (D18).** Everything must work there at 1×; 2× must give the same layout.
@@ -38,7 +43,7 @@ The in-game screen (`MainGameScreen`) has three parts:
 | Toggle button | `UiTheme.style("button.toggle")`; checked = orange (`accent`) | the left menu |
 | Primary button | `UiTheme.style("button.primary")`: the one main action of a panel | Send the Invitation (Schedule, arrange a friendly) |
 | Labels by role | font roles `display` 1.5, `title` 1.3, `heading` 1.2, `subheading` 1.1, `body` 1.0, `small` 0.9 (`UiTheme.fontScale`); section headings use `text.heading` (lavender) | dashboard cards above |
-| Link | VisUI `LinkLabel` (skin orange) for in-game links (player, club, score) and web links; Club Info / Club Detail still colour their source URL with `link.normal`/`link.hover` (blue). New code: `LinkLabel` | squad names, Authorities (Wikipedia) |
+| Link | VisUI `LinkLabel` (skin orange, hand cursor) for every link: in-game ones (player, club, score) and web ones (`new LinkLabel(text, url)` opens the browser). One link colour; no other label is coloured as a link | squad names, Authorities (Wikipedia), Club Info source |
 | Select box | `VisSelectBox`; the Options box keeps showing "Options" after a pick | top bar |
 | Data table | header row, full-width separator, rows; numbers right-aligned in fixed `col.*` widths; abbreviated headers get a tooltip | ![squad](img/squad-tooltip-1x.png) |
 | Dialog | through `UiDialogs` only (section 5) | ![unsaved](img/unsaved-progress-1x.png) |
@@ -61,13 +66,17 @@ Colours say something about **the game**, never "this is a number".
 | `rating.*` | attribute quality bands, gold to red |
 | `category.*` | inbox categories (league cyan, cup gold, authority orange, match green, job magenta, system white) |
 | `status.filled/vacant`, `application.*` | job screens |
-| `link.*`, `selection`, `indicator.unread` | links, the selected row, unread marker |
+| `selection`, `indicator.unread` | the selected row, unread marker (links take the `LinkLabel` skin colour, no token) |
 
 Keep contrast: muted text (`grey-50`) goes on black or on the dark `button` background, never on `button-over`.
 
 ## 5. Windows and dialogs
 - **One modal at a time.** Open every dialog with `UiDialogs.show / info / confirm`; a dialog that opens another
   replaces itself. `SaveGameDialog` and `LoadGameDialog` call `UiDialogs.track` before `super.show`.
+- **Esc is the dialog's Cancel / Close / OK, never a destructive choice** (U-12). `UiDialogs.confirm` takes the value
+  Esc answers with (the Cancel button's: unsaved progress → Cancel, never Do Not Save; Delete / Overwrite → Cancel);
+  `info` and `show` close; a dialog class sets its own with `UiDialogs.closeOnEscape(this, this::hide)`. The key is
+  caught at the dialog (also while typing in its text field) and stops there, so the top-bar Back does not run.
 - Dialogs are for a question that blocks the player's action (save over a name, delete a save, unsaved progress,
   a failed load). News, results and replies are **inbox messages**, not dialogs. A draw that blocks time is a
   message plus the top-bar button, not a dialog.
@@ -84,18 +93,19 @@ one: league tables (Pld, W, D, L, GF, GA, Pts: `UiTooltips.LEAGUE_COLUMNS`) and 
 ```
 Menu ─ New Game → Season (+ Create Manager) → Countries → Overview → in game
      ─ Load Game (dialog) → in game        ─ Settings → back to Menu
-     ─ Match Engine Debug → 2D viewer (dev) ─ Quit
+     ─ Match Engine Debug → 2D viewer (only with -Dfuttoboru.dev=true, docs/BUILD.md) ─ Quit
+     Settings: Language switches at once (saved) and Settings is built again in it
 In game: top bar Options = Save | Load | Settings | Quit to menu | Quit to desktop
          (Load and both Quits ask Save First / Do Not Save / Cancel when there is unsaved progress)
   manager:    Home, Inbox, Squad | Schedule, Match History, Competitions, History | Club Info, Finances |
               Personal Details, Authorities
   job seeker: Home, Inbox | History | Club Browser, Job Board, My Applications | Personal Details, Authorities
-  drill-downs: Competitions → League / Cup detail → Cup bracket; Squad → Player; Club Browser → Club detail;
+  drill-downs: Competitions → League / Cup detail → Cup bracket; Squad (tabs Players | Team Sheet) → Player; Club Browser → Club detail;
                My Applications → Job offers ⇄ Negotiation; Inbox / top bar → League or Cup draw;
                Schedule ← Match Preview → Match Result (top bar)
 ```
-- **Esc**: Back in game (the top-bar Back button, `NavigationHistory`); in Settings, back to where you came from.
-  While a dialog is open Esc does nothing yet (dialogs do not close on Esc).
+- **Esc**: closes the open dialog (its Cancel, section 5); otherwise Back in game (the top-bar Back button,
+  `NavigationHistory`); in Settings, back to where you came from.
 - **F12**: screenshot of the window to `Documents/RndModGames/Futtuboru/screenshots`, with a toast (in game only).
 - To add a menu entry: one `MenuEntry` in `MenuEntries.ALL`, and its drill-downs in `DRILL_DOWNS`.
 
@@ -119,7 +129,7 @@ More captures: [menu](img/menu-1x.png) · [settings](img/settings-1x.png) ([2×]
 ## 9. Checklist for a new screen
 1. A `*ScreenTable` shown by `MainMenuManager.setActiveMainScreen` (a `case` there, or the entry shows an empty
    panel), plus a `MenuEntry` or a drill-down mapping.
-2. Every word through `LanguageModLoader.getValue(key)`, the key in all 4 bundles.
+2. Every word through `LanguageModLoader.getValue(key)`, the key in all 4 bundles; dates and numbers through `GameFormat`.
 3. Colours, pads, sizes and styles from `UiTheme` tokens; no `setDebug`, no `setFontScale` literals.
 4. Header separators span all columns; long lists inside a scroll pane, or leave it to `fitContent`.
 5. Dialogs through `UiDialogs`; abbreviations with a tooltip.

@@ -299,6 +299,7 @@ public class MainGameMenuTable extends VisTable {
                                LanguageModLoader.getValue("discard_progress"),
                                LanguageModLoader.getValue("cancel") },
                 new Integer[] { CONFIRM_SAVE_FIRST, CONFIRM_DISCARD, CONFIRM_CANCEL },
+                CONFIRM_CANCEL, // Esc = Cancel, never Do Not Save
                 result -> {
                     if (result == CONFIRM_SAVE_FIRST) {
                         showSaveDialog(stage, action);
@@ -529,8 +530,9 @@ public class MainGameMenuTable extends VisTable {
         
         // Simulate Match and Advance Time
         ((Futtoboru)(game)).getGameEngine().getMatchResult();
-        
-        mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_RESULT_SCREEN);
+
+        // the match just played (not one opened earlier from Match History, G-03)
+        mainMenuManager.showLatestMatchResult();
         
         mainButtonContainer.clear();
         mainButtonContainer.add(continueGameButton);

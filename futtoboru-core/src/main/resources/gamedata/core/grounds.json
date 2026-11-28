@@ -620,5 +620,32 @@
       "https://en.wikipedia.org/wiki/Heeley_F.C.",
       "https://en.wikipedia.org/wiki/Heeley_F.C.#Grounds"
     ]
+  },
+  {
+    "id": "kennington-oval",
+    "name": "Kennington Oval",
+    "opened": 1845,
+    "capacity": 25000,
+    "description": "Surrey's cricket ground in south London, on a former market garden of the Duchy of Cornwall. It staged nearly every FA Cup final up to 1892, because C. W. Alcock was secretary of both Surrey and the FA. Gasholders stood just outside from about 1853.",
+    "ownedByClub": false,
+    "sources": [
+      "https://en.wikipedia.org/wiki/The_Oval",
+      "https://en.wikipedia.org/wiki/1889_FA_Cup_final",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season"
+    ],
+    "notes": "P2-14 (H-02 research: docs/data/history/GROUNDS_1888-89.md): a neutral FA Cup venue, no club's home. Capacity = the 1889 final crowd (22,250 to 27,000 in the sources; 25,000 taken), not a measured capacity. No value, land value or rent: no club rents it in the game."
+  },
+  {
+    "id": "bramall-lane",
+    "name": "Bramall Lane",
+    "opened": 1855,
+    "capacity": 23000,
+    "description": "A Sheffield cricket ground leased from the Duke of Norfolk in 1855 and Yorkshire's headquarters until 1893. Over 20,000 came to the floodlit match of 14 October 1878. The Wednesday played here until 1887; Sheffield United were formed days after the 1889 FA Cup semi-final.",
+    "ownedByClub": false,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Bramall_Lane",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season"
+    ],
+    "notes": "P2-14 (H-02 research: docs/data/history/GROUNDS_1888-89.md): a neutral FA Cup venue in 1888-89, no club's home that season. Capacity = the 1889 semi-final crowd (22,688), rounded; not a measured capacity. No value, land value or rent: no club rents it in the game."
   }
 ]

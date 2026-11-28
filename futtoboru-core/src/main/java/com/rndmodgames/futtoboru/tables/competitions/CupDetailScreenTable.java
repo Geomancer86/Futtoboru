@@ -2,7 +2,6 @@ package com.rndmodgames.futtoboru.tables.competitions;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -19,6 +18,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -43,7 +43,7 @@ public class CupDetailScreenTable extends VisTable {
     private VisScrollPane contentScrollPane;
     private VisTable contentTable;
     
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
+    private DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.MEDIUM); // U-12: the game language
     
     public CupDetailScreenTable(Game parent) {
         super(true);
@@ -227,11 +227,21 @@ public class CupDetailScreenTable extends VisTable {
                     
                     // Score or vs
                     String score = " " + LanguageModLoader.getValue("match_vs") + " ";
-                    if (match.getIsPlayed() != null && match.getIsPlayed() && 
+                    if (match.getIsPlayed() != null && match.getIsPlayed() &&
                         match.getHomeGoals() != null && match.getAwayGoals() != null) {
-                        score = " " + match.getHomeGoals() + " - " + match.getAwayGoals() + " ";
+                        // G-03: a played tie opens its result and report
+                        final Match played = match;
+                        com.kotcrab.vis.ui.widget.LinkLabel scoreLink = new com.kotcrab.vis.ui.widget.LinkLabel(
+                            match.getHomeGoals() + " - " + match.getAwayGoals());
+                        scoreLink.setListener(url -> {
+                            if (menuManager != null) {
+                                menuManager.showMatchResult(played);
+                            }
+                        });
+                        row.add(scoreLink).width(UiTheme.size("col.score")).center();
+                    } else {
+                        row.add(new VisLabel(score)).width(UiTheme.size("col.score")).center();
                     }
-                    row.add(new VisLabel(score)).width(UiTheme.size("col.score")).center();
                     
                     // Away team or "Winner of X"
                     String awayName = getTeamNameOrWinner(match, false);

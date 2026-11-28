@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -362,6 +361,10 @@ public class FuttoboruGameEngine {
         LocalDateTime newDate = current.plusDays(1);
         gameInstance.getCurrentGame().setGameDate(newDate);
         
+        // G-02: the day's injury recovery, every club (a man fit again is available for today's matches)
+        com.rndmodgames.futtoboru.engine.injuries.InjuryManager.recoverDaily(gameInstance.getCurrentGame(), newDate,
+                messageManager);
+
         // Check Game Scripts (may create new scheduled messages)
         scriptsManager.checkGameScripts();
 
@@ -429,15 +432,10 @@ public class FuttoboruGameEngine {
          *       
          *       - simulate all clubs, not only player controlled
          *
-         * P2-12: each club once a day. A new game lists the clubs of the selected countries a second time
-         * (NewGameOverviewScreen adds the competitions' participants, then all clubs of each country), so every
-         * home club sold tickets twice a day and booked each gate twice.
+         * P2-13: the game lists each club once (NewGameClubs for a new game, SaveGame.removeDuplicateClubs on
+         * load), so this and every other per-club step runs once per club a day.
          */
-        Set<Club> processedClubs = Collections.newSetFromMap(new IdentityHashMap<>());
         for (Club currentClub : gameInstance.getCurrentGame().getAllClubs()) {
-            if (!processedClubs.add(currentClub)) {
-                continue;
-            }
 
             //
             Log.debug(Log.ENGINE_GAME, "FuttoboruGameEngine", "PROCESSING CLUB: " + currentClub.getName());
@@ -578,12 +576,10 @@ public class FuttoboruGameEngine {
             }
         }
         
-        // Calculate and deduct expenses for all clubs, each once (G-04: a new game lists some clubs twice, which
-        // booked their week's expenses, wages included, twice; P2-12 did the same for the daily ticket loop)
+        // Calculate and deduct expenses for all clubs
         int expensesCalculated = 0;
-        Set<Club> booked = Collections.newSetFromMap(new IdentityHashMap<>());
         for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
-            if (club == null || !booked.add(club)) {
+            if (club == null) {
                 continue;
             }
             
@@ -619,9 +615,8 @@ public class FuttoboruGameEngine {
     
     /** G-04: the month's income and expenditure of every club start again on the 1st */
     private void resetMonthTotals() {
-        Set<Club> done = Collections.newSetFromMap(new IdentityHashMap<>());
         for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
-            if (club != null && done.add(club)) {
+            if (club != null) {
                 club.setMonthIncome(BigDecimal.ZERO);
                 club.setMonthExpenditure(BigDecimal.ZERO);
             }

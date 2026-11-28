@@ -141,6 +141,11 @@ class ContractSeasonTests extends BaseTest {
     }
 
     private static void roundTrip(SaveGame game) {
+        // the fixture's manager has no languages (R-11a fills them on load): give them now so the text compares
+        com.rndmodgames.futtoboru.system.generators.LanguageGenerator.fillMissing(game.getAllPersons(),
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getLanguageData(),
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getGameData(),
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getRandom());
         GameFingerprint before = GameFingerprint.of(game);
         String text = SaveCodec.encode(game, "G-04", LocalDateTime.of(2000, 1, 1, 0, 0));
         LoadResult loaded = SaveCodec.decode(text);

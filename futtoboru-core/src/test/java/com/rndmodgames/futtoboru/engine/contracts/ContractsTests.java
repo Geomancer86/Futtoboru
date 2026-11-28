@@ -152,8 +152,6 @@ class ContractsTests extends BaseTest {
         for (int i = 2; i < men.size(); i++) {
             mine.addPlayerContract(contract(mine, men.get(i), 1888, ContractType.PROFESSIONAL, 30, 0));
         }
-        // a new game lists some clubs twice (NewGameOverviewScreen): the week is still booked once
-        world.game.getAllClubs().add(mine);
         BigDecimal season = ContractBand.ofShillings(45 + 2 + 30 * 9);
         BigDecimal summer = ContractBand.ofShillings(20);
         assertEquals(0, season.compareTo(ContractTerms.wageBill(mine, false)));
@@ -324,6 +322,39 @@ class ContractsTests extends BaseTest {
         day(1889, 5, 2);
         assertEquals(size, mine.getPlayers().size());
         assertEquals(1, messages(ContractManager.MESSAGE_CLOSE_SEASON).size());
+    }
+
+    @Test
+    void theRolloverWaitsForTheReElectionVoteAndEmptiesTheSheetPlacesOfMenWhoLeft() {
+        // G-08: the League's annual meeting is still to come on 1 May (a late last League day)
+        com.rndmodgames.futtoboru.data.CompetitionEdition edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
+        com.rndmodgames.futtoboru.data.ReElection vote = new com.rndmodgames.futtoboru.data.ReElection();
+        vote.setMeeting(LocalDateTime.of(1889, 5, 4, 0, 0));
+        edition.setReElection(vote);
+        world.league.setEditions(new ArrayList<>(List.of(edition)));
+        // G-01: the manager's standing sheet names the man he will not retain, as captain
+        Player releasedMan = mine.getPlayers().get(2);
+        com.rndmodgames.futtoboru.data.TeamSheet sheet = com.rndmodgames.futtoboru.engine.team.TeamSheets.standing(mine);
+        int slot = -1;
+        for (int s = 0; s < com.rndmodgames.futtoboru.data.TeamShape.SLOTS; s++) {
+            if (releasedMan.getId().equals(sheet.getPlayerId(s))) {
+                slot = s;
+            }
+        }
+        assertTrue(slot >= 0, "the released man is on the sheet");
+        sheet.setCaptainId(releasedMan.getId());
+
+        day(1889, 4, 16);
+        contracts.release(contractOf(mine, 2));
+        day(1889, 5, 1);
+        assertEquals(Integer.valueOf(1888), world.game.getContractsSeason(), "1 May: waits for the vote");
+        assertTrue(mine.getPlayers().contains(releasedMan));
+        vote.setHeld(true);
+        day(1889, 5, 4);
+        assertEquals(Integer.valueOf(1889), world.game.getContractsSeason(), "rolled over after the vote");
+        assertFalse(mine.getPlayers().contains(releasedMan));
+        assertNull(mine.getTeamSheet().getPlayerId(slot), "his place on the sheet is empty");
+        assertNull(mine.getTeamSheet().getCaptainId(), "and the captaincy with it");
     }
 
     @Test
