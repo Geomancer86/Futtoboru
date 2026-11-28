@@ -30,6 +30,8 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 | D23 | **DarkBlade code may be reused or re-implemented in Futtoboru** (producer, 2026-11-28), including in this public repo. Port as-is, port + adapt, or re-implement per module (plan: E-21 viewer). Still never carry over secrets, credentials, LAN addresses, personal data or business notes (`PRIVACY.md`), and third-party or AI-generated assets only after their licences are checked. |
 | D24 | **Viewer port choices** (producer, 2026-11-28; `docs/design/MATCH_VIEWER_PLAN.md`): copy-port DarkBlade engine classes per class with an origin line (clearance confirmed for all DarkBlade code); keep the 30 Hz simulation with viewer interpolation; replays = ~20 s view buffer + full re-simulation from seed. View angle and pixel scale come from the art prototype checklist. |
 
+| D25 | (producer, 2026-11-28) Each **new game draws a fresh seed** (saved in the game; tests and replays still pass `-Dfuttoboru.seed`). **Agents may push** what progress needs, including tagged releases to `main` (fast-forward only, never force). Old `feature/ui-auto-scale` archived as tag `archive/ui-auto-scale-2026-07` and deleted. E-01 follow-ups queued: source the placeholder positions, dribbling in ageing and snapshots, positions for generated players. |
+
 ## Phases
 **Phase 0: consolidate git** (done 2026-11-27 except P0-4)
 - P0-1 archive the 4 local-only repos ✔ · P0-2 move root docs ✔ · P0-3 CLAUDE.md + HANDOFF/BUILD/ROADMAP/STATUS ✔
