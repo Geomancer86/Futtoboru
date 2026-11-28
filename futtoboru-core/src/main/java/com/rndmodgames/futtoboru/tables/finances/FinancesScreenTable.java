@@ -479,6 +479,9 @@ public class FinancesScreenTable extends VisTable {
                 .colspan(2).left().pad(UiTheme.space("xxs")).row();
     }
 
+    private static final String[] DEBT_LEVEL = { null, "finances_debt_level1", "finances_debt_level2",
+            "finances_debt_level3" };
+
     /** G-12: budget vs actual (whole season, to date, so far) and the club's debt */
     private void displayBudget(Club club) {
         Budget b = club.getBudget();
@@ -540,7 +543,7 @@ public class FinancesScreenTable extends VisTable {
         displayExpenseRow(LanguageModLoader.getValue("finances_debt_interest"), b.getActualInterest());
         int level = BudgetManager.debtLevel(club);
         if (level > 0) {
-            VisLabel state = new VisLabel(LanguageModLoader.getValue("finances_debt_level" + level));
+            VisLabel state = new VisLabel(LanguageModLoader.getValue(DEBT_LEVEL[level]));
             state.setColor(UiTheme.color(level >= 3 ? "state.negative" : "text.secondary"));
             this.add(state).colspan(2).left().pad(UiTheme.space("xxs")).row();
         }

@@ -60,6 +60,11 @@ public class BudgetManager {
     public static final int WARN_GATES_AFTER_WEEKS = 20;
     public static final BigDecimal WARN_GATES_UNDER = new BigDecimal("0.75");
 
+    private static final String[] DEBT_TITLE = { null, "finances_msg_debt1_title", "finances_msg_debt2_title",
+            "finances_msg_debt3_title" };
+    private static final String[] DEBT_BODY = { null, "finances_msg_debt1_body", "finances_msg_debt2_body",
+            "finances_msg_debt3_body" };
+
     public static final String MESSAGE_DEBT = "FINANCE_DEBT_";
     public static final String MESSAGE_SPEND = "FINANCE_BUDGET_SPEND";
     public static final String MESSAGE_GATES = "FINANCE_BUDGET_GATES";
@@ -243,8 +248,7 @@ public class BudgetManager {
         Object[] args = { MessageManager.formatDay(now.getDayOfMonth(), now.getMonthValue(), now.getYear()),
                 Money.format(debt(club)), Money.format(b.getFacilityLimit()) };
         send(MESSAGE_DEBT + level, level >= 3 ? MessagePriority.URGENT : MessagePriority.NORMAL,
-                LanguageModLoader.format("finances_msg_debt" + level + "_title", args),
-                LanguageModLoader.format("finances_msg_debt" + level + "_body", args), now);
+                LanguageModLoader.format(DEBT_TITLE[level], args), LanguageModLoader.format(DEBT_BODY[level], args), now);
     }
 
     private void warnBudget(Club club, Budget b, LocalDateTime now) {
