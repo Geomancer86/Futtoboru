@@ -16,7 +16,6 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 | P2-14 neutral venues on `Match` + season calendar as data (FA Cup opens/drawn in its real month) | BOOK3PRO | `b3/P2-14-venues-calendar` | 2026-11-28 |
 | G-01 team sheet (XI, shape, style, captain; AI too) on the instant result **(PARKED: WIP pushed, next to finish)** | BOOK3PRO | `b3/G-01-team-sheet` | 2026-11-28 |
 | G-04 contracts through the season (AI clubs too) **(PARKED: WIP pushed, after G-01)** | BOOK3PRO | `b3/G-04-contracts` | 2026-11-28 |
-| G-08 re-election vote for the bottom clubs + season summary letter at rollover (contracts, retained lists, free agents stay in G-04) | BOOK3PRO | `b3/G-02-new-season` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
