@@ -41,7 +41,7 @@
             <!-- ./mvnw -B verify -Pslow: the slow tier alone (Jenkins after each develop commit) -->
             <id>slow</id>
             <properties>
-                <test.groups>slow,season</test.groups>
+                <groups>slow,season</groups>
                 <test.excludedGroups>smoke</test.excludedGroups>
             </properties>
         </profile>
@@ -92,7 +92,6 @@
 
    		<!-- T-01 test tiers (D27): JUnit tags left out of the default (fast) run; -Pfull keeps only smoke out -->
    		<test.excludedGroups>slow,season,smoke</test.excludedGroups>
-   		<test.groups></test.groups>
    		
    		<!-- Java Source Version -->
    		<java.source.version>17</java.source.version>
@@ -110,7 +109,6 @@
                     <version>${maven.surefire.plugin.version}</version>
                     <configuration>
                         <excludedGroups>${test.excludedGroups}</excludedGroups>
-                        <groups>${test.groups}</groups>
                     </configuration>
                 </plugin>
                 <plugin>

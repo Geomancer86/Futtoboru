@@ -1,21 +1,79 @@
 name: CI
 
+# T-01 test tiers (D27, docs/BUILD.md "Test tiers"):
+#   push to a feature branch (ws/**, b3/**, ...) -> the level of what the branch changed (tools/test_level.py):
+#                                                  docs: no Java; data: data checks + Java data/guard tests;
+#                                                  presentation/simulation: the fast tier
+#   push to develop / main, PR into develop      -> full tier (-Pfull)
+#   nightly schedule, workflow_dispatch          -> full + smoke (-Pfull,smoke) under Xvfb
 on:
   push:
   pull_request:
+    branches: [develop]
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: "fast, full or smoke"
+        default: smoke
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  java:
-    name: Maven verify (JDK 17)
+  level:
+    name: Decide the test level
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    outputs:
+      tier: ${{ steps.decide.outputs.tier }}
+      level: ${{ steps.decide.outputs.level }}
+      maven: ${{ steps.decide.outputs.maven }}
+      python: ${{ steps.decide.outputs.python }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: decide
+        run: |
+          ref="${GITHUB_REF#refs/heads/}"
+          if [ "${{ github.event_name }}" = "schedule" ]; then tier=smoke
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then tier="${{ github.event.inputs.tier }}"
+          elif [ "${{ github.event_name }}" = "pull_request" ] || [ "$ref" = develop ] || [ "$ref" = main ]; then tier=full
+          else tier=branch
+          fi
+          if [ "$tier" = branch ]; then
+            python3 tools/test_level.py --base origin/develop --no-green --json > level.json
+            cat level.json
+            level=$(python3 -c "import json; print(json.load(open('level.json'))['level'])")
+            maven=$(python3 -c "import json; print(' '.join(json.load(open('level.json'))['maven']))")
+            python=$(python3 -c "import json; d=json.load(open('level.json')); print('true' if d['pytest'] or d['validate'] else 'false')")
+            tier=fast
+          else
+            level=simulation
+            python=true
+            case "$tier" in
+              full) maven="-B -ntp verify -Pfull" ;;
+              smoke) maven="-B -ntp verify -Pfull,smoke" ;;
+              *) maven="-B -ntp verify" ;;
+            esac
+          fi
+          echo "tier=$tier" >> "$GITHUB_OUTPUT"
+          echo "level=$level" >> "$GITHUB_OUTPUT"
+          echo "maven=$maven" >> "$GITHUB_OUTPUT"
+          echo "python=$python" >> "$GITHUB_OUTPUT"
+          echo "tier $tier, level $level, maven: ${maven:-none}, python checks: $python"
+
+  java:
+    name: Maven (${{ needs.level.outputs.tier }} tier, level ${{ needs.level.outputs.level }})
+    needs: level
+    if: needs.level.outputs.maven != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -23,20 +81,26 @@ jobs:
           distribution: temurin
           java-version: "17"
           cache: maven
-      - name: Install Xvfb (libGDX tests, as on the old Jenkins)
+      - name: Install Xvfb (libGDX tests, the smoke test)
         run: sudo apt-get update -q && sudo apt-get install -y -q xvfb
-      - name: ./mvnw -B verify
-        run: xvfb-run -a ./mvnw -B -ntp verify
+      - name: ./mvnw ${{ needs.level.outputs.maven }}
+        run: xvfb-run -a ./mvnw ${{ needs.level.outputs.maven }}
+      - name: Untagged slow test classes (tools/test_tiers.py)
+        run: python3 tools/test_tiers.py
       - name: Upload test reports on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: surefire-reports
-          path: "**/target/surefire-reports/"
+          name: test-reports
+          path: |
+            **/target/surefire-reports/
+            **/target/failsafe-reports/
           retention-days: 7
 
   data:
-    name: Game data (pytest + validator)
+    name: Game data and tools (pytest + validator)
+    needs: level
+    if: needs.level.outputs.python == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -45,7 +109,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install --quiet pytest
-      - name: pytest tools/data tools/art
-        run: python -m pytest -q tools/data tools/art
+      - name: pytest tools/data tools/art tools/test_dev_tools.py
+        run: python -m pytest -q tools/data tools/art tools/test_dev_tools.py
       - name: validate game data
         run: python tools/data/validate.py

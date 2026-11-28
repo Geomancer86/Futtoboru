@@ -157,7 +157,7 @@ def decide(base=None, tier="fast", offline=False, use_green=True):
             level = "simulation"
             why.setdefault("simulation", []).append("(%d tests selected: more than %d)" % (len(selected), MAX_SELECTED))
         else:
-            tests = GUARD_TESTS + [t for t in selected if t not in GUARD_TESTS]
+            tests = GUARD_TESTS + (DATA_TESTS if "data" in why else []) + [t for t in selected if t not in GUARD_TESTS]
     if tier == "full" and level != "docs":
         level = "simulation"  # --full: the whole full tier for any code or data change
     desktop = any(f.startswith("futtoboru-desktop/") for f in files)
