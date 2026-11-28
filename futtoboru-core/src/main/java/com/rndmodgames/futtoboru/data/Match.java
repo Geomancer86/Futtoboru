@@ -86,6 +86,15 @@ public class Match implements Serializable {
      */
     private String venue;
 
+    /**
+     * E-17 (D19-9): every event of the match as the ECS engine saw it, in the compact saved form of
+     * {@code match.ecs.events.MatchEventLog} (a short versioned Base64 string, about 2 KB a match); read back with
+     * {@code engine.report.MatchEvents.of(match)} for the ticker and the report. Null for a match the instant engine
+     * played, an unplayed match and an older save. Player refs in it name the slots of {@link #getHomeSheet()} /
+     * {@link #getAwaySheet()}.
+     */
+    private String eventLog;
+
     // Match Type Constants
     public static final int FRIENDLY_MATCH = 1;
     public static final int LEAGUE_MATCH = 2;
@@ -357,5 +366,14 @@ public class Match implements Serializable {
 
     public void setVenue(String venue) {
         this.venue = venue;
+    }
+
+    /** E-17: the match's events in their compact saved form, null when none (instant engine, older save). */
+    public String getEventLog() {
+        return eventLog;
+    }
+
+    public void setEventLog(String eventLog) {
+        this.eventLog = eventLog;
     }
 }
