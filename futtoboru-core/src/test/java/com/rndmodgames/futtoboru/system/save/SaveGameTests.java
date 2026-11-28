@@ -325,6 +325,49 @@ class SaveGameTests {
         assertFalse(game.getAllClubs().isEmpty());
     }
 
+    /**
+     * P2-9: the creation scripts of a v1 save (made before the scripts carried the edition id) open the season's
+     * data editions from season.json instead of adding a second 1888-89 edition next to them.
+     */
+    @Test
+    void theV1FixtureScriptsOpenTheDataEditions() throws IOException {
+        String text;
+        try (java.io.InputStream in = getClass().getClassLoader().getResourceAsStream(FIXTURE)) {
+            assertNotNull(in, FIXTURE + " is missing");
+            text = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        assertFalse(text.contains("CUP_EDITION") || text.contains("LEAGUE_EDITION"), "a save made before P2-9");
+        SaveGame game = SaveCodec.decode(text).getGame();
+        NewGameFixture.bind(application, game);
+        NewGameFixture.play(application, game, 45, true); // past both scripts (17 April, 1 May)
+
+        League league = game.getMainAuthority().getLeagues().get(0);
+        assertEquals(1, league.getEditions().size(), "one league edition: " + league.getEditions());
+        CompetitionEdition leagueEdition = league.getEditions().get(0);
+        assertEquals("football-league-1888-89", leagueEdition.getDataId());
+        assertNotNull(leagueEdition.getStartDate(), "the league script opened the data edition");
+        assertEquals(12, leagueEdition.getParticipantClubsIds().size(), "participants not added twice");
+
+        int cups = 0;
+        for (Competition c : game.getAllCups()) {
+            if (!"fa-cup".equals(c.getDataId())) {
+                continue;
+            }
+            cups++;
+            assertEquals(1, c.getEditions().size(), "one FA Cup edition");
+            CompetitionEdition cupEdition = c.getEditions().get(0);
+            assertEquals("fa-cup-1888-89", cupEdition.getDataId());
+            assertNotNull(cupEdition.getStartDate(), "the cup script opened the data edition");
+            assertEquals(32, cupEdition.getParticipantClubsIds().size(), "participants not added twice");
+        }
+        assertEquals(1, cups);
+        for (Competition c : game.getAllLeagues()) {
+            if ("football-league".equals(c.getDataId())) {
+                assertEquals(1, c.getEditions().size(), "one Football League edition");
+            }
+        }
+    }
+
     private static File write(File dir, String name, String text) throws IOException {
         Files.createDirectories(dir.toPath());
         File f = new File(dir, name);

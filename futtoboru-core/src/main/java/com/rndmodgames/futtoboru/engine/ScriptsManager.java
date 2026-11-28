@@ -295,34 +295,38 @@ public class ScriptsManager {
             }
         }
         
-        // Create the first edition for this league
-        com.rndmodgames.futtoboru.data.CompetitionEdition edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
-        edition.setId(currentGame.getIdAllocator().nextId());
+        // The season's edition: the one from the game data (season.json) if there is one (P2-9: a second,
+        // script-made edition was never drawn or finished), else a new one
         String seasonName = (startDate != null) ? startDate.getYear() + "-" + ((startDate.getYear() + 1) % 100) : "Season 1";
-        edition.setName(leagueName + " " + seasonName);
+        com.rndmodgames.futtoboru.data.CompetitionEdition edition = findSeasonEdition(leagueCompetition,
+                (Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_EDITION), startDate);
+        boolean fromData = edition != null;
+        if (!fromData) {
+            edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
+            edition.setId(currentGame.getIdAllocator().nextId());
+            edition.setName(leagueName + " " + seasonName);
+        }
         edition.setStartDate(startDate);
         // P2-11: the season runs to the league's last match day of the era calendar (mid-April)
         edition.setEndDate(edition.getStartDate() != null
                 ? com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(edition.getStartDate()).leagueEnd() : null);
-        
-        if (clubIds != null) {
-            for (Long clubId : clubIds) {
-                edition.getParticipantClubsIds().add(clubId);
-            }
-            edition.setParticipantClubs(clubIds.size);
+
+        setParticipants(edition, clubIds);
+
+        if (!league.getEditions().contains(edition)) {
+            league.getEditions().add(edition);
         }
-        
-        league.getEditions().add(edition);
-        
-        // Also add edition to the competition object
-        if (leagueCompetition != null) {
-            if (leagueCompetition.getEditions() == null) {
-                leagueCompetition.setEditions(new java.util.ArrayList<>());
-            }
+
+        // Also add edition to the competition object (a data edition is already there)
+        if (leagueCompetition.getEditions() == null) {
+            leagueCompetition.setEditions(new java.util.ArrayList<>());
+        }
+        if (!leagueCompetition.getEditions().contains(edition)) {
             leagueCompetition.getEditions().add(edition);
         }
-        
-        Log.info(Log.ENGINE_SCRIPTS, "Created first edition for league: " + edition.getName());
+
+        Log.info(Log.ENGINE_SCRIPTS, (fromData ? "Opened the data edition of league: " : "Created first edition for league: ")
+                + edition.getName());
         
         Log.info(Log.ENGINE_SCRIPTS, "========================================");
         Log.info(Log.ENGINE_SCRIPTS, "LEAGUE CREATION SUCCESSFUL!");
@@ -617,22 +621,27 @@ public class ScriptsManager {
             return;
         }
         
-        // Create Edition
-        com.rndmodgames.futtoboru.data.CompetitionEdition edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
-        edition.setId(currentGame.getIdAllocator().nextId());
+        // The season's edition: the one from the game data (season.json) if there is one (P2-9: a second,
+        // script-made edition was never drawn or finished), else a new one
         java.time.LocalDateTime gameDate = currentGame.getGameDate();
-        String seasonName = gameDate.getYear() + "-" + ((gameDate.getYear() + 1) % 100);
-        edition.setName(cupName + " " + seasonName);
+        com.rndmodgames.futtoboru.data.CompetitionEdition edition = findSeasonEdition(cup,
+                (Long) script.getScriptValues().get(ScriptsLoader.CUP_EDITION), gameDate);
+        boolean fromData = edition != null;
+        if (!fromData) {
+            edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
+            edition.setId(currentGame.getIdAllocator().nextId());
+            String seasonName = gameDate.getYear() + "-" + ((gameDate.getYear() + 1) % 100);
+            edition.setName(cupName + " " + seasonName);
+        }
         edition.setStartDate(gameDate);
         edition.setEndDate(com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(gameDate).cupEnd()); // P2-11
-        
+
         if (currentGame.getAllClubs() == null) {
             currentGame.setAllClubs(new java.util.ArrayList<>());
         }
-        
+
         for (int i = 0; i < participantIds.size; i++) {
             Long id = participantIds.get(i);
-            edition.getParticipantClubsIds().add(id);
             // Ensure club is in SaveGame
             if (currentGame.getClubById(id) == null) {
                 Club club = DatabaseLoader.getClubById(id);
@@ -642,11 +651,14 @@ public class ScriptsManager {
                 }
             }
         }
-        edition.setParticipantClubs(participantIds.size);
-        cup.getEditions().add(edition);
-        
-        Log.info(Log.ENGINE_SCRIPTS, "Created cup edition: " + edition.getName() + " with " + participantIds.size + " teams");
-        
+        setParticipants(edition, participantIds);
+        if (!cup.getEditions().contains(edition)) {
+            cup.getEditions().add(edition);
+        }
+
+        Log.info(Log.ENGINE_SCRIPTS, (fromData ? "Opened the data cup edition: " : "Created cup edition: ")
+                + edition.getName() + " with " + participantIds.size + " teams");
+
         // Deliver Message (Informing User)
         if (gameInstance != null && gameInstance.getGameEngine() != null) {
             com.rndmodgames.futtoboru.engine.messages.MessageManager messageManager = 
@@ -677,6 +689,50 @@ public class ScriptsManager {
         script.setIsExecuted(true);
         Log.info(Log.ENGINE_SCRIPTS, "CUP CREATION SUCCESSFUL!");
         Log.info(Log.ENGINE_SCRIPTS, "========================================");
+    }
+
+    /**
+     * P2-9: the season's edition of a competition from the game data, so a creation script opens it instead of
+     * adding a second edition of the same season. By the edition id the script carries; a script without it (saves
+     * made before P2-9) takes the competition's data edition of the season of {@code date}. Null if there is none.
+     */
+    static com.rndmodgames.futtoboru.data.CompetitionEdition findSeasonEdition(Competition competition, Long editionId,
+            java.time.LocalDateTime date) {
+        if (competition == null || competition.getEditions() == null) {
+            return null;
+        }
+        for (com.rndmodgames.futtoboru.data.CompetitionEdition e : competition.getEditions()) {
+            if (e != null && editionId != null && editionId.equals(e.getId())) {
+                return e;
+            }
+        }
+        if (editionId != null || date == null) {
+            return null;
+        }
+        int startYear = com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(date).getStartYear();
+        for (com.rndmodgames.futtoboru.data.CompetitionEdition e : competition.getEditions()) {
+            if (e == null || e.getDataId() == null) {
+                continue;
+            }
+            if (e.getStartDate() == null
+                    || com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(e.getStartDate()).getStartYear() == startYear) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    /** The script's participants on the edition (a data edition already lists them: no duplicates) */
+    private static void setParticipants(com.rndmodgames.futtoboru.data.CompetitionEdition edition, Array<Long> clubIds) {
+        if (clubIds == null) {
+            return;
+        }
+        for (Long clubId : clubIds) {
+            if (clubId != null && !edition.getParticipantClubsIds().contains(clubId)) {
+                edition.getParticipantClubsIds().add(clubId);
+            }
+        }
+        edition.setParticipantClubs(edition.getParticipantClubsIds().size());
     }
 
     /**

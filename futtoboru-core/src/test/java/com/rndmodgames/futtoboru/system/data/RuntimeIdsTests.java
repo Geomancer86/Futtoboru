@@ -124,10 +124,12 @@ class RuntimeIdsTests {
         made.addAll(game.getAllApplications());
         made.addAll(game.getPendingOffers());
 
-        // the cup created by its script, with a full bracket
+        // the cup opened by its script (the season's data edition, P2-9), with a full bracket
         Competition faCup = DatabaseLoader.getCompetitionByDataId("fa-cup");
         CompetitionEdition cupEdition = faCup.getEditions().get(faCup.getEditions().size() - 1);
-        assertEquals(null, cupEdition.getDataId(), "the cup script should have created its edition");
+        assertEquals("fa-cup-1888-89", cupEdition.getDataId(), "the cup script should open the data edition");
+        assertEquals(1, faCup.getEditions().size(), "no second 1888-89 edition");
+        assertNotNull(cupEdition.getStartDate(), "the cup script should have opened the edition");
         assertEquals(32, cupEdition.getParticipantClubsIds().size());
         List<Match> bracket = new com.rndmodgames.futtoboru.engine.cup.CupBracketGenerator(game.getIdAllocator())
                 .generateCompleteBracket(cupEdition.getParticipantClubsIds(), faCup.getId(), cupEdition.getId(),
