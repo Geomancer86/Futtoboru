@@ -3,7 +3,7 @@
 # Port of run-game-debug-simple.bat.
 cd "$(dirname "$0")" || exit 1
 
-JAR=${JAR:-futtoboru-desktop/target/futtoboru-desktop-0.6.0-alpha-jar-with-dependencies.jar}
+JAR=${JAR:-futtoboru-desktop/target/futtoboru-desktop-0.6.0-SNAPSHOT-jar-with-dependencies.jar}
 LOG=game-debug.log
 JAVA_OPTS_EXTRA=
 [ "$(uname -s)" = Darwin ] && JAVA_OPTS_EXTRA=-XstartOnFirstThread

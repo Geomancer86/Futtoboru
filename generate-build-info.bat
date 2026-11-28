@@ -47,7 +47,7 @@ for /f "tokens=2 delims==" %%a in ('wmic os get localdatetime /value') do set "d
 set BUILD_TIMESTAMP=%dt:~0,4%-%dt:~4,2%-%dt:~6,2% %dt:~8,2%:%dt:~10,2%:%dt:~12,2%
 
 REM Version from pom.xml (hardcoded for now, could parse it)
-set VERSION=0.6.0-alpha
+set VERSION=0.6.0-SNAPSHOT
 
 REM Create build.properties file
 (
