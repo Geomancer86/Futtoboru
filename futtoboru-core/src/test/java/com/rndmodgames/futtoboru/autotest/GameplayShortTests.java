@@ -21,6 +21,7 @@ import com.rndmodgames.futtoboru.system.DatabaseLoader;
  * and 3 are in the fast tier; seed 1, played three times (same seed = same game, with or without the reloads), is
  * slow. Report: {@code target/autotest/short.md}.
  */
+@Tag("slow") // 5.5 s with two seeded games: slow tier (A-01 rule: short runs over 2 s)
 class GameplayShortTests extends BaseTest {
 
     static final int DAYS = 42;

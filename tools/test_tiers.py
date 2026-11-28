@@ -20,7 +20,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LIMIT = 5.0
-SLOW_TAGS = ("slow", "season", "smoke")
+SLOW_TAGS = ("slow", "season", "smoke", "soak")
 _TAG = re.compile(r'@Tag\("(%s)"\)' % "|".join(SLOW_TAGS))
 
 
