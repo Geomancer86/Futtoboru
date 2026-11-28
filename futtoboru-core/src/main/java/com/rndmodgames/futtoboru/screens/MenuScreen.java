@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.rndmodgames.futtoboru.ui.UiScale;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -45,10 +45,10 @@ public class MenuScreen implements Screen {
 		
 		this.game = parent;
 		
-		stage = new Stage(new ScreenViewport());
+		stage = new Stage(UiScale.newViewport());
 
 		final VisTable mainTable = new VisTable(true);
-        mainTable.setFillParent(true);
+        // root of UiScale.addOverflowScroll below: scrolls when it does not fit (200%)
 		
 		final VisTable table = new VisTable();
 		
@@ -183,7 +183,7 @@ public class MenuScreen implements Screen {
         mainTable.add(bottomRow).growX().fillX().padBottom(UiTheme.space("sm"));
         
         //
-        stage.addActor(mainTable);
+        UiScale.addOverflowScroll(stage, mainTable);
 	}
 	
 	@Override
@@ -208,7 +208,7 @@ public class MenuScreen implements Screen {
 	public void resize(int width, int height) {
 	    
 		// Update viewport on resize to keep event coordinate for buttons/widgets
-		stage.getViewport().update(width, height, true);
+		UiScale.updateStageViewport(stage, width, height);
 	}
 
 	@Override

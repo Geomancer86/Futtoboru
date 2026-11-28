@@ -15,6 +15,7 @@ import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.engine.ScriptsManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiScale;
 
 class PreferenceManagerTests {
 
@@ -79,6 +80,33 @@ class PreferenceManagerTests {
         assertEquals(PreferencesManager.DEFAULT_RESOLUTION, application.preferences.getResolution());
     }
     
+    @Test
+    void oldSmallResolutionBecomes1280x720AndUiScaleRoundTrips() {
+
+        PreferencesManager preferences = application.preferences != null ? application.preferences : new PreferencesManager();
+        String savedResolution = preferences.getPreference(PreferencesManager.SETTINGS_RESOLUTION_PREF);
+        String savedScale = preferences.getPreference(PreferencesManager.SETTINGS_UI_SCALE_PREF);
+        try {
+            // D18: an old sub-720p preference is replaced by the 1280x720 default
+            preferences.updateScreenResolution("640x480");
+            assertEquals("1280x720", preferences.getResolution());
+            assertEquals("1280x720", preferences.getPreference(PreferencesManager.SETTINGS_RESOLUTION_PREF));
+
+            // U-03a: Auto by default, then 200% / 100% saved; odd values snap to an integer step
+            preferences.updateUserPreference(PreferencesManager.SETTINGS_UI_SCALE_PREF, "");
+            assertEquals(UiScale.AUTO, preferences.getUiScale(), 0f);
+            preferences.updateUiScale(2f);
+            assertEquals(2f, preferences.getUiScale(), 0f);
+            preferences.updateUiScale(1.25f);
+            assertEquals(1f, preferences.getUiScale(), 0f);
+            preferences.updateUserPreference(PreferencesManager.SETTINGS_UI_SCALE_PREF, "big");
+            assertEquals(UiScale.AUTO, preferences.getUiScale(), 0f);
+        } finally {
+            preferences.updateUserPreference(PreferencesManager.SETTINGS_RESOLUTION_PREF, savedResolution == null ? "" : savedResolution);
+            preferences.updateUserPreference(PreferencesManager.SETTINGS_UI_SCALE_PREF, savedScale == null ? "" : savedScale);
+        }
+    }
+
     @Test
     void savePreferenceTest() {
         

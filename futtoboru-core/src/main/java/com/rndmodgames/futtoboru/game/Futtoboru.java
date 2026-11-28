@@ -30,6 +30,7 @@ import com.rndmodgames.futtoboru.screens.SettingsScreen;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
+import com.rndmodgames.futtoboru.ui.UiScale;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -78,7 +79,7 @@ public class Futtoboru extends Game {
      * TODO: reset to defaults
      * TODO: restart game functionality (might not be needed and not be possible)
      */
-    public static String RESOLUTION = "640x480";              // Working
+    public static String RESOLUTION = UiScale.DEFAULT_RESOLUTION; // D18: 1280x720 minimum and default
     public static boolean FULLSCREEN = false;                 // Working
     
     /**
@@ -185,13 +186,14 @@ public class Futtoboru extends Game {
          */
         FULLSCREEN = preferences.getFullscreen();
         
-        // avoid crashing on empty or missing preferences file
-        if (preferences.getResolution() != null && !preferences.getResolution().equals("")) {
-            
-            RESOLUTION = preferences.getResolution();
-        }
-        
-        // This will take care of Setting the Right Fullscreen/Windowed Resolution mode
+        // at least 1280x720; a missing or old sub-720p value becomes the default (D18)
+        RESOLUTION = preferences.getResolution();
+
+        // U-03a: Auto (default), 100% or 200%; every UI stage reads it through UiScale
+        UiScale.setSetting(preferences.getUiScale());
+
+        // The desktop launcher already opened the window from the same preferences; this only changes the mode
+        // when it differs (no startup double resize)
         setScreen();
         
         // Load VisUI NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
@@ -336,6 +338,22 @@ public class Futtoboru extends Game {
     }
     
     /**
+     * U-03a: saves the UI scale ({@link UiScale#AUTO}, 1 or 2) and applies it to the current screen's stage at once;
+     * screens opened later build their stages with it.
+     */
+    public void updateUiScale(float scale) {
+
+        UiScale.setSetting(scale);
+        preferences.updateUiScale(UiScale.getSetting());
+        Log.info(Log.SYSTEM_CONFIG, "UI scale " + (UiScale.isAuto(UiScale.getSetting()) ? "Auto" : UiScale.formatPercent(UiScale.getSetting()))
+                + " -> " + UiScale.formatPercent(UiScale.currentScale()));
+
+        if (screen != null && Gdx.graphics != null) {
+            screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+    }
+
+    /**
      * Utility method used to toggle Fullscreen and Windowed Mode
      */
     public void toggleFullscreen() {
@@ -351,17 +369,20 @@ public class Futtoboru extends Game {
     public void setScreen() {
         
         if (FULLSCREEN){
-            
-            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+
+            if (!Gdx.graphics.isFullscreen()) {
+                Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+            }
         } else {
 
-            // The selected resolution
-            String res = Futtoboru.RESOLUTION;
-            String [] splitRes = res.split("x"); 
-    
+            // The selected resolution (at least 1280x720)
+            int[] size = UiScale.windowSize(Futtoboru.RESOLUTION);
+
             // Resize on this Screen updates the Viewport (for event coordinates)
-            //  and is called automatically
-            Gdx.graphics.setWindowedMode(Integer.valueOf(splitRes[0]), Integer.valueOf(splitRes[1]));
+            //  and is called automatically; skipped when the window already has this size
+            if (Gdx.graphics.isFullscreen() || Gdx.graphics.getWidth() != size[0] || Gdx.graphics.getHeight() != size[1]) {
+                Gdx.graphics.setWindowedMode(size[0], size[1]);
+            }
         }
         
         preferences.updateFullScreen(FULLSCREEN);

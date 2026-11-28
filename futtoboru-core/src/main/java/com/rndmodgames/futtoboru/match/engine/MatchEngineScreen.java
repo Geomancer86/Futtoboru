@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -112,7 +111,7 @@ public class MatchEngineScreen implements Screen {
         camera.update();
         
         // Initialize UI
-        uiStage = new Stage(new ScreenViewport());
+        uiStage = new Stage(com.rndmodgames.futtoboru.ui.UiScale.newViewport());
         font = new BitmapFont();
         
         // Create match info label
@@ -472,7 +471,7 @@ public class MatchEngineScreen implements Screen {
     public void resize(int width, int height) {
         viewport.update(width, height);
         camera.update();
-        uiStage.getViewport().update(width, height, true);
+        com.rndmodgames.futtoboru.ui.UiScale.updateStageViewport(uiStage, width, height);
     }
     
     @Override

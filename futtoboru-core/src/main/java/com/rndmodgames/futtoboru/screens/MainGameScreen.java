@@ -9,7 +9,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.rndmodgames.futtoboru.ui.UiScale;
 import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
@@ -72,7 +72,7 @@ public class MainGameScreen implements Screen {
         }
         
         //
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(UiScale.newViewport());
         
         // Full Game Window
         final VisTable gameWindowTable = new VisTable(true);
@@ -110,7 +110,7 @@ public class MainGameScreen implements Screen {
         //
         gameWindowTable.row();
         gameWindowTable.add(menuManager.getButtonsMenu()).top();
-        gameWindowTable.add(mainTable).grow();
+        gameWindowTable.add(UiScale.newWideOverflowScrollPane(mainTable)).grow(); // U-03a: a too-wide panel scrolls, the top bar stays
 
         // Initialize Toast Manager
         toastManager = new ToastManager(stage);
@@ -193,7 +193,7 @@ public class MainGameScreen implements Screen {
     public void resize(int width, int height) {
         
         // Update viewport on resize to keep event coordinate for buttons/widgets
-        stage.getViewport().update(width, height, true);
+        UiScale.updateStageViewport(stage, width, height);
     }
 
     @Override
