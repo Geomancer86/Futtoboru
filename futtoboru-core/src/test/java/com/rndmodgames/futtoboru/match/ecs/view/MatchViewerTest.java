@@ -350,7 +350,7 @@ class MatchViewerTest {
     /** A buggy simulation system that asks for art. */
     static final class ArtAskingSystem extends EntitySystem implements SimSystem {
         ArtAskingSystem() {
-            super(SystemPriority.LAWS);
+            super(SystemPriority.LAWS + 5); // a free slot (LAWS is taken by E-16)
         }
 
         @Override
