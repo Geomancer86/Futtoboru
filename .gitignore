@@ -149,5 +149,7 @@ references/
 *.jks
 credentials*.json
 settings.xml
+# Python bytecode
 __pycache__/
+*.pyc
 .pytest_cache/

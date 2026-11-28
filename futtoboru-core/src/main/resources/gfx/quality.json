@@ -9,6 +9,7 @@
         "light": { "on": 1, "ticks": [3, 2, 1, 1], "map": [0, 1, 1, 1], "cap": [16, 32, 64, 128], "resolution": [0.125, 0.25, 0.25, 0.5] },
         "shadows": { "on": 1 },
         "marks": { "on": 1, "ticks": [4, 2, 2, 1], "cap": [0, 128, 256, 512] },
+        "skyline": { "on": 1 },
         "smoke": { "on": 1, "ticks": [2, 1, 1, 1], "chimneys": [6, 12, 24, 48], "density": [0.6, 0.8, 1, 1] },
         "camera_fx": { "on": 1, "shake": 1 }
     }

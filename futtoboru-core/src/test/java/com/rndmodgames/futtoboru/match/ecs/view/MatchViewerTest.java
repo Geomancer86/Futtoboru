@@ -400,7 +400,7 @@ class MatchViewerTest {
         int frames;
 
         TexturePass() {
-            super(SystemPriority.DRAW_PITCH);
+            super(SystemPriority.DRAW_MARKS);
             Pixmap pixmap = new Pixmap(8, 4, Pixmap.Format.RGBA8888);
             pixmap.setColor(0.2f, 0.6f, 0.2f, 1f);
             pixmap.fill();
