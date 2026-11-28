@@ -21,6 +21,7 @@ futtoboru-core/src/main/resources/gamedata/
       season.json            start, countries, editions (league + cup, with participants)
       squads.json            per club this season: ground, balance, players (person ids), positions, dribbling (E-01)
       nationality_modifiers.json  region_modifiers.json
+      contracts.json         wage bands per club standing, squad sizes (G-04, see below)
       results.json           real results of the season: reference data only (D17), see below
 ```
 What changes from season to season (ground, balance, squad) lives in the season folder; what is permanent
@@ -151,6 +152,20 @@ Two optional objects on a **squad entry** (`seasons/<id>/squads.json`), keyed by
   player the line his seeded attributes suit best. Dribbling then drifts and ages like every other attribute.
 - **Saves v2:** `Player.position` (enum name) and `Player.dribbling`. The v1 -> v2 step in `SaveMigrations` adds
   dribbling (sourced, else derived from the saved attributes) and the position from the club's squad entry.
+
+## Contract bands (G-04): `seasons/<id>/contracts.json`
+One record per club **standing**: `league` (a club of a league that season), `other`, `amateur` (only this band lists
+`clubs`; 1888-89: the three old boys' clubs). Money in **shillings a week**, as the sources give it (the game keeps
+pounds, 20s = GBP 1): `seasonWageMin/Max` (the playing season, Sep-Apr), `summerWageMin/Max` (close season, May-Aug),
+`amateurExpenses` (an amateur takes no wage); shares 0-1: `professionalShare`, `summerPayShare`; squads:
+`minimumSquad` (a club signs free agents below it at the 1 May rollover), `squadSize` (the most a committee retains);
+`confidence`, `sources`, `notes`. Sourced (docs/data/history/RECRUITMENT_1888-1900.md 4.1-4.5): one-season articles,
+20-50s in the season and 20s summer pay for a good 1888 man, amateurs unpaid. Everything else is `placeholder`
+(D30 A3). A later season without the file uses the latest earlier season's bands. No ids. Errors: share outside 0-1,
+negative money, min above max, `minimumSquad` under 11, two bands of one standing, `clubs` outside `amateur`.
+Saves: the new `PlayerContract` fields (`season`, `summerWage`, `weeklyExpenses`, retained-list marks) and
+`SaveGame.freeAgents` are optional; an older save derives the season from the start, the end on 30 April, no summer
+pay (no `saveVersion` bump).
 
 ## Rename log
 | Date | Kind | Old id | New id | Why | Approved by |

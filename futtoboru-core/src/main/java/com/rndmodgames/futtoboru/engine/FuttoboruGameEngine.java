@@ -93,6 +93,15 @@ public class FuttoboruGameEngine {
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
         this.expenseCalculator = new ExpenseCalculator(gameInstance);
+        this.contractManager = new com.rndmodgames.futtoboru.engine.contracts.ContractManager(gameInstance,
+                messageManager);
+    }
+
+    /** G-04: engagements through the season (retained list, answers, the 1 May rollover), every club */
+    private final com.rndmodgames.futtoboru.engine.contracts.ContractManager contractManager;
+
+    public com.rndmodgames.futtoboru.engine.contracts.ContractManager getContractManager() {
+        return contractManager;
     }
 
     /** U-06 / D18: the rotating autosave slot (1st of each month and season rollover) */
@@ -363,7 +372,15 @@ public class FuttoboruGameEngine {
         if (gameInstance.getJobManager() != null) {
             gameInstance.getJobManager().updateJobOpenings();
         }
-        
+
+        // G-04: a new month's money starts from nothing (the Finances screen's "this month"; it never reset)
+        if (newDate.getDayOfMonth() == 1) {
+            resetMonthTotals();
+        }
+
+        // G-04: engagements (retained list from 16 April, answers the next day, the 1 May rollover for every club)
+        contractManager.afterDay(newDate);
+
         /**
          * STEP 5: Deliver scheduled messages AFTER advancing date
          * This catches messages scheduled for the new date (same day events)
@@ -561,10 +578,12 @@ public class FuttoboruGameEngine {
             }
         }
         
-        // Calculate and deduct expenses for all clubs
+        // Calculate and deduct expenses for all clubs, each once (G-04: a new game lists some clubs twice, which
+        // booked their week's expenses, wages included, twice; P2-12 did the same for the daily ticket loop)
         int expensesCalculated = 0;
+        Set<Club> booked = Collections.newSetFromMap(new IdentityHashMap<>());
         for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
-            if (club == null) {
+            if (club == null || !booked.add(club)) {
                 continue;
             }
             
@@ -598,6 +617,17 @@ public class FuttoboruGameEngine {
         }
     }
     
+    /** G-04: the month's income and expenditure of every club start again on the 1st */
+    private void resetMonthTotals() {
+        Set<Club> done = Collections.newSetFromMap(new IdentityHashMap<>());
+        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+            if (club != null && done.add(club)) {
+                club.setMonthIncome(BigDecimal.ZERO);
+                club.setMonthExpenditure(BigDecimal.ZERO);
+            }
+        }
+    }
+
     /**
      * Get the date of the most recent expense calculation
      */

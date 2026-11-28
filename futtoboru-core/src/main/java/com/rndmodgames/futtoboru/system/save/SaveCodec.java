@@ -299,6 +299,9 @@ public final class SaveCodec {
                 // slot his squad is shortest of
                 com.rndmodgames.futtoboru.system.generators.PositionAssigner.fillMissing(
                         result.getGame().getAllClubs(), "loaded save");
+                // G-04: an engagement saved before G-04 gets its season, its 30 April end and no summer pay (no
+                // format change: the new contract fields are optional)
+                com.rndmodgames.futtoboru.engine.contracts.ContractManager.deriveOldContracts(result.getGame());
             }
             return result;
         } catch (RuntimeException e) {

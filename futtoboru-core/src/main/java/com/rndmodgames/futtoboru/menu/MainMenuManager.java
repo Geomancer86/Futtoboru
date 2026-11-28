@@ -101,7 +101,10 @@ public class MainMenuManager {
     // Draw Screen (v1.0)
     public static final int LEAGUE_DRAW_SCREEN = 10008;
     public static final int CUP_DRAW_SCREEN = 10009;
-    
+
+    // G-04: the retained list (from the Squad screen or the club's April letter)
+    public static final int RETAINED_LIST_SCREEN = 10010;
+
         
     //
     public static int PREVIOUS_SCREEN = -1; //
@@ -158,7 +161,10 @@ public class MainMenuManager {
     
     // Player Detail Screen (v1.0)
     private com.rndmodgames.futtoboru.tables.player.PlayerDetailScreenTable playerDetailScreenTable = null;
-    
+
+    // G-04 retained list
+    private com.rndmodgames.futtoboru.tables.contracts.RetainedListScreenTable retainedListScreenTable = null;
+
     // Selected club for detail view and job application
     private Club selectedClubForDetail = null;
     private Club selectedClubForJobApplication = null;
@@ -224,7 +230,11 @@ public class MainMenuManager {
         // Player Detail Screen (v1.0)
         playerDetailScreenTable = new com.rndmodgames.futtoboru.tables.player.PlayerDetailScreenTable(game);
         playerDetailScreenTable.setMenuManager(this);
-        
+
+        // G-04 retained list
+        retainedListScreenTable = new com.rndmodgames.futtoboru.tables.contracts.RetainedListScreenTable(game);
+        retainedListScreenTable.setMenuManager(this);
+
         // Set menu manager references
         clubBrowserScreenTable.setMenuManager(this);
         clubDetailScreenTable.setMenuManager(this);
@@ -576,8 +586,19 @@ public class MainMenuManager {
             // Set as main content
             parentTable.add(squadScreenTable).grow();
 
-            break;            
-            
+            break;
+
+        case RETAINED_LIST_SCREEN:
+            // G-04: the club's retained list (from the Squad screen or the April letter)
+            if (currentClub == null) {
+                redirectTo(HOME_SCREEN);
+                return;
+            }
+            retainedListScreenTable.setCurrentClub(currentClub);
+            retainedListScreenTable.updateDynamicComponents();
+            parentTable.add(retainedListScreenTable).grow();
+            break;
+
         case SCHEDULE_SCREEN:
 
             /**
@@ -899,6 +920,10 @@ public class MainMenuManager {
 
         case MAIN_SQUAD_SCREEN:
             squadScreenTable.updateDynamicComponents();
+            break;
+
+        case RETAINED_LIST_SCREEN:
+            retainedListScreenTable.updateDynamicComponents();
             break;
         
         case AUTHORITY_SCREEN:

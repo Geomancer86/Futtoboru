@@ -39,13 +39,16 @@ POSITIONS = {"goalkeeper", "full-back", "half-back", "right-wing", "inside-right
 POSITION_SOURCES = {"players-1888-89", "players-1888-89-line", "placeholder", "wp-season-1888-89",
                     "wp-season-1888-89-line", "wp-player", "wp-player-line", "fa-cup-final-1889"}
 ATTR_MIN, ATTR_MAX = 3, 23  # the attribute scale (3d6 plus modifiers, PlayerAttributeGenerator)
+# G-04: the wage band a club's men are engaged on (seasons/<id>/contracts.json): a Football League club, any other
+# club, or a club of amateurs only (listed by id in that band's `clubs`)
+CLUB_STANDINGS = {"league", "other", "amateur"}
 KINDS = ["continent", "country", "profession", "occupation", "competition", "club", "ground", "person", "region",
          "season", "edition"]
 
 # field spec: name -> (type, required). Types: str, int, num, bool, date, datetime, strs, attrs,
 # ref:<kind>, refs:<kind>, enum:<name>, list:<record spec name>, map:<record spec name> (an object: id -> record)
 ENUMS = {"confidence": CONFIDENCE, "occupation_category": OCCUPATION_CATEGORIES, "competition_type": COMPETITION_TYPES,
-         "position": POSITIONS, "position_source": POSITION_SOURCES}
+         "position": POSITIONS, "position_source": POSITION_SOURCES, "club_standing": CLUB_STANDINGS}
 SPECS = {
     "continent": {"id": ("str", True), "name": ("str", True)},
     "country": {"id": ("str", True), "name": ("str", True), "formalName": ("str", False),
@@ -87,6 +90,13 @@ SPECS = {
                "home": ("ref:club", True), "away": ("ref:club", True), "homeGoals": ("int", False),
                "awayGoals": ("int", False), "walkover": ("ref:club", False), "attendance": ("int", False),
                "venue": ("str", False), "source": ("str", True), "notes": ("str", False)},
+    # G-04: one-season engagements of a season, per club standing; money in shillings a week (docs/DATA_MODEL.md)
+    "contract_band": {"standing": ("enum:club_standing", True), "clubs": ("refs:club", False),
+                      "professionalShare": ("num", True), "seasonWageMin": ("num", True),
+                      "seasonWageMax": ("num", True), "summerWageMin": ("num", True), "summerWageMax": ("num", True),
+                      "summerPayShare": ("num", True), "amateurExpenses": ("num", True),
+                      "minimumSquad": ("int", True), "squadSize": ("int", True),
+                      "confidence": ("enum:confidence", True), "sources": ("strs", True), "notes": ("str", False)},
     "pack": {"id": ("str", True), "name": ("str", True), "version": ("int", True), "dataVersion": ("int", True),
              "seasons": ("strs", True), "files": ("strs", True)},
 }
@@ -101,6 +111,7 @@ SEASON_FILES = {
     "squads.json": ("squad", None), "nationality_modifiers.json": ("nationality_modifier", None),
     "region_modifiers.json": ("region", "region"),
     "results.json": ("result", None),
+    "contracts.json": ("contract_band", None),
 }
 
 
@@ -231,6 +242,39 @@ def check_results(data: list, where: str, sid: str, season: dict | None, rep: Re
             rep.error(rw, f"edition `{r['edition']}` is not an edition of season {sid}")
 
 
+def check_contract_bands(data: list, where: str, rep: Report):
+    """G-04: shares are 0-1, money is not negative and min <= max, squads can field eleven, one band per standing;
+    only the `amateur` band lists clubs."""
+    seen = Counter()
+    for i, b in enumerate(data):
+        if not isinstance(b, dict):
+            continue
+        rw = f"{where}[{i}]"
+        seen[b.get("standing")] += 1
+        for f in ("professionalShare", "summerPayShare"):
+            v = b.get(f)
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and not 0 <= v <= 1:
+                rep.error(rw, f"`{f}` {v} is outside 0-1")
+        for f in ("seasonWageMin", "seasonWageMax", "summerWageMin", "summerWageMax", "amateurExpenses"):
+            v = b.get(f)
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and v < 0:
+                rep.error(rw, f"`{f}` {v} is negative")
+        for lo, hi in (("seasonWageMin", "seasonWageMax"), ("summerWageMin", "summerWageMax")):
+            a, z = b.get(lo), b.get(hi)
+            if all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in (a, z)) and a > z:
+                rep.error(rw, f"`{lo}` {a} is above `{hi}` {z}")
+        m, s = b.get("minimumSquad"), b.get("squadSize")
+        if isinstance(m, int) and not isinstance(m, bool) and m < 11:
+            rep.error(rw, f"`minimumSquad` {m} cannot field eleven")
+        if all(isinstance(x, int) and not isinstance(x, bool) for x in (m, s)) and m > s:
+            rep.error(rw, f"`minimumSquad` {m} is above `squadSize` {s}")
+        if b.get("clubs") and b.get("standing") != "amateur":
+            rep.error(rw, "only the `amateur` band lists clubs")
+    for standing, n in seen.items():
+        if n > 1:
+            rep.error(where, f"standing `{standing}` has {n} bands")
+
+
 def load_json(path: Path, rep: Report, where: str):
     try:
         return json.loads(path.read_text(encoding="utf-8"))
@@ -359,6 +403,8 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
                     check_squad_roles(rec, f"{where}[{i}]", rep)
             if spec_name == "result":
                 results.append((data, where, parts[1]))
+            if spec_name == "contract_band":
+                check_contract_bands(data, where, rep)
         for sid in manifest.get("seasons", []):
             if not (pdir / "seasons" / sid / "season.json").exists():
                 rep.error(f"{pack}/pack.json", f"season `{sid}` has no seasons/{sid}/season.json")

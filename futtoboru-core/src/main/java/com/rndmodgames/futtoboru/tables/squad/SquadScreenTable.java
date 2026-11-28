@@ -114,7 +114,22 @@ public class SquadScreenTable extends VisTable{
         this.add(averageAgeLabel);
         this.add(averagePlayerAgeValueLabel);
         this.row();
-        
+
+        // G-04: the retained list (engagements for next season; open from 16 April)
+        com.kotcrab.vis.ui.widget.VisTextButton retainedListButton = new com.kotcrab.vis.ui.widget.VisTextButton(
+                LanguageModLoader.getValue("contracts_retained_list"));
+        retainedListButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                if (game.getGameEngine() != null && game.getGameEngine().getMainMenuManager() != null) {
+                    game.getGameEngine().getMainMenuManager().setActiveMainScreen(
+                            com.rndmodgames.futtoboru.menu.MainMenuManager.RETAINED_LIST_SCREEN);
+                }
+            }
+        });
+        this.add(retainedListButton).colspan(2).left();
+        this.row();
+
         // Players List Component (wrapped in scroll pane for horizontal scrolling)
         this.addSeparator().colspan(2);
         this.row();

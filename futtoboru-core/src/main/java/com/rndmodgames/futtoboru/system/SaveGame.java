@@ -164,6 +164,18 @@ public class SaveGame implements Serializable {
 
     /** The seed of the game's root random source (P2-0): saved, and restored when the game is loaded */
     private Long seed;
+
+    /**
+     * G-04: men without a club (not retained, or declined their club's terms) at a season rollover. Before
+     * retain and transfer (1893-94) any club may sign them; clubs short of men sign from here first.
+     */
+    private List<Player> freeAgents = new ArrayList<>();
+
+    /** G-04: the season of the engagements running now (1888 = 1888-89); null until the contract manager first runs */
+    private Integer contractsSeason;
+
+    /** G-04: the season whose retained list has been opened (its letter sent) */
+    private Integer retainedListSeason;
     
     /**
      * Proposed Matches
@@ -253,6 +265,34 @@ public class SaveGame implements Serializable {
 
     public void setSeed(Long seed) {
         this.seed = seed;
+    }
+
+    /** @return the free-agent pool (never null) */
+    public List<Player> getFreeAgents() {
+        if (freeAgents == null) {
+            freeAgents = new ArrayList<>();
+        }
+        return freeAgents;
+    }
+
+    public void setFreeAgents(List<Player> freeAgents) {
+        this.freeAgents = freeAgents;
+    }
+
+    public Integer getContractsSeason() {
+        return contractsSeason;
+    }
+
+    public void setContractsSeason(Integer contractsSeason) {
+        this.contractsSeason = contractsSeason;
+    }
+
+    public Integer getRetainedListSeason() {
+        return retainedListSeason;
+    }
+
+    public void setRetainedListSeason(Integer retainedListSeason) {
+        this.retainedListSeason = retainedListSeason;
     }
 
     /** @return the name of the save slot this game was last saved to or loaded from, or null */

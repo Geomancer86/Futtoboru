@@ -261,6 +261,19 @@ public final class ScreenshotTour extends Futtoboru {
             menu().setSelectedPlayer(game.getCurrentClub().getPlayers().get(0));
             menu().setActiveMainScreen(MainMenuManager.PLAYER_DETAIL_SCREEN);
         });
+        // G-04: the retained list as it looks on 16 April (the date moved there for the picture, then back)
+        java.time.LocalDateTime[] tourDate = new java.time.LocalDateTime[1];
+        once("game-retained-list", () -> {
+            tourDate[0] = game.getGameDate();
+            game.setGameDate(java.time.LocalDateTime.of(1889, 4, 16, 4, 0));
+            com.rndmodgames.futtoboru.engine.contracts.ContractManager contracts = getGameEngine().getContractManager();
+            List<com.rndmodgames.futtoboru.data.PlayerContract> ending = contracts.endingContracts(game.getCurrentClub());
+            contracts.retain(ending.get(0));
+            contracts.changeOfferedWage(game.getCurrentClub(), ending.get(0), 3);
+            contracts.release(ending.get(1));
+            menu().setActiveMainScreen(MainMenuManager.RETAINED_LIST_SCREEN);
+        });
+        once(null, () -> game.setGameDate(tourDate[0]));
         once("game-league-detail", () -> {
             menu().openMenuEntry(MainMenuManager.COMPETITIONS_SCREEN);
             menu().setSelectedLeague(game.getMainAuthority().getLeagues().get(0));

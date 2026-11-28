@@ -91,6 +91,8 @@ public class GameData {
         ENUMS.put("position_source", new TreeSet<>(Arrays.asList("players-1888-89", "players-1888-89-line",
                 "placeholder", "wp-season-1888-89", "wp-season-1888-89-line", "wp-player", "wp-player-line",
                 "fa-cup-final-1889")));
+        // G-04: the wage band a club's men are engaged on (same list as tools/data/validate.py)
+        ENUMS.put("club_standing", new TreeSet<>(Arrays.asList("league", "other", "amateur")));
     }
 
     /** The attribute scale (3d6 plus modifiers, PlayerAttributeGenerator): a sourced dribbling value is inside. */
@@ -156,6 +158,11 @@ public class GameData {
         spec("result", "edition", "ref:edition!", "round", "str", "date", "date", "home", "ref:club!", "away",
                 "ref:club!", "homeGoals", "int", "awayGoals", "int", "walkover", "ref:club", "attendance", "int",
                 "venue", "str", "source", "str!", "notes", "str");
+        // G-04: one-season engagements of a season per club standing, money in shillings a week (DATA_MODEL.md)
+        spec("contract_band", "standing", "enum:club_standing!", "clubs", "refs:club", "professionalShare", "num!",
+                "seasonWageMin", "num!", "seasonWageMax", "num!", "summerWageMin", "num!", "summerWageMax", "num!",
+                "summerPayShare", "num!", "amateurExpenses", "num!", "minimumSquad", "int!", "squadSize", "int!",
+                "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
         spec("pack", "id", "str!", "name", "str!", "version", "int!", "dataVersion", "int!", "seasons", "strs!",
                 "files", "strs!");
     }
@@ -178,6 +185,7 @@ public class GameData {
         SEASON_FILES.put("nationality_modifiers.json", new String[] { "nationality_modifier", null });
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
         SEASON_FILES.put("results.json", new String[] { "result", null });
+        SEASON_FILES.put("contracts.json", new String[] { "contract_band", null });
     }
 
     // ------------------------------------------------------------------------------------------------------------
@@ -586,6 +594,9 @@ public class GameData {
         if ("squad".equals(specName)) {
             checkSquadRoles(v, where);
         }
+        if ("contract_band".equals(specName)) {
+            checkContractBand(v, where);
+        }
         if (spec.containsKey("id")) {
             JsonValue id = v.get("id");
             if (id != null && id.isString() && !ID_RE.matcher(id.asString()).matches()) {
@@ -716,6 +727,45 @@ public class GameData {
             if (positions == null || !positions.isObject() || positions.get(pid) == null) {
                 report.warn(where + " `" + pid + "`", "no position");
             }
+        }
+    }
+
+    /**
+     * G-04 (same rules as tools/data/validate.py): shares 0-1, money not negative and min &lt;= max, squads that can
+     * field eleven; only the {@code amateur} band lists clubs. (One band per standing is checked by validate.py.)
+     */
+    private void checkContractBand(JsonValue b, String where) {
+        for (String f : new String[] { "professionalShare", "summerPayShare" }) {
+            JsonValue v = b.get(f);
+            if (v != null && v.isNumber() && (v.asDouble() < 0 || v.asDouble() > 1)) {
+                report.error(where, "`" + f + "` " + v.asDouble() + " is outside 0-1");
+            }
+        }
+        for (String f : new String[] { "seasonWageMin", "seasonWageMax", "summerWageMin", "summerWageMax",
+                "amateurExpenses" }) {
+            JsonValue v = b.get(f);
+            if (v != null && v.isNumber() && v.asDouble() < 0) {
+                report.error(where, "`" + f + "` " + v.asDouble() + " is negative");
+            }
+        }
+        for (String[] range : new String[][] { { "seasonWageMin", "seasonWageMax" }, { "summerWageMin", "summerWageMax" } }) {
+            JsonValue lo = b.get(range[0]);
+            JsonValue hi = b.get(range[1]);
+            if (lo != null && hi != null && lo.isNumber() && hi.isNumber() && lo.asDouble() > hi.asDouble()) {
+                report.error(where, "`" + range[0] + "` is above `" + range[1] + "`");
+            }
+        }
+        JsonValue min = b.get("minimumSquad");
+        JsonValue size = b.get("squadSize");
+        if (min != null && min.isLong() && min.asLong() < 11) {
+            report.error(where, "`minimumSquad` " + min.asLong() + " cannot field eleven");
+        }
+        if (min != null && size != null && min.isLong() && size.isLong() && min.asLong() > size.asLong()) {
+            report.error(where, "`minimumSquad` is above `squadSize`");
+        }
+        JsonValue clubs = b.get("clubs");
+        if (clubs != null && clubs.isArray() && clubs.size > 0 && !"amateur".equals(b.getString("standing", null))) {
+            report.error(where, "only the `amateur` band lists clubs");
         }
     }
 

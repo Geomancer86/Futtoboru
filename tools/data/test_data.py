@@ -267,3 +267,37 @@ def test_player_without_position_is_a_warning(pack):
     rep = validate.validate(pack)
     assert rep.errors == []
     assert any("no position" in w for w in rep.warnings)
+
+
+# ---------------------------------------------------------------------------------------------- G-04 contract bands
+CONTRACTS = ("core", "seasons", "1888-89", "contracts.json")
+
+
+def test_shipped_contract_bands_cover_every_standing_and_keep_the_sourced_1888_wages():
+    bands = {b["standing"]: b for b in json.loads(ROOT.joinpath(*CONTRACTS).read_text(encoding="utf-8"))}
+    assert set(bands) == {"league", "other", "amateur"}
+    league = bands["league"]
+    # Holt's 1888 terms (45s a week in the season, 20s in the summer) sit inside the League band
+    assert league["seasonWageMin"] <= 45 <= league["seasonWageMax"]
+    assert league["summerWageMin"] <= 20 <= league["summerWageMax"]
+    assert bands["amateur"]["professionalShare"] == 0 and bands["amateur"]["clubs"]
+
+
+def test_contract_band_typos_and_bad_ranges_are_errors(pack):
+    def bad(d):
+        d[0]["weeklyWage"] = 45
+        d[0]["professionalShare"] = 1.5
+        d[0]["seasonWageMin"] = 60
+        d[1]["minimumSquad"] = 9
+        d[1]["clubs"] = ["preston-north-end"]
+        d[2]["clubs"].append("atlantis-fc")
+        d.append(dict(d[0]))
+    edit(pack.joinpath(*CONTRACTS), bad)
+    out = errors(pack)
+    assert "unknown field `weeklyWage`" in out
+    assert "`professionalShare` 1.5 is outside 0-1" in out
+    assert "`seasonWageMin` 60 is above `seasonWageMax` 50" in out
+    assert "`minimumSquad` 9 cannot field eleven" in out
+    assert "only the `amateur` band lists clubs" in out
+    assert "unknown club `atlantis-fc`" in out
+    assert "standing `league` has 2 bands" in out
