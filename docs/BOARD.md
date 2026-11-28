@@ -7,7 +7,6 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | G-10 history + fan tiers on screen (club detail history/nicknames/rivals; player tier badge + bio) | WORKSTATION | `ws/G-10-history-ui` | 2026-11-28 |
-| G-04 contracts through the season (AI clubs too) **(active: finishing)** | BOOK3PRO | `b3/G-04-contracts` | 2026-11-28 |
 | E-DET cross-JDK determinism: own Gaussian in RandomSource, re-pin goldens once, guard | WORKSTATION | `ws/E-DET-gaussian` | 2026-11-28 |
 | E-17a ECS engine behind `-Dfuttoboru.match.engine=instant|ecs` (default instant) + MatchEngine contract test + ECS season soak entry | WORKSTATION | `ws/E-17a-engine-flag` | 2026-11-28 |
 | E-12b/E-16b realism: ball bounces off posts/bar, forwards run onto passes (offsides happen), foul rate check | WORKSTATION | `ws/E-16b-realism` | 2026-11-28 |
@@ -49,8 +48,8 @@ Model tier per D33: Sonnet for docs/data/research/art tools/merges, Opus for cor
 | G-01 gate run, G-04, R-02 + R-11a merge | parked by the producer (max two code lanes on BOOK3PRO); G-04 waits for G-01 |
 | AGM date for G-08 | unsourced (placeholder: one week after the league ends) |
 | G1 path-aware gate, G3 nightly soak, G4 red-develop rule | INF-01 (WORKSTATION, claimed) + `test_level.py` (BOOK3PRO) |
-| Phase 5 (season 2, 1889-90 as a release) | v0.5.0 tag, G-04 contracts, G-05 |
+| Phase 5 (season 2, 1889-90 as a release) | G-05 |
 | Marketing | a full season playing end to end on the shipped build (ROADMAP Phase 5 rule) |
 
 ## Already claimed (do not take)
-E-17a, INF-01, E-16b, H-05, DOC-01 (WORKSTATION); U-12, P2-14, G-01, G-04, R-02 + R-11a (BOOK3PRO).
+E-17a, INF-01, E-16b, H-05, DOC-01 (WORKSTATION); U-12, P2-14, G-01, R-02 + R-11a (BOOK3PRO).
