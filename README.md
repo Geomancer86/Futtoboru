@@ -35,7 +35,7 @@ mvn clean install
 ### From Command Line:
 
 ```bash
-java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.6.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.6.0-alpha-jar-with-dependencies.jar
 ```
 
 **Note:** The JAR file is created in `futtoboru-desktop/target/` directory after building.

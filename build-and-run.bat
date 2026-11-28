@@ -38,14 +38,14 @@ if %BUILD_EXIT_CODE% NEQ 0 (
 )
 
 REM Verify JAR file exists
-if not exist ".\futtoboru-desktop\target\futtoboru-desktop-0.6.0-SNAPSHOT-jar-with-dependencies.jar" (
+if not exist ".\futtoboru-desktop\target\futtoboru-desktop-0.6.0-alpha-jar-with-dependencies.jar" (
     echo.
     echo ========================================
     echo ERROR: JAR file not found after build!
     echo ========================================
     echo.
     echo Expected location:
-    echo   futtoboru-desktop\target\futtoboru-desktop-0.6.0-SNAPSHOT-jar-with-dependencies.jar
+    echo   futtoboru-desktop\target\futtoboru-desktop-0.6.0-alpha-jar-with-dependencies.jar
     echo.
     echo The build may have failed silently.
     echo Please check build output above.
@@ -55,7 +55,7 @@ if not exist ".\futtoboru-desktop\target\futtoboru-desktop-0.6.0-SNAPSHOT-jar-wi
 )
 
 echo.
-echo JAR file verified: futtoboru-desktop\target\futtoboru-desktop-0.6.0-SNAPSHOT-jar-with-dependencies.jar
+echo JAR file verified: futtoboru-desktop\target\futtoboru-desktop-0.6.0-alpha-jar-with-dependencies.jar
 echo.
 
 echo.

@@ -25,7 +25,7 @@ fi
 BUILD_TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
 # Version from pom.xml (hardcoded for now, as in the .bat)
-VERSION=0.6.0-SNAPSHOT
+VERSION=0.6.0-alpha
 
 {
     echo "version=$VERSION"
