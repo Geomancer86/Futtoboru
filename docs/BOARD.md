@@ -6,7 +6,6 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
-| E-20 ECS calibration vs 1888-89 (goals/game, H/D/A, home advantage, injury rate) | WORKSTATION | `ws/E-20-calibration` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 | G-12a economy: non-League clubs fall into debt | BOOK3PRO | `b3/G-12a-economy` | 2026-11-28 |
 | G-10 history and fan tiers on screen (club facts, prose en+es, fan-tier meter) | BOOK3PRO (parked) | `b3/G-10-history-ui` | 2026-11-28 |
