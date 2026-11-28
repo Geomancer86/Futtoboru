@@ -6,6 +6,7 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| H-06 era events data (`era/baseline.json` + `events.json` per ERA_EVENTS_PROPOSAL, D30) | WORKSTATION | `ws/H-06-era-events` | 2026-11-28 |
 | E-17a ECS engine behind `-Dfuttoboru.match.engine=instant|ecs` (default instant) + MatchEngine contract test + ECS season soak entry | WORKSTATION | `ws/E-17a-engine-flag` | 2026-11-28 |
 | INF-01 Jenkins: concurrent + branch builds, full+smoke per develop commit, nightly soak (G3), `green/develop` + `playable-latest`, executors 4 day / 8 night | WORKSTATION | `ws/INF-01-jenkins` | 2026-11-28 |
 | E-12b/E-16b realism: ball bounces off posts/bar, forwards run onto passes (offsides happen), foul rate check | WORKSTATION | `ws/E-16b-realism` | 2026-11-28 |
