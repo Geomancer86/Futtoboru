@@ -79,7 +79,7 @@ class MatchWorldTest {
         ImmutableArray<Entity> entities;
 
         MutatingPass() {
-            super(SystemPriority.DRAW_VFX);
+            super(SystemPriority.DRAW_PARTICLES);
         }
 
         @Override
@@ -116,7 +116,7 @@ class MatchWorldTest {
         }
 
         MatchWorld viewed = kickedOff();
-        BallReaderPass ball = viewed.addDrawPass(new BallReaderPass(SystemPriority.DRAW_BALL));
+        BallReaderPass ball = viewed.addDrawPass(new BallReaderPass(SystemPriority.DRAW_ACTORS));
         BallReaderPass debug = viewed.addDrawPass(new BallReaderPass(SystemPriority.DRAW_DEBUG));
         viewed.setDrawGuard(true);
         long[] actual = new long[ticks];
@@ -173,7 +173,7 @@ class MatchWorldTest {
         }
         w.addDrawPass(new Named(SystemPriority.DRAW_DEBUG, "d"));
         w.addDrawPass(new Named(SystemPriority.DRAW_PITCH, "p"));
-        w.addDrawPass(new Named(SystemPriority.DRAW_BALL, "b"));
+        w.addDrawPass(new Named(SystemPriority.DRAW_ACTORS, "b"));
         w.addDrawPass(new Named(SystemPriority.DRAW_INTERPOLATION, "i"));
         w.draw(0);
         assertEquals("ipbd", order.toString());
@@ -206,7 +206,7 @@ class MatchWorldTest {
         assertEquals(0, clock.alpha(), 0);
 
         MatchWorld w = world(new UniformPitch(Surface.DRY, 0));
-        BallReaderPass pass = w.addDrawPass(new BallReaderPass(SystemPriority.DRAW_BALL));
+        BallReaderPass pass = w.addDrawPass(new BallReaderPass(SystemPriority.DRAW_ACTORS));
         w.spawn(SpawnRole.BALL).add(BallComponent.atRest(0, 0, 0.4));
         FixedStepClock viewer = new FixedStepClock(w.tickSeconds(), 8);
         int ticks = 0;
@@ -236,9 +236,13 @@ class MatchWorldTest {
 
     // ---- entry point ---------------------------------------------------------------------------------------------
 
-    /** Golden hashes of the {@code play} stub over a full match (162,000 ticks); see BallPhysicsTest for the rule. */
-    static final long GOLDEN_PLAY_DRY = 0x0287cbc750d84093L;
-    static final long GOLDEN_PLAY_RAIN = 0x8f2d2af5fd95eddbL;
+    /**
+     * Golden hashes of the {@code play} stub over a full match (162,000 ticks); see BallPhysicsTest for the rule.
+     * Re-pinned by E-13 (ecs-0.2): {@code play} now lines up 22 bodies (body, athlete, kit, injury, command appended
+     * to the hashed components); they stand still, while boots soak in the rain.
+     */
+    static final long GOLDEN_PLAY_DRY = 0x18b78bc9e51c1b21L;
+    static final long GOLDEN_PLAY_RAIN = 0xd5c718bc39622621L;
 
     @Test
     void playIsDeterministicAndPinnedByAGoldenHash() {
