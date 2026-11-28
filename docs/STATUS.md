@@ -7,7 +7,7 @@ _Last updated 2026-11-27 (BOOK3PRO)._ Version 0.4.0-SNAPSHOT.
 | Day advance / game flow | working | Continue double-click fixed (P2-1) |
 | Inbox / messages | working | `MessageManager` |
 | League fixtures + standings | working | one result path `MatchResultRecorder` (P2-2); table counts league matches only; champion prize £500 / runner-up £250 in `AuthorityManager.LEAGUE_*_PRIZE`; Golden Boot per season (P2-3). Generated schedule runs Apr 1888-Jan 1889 |
-| FA Cup | working | completion, runner-up, replays; final = the bracket's last tie (P2-7); brackets of any size with byes, next edition opens in May (P2-3); tests in engine/cup, engine/temporal, `CupFinalAndPrizeTests` |
+| FA Cup | working | completion, runner-up, replays; final = the bracket's last tie (P2-7); brackets of any size with byes, next edition opens in May (P2-3); one edition per season: the creation scripts open the season.json edition (P2-9); tests in engine/cup, engine/temporal, `CupFinalAndPrizeTests` |
 | Match simulation | crude | random scoreline; replaced in Phase 3 |
 | Unemployed / job system | mostly working | offer and refresh bugs |
 | Finances | partial | weekly expenses, gate income; money text in £ via `Money.format` (P2-7) |
