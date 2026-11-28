@@ -7,7 +7,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | E-14 actions: kicks/passes/crosses/shots/headers, keeper handling, lace cuts | WORKSTATION | `ws/E-14-actions` | 2026-11-28 |
-| R-10 + R-11 research: era player sources; languages and literacy (docs only) | BOOK3PRO | `b3/R-10-player-sources` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -21,6 +20,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Unclaimed:** nothing for v0.5; Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md` (WORKSTATION).
 
 ## Log
+- 2026-11-28 · BOOK3PRO · DONE · R-10 + R-11 · merged 912d3b4: `docs/data/history/PLAYER_SOURCES.md` (sources, licences, Wikidata-first pipeline, 3 producer choices), `LANGUAGES_LITERACY_1880-1914.md` (sourced rates), design §10 in `RECRUITMENT_AND_TRIALS.md` (slices R-11a..d).
 - 2026-11-28 · WORKSTATION · DONE · E-21c · Viewer draws the D26 sheets (`IndexActorSprites`/`SpriteIndex` → RuntimeAtlas; animation from speed/charge/down/injury, 8 dirs, keeper set, officials, ball BA2 by spin/wetness, mud overlay), `CrowdPass` (CR1 as arrays, density from attendance, mood −1..1) + `TouchlinePass` (T1 people/props); debug viewer drives real E-13 bodies. 136 match/ecs + ui/gfx tests. Merged with no extra tests (disjoint from T-01).
 - 2026-11-28 · WORKSTATION · NOTE · D28 · Producer: match view default scale **10 px/m** (2× sheets); 5 px/m only for a zoomed-out wide view. Follow-ups: `ws/E-21s-fidelity` (doll port fixed to match the prototype pixel-for-pixel) and `ws/E-21d-scale-10` (camera/sprite scale).
 - 2026-11-28 · BOOK3PRO · DONE · T-01 (D27) · Merged 969ff0e. **New rule for both machines (CLAUDE.md):** while coding `tools/test-changed.ps1` (affected tests, no lock); at the end, once: `git merge origin/develop` then `python tools/test_level.py --run` (= `tools/dev/check`): levels docs/data/presentation/simulation from what changed since the last green run (`target/.last-green-fast`), so a merge that only brought docs/HANDOFF runs nothing; develop unmoved since the tested SHA = merge without running. Heavy runs only via `python tools/suite_lock.py run -- <cmd>` (one per machine, waits inside). Tiers: default `verify` = fast (untagged), `-Pslow`, `-Pfull`, `-Pfull,smoke` (DesktopSmokeIT runs the real jar); `@Tag("slow")` over 2 s, `tools/test_tiers.py` fails an untagged class over 5 s. Full tier: GitHub on develop/main/PRs, Jenkins "Futtoboru DEV" (slow + coverage per develop commit, nightly full + smoke + coverage + bisect; a branch with BUILD_BRANCH + TEST_TIER=full). `SeasonMemo` shares one played season between AutosaveTests and SaveGameTests. Other lanes: `@Tag` lines on FullSeasonTests, SeededGameTests, NewGameFreshDataTests, AutosaveTests, SaveGameTests.
