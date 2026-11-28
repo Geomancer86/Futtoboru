@@ -7,6 +7,14 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | E-14 actions: kicks/passes/crosses/shots/headers, keeper handling, lace cuts | WORKSTATION | `ws/E-14-actions` | 2026-11-28 |
+| P2-13 duplicate clubs in `allClubs` (new game + load) + sweep of every other open bug (D31) | BOOK3PRO | `b3/P2-13-duplicate-clubs` | 2026-11-28 |
+| J-01 job system: duplicate offer rows, offer/refresh bugs, salary shown as money | BOOK3PRO | `b3/J-01-job-bugs` | 2026-11-28 |
+| U-12 UI polish: Esc closes dialogs, dates/decimals/months from the game language, Authorities season, one link colour, inbox filter, debug button behind a dev flag | BOOK3PRO | `b3/U-12-ui-polish` | 2026-11-28 |
+| P2-14 neutral venues on `Match` + season calendar as data (FA Cup opens/drawn in its real month) | BOOK3PRO | `b3/P2-14-venues-calendar` | 2026-11-28 |
+| G-01 team sheet (XI, shape, style, captain; AI too) on the instant result | BOOK3PRO | `b3/G-01-team-sheet` | 2026-11-28 |
+| G-03 match report stand-in (goal minutes, period paragraph) | BOOK3PRO | `b3/G-03-match-report` | 2026-11-28 |
+| G-04 contracts through the season (AI clubs too) | BOOK3PRO | `b3/G-04-contracts` | 2026-11-28 |
+| Jenkins "Futtoboru DEV" setup + BOOK3PRO trigger access (T-01 open item) | BOOK3PRO | none (CI config) | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -16,10 +24,13 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Ready to take (from docs/ROADMAP.md)
 Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 minimum, autosave, labels in language files). Details in `docs/ROADMAP.md` Phase 2 close-out + Phase 3.
 
-**v0.5.0-alpha released** (tag on `main`, 7d7727f). V-01 + U-05 done; remaining for v0.5.0: nothing claimed. Tag v0.5.0 when the producer agrees.
-**Unclaimed:** nothing for v0.5; Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md` (WORKSTATION).
+**v0.5.0-alpha released** (tag on `main`, 7d7727f). **v0.5.0** is tagged once P2-13, J-01, U-12 and P2-14 are merged (D30 A10).
+**Phase 3b (D30):** gameplay on the instant result; order in `docs/ROADMAP.md`. Next after the claimed lanes: G-02 injuries, G-05 committee, recruitment R-02..R-07, G-08 re-election.
+**Unclaimed for WORKSTATION:** Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md`. The ECS engine will read G-01's team sheet (`TeamSheet`, outside `match/ecs`) as its line-up input.
 
 ## Log
+- 2026-11-28 · BOOK3PRO · CLAIM · P2-13, J-01, U-12, P2-14, G-01, G-03, G-04, Jenkins · Seven parallel lanes (one worktree each) + CI setup. **WORKSTATION:** G-01 adds a `TeamSheet` (XI + shape + style + captain) per club and match outside `match/ecs`; please make the ECS engine read it as its line-up when you wire `EcsMatchEngine.play` to real matches. G-01/G-03 touch `MatchSimulator` only (not `match/ecs`).
+- 2026-11-28 · BOOK3PRO · NOTE · D30 + D31 · Producer picks (next-steps list): team sheet out of v0.6 onto the instant result; the instant result is the match path until E-20; placeholder data allowed for all gameplay; H-01 history, H-02 grounds and H-03 era events proposals **approved**; duplicate-club fix may re-pin seeds; debug menu button behind a dev flag; FA Cup in its real month + calendar as data; tag v0.5.0 after the quick fixes; agents run Jenkins. **D31 (CLAUDE.md): no open bugs** (fix when found, re-pin if needed) and **AI clubs get every system the player has**. ROADMAP: WORKSTATION's "D28" match view scale renumbered **D29** (D28 = recruitment). B1 (develop red) was already fixed by WORKSTATION in E-21d; guards re-checked green here (5f04cd8).
 - 2026-11-28 · WORKSTATION · DONE · E-21d (D28) · Match view at 10 px/m (2× sheets everywhere; crowd/props at double texel; `W` / `-Dfuttoboru.viewer.wide=true` = 5 px/m wide view), magnification aims at ~80 m across (720p ×2 = 64 m, 1080p ×2 = 96 m), pitch baked at 10 px/m. **Resolves the "develop red" BLOCKED note**: `UiThemeTest` (viewer colour literals → `ViewColors`/named constants) and `LoggingStyleGuardTest` both green; `tools/test_level.py --run` green on the merged tree (16 s).
 - 2026-11-28 · WORKSTATION · DONE · E-21s fidelity · Doll port fixed to match the prototype pixel for pixel (flat spheres as in the JS; exact stripe/hoop/sash maths); all 81 sheets re-baked, index format unchanged; preview defaults to 2× (D28).
 - 2026-11-28 · WORKSTATION · FIX · develop was red on `LoggingStyleGuardTest` (a `System.out.println` in `ViewerDebugApp` from E-21c, merged without the guard by the PM). Fixed. Lesson: "disjoint files" merges still run the cross-cutting guards (`LoggingStyleGuardTest`, `UiThemeTest`, `LanguageBundleKeysTest`, `EcsDeterminismGuardTest`) — `tools/test_level.py --run` does this.
