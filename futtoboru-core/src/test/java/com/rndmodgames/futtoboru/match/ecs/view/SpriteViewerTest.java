@@ -211,7 +211,8 @@ class SpriteViewerTest {
             p.magnification = 2;
             f = sprites.ball(p);
             assertEquals("ball/high/soaked", f.animation);
-            assertEquals(2, f.sprite.scale, "magnification 2: the 2x ball at half size");
+            assertEquals(1, f.sprite.scale, "the small 1x ball frame, in proportion with the players (E-21e)");
+            assertEquals(1, f.texel, "one screen pixel per texel, as a 2x player beside it");
         } finally {
             atlas.dispose();
             NoGl.uninstall();
@@ -298,6 +299,14 @@ class SpriteViewerTest {
         CrowdPass near = viewed.engine().getSystem(CrowdPass.Near.class);
         assertTrue(far.figures() > 500, "a 9000 gate fills the far bank: " + far.figures());
         assertTrue(near.figures() > 0 && near.figures() < far.figures());
+        ViewCamera cam = v.view().viewCamera();
+        double hw = cam.halfWidth();
+        for (int i = 0; i < near.figures(); i++) {
+            double y = near.figureY(i);
+            assertTrue(y < -hw && y > -hw - 1.3, "near line just in front of the near touchline: " + y);
+            assertTrue(near.drawScale(cam, y) <= CrowdPass.NEAR_MAX_SCALE * cam.pixelsPerMetre() + 1e-9,
+                    "near line capped, never a giant row");
+        }
         assertTrue(far.drawn() > 0 && far.drawn() <= far.figures(), "culled to the view");
         assertTrue(far.moodCount(CrowdPass.CHEER) > 0 && far.moodCount(CrowdPass.CALM) > 0,
                 "a lively crowd: some cheer, some stay calm");

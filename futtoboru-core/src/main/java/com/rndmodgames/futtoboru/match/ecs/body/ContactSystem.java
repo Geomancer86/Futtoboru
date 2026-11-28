@@ -25,7 +25,7 @@ import com.rndmodgames.futtoboru.match.ecs.SystemPriority;
  * <li><b>Injuries:</b> impulse above the threshold rolls on the {@code body:contact:injury} fork (draws only when the
  * chance is above zero, in pair order), shin pads lower it: KNOCK / PASSENGER / OFF.</li>
  * <li><b>Laws:</b> nothing is judged here. Each impact is written to a reused {@link ContactRecord} with
- * charge-from-behind and keeper flags; charging the keeper is fair in 1888-89 ({@link BodyParams#keeperChargeProtected}
+ * charge-from-behind and keeper flags; charging the keeper is fair in 1888-89 ({@code RulesProfile.keeperChargeProtected}
  * false). The laws (E-16) and event detection (E-17) read {@link #contactCount()} / {@link #contact(int)} in the same
  * tick.</li>
  * </ul>
@@ -230,7 +230,7 @@ public final class ContactSystem extends EntitySystem implements SimSystem {
         c.bHitFromBehind = -(b.fx * nx + b.fy * ny) < -cosBehind;
         c.aKeeper = athlete[i].isKeeper();
         c.bKeeper = athlete[j].isKeeper();
-        c.keeperProtected = p.keeperChargeProtected;
+        c.keeperProtected = world.params().rules.keeperChargeProtected();
         c.aFall = aFall;
         c.bFall = bFall;
         c.aInjury = aInjury;
