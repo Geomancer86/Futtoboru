@@ -153,5 +153,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- V-01: the dev-only screenshot tour (src/test/.../tools/ScreenshotTour, tools/ui/screenshots.sh) opens a real window -->
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-backend-lwjgl3</artifactId>
+            <version>${libgdx.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 </project>

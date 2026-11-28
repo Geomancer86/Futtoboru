@@ -153,7 +153,7 @@ public class CupPlayoffsTable extends VisTable {
     
     private VisTable createMatchBox(Match match) {
         VisTable box = new VisTable(true);
-        box.setBackground("button-over"); // Use a subtle background
+        box.setBackground("button"); // V-01: the dark button background keeps "Winner of" (text.muted) readable
         
         Club home = match.getHomeClubId() != null ? currentGame.getClubById(match.getHomeClubId()) : null;
         Club away = match.getAwayClubId() != null ? currentGame.getClubById(match.getAwayClubId()) : null;

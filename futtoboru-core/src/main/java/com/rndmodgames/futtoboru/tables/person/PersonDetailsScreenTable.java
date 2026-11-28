@@ -100,7 +100,7 @@ public class PersonDetailsScreenTable extends VisTable {
             nationalityValueLabel.setText(person.getCountry().getCommonName());
             
             //
-            ageValueLabel.setText(dateFormatter.format(person.getBirthDate()));
+            ageValueLabel.setText(person.getBirthDate() != null ? dateFormatter.format(person.getBirthDate()) : "-"); // V-01: no NPE without a birth date
             
             //
             currentCountryValueLabel.setText(person.getCurrentCountry().getCommonName());

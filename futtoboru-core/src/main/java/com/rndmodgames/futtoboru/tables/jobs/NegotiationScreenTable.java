@@ -80,7 +80,7 @@ public class NegotiationScreenTable extends VisTable {
         this.row();
         this.add(new VisLabel("Negotiate Job Offer" + (club != null ? " - " + club.getName() : ""))).colspan(2);
         this.row();
-        this.addSeparator();
+        this.addSeparator().colspan(2); // V-01: a one-column separator pushed column 2 to the right edge
         
         // Current offer
         this.row();
@@ -91,7 +91,7 @@ public class NegotiationScreenTable extends VisTable {
         this.row();
         this.add(new VisLabel("Negotiation Round: " + currentOffer.getNegotiationRound() + "/3")).colspan(2);
         this.row();
-        this.addSeparator();
+        this.addSeparator().colspan(2); // V-01: a one-column separator pushed column 2 to the right edge
         
         // Counter-offer inputs
         this.row();
@@ -105,7 +105,7 @@ public class NegotiationScreenTable extends VisTable {
         contractLengthField = new VisTextField(currentOffer.getContractLengthMonths().toString());
         this.add(contractLengthField).width(UiTheme.size("col.wide"));
         this.row();
-        this.addSeparator();
+        this.addSeparator().colspan(2); // V-01: a one-column separator pushed column 2 to the right edge
         
         // Buttons
         VisTable buttonsTable = new VisTable(true);

@@ -261,8 +261,9 @@ public class FuttoboruGameEngine {
                 continue;
             }
             
-            // Skip if match date is in the future
-            if (match.getMatchDateTime() != null && match.getMatchDateTime().isAfter(currentDate)) {
+            // Skip if match day is in the future (by date: the game clock stays before the 15:00 kick-off, V-01)
+            if (match.getMatchDateTime() != null
+                    && match.getMatchDateTime().toLocalDate().isAfter(currentDate.toLocalDate())) {
                 continue;
             }
             

@@ -56,6 +56,7 @@ public class JobOfferScreenTable extends VisTable {
         
         // Offers list
         offersListTable = new VisTable(true);
+        offersListTable.top(); // V-01: rows start under the title, not mid-screen
         
         offersScrollPane = new VisScrollPane(offersListTable);
         offersScrollPane.setFadeScrollBars(false);
@@ -112,7 +113,7 @@ public class JobOfferScreenTable extends VisTable {
         offersListTable.add(new VisLabel("Contract")).width(UiTheme.size("col.label"));
         offersListTable.add(new VisLabel("Actions")).width(UiTheme.size("col.xwide"));
         offersListTable.row();
-        offersListTable.addSeparator();
+        offersListTable.addSeparator().colspan(4); // V-01: full width, not the first column only
         
         // Offers
         for (JobOffer offer : offers) {

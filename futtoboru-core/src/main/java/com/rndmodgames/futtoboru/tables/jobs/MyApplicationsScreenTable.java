@@ -51,6 +51,7 @@ public class MyApplicationsScreenTable extends VisTable {
         
         // Applications list
         applicationsListTable = new VisTable(true);
+        applicationsListTable.top(); // V-01: rows start under the title, not mid-screen
         
         applicationsScrollPane = new VisScrollPane(applicationsListTable);
         applicationsScrollPane.setFadeScrollBars(false);
@@ -83,7 +84,7 @@ public class MyApplicationsScreenTable extends VisTable {
         applicationsListTable.add(new VisLabel("Status")).width(UiTheme.size("col.label"));
         applicationsListTable.add(new VisLabel("Match %")).width(UiTheme.size("col.number"));
         applicationsListTable.row();
-        applicationsListTable.addSeparator();
+        applicationsListTable.addSeparator().colspan(4); // V-01: full width, not the first column only
         
         // Applications
         for (JobApplication application : applications) {
