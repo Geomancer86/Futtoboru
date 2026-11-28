@@ -221,6 +221,7 @@ facts: `docs/data/history/RECRUITMENT_1888-1900.md`, `LANGUAGES_LITERACY_1880-19
 - `professions.json` has `trainer`, `secretary`, `committee-member` (R-09). A person's `judgement` (saves, optional):
   `physical` / `technical` / `mental` / `keeper` (3..23), `bias` (local, pace, size, scots, flair), `network` (pool
   regions). Every club's trainer and AI secretary are in `Club.staff`; the player's club's secretary is the player.
+  G-05's `CommitteeMember` has the same optional `judgement`.
 - **Candidates (saves, optional fields, saveVersion stays 3):** `SaveGame.candidates` = `[{player, region,
   sourceKind, origin, originClub, playsFor, upbringing, tendencies, arrivedAge, real, season, since, status}]` (the
   player and his person in the usual tables, not in `allPlayers`), `candidatePoolSeason`, `candidateArrivalsMonth`.

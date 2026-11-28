@@ -63,6 +63,20 @@ pipeline {
                 '''
             }
         }
+
+        // D33 G4: the ECS engine plays a full 1888-89 season every night (behind the flag; instant stays default)
+        stage('ECS season soak') {
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    sh '''
+                        ./mvnw -B -ntp -o test -pl futtoboru-core -Dtest=EcsSeasonSoakTests -Dfuttoboru.soak=true \
+                            -Dfuttoboru.soak.seeds=1888,7 -Dsurefire.failIfNoSpecifiedTests=false \
+                            || ./mvnw -B -ntp test -pl futtoboru-core -Dtest=EcsSeasonSoakTests -Dfuttoboru.soak=true \
+                            -Dfuttoboru.soak.seeds=1888,7 -Dsurefire.failIfNoSpecifiedTests=false
+                    '''
+                }
+            }
+        }
     }
 
     post {

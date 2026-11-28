@@ -128,11 +128,17 @@ class AiSystemsTest {
         PhysicsParams p = m.w.params();
         m.w.runTicks(600);
         int refreshed = 0;
+        int off = 0;
         long tick = m.w.tickCount();
         m.w.tick();
         double sumErr = 0;
         for (int i = 0; i < 22; i++) {
             PerceptionComponent pc = m.players[i].getComponent(PerceptionComponent.class);
+            InjuryComponent inj = m.players[i].getComponent(InjuryComponent.class);
+            if (inj != null && inj.isOff()) {
+                off++; // injured off the field: he no longer perceives (his beliefs freeze), whatever the seed
+                continue;
+            }
             if (pc.seenTick == tick - p.ai.reactionTicks) {
                 refreshed++;
                 BodyComponent me = m.players[i].getComponent(BodyComponent.class);
@@ -143,9 +149,10 @@ class AiSystemsTest {
             }
             sumErr += Math.abs(pc.ballX - m.ball.x) + Math.abs(pc.ballY - m.ball.y);
         }
-        assertTrue(refreshed >= 6 && refreshed <= 8, "a third of the players think per tick: " + refreshed);
+        assertTrue(off <= 2, "injuries off are rare: " + off);
+        assertTrue(refreshed >= 6 - off && refreshed <= 8, "a third of the players think per tick: " + refreshed);
         assertTrue(sumErr > 0, "beliefs are not the truth");
-        assertTrue(sumErr / 22 < 10, "but close to it: " + sumErr / 22);
+        assertTrue(sumErr / (22 - off) < 10, "but close to it: " + sumErr / (22 - off));
     }
 
     // ---- decisions in a match ----------------------------------------------------------------------------------

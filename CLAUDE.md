@@ -11,7 +11,7 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
 
 ## Git rules (both machines are equals, decision D8)
 - One item = one branch from `origin/develop`: `ws/<item>` on WORKSTATION, `b3/<item>` on BOOK3PRO.
-- Tests (D27, `docs/BUILD.md` "Test tiers"): while coding only the affected tests (`tools/test-changed.ps1`, no lock);
+- Tests (D27, `docs/BUILD.md` "Test tiers"): while coding only the affected tests (`tools/test-changed.ps1`, through the lock like every Maven run);
   the level gate once at the end: `git fetch origin && git merge origin/develop`, then `python tools/test_level.py --run`
   (same as `tools/dev/check`). It runs only what changed since the last green run, so a merge that brought only docs
   re-runs nothing; if develop did not move since the tested SHA, merge into develop without running anything.

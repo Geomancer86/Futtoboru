@@ -27,9 +27,9 @@ import com.rndmodgames.futtoboru.system.generators.NameGenerator;
  * <p>The posts are kept in {@code Club.staff} (profession id -> person id) like the job-market posts, but they are not
  * on the job market ({@code ClubStaffManager.STAFF_POSITIONS}): an AI club's trainer and secretary are made here, and
  * the player's club's secretary post is never stored (it is the player, {@link #secretaryOf}), so the player never
- * "holds two posts". Committee members are G-05's ({@code b3/G-05-committee}, not merged when this was written): the
- * {@code committee-member} profession exists and {@link #judgementFor} has its profile; G-05's men get judgements when
- * they become persons.
+ * "holds two posts". G-05 judges the holder of the manager post as the secretary(-manager): an AI club's secretary is
+ * that man once the job market has appointed one, else the club's own {@code secretary} (so there always is one).
+ * G-05's committee men (inside {@code Club.committee}, not persons) get a {@code committee-member} judgement too.
  *
  * <p>Profiles, ages and the bias draws are placeholders (D30 A3), listed for review.
  */
@@ -94,6 +94,16 @@ public final class StaffRoles {
                 appointed++;
             }
         }
+        Profession manager = DatabaseLoader.getProfessionByDataId(Profession.MANAGER);
+        for (Club club : ContractManager.uniqueClubs(game)) {
+            // the secretary-manager the committee judges (G-05), appointed by the job market
+            Person secretaryManager = holder(game, club, manager);
+            if (secretaryManager != null && secretaryManager != owner && secretaryManager.getJudgement() == null) {
+                secretaryManager.setJudgement(judgementFor(Profession.SECRETARY, networkOf(club),
+                        root.fork("judge:" + secretaryManager.getId())));
+            }
+            committeeJudgements(club, root);
+        }
         if (owner != null && owner.getJudgement() == null && owner.getId() != null) {
             owner.setJudgement(judgementFor(Profession.SECRETARY, networkOf(mine), root.fork("judge:" + owner.getId())));
         }
@@ -108,12 +118,36 @@ public final class StaffRoles {
         return holder(game, club, DatabaseLoader.getProfessionByDataId(Profession.TRAINER));
     }
 
-    /** @return the club's secretary: the player at his own club, else the man in the post (or null) */
+    /**
+     * @return the club's secretary: the player at his own club; else the secretary-manager (the manager post, whom
+     *         G-05's committee judges) when the job market has appointed one; else the club's secretary (or null)
+     */
     public static Person secretaryOf(SaveGame game, Club club) {
         if (game != null && club != null && club == game.getCurrentClub() && game.getOwner() != null) {
             return game.getOwner();
         }
+        Person secretaryManager = holder(game, club, DatabaseLoader.getProfessionByDataId(Profession.MANAGER));
+        if (secretaryManager != null) {
+            return secretaryManager;
+        }
         return holder(game, club, DatabaseLoader.getProfessionByDataId(Profession.SECRETARY));
+    }
+
+    /** G-05's committee men get their judgement once their committee exists ({@code fork("judge:committee:...")}). */
+    private static void committeeJudgements(Club club, RandomSource root) {
+        if (club.getCommittee() == null) {
+            return;
+        }
+        List<com.rndmodgames.futtoboru.data.CommitteeMember> members = club.getCommittee().getMembers();
+        for (int i = 0; i < members.size(); i++) {
+            com.rndmodgames.futtoboru.data.CommitteeMember m = members.get(i);
+            if (m != null && m.getJudgement() == null) {
+                String key = (club.getDataId() != null ? club.getDataId() : "id" + club.getId()) + ":" + i + ":"
+                        + m.getFullName();
+                m.setJudgement(judgementFor(Profession.COMMITTEE_MEMBER, networkOf(club),
+                        root.fork("judge:committee:" + key)));
+            }
+        }
     }
 
     private static Person holder(SaveGame game, Club club, Profession post) {

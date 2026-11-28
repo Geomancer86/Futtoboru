@@ -68,7 +68,9 @@ class RecruitmentGameTests extends BaseTest {
                 assertSame(game.getOwner(), secretary, "the player is his club's secretary");
                 assertNull(club.getStaffId(secretaryPost.getId()), "never stored: he holds his own post only");
             } else {
-                assertTrue(secretary.getPrimaryProfession().is(Profession.SECRETARY), club.getDataId());
+                // the club's own secretary until the job market appoints a secretary-manager (G-05's secretary)
+                assertTrue(secretary.getPrimaryProfession().is(Profession.SECRETARY)
+                        || secretary.getPrimaryProfession().is(Profession.MANAGER), club.getDataId());
                 assertEquals(club.getId(), secretary.getCurrentClubId());
                 assertTrue(holders.add(secretary.getId()), "one post each");
             }
@@ -82,8 +84,20 @@ class RecruitmentGameTests extends BaseTest {
         assertEquals(Integer.valueOf(1888), game.getCandidatePoolSeason());
         assertEquals("lancashire", CandidatePools.regionOf(mine).dataId());
 
+        // G-05's committee men (made on the first day) judge too, after the same day's staff step
+        application.getGameEngine().continueGame();
+        assertNotNull(mine.getCommittee(), "G-05 committee");
+        assertFalse(mine.getCommittee().getMembers().isEmpty());
+        for (com.rndmodgames.futtoboru.data.CommitteeMember m : mine.getCommittee().getMembers()) {
+            StaffJudgement j = m.getJudgement();
+            assertNotNull(j, m.getFullName());
+            assertTrue(j.getMental() >= StaffJudgement.MIN && j.getMental() <= StaffJudgement.MAX);
+            assertEquals("lancashire", j.getNetwork().get(0));
+        }
+
         // the player leaves: the AI club gets a secretary of its own the next time
         game.getOwner().setCurrentClubId(null);
+        mine.setStaffId(DatabaseLoader.getProfessionByDataId(Profession.MANAGER).getId(), null);
         assertEquals(1, StaffRoles.ensure(game, game.getGameDate().plusDays(1), application.random()));
         assertTrue(StaffRoles.secretaryOf(game, mine).getPrimaryProfession().is(Profession.SECRETARY));
     }

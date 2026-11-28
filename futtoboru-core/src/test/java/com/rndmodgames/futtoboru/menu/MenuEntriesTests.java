@@ -26,7 +26,8 @@ class MenuEntriesTests {
         assertEquals(List.of(MainMenuManager.HOME_SCREEN, MainMenuManager.INBOX_SCREEN, MainMenuManager.MAIN_SQUAD_SCREEN,
                 MainMenuManager.SCHEDULE_SCREEN, MainMenuManager.MATCH_HISTORY_SCREEN, MainMenuManager.COMPETITIONS_SCREEN,
                 MainMenuManager.HISTORY_SCREEN, MainMenuManager.CLUB_INFO_SCREEN, MainMenuManager.FINANCES_SCREEN,
-                MainMenuManager.CANDIDATES_SCREEN, MainMenuManager.PERSON_DETAILS_SCREEN, MainMenuManager.AUTHORITY_SCREEN),
+                MainMenuManager.COMMITTEE_SCREEN, MainMenuManager.CANDIDATES_SCREEN,
+                MainMenuManager.PERSON_DETAILS_SCREEN, MainMenuManager.AUTHORITY_SCREEN),
                 screens(MenuEntries.forProfession(true)));
     }
 

@@ -49,7 +49,7 @@ public interface RandomSource {
      */
     Random asRandom();
 
-    /** The default implementation (SplittableRandom inside). */
+    /** The default implementation (SplitMix64, JDK-independent: {@link SplittableRandomSource}). */
     static RandomSource seeded(long seed) {
         return new SplittableRandomSource(seed);
     }

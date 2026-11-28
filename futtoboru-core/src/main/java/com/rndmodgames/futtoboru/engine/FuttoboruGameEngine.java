@@ -120,6 +120,35 @@ public class FuttoboruGameEngine {
         return resultRecorder;
     }
     
+    private com.rndmodgames.futtoboru.system.data.EraProfile eraProfile;
+    private com.rndmodgames.futtoboru.engine.era.EraEventScheduler eraScheduler;
+
+    private com.rndmodgames.futtoboru.engine.era.EraEventScheduler eraScheduler() {
+        if (eraScheduler == null) {
+            eraScheduler = new com.rndmodgames.futtoboru.engine.era.EraEventScheduler(era(), messageManager);
+        }
+        return eraScheduler;
+    }
+
+    /** The era events and baseline (H-06), loaded on first use. */
+    public com.rndmodgames.futtoboru.system.data.EraProfile era() {
+        if (eraProfile == null) {
+            eraProfile = com.rndmodgames.futtoboru.system.data.EraProfile.loadDefault();
+        }
+        return eraProfile;
+    }
+
+    /** The rules, ball, kit and league parameters in force on {@code date} (G-11). */
+    public com.rndmodgames.futtoboru.system.data.EraProfile.Resolved currentEra(LocalDate date) {
+        return era().at(date);
+    }
+
+    /** The era of the game's current date; null when no game is loaded. */
+    public com.rndmodgames.futtoboru.system.data.EraProfile.Resolved currentEra() {
+        return gameInstance.getCurrentGame() == null || gameInstance.getCurrentGame().getGameDate() == null ? null
+                : currentEra(gameInstance.getCurrentGame().getGameDate().toLocalDate());
+    }
+
     public MessageManager getMessageManager() {
         return messageManager;
     }
@@ -360,7 +389,10 @@ public class FuttoboruGameEngine {
          */
         LocalDateTime newDate = current.plusDays(1);
         gameInstance.getCurrentGame().setGameDate(newDate);
-        
+
+        // G-11: the authorities and the press announce era changes (never twice; ids kept in the save)
+        eraScheduler().announce(gameInstance.getCurrentGame(), current.toLocalDate(), newDate.toLocalDate());
+
         // G-02: the day's injury recovery, every club (a man fit again is available for today's matches)
         com.rndmodgames.futtoboru.engine.injuries.InjuryManager.recoverDaily(gameInstance.getCurrentGame(), newDate,
                 messageManager);
@@ -371,6 +403,11 @@ public class FuttoboruGameEngine {
         // Check Competition Schedules
         authorityManager.checkCompetitionsSchedule();
         
+        // G-05: every club's committee (expectations, confidence, letters, dismissal) before the job market's day,
+        // so a dismissed secretary's post is advertised at once
+        com.rndmodgames.futtoboru.engine.committee.CommitteeManager.daily(gameInstance.getCurrentGame(),
+                Futtoboru.randomOf(gameInstance), gameInstance.getClubStaffManager(), messageManager);
+
         // Update Job Openings (v1.0)
         if (gameInstance.getJobManager() != null) {
             gameInstance.getJobManager().updateJobOpenings();
