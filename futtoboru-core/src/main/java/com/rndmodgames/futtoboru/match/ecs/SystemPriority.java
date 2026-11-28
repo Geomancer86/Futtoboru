@@ -21,15 +21,37 @@ public final class SystemPriority {
     public static final int EVENT_DETECTION = 110;
     public static final int CLOCK = 120;
 
-    // Draw passes (viewer, E-21): run once per frame by MatchWorld.draw, in this order.
-    public static final int DRAW_INTERPOLATION = 1000;
-    public static final int DRAW_PITCH = 1010;
-    public static final int DRAW_PLAYERS = 1020;
-    public static final int DRAW_BALL = 1030;
-    public static final int DRAW_OFFICIALS = 1040;
-    public static final int DRAW_CROWD = 1050;
-    public static final int DRAW_VFX = 1060;
-    public static final int DRAW_DEBUG = 1070;
+    // Draw passes (viewer, E-21; docs/design/MATCH_VIEWER_PLAN.md §2.2): run once per frame by MatchWorld.draw, in
+    // this order. Bands leave gaps: a second pass in a band takes band + 1, + 2 ... and gets its own constant here.
+    /** FRAME band: view state every later pass reads (interpolated transforms, camera, sky). */
+    public static final int DRAW_FRAME = 1000;
+    public static final int DRAW_INTERPOLATION = DRAW_FRAME;
+    public static final int DRAW_CAMERA = 1002;
+    public static final int DRAW_SKY = 1004;
+    /** Match events turned into view events (particles, camera kicks, crowd reactions). */
+    public static final int DRAW_EVENTS = 1010;
+    /** Light sources gathered for the light map. */
+    public static final int DRAW_LIGHTS = 1015;
+    public static final int DRAW_PITCH = 1100;
+    /** Mud, divots, footprints, wear overlay. */
+    public static final int DRAW_MARKS = 1120;
+    public static final int DRAW_SHADOWS = 1150;
+    /** Crowd along the far touchline (behind the players in a three-quarter view). */
+    public static final int DRAW_CROWD_BACK = 1180;
+    /** Players, officials, ball and goal frames, depth-sorted together. */
+    public static final int DRAW_ACTORS = 1200;
+    /** The ball in the air above heads. */
+    public static final int DRAW_OVERHEAD = 1250;
+    public static final int DRAW_LIGHT = 1300;
+    public static final int DRAW_PARTICLES = 1350;
+    /** Crowd along the near touchline (in front of the players). */
+    public static final int DRAW_CROWD_FRONT = 1400;
+    /** Rain, snow, fog, cloud shadows. */
+    public static final int DRAW_ATMOSPHERE = 1500;
+    /** Shake, grade, flashes. */
+    public static final int DRAW_CAMERA_FX = 1800;
+    public static final int DRAW_DEBUG = 1850;
+    public static final int DRAW_POST = 1900;
 
     private SystemPriority() {
     }

@@ -1,0 +1,15 @@
+{
+    "schemaVersion": 1,
+    "default": "high",
+    "modules": {
+        "particles": { "on": 1, "ticks": [2, 1, 1, 1], "cap": [500, 1000, 2000, 4000], "reserve": [100, 200, 400, 800] },
+        "crowd": { "on": 1, "ticks": [2, 1, 1, 1], "animated": [0.25, 0.5, 1, 1] },
+        "weather": { "on": 1, "ticks": [8, 4, 4, 2], "cap": [150, 600, 1200, 2400], "density": [0.5, 0.75, 1, 1] },
+        "fog": { "on": 1, "ticks": [4, 2, 2, 1] },
+        "light": { "on": 1, "ticks": [3, 2, 1, 1], "map": [0, 1, 1, 1], "cap": [16, 32, 64, 128], "resolution": [0.125, 0.25, 0.25, 0.5] },
+        "shadows": { "on": 1 },
+        "marks": { "on": 1, "ticks": [4, 2, 2, 1], "cap": [0, 128, 256, 512] },
+        "smoke": { "on": 1, "ticks": [2, 1, 1, 1], "chimneys": [6, 12, 24, 48], "density": [0.6, 0.8, 1, 1] },
+        "camera_fx": { "on": 1, "shake": 1 }
+    }
+}
