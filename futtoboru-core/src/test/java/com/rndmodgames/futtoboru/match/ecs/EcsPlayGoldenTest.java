@@ -20,8 +20,8 @@ import com.rndmodgames.futtoboru.engine.random.RandomSource;
 @Tag("slow")
 class EcsPlayGoldenTest {
 
-    static final long GOLDEN_PLAY_DRY = 0x9e70579e8eb7d1beL;
-    static final long GOLDEN_PLAY_RAIN = 0x3b206867b6e433ebL;
+    static final long GOLDEN_PLAY_DRY = 0xff0bf56e03cc1336L;
+    static final long GOLDEN_PLAY_RAIN = 0x656a3f35f32613f7L;
 
     @Test
     void playIsDeterministicAndPinnedByAGoldenHash() {

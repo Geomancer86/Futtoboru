@@ -16,7 +16,7 @@ set DEV_FLAG=
 if /I "%FUTTOBORU_DEV%"=="true" set DEV_FLAG=-Dfuttoboru.dev=true
 
 REM Run Java and log ALL output to file (stdout and stderr)
-java %DEV_FLAG% -jar ./futtoboru-desktop/target/futtoboru-desktop-0.5.0-SNAPSHOT-jar-with-dependencies.jar > game-debug.log 2>&1
+java %DEV_FLAG% -jar ./futtoboru-desktop/target/futtoboru-desktop-0.6.0-SNAPSHOT-jar-with-dependencies.jar > game-debug.log 2>&1
 
 echo.
 echo ========================================

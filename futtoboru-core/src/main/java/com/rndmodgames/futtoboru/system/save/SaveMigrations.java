@@ -7,10 +7,15 @@ import java.util.TreeMap;
 import java.util.function.UnaryOperator;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Position;
+import com.rndmodgames.futtoboru.data.language.LanguageSkill;
+import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.data.DataRecord;
 import com.rndmodgames.futtoboru.system.data.GameData;
+import com.rndmodgames.futtoboru.system.data.LanguageData;
+import com.rndmodgames.futtoboru.system.generators.LanguageGenerator;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 
 /**
@@ -28,6 +33,7 @@ public final class SaveMigrations {
     private static final Map<Integer, UnaryOperator<JsonValue>> STEPS = new TreeMap<>();
     static {
         STEPS.put(1, SaveMigrations::addPositionAndDribbling);
+        STEPS.put(2, SaveMigrations::addLanguages);
     }
 
     private SaveMigrations() {
@@ -104,6 +110,71 @@ public final class SaveMigrations {
             }
         }
         return root;
+    }
+
+    /**
+     * v2 -> v3 (R-11a): every person gets {@code languages}, {@code homeLanguage}, {@code birthArea} and
+     * {@code parentsOrigin}, generated exactly as a new game generates them: on the person's own fork of the game's
+     * database stream ({@code seeded(seed).fork("database").fork(LanguageGenerator.streamName(person))}), from his
+     * saved country and birth date. A save without a seed is left as it is (the load fills the gap afterwards).
+     */
+    static JsonValue addLanguages(JsonValue root) {
+        return addLanguages(root, DatabaseLoader.getLanguageData(), DatabaseLoader.getGameData());
+    }
+
+    /** The v2 -> v3 step with the data given (public for tests). */
+    public static JsonValue addLanguages(JsonValue root, LanguageData languages, GameData data) {
+        JsonValue seed = root.has("game") ? root.get("game").get("seed") : null;
+        if (languages == null || seed == null || !seed.isLong()) {
+            return root;
+        }
+        RandomSource database = RandomSource.seeded(seed.asLong()).fork("database");
+        for (JsonValue p = child(root, "persons"); p != null; p = p.next) {
+            if (p.has("languages") && p.get("languages").size > 0) {
+                continue;
+            }
+            Person person = new Person();
+            person.setDataId(p.getString("dataId", null));
+            person.setId(p.has("id") && p.get("id").isLong() ? p.getLong("id") : null);
+            person.setName(p.getString("name", null));
+            person.setLastname(p.getString("lastname", null));
+            String born = p.has("birthDate") && p.get("birthDate").isString() ? p.getString("birthDate") : null;
+            person.setBirthDate(born == null ? null : java.time.LocalDateTime.parse(born));
+            String country = p.has("country") && p.get("country").isString() ? p.getString("country") : null;
+            if (country != null) {
+                // the generator needs only the data id (no database lookup before the load rebuilds it)
+                com.rndmodgames.futtoboru.data.Country c = new com.rndmodgames.futtoboru.data.Country();
+                c.setDataId(country);
+                person.setCountry(c);
+            }
+            LanguageGenerator.assign(person, languages, data, database);
+            if (p.has("languages")) {
+                p.remove("languages");
+            }
+            JsonValue list = new JsonValue(JsonValue.ValueType.array);
+            for (LanguageSkill s : person.getLanguages()) {
+                JsonValue o = new JsonValue(JsonValue.ValueType.object);
+                o.addChild("language", new JsonValue(s.getLanguage()));
+                o.addChild("speak", new JsonValue(s.getSpeak()));
+                o.addChild("understand", new JsonValue(s.getUnderstand()));
+                o.addChild("readWrite", new JsonValue(s.getReadWrite()));
+                list.addChild(o);
+            }
+            p.addChild("languages", list);
+            put(p, "homeLanguage", person.getHomeLanguage());
+            put(p, "birthArea", person.getBirthArea());
+            put(p, "parentsOrigin", person.getParentsOrigin());
+        }
+        return root;
+    }
+
+    private static void put(JsonValue o, String field, String value) {
+        if (o.has(field)) {
+            o.remove(field);
+        }
+        if (value != null) {
+            o.addChild(field, new JsonValue(value));
+        }
     }
 
     private static JsonValue child(JsonValue v, String field) {

@@ -23,6 +23,26 @@
       "james-trainer-1863",
       "richard-whittle-1864"
     ],
+    "fanTiers": {
+      "fred-dewhurst-1863": 4,
+      "george-drummond-1865": 2,
+      "jack-edwards-1867": 1,
+      "archie-goodall-1865": 1,
+      "john-goodall-1863": 4,
+      "jack-gordon-1861": 2,
+      "johnny-graham-1857": 2,
+      "willie-graham-1866": 1,
+      "robert-holmes-1867": 2,
+      "bob-howarth-1865": 3,
+      "jock-inglis-1859": 1,
+      "robert-mills-roberts-1862": 3,
+      "sandy-robertson-1860": 1,
+      "jimmy-ross-1866": 3,
+      "david-russel-1863": 2,
+      "sam-thomson-1862": 2,
+      "james-trainer-1863": 3,
+      "richard-whittle-1864": 1
+    },
     "positions": {
       "fred-dewhurst-1863": { "position": "inside-right", "source": "players-1888-89-line" },
       "george-drummond-1865": { "position": "left-wing", "source": "players-1888-89" },
@@ -69,6 +89,26 @@
       "harry-yates-1861",
       "bob-thomas-1867"
     ],
+    "fanTiers": {
+      "albert-allen-1867": 3,
+      "walter-ashmore-1861": 1,
+      "albert-brown-1862": 2,
+      "john-burton-1863": 2,
+      "frank-coulton-1866": 2,
+      "gershom-cox-1863": 2,
+      "frankie-dawson-1862": 1,
+      "harry-devey-1864": 2,
+      "arthur-dixon-1867": 1,
+      "batty-garvey-1865": 1,
+      "archie-goodall-1865": 1,
+      "tommy-green-1863": 2,
+      "thomas-harrison-1866": 1,
+      "dennis-hodgetts-1863": 4,
+      "archie-hunter-1859": 5,
+      "jimmy-warner-1865": 3,
+      "arthur-wollaston-1865": 1,
+      "harry-yates-1861": 2
+    },
     "positions": {
       "albert-allen-1867": { "position": "inside-right", "source": "players-1888-89-line" },
       "walter-ashmore-1861": { "position": "goalkeeper", "source": "wp-season-1888-89" },
@@ -122,6 +162,27 @@
       "r-dudley-1865",
       "t-tomkyes-1866"
     ],
+    "fanTiers": {
+      "harry-wood-1868": 2,
+      "john-brodie-1862": 3,
+      "tommy-knight-1865": 1,
+      "dickie-baugh-1864": 3,
+      "harry-allen-1866": 3,
+      "charlie-mason-1863": 3,
+      "david-wykes-1867": 1,
+      "jack-baynton-1859": 3,
+      "albert-fletcher-1867": 2,
+      "arthur-lowder-1863": 2,
+      "alec-cannon-1866": 1,
+      "william-rose-1865": 1,
+      "walter-white-1866": 1,
+      "tommy-hunter-1863": 2,
+      "joe-cooper-1865": 2,
+      "john-benton-1866": 1,
+      "nick-anderson-1867": 1,
+      "r-dudley-1865": 1,
+      "t-tomkyes-1866": 1
+    },
     "positions": {
       "harry-wood-1868": { "position": "inside-left", "source": "players-1888-89-line" },
       "john-brodie-1862": { "position": "centre-forward", "source": "fa-cup-final-1889" },
@@ -174,6 +235,31 @@
       "bernard-whittaker-1865"
     ],
     "notes": "Leamington Road in 1888-89; Ewood Park only from 1890.",
+    "fanTiers": {
+      "willie-almond-1868": 1,
+      "herby-arthur-1863": 4,
+      "john-barton-1866": 1,
+      "james-beresford-1860": 1,
+      "joe-beverley-1856": 2,
+      "james-brown-1865": 1,
+      "jimmy-douglas-1859": 2,
+      "james-duerden-1866": 1,
+      "harry-fecitt-1864": 2,
+      "john-forbes-1862": 3,
+      "jimmy-forrest-1864": 4,
+      "robert-haresnape-1866": 1,
+      "william-holden-1860": 1,
+      "billy-mcowen-1871": 1,
+      "w-mitchell-1866": 1,
+      "robert-porter-1867": 1,
+      "jack-southworth-1866": 2,
+      "james-southworth-1864": 1,
+      "james-stothert-1870": 1,
+      "fergus-suter-1857": 3,
+      "william-townley-1866": 2,
+      "nat-walton-1867": 2,
+      "bernard-whittaker-1865": 1
+    },
     "positions": {
       "willie-almond-1868": { "position": "half-back", "source": "players-1888-89" },
       "herby-arthur-1863": { "position": "goalkeeper", "source": "players-1888-89" },
@@ -236,6 +322,32 @@
       "h-mcguinness-1866",
       "jim-parkinson-1865"
     ],
+    "fanTiers": {
+      "james-brogan-1864": 1,
+      "kenny-davenport-1862": 3,
+      "john-milne-1866": 1,
+      "david-weir-1863": 1,
+      "bob-roberts-1864": 3,
+      "alexander-barbour-1862": 2,
+      "harry-tyrer-1868": 1,
+      "peter-bullough-1865": 1,
+      "charlie-harrison-1861": 1,
+      "di-jones-1867": 1,
+      "bethel-robinson-1861": 1,
+      "thomas-coupar-1865": 1,
+      "g-owen-1865": 1,
+      "j-scowcroft-1861": 1,
+      "sam-gillam-1865": 1,
+      "w-flitcroft-1864": 1,
+      "d-mercer-1865": 1,
+      "john-mitchell-1861": 1,
+      "jimmy-turner-1865": 1,
+      "e-siddons-1866": 1,
+      "w-simmers-1865": 1,
+      "frank-dyer-1867": 1,
+      "h-mcguinness-1866": 1,
+      "jim-parkinson-1865": 1
+    },
     "positions": {
       "james-brogan-1864": { "position": "centre-forward", "source": "players-1888-89-line" },
       "kenny-davenport-1862": { "position": "inside-right", "source": "players-1888-89" },
@@ -289,6 +401,28 @@
       "joe-wilson-1865",
       "george-woodhall-1864"
     ],
+    "fanTiers": {
+      "billy-bassett-1869": 4,
+      "jem-bayliss-1865": 3,
+      "fredrick-crabtree-1866": 1,
+      "harry-green-1865": 1,
+      "george-haynes-1866": 1,
+      "billy-hendry-1865": 1,
+      "ezra-horton-1864": 3,
+      "jack-horton-1863": 2,
+      "albert-millard-1866": 1,
+      "harold-oliver-1865": 1,
+      "tom-pearson-1866": 2,
+      "charlie-perry-1864": 2,
+      "walter-perry-1865": 1,
+      "alexander-ramsey-1865": 1,
+      "bob-roberts-1859": 3,
+      "charlie-shaw-1866": 1,
+      "george-timmins-1863": 2,
+      "luther-walker-1862": 1,
+      "joe-wilson-1865": 2,
+      "george-woodhall-1864": 3
+    },
     "positions": {
       "billy-bassett-1869": { "position": "right-wing", "source": "players-1888-89" },
       "jem-bayliss-1865": { "position": "half-back", "source": "players-1888-89" },
@@ -340,6 +474,30 @@
       "jonathan-wilkinson-1864",
       "j-woods-1865"
     ],
+    "fanTiers": {
+      "billy-barbour-1865": 1,
+      "jim-bonar-1866": 2,
+      "bob-brand-1865": 1,
+      "peter-chippendale-1864": 1,
+      "hugh-galbraith-1866": 1,
+      "pat-gallocher-1865": 1,
+      "george-haworth-1863": 3,
+      "j-holden-1865": 1,
+      "johnny-horne-1862": 2,
+      "john-kirkham-1869": 1,
+      "joe-lofthouse-1864": 2,
+      "robert-macbeth-1866": 1,
+      "john-mclellan-1863": 1,
+      "henry-parkinson-1865": 1,
+      "luther-pemberton-1864": 1,
+      "j-robertson-1865": 1,
+      "stephen-smith-singleton-1863": 1,
+      "john-stevenson-1862": 1,
+      "james-tattersall-1864": 1,
+      "arthur-wilkinson-1865": 1,
+      "jonathan-wilkinson-1864": 1,
+      "j-woods-1865": 1
+    },
     "positions": {
       "billy-barbour-1865": { "position": "centre-forward", "source": "players-1888-89" },
       "jim-bonar-1866": { "position": "inside-right", "source": "players-1888-89-line" },
@@ -406,6 +564,41 @@
       "frank-sugg-1862",
       "joe-davies-1870"
     ],
+    "fanTiers": {
+      "edgar-chadwick-1869": 1,
+      "johnny-holt-1865": 1,
+      "george-dobson-1862": 3,
+      "robert-smalley-1865": 2,
+      "nick-ross-1863": 3,
+      "john-weir-1865": 2,
+      "george-farmer-1865": 3,
+      "robert-watson-1864": 1,
+      "james-costley-1865": 1,
+      "alec-dick-1865": 2,
+      "david-waugh-1864": 1,
+      "william-brown-1865": 1,
+      "alex-mckinnon-1864": 1,
+      "alf-milward-1865": 1,
+      "jack-angus-1865": 1,
+      "george-fleming-1864": 1,
+      "charles-jolliffe-1865": 1,
+      "william-lewis-1865": 1,
+      "william-briscoe-1864": 1,
+      "albert-chadwick-1866": 1,
+      "jas-coyne-1865": 1,
+      "george-davie-1865": 1,
+      "mike-higgins-1865": 1,
+      "robert-jones-1864": 1,
+      "bob-kelso-1863": 1,
+      "jack-keys-1865": 1,
+      "r-morris-1865": 1,
+      "henry-parkinson-1865": 1,
+      "hugh-pollock-1864": 1,
+      "roberts-1865": 1,
+      "george-stephenson-1864": 1,
+      "harry-warmby-1864": 1,
+      "walter-wilson-1864": 1
+    },
     "positions": {
       "edgar-chadwick-1869": { "position": "inside-left", "source": "players-1888-89" },
       "johnny-holt-1865": { "position": "half-back", "source": "players-1888-89" },
@@ -469,6 +662,27 @@
       "william-smith-1865",
       "robert-duckworth-1865"
     ],
+    "fanTiers": {
+      "dan-friel-1860": 3,
+      "john-yates-1861": 2,
+      "pat-gallocher-1865": 3,
+      "sandy-lang-1865": 3,
+      "william-bury-1865": 2,
+      "jack-keenan-1865": 2,
+      "bill-mcfettridge-1865": 2,
+      "jack-abrahams-1865": 2,
+      "walter-cox-1865": 1,
+      "william-tait-1864": 2,
+      "ross-mcmahon-1865": 1,
+      "thomas-midgley-1860": 1,
+      "alec-brady-1865": 1,
+      "fred-poland-1865": 2,
+      "william-mckay-1865": 1,
+      "william-brady-1870": 1,
+      "robert-kay-1865": 1,
+      "william-smith-1865": 1,
+      "robert-duckworth-1865": 1
+    },
     "positions": {
       "dan-friel-1860": { "position": "half-back", "source": "players-1888-89" },
       "john-yates-1861": { "position": "left-wing", "source": "players-1888-89" },
@@ -524,6 +738,28 @@
       "albert-williamson-1864",
       "levi-wright-1864"
     ],
+    "fanTiers": {
+      "george-bakewell-1865": 3,
+      "william-chatterton-1861": 3,
+      "lewis-cooper-1864": 2,
+      "archibald-ferguson-1863": 1,
+      "alex-higgins-1863": 3,
+      "william-hopewell-1864": 1,
+      "arthur-latham-1863": 2,
+      "john-lees-1865": 1,
+      "joseph-marshall-1863": 1,
+      "isaac-monks-1864": 1,
+      "haydn-morley-1864": 2,
+      "thomas-needham-1865": 1,
+      "ruben-pitman-1864": 1,
+      "harry-plackett-1866": 1,
+      "lawrence-plackett-1869": 2,
+      "walter-roulstone-1864": 2,
+      "j-smith-1864": 1,
+      "benjamin-spilsbury-1865": 3,
+      "albert-williamson-1864": 2,
+      "levi-wright-1864": 2
+    },
     "positions": {
       "george-bakewell-1865": { "position": "right-wing", "source": "players-1888-89-line" },
       "ew-bellhouse-1865": { "position": "half-back", "source": "wp-season-1888-89" },
@@ -595,6 +831,32 @@
       "fred-weightman-1865",
       "tom-widdowson-1863"
     ],
+    "fanTiers": {
+      "thomas-allin-1865": 1,
+      "george-brown-1863": 1,
+      "john-clements-1864": 1,
+      "henry-cursham-1863": 4,
+      "harry-daft-1866": 3,
+      "herbert-emmitt-1864": 1,
+      "william-gunn-1865": 3,
+      "frank-guttridge-1863": 1,
+      "ted-harker-1865": 1,
+      "bill-hodder-1864": 1,
+      "jack-holland-1861": 2,
+      "harry-jackson-1865": 1,
+      "bob-jardine-1864": 1,
+      "billy-may-1864": 1,
+      "edward-may-1865": 1,
+      "tom-mclean-1863": 1,
+      "albert-moore-1865": 2,
+      "alf-shelton-1865": 2,
+      "charlie-shelton-1864": 3,
+      "mordecai-sherwin-1862": 4,
+      "herbert-snook-1865": 1,
+      "ben-warburton-1864": 1,
+      "edwin-wardle-1864": 1,
+      "tom-widdowson-1863": 1
+    },
     "positions": {
       "thomas-allin-1865": { "position": "centre-forward", "source": "wp-player" },
       "lf-bailey-1865": { "position": "right-wing", "source": "wp-season-1888-89-line" },
@@ -671,6 +933,30 @@
       "thomas-moore-1865",
       "bill-smalley-1865"
     ],
+    "fanTiers": {
+      "bill-rowley-1863": 3,
+      "wilf-merritt-1865": 1,
+      "tommy-clare-1865": 3,
+      "alf-underwood-1869": 2,
+      "bob-ramsay-1863": 2,
+      "george-shutt-1864": 3,
+      "elijah-smith-1863": 2,
+      "billy-hendry-1865": 1,
+      "bob-mcskimming-1864": 3,
+      "alf-edge-1865": 2,
+      "bob-milarvie-1864": 1,
+      "billy-tunnicliffe-1865": 1,
+      "jimmy-sloane-1864": 1,
+      "frank-staton-1865": 1,
+      "george-lawton-1864": 2,
+      "jimmy-sayer-1865": 3,
+      "george-slater-1865": 1,
+      "harry-montford-1865": 1,
+      "tom-wainwright-1865": 1,
+      "bob-barr-1864": 1,
+      "alfred-dempsey-1865": 1,
+      "bill-smalley-1865": 1
+    },
     "positions": {
       "bill-rowley-1863": { "position": "goalkeeper", "source": "players-1888-89" },
       "wilf-merritt-1865": { "position": "goalkeeper", "source": "wp-season-1888-89" },
@@ -723,6 +1009,9 @@
       "edgar-phillips-1864",
       "timothy-king-1862"
     ],
+    "fanTiers": {
+      "william-moon-1868": 3
+    },
     "positions": {
       "william-moon-1868": { "position": "goalkeeper", "source": "players-1888-89" },
       "rupert-sandilands-1868": { "position": "left-wing", "source": "wp-player" },
@@ -754,6 +1043,9 @@
       "noah-carter-1865",
       "tom-jones-1866"
     ],
+    "fanTiers": {
+      "bambridge-charles-1858": 3
+    },
     "positions": {
       "bambridge-charles-1858": { "position": "right-wing", "source": "players-1888-89-line" },
       "bambridge-arthur-1861": { "position": "goalkeeper", "source": "placeholder" },
@@ -847,6 +1139,9 @@
       "mark-wright-1861",
       "nathan-carter-1865"
     ],
+    "fanTiers": {
+      "tinsley-lindley-1865": 4
+    },
     "positions": {
       "billy-gunn-1858": { "position": "goalkeeper", "source": "placeholder" },
       "tinsley-lindley-1865": { "position": "centre-forward", "source": "players-1888-89" },
@@ -878,6 +1173,9 @@
       "joseph-thomas-1867",
       "elijah-walker-1861"
     ],
+    "fanTiers": {
+      "jack-peden-1863": 3
+    },
     "positions": {
       "jack-peden-1863": { "position": "left-wing", "source": "players-1888-89" },
       "sam-johnston-1866": { "position": "goalkeeper", "source": "placeholder" },
@@ -941,6 +1239,9 @@
       "walter-gillam-1866",
       "john-campbell-1869"
     ],
+    "fanTiers": {
+      "andrew-watson-1856": 3
+    },
     "positions": {
       "andrew-watson-1856": { "position": "full-back", "source": "wp-player" },
       "bob-mcfarlane-1866": { "position": "full-back", "source": "placeholder" },
@@ -1066,6 +1367,9 @@
       "jimmy-hannah-1868",
       "benjamin-white-1863"
     ],
+    "fanTiers": {
+      "james-allan-1857": 4
+    },
     "positions": {
       "james-allan-1857": { "position": "centre-forward", "source": "players-1888-89-line" },
       "john-angus-1867": { "position": "goalkeeper", "source": "wp-player" },
@@ -1128,6 +1432,10 @@
       "jeremiah-smith-1867",
       "nathaniel-harris-1864"
     ],
+    "fanTiers": {
+      "william-bell-1860": 3,
+      "john-pearson-1868": 2
+    },
     "positions": {
       "william-bell-1860": { "position": "half-back", "source": "wp-player" },
       "john-pearson-1868": { "position": "inside-right", "source": "wp-player" },
@@ -1159,6 +1467,9 @@
       "percy-walters-1863",
       "arthur-walters-1864"
     ],
+    "fanTiers": {
+      "charles-wreford-brown-1866": 3
+    },
     "positions": {
       "charles-wreford-brown-1866": { "position": "half-back", "source": "players-1888-89" },
       "william-cobbold-1863": { "position": "inside-right", "source": "wp-player-line" },
@@ -1221,6 +1532,9 @@
       "james-baker-1861",
       "simon-evans-1861"
     ],
+    "fanTiers": {
+      "fred-geary-1868": 2
+    },
     "positions": {
       "fred-geary-1868": { "position": "centre-forward", "source": "players-1888-89" },
       "arthur-elliott-1870": { "position": "right-wing", "source": "wp-player-line" },
@@ -1253,6 +1567,11 @@
       "albert-mumford-1865",
       "michael-whitham-1867"
     ],
+    "fanTiers": {
+      "teddy-brayshaw-1864": 3,
+      "billy-betts-1864": 3,
+      "albert-mumford-1865": 2
+    },
     "positions": {
       "jim-smith-1865": { "position": "goalkeeper", "source": "placeholder" },
       "teddy-brayshaw-1864": { "position": "half-back", "source": "players-1888-89" },
@@ -1347,6 +1666,10 @@
       "ted-hill-1865",
       "jonah-edwards-1868"
     ],
+    "fanTiers": {
+      "chris-charsley-1864": 2,
+      "caesar-jenkyns-1866": 1
+    },
     "positions": {
       "chris-charsley-1864": { "position": "goalkeeper", "source": "players-1888-89" },
       "fred-speller-1863": { "position": "half-back", "source": "placeholder" },
@@ -1378,6 +1701,10 @@
       "fred-martin-1861",
       "ben-lee-1865"
     ],
+    "fanTiers": {
+      "albert-aldridge-1863": 3,
+      "alf-jones-1861": 2
+    },
     "positions": {
       "albert-aldridge-1863": { "position": "full-back", "source": "players-1888-89" },
       "alf-jones-1861": { "position": "full-back", "source": "players-1888-89" },

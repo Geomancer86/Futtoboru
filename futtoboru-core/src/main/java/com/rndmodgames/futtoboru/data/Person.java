@@ -72,6 +72,16 @@ public class Person implements Serializable {
     private LocalDateTime lastJobApplicationDate;
     private Integer applicationsThisWeek = 0;
 
+    /**
+     * R-11a (design §10.1, saves v3): the languages he speaks, understands and reads/writes (levels 0-4), his home
+     * language, the rate area he was born in and the country his parents came from (null = his own). Generated from
+     * his upbringing only ({@code LanguageGenerator}), never from football ability.
+     */
+    private List<com.rndmodgames.futtoboru.data.language.LanguageSkill> languages = new ArrayList<>();
+    private String homeLanguage;
+    private String birthArea;
+    private String parentsOrigin;
+
     //
     public Person() {
         
@@ -271,6 +281,55 @@ public class Person implements Serializable {
 
     public String getDataId() {
         return dataId;
+    }
+
+    /** @return his languages, home language first (never null; empty until generated) */
+    public List<com.rndmodgames.futtoboru.data.language.LanguageSkill> getLanguages() {
+        if (languages == null) {
+            languages = new ArrayList<>();
+        }
+        return languages;
+    }
+
+    public void setLanguages(List<com.rndmodgames.futtoboru.data.language.LanguageSkill> languages) {
+        this.languages = languages == null ? new ArrayList<>() : languages;
+    }
+
+    /** @return the skill in one language, or null when he has none */
+    public com.rndmodgames.futtoboru.data.language.LanguageSkill getLanguage(String languageId) {
+        for (com.rndmodgames.futtoboru.data.language.LanguageSkill s : getLanguages()) {
+            if (s.getLanguage() != null && s.getLanguage().equals(languageId)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /** @return the language data id he grew up speaking at home, or null before generation */
+    public String getHomeLanguage() {
+        return homeLanguage;
+    }
+
+    public void setHomeLanguage(String homeLanguage) {
+        this.homeLanguage = homeLanguage;
+    }
+
+    /** @return the rate area ({@code areas.json}) he was born in, or null (born abroad, or not generated) */
+    public String getBirthArea() {
+        return birthArea;
+    }
+
+    public void setBirthArea(String birthArea) {
+        this.birthArea = birthArea;
+    }
+
+    /** @return the country data id his parents came from when not his own, else null */
+    public String getParentsOrigin() {
+        return parentsOrigin;
+    }
+
+    public void setParentsOrigin(String parentsOrigin) {
+        this.parentsOrigin = parentsOrigin;
     }
 
     public void setDataId(String dataId) {

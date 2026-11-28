@@ -127,8 +127,10 @@ def test_removed_record_keeps_its_number_reserved(pack):
     edit(pack / "core" / "people.json", drop)
     edit(pack / "core" / "seasons" / "1888-89" / "squads.json",
          lambda d: [sq.update(players=[p for p in sq["players"] if p != "fred-dewhurst-1863"],
-                              positions={k: v for k, v in sq["positions"].items() if k != "fred-dewhurst-1863"})
+                              positions={k: v for k, v in sq["positions"].items() if k != "fred-dewhurst-1863"},
+                              fanTiers={k: v for k, v in sq.get("fanTiers", {}).items() if k != "fred-dewhurst-1863"})
                     for sq in d])
+    edit(pack / "core" / "text" / "en" / "history.json", lambda d: d["person"].pop("fred-dewhurst-1863", None))
     assert "person `fred-dewhurst-1863` (" in errors(pack) and "has no record" in errors(pack)
     edit(pack / "core" / "ids.json", lambda d: d["retired"].setdefault("person", []).append("fred-dewhurst-1863"))
     assert errors(pack) == ""
@@ -374,6 +376,233 @@ def test_era_baseline_is_strict(pack):
 def test_every_baseline_parameter_is_used_or_documented_in_a_group():
     base = json.loads((ROOT / "core" / "era" / "baseline.json").read_text(encoding="utf-8"))
     assert set(base["parameters"]) == {"rules", "ball", "kit", "league"}
+# ---------------------------------------------------------------------------------------------- history data (H-05)
+TEXT_EN = ("core", "text", "en", "history.json")
+SQUADS = ("core", "seasons", "1888-89", "squads.json")
+
+
+def add_lang(pack, lang="es", club_keys=("stoke",)):
+    src = json.loads((pack / "core" / "text" / "en" / "history.json").read_text(encoding="utf-8"))
+    out = {"club": {k: src["club"][k] for k in club_keys if k in src["club"]}, "person": {}}
+    (pack / "core" / "text" / lang).mkdir(parents=True)
+    (pack / "core" / "text" / lang / "history.json").write_text(json.dumps(out), encoding="utf-8")
+    edit(pack / "core" / "pack.json", lambda d: d["files"].append(f"text/{lang}/history.json"))
+    return out
+
+
+def test_shipped_history_covers_the_league_clubs_and_tiers():
+    text = json.loads(ROOT.joinpath(*TEXT_EN).read_text(encoding="utf-8"))
+    league = ["preston-north-end", "aston-villa", "wolverhampton-wanderers", "blackburn-rovers", "bolton-wanderers",
+              "west-bromwich-albion", "accrington", "everton", "burnley", "derby-county", "notts-county", "stoke"]
+    clubs = {c["id"]: c for c in json.loads((ROOT / "core" / "clubs.json").read_text(encoding="utf-8"))}
+    squads = {s["club"]: s for s in json.loads(ROOT.joinpath(*SQUADS).read_text(encoding="utf-8"))}
+    for cid in league:
+        assert text["club"][cid]["hook"] and text["club"][cid]["history"] and "1888-89" in text["club"][cid]["seasons"]
+        assert "origin" in clubs[cid]
+        assert squads[cid]["fanTiers"], cid
+    assert squads["aston-villa"]["fanTiers"]["archie-hunter-1859"] == 5
+
+
+def test_history_text_key_must_resolve(pack):
+    edit(pack / "core" / "text" / "en" / "history.json", lambda d: d["club"].update({"atlantis-fc": d["club"]["stoke"]}))
+    assert "unknown club `atlantis-fc`" in errors(pack)
+
+
+def test_history_text_follows_aliases(pack):
+    edit(pack / "core" / "clubs.json", lambda d: [c.update({"id": "stoke-fc"}) for c in d if c["id"] == "stoke"])
+    edit(pack / "core" / "aliases.json", lambda d: d["club"].update({"stoke": "stoke-fc"}))
+    out = errors(pack)
+    assert "unknown club" not in out and "history.json" not in out
+
+
+def test_history_entry_needs_sources_and_has_no_unknown_fields(pack):
+    def bad(d):
+        d["club"]["stoke"]["sources"] = []
+        d["club"]["everton"]["motto"] = "x"
+        d["person"]["john-goodall-1863"]["sources"] = ["not a link"]
+        del d["club"]["burnley"]["hook"]
+    edit(pack / "core" / "text" / "en" / "history.json", bad)
+    out = errors(pack)
+    assert "club.stoke.sources: empty" in out
+    assert "unknown field `motto`" in out
+    assert "is not a link" in out
+    assert "missing field `hook`" in out
+
+
+def test_history_season_key_must_be_a_season(pack):
+    edit(pack / "core" / "text" / "en" / "history.json", lambda d: d["club"]["stoke"]["seasons"].update({"1066-67": "x"}))
+    assert "unknown season `1066-67`" in errors(pack)
+
+
+def test_translation_may_only_hold_keys_of_en(pack):
+    add_lang(pack, "es", ("stoke",))
+    rep = validate.validate(pack)
+    assert rep.errors == [] and any("not translated" in w for w in rep.warnings)
+    edit(pack / "core" / "text" / "es" / "history.json", lambda d: d["club"].update({"everton-9": d["club"]["stoke"]}))
+    assert "unknown club `everton-9`" in errors(pack)
+    # a key that resolves but has no English entry is an orphan
+    edit(pack / "core" / "text" / "es" / "history.json",
+         lambda d: (d["club"].pop("everton-9"), d["club"].update({"swifts": d["club"]["stoke"]})))
+    edit(pack / "core" / "text" / "en" / "history.json", lambda d: d["club"].pop("swifts", None))
+    assert "`swifts` has no entry in text/en (orphan translation)" in errors(pack)
+
+
+def test_language_code(pack):
+    add_lang(pack, "english", ())
+    assert "is not a language code" in errors(pack)
+
+
+def test_fan_tier_rules(pack):
+    def bad(d):
+        sq = d[0]
+        sq["fanTiers"]["john-goodall-1863"] = 6
+        sq["fanTiers"]["archie-hunter-1859"] = 3      # a Villa player, not in Preston's squad
+    edit(pack / "core" / "seasons" / "1888-89" / "squads.json", bad)
+    out = errors(pack)
+    assert "tier must be a whole number 0-5" in out
+    assert "`archie-hunter-1859` is not a player of this squad" in out
+
+
+def test_fan_tier_must_be_a_known_person(pack):
+    edit(pack / "core" / "seasons" / "1888-89" / "squads.json",
+         lambda d: d[0]["fanTiers"].update({"nobody-1900": 1}))
+    assert "unknown person `nobody-1900`" in errors(pack)
+
+
+def test_nickname_needs_sources_and_a_forward_period(pack):
+    def bad(d):
+        d[0]["nicknames"] = [{"name": "The Invincibles", "from": 1890, "to": 1883, "sources": []},
+                             {"name": "", "sources": ["https://example.org"], "colour": 1}]
+        d[0]["origin"] = "pub"
+    edit(pack / "core" / "clubs.json", bad)
+    out = errors(pack)
+    assert "nicknames[0].sources: empty" in out
+    assert "`from` 1890 is after `to` 1883" in out
+    assert "unknown field `colour`" in out
+    assert ".name: empty" in out
+    assert "origin" in out and "one of" in out
+
+
+def test_person_nicknames_and_known_as(pack):
+    def add(d):
+        d[0]["nicknames"] = [{"name": "Dewy", "period": True, "sources": ["https://example.org/x"]}]
+        d[0]["knownAs"] = "Freddie Dewhurst"
+    edit(pack / "core" / "people.json", add)
+    assert errors(pack) == ""
+
+
+def test_rivals_resolve_and_one_sided_rivalry_is_a_warning(pack):
+    edit(pack / "core" / "clubs.json", lambda d: [c.update({"rivals": []}) for c in d if c["id"] == "blackburn-rovers"])
+    edit(pack / "core" / "clubs.json", lambda d: d[0].update({"rivals": ["stoke"]}))
+    rep = validate.validate(pack)
+    assert rep.errors == [] and any("does not list `preston-north-end` back" in w for w in rep.warnings)
+    edit(pack / "core" / "clubs.json", lambda d: d[0].update({"rivals": ["preston-north-end", "atlantis"]}))
+    out = errors(pack)
+    assert "unknown club `atlantis`" in out and "not its own rival" in out
+
+
+def test_name_history_needs_from_and_sources(pack):
+    edit(pack / "core" / "clubs.json", lambda d: d[0].update({"nameHistory": [{"name": "North End"}]}))
+    out = errors(pack)
+    assert "missing field `from`" in out and "missing field `sources`" in out
+# ---------------------------------------------------------------------------------------------- R-02, R-11a
+REC = ("core", "recruitment")
+
+
+def test_shipped_recruitment_and_language_data_is_sourced():
+    for f, field in (("rules.json", "rule"), ("wages.json", "type"), ("origins.json", "nudges")):
+        rows = json.loads(ROOT.joinpath(*REC, f).read_text(encoding="utf-8"))
+        assert rows and all(field in r for r in rows), f
+    rules = {r["rule"] for r in json.loads(ROOT.joinpath(*REC, "rules.json").read_text(encoding="utf-8"))}
+    # the dated rules of the brief: 1885 registration + residence, 1888 consent, 1890 wait, 1893 retain, 1901 cap
+    assert {"registration", "residence", "second-registration-consent", "registration-wait", "retain-and-transfer",
+            "max-wage"} <= rules
+    rates = json.loads((ROOT / "core" / "language_rates.json").read_text(encoding="utf-8"))
+    assert all(r["sources"] or r["confidence"] in validate.UNSOURCED_OK for r in rates)
+
+
+def test_rule_needs_its_value_and_a_source(pack):
+    def bad(d):
+        d[0]["sources"] = []
+        d[0]["rule"] = "registration-wait"
+        d[1]["until"] = "1880"
+        d.append({"id": "made-up", "rule": "bribery", "from": "1888", "body": "fa", "appliesTo": "all",
+                  "confidence": "high", "sources": ["x"]})
+    edit(pack.joinpath(*REC, "rules.json"), bad)
+    out = errors(pack)
+    assert "no source" in out
+    assert "a `registration-wait` rule needs `days`" in out
+    assert "`until` 1880 is before `from`" in out
+    assert "bribery" in out
+
+
+def test_wage_band_and_example_checks(pack):
+    def bad(d):
+        d[0].pop("weeklyPence")
+        band = next(r for r in d if r["type"] == "band")
+        band["minWeeklyPence"], band["maxWeeklyPence"] = 600, 300
+        d[1]["club"] = "real-madrid"
+    edit(pack.joinpath(*REC, "wages.json"), bad)
+    out = errors(pack)
+    assert "an `example` needs `weeklyPence`" in out
+    assert "minWeeklyPence 600 is above maxWeeklyPence 300" in out
+    assert "unknown club `real-madrid`" in out
+
+
+def test_origin_nudges_are_small_and_refs_resolve(pack):
+    def bad(d):
+        d[0]["nudges"]["strength"] = 5
+        d[0]["literacyShift"] = 2
+        d[0]["sourceKinds"].append("academy")
+        d[0]["occupations"].append("astronaut")
+    edit(pack.joinpath(*REC, "origins.json"), bad)
+    out = errors(pack)
+    assert "a nudge is a whole number from -2 to 2" in out
+    assert "literacyShift" in out
+    assert "`academy` is not one of" in out
+    assert "unknown occupation `astronaut`" in out
+
+
+def test_new_records_need_numbers(pack):
+    edit(pack.joinpath(*REC, "origin_clubs.json"),
+         lambda d: d.append(dict(d[0], id="st-marys-junior", name="St Mary's")))
+    assert "origin-club `st-marys-junior` has no number" in errors(pack)
+
+
+def test_area_weights_add_up_per_country(pack):
+    edit(pack / "core" / "areas.json", lambda d: d[0].update({"weight": 0.5}))
+    assert "the area weights of `england` add up to" in errors(pack)
+
+
+def test_rate_rows_are_consistent_and_never_overlap(pack):
+    def bad(d):
+        glam = next(r for r in d if r.get("area") == "glamorgan")
+        glam["only"] = {"welsh": 0.9, "irish": 0.1}
+        glam["speaks"]["english"] = 1.0
+        d.append({"countries": ["england"], "bornFrom": 1860, "bornUntil": 1862, "signsMen": 0.9,
+                  "readWriteIfSigns": [0.5, 0.5], "parentsBorn": {"atlantis": 0.1},
+                  "confidence": "high", "sources": ["x"]})
+        d.append({"area": "glamorgan", "countries": ["wales"], "bornFrom": 1900, "bornUntil": 1890,
+                  "confidence": "estimate", "sources": []})
+    edit(pack / "core" / "language_rates.json", bad)
+    out = errors(pack)
+    assert "0.9 speak only it but 0.495 speak it" in out
+    assert "a language in `only` must be in `speaks`" in out
+    assert "English is the default language" in out
+    assert "`signsMen` for country england overlaps" in out
+    assert "readWriteIfSigns" in out
+    assert "unknown country `atlantis`" in out
+    assert "an `area` or `countries`, not both" in out
+    assert "bornFrom 1900 is after bornUntil 1890" in out
+    assert "no rate" in out
+
+
+def test_rates_need_a_default_row(pack):
+    edit(pack / "core" / "language_rates.json",
+         lambda d: d.remove(next(r for r in d if "area" not in r and "countries" not in r)))
+    assert "no default row" in errors(pack)
+
+
 # ---- P2-14: the season calendar and the cup's neutral grounds (season.json) -------------------------------------
 SEASON = ("core", "seasons", "1888-89", "season.json")
 

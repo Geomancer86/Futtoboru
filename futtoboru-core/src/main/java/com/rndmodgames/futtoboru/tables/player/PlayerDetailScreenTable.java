@@ -125,6 +125,12 @@ public class PlayerDetailScreenTable extends VisTable {
         contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
         contentTable.row();
         
+        // R-11a: languages and literacy, in words
+        buildLanguagesSection();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
+        contentTable.row();
+
         // Modifiers & Bonuses Section (v2.0 - 3d6 system)
         buildModifiersSection();
         contentTable.row();
@@ -203,6 +209,22 @@ public class PlayerDetailScreenTable extends VisTable {
                 : LanguageModLoader.getValue(currentPlayer.getPosition().labelKey()))).left();
         infoTable.row();
 
+        // G-01: his place on his club's team sheet
+        com.rndmodgames.futtoboru.data.Club sheetClub = squadOf(currentPlayer);
+        if (sheetClub != null) {
+            com.rndmodgames.futtoboru.data.TeamSheet sheet =
+                    com.rndmodgames.futtoboru.engine.team.TeamSheets.standing(sheetClub);
+            int slot = sheet.slotOf(currentPlayer.getId());
+            String place = slot < 0 ? LanguageModLoader.getValue("team_sheet_not_selected")
+                    : LanguageModLoader.getValue(sheet.position(slot).labelKey());
+            if (slot >= 0 && currentPlayer.getId().equals(sheet.getCaptainId())) {
+                place = LanguageModLoader.format("team_sheet_place_captain", place);
+            }
+            infoTable.add(new VisLabel(LanguageModLoader.getValue("team_sheet"))).left().width(UiTheme.size("col.label"));
+            infoTable.add(new VisLabel(place)).left();
+            infoTable.row();
+        }
+
         // Player Profession (day job for amateur/semi-pro)
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_profession"))).left().width(UiTheme.size("col.label"));
         String professionName = LanguageModLoader.getValue("player_profession_none");
@@ -242,6 +264,43 @@ public class PlayerDetailScreenTable extends VisTable {
         contentTable.add(infoTable).left().pad(UiTheme.space("sm"));
     }
     
+    /**
+     * R-11a (design §10.1): the languages he speaks, understands and reads/writes, home language first, in words
+     * ("speaks a little, understands well; reads slowly"). They describe skills, never origins.
+     */
+    private void buildLanguagesSection() {
+        VisTable table = new VisTable(true);
+        table.add(new VisLabel(LanguageModLoader.getValue("player_languages"))).colspan(2).left();
+        table.row();
+        com.rndmodgames.futtoboru.data.Person person = currentPlayer.getPerson();
+        table.add(new VisLabel(LanguageModLoader.getValue("player_home_language"))).left().width(UiTheme.size("col.label"));
+        table.add(new VisLabel(person.getHomeLanguage() == null ? LanguageModLoader.getValue("player_languages_none")
+                : languageName(person.getHomeLanguage()))).left();
+        for (com.rndmodgames.futtoboru.data.language.LanguageSkill s : person.getLanguages()) {
+            table.row();
+            table.add(new VisLabel(LanguageModLoader.format("player_language_line", languageName(s.getLanguage()),
+                    bundleWord(LANGUAGE_LEVEL_KEY, s.getSpeak()), bundleWord(LANGUAGE_LEVEL_KEY, s.getUnderstand()),
+                    bundleWord(READ_WRITE_KEY, s.getReadWrite())))).colspan(2).left();
+        }
+        contentTable.add(table).left().pad(UiTheme.space("sm"));
+    }
+
+    /** Bundle key prefixes of the level words (0..4), checked by LanguageLabelsTest. */
+    public static final String LANGUAGE_LEVEL_KEY = "language_level_";
+    public static final String READ_WRITE_KEY = "language_read_write_";
+    public static final String LANGUAGE_NAME_KEY = "language_";
+
+    private static String bundleWord(String prefix, int level) {
+        String key = prefix + level;
+        return LanguageModLoader.getValue(key);
+    }
+
+    /** @return the bundle name of a language data id ({@code scottish-gaelic} -> {@code language_scottish_gaelic}) */
+    public static String languageName(String languageId) {
+        String key = LANGUAGE_NAME_KEY + languageId.replace('-', '_');
+        return LanguageModLoader.getValue(key);
+    }
+
     /**
      * Build contract details section (v1.0)
      * Shows contract type, wages, bonuses, and expiry
@@ -696,5 +755,21 @@ public class PlayerDetailScreenTable extends VisTable {
     public void setMenuManager(MainMenuManager menuManager) {
         this.menuManager = menuManager;
     }
-}
 
+    /** G-01: the club whose squad holds this very player (a person listed twice has a copy per squad). */
+    private com.rndmodgames.futtoboru.data.Club squadOf(Player player) {
+        if (futtoboru.getCurrentGame() == null || futtoboru.getCurrentGame().getAllClubs() == null) {
+            return null;
+        }
+        for (com.rndmodgames.futtoboru.data.Club club : futtoboru.getCurrentGame().getAllClubs()) {
+            if (club != null && club.getPlayers() != null) {
+                for (Player p : club.getPlayers()) {
+                    if (p == player) {
+                        return club;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+}
