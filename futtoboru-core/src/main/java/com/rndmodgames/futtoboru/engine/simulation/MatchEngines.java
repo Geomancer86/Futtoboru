@@ -56,6 +56,25 @@ public final class MatchEngines {
         selected = parse(id);
     }
 
+    /**
+     * U-13: the engine the player picked in Settings ({@code instant}/{@code ecs}). The command-line flag still wins
+     * when it was given; otherwise the preference applies at once.
+     */
+    public static void applyPreference(String id) {
+        selected = choose(System.getProperty(PROPERTY), id);
+    }
+
+    /** The flag when given, else the preference, else instant. */
+    static String choose(String property, String preference) {
+        return property != null && !property.isBlank() ? parse(property) : parse(preference);
+    }
+
+    /** True when the command-line flag fixes the engine (the Settings option then has no effect). */
+    public static boolean flagGiven() {
+        String v = System.getProperty(PROPERTY);
+        return v != null && !v.isBlank();
+    }
+
     /** Back to the engine chosen at startup. */
     public static void reset() {
         selected = STARTUP;
