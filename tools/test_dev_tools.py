@@ -70,3 +70,15 @@ def test_run_locked_returns_the_exit_code_and_logs_history(tmp_path, monkeypatch
     assert not os.path.exists(suite_lock.lock_path("suite")), "released"
     with open(os.path.join(str(tmp_path), suite_lock.HISTORY), encoding="utf-8") as handle:
         assert json.loads(handle.readline())["exit"] == 3
+
+
+def test_an_extensionless_script_runs_its_windows_twin(tmp_path):
+    script = tmp_path / "mvnw"
+    script.write_text("#!/bin/sh\n")
+    (tmp_path / "mvnw.cmd").write_text("@echo off\n")
+    assert suite_lock.windows_twin(str(script), is_windows=True) == str(script) + ".cmd"
+    assert suite_lock.windows_twin(str(script), is_windows=False) == str(script)
+    assert suite_lock.windows_twin(str(tmp_path / "mvnw.cmd"), is_windows=True) == str(tmp_path / "mvnw.cmd")
+    lone = tmp_path / "tool"
+    lone.write_text("x")
+    assert suite_lock.windows_twin(str(lone), is_windows=True) == str(lone)

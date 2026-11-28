@@ -271,12 +271,24 @@ class Held:
                      "at": datetime.datetime.now().isoformat(timespec="seconds")})
 
 
+def windows_twin(first, is_windows=None):
+    """On Windows an extensionless shell script (./mvnw) cannot be started: use its .cmd/.bat twin if there is one"""
+    if is_windows is None:
+        is_windows = os.name == "nt"
+    if not is_windows or os.path.splitext(first)[1]:
+        return first
+    for ext in (".cmd", ".bat"):
+        if os.path.isfile(first + ext):
+            return first + ext
+    return first
+
+
 def runnable(command):
-    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows"""
-    first = command[0]
+    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows; ./mvnw becomes mvnw.cmd there"""
+    first = windows_twin(command[0])
     if os.path.isfile(first) and not os.path.isabs(first):
-        return [os.path.abspath(first)] + command[1:]
-    return command
+        first = os.path.abspath(first)
+    return [first] + command[1:]
 
 
 def run_locked(command, lock="suite", wait_min=WAIT_MIN, expire_min=EXPIRE_MIN, cwd=ROOT):
@@ -285,8 +297,9 @@ def run_locked(command, lock="suite", wait_min=WAIT_MIN, expire_min=EXPIRE_MIN, 
         with Held(lock, " ".join(command), wait_min, expire_min) as held:
             started = now()
             try:
-                code = subprocess.call(runnable(command), cwd=cwd,
-                                       shell=os.name == "nt" and command[0].lower().endswith((".bat", ".cmd")))
+                launch = runnable(command)
+                code = subprocess.call(launch, cwd=cwd,
+                                       shell=os.name == "nt" and launch[0].lower().endswith((".bat", ".cmd")))
             except KeyboardInterrupt:
                 code = 130
             held.exit = code
