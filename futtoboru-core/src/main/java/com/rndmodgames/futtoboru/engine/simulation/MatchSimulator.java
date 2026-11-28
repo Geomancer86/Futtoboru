@@ -39,7 +39,8 @@ public class MatchSimulator {
     }
     
     /**
-     * @param root each match draws from {@code root.fork("match:" + id)} and its gate from {@code fork("gate:" + id)},
+     * @param root each match draws from {@code root.fork("match:" + id)}, its gate from {@code fork("gate:" + id)} and
+     *             its goal minutes from {@code fork("minutes:" + id)} (G-03),
      *             so a result depends on the seed and the match, not on the order the day's matches are played
      */
     public MatchSimulator(Futtoboru gameInstance, RandomSource root) {
@@ -111,7 +112,10 @@ public class MatchSimulator {
         
         // Generate scorers (v1.0 - Awards System)
         generateScorers(match, homeClub, awayClub, homeScore, awayScore);
-        
+
+        // Goal minutes (G-03): after the scorers, on their own stream, so scores and scorers never depend on them
+        GoalMinutes.assign(match, root.fork("minutes:" + matchKey));
+
         // Calculate attendance (simple: based on the capacity of the ground played at, P2-14: a neutral venue)
         com.rndmodgames.futtoboru.data.Stadium ground = com.rndmodgames.futtoboru.engine.cup.NeutralVenues.isNeutral(match)
                 ? com.rndmodgames.futtoboru.system.DatabaseLoader.getGroundByDataId(match.getVenue()) : null;

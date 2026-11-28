@@ -141,6 +141,8 @@ class NeutralVenuesTests extends BaseTest {
 
         EngineTestWorld.score(fin, 1, 1);
         recorder.record(fin);
+        assertEquals("Kennington Oval", com.rndmodgames.futtoboru.engine.report.MatchFacts.of(world.game, fin).ground(),
+                "the match report names the neutral ground (G-03)");
         Match replay = null;
         for (Match m : world.game.getClubById(fin.getHomeClubId()).getScheduledMatches()) {
             if (fin.getId().equals(m.getParentMatch1Id())) {

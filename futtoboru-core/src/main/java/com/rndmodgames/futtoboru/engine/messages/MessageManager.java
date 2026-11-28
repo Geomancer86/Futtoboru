@@ -203,8 +203,11 @@ public class MessageManager {
         // Also check for duplicate messages by type and title (for welcome messages, etc.)
         // This prevents creating multiple welcome messages if updateDynamicComponents is called multiple times.
         // Never for a mandatory message: dropping one leaves its scheduled copy blocking the game forever (P2-3).
+        // Never for a match result either (G-03): the same clubs and score next season (or a replay) is a new
+        // result, not a duplicate; a result is one per match (MatchResultRecorder records a match once).
         if (message.getMessageType() != null && message.getTitle() != null
-                && !Boolean.TRUE.equals(message.getIsMandatory())) {
+                && !Boolean.TRUE.equals(message.getIsMandatory())
+                && !"MATCH_RESULT".equals(message.getMessageType())) {
             for (Message existing : currentGame.getAllMessages()) {
                 if (existing != null && 
                     existing.getMessageType() != null && existing.getMessageType().equals(message.getMessageType()) &&
@@ -335,8 +338,11 @@ public class MessageManager {
     
     /**
      * Create a league creation announcement message
+     *
+     * @param firstLeagueDay the day of the first league matches (P2-13: the text named 8 September 1888 whatever
+     *        the calendar); null shows "to be decided"
      */
-    public Message createLeagueCreationMessage(League league) {
+    public Message createLeagueCreationMessage(League league, LocalDateTime firstLeagueDay) {
         if (league == null) {
             return null;
         }
@@ -363,7 +369,7 @@ public class MessageManager {
             }
         }
         
-        content.append("\n\n").append(LanguageModLoader.getValue("msg_league_created_first_season"));
+        content.append("\n\n").append(LanguageModLoader.format("msg_league_created_first_season", formatDate(firstLeagueDay)));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null); // System message
@@ -423,7 +429,11 @@ public class MessageManager {
         return message;
     }
     
-    public Message createFixtureReleaseMessage(League league) {
+    /**
+     * @param firstLeagueDay the day of the first league matches (P2-13: the text said "your club's first match is
+     *        scheduled for 8 September 1888", also to a manager whose club is not in the league); null: "to be decided"
+     */
+    public Message createFixtureReleaseMessage(League league, LocalDateTime firstLeagueDay) {
         if (league == null) {
             return null;
         }
@@ -435,7 +445,7 @@ public class MessageManager {
         message.setTitle(LanguageModLoader.getValue("msg_fixtures_released_title"));
 
         StringBuilder content = new StringBuilder();
-        content.append(LanguageModLoader.format("msg_fixtures_released_text", league.getName()));
+        content.append(LanguageModLoader.format("msg_fixtures_released_text", league.getName(), formatDate(firstLeagueDay)));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -665,6 +675,12 @@ public class MessageManager {
                          match.getHomeGoals(), match.getAwayGoals(), awayClub.getName()));
         
         StringBuilder content = new StringBuilder();
+        // G-03: the report's headline over the score; the full report is one click away (actionData = match id)
+        SaveGame reportGame = getCurrentGame();
+        if (reportGame != null) {
+            content.append(com.rndmodgames.futtoboru.engine.report.MatchReport.of(reportGame, match).getHeadline());
+            content.append("\n");
+        }
         content.append(homeClub.getName());
         content.append(" ");
         content.append(match.getHomeGoals());
@@ -673,7 +689,7 @@ public class MessageManager {
         content.append(" ");
         content.append(awayClub.getName());
         content.append("\n\n");
-        
+
         if (match.getMatchDateTime() != null) {
             content.append(LanguageModLoader.format("msg_match_date", formatDate(match.getMatchDateTime())));
             content.append("\n");
@@ -702,7 +718,9 @@ public class MessageManager {
         } else {
             content.append(LanguageModLoader.getValue("msg_match_drawn"));
         }
-        
+
+        message.setActionScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.MATCH_RESULT_SCREEN);
+        message.setActionData(match.getId());
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
         message.setIsRead(false);

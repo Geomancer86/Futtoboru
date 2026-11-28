@@ -257,16 +257,29 @@ class GameDataTests {
         assertEquals(List.of("kennington-oval"), cup.refs("neutralVenues.rounds[1].grounds"));
 
         GameData.Source base = new GameData.ClasspathSource("gamedata");
-        String text = base.read("core/seasons/1888-89/season.json")
+        String seasonJson = base.read("core/seasons/1888-89/season.json");
+        GameData data = withSeason(base, seasonJson
                 .replace("\"midweek\": \"wednesday\"", "\"midweek\": \"caturday\"")
                 .replace("\"onOrAfter\": \"10-01\",", "") // the cup's opening rule without an anchor
                 .replace("\"properFrom\": \"02-01\"", "\"properFrom\": \"02-30\"")
-                .replace("\"laterDraws\": \"open-draw\"", "\"laterDraws\": \"open-draw\", \"kickOff\": \"15:00\"")
-                .replace("\"kennington-oval\"", "\"wembley\"");
-        GameData data = GameData.load(new GameData.Source() {
+                .replace("\"laterDraws\": \"open-draw\"", "\"laterDraws\": \"open-draw\", \"kickOff\": \"15:00\""));
+        assertError(data, "caturday");
+        assertError(data, "exactly one of `onOrAfter` / `onOrBefore`");
+        assertError(data, "a month-day MM-DD");
+        assertError(data, "unknown field `kickOff`");
+
+        // an unknown neutral ground is reported and left out of the round's list (the edition stays)
+        GameData ground = withSeason(base, seasonJson.replace("\"kennington-oval\"", "\"wembley\""));
+        assertError(ground, "unknown ground `wembley`");
+        assertTrue(ground.get(GameData.EDITION, "fa-cup-1888-89").refs("neutralVenues.rounds[1].grounds").isEmpty());
+    }
+
+    /** The shipped data with another 1888-89 season.json */
+    private static GameData withSeason(GameData.Source base, String seasonJson) {
+        return GameData.load(new GameData.Source() {
             @Override
             public String read(String path) {
-                return path.equals("core/seasons/1888-89/season.json") ? text : base.read(path);
+                return path.equals("core/seasons/1888-89/season.json") ? seasonJson : base.read(path);
             }
 
             @Override
@@ -279,11 +292,6 @@ class GameDataTests {
                 return base.listFolders();
             }
         });
-        assertError(data, "caturday");
-        assertError(data, "exactly one of `onOrAfter` / `onOrBefore`");
-        assertError(data, "a month-day MM-DD");
-        assertError(data, "unknown field `kickOff`");
-        assertError(data, "unknown ground `wembley`");
     }
 
     @Test

@@ -221,7 +221,64 @@ public class SaveGame implements Serializable {
         
         return null; // Club not found
     }
-    
+
+    /**
+     * P2-13: lists a club in the game unless a club with its id is listed already (every per-club daily and weekly
+     * step runs once per entry of {@link #getAllClubs()}).
+     *
+     * @return true when the club was added
+     */
+    public boolean addClub(Club club) {
+        if (club == null) {
+            return false;
+        }
+        if (allClubs == null) {
+            allClubs = new ArrayList<>();
+        }
+        for (Club listed : allClubs) {
+            if (listed == club || (listed != null && listed.getId() != null && listed.getId().equals(club.getId()))) {
+                return false;
+            }
+        }
+        allClubs.add(club);
+        return true;
+    }
+
+    /**
+     * P2-13: drops the later entries of a club listed more than once (by id, or the same object), keeping the order.
+     * Saves made before P2-13 list the clubs of the selected countries twice; on load both entries are the one saved
+     * club object, the one every other reference points at, so the first entry is kept.
+     *
+     * @return how many entries were dropped
+     */
+    public int removeDuplicateClubs() {
+        if (allClubs == null) {
+            return 0;
+        }
+        java.util.Set<Long> ids = new java.util.HashSet<>();
+        java.util.Set<Club> seen = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        int before = allClubs.size();
+        allClubs.removeIf(c -> c != null && (!seen.add(c) || (c.getId() != null && !ids.add(c.getId()))));
+        return before - allClubs.size();
+    }
+
+    /**
+     * P2-13: drops the later copies of a weekly/initial attribute snapshot taken twice (same player, date and type),
+     * which games with a club listed twice took for every player of that club.
+     *
+     * @return how many snapshots were dropped
+     */
+    public int removeDuplicateSnapshots() {
+        if (playerAttributeSnapshots == null) {
+            return 0;
+        }
+        java.util.Set<String> keys = new java.util.HashSet<>();
+        int before = playerAttributeSnapshots.size();
+        playerAttributeSnapshots.removeIf(s -> s != null
+                && !keys.add(s.getPlayerId() + "@" + s.getSnapshotDate() + "@" + s.getSnapshotType()));
+        return before - playerAttributeSnapshots.size();
+    }
+
     //
     /**
      * @return the allocator for runtime ids of objects made during play (never null)

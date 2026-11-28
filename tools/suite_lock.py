@@ -283,23 +283,47 @@ def windows_twin(first, is_windows=None):
     return first
 
 
-def runnable(command):
-    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows; ./mvnw becomes mvnw.cmd there"""
-    first = windows_twin(command[0])
+def runnable(command, cwd=None):
+    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows; ./mvnw becomes mvnw.cmd there.
+    A relative program path is resolved against cwd (the command's working directory) when given"""
+    first = command[0]
+    if cwd and not os.path.isabs(first) and os.path.dirname(first):
+        first = os.path.join(cwd, first)
+    first = windows_twin(first)
     if os.path.isfile(first) and not os.path.isabs(first):
         first = os.path.abspath(first)
     return [first] + command[1:]
 
 
+# set for the command's process tree while it holds a lock: a nested run_locked of the same lock (e.g.
+# `suite_lock.py run -- python tools/test_level.py --run`, where test_level takes the lock itself) runs directly
+HELD_ENV = "FUTTOBORU_SUITE_LOCK_HELD"
+
+
+def held_by_parent(lock):
+    return lock in os.environ.get(HELD_ENV, "").split(",")
+
+
+def call(command, cwd, env=None):
+    argv = runnable(command, cwd)
+    return subprocess.call(argv, cwd=cwd, env=env, shell=os.name == "nt" and argv[0].lower().endswith((".bat", ".cmd")))
+
+
 def run_locked(command, lock="suite", wait_min=WAIT_MIN, expire_min=EXPIRE_MIN, cwd=ROOT):
-    """Runs the command (a list) under the lock; @return its exit code, or NOT_TAKEN"""
+    """Runs the command (a list) under the lock; @return its exit code, or NOT_TAKEN. Re-entrant: inside a command
+    that already holds this lock, the command just runs (no deadlock)"""
+    if held_by_parent(lock):
+        try:
+            return call(command, cwd)
+        except KeyboardInterrupt:
+            return 130
+    env = dict(os.environ)
+    env[HELD_ENV] = ",".join(filter(None, [env.get(HELD_ENV), lock]))
     try:
         with Held(lock, " ".join(command), wait_min, expire_min) as held:
             started = now()
             try:
-                launch = runnable(command)
-                code = subprocess.call(launch, cwd=cwd,
-                                       shell=os.name == "nt" and launch[0].lower().endswith((".bat", ".cmd")))
+                code = call(command, cwd, env)
             except KeyboardInterrupt:
                 code = 130
             held.exit = code

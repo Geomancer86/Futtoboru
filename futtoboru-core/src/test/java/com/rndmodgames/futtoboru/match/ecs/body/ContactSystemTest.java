@@ -194,7 +194,7 @@ class ContactSystemTest {
         assertFalse(keeper.foulSuspected(), "1888-89: the keeper may be charged");
 
         PhysicsParams protectedKeeper = new PhysicsParams();
-        protectedKeeper.body.keeperChargeProtected = true; // 1892/1894 onward
+        protectedKeeper.rules = com.rndmodgames.futtoboru.match.ecs.laws.RulesProfile.forSeason(1894); // 1892/1894 onward
         assertTrue(charge(protectedKeeper, 75, 6, true, Position.GOALKEEPER, StrictMath.PI, 3, false).foulSuspected());
 
         ContactRecord front = charge(params, 75, 6, true, Position.HALF_BACK, StrictMath.PI, 3, false);
