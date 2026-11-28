@@ -271,22 +271,47 @@ class Held:
                      "at": datetime.datetime.now().isoformat(timespec="seconds")})
 
 
-def runnable(command):
-    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows"""
+def runnable(command, cwd=None):
+    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows; ./mvnw (a shell script) becomes
+    mvnw.cmd there, so the same command line works on every machine"""
     first = command[0]
-    if os.path.isfile(first) and not os.path.isabs(first):
-        return [os.path.abspath(first)] + command[1:]
-    return command
+    if os.name == "nt" and os.path.basename(first) == "mvnw" and os.path.isfile(os.path.join(cwd or ".", first + ".cmd")):
+        first = first + ".cmd"
+    path = os.path.join(cwd or ".", first)
+    if os.path.isfile(path) and not os.path.isabs(first):
+        return [os.path.abspath(path)] + command[1:]
+    return [first] + command[1:]
+
+
+# set for the command's process tree while it holds a lock: a nested run_locked of the same lock (e.g.
+# `suite_lock.py run -- python tools/test_level.py --run`, where test_level takes the lock itself) runs directly
+HELD_ENV = "FUTTOBORU_SUITE_LOCK_HELD"
+
+
+def held_by_parent(lock):
+    return lock in os.environ.get(HELD_ENV, "").split(",")
+
+
+def call(command, cwd, env=None):
+    argv = runnable(command, cwd)
+    return subprocess.call(argv, cwd=cwd, env=env, shell=os.name == "nt" and argv[0].lower().endswith((".bat", ".cmd")))
 
 
 def run_locked(command, lock="suite", wait_min=WAIT_MIN, expire_min=EXPIRE_MIN, cwd=ROOT):
-    """Runs the command (a list) under the lock; @return its exit code, or NOT_TAKEN"""
+    """Runs the command (a list) under the lock; @return its exit code, or NOT_TAKEN. Re-entrant: inside a command
+    that already holds this lock, the command just runs (no deadlock)"""
+    if held_by_parent(lock):
+        try:
+            return call(command, cwd)
+        except KeyboardInterrupt:
+            return 130
+    env = dict(os.environ)
+    env[HELD_ENV] = ",".join(filter(None, [env.get(HELD_ENV), lock]))
     try:
         with Held(lock, " ".join(command), wait_min, expire_min) as held:
             started = now()
             try:
-                code = subprocess.call(runnable(command), cwd=cwd,
-                                       shell=os.name == "nt" and command[0].lower().endswith((".bat", ".cmd")))
+                code = call(command, cwd, env)
             except KeyboardInterrupt:
                 code = 130
             held.exit = code
