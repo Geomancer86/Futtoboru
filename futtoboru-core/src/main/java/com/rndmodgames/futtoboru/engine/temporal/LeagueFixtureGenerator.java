@@ -38,9 +38,17 @@ public class LeagueFixtureGenerator {
      * Match ids come from the game's allocator (P2-4), read fresh in case the game was replaced
      */
     private long nextMatchId() {
-        SaveGame game = gameInstance != null && gameInstance.getCurrentGame() != null
-                ? gameInstance.getCurrentGame() : currentGame;
-        return game.getIdAllocator().nextId();
+        return game().getIdAllocator().nextId();
+    }
+
+    /**
+     * The game being played, read on every use (A-01): this generator is built with the engine, before New Game
+     * makes the game (MenuScreen's prepareNewGame), and a Load replaces the game without a new engine; the copy
+     * taken in the constructor was null or another game, so the second season's fixtures failed (NPE).
+     */
+    private SaveGame game() {
+        return gameInstance != null && gameInstance.getCurrentGame() != null ? gameInstance.getCurrentGame()
+                : currentGame;
     }
     
     /**
@@ -210,8 +218,8 @@ public class LeagueFixtureGenerator {
         int matchesSkipped = 0;
         
         for (Match match : allMatches) {
-            Club homeClub = currentGame.getClubById(match.getHomeClubId());
-            Club awayClub = currentGame.getClubById(match.getAwayClubId());
+            Club homeClub = game().getClubById(match.getHomeClubId());
+            Club awayClub = game().getClubById(match.getAwayClubId());
             
             if (homeClub == null) {
                 Log.error(Log.ENGINE_SCHEDULING, "Home club not found for ID: " + match.getHomeClubId());
@@ -529,9 +537,9 @@ public class LeagueFixtureGenerator {
         
         Log.info(Log.ENGINE_SCHEDULING, "    Checking if club is in SaveGame...");
         // Check if club is in SaveGame (for match references)
-        Club saveGameClub = currentGame.getClubById(club.getId());
+        Club saveGameClub = game().getClubById(club.getId());
         if (saveGameClub == null) {
-            String error = errorPrefix + "\n  REASON: Club not found in SaveGame (ID: " + club.getId() + ")\n  Total clubs in SaveGame: " + (currentGame.getAllClubs() != null ? currentGame.getAllClubs().size() : 0) + "\n  FIX: Ensure club is properly added to SaveGame";
+            String error = errorPrefix + "\n  REASON: Club not found in SaveGame (ID: " + club.getId() + ")\n  Total clubs in SaveGame: " + (game().getAllClubs() != null ? game().getAllClubs().size() : 0) + "\n  FIX: Ensure club is properly added to SaveGame";
             Log.error(Log.ENGINE_SCHEDULING, "========================================");
             Log.error(Log.ENGINE_SCHEDULING, error);
             Log.error(Log.ENGINE_SCHEDULING, "========================================");

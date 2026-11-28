@@ -941,20 +941,31 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
     /**
      * Check if cup needs an initial draw (no matches scheduled yet)
      */
-    private boolean needsCupDraw(CompetitionEdition edition) {
+    boolean needsCupDraw(CompetitionEdition edition) {
         if (edition.getParticipantClubsIds() == null || edition.getParticipantClubsIds().isEmpty()) {
             return false;
         }
+        // A-01: a cup already won, or one whose ties are all played (no longer in any club's fixtures, the recorder
+        // removes them), was drawn: drawing it again made a second bracket of the same edition, on next season's
+        // dates, played alongside the next edition
+        if (edition.getChampionsId() != null) {
+            return false;
+        }
         
-        // Check if any matches exist for this edition
+        // Check if any matches exist for this edition, to play or played
         for (Club club : currentGame.getAllClubs()) {
-            if (club == null || club.getScheduledMatches() == null) {
+            if (club == null) {
                 continue;
             }
-            for (Match match : club.getScheduledMatches()) {
-                if (match != null && match.getCompetitionEditionId() != null &&
-                    match.getCompetitionEditionId().equals(edition.getId())) {
-                    return false; // Matches already scheduled
+            for (List<Match> list : java.util.Arrays.asList(club.getScheduledMatches(), club.getPlayedMatches())) {
+                if (list == null) {
+                    continue;
+                }
+                for (Match match : list) {
+                    if (match != null && match.getCompetitionEditionId() != null
+                            && match.getCompetitionEditionId().equals(edition.getId())) {
+                        return false; // Matches already scheduled or played
+                    }
                 }
             }
         }

@@ -2,6 +2,8 @@
 // script path "Jenkinsfile.soak", branch develop. SoakTests (futtoboru-core, tag "soak", profile -Psoak) plays SOAK_SEEDS
 // seeded games for SOAK_SEASONS seasons each and checks the invariants at every rollover; one dynamic test per seed.
 // Red: the build description and target/soak-report.txt (archived) name the first failing seed.
+// A-01: the same -Psoak run plays GameplayLongTests (tag "soak"): PlayerBot as the human, AUTOTEST_SEEDS seeds x
+// AUTOTEST_SEASONS seasons with the daily/weekly invariants; its run report is target/autotest/long.md (archived).
 pipeline {
 
     agent {
@@ -13,6 +15,8 @@ pipeline {
         string(name: 'SOAK_SEEDS', defaultValue: '16', description: 'Number of seeds')
         string(name: 'SOAK_SEASONS', defaultValue: '3', description: 'Seasons played per seed')
         string(name: 'SOAK_FIRST_SEED', defaultValue: '1', description: 'First seed (seeds are consecutive)')
+        string(name: 'AUTOTEST_SEEDS', defaultValue: '3', description: 'A-01 PlayerBot long scenario: seeds')
+        string(name: 'AUTOTEST_SEASONS', defaultValue: '5', description: 'A-01 PlayerBot long scenario: seasons per seed')
     }
 
     tools {
@@ -54,7 +58,7 @@ pipeline {
                 // the soak needs the core module and its test classes only; the desktop module is not built
                 sh '''
                     chmod +x mvnw
-                    ARGS="-B -ntp test -Psoak -pl futtoboru-core -am -Dsoak.seeds=$SOAK_SEEDS -Dsoak.seasons=$SOAK_SEASONS -Dsoak.firstSeed=$SOAK_FIRST_SEED"
+                    ARGS="-B -ntp test -Psoak -pl futtoboru-core -am -Dsoak.seeds=$SOAK_SEEDS -Dsoak.seasons=$SOAK_SEASONS -Dsoak.firstSeed=$SOAK_FIRST_SEED -Dautotest.long.seeds=$AUTOTEST_SEEDS -Dautotest.long.seasons=$AUTOTEST_SEASONS"
                     if command -v xvfb-run >/dev/null 2>&1; then
                         xvfb-run -a ./mvnw $ARGS
                     else
@@ -82,7 +86,7 @@ pipeline {
     post {
         always {
             junit testResults: '**/target/surefire-reports/TEST-*.xml', allowEmptyResults: true
-            archiveArtifacts artifacts: 'futtoboru-core/target/soak-report.txt', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'futtoboru-core/target/soak-report.txt, futtoboru-core/target/autotest/*.md', allowEmptyArchive: true
             script {
                 if (fileExists('futtoboru-core/target/soak-report.txt')) {
                     currentBuild.description = readFile('futtoboru-core/target/soak-report.txt').readLines()[0]

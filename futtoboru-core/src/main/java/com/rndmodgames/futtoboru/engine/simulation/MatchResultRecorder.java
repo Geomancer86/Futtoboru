@@ -144,6 +144,14 @@ public class MatchResultRecorder {
 
         moveToPlayed(match, homeClub);
         moveToPlayed(match, awayClub);
+        // A-01: a later cup round is listed by every entrant until its clubs are known (AuthorityManager
+        // generateCupDraw); once played it leaves every list, not only its two clubs'
+        for (Club other : game.getAllClubs()) {
+            if (other != null && other != homeClub && other != awayClub && other.getScheduledMatches() != null) {
+                other.getScheduledMatches().removeIf(m -> m == match
+                        || (m != null && m.getId() != null && m.getId().equals(match.getId())));
+            }
+        }
 
         if (messageManager != null) {
             Message resultMessage = messageManager.createMatchResultMessage(match, homeClub, awayClub);

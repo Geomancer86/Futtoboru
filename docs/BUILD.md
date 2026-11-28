@@ -96,6 +96,10 @@ runs what the merge brought).
 - **`python tools/suite_lock.py run -- <command>`**: one heavy run per machine (lock folder `%TEMP%/futtoboru-locks`,
   `FUTTOBORU_LOCK_DIR`); waits inside, a dead or 20-minute-silent holder loses it; `status`, `release`. Re-entrant: a
   run inside a locked command (`suite_lock.py run -- python tools/test_level.py --run`) does not wait for its parent.
+- **Gameplay autotests (A-01, `autotest/`: `PlayerBot` plays as the human, invariants every day/week, report in `target/autotest/<scenario>.md`):**
+  short `-Dtest=GameplayShortTests` (6 weeks, 3 seeds; two seeds fast tier, determinism/reload run slow);
+  mid `python tools/suite_lock.py run -- ./mvnw -B test -pl futtoboru-core -Dtest=GameplayMidTests` (one season to the 1889-90 rollover, slow; `-Dautotest.seed=`, `-Dautotest.club=`);
+  long `-Psoak` or `-Dtest=GameplayLongTests` (5 seasons x 3 seeds, tag `soak`, Jenkins "Futtoboru Soak" nightly; `-Dautotest.long.seeds=`, `-Dautotest.long.seasons=`).
 - `SeasonMemo` (test code) plays the seeded season once per test JVM and hands copies (save codec) to AutosaveTests
   and SaveGameTests.
 - No `clean` locally (a deleted test resource can survive in `target/` until you clean). One surefire fork: measured
