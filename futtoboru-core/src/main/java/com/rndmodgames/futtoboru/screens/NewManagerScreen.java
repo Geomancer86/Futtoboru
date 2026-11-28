@@ -121,7 +121,7 @@ public class NewManagerScreen implements Screen {
         /**
          * Birthdate Label
          */
-        VisLabel birthDateLabel = new VisLabel(LanguageModLoader.getValue("birth_date") + " dd/MM/yyyy");
+        VisLabel birthDateLabel = new VisLabel(LanguageModLoader.format("manager_birth_date_with_format", LanguageModLoader.getValue("birth_date")));
         
         /**
          * Birth Date Validatable Text Field

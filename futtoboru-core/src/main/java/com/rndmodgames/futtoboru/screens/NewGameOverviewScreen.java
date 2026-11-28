@@ -182,7 +182,7 @@ public class NewGameOverviewScreen implements Screen {
         activePlayers = (int) (activePlayers * 1.5f);
         
         // Update active player label
-        estimatedPlayerCountValueLabel.setText(activePlayers + " Players");
+        estimatedPlayerCountValueLabel.setText(LanguageModLoader.format("newgame_players_count", activePlayers));
 
         /**
          * New Game Details Table
@@ -198,17 +198,17 @@ public class NewGameOverviewScreen implements Screen {
         // Available Cups
         newGameDetailsTable.row();
         newGameDetailsTable.add(availableCupsLabel);
-        newGameDetailsTable.add(activeCups + " Cups");
+        newGameDetailsTable.add(LanguageModLoader.format("newgame_cups_count", activeCups));
         
         // Available Leagues
         newGameDetailsTable.row();
         newGameDetailsTable.add(availableLeaguesLabel);
-        newGameDetailsTable.add(activeLeagues + " Leagues");
+        newGameDetailsTable.add(LanguageModLoader.format("newgame_leagues_count", activeLeagues));
         
         // Available Teams
         newGameDetailsTable.row();
         newGameDetailsTable.add(availableTeamsLabel);
-        newGameDetailsTable.add(activeTeams + " Teams");
+        newGameDetailsTable.add(LanguageModLoader.format("newgame_teams_count", activeTeams));
         
         newGameDetailsTable.row();
         newGameDetailsTable.add(estimatedPlayerCountLabel);
@@ -927,7 +927,7 @@ public class NewGameOverviewScreen implements Screen {
         case 6:
         case 7:
             // set starting club to UNAVAILABLE and DISABLE
-            startingClubSelectBox.setItems(new Club("UNAVAILABLE"));
+            startingClubSelectBox.setItems(new Club(LanguageModLoader.getValue("newgame_club_unavailable")));
             startingClubSelectBox.setDisabled(true);
             updateStartingClubThumb();
             break;

@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.math.BigDecimal;
 import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
@@ -59,7 +60,7 @@ public class JobBoardScreenTable extends VisTable {
         
         // Title
         this.row();
-        this.add(new VisLabel("Job Board")).colspan(2);
+        this.add(new VisLabel(LanguageModLoader.getValue("job_board"))).colspan(2);
         this.row();
         this.addSeparator();
         
@@ -102,18 +103,18 @@ public class JobBoardScreenTable extends VisTable {
         
         if (jobs.isEmpty()) {
             jobsListTable.row();
-            jobsListTable.add(new VisLabel("No job openings available at this time.")).colspan(3);
+            jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_no_openings"))).colspan(3);
             return;
         }
         
         // Header
         jobsListTable.row();
-        jobsListTable.add(new VisLabel("Club")).width(UiTheme.size("col.wide"));
-        jobsListTable.add(new VisLabel("Position")).width(UiTheme.size("col.label"));
-        jobsListTable.add(new VisLabel("Salary")).width(UiTheme.size("col.number"));
-        jobsListTable.add(new VisLabel("Contract")).width(UiTheme.size("col.number"));
-        jobsListTable.add(new VisLabel("Deadline")).width(UiTheme.size("col.label"));
-        jobsListTable.add(new VisLabel("Action")).width(UiTheme.size("col.number"));
+        jobsListTable.add(new VisLabel(LanguageModLoader.getValue("table_club"))).width(UiTheme.size("col.wide"));
+        jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_position"))).width(UiTheme.size("col.label"));
+        jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_salary"))).width(UiTheme.size("col.number"));
+        jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_contract"))).width(UiTheme.size("col.number"));
+        jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_deadline"))).width(UiTheme.size("col.label"));
+        jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_action"))).width(UiTheme.size("col.number"));
         jobsListTable.row();
         jobsListTable.addSeparator().colspan(6); // V-01: full width, not the first column only
         
@@ -130,7 +131,7 @@ public class JobBoardScreenTable extends VisTable {
             jobsListTable.add(new VisLabel(club.getName())).width(UiTheme.size("col.wide"));
             jobsListTable.add(new VisLabel(profession.getName())).width(UiTheme.size("col.label"));
             jobsListTable.add(new VisLabel(Money.format(job.getSalary()))).width(UiTheme.size("col.number"));
-            jobsListTable.add(new VisLabel(job.getContractLengthMonths() + " months")).width(UiTheme.size("col.number"));
+            jobsListTable.add(new VisLabel(LanguageModLoader.format("jobs_months", job.getContractLengthMonths()))).width(UiTheme.size("col.number"));
             jobsListTable.add(new VisLabel(job.getApplicationDeadline().toString())).width(UiTheme.size("col.label"));
             
             // Apply button - Check if already applied
@@ -159,18 +160,18 @@ public class JobBoardScreenTable extends VisTable {
             VisTextButton applyButton;
             if (alreadyApplied) {
                 // Show status instead of Apply button
-                String statusText = "Applied";
+                String statusText = LanguageModLoader.getValue("jobs_status_applied");
                 if (applicationStatus == ApplicationStatus.OFFER_RECEIVED) {
-                    statusText = "Offer Received";
+                    statusText = LanguageModLoader.getValue("jobs_status_offer_received");
                 } else if (applicationStatus == ApplicationStatus.REJECTED) {
-                    statusText = "Rejected";
+                    statusText = LanguageModLoader.getValue("jobs_status_rejected");
                 } else if (applicationStatus == ApplicationStatus.PENDING) {
-                    statusText = "Pending";
+                    statusText = LanguageModLoader.getValue("jobs_status_pending");
                 }
                 applyButton = new VisTextButton(statusText);
                 applyButton.setDisabled(true); // Disable the button
             } else {
-                applyButton = new VisTextButton("Apply");
+                applyButton = new VisTextButton(LanguageModLoader.getValue("jobs_apply"));
             }
             Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Creating Apply button for job ID: " + jobId + ", Club: " + (jobClub != null ? jobClub.getName() : "NULL") + ", Profession: " + (jobProfession != null ? jobProfession.getName() : "NULL"));
             
@@ -244,8 +245,8 @@ public class JobBoardScreenTable extends VisTable {
                             Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Application successful: ID=" + result.getId() + ", Status=" + result.getStatus());
                             
                             // Show success message
-                            showMessage("Application Submitted", 
-                                      "Your application for " + jobClub.getName() + " (" + jobProfession.getName() + ") has been submitted successfully.");
+                            showMessage(LanguageModLoader.getValue("jobs_application_submitted"), 
+                                      LanguageModLoader.format("jobs_application_submitted_text", jobClub.getName(), jobProfession.getName()));
                             
                             // Force immediate refresh to show updated status
                             Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Forcing immediate screen refresh...");
@@ -263,8 +264,8 @@ public class JobBoardScreenTable extends VisTable {
                             Log.info(Log.UI_JOBS, "JobBoardScreenTable", "Application returned null (may be rejected or already exists)");
                             
                             // Show error message
-                            showMessage("Application Failed", 
-                                      "Unable to submit application. The position may no longer be available or you may have already applied.");
+                            showMessage(LanguageModLoader.getValue("jobs_application_failed"), 
+                                      LanguageModLoader.getValue("jobs_application_failed_text"));
                         }
                         
                         Log.info(Log.UI_JOBS, "JobBoardScreenTable", "=== Apply button click completed ===");

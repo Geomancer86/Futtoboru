@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.draw;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +43,7 @@ public class CupDrawScreenTable extends VisTable {
     private List<Long> drawOrder; // Teams in draw order (for one-by-one reveal)
     private int currentRevealedIndex = 0;
     private boolean allRevealed = false;
-    private String roundName = "First Round";
+    private String roundName = LanguageModLoader.getValue("draw_round_first");
     
     // UI components
     private VisScrollPane contentScrollPane;
@@ -249,15 +250,18 @@ public class CupDrawScreenTable extends VisTable {
     }
     
     private String getRoundName(int roundNumber, int participants) {
-        if (participants == 2) return "Final";
-        if (participants == 4) return "Semi-Final";
-        if (participants == 8) return "Quarter-Final";
+        if (participants == 2) return LanguageModLoader.getValue("draw_round_final");
+        if (participants == 4) return LanguageModLoader.getValue("draw_round_semi_final");
+        if (participants == 8) return LanguageModLoader.getValue("draw_round_quarter_final");
         
-        String[] ordinals = {"", "First", "Second", "Third", "Fourth", "Fifth", "Sixth"};
+        String[] ordinals = {"", LanguageModLoader.getValue("draw_round_first"),
+                LanguageModLoader.getValue("draw_round_second"), LanguageModLoader.getValue("draw_round_third"),
+                LanguageModLoader.getValue("draw_round_fourth"), LanguageModLoader.getValue("draw_round_fifth"),
+                LanguageModLoader.getValue("draw_round_sixth")};
         if (roundNumber > 0 && roundNumber < ordinals.length) {
-            return ordinals[roundNumber] + " Round";
+            return ordinals[roundNumber];
         }
-        return "Round " + roundNumber;
+        return LanguageModLoader.format("draw_round_n", roundNumber);
     }
     
     /**
@@ -390,26 +394,26 @@ public class CupDrawScreenTable extends VisTable {
         contentTable.clear();
         
         if (currentCup == null || currentEdition == null) {
-            contentTable.add(new VisLabel("No cup draw selected")).pad(UiTheme.space("lg")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("draw_no_cup_selected"))).pad(UiTheme.space("lg")).row();
             return;
         }
         
         // Title
-        VisLabel titleLabel = new VisLabel(currentCup.getName() + " - " + roundName + " Draw");
+        VisLabel titleLabel = new VisLabel(LanguageModLoader.format("draw_cup_title", currentCup.getName(), roundName));
         titleLabel.setFontScale(UiTheme.fontScale("title"));
         contentTable.add(titleLabel).pad(UiTheme.space("sm")).row();
         
         contentTable.addSeparator().pad(UiTheme.space("xs")).row();
         
         // Instructions
-        contentTable.add(new VisLabel("The draw for the " + roundName + " is being revealed.")).pad(UiTheme.space("xs")).row();
-        contentTable.add(new VisLabel("Click 'Next' to reveal teams one by one (like Football Manager).")).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.format("draw_cup_revealing", roundName))).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.getValue("draw_cup_hint"))).pad(UiTheme.space("xs")).row();
         
         contentTable.add().height(UiTheme.space("sm")).row();
         
         // Draw table - shows teams being drawn one by one
         fixturesTable = new VisTable(true);
-        fixturesTable.add(new VisLabel("Team")).width(UiTheme.size("col.wide")).row();
+        fixturesTable.add(new VisLabel(LanguageModLoader.getValue("draw_team"))).width(UiTheme.size("col.wide")).row();
         fixturesTable.addSeparator().row();
         
         // Show revealed teams
@@ -436,7 +440,7 @@ public class CupDrawScreenTable extends VisTable {
             // Show "???" for unrevealed teams
             if (!allRevealed && currentRevealedIndex < drawOrder.size()) {
                 fixturesTable.add(new VisLabel("???")).width(UiTheme.size("col.wide")).pad(UiTheme.space("xxs")).row();
-                fixturesTable.add(new VisLabel((drawOrder.size() - currentRevealedIndex) + " more teams to be drawn")).pad(UiTheme.space("xs")).row();
+                fixturesTable.add(new VisLabel(LanguageModLoader.format("draw_more_teams", drawOrder.size() - currentRevealedIndex))).pad(UiTheme.space("xs")).row();
             }
         }
         
@@ -454,7 +458,7 @@ public class CupDrawScreenTable extends VisTable {
         
         // Show draw buttons if draw is not complete and we have teams to reveal
         if (!allRevealed && drawOrder != null && drawOrder.size() > 0 && currentRevealedIndex < drawOrder.size()) {
-            nextButton = new VisTextButton("Next");
+            nextButton = new VisTextButton(LanguageModLoader.getValue("draw_next"));
             nextButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
@@ -467,7 +471,7 @@ public class CupDrawScreenTable extends VisTable {
             });
             buttonTable.add(nextButton).pad(UiTheme.space("xs"));
             
-            drawAllButton = new VisTextButton("Draw All");
+            drawAllButton = new VisTextButton(LanguageModLoader.getValue("draw_all"));
             drawAllButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
@@ -479,8 +483,8 @@ public class CupDrawScreenTable extends VisTable {
             buttonTable.add(drawAllButton).pad(UiTheme.space("xs"));
         } else if (drawOrder == null || drawOrder.isEmpty()) {
             // If no draw order, show a message and allow manual generation
-            contentTable.add(new VisLabel("No draw data available. Generating draw...")).pad(UiTheme.space("sm")).row();
-            VisTextButton generateButton = new VisTextButton("Generate Draw");
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("draw_generating"))).pad(UiTheme.space("sm")).row();
+            VisTextButton generateButton = new VisTextButton(LanguageModLoader.getValue("draw_generate"));
             generateButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
@@ -493,7 +497,7 @@ public class CupDrawScreenTable extends VisTable {
         }
         
         if (allRevealed || (drawOrder != null && drawOrder.size() > 0 && currentRevealedIndex >= drawOrder.size())) {
-            continueButton = new VisTextButton("Continue");
+            continueButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
             continueButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {

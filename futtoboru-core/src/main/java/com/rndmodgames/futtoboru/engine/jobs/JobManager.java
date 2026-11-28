@@ -1107,11 +1107,10 @@ public class JobManager {
         message.setId(nextId());
         message.setRemitent(null); // System message
         message.setMessageTime(currentGame.getGameDate());
-        message.setTitle("Job Offer Received");
-        message.setPlainTextMessage("You have received a job offer from " + club.getName() + 
-                                   ".\n\nSalary: " + Money.format(offer.getSalary()) + 
-                                   "\nContract Length: " + offer.getContractLengthMonths() + " months" +
-                                   "\n\nPlease respond within 7 days.");
+        message.setMessageType("JOB_OFFER");
+        message.setTitle(com.rndmodgames.localization.LanguageModLoader.getValue("jobs_msg_offer_title"));
+        message.setPlainTextMessage(com.rndmodgames.localization.LanguageModLoader.format("msg_job_offer_text",
+                club.getName(), Money.format(offer.getSalary()), offer.getContractLengthMonths()));
         message.setIsRead(false);
         message.setIsDeleted(false);
         

@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.math.BigDecimal;
 import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
@@ -61,7 +62,7 @@ public class NegotiationScreenTable extends VisTable {
         
         if (currentOffer == null) {
             this.row();
-            this.add(new VisLabel("No offer selected for negotiation."));
+            this.add(new VisLabel(LanguageModLoader.getValue("jobs_no_offer_selected")));
             return;
         }
         
@@ -78,30 +79,30 @@ public class NegotiationScreenTable extends VisTable {
         
         // Title
         this.row();
-        this.add(new VisLabel("Negotiate Job Offer" + (club != null ? " - " + club.getName() : ""))).colspan(2);
+        this.add(new VisLabel(club != null ? LanguageModLoader.format("jobs_negotiate_offer_club", club.getName()) : LanguageModLoader.getValue("jobs_negotiate_offer"))).colspan(2);
         this.row();
         this.addSeparator().colspan(2); // V-01: a one-column separator pushed column 2 to the right edge
         
         // Current offer
         this.row();
-        this.add(new VisLabel("Current Offer:")).colspan(2);
+        this.add(new VisLabel(LanguageModLoader.getValue("jobs_current_offer"))).colspan(2);
         this.row();
-        this.add(new VisLabel("Salary: " + Money.format(currentOffer.getSalary())));
-        this.add(new VisLabel("Contract: " + currentOffer.getContractLengthMonths() + " months"));
+        this.add(new VisLabel(LanguageModLoader.format("jobs_salary_value", Money.format(currentOffer.getSalary()))));
+        this.add(new VisLabel(LanguageModLoader.format("jobs_contract_value", currentOffer.getContractLengthMonths())));
         this.row();
-        this.add(new VisLabel("Negotiation Round: " + currentOffer.getNegotiationRound() + "/3")).colspan(2);
+        this.add(new VisLabel(LanguageModLoader.format("jobs_negotiation_round", currentOffer.getNegotiationRound(), 3))).colspan(2);
         this.row();
         this.addSeparator().colspan(2); // V-01: a one-column separator pushed column 2 to the right edge
         
         // Counter-offer inputs
         this.row();
-        this.add(new VisLabel("Counter-Offer:")).colspan(2);
+        this.add(new VisLabel(LanguageModLoader.getValue("jobs_counter_offer"))).colspan(2);
         this.row();
-        this.add(new VisLabel("New Salary:"));
+        this.add(new VisLabel(LanguageModLoader.getValue("jobs_new_salary")));
         salaryField = new VisTextField(currentOffer.getSalary().toString());
         this.add(salaryField).width(UiTheme.size("col.wide"));
         this.row();
-        this.add(new VisLabel("New Contract Length (months):"));
+        this.add(new VisLabel(LanguageModLoader.getValue("jobs_new_contract_length")));
         contractLengthField = new VisTextField(currentOffer.getContractLengthMonths().toString());
         this.add(contractLengthField).width(UiTheme.size("col.wide"));
         this.row();
@@ -111,7 +112,7 @@ public class NegotiationScreenTable extends VisTable {
         VisTable buttonsTable = new VisTable(true);
         
         // Submit counter-offer button
-        VisTextButton submitButton = new VisTextButton("Submit Counter-Offer");
+        VisTextButton submitButton = new VisTextButton(LanguageModLoader.getValue("jobs_submit_counter_offer"));
         submitButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
             @Override
             public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
@@ -150,7 +151,7 @@ public class NegotiationScreenTable extends VisTable {
         buttonsTable.add(submitButton);
         
         // Cancel button
-        VisTextButton cancelButton = new VisTextButton("Cancel");
+        VisTextButton cancelButton = new VisTextButton(LanguageModLoader.getValue("cancel"));
         cancelButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
             @Override
             public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {

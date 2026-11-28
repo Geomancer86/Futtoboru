@@ -669,15 +669,16 @@ public class ScriptsManager {
                 com.rndmodgames.futtoboru.data.Message creationMsg = new com.rndmodgames.futtoboru.data.Message();
                 creationMsg.setCategory(com.rndmodgames.futtoboru.data.MessageCategory.CUP);
                 creationMsg.setPriority(com.rndmodgames.futtoboru.data.MessagePriority.URGENT);
-                creationMsg.setTitle(cupName + " Created");
-                creationMsg.setPlainTextMessage("The " + edition.getName() + " has been established. All participant clubs have been registered, and the first round draw is ready to be conducted.");
+                creationMsg.setTitle(com.rndmodgames.localization.LanguageModLoader.format("msg_cup_created_title", cupName));
+                creationMsg.setPlainTextMessage(com.rndmodgames.localization.LanguageModLoader.format("msg_cup_created_text", edition.getName()));
                 creationMsg.setScheduledDate(gameDate);
                 creationMsg.setIsMandatory(false);
                 messageManager.deliverMessage(creationMsg);
                 
                 // Mandatory Draw Message (blocks time advancement)
                 int roundNumber = 1;
-                com.rndmodgames.futtoboru.data.Message drawMessage = messageManager.createCupDrawMessage(cup, edition, roundNumber, "First Round");
+                com.rndmodgames.futtoboru.data.Message drawMessage = messageManager.createCupDrawMessage(cup, edition, roundNumber,
+                        com.rndmodgames.localization.LanguageModLoader.getValue("msg_round_first"));
                 if (drawMessage != null) {
                     drawMessage.setScheduledDate(gameDate); 
                     messageManager.deliverMessage(drawMessage);
