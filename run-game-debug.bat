@@ -13,7 +13,7 @@ echo.
 
 REM Run Java with output visible on screen AND logged to file
 REM Using PowerShell Tee-Object to show on screen and save to file
-powershell -NoProfile -Command "java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.5.0-alpha-jar-with-dependencies.jar 2>&1 | Tee-Object -FilePath game-debug.log"
+powershell -NoProfile -Command "java -jar ./futtoboru-desktop/target/futtoboru-desktop-0.5.0-SNAPSHOT-jar-with-dependencies.jar 2>&1 | Tee-Object -FilePath game-debug.log"
 
 echo.
 echo ========================================

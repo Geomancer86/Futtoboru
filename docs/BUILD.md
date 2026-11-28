@@ -10,7 +10,7 @@
 ```
 ./mvnw -B -DskipTests package       # fast build (PowerShell/cmd: .\mvnw.cmd ...)
 ./mvnw -B verify                    # build + tests (run before every push)
-java -jar futtoboru-desktop/target/futtoboru-desktop-0.5.0-alpha-jar-with-dependencies.jar
+java -jar futtoboru-desktop/target/futtoboru-desktop-0.5.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 Scripts at the repo root, each in a Windows `.bat` and a POSIX `.sh` version (Linux, Git Bash, WSL):
 

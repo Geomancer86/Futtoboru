@@ -17,7 +17,7 @@ public class BuildInfo {
     
     private static final String BUILD_PROPERTIES_FILE = "/build.properties";
     
-    private static String version = "0.5.0-alpha";
+    private static String version = "0.5.0-SNAPSHOT";
     private static String buildNumber = "0";
     private static String commitHash = "unknown";
     private static String buildTimestamp = "unknown";
