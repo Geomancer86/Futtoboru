@@ -12,6 +12,7 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 | R-09 staff roles + R-03 candidate pools | BOOK3PRO | `b3/R-03-pools` | 2026-11-28 |
 | G-12a economy: non-League clubs fall into debt | BOOK3PRO | `b3/G-12a-economy` | 2026-11-28 |
+| G-13 AI-to-AI friendlies and away guarantees | BOOK3PRO | `b3/G-13-ai-friendlies` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -28,7 +29,6 @@ Model tier per D33: Sonnet for docs/data/research/art tools/merges, Opus for cor
 | G-05 committee and the secretary's job (sacking, job seeker) | BOOK3PRO | Opus | J-01 job system is merged |
 | R-03..R-07 recruitment without trials | BOOK3PRO | Opus | after R-02 data merges (D28 answered) |
 | G-09 training, G-11 era events in the inbox, G-12 budget and debt | WORKSTATION (D33-7) | Sonnet/Opus | G-11 has data proposal `docs/design/ERA_EVENTS_PROPOSAL.md` |
-| G-13 AI-to-AI friendlies and away guarantees | WORKSTATION | Opus | D31: AI clubs get every system; U-08 `FriendlyArranger` is the base |
 | R-08 AI recruitment/poaching | BOOK3PRO | Opus | after R-02..R-07 |
 | E-17 events + `MatchResult` stats (after E-17a) | WORKSTATION | Opus | `match/ecs/**` is WORKSTATION's lock |
 | E-18 crowd sections, E-19 performance (zero-alloc, spatial grid, benchmark) | WORKSTATION | Opus | E-19 needed: ~1.5-2.5 s a match estimated |
