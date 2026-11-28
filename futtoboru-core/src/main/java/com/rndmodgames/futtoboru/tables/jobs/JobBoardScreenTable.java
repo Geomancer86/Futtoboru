@@ -8,7 +8,6 @@ import java.util.List;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -24,6 +23,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiDialogs;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -290,10 +290,7 @@ public class JobBoardScreenTable extends VisTable {
     void showMessage(String title, String message) {
         Stage stage = this.getStage();
         if (stage != null) {
-            VisDialog dialog = new VisDialog(title);
-            dialog.text(message);
-            dialog.button("OK");
-            dialog.show(stage);
+            UiDialogs.info(stage, title, message);
         } else {
             // Fallback to console if stage not available
             Log.info(Log.UI_JOBS, "JobBoardScreenTable", title + ": " + message);
