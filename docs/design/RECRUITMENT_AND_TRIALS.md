@@ -253,6 +253,12 @@ The order without the engine: R-02 → R-09 → R-03 → R-04 → R-05 → R-07 
 matches and signing; R-06 adds the scenes when the engine is ready (v0.6+).
 
 ## 9. Open questions for the producer
+
+> **Answered 2026-11-28 (ROADMAP D28):** all eleven as recommended, plus Q12 origin nudges, Q13 foreign-born
+> players with family backstories and **per-language speaking / understanding / literacy attributes** feeding
+> cohesion, Q14 football-upbringing effects (not a per-country table), Q15 agents research and convert the era
+> player sources. Slices gain **R-10** (era player sources research + conversion) and **R-11** (languages and
+> literacy: data, attributes, cohesion effect, sourced literacy and migration rates).
 1. **Who is the player at the club?** (a) the secretary(-manager), who recruits and signs alone; (b) the secretary,
    and the committee must approve wages above a band and votes on big signings; (c) the committee is only flavour.
    **Recommend (b)**: historical, and it gives the committee a voice.
