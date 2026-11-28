@@ -439,6 +439,9 @@ public class GameData {
                 readRegistry(data, where, pack);
                 continue;
             }
+            if (f.startsWith("era/")) {
+                continue; // era events (H-06): read by EraProfile, checked by validate.py
+            }
             String season = null;
             String[] spec;
             if (parts.length == 3 && parts[0].equals("seasons")) {

@@ -31,6 +31,7 @@ def test_every_person_is_in_a_squad_and_ids_are_unique():
 def pack(tmp_path):
     dst = tmp_path / "gamedata"
     shutil.copytree(ROOT, dst)
+    shutil.copytree(ROOT.parent / "mods" / "language", tmp_path / "mods" / "language")
     return dst
 
 
@@ -267,3 +268,109 @@ def test_player_without_position_is_a_warning(pack):
     rep = validate.validate(pack)
     assert rep.errors == []
     assert any("no position" in w for w in rep.warnings)
+
+
+# ---- H-06: era events -------------------------------------------------------------------------------------------
+
+def era(pack_root, name):
+    return pack_root / "core" / "era" / name
+
+
+def first_event(d, **fields):
+    d[0].update(fields)
+
+
+def test_era_files_are_shipped_and_counted():
+    events = json.loads((ROOT / "core" / "era" / "events.json").read_text(encoding="utf-8"))
+    base = json.loads((ROOT / "core" / "era" / "baseline.json").read_text(encoding="utf-8"))
+    assert len(events) >= 30
+    assert sum(len(g) for g in base["parameters"].values()) >= 40
+    assert [e["effective"] for e in events] == sorted(e["effective"] for e in events)
+
+
+def test_era_event_unknown_field_and_bad_enum(pack):
+    edit(era(pack, "events.json"), lambda d: first_event(d, colour="red", kind="law"))
+    e = errors(pack)
+    assert "unknown field `colour`" in e
+    assert "kind" in e and "one of" in e
+
+
+def test_era_effect_param_must_exist_in_baseline(pack):
+    edit(era(pack, "events.json"),
+         lambda d: d[1]["effects"].append({"param": "rules.penaltyKik", "op": "set", "value": True}))
+    assert "unknown parameter `rules.penaltyKik`" in errors(pack)
+
+
+def test_era_effect_value_type_and_op(pack):
+    edit(era(pack, "events.json"),
+         lambda d: d[1]["effects"].extend([{"param": "rules.penaltyKick", "op": "set", "value": 3},
+                                           {"param": "rules.officials", "op": "scale", "value": 2},
+                                           {"param": "ball.massMinG", "op": "mul", "value": 2}]))
+    e = errors(pack)
+    assert "does not match the type of `rules.penaltyKick`" in e
+    assert "`scale` needs a numeric parameter" in e
+    assert "effects[4].op: expected one of" in e
+
+
+def test_era_adoption_needs_number_and_seasons(pack):
+    edit(era(pack, "events.json"),
+         lambda d: d[1]["effects"].extend([{"param": "rules.goalNets", "op": "set", "value": True, "adoption": {"seasons": 3}},
+                                           {"param": "kit.shinPadShare", "op": "set", "value": 1, "adoption": {"seasons": 0}},
+                                           {"param": "kit.shinPadShare", "op": "set", "value": 1, "adoption": {}}]))
+    e = errors(pack)
+    assert "`adoption` needs a numeric parameter" in e
+    assert "`seasons` must be at least 1" in e
+    assert "missing field `seasons`" in e
+
+
+def test_era_dates_are_checked(pack):
+    edit(era(pack, "events.json"), lambda d: first_event(d, announced="1889-02-30", effective="1888-01-01"))
+    assert "must be a calendar date" in errors(pack)
+    edit(era(pack, "events.json"), lambda d: first_event(d, announced="1889-06-03", effective="1889-01-01"))
+    assert "is before announced" in errors(pack)
+
+
+def test_era_duplicate_id_and_unknown_requires(pack):
+    edit(era(pack, "events.json"), lambda d: (d[1].update({"id": d[0]["id"]}), d[0].update({"requires": ["nope"]})))
+    e = errors(pack)
+    assert "duplicate event id" in e
+    assert "requires unknown event `nope`" in e
+
+
+def test_era_requires_must_not_take_effect_later(pack):
+    def f(d):
+        d[0]["requires"] = [d[-1]["id"]]
+    edit(era(pack, "events.json"), f)
+    assert "which takes effect later" in errors(pack)
+
+
+def test_era_message_key_must_match_id_and_exist_in_every_bundle(pack):
+    edit(era(pack, "events.json"), lambda d: d[1]["message"].update({"key": "era.other"}))
+    assert "must be `era." in errors(pack)
+    lang = pack.parent / "mods" / "language" / "BaseBundle_sp_la.properties"
+    text = lang.read_text(encoding="utf-8")
+    lang.write_text("".join(l for l in text.splitlines(True) if not l.startswith("era.ifab-1925-offside-two.body=")),
+                    encoding="utf-8")
+    e = errors(pack)
+    assert "`era.ifab-1925-offside-two.body` missing or empty in BaseBundle_sp_la.properties" in e
+
+
+def test_era_scope_refs_and_sources(pack):
+    edit(era(pack, "events.json"), lambda d: first_event(d, scope={"competitions": ["no-such-cup"]}, sources=["not a link"]))
+    e = errors(pack)
+    assert "unknown competition `no-such-cup`" in e
+    assert "expected an http(s) link" in e
+
+
+def test_era_baseline_is_strict(pack):
+    edit(era(pack, "baseline.json"), lambda d: (d["parameters"]["rules"].update({"bad": [1]}), d.update({"x": 1}),
+                                               d["parameters"].update({"pitch": {"a": 1}})))
+    e = errors(pack)
+    assert "unknown field `x`" in e
+    assert "unknown parameter group `pitch`" in e
+    assert "value must be a number, true/false or text" in e
+
+
+def test_every_baseline_parameter_is_used_or_documented_in_a_group():
+    base = json.loads((ROOT / "core" / "era" / "baseline.json").read_text(encoding="utf-8"))
+    assert set(base["parameters"]) == {"rules", "ball", "kit", "league"}
