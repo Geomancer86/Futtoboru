@@ -11,7 +11,7 @@ _Last updated 2026-11-28 (BOOK3PRO)._ Version 0.5.0-SNAPSHOT.
 | Match simulation | crude | random scoreline; replaced in Phase 3 |
 | Unemployed / job system | mostly working | offer and refresh bugs |
 | Friendlies / Schedule | working | U-08: Schedule screen = 12-week calendar (played with score, fixed, awaiting answer) + arrange form (day from the calendar, ground, opponent). `engine/temporal/FriendlyArranger`: at least 2 days' notice; the other club answers by inbox letter the next day (accept, or decline with a reason: engaged, no side, travel cost, ground let; 80% accept when free, `fork("friendly:<id>")`); played via `MatchResultRecorder` (no table change); home club takes the gate; a friendly is called off when a league/cup match is fixed for that day. No AI-to-AI friendlies yet |
-| Finances | partial | weekly expenses, gate income; money text in £ via `Money.format` (P2-7) |
+| Finances | partial | weekly expenses, gate income (home club only, booked once per match, P2-12; no 1888-89 gate share); money text in £ via `Money.format` (P2-7) |
 | Contracts | partial | generated only; no expiry or transfers |
 | New season | partial | generated when the league completes; no re-election vote yet |
 | Save / load | working | v2 format (E-01 adds player position + dribbling; v1 saves migrate), v1 (P2-5): `saveVersion` + data version, named saves, data saved by id, one object per club after load, round-trip test; v0.4 saves show "older version"; a New Game after playing/loading another starts from freshly rebuilt data with the same ids (P2-10) and a fresh seed unless `-Dfuttoboru.seed` forces one (S-01, D25); autosave slot on the 1st of each month and at season rollover, listed as "Autosave"; U-06 dialogs: Delete per save (autosave too) with confirm, "Overwrite?" before writing over an existing name, empty names refused; quitting/closing waits for a running autosave (max 5 s) |
@@ -23,7 +23,9 @@ _Last updated 2026-11-28 (BOOK3PRO)._ Version 0.5.0-SNAPSHOT.
 | Tactics, Training, Transfers, Scouting, Staff, Board | stub | empty screens; recruitment, trials and scouting designed in `docs/design/RECRUITMENT_AND_TRIALS.md` (R-01, slices R-02..R-09, 11 producer questions) |
 | Settings | working | sound panel and the empty gameplay panel hidden until there is audio / a setting (U-08) |
 | UI scale / window | working | U-03a: `ui/UiScale` on every stage (Settings: Auto (shows %) / 100% / 200%, integer steps; Auto = OS content scale rounded to 1-2, else 2x from a 1920x1080 window); window default and minimum 1280x720 from the saved preference (launcher, no double resize); screen roots scroll when they do not fit |
+| Visual check / UI guide | working | V-01: `tools/ui/screenshots.sh` tours every screen and dialog at 1x and 2x; `docs/design/INTERFACE_GUIDE.md` (U-05) |
 | Logging | working | one style (P1-5): `Log.info/debug/warn/error(Log.<CATEGORY>[, tag], msg[, e])`; info/debug/warn follow Settings > Debug Logging, errors always print with stack trace; `LoggingStyleGuardTest` blocks `System.out/err`, `printStackTrace`, `Gdx.app.log` in main code |
+| Labels / languages | working | U-10 (D18): every on-screen label and inbox message text comes from `mods/language/BaseBundle_{en_us,en_uk,sp_la,sp_sp}.properties` (Spanish translated; ASCII with `\uXXXX`); `LanguageModLoader.getValue/format("key", args)`, English fallback when no bundle is loaded; `LanguageBundleKeysTest` blocks hard-coded UI text and missing keys (dev-only: `MatchEngineDebugScreen`). Month/day names in screen date patterns still English |
 
 Full season: `engine/FullSeasonTests` plays 1888-89 headless and seeded to the 1889-90 rollover (P2-3, ~11 s, in `verify`).
 

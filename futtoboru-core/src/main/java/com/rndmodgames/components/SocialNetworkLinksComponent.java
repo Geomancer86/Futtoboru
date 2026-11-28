@@ -21,25 +21,33 @@ public class SocialNetworkLinksComponent extends VisTable {
     public static final String INSTAGRAM_URL = "https://www.instagram.com/rndmodgames";
     public static final String RNDMODGAMES_URL = "https://rndmodgames.com";
     public static final String FUTTOBORU_GITHUB_URL = "https://github.com/Geomancer86/Futtoboru";
+
+    /** Link texts: account and site names (proper names, the same in every language, so not in the bundles). */
+    static final String PATREON_LINK = "Nicolas Alvargonzalez @ Patreon";
+    static final String TWITTER_LINK = "RndModGames @ Twitter";
+    static final String FACEBOOK_LINK = "RndModGames @ Facebook";
+    static final String INSTAGRAM_LINK = "RndModGames @ Instagram";
+    static final String RNDMODGAMES_LINK = "RndModGames.com";
+    static final String FUTTOBORU_GITHUB_LINK = "Futtoboru @ Github";
     
     public SocialNetworkLinksComponent() {
 
         row();
-        add(new LinkLabel("Nicolas Alvargonzalez @ Patreon", PATREON_URL)).right();
+        add(new LinkLabel(PATREON_LINK, PATREON_URL)).right();
         
         row();
-        add(new LinkLabel("RndModGames @ Twitter", TWITTER_URL)).right();
+        add(new LinkLabel(TWITTER_LINK, TWITTER_URL)).right();
         
         row();
-        add(new LinkLabel("RndModGames @ Facebook", FACEBOOK_URL)).right();
+        add(new LinkLabel(FACEBOOK_LINK, FACEBOOK_URL)).right();
         
         row();
-        add(new LinkLabel("RndModGames @ Instagram", INSTAGRAM_URL)).right();
+        add(new LinkLabel(INSTAGRAM_LINK, INSTAGRAM_URL)).right();
         
         row();
-        add(new LinkLabel("RndModGames.com", RNDMODGAMES_URL)).right();
+        add(new LinkLabel(RNDMODGAMES_LINK, RNDMODGAMES_URL)).right();
         
         row();
-        add(new LinkLabel("Futtoboru @ Github", FUTTOBORU_GITHUB_URL)).right();
+        add(new LinkLabel(FUTTOBORU_GITHUB_LINK, FUTTOBORU_GITHUB_URL)).right();
     }
 }

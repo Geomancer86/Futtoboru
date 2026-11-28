@@ -56,7 +56,7 @@ public class HomeScreenTable extends VisTable {
         HomeDashboard dashboard = HomeDashboard.of(((Futtoboru) game).getCurrentGame());
 
         // header: manager, club, date
-        VisLabel title = new VisLabel(dashboard.hasClub() ? dashboard.getClubName() : text("dashboard_unemployed"));
+        VisLabel title = new VisLabel(dashboard.hasClub() ? dashboard.getClubName() : LanguageModLoader.getValue("dashboard_unemployed"));
         title.setFontScale(UiTheme.fontScale("title"));
         add(title).left().colspan(2).padBottom(UiTheme.space("xxs"));
         row();

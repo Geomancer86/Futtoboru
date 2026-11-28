@@ -14,6 +14,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -68,7 +69,7 @@ public class MatchHistoryScreenTable extends VisTable {
         
         if (currentClub == null) {
             this.clear();
-            this.add("No club selected.");
+            this.add(LanguageModLoader.getValue("match_no_club"));
             return;
         }
         
@@ -78,7 +79,7 @@ public class MatchHistoryScreenTable extends VisTable {
         
         if (currentClub.getPlayedMatches() == null || currentClub.getPlayedMatches().isEmpty()) {
             this.row();
-            this.add("No matches played yet.");
+            this.add(LanguageModLoader.getValue("match_none_played"));
             return;
         }
         
@@ -93,16 +94,16 @@ public class MatchHistoryScreenTable extends VisTable {
         
         // Header
         this.row().padTop(UiTheme.space("sm")).padBottom(UiTheme.space("sm"));
-        VisLabel headerLabel = new VisLabel("MATCH HISTORY");
+        VisLabel headerLabel = new VisLabel(LanguageModLoader.getValue("match_history_title"));
         headerLabel.setFontScale(UiTheme.fontScale("title"));
         this.add(headerLabel).colspan(4).padBottom(UiTheme.space("md"));
         
         // Column headers
         this.row().padBottom(UiTheme.space("xs"));
-        this.add(new VisLabel("Date")).width(UiTheme.size("col.number"));
-        this.add(new VisLabel("Home")).expandX().left();
-        this.add(new VisLabel("Score")).width(UiTheme.size("col.value"));
-        this.add(new VisLabel("Away")).expandX().left();
+        this.add(new VisLabel(LanguageModLoader.getValue("history_date"))).width(UiTheme.size("col.number"));
+        this.add(new VisLabel(LanguageModLoader.getValue("history_home"))).expandX().left();
+        this.add(new VisLabel(LanguageModLoader.getValue("history_score"))).width(UiTheme.size("col.value"));
+        this.add(new VisLabel(LanguageModLoader.getValue("history_away"))).expandX().left();
         
         // Separator
         this.row();
@@ -127,7 +128,7 @@ public class MatchHistoryScreenTable extends VisTable {
             this.row().padTop(UiTheme.space("xs")).padBottom(UiTheme.space("xs"));
             String matchDate = match.getMatchDateTime() != null 
                 ? match.getMatchDateTime().format(dateFormatter) 
-                : "Unknown";
+                : LanguageModLoader.getValue("unknown");
             this.add(new VisLabel(matchDate)).width(UiTheme.size("col.number"));
             
             // Home team (clickable)

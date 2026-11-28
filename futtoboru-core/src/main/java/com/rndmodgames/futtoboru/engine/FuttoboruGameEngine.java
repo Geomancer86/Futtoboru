@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -261,8 +262,9 @@ public class FuttoboruGameEngine {
                 continue;
             }
             
-            // Skip if match date is in the future
-            if (match.getMatchDateTime() != null && match.getMatchDateTime().isAfter(currentDate)) {
+            // Skip if match day is in the future (by date: the game clock stays before the 15:00 kick-off, V-01)
+            if (match.getMatchDateTime() != null
+                    && match.getMatchDateTime().toLocalDate().isAfter(currentDate.toLocalDate())) {
                 continue;
             }
             
@@ -409,8 +411,16 @@ public class FuttoboruGameEngine {
          * NOTE: player might not have a CURRENT_CLUB
          *       
          *       - simulate all clubs, not only player controlled
+         *
+         * P2-12: each club once a day. A new game lists the clubs of the selected countries a second time
+         * (NewGameOverviewScreen adds the competitions' participants, then all clubs of each country), so every
+         * home club sold tickets twice a day and booked each gate twice.
          */
+        Set<Club> processedClubs = Collections.newSetFromMap(new IdentityHashMap<>());
         for (Club currentClub : gameInstance.getCurrentGame().getAllClubs()) {
+            if (!processedClubs.add(currentClub)) {
+                continue;
+            }
 
             //
             Log.debug(Log.ENGINE_GAME, "FuttoboruGameEngine", "PROCESSING CLUB: " + currentClub.getName());

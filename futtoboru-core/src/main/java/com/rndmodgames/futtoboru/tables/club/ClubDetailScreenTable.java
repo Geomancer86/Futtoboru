@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.club;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.math.BigDecimal;
 import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.text.DecimalFormat;
@@ -83,7 +84,7 @@ public class ClubDetailScreenTable extends VisTable {
         
         if (club == null) {
             Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Club is null, showing message");
-            this.add(new VisLabel("No club selected."));
+            this.add(new VisLabel(LanguageModLoader.getValue("club_none_selected")));
             return;
         }
         
@@ -96,26 +97,26 @@ public class ClubDetailScreenTable extends VisTable {
 
         // Club Name
         details.row();
-        details.add(new VisLabel("Club:")).left();
+        details.add(new VisLabel(LanguageModLoader.getValue("club_label_club"))).left();
         details.add(new VisLabel(club.getName())).left().expandX();
         details.row();
         
         if (club.getFullName() != null && !club.getFullName().equals(club.getName())) {
-            details.add(new VisLabel("Full Name:")).left();
+            details.add(new VisLabel(LanguageModLoader.getValue("club_full_name"))).left();
             details.add(new VisLabel(club.getFullName())).left().expandX();
             details.row();
         }
         
         // Country
         if (club.getCountry() != null) {
-            details.add(new VisLabel("Country:")).left();
+            details.add(new VisLabel(LanguageModLoader.getValue("club_country"))).left();
             details.add(new VisLabel(club.getCountry().getCommonName())).left().expandX();
             details.row();
         }
         
         // Foundation Year
         if (club.getYear() != null) {
-            details.add(new VisLabel("Founded:")).left();
+            details.add(new VisLabel(LanguageModLoader.getValue("club_founded"))).left();
             details.add(new VisLabel(club.getYear().toString())).left().expandX();
             details.row();
         }
@@ -124,47 +125,47 @@ public class ClubDetailScreenTable extends VisTable {
         if (club.getStadium() != null) {
             details.addSeparator();
             details.row();
-            VisLabel stadiumHeader = new VisLabel("STADIUM INFORMATION");
+            VisLabel stadiumHeader = new VisLabel(LanguageModLoader.getValue("club_stadium_information"));
             stadiumHeader.setFontScale(UiTheme.fontScale("subheading"));
             details.add(stadiumHeader).colspan(2).left().padTop(UiTheme.space("sm"));
             details.row();
             
             // Stadium Name
-            details.add(new VisLabel("Stadium:")).left();
+            details.add(new VisLabel(LanguageModLoader.getValue("club_stadium"))).left();
             details.add(new VisLabel(club.getStadium().getName())).left().expandX();
             details.row();
             
             // Capacity
             if (club.getStadium().getCapacity() != null) {
-                details.add(new VisLabel("Capacity:")).left();
+                details.add(new VisLabel(LanguageModLoader.getValue("club_capacity"))).left();
                 details.add(new VisLabel(club.getStadium().getCapacity().toString())).left().expandX();
                 details.row();
             }
             
             // Built Year
             if (club.getStadium().getBuiltYear() != null) {
-                details.add(new VisLabel("Built Year:")).left();
+                details.add(new VisLabel(LanguageModLoader.getValue("club_built_year"))).left();
                 details.add(new VisLabel(club.getStadium().getBuiltYear().toString())).left().expandX();
                 details.row();
             }
             
             // Value
             if (club.getStadium().getValue() != null && club.getStadium().getValue().compareTo(BigDecimal.ZERO) > 0) {
-                details.add(new VisLabel("Estimated Value:")).left();
+                details.add(new VisLabel(LanguageModLoader.getValue("club_estimated_value"))).left();
                 details.add(new VisLabel(Money.format(club.getStadium().getValue()))).left().expandX();
                 details.row();
             }
             
             // Ownership Status
-            details.add(new VisLabel("Ownership:")).left();
-            String ownershipStatus = club.getStadium().isOwned() ? "Owned" : "Rented";
+            details.add(new VisLabel(LanguageModLoader.getValue("club_ownership"))).left();
+            String ownershipStatus = club.getStadium().isOwned() ? LanguageModLoader.getValue("club_owned") : LanguageModLoader.getValue("club_rented");
             details.add(new VisLabel(ownershipStatus)).left().expandX();
             details.row();
             
             // Land Value (if owned)
             if (club.getStadium().isOwned() && club.getStadium().getLandValue() != null && 
                 club.getStadium().getLandValue().compareTo(BigDecimal.ZERO) > 0) {
-                details.add(new VisLabel("Land Value:")).left();
+                details.add(new VisLabel(LanguageModLoader.getValue("club_land_value"))).left();
                 details.add(new VisLabel(Money.format(club.getStadium().getLandValue()))).left().expandX();
                 details.row();
             }
@@ -172,8 +173,8 @@ public class ClubDetailScreenTable extends VisTable {
             // Annual Rent (if rented)
             if (!club.getStadium().isOwned() && club.getStadium().getAnnualRent() != null && 
                 club.getStadium().getAnnualRent().compareTo(BigDecimal.ZERO) > 0) {
-                details.add(new VisLabel("Annual Rent:")).left();
-                details.add(new VisLabel(Money.format(club.getStadium().getAnnualRent()) + "/year")).left().expandX();
+                details.add(new VisLabel(LanguageModLoader.getValue("club_annual_rent"))).left();
+                details.add(new VisLabel(LanguageModLoader.format("club_per_year", Money.format(club.getStadium().getAnnualRent())))).left().expandX();
                 details.row();
             }
             
@@ -181,7 +182,7 @@ public class ClubDetailScreenTable extends VisTable {
             if (club.getStadium().isOwned()) {
                 BigDecimal totalAssetValue = club.getStadium().getTotalAssetValue();
                 if (totalAssetValue.compareTo(BigDecimal.ZERO) > 0) {
-                    details.add(new VisLabel("Total Asset Value:")).left();
+                    details.add(new VisLabel(LanguageModLoader.getValue("club_total_asset_value"))).left();
                     VisLabel assetValueLabel = new VisLabel(Money.format(totalAssetValue));
                     assetValueLabel.setColor(UiTheme.color("state.positive")); // Green for asset value
                     details.add(assetValueLabel).left().expandX();
@@ -193,7 +194,7 @@ public class ClubDetailScreenTable extends VisTable {
             if (club.getStadium().getDescription() != null && !club.getStadium().getDescription().trim().isEmpty()) {
                 details.addSeparator().colspan(2).padTop(UiTheme.space("xs")).padBottom(UiTheme.space("xs"));
                 details.row();
-                VisLabel descHeader = new VisLabel("Historical Summary:");
+                VisLabel descHeader = new VisLabel(LanguageModLoader.getValue("club_historical_summary"));
                 descHeader.setFontScale(UiTheme.fontScale("subheading.minor"));
                 details.add(descHeader).colspan(2).left();
                 details.row();
@@ -208,7 +209,7 @@ public class ClubDetailScreenTable extends VisTable {
             if (club.getStadium().getUrlSource() != null && !club.getStadium().getUrlSource().trim().isEmpty()) {
                 details.addSeparator().colspan(2).padTop(UiTheme.space("xs")).padBottom(UiTheme.space("xs"));
                 details.row();
-                details.add(new VisLabel("Source:")).left();
+                details.add(new VisLabel(LanguageModLoader.getValue("club_source"))).left();
                 
                 final String url = club.getStadium().getUrlSource();
                 final VisLabel urlLabel = new VisLabel(url);
@@ -244,7 +245,7 @@ public class ClubDetailScreenTable extends VisTable {
         if (club.getClubBalance() != null) {
             details.addSeparator();
             details.row();
-            details.add(new VisLabel("Balance:")).left();
+            details.add(new VisLabel(LanguageModLoader.getValue("club_balance"))).left();
             details.add(new VisLabel(Money.format(club.getClubBalance()))).left().expandX();
             details.row();
         }
@@ -252,7 +253,7 @@ public class ClubDetailScreenTable extends VisTable {
         // Staff Positions
         details.addSeparator();
         details.row();
-        details.add(new VisLabel("Staff Positions:")).colspan(2).left();
+        details.add(new VisLabel(LanguageModLoader.getValue("club_staff_positions"))).colspan(2).left();
         details.row();
         
         if (clubStaffManager != null) {
@@ -266,7 +267,7 @@ public class ClubDetailScreenTable extends VisTable {
                 }
                 
                 boolean isVacant = vacantPositions.contains(profession);
-                String status = isVacant ? "VACANT" : "FILLED";
+                String status = isVacant ? LanguageModLoader.getValue("club_vacant") : LanguageModLoader.getValue("club_filled");
                 
                 details.row();
                 details.add(new VisLabel(profession.getName() + ":")).left();
@@ -314,18 +315,18 @@ public class ClubDetailScreenTable extends VisTable {
                         VisTextButton applyButton;
                         if (alreadyApplied) {
                             // Show status instead of Apply button
-                            String statusText = "Applied";
+                            String statusText = LanguageModLoader.getValue("club_applied");
                             if (applicationStatus == ApplicationStatus.OFFER_RECEIVED) {
-                                statusText = "Offer Received";
+                                statusText = LanguageModLoader.getValue("club_offer_received");
                             } else if (applicationStatus == ApplicationStatus.REJECTED) {
-                                statusText = "Rejected";
+                                statusText = LanguageModLoader.getValue("club_rejected");
                             } else if (applicationStatus == ApplicationStatus.PENDING) {
-                                statusText = "Pending";
+                                statusText = LanguageModLoader.getValue("club_pending");
                             }
                             applyButton = new VisTextButton(statusText);
                             applyButton.setDisabled(true); // Disable the button
                         } else {
-                            applyButton = new VisTextButton("Apply");
+                            applyButton = new VisTextButton(LanguageModLoader.getValue("club_apply"));
                         }
                         Log.info(Log.UI_CLUB, "ClubDetailScreenTable", ">>> Creating Apply button for: " + finalProfession.getName() + " at " + finalClub.getName());
                         Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] >>> Creating Apply button");
@@ -442,8 +443,8 @@ public class ClubDetailScreenTable extends VisTable {
                                                 Gdx.app.postRunnable(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        self.showMessage("Application Submitted", 
-                                                                      "Your application for " + finalClub.getName() + " (" + finalProfession.getName() + ") has been submitted successfully.");
+                                                        self.showMessage(LanguageModLoader.getValue("club_application_submitted"), 
+                                                                      LanguageModLoader.format("club_application_submitted_text", finalClub.getName(), finalProfession.getName()));
                                                     }
                                                 });
                                                 
@@ -477,8 +478,8 @@ public class ClubDetailScreenTable extends VisTable {
                                                 Gdx.app.postRunnable(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        self.showMessage("Application Failed", 
-                                                                      "Unable to submit application. The position may no longer be available or you may have already applied.");
+                                                        self.showMessage(LanguageModLoader.getValue("club_application_failed"), 
+                                                                      LanguageModLoader.getValue("club_application_failed_text"));
                                                     }
                                                 });
                                             }

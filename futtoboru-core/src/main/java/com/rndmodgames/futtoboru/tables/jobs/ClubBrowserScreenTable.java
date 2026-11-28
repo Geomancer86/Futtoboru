@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class ClubBrowserScreenTable extends VisTable {
         
         // Title
         this.row();
-        this.add(new VisLabel("Club Browser")).colspan(4);
+        this.add(new VisLabel(LanguageModLoader.getValue("club_browser"))).colspan(4);
         this.row();
         this.addSeparator();
         
@@ -76,18 +77,18 @@ public class ClubBrowserScreenTable extends VisTable {
         
         if (allClubs == null || allClubs.isEmpty()) {
             clubsListTable.row();
-            clubsListTable.add(new VisLabel("No clubs available.")).colspan(4);
+            clubsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_no_clubs"))).colspan(4);
             return;
         }
         
         // Header
         clubsListTable.row();
-        clubsListTable.add(new VisLabel("Club Name")).width(UiTheme.size("col.club"));
-        clubsListTable.add(new VisLabel("Country")).width(UiTheme.size("col.label"));
-        clubsListTable.add(new VisLabel("Open Positions")).width(UiTheme.size("col.label"));
-        clubsListTable.add(new VisLabel("Actions")).width(UiTheme.size("col.wide"));
+        clubsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_club_name"))).width(UiTheme.size("col.club"));
+        clubsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_country"))).width(UiTheme.size("col.label"));
+        clubsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_open_positions"))).width(UiTheme.size("col.label"));
+        clubsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_actions"))).width(UiTheme.size("col.wide"));
         clubsListTable.row();
-        clubsListTable.addSeparator();
+        clubsListTable.addSeparator().colspan(4); // V-01: full width, not the first column only
         
         // Clubs
         for (Club club : allClubs) {
@@ -96,7 +97,7 @@ public class ClubBrowserScreenTable extends VisTable {
             }
             
             Country country = club.getCountry();
-            String countryName = country != null ? country.getCommonName() : "Unknown";
+            String countryName = country != null ? country.getCommonName() : LanguageModLoader.getValue("unknown");
             
             // Count open positions
             final int openPositions = (clubStaffManager != null) ? 
@@ -133,13 +134,13 @@ public class ClubBrowserScreenTable extends VisTable {
             });
             clubsListTable.add(clubNameLabel).width(UiTheme.size("col.club"));
             clubsListTable.add(new VisLabel(countryName)).width(UiTheme.size("col.label"));
-            clubsListTable.add(new VisLabel(openPositions + " vacant")).width(UiTheme.size("col.label"));
+            clubsListTable.add(new VisLabel(LanguageModLoader.format("jobs_vacant", openPositions))).width(UiTheme.size("col.label"));
             
             // Action buttons
             VisTable actionButtons = new VisTable(true);
             
             // View Details button
-            VisTextButton viewButton = new VisTextButton("View");
+            VisTextButton viewButton = new VisTextButton(LanguageModLoader.getValue("jobs_view"));
             viewButton.addCaptureListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -158,7 +159,7 @@ public class ClubBrowserScreenTable extends VisTable {
             
             // Apply for Job button (only if open positions exist)
             if (openPositions > 0) {
-                VisTextButton applyButton = new VisTextButton("Apply");
+                VisTextButton applyButton = new VisTextButton(LanguageModLoader.getValue("jobs_apply"));
                 applyButton.addCaptureListener(new InputListener() {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

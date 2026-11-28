@@ -29,6 +29,16 @@ The `.sh` scripts take `JAR=<path>` to run another jar. Line endings are fixed b
 Save games go to `~/Documents/RndModGames/Futtuboru/savegames/`.
 macOS is not supported yet (LWJGL3 needs `-XstartOnFirstThread`).
 
+## Screenshot tour (V-01, dev only)
+```
+tools/ui/screenshots.sh [outDir=target/screenshots] [passes=1x,2x] [locale=en_US]   # cmd: tools\ui\screenshots.bat
+```
+Compiles core test sources and runs `ScreenshotTour` (`futtoboru-core/src/test/.../tools/`, not a JUnit test, never
+run by `verify`) in a real window: seed 1888, a `NewGameFixture` game, every screen, drill-down and dialog, one PNG
+each in `<outDir>/1x` (1280x720, UI scale 1x) and `<outDir>/2x` (2560x1440, 2x; needs a monitor that can hold that
+window). About 2 minutes. Saves go to a temp folder; preferences and Documents are not touched. Exit code 1 and
+`[tour] PROBLEM` lines when a stop failed. How to use the images: `docs/design/INTERFACE_GUIDE.md` section 8.
+
 ## New machine (BOOK3PRO or any Windows PC), PowerShell
 ```
 java -version ; git --version

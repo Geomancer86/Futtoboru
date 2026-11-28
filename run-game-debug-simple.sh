@@ -19,7 +19,7 @@ echo "========================================"
 echo
 
 # shellcheck disable=SC2086
-java $JAVA_OPTS_EXTRA -jar "$JAR" > "$LOG" 2>&1
+java -Dfuttoboru.dev=true $JAVA_OPTS_EXTRA -jar "$JAR" > "$LOG" 2>&1
 status=$?
 
 echo

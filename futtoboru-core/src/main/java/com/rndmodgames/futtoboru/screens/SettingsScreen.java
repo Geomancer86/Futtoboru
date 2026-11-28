@@ -344,39 +344,9 @@ public class SettingsScreen implements Screen {
         graphicsSettings.add(uiScaleSelectBox).pad(UiTheme.space("xs")).fill();
         graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
 
-        // Day-Night Cycle Rendering
-        graphicsSettings.add(dayNightTintLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
-        graphicsSettings.add(dayNightTintCheckBox).pad(UiTheme.space("none")).align(Align.right);
-        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
-        
-        // Shadows Rendering
-        graphicsSettings.add(shadowsLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
-        graphicsSettings.add(shadowsCheckBox).pad(UiTheme.space("none")).align(Align.right);
-        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
-        
-        // Damage Counters Rendering
-        graphicsSettings.add(damageCountersLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
-        graphicsSettings.add(damageCountersCheckBox).pad(UiTheme.space("none")).align(Align.right);
-        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
-        
-        // Debug Physics Label
-        graphicsSettings.add(debugPhysicsLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
-        graphicsSettings.add(debugPhysicsCheckBox).pad(UiTheme.space("none")).align(Align.right);
-        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
-        
-        // Debug Path Finding
-        graphicsSettings.add(debugPathFindingLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
-        graphicsSettings.add(debugPathFindingCheckBox).pad(UiTheme.space("none")).align(Align.right);
-        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
-        
-        // Debug Sight
-        graphicsSettings.add(debugSightLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
-        graphicsSettings.add(debugSightCheckBox).pad(UiTheme.space("none")).align(Align.right);
-        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
-        
-        // Table Debug
-        graphicsSettings.add(tableDebugLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
-        graphicsSettings.add(tableDebugCheckBox).pad(UiTheme.space("none")).align(Align.right);
+        // V-01: the DarkBlade rows (day-night tint, shadows, damage counters, debug physics / path finding / sight /
+        // tables) are not shown: none of them does anything in Futtoboru (their toggles are commented out above)
+
         
         graphicsSettings.row().fill();
 
