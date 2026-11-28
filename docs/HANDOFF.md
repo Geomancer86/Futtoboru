@@ -6,6 +6,9 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| E-15 player AI (perception, shape slots, style, action choice) | WORKSTATION | `ws/E-15-ai` | 2026-11-28 |
+| E-16 officials + laws (umpires/referee bodies, 3-player offside, appeals, disputed goals, fouls, half-time) | WORKSTATION | `ws/E-16-laws` | 2026-11-28 |
+| E-21e viewer polish (near crowd size, ball size, corrected sprites screenshot) | WORKSTATION | `ws/E-21e-viewer-polish` | 2026-11-28 |
 | P2-13 duplicate clubs in `allClubs` (new game + load) + sweep of every other open bug (D31) | BOOK3PRO | `b3/P2-13-duplicate-clubs` | 2026-11-28 |
 | J-01 job system: duplicate offer rows, offer/refresh bugs, salary shown as money | BOOK3PRO | `b3/J-01-job-bugs` | 2026-11-28 |
 | U-12 UI polish: Esc closes dialogs, dates/decimals/months from the game language, Authorities season, one link colour, inbox filter, debug button behind a dev flag | BOOK3PRO | `b3/U-12-ui-polish` | 2026-11-28 |
@@ -28,6 +31,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Unclaimed for WORKSTATION:** Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md`. The ECS engine will read G-01's team sheet (`TeamSheet`, outside `match/ecs`) as its line-up input.
 
 ## Log
+- 2026-11-28 · WORKSTATION · CLAIM · E-15 (`match/ecs/ai/**`), E-16 (`match/ecs/laws/**` + officials), E-21e (`match/ecs/view/**`).
 - 2026-11-28 · WORKSTATION · DONE · E-14 · `match/ecs/action`: `ActionCommand`/`ActionSystem` (dribble, pass ground/lofted, cross, shot, clear, header, keeper catch/punch/throw, throw-in; nearest player wins, others CONTESTED), `SkillComponent` (kicking, technique, heading, handling, dribbling), `PossessionComponent` on the ball, `ActionRecord`s for laws/events. Kicks solved against the real ball model with skill/fatigue/pressure/wet-ball noise on inputs only; foot impulse with wet heavy boots; headers in head band; lace cuts rare (×2 saturated); keeper hands own half in 1888 (area from 1912), 2-step carry. Goldens re-pinned, ENGINE_VERSION ecs-0.3. Gate green (366 core). Next: E-15 AI, E-16 laws/officials.
 - 2026-11-28 · WORKSTATION · NOTE · T-01 tooling (BOOK3PRO) · `python tools/suite_lock.py run -- python tools/test_level.py --run` deadlocks (test_level takes the suite lock itself); run `test_level.py` directly. Maybe make test_level detect an outer lock held by the same worktree, or document it in CLAUDE.md.
 - 2026-11-28 · BOOK3PRO · CLAIM · P2-13, J-01, U-12, P2-14, G-01, G-03, G-04, Jenkins · Seven parallel lanes (one worktree each) + CI setup. **WORKSTATION:** G-01 adds a `TeamSheet` (XI + shape + style + captain) per club and match outside `match/ecs`; please make the ECS engine read it as its line-up when you wire `EcsMatchEngine.play` to real matches. G-01/G-03 touch `MatchSimulator` only (not `match/ecs`).
