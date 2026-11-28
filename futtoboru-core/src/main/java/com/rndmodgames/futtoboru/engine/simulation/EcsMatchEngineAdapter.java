@@ -114,7 +114,13 @@ public final class EcsMatchEngineAdapter implements MatchEngine {
         return new EcsMatchInput(fixture.matchKey(),
                 new UniformPitch(fixture.weather().surface(), fixture.weather().wetness()), 0.0, HALF_MINUTES,
                 new EcsMatchInput.Side(home.sheet, home.style), new EcsMatchInput.Side(away.sheet, away.style),
-                fixture.neutral());
+                fixture.neutral(), expectedAttendance(fixture));
+    }
+
+    /** Attendance the crowd is sized for: three quarters of the home ground's capacity (the sim draws 60-90%). */
+    static int expectedAttendance(MatchFixture fixture) {
+        com.rndmodgames.futtoboru.data.Stadium ground = fixture.home().getStadium();
+        return ground != null && ground.getCapacity() != null ? (int) (ground.getCapacity() * 0.75) : 0;
     }
 
     /** {@link Shape} of the engine for a sheet's {@link TeamShape} (same label, same slot positions). */

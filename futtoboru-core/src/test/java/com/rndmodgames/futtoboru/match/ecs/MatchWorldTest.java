@@ -240,9 +240,9 @@ class MatchWorldTest {
      * Golden hash of {@code play} over a short match (two halves of 3 minutes, 10,800 ticks): the full loop with the
      * player AI (E-15) and the laws (E-16); see BallPhysicsTest for the rule. The 90-minute goldens and the wet-ball
      * masses are in {@link EcsPlayGoldenTest} (slow tier). Pinned by E-15 (ecs-0.5); re-pinned by E-16b (ecs-0.6);
-     * by E-20 (ecs-0.8): home advantage and a fifth of the injury rate; E-20c (ecs-0.9): shot range 28 to 27 m.
+     * by E-20 (ecs-0.8): home advantage and a fifth of the injury rate; E-20c (ecs-0.9): shot range 28 to 27 m; E-18 (ecs-0.10): crowd sections.
      */
-    static final long GOLDEN_SHORT_PLAY = 0xad120c129102e5b2L;
+    static final long GOLDEN_SHORT_PLAY = 0x6fb97b2d6404564eL;
 
     @Test
     void shortPlayIsDeterministicAndPinnedByAGoldenHash() {

@@ -176,6 +176,45 @@ class ViewPassesTest {
         assertEquals(a.stateHash(), b.stateHash(), "the match does not care");
     }
 
+    private static MatchWorld wetWorld(Surface surface, double wetness) {
+        MatchWorld w = new MatchWorld(new PhysicsParams(), new UniformPitch(surface, wetness),
+                RandomSource.seeded(1888L).fork("match:view"));
+        MatchSystems.installSimulation(w);
+        w.spawn(SpawnRole.BALL).add(BallComponent.atRest(0, 0, w.params().ballDryMassKg));
+        return w;
+    }
+
+    @Test
+    void weatherFollowsTheMatchInputAndNeverTouchesTheState() {
+        MatchWorld headless = wetWorld(Surface.MUDDY, PitchConditions.WATERLOGGED);
+        headless.runTicks(200);
+        MatchWorld wet = wetWorld(Surface.MUDDY, PitchConditions.WATERLOGGED);
+        MatchViewer v = viewer(wet);
+        v.view().reseedCosmetic(7);
+        wet.setDrawGuard(true);
+        ArtGuard.forbid(true);
+        while (wet.tickCount() < 200) {
+            v.frame(1.0 / 60);
+        }
+        WeatherPass rain = wet.engine().getSystem(WeatherPass.class);
+        FogPass fog = wet.engine().getSystem(FogPass.class);
+        assertEquals(ViewWeather.Kind.HEAVY, rain.kind());
+        assertTrue(rain.particles() > 100, "heavy rain falls: " + rain.particles());
+        assertTrue(fog.tintAlpha() > 0.2f && fog.fog() > 0, "overcast and misty");
+        assertEquals(headless.stateHash(), wet.stateHash(), "weather is drawing only");
+
+        MatchWorld dry = wetWorld(Surface.DRY, PitchConditions.DRY);
+        MatchViewer vd = viewer(dry);
+        for (int i = 0; i < 60; i++) {
+            vd.frame(1.0 / 60);
+        }
+        assertEquals(0, dry.engine().getSystem(WeatherPass.class).particles());
+        assertEquals(0f, dry.engine().getSystem(FogPass.class).tintAlpha());
+        assertEquals(ViewWeather.Kind.SNOW, ViewWeather.of(0, Surface.FROZEN));
+        assertTrue(ViewWeather.mud(0.8, 5400) > ViewWeather.mud(0.8, 0), "mud builds over the match");
+        assertEquals(0, ViewWeather.mud(0, 5400));
+    }
+
     @Test
     void artLoadsOnOnePageAndNeverInsideATick() {
         NoGl.install();

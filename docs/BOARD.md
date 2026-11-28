@@ -7,8 +7,6 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | R-04 hidden ratings and perception (observers, ranges, consensus, words + numeric toggle) | BOOK3PRO | `b3/R-04-perception` | 2026-11-28 |
-| E-21g weather in the viewer (W1 particles + tint, mud, fog, snow, wet ball) from match weather | WORKSTATION | `ws/E-21g-weather` | 2026-11-28 |
-| E-18 crowd sections in the sim (mood, density, encroachment, small player effect; D22) | WORKSTATION | `ws/E-18-crowd` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 | G-10 history and fan tiers on screen (club facts, prose en+es, fan-tier meter) | BOOK3PRO (parked) | `b3/G-10-history-ui` | 2026-11-28 |
 | G-13 AI-to-AI friendlies and away guarantees | BOOK3PRO (parked) | `b3/G-13-ai-friendlies` | 2026-11-28 |
@@ -31,7 +29,6 @@ Model tier per D33: Sonnet for docs/data/research/art tools/merges, Opus for cor
 | G-09 training, G-11 era events in the inbox, G-12 budget and debt | WORKSTATION (D33-7) | Sonnet/Opus | G-11 has data proposal `docs/design/ERA_EVENTS_PROPOSAL.md` |
 | R-08 AI recruitment/poaching | BOOK3PRO | Opus | after R-02..R-07 |
 | E-17 events + `MatchResult` stats (after E-17a) | WORKSTATION | Opus | `match/ecs/**` is WORKSTATION's lock |
-| E-18 crowd sections, E-19 performance (zero-alloc, spatial grid, benchmark) | WORKSTATION | Opus | E-19 needed: ~1.5-2.5 s a match estimated |
 | P2-4 data review of the copied cup rosters | WORKSTATION | Sonnet | `docs/data/REVIEW_1888-89.md`; ~204 placeholder cup positions; placeholders allowed (D30 A3) |
 | Source the 4 placeholder League positions (Villa, Blackburn, Burnley x2) | WORKSTATION | Sonnet | H-04 leftovers |
 | E-01 follow-up: sourced positions for generated players beyond `PositionAssigner` | BOOK3PRO | Sonnet | queued in D25 |

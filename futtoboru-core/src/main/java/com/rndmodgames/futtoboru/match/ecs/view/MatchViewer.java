@@ -71,6 +71,7 @@ public final class MatchViewer {
         frame.setPaused(paused);
         frame.setMatchSpeed(clock.speed());
         frame.setWetness(world.pitch().wetness());
+        frame.setSurface(world.pitch().surfaceAt(0, 0));
         frame.begin(frameSeconds, paused ? 1.0 : clock.alpha(), world.tickCount());
         world.draw(frame);
         return steps;

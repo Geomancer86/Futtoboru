@@ -37,7 +37,7 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.Team;
 public final class EcsMatchEngine {
 
     /** Saved with every match (§5.3); bump when a change alters any simulated bit. */
-    public static final String ENGINE_VERSION = "ecs-0.9";
+    public static final String ENGINE_VERSION = "ecs-0.10";
 
     private final PhysicsParams params;
 
@@ -202,6 +202,7 @@ public final class EcsMatchEngine {
         BallComponent ball = BallComponent.atRest(0, 0, params.ballDryMassKg * (1.0 + input.ballCarryShare()));
         ballEntity.add(ball);
         Officials.spawn(world, pitch, ends);
+        CrowdSystem.spawn(world, pitch, input.attendance(), input.neutral());
         PlayStateComponent play = PlayStateComponent.attach(ballEntity, ends, Team.HOME, input.halfMinutes(),
                 params.tickHz);
         AiSetup.install(world, side(input.home()), side(input.away()), ends);

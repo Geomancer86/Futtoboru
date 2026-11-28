@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.match.ecs.CrowdSystem;
 import com.rndmodgames.futtoboru.match.ecs.IdentityComponent;
 import com.rndmodgames.futtoboru.match.ecs.MatchWorld;
 import com.rndmodgames.futtoboru.match.ecs.PhysicsParams;
@@ -89,6 +90,7 @@ public final class ActionSystem extends EntitySystem implements SimSystem {
     private final RandomSource lace;
     private MatchEnds ends = new MatchEnds(Team.HOME);
     private boolean homeGround;
+    private CrowdSystem crowd;
     private PitchGeometry pitch = new PitchGeometry(PitchParams.defaults1888());
 
     private final ActionRecord[] records = new ActionRecord[MAX_RECORDS_PER_TICK];
@@ -148,6 +150,11 @@ public final class ActionSystem extends EntitySystem implements SimSystem {
      */
     public void setHomeGround(boolean homeGround) {
         this.homeGround = homeGround;
+    }
+
+    /** The crowd whose mood gives a small confidence effect on the noise (E-18); null: none. */
+    public void setCrowd(CrowdSystem crowd) {
+        this.crowd = crowd;
     }
 
     /** Which side defends which goal (keeper's own half); change at half-time. Default: home defends west. */
@@ -713,6 +720,9 @@ public final class ActionSystem extends EntitySystem implements SimSystem {
         double f = (1 + a.fatigueGain * fatigue) * (1 + a.pressureGain * pressure) * (1 + a.wetBallGain * sat)
                 * (1 + a.awkwardGain * awkward) * (b.stumbleTicks > 0 ? 1 + a.stumbleGain : 1)
                 * (homeGround && b.team == Team.AWAY ? 1 + a.awayNoiseGain : 1);
+        if (crowd != null) {
+            f *= 1 - CrowdSystem.CONFIDENCE_GAIN * crowd.support(b.x, b.y, b.team);
+        }
         lastNoiseFactor = f;
         return f;
     }
