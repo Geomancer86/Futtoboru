@@ -282,7 +282,8 @@ public class DatabaseLoader {
         Log.info(Log.DATA_LOADING, "GameData",
                 "Read packs " + data.getPacks() + ": " + report);
 
-        IdAllocator dataIds = data.getDataIdAllocator();
+        // a copy: every build (start, rebuild before a load or a new game) hands out the same derived ids (P2-10)
+        IdAllocator dataIds = new IdAllocator(data.getDataIdAllocator().peek());
 
         loadContinents(data);
         loadCountries(data);
