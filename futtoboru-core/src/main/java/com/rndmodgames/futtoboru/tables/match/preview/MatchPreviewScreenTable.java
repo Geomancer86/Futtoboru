@@ -5,6 +5,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.data.Stadium;
@@ -141,12 +142,16 @@ public class MatchPreviewScreenTable extends VisTable {
         fixture.setFontScale(UiTheme.fontScale("heading"));
         this.add(fixture).center();
 
-        // Venue: the home club's season ground. Match has no venue field yet, so a neutral ground (e.g. a cup
-        // final at Kennington Oval) cannot be shown until the schedule records one; GroundArt takes any ground.
-        Stadium venue = homeClub.getStadium();
+        // Venue: the match's neutral ground (P2-14: a cup semi-final or final, e.g. Kennington Oval), else the home
+        // club's season ground
+        Stadium venue = NeutralVenues.stadiumOf(match, game.getCurrentGame());
         if (venue != null) {
             this.row();
-            this.add(new VisLabel(LanguageModLoader.getValue("ground_venue") + ": " + venue.getName())).center();
+            String line = LanguageModLoader.getValue("ground_venue") + ": " + venue.getName();
+            if (NeutralVenues.isNeutral(match)) {
+                line += " " + LanguageModLoader.getValue("ground_neutral_suffix");
+            }
+            this.add(new VisLabel(line)).center();
         }
         this.row();
         this.add(game.getGroundArt().picture(GroundArt.groundId(venue), false, UiTheme.size("art.ground.header.w"),

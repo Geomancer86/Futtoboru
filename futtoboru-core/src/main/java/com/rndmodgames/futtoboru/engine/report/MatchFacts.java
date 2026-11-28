@@ -24,7 +24,7 @@ import com.rndmodgames.futtoboru.system.SaveGame;
  * @param goals in minute order when {@code minutesKnown}, else the home goals then the away goals (minute 0)
  * @param competition the league's or cup's name, null for a friendly or when not found
  * @param round the cup round number (0 when not a cup match); {@code roundTies} the ties drawn in that round
- * @param ground the ground's name, or null when the home club has none
+ * @param ground the name of the ground played at (P2-14: a neutral venue, else the home club's), or null
  * @param attendance 0 when unknown
  * @param date null when unknown
  */
@@ -74,7 +74,13 @@ public record MatchFacts(String matchKey, long seed, String home, String away, i
             round = match.getRound() != null ? match.getRound() : 0;
             roundTies = tiesInRound(game, match);
         }
-        String ground = homeClub != null && homeClub.getStadium() != null ? homeClub.getStadium().getName() : null;
+        // P2-14: the ground played at: the match's neutral venue (a cup semi-final or final), else the home club's
+        com.rndmodgames.futtoboru.data.Stadium venue =
+                com.rndmodgames.futtoboru.engine.cup.NeutralVenues.stadiumOf(match, game);
+        if (venue == null && homeClub != null) {
+            venue = homeClub.getStadium();
+        }
+        String ground = venue != null ? venue.getName() : null;
         if (ground != null && ground.isBlank()) {
             ground = null;
         }

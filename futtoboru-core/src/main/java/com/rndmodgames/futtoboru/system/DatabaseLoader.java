@@ -85,6 +85,8 @@ public class DatabaseLoader {
     private static HashMap<String, Season> seasonsByDataId = new HashMap<>();
     private static HashMap<String, Continent> continentsByDataId = new HashMap<>();
     private static HashMap<String, PlayerProfession> playerProfessionsByDataId = new HashMap<>();
+    /** P2-14: every ground by data id (a club's season ground object, else one built from grounds.json) */
+    private static HashMap<String, Stadium> groundsByDataId = new HashMap<>();
 
     //
     private static List<Profession> professions = new ArrayList<>();
@@ -291,7 +293,9 @@ public class DatabaseLoader {
         loadModifiers(data, dataIds);
         loadCompetitions(data);
         loadPeople(data, rng);
+        loadCalendars(data); // P2-14: before the seasons, whose cup scripts run on the calendar's opening day
         loadSeasons(data, dataIds, rng);
+        loadGrounds(data);
 
         if (dataIds.peek() >= IdAllocator.GAME_START) {
             Log.error(Log.DATA_LOADING, "GameData",
@@ -324,6 +328,7 @@ public class DatabaseLoader {
         seasonsByDataId = new HashMap<>();
         continentsByDataId = new HashMap<>();
         playerProfessionsByDataId = new HashMap<>();
+        groundsByDataId = new HashMap<>();
         professions = new ArrayList<>();
         selectableProfessions = new ArrayList<>();
         playerProfessions = new LinkedHashMap<>();
@@ -485,6 +490,74 @@ public class DatabaseLoader {
             persons.add(person);
             personsByDataId.put(person.getDataId(), person);
         }
+    }
+
+    /**
+     * P2-14 (D30 A9): each season's {@code calendar} rules (engine/temporal/CalendarRules) and its cups' neutral
+     * grounds (engine/cup/NeutralVenues), by the season's start year. A season without them keeps the latest
+     * earlier season's; none at all = the code defaults.
+     */
+    private static void loadCalendars(GameData data) {
+        Map<Integer, com.rndmodgames.futtoboru.engine.temporal.CalendarRules> calendars = new HashMap<>();
+        Map<String, java.util.NavigableMap<Integer, com.rndmodgames.futtoboru.engine.cup.NeutralVenues.Rules>> neutral =
+                new HashMap<>();
+        for (DataRecord r : data.all(GameData.SEASON)) {
+            int startYear = com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.startYearOf(
+                    LocalDateTime.parse(r.str("start")).toLocalDate());
+            if (r.raw("calendar") != null) {
+                calendars.put(startYear, com.rndmodgames.futtoboru.engine.temporal.CalendarRules.read(r.raw("calendar"),
+                        i -> first(r.refs("calendar.cups[" + i + "].competition"))));
+            }
+            for (DataRecord e : r.children()) {
+                if (e.raw("neutralVenues") != null && e.ref("competition") != null) {
+                    neutral.computeIfAbsent(e.ref("competition"), k -> new java.util.TreeMap<>()).put(startYear,
+                            com.rndmodgames.futtoboru.engine.cup.NeutralVenues.read(e.raw("neutralVenues"),
+                                    i -> e.refs("neutralVenues.rounds[" + i + "].grounds")));
+                }
+            }
+        }
+        com.rndmodgames.futtoboru.engine.temporal.CalendarRules.install(calendars);
+        com.rndmodgames.futtoboru.engine.cup.NeutralVenues.install(neutral);
+        Log.info(Log.DATA_LOADING, "Season calendars: " + calendars.keySet() + "; neutral grounds: " + neutral.keySet());
+    }
+
+    private static String first(List<String> ids) {
+        return ids.isEmpty() ? null : ids.get(0);
+    }
+
+    /**
+     * P2-14: every ground by data id, for a match's venue. A club's season ground is that club's object; a ground
+     * no club plays at (the neutral cup grounds) gets one built from grounds.json with its data number.
+     */
+    private static void loadGrounds(GameData data) {
+        for (Club club : clubs) {
+            if (club.getStadium() != null && club.getStadium().getDataId() != null) {
+                groundsByDataId.putIfAbsent(club.getStadium().getDataId(), club.getStadium());
+            }
+        }
+        for (DataRecord g : data.all(GameData.GROUND)) {
+            if (groundsByDataId.containsKey(g.id())) {
+                continue;
+            }
+            Stadium stadium = new Stadium();
+            stadium.setId(g.runtimeId());
+            stadium.setDataId(g.id());
+            stadium.setName(g.str("name"));
+            stadium.setBuiltYear(g.integer("opened"));
+            stadium.setCapacity(g.integer("capacity"));
+            stadium.setValue(g.decimal("value"));
+            stadium.setDescription(g.str("description"));
+            stadium.setUrlSource(g.first("sources"));
+            stadium.setLandValue(g.decimal("landValue"));
+            stadium.setOwned(g.bool("ownedByClub", false));
+            stadium.setAnnualRent(g.decimal("annualRent"));
+            groundsByDataId.put(g.id(), stadium);
+        }
+    }
+
+    /** @return a ground by data id (aliases followed), or null (P2-14: a match's neutral venue) */
+    public static Stadium getGroundByDataId(String dataId) {
+        return dataId == null ? null : groundsByDataId.get(canonical(GameData.GROUND, dataId));
     }
 
     private static void loadSeasons(GameData data, IdAllocator dataIds, RandomSource rng) {
