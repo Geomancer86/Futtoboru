@@ -6,7 +6,9 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
-| E-DET cross-JDK determinism: own Gaussian in RandomSource, re-pin goldens once, guard | WORKSTATION | `ws/E-DET-gaussian` | 2026-11-28 |
+| E-20 ECS calibration vs 1888-89 (goals/game, H/D/A, home advantage, injury rate) | WORKSTATION | `ws/E-20-calibration` | 2026-11-28 |
+| E-17 match events: event list (key/extended/full), minute ticker data, period report; injuries weaken ECS players | WORKSTATION | `ws/E-17-events` | 2026-11-28 |
+| G-12 club budget and debt | WORKSTATION | `ws/G-12-budget` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 | G-05 committee and the secretary's job | BOOK3PRO | `b3/G-05-committee` | 2026-11-28 |
 | R-09 staff roles + R-03 candidate pools | BOOK3PRO | `b3/R-03-pools` | 2026-11-28 |

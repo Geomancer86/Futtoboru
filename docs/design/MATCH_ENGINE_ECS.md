@@ -92,6 +92,8 @@ MatchInput (V2 §3) + rng = game.random().fork("match:" + matchKey)
 1. **Seeded only.** One fork per match (`match:<key>`, already used by `MatchSimulator`); sub-forks per purpose
    (`fork("weather")`, `fork("ai:" + playerId)`, `fork("officials")`) so adding a draw in one system does not shift
    another's sequence. No `Math.random`, no `new Random`, no `System.nanoTime`/wall clock in sim code (guard test).
+   No JDK generator anywhere in game code (`JdkRandomnessGuardTest`): `RandomSource` is our own SplitMix64 with a
+   Marsaglia-polar Gaussian (`StrictMath.log`), because `SplittableRandom.nextGaussian` differs between JDK releases.
 2. **Arithmetic.** Java 17 floating point is strict everywhere (JEP 306), so `+ - * /` and `Math.sqrt` give the same
    bits on every JVM. **Transcendentals use `StrictMath`** (`exp`, `sin`, `cos`, `atan2`, `pow`): `Math.*` may use
    CPU intrinsics that differ between x64 and arm64 (BOOK3PRO vs WORKSTATION vs CI). Sim state is `double`; floats
