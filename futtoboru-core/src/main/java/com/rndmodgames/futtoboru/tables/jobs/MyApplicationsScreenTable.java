@@ -4,7 +4,6 @@ import com.rndmodgames.localization.LanguageModLoader;
 import java.util.List;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -89,15 +88,7 @@ public class MyApplicationsScreenTable extends VisTable {
         
         // Applications
         for (JobApplication application : applications) {
-            // Get job opening
-            com.rndmodgames.futtoboru.data.jobs.JobOpening jobOpening = null;
-            for (com.rndmodgames.futtoboru.data.jobs.JobOpening job : currentGame.getActiveJobOpenings()) {
-                if (job.getId().equals(application.getJobOpeningId())) {
-                    jobOpening = job;
-                    break;
-                }
-            }
-            
+            com.rndmodgames.futtoboru.data.jobs.JobOpening jobOpening = jobManager.getJobOpeningById(application.getJobOpeningId());
             if (jobOpening == null) {
                 continue;
             }
@@ -114,7 +105,7 @@ public class MyApplicationsScreenTable extends VisTable {
             applicationsListTable.add(new VisLabel(profession.getName())).width(UiTheme.size("col.label"));
             
             // Status with color
-            String statusText = statusName(application.getStatus());
+            String statusText = JobBoardScreenTable.statusName(application.getStatus());
             VisLabel statusLabel = new VisLabel(statusText);
             if (application.getStatus() == ApplicationStatus.OFFER_RECEIVED) {
                 statusLabel.setColor(UiTheme.color("application.offer")); // Green
@@ -127,9 +118,12 @@ public class MyApplicationsScreenTable extends VisTable {
                 application.getMatchPercentage() != null ? application.getMatchPercentage() + "%" : LanguageModLoader.getValue("not_available")
             )).width(UiTheme.size("col.number"));
             
-            // If offer received, add button to view offer
-            if (application.getStatus() == ApplicationStatus.OFFER_RECEIVED) {
-                final com.rndmodgames.futtoboru.data.jobs.JobOpening finalJobOpening = jobOpening; // Make final for inner class
+            // If an offer is waiting for an answer, add button to view offer (J-01: not for a lapsed one)
+            final com.rndmodgames.futtoboru.data.jobs.JobOpening finalJobOpening = jobOpening; // Make final for inner class
+            boolean offerWaiting = application.getStatus() == ApplicationStatus.OFFER_RECEIVED
+                    && jobManager.getPlayerOffers(currentGame.getOwner()).stream()
+                            .anyMatch(o -> finalJobOpening.getId().equals(o.getJobOpeningId()));
+            if (offerWaiting) {
                 applicationsListTable.row();
                 VisTextButton viewOfferButton = new VisTextButton(LanguageModLoader.getValue("jobs_view_offer"));
                 viewOfferButton.addCaptureListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
@@ -160,25 +154,6 @@ public class MyApplicationsScreenTable extends VisTable {
     
     public void setMenuManager(MainMenuManager menuManager) {
         this.menuManager = menuManager;
-    }
-
-    /** The application status as the player reads it. */
-    private static String statusName(ApplicationStatus status) {
-        if (status == null) {
-            return LanguageModLoader.getValue("unknown");
-        }
-        switch (status) {
-        case PENDING:
-            return LanguageModLoader.getValue("jobs_status_pending");
-        case REJECTED:
-            return LanguageModLoader.getValue("jobs_status_rejected");
-        case OFFER_RECEIVED:
-            return LanguageModLoader.getValue("jobs_status_offer_received");
-        case ACCEPTED:
-            return LanguageModLoader.getValue("jobs_status_accepted");
-        default:
-            return LanguageModLoader.getValue("jobs_status_withdrawn");
-        }
     }
 }
 

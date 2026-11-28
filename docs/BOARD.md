@@ -11,7 +11,6 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 | E-12b/E-16b realism: ball bounces off posts/bar, forwards run onto passes (offsides happen), foul rate check | WORKSTATION | `ws/E-16b-realism` | 2026-11-28 |
 | H-05 history data into gamedata per HISTORY_DATA_PROPOSAL (D30): history texts, nicknames, fan tiers, kits | WORKSTATION | `ws/H-05-history-data` | 2026-11-28 |
 | DOC-01 ROADMAP ticks + STATUS refresh + Ready-to-take with blockers (R-FUT-9) | WORKSTATION | `ws/DOC-01-boards` | 2026-11-28 |
-| J-01 job system: duplicate offer rows, offer/refresh bugs, salary shown as money | BOOK3PRO | `b3/J-01-job-bugs` | 2026-11-28 |
 | U-12 UI polish: Esc closes dialogs, dates/decimals/months from the game language, Authorities season, one link colour, inbox filter, debug button behind a dev flag | BOOK3PRO | `b3/U-12-ui-polish` | 2026-11-28 |
 | P2-14 neutral venues on `Match` + season calendar as data (FA Cup opens/drawn in its real month) | BOOK3PRO | `b3/P2-14-venues-calendar` | 2026-11-28 |
 | G-01 team sheet (XI, shape, style, captain; AI too) on the instant result **(PARKED: WIP pushed, next to finish)** | BOOK3PRO | `b3/G-01-team-sheet` | 2026-11-28 |
