@@ -59,8 +59,8 @@ public class MatchHistoryScreenTable extends VisTable {
     public void updateDynamicComponents() {
         
         // Refresh current club reference from game state
-        if (game != null && game.getCurrentGame() != null) {
-            Club refreshedClub = game.getCurrentGame().getCurrentClub();
+        if (game != null && game.getSession().getGame() != null) {
+            Club refreshedClub = game.getSession().getGame().getCurrentClub();
             if (refreshedClub != null && (currentClub == null || !refreshedClub.getId().equals(currentClub.getId()))) {
                 currentClub = refreshedClub;
             }
@@ -115,8 +115,8 @@ public class MatchHistoryScreenTable extends VisTable {
         for (Match match : sortedMatches) {
             
             // Get clubs (use SaveGame, not DatabaseLoader for current game state)
-            Club homeClub = game.getCurrentGame().getClubById(match.getHomeClubId());
-            Club awayClub = game.getCurrentGame().getClubById(match.getAwayClubId());
+            Club homeClub = game.getSession().getGame().getClubById(match.getHomeClubId());
+            Club awayClub = game.getSession().getGame().getClubById(match.getAwayClubId());
             
             if (homeClub == null || awayClub == null) {
                 Log.error(Log.UI_MATCH, "MatchHistoryScreenTable", "Could not find clubs for match");

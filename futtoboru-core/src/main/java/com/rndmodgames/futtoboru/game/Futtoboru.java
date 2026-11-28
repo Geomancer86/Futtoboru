@@ -99,7 +99,8 @@ public class Futtoboru extends Game {
     /**
      * Simulation/Save Game Instance
      */
-    private SaveGame currentGame = null;
+    /** RF-01: the current game, its database, screen navigation and save marks, shared with the screens */
+    private final GameSession session = new GameSession();
     private FuttoboruGameEngine gameEngine = null;
     private AuthorityManager authorityManager = null;
     private ScriptsManager scriptsManager = null;
@@ -178,6 +179,16 @@ public class Futtoboru extends Game {
         this.random = RandomSource.seeded(seed);
     }
     
+    /** RF-01: what the screens share about the game being played (current game, database, navigation). */
+    public GameSession getSession() {
+        return session;
+    }
+
+    /** RF-01: the game's database (one object, rebuilt in place for a new or a loaded game). */
+    public DatabaseLoader getDatabase() {
+        return DatabaseLoader.getInstance();
+    }
+
     /** The game's root source, or the database loader's when there is no game (headless tools and tests). */
     public static RandomSource randomOf(Futtoboru game) {
         if (game != null && game.random() != null) {
@@ -278,7 +289,7 @@ public class Futtoboru extends Game {
     public void prepareNewGame() {
         Log.info(Log.SYSTEM_INIT, "Futtoboru", "New game: rebuilding the database from game data");
         awaitAutosave();
-        this.currentGame = null;
+        session.setGame(null);
         reseedForNewGame();
         DatabaseLoader.setRandom(random.fork("database"));
         DatabaseLoader.rebuild();
@@ -320,7 +331,7 @@ public class Futtoboru extends Game {
             
         case GAME_SCREEN:
             Log.info(Log.SYSTEM_INIT, "Futtoboru", "Changing to GAME_SCREEN...");
-            Log.info(Log.SYSTEM_INIT, "Futtoboru", "Current game: " + (currentGame != null ? "exists" : "NULL"));
+            Log.info(Log.SYSTEM_INIT, "Futtoboru", "Current game: " + (session.getGame() != null ? "exists" : "NULL"));
             Log.info(Log.SYSTEM_INIT, "Futtoboru", "Game engine: " + (gameEngine != null ? "exists" : "NULL"));
             try {
                 this.setScreen(new MainGameScreen(this));
@@ -488,11 +499,11 @@ public class Futtoboru extends Game {
      *
      */
     public SaveGame getCurrentGame() {
-        return currentGame;
+        return session.getGame();
     }
 
     public void setCurrentGame(SaveGame currentGame) {
-        this.currentGame = currentGame;
+        session.setGame(currentGame);
         // the game keeps the seed its database and play are drawn from, so a save can restore it (P2-5)
         if (currentGame != null && currentGame.getSeed() == null) {
             currentGame.setSeed(getSeed());
@@ -559,7 +570,7 @@ public class Futtoboru extends Game {
      * This must be called after currentGame is set.
      */
     public void initializeJobSystem() {
-        if (currentGame == null) {
+        if (session.getGame() == null) {
             Log.error(Log.SYSTEM_INIT, "Futtoboru", "Cannot initialize job system: currentGame is null");
             return;
         }

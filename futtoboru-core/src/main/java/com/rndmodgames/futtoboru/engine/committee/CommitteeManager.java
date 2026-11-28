@@ -99,7 +99,7 @@ public final class CommitteeManager {
         if (game == null || game.getGameDate() == null || game.getAllClubs() == null || root == null) {
             return;
         }
-        Profession secretaryPost = DatabaseLoader.getProfessionByDataId(Profession.MANAGER);
+        Profession secretaryPost = DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER);
         Map<Long, List<Club>> tables = new HashMap<>();
         for (Club club : new ArrayList<>(game.getAllClubs())) {
             if (club != null && club.getId() != null) {
@@ -177,9 +177,9 @@ public final class CommitteeManager {
         ClubCommittee c = new ClubCommittee();
         RandomSource rng = root.fork("committee:" + key(club));
         Country country = club.getCountry();
-        if (country == null || DatabaseLoader.getFirstNames(country).size() < 2
-                || DatabaseLoader.getLastNames(country).size() < 2) {
-            country = DatabaseLoader.getCountryByDataId("england");
+        if (country == null || DatabaseLoader.getInstance().getFirstNames(country).size() < 2
+                || DatabaseLoader.getInstance().getLastNames(country).size() < 2) {
+            country = DatabaseLoader.getInstance().getCountryByDataId("england");
         }
         int thisYear = game.getGameDate().getYear();
         int men = 4 + rng.nextInt(3); // president, treasurer, 2-4 committee men
@@ -237,8 +237,8 @@ public final class CommitteeManager {
             c.setStanding(sizeRank * 3 <= n ? "leading" : sizeRank * 3 <= 2 * n ? "middling" : "small");
             c.setCupTiesExpected("leading".equals(c.getStanding()) ? 1 : 0);
         }
-        WageRecord band = DatabaseLoader.getRecruitmentData() != null
-                ? DatabaseLoader.getRecruitmentData().band(c.getStanding(), today.toLocalDate()) : null;
+        WageRecord band = DatabaseLoader.getInstance().getRecruitmentData() != null
+                ? DatabaseLoader.getInstance().getRecruitmentData().band(c.getStanding(), today.toLocalDate()) : null;
         c.setWageBandPence(band != null && band.getMaxWeeklyPence() != null ? band.getMaxWeeklyPence()
                 : Committee.DEFAULT_BAND_PENCE);
         Log.info(Log.ENGINE_GAME, "CommitteeManager", club.getName() + " " + Season.label(year) + ": top "

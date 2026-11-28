@@ -49,7 +49,7 @@ class PlayersLoaderTests {
         /**
          * Iterate all clubs and make sure all players are there
          */
-        Country england = DatabaseLoader.getCountryByDataId("england");
+        Country england = DatabaseLoader.getInstance().getCountryByDataId("england");
         
         List<Club> allClubs = dbLoader.getClubsByCountry(england);
         

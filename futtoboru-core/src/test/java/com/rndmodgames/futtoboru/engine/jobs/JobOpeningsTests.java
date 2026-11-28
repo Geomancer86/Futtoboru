@@ -36,9 +36,9 @@ class JobOpeningsTests extends JobGameTestBase {
     @Test
     void clubsAdvertiseTheirManagerDirectorAndScoutInPoundsAndPence() {
         Set<Long> posts = Set.of(manager.getId(), director.getId(),
-                DatabaseLoader.getProfessionByDataId(Profession.SCOUT).getId());
+                DatabaseLoader.getInstance().getProfessionByDataId(Profession.SCOUT).getId());
         assertEquals(posts, ids(staff.getStaffPositions()));
-        Club bolton = DatabaseLoader.getClubByDataId("bolton-wanderers");
+        Club bolton = DatabaseLoader.getInstance().getClubByDataId("bolton-wanderers");
         assertEquals(posts, ids(staff.getVacantPositions(bolton)), "agents, investors and owners are not club staff");
         assertFalse(game.getActiveJobOpenings().isEmpty());
         for (JobOpening job : game.getActiveJobOpenings()) {
@@ -63,7 +63,7 @@ class JobOpeningsTests extends JobGameTestBase {
     void onePostHasOneOpening() {
         becomeJobSeeker();
         JobOpening job = opening("bolton-wanderers", manager);
-        Club bolton = DatabaseLoader.getClubByDataId("bolton-wanderers");
+        Club bolton = DatabaseLoader.getInstance().getClubByDataId("bolton-wanderers");
         game.setGameDate(job.getApplicationDeadline().minusDays(1));
         jobs.applyForJob(owner, job); // an offer the seeker sits on keeps the post open past its deadline
         game.setGameDate(job.getApplicationDeadline());
@@ -78,12 +78,12 @@ class JobOpeningsTests extends JobGameTestBase {
     @Test
     void anOlderSaveIsTidiedOnTheNextDay() {
         becomeJobSeeker();
-        Club bolton = DatabaseLoader.getClubByDataId("bolton-wanderers");
-        Club derby = DatabaseLoader.getClubByDataId("derby-county");
+        Club bolton = DatabaseLoader.getInstance().getClubByDataId("bolton-wanderers");
+        Club derby = DatabaseLoader.getInstance().getClubByDataId("derby-county");
         JobOpening job = opening("bolton-wanderers", manager);
         jobs.applyForJob(owner, job);
         jobs.getPlayerOffers(owner).get(0).setStatus(com.rndmodgames.futtoboru.data.jobs.OfferStatus.REJECTED);
-        JobOpening agent = new JobOpening(bolton, DatabaseLoader.getProfessionByDataId(Profession.AGENT), game.getGameDate());
+        JobOpening agent = new JobOpening(bolton, DatabaseLoader.getInstance().getProfessionByDataId(Profession.AGENT), game.getGameDate());
         agent.setId(game.getIdAllocator().nextId());
         JobOpening twice = new JobOpening(derby, manager, game.getGameDate());
         twice.setId(game.getIdAllocator().nextId());
@@ -103,7 +103,7 @@ class JobOpeningsTests extends JobGameTestBase {
     void aPostFilledElsewhereLeavesTheBoardAtOnce() {
         becomeJobSeeker();
         JobOpening job = opening("bolton-wanderers", manager);
-        Club bolton = DatabaseLoader.getClubByDataId("bolton-wanderers");
+        Club bolton = DatabaseLoader.getInstance().getClubByDataId("bolton-wanderers");
         Person other = new Person();
         game.assignId(other);
         game.getAllPersons().add(other);

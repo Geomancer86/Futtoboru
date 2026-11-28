@@ -57,7 +57,7 @@ class ContractSeasonTests extends BaseTest {
             boolean league = java.util.List.of("preston-north-end", "aston-villa", "wolverhampton-wanderers",
                     "blackburn-rovers", "bolton-wanderers", "west-bromwich-albion", "accrington", "everton", "burnley",
                     "derby-county", "notts-county", "stoke").contains(club.getDataId());
-            ContractBand band = ContractBand.forClub(DatabaseLoader.getContractBands(1888), club.getDataId(), league);
+            ContractBand band = ContractBand.forClub(DatabaseLoader.getInstance().getContractBands(1888), club.getDataId(), league);
             for (Player p : club.getPlayers()) {
                 PlayerContract c = club.getContractForPlayer(p.getId());
                 assertNotNull(c, club.getDataId() + " " + p.getPerson().getDataId());
@@ -143,8 +143,8 @@ class ContractSeasonTests extends BaseTest {
     private static void roundTrip(SaveGame game) {
         // the fixture's manager has no languages (R-11a fills them on load): give them now so the text compares
         com.rndmodgames.futtoboru.system.generators.LanguageGenerator.fillMissing(game.getAllPersons(),
-                com.rndmodgames.futtoboru.system.DatabaseLoader.getLanguageData(),
-                com.rndmodgames.futtoboru.system.DatabaseLoader.getGameData(),
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getLanguageData(),
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getGameData(),
                 com.rndmodgames.futtoboru.system.DatabaseLoader.getRandom());
         GameFingerprint before = GameFingerprint.of(game);
         String text = SaveCodec.encode(game, "G-04", LocalDateTime.of(2000, 1, 1, 0, 0));

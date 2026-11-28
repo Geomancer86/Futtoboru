@@ -129,9 +129,9 @@ public final class PlayerBot {
         Futtoboru app = new Futtoboru(seed);
         app.prepareNewGame();
 
-        Season season = DatabaseLoader.getSeasonByDataId("1888-89");
-        Country england = DatabaseLoader.getCountryByDataId("england");
-        Profession secretary = DatabaseLoader.getProfessionByDataId(Profession.MANAGER);
+        Season season = DatabaseLoader.getInstance().getSeasonByDataId("1888-89");
+        Country england = DatabaseLoader.getInstance().getCountryByDataId("england");
+        Profession secretary = DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER);
         Person owner = new Person();
         owner.setName("Bot");
         owner.setLastname("Secretary");
@@ -142,7 +142,7 @@ public final class PlayerBot {
         game.setOwner(owner);
 
         // NewGameOverviewScreen, Start
-        game.setMainAuthority(DatabaseLoader.getMainAuthority());
+        game.setMainAuthority(DatabaseLoader.getInstance().getMainAuthority());
         List<Country> selected = new ArrayList<>();
         selected.add(england);
         game.setSelectedCountries(selected);
@@ -154,7 +154,7 @@ public final class PlayerBot {
         game.setGameStartDate(season.getStartDate());
         game.setGameDate(season.getStartDate());
         game.setAllClubs(new ArrayList<>());
-        NewGameClubs.addTo(game, DatabaseLoader.getCompetitions(), selected);
+        NewGameClubs.addTo(game, DatabaseLoader.getInstance().getCompetitions(), selected);
         Club start = null;
         for (Club c : game.getAllClubs()) {
             if (strategy.clubDataId.equals(c.getDataId())) {

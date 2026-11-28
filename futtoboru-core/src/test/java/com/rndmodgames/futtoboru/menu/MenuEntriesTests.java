@@ -17,31 +17,31 @@ import com.rndmodgames.futtoboru.ui.LanguageBundleKeysTest;
 /** U-04b: one menu-entry list for both professions. */
 class MenuEntriesTests {
 
-    private static List<Integer> screens(List<MenuEntry> entries) {
+    private static List<GameScreenId> screens(List<MenuEntry> entries) {
         return entries.stream().map(MenuEntry::screen).collect(Collectors.toList());
     }
 
     @Test
     void managerMenu() {
-        assertEquals(List.of(MainMenuManager.HOME_SCREEN, MainMenuManager.INBOX_SCREEN, MainMenuManager.MAIN_SQUAD_SCREEN,
-                MainMenuManager.SCHEDULE_SCREEN, MainMenuManager.MATCH_HISTORY_SCREEN, MainMenuManager.COMPETITIONS_SCREEN,
-                MainMenuManager.HISTORY_SCREEN, MainMenuManager.CLUB_INFO_SCREEN, MainMenuManager.FINANCES_SCREEN,
-                MainMenuManager.COMMITTEE_SCREEN, MainMenuManager.CANDIDATES_SCREEN,
-                MainMenuManager.PERSON_DETAILS_SCREEN, MainMenuManager.AUTHORITY_SCREEN),
+        assertEquals(List.of(GameScreenId.HOME, GameScreenId.INBOX, GameScreenId.MAIN_SQUAD,
+                GameScreenId.SCHEDULE, GameScreenId.MATCH_HISTORY, GameScreenId.COMPETITIONS,
+                GameScreenId.HISTORY, GameScreenId.CLUB_INFO, GameScreenId.FINANCES,
+                GameScreenId.COMMITTEE, GameScreenId.CANDIDATES,
+                GameScreenId.PERSON_DETAILS, GameScreenId.AUTHORITY),
                 screens(MenuEntries.forProfession(true)));
     }
 
     @Test
     void jobSeekerMenuHasNoClubScreens() {
-        assertEquals(List.of(MainMenuManager.HOME_SCREEN, MainMenuManager.INBOX_SCREEN, MainMenuManager.HISTORY_SCREEN,
-                MainMenuManager.CLUB_BROWSER_SCREEN, MainMenuManager.JOB_BOARD_SCREEN, MainMenuManager.MY_APPLICATIONS_SCREEN,
-                MainMenuManager.PERSON_DETAILS_SCREEN, MainMenuManager.AUTHORITY_SCREEN),
+        assertEquals(List.of(GameScreenId.HOME, GameScreenId.INBOX, GameScreenId.HISTORY,
+                GameScreenId.CLUB_BROWSER, GameScreenId.JOB_BOARD, GameScreenId.MY_APPLICATIONS,
+                GameScreenId.PERSON_DETAILS, GameScreenId.AUTHORITY),
                 screens(MenuEntries.forProfession(false)));
     }
 
     @Test
     void eachScreenAndLabelOnce() {
-        Set<Integer> screens = new HashSet<>();
+        Set<GameScreenId> screens = new HashSet<>();
         Set<String> labels = new HashSet<>();
         for (MenuEntry entry : MenuEntries.ALL) {
             assertTrue(screens.add(entry.screen()), "screen twice: " + entry);
@@ -67,13 +67,13 @@ class MenuEntriesTests {
 
     @Test
     void drillDownsHighlightAnEntry() {
-        Set<Integer> entryScreens = MenuEntries.ALL.stream().map(MenuEntry::screen).collect(Collectors.toSet());
+        Set<GameScreenId> entryScreens = MenuEntries.ALL.stream().map(MenuEntry::screen).collect(Collectors.toSet());
         MenuEntries.DRILL_DOWNS.forEach((drillDown, entry) -> {
             assertFalse(entryScreens.contains(drillDown), "a drill-down is not a menu entry: " + drillDown);
             assertTrue(entryScreens.contains(entry), "drill-down " + drillDown + " maps to a non-entry " + entry);
         });
-        assertEquals(MainMenuManager.COMPETITIONS_SCREEN, MenuEntries.entryScreenFor(MainMenuManager.CUP_PLAYOFFS_SCREEN));
-        assertEquals(MainMenuManager.INBOX_SCREEN, MenuEntries.entryScreenFor(MainMenuManager.INBOX_SCREEN));
+        assertEquals(GameScreenId.COMPETITIONS, MenuEntries.entryScreenFor(GameScreenId.CUP_PLAYOFFS));
+        assertEquals(GameScreenId.INBOX, MenuEntries.entryScreenFor(GameScreenId.INBOX));
     }
 
     @Test

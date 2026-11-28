@@ -59,7 +59,7 @@ public final class InjuryRules {
 
     /** The rules of the loaded game data (code defaults when there is none). */
     public static synchronized InjuryRules current() {
-        GameData data = DatabaseLoader.getGameData();
+        GameData data = DatabaseLoader.getInstance().getGameData();
         if (data == null) {
             return DEFAULTS;
         }

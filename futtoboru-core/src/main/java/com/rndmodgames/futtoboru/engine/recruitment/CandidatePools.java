@@ -139,7 +139,7 @@ public final class CandidatePools {
     }
 
     private static RecruitmentData data() {
-        return DatabaseLoader.getRecruitmentData();
+        return DatabaseLoader.getInstance().getRecruitmentData();
     }
 
     /** Rebuilds every region's pool for {@code season}: last season's men leave (none is signed or watched yet). */
@@ -164,7 +164,7 @@ public final class CandidatePools {
             if (out.size() >= region.size() || !pp.listedIn(season) || inSquads.contains(pp.person())) {
                 continue;
             }
-            Person person = DatabaseLoader.getPersonByDataId(pp.person());
+            Person person = DatabaseLoader.getInstance().getPersonByDataId(pp.person());
             if (person == null || person.getBirthDate() == null || age(person, now) < MIN_AGE) {
                 continue;
             }
@@ -292,25 +292,25 @@ public final class CandidatePools {
         Origin origin = origins.isEmpty() ? null : origins.get(rng.nextInt(origins.size()));
         PlayerProfession occupation = null;
         if (origin != null && !origin.getOccupations().isEmpty()) {
-            occupation = DatabaseLoader.getPlayerProfessionByDataId(
+            occupation = DatabaseLoader.getInstance().getPlayerProfessionByDataId(
                     origin.getOccupations().get(rng.nextInt(origin.getOccupations().size())));
         }
 
         // the man
-        Country nameCountry = DatabaseLoader.getCountryByDataId(born);
-        if (nameCountry == null || DatabaseLoader.getFirstNames(nameCountry).size() < 2
-                || DatabaseLoader.getLastNames(nameCountry).size() < 2) {
-            nameCountry = DatabaseLoader.getCountryByDataId("england");
+        Country nameCountry = DatabaseLoader.getInstance().getCountryByDataId(born);
+        if (nameCountry == null || DatabaseLoader.getInstance().getFirstNames(nameCountry).size() < 2
+                || DatabaseLoader.getInstance().getLastNames(nameCountry).size() < 2) {
+            nameCountry = DatabaseLoader.getInstance().getCountryByDataId("england");
         }
         String[] name = NameGenerator.generateName(nameCountry, rng);
         Person person = new Person();
         person.setName(name[0]);
         person.setLastname(name[1]);
-        Country birthCountry = DatabaseLoader.getCountryByDataId(born);
+        Country birthCountry = DatabaseLoader.getInstance().getCountryByDataId(born);
         person.setCountry(birthCountry);
-        person.setCurrentCountry(DatabaseLoader.getCountryByDataId(region.country()));
+        person.setCurrentCountry(DatabaseLoader.getInstance().getCountryByDataId(region.country()));
         person.setBirthDate(now.minusYears(age).minusDays(rng.nextInt(365)).toLocalDate().atStartOfDay());
-        person.setPrimaryProfession(DatabaseLoader.getProfessionByDataId(Profession.PLAYER));
+        person.setPrimaryProfession(DatabaseLoader.getInstance().getProfessionByDataId(Profession.PLAYER));
         game.assignId(person);
 
         Player player = new Player();
@@ -394,7 +394,7 @@ public final class CandidatePools {
      */
     static void languages(Person person, PoolRegion region, String born, Integer arrived, Origin origin,
             RandomSource rng) {
-        LanguageData lang = DatabaseLoader.getLanguageData();
+        LanguageData lang = DatabaseLoader.getInstance().getLanguageData();
         if (lang == null || lang.getLanguages().isEmpty()) {
             return;
         }

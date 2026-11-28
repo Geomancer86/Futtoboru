@@ -122,7 +122,7 @@ public class NewGameOverviewScreen implements Screen {
         int activeTeams = 0;
         int activePlayers = 0;
         
-        List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
+        List<Competition> allCompetitions = ((Futtoboru) game).getSession().database().getCompetitions();
         
         for (Competition competition : allCompetitions) {
             
@@ -145,10 +145,10 @@ public class NewGameOverviewScreen implements Screen {
         for (Country country : selectedCountries) {
             
             // Count Active Teams
-            activeTeams += DatabaseLoader.getClubsByCountry().get(country.getId()).size();
+            activeTeams += ((Futtoboru) game).getSession().database().getClubsByCountry().get(country.getId()).size();
             
             // Iterate country clubs and count players
-            List<Club> allClubs = DatabaseLoader.getInstance().getClubsByCountry(country);
+            List<Club> allClubs = ((Futtoboru) game).getSession().database().getClubsByCountry(country);
             
             // 
             for (Club club : allClubs) {
@@ -279,8 +279,8 @@ public class NewGameOverviewScreen implements Screen {
          */
         final VisSelectBox<Profession> professionsSelectBox = new VisSelectBox<>();
         
-        professionsSelectBox.setItems(DatabaseLoader.getInstance().getSelectableProfessions()
-                .toArray(new Profession[DatabaseLoader.getInstance().getSelectableProfessions().size()]));
+        professionsSelectBox.setItems(((Futtoboru) game).getSession().database().getSelectableProfessions()
+                .toArray(new Profession[((Futtoboru) game).getSession().database().getSelectableProfessions().size()]));
         
         /**
          * Initial Club Selection
@@ -393,7 +393,7 @@ public class NewGameOverviewScreen implements Screen {
                      *      - Starting Scripts          [WIP]
                      */
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 1: Getting current game...");
-                    SaveGame currentGame = ((Futtoboru) game).getCurrentGame();
+                    SaveGame currentGame = ((Futtoboru) game).getSession().getGame();
                     
                     if (currentGame == null) {
                         Log.error(Log.UI_MENU, "NewGameOverviewScreen", "currentGame is NULL!");
@@ -403,11 +403,11 @@ public class NewGameOverviewScreen implements Screen {
                     
                     // Game Authority
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 2: Setting main authority...");
-                    if (DatabaseLoader.getMainAuthority() == null) {
+                    if (((Futtoboru) game).getSession().database().getMainAuthority() == null) {
                         Log.error(Log.UI_MENU, "NewGameOverviewScreen", "MainAuthority is NULL!");
                         throw new IllegalStateException("MainAuthority is null. Database may not be loaded correctly.");
                     }
-                    currentGame.setMainAuthority(DatabaseLoader.getMainAuthority());
+                    currentGame.setMainAuthority(((Futtoboru) game).getSession().database().getMainAuthority());
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 2: OK - main authority set");
                     
                     //
@@ -486,8 +486,8 @@ public class NewGameOverviewScreen implements Screen {
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: Loading clubs database...");
                     currentGame.setAllClubs(new ArrayList<>());
                     
-                    if (DatabaseLoader.getClubsByCountry() == null) {
-                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "DatabaseLoader.getClubsByCountry() is NULL!");
+                    if (((Futtoboru) game).getSession().database().getClubsByCountry() == null) {
+                        Log.error(Log.UI_MENU, "NewGameOverviewScreen", "((Futtoboru) game).getSession().database().getClubsByCountry() is NULL!");
                         throw new IllegalStateException("Clubs by country map is null. Database may not be loaded correctly.");
                     }
                     
@@ -502,7 +502,7 @@ public class NewGameOverviewScreen implements Screen {
                     // P2-13: the participants first, then the clubs of the selected countries not listed yet: each
                     // club once (it was twice for the selected countries, so the daily club steps ran twice)
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6a: Adding competitions, their participants and the selected countries' clubs...");
-                    NewGameClubs.addTo(currentGame, DatabaseLoader.getCompetitions(), selectedCountries);
+                    NewGameClubs.addTo(currentGame, ((Futtoboru) game).getSession().database().getCompetitions(), selectedCountries);
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: OK - Total cups: " + currentGame.getAllCups().size() + ", leagues: " + currentGame.getAllLeagues().size() + ", total clubs: " + currentGame.getAllClubs().size());
 
                     /**
@@ -718,7 +718,7 @@ public class NewGameOverviewScreen implements Screen {
                     }
                     
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 14: Changing to GAME_SCREEN...");
-                    com.rndmodgames.futtoboru.menu.MainMenuManager.resetNavigation();
+                    ((Futtoboru) game).getSession().navigation().reset();
                     ((Futtoboru) game).changeScreen(Futtoboru.GAME_SCREEN);
                     Log.info(Log.UI_MENU, "NewGameOverviewScreen", "=== START GAME COMPLETED SUCCESSFULLY ===");
                     
@@ -893,8 +893,8 @@ public class NewGameOverviewScreen implements Screen {
              *  - TODO: this needs to depend on the Lowest Selected League too
              */
             
-            startingClubSelectBox.setItems(DatabaseLoader.getInstance().getClubsByCountry(startingCountry)
-                    .toArray(new Club[DatabaseLoader.getInstance().getClubsByCountry(startingCountry).size()]));
+            startingClubSelectBox.setItems(((Futtoboru) game).getSession().database().getClubsByCountry(startingCountry)
+                    .toArray(new Club[((Futtoboru) game).getSession().database().getClubsByCountry(startingCountry).size()]));
             
             startingClubSelectBox.setDisabled(false);
             updateStartingClubThumb();

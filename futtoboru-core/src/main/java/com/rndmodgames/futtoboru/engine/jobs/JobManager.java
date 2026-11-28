@@ -326,7 +326,7 @@ public class JobManager {
             if (club == null) {
                 continue;
             }
-            if (!ClubStaffManager.isStaffPosition(DatabaseLoader.getProfessionById(job.getProfessionId()))) {
+            if (!ClubStaffManager.isStaffPosition(DatabaseLoader.getInstance().getProfessionById(job.getProfessionId()))) {
                 // saves from before J-01 advertised agents, investors and owners as club posts
                 job.setStatus(JobStatus.EXPIRED);
                 continue;
@@ -352,7 +352,7 @@ public class JobManager {
                 continue;
             }
             Club club = clubs.get(job.getClubId());
-            Profession profession = DatabaseLoader.getProfessionById(job.getProfessionId());
+            Profession profession = DatabaseLoader.getInstance().getProfessionById(job.getProfessionId());
             if (club == null || !ClubStaffManager.isStaffPosition(profession) || !club.isPositionVacant(profession.getId())) {
                 continue;
             }
@@ -446,7 +446,7 @@ public class JobManager {
      * and it is a club post at all (saves from before J-01 advertised agents, investors and owners).
      */
     private static boolean isPostVacant(JobOpening job, Map<Long, Club> clubs) {
-        if (!ClubStaffManager.isStaffPosition(DatabaseLoader.getProfessionById(job.getProfessionId()))) {
+        if (!ClubStaffManager.isStaffPosition(DatabaseLoader.getInstance().getProfessionById(job.getProfessionId()))) {
             return false;
         }
         Club club = clubs.get(job.getClubId());
@@ -783,7 +783,7 @@ public class JobManager {
         JobOpening jobOpening = getJobOpeningById(offer.getJobOpeningId());
         Person recipient = getPersonById(offer.getRecipientId());
         Club club = jobOpening != null ? currentGame.getClubById(jobOpening.getClubId()) : null;
-        Profession profession = jobOpening != null ? DatabaseLoader.getProfessionById(jobOpening.getProfessionId()) : null;
+        Profession profession = jobOpening != null ? DatabaseLoader.getInstance().getProfessionById(jobOpening.getProfessionId()) : null;
         if (jobOpening == null || recipient == null || club == null || profession == null) {
             Log.error(Log.ENGINE_JOBS, "JobManager", "acceptOffer: opening, recipient, club or profession missing");
             return false;

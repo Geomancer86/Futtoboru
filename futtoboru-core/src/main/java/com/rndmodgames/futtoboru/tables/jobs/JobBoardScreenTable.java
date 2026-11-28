@@ -20,7 +20,6 @@ import com.rndmodgames.futtoboru.data.jobs.JobOpening;
 import com.rndmodgames.futtoboru.engine.finances.Money;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiDialogs;
@@ -53,7 +52,7 @@ public class JobBoardScreenTable extends VisTable {
         super(true);
 
         this.game = parent;
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
         this.jobManager = ((Futtoboru)game).getJobManager();
 
         // Title
@@ -103,7 +102,7 @@ public class JobBoardScreenTable extends VisTable {
         Person owner = currentGame.getOwner();
         for (JobOpening job : jobs) {
             Club club = currentGame.getClubById(job.getClubId());
-            Profession profession = DatabaseLoader.getProfessionById(job.getProfessionId());
+            Profession profession = ((Futtoboru) game).getSession().database().getProfessionById(job.getProfessionId());
             if (club == null || profession == null) {
                 continue;
             }

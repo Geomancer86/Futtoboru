@@ -56,7 +56,7 @@ public class FixturesTable extends VisTable {
 
     public void updateDynamicComponents() {
         matchListTable.clear();
-        SaveGame save = game.getCurrentGame();
+        SaveGame save = game.getSession().getGame();
         if (save == null) {
             return;
         }
@@ -167,10 +167,10 @@ public class FixturesTable extends VisTable {
             return text("schedule_opponent_tbd");
         }
         Long opponentId = home ? match.getAwayClubId() : match.getHomeClubId();
-        Club opponent = opponentId != null ? game.getCurrentGame().getClubById(opponentId) : null;
+        Club opponent = opponentId != null ? game.getSession().getGame().getClubById(opponentId) : null;
         String name = opponent != null ? opponent.getName() : text("schedule_opponent_tbd");
         if (NeutralVenues.isNeutral(match)) { // P2-14: a cup semi-final or final at a neutral ground
-            Stadium ground = NeutralVenues.stadiumOf(match, game.getCurrentGame());
+            Stadium ground = NeutralVenues.stadiumOf(match, game.getSession().getGame());
             return FriendlyArranger.fill(text("schedule_vs_neutral"), name,
                     ground != null ? ground.getName() : match.getVenue());
         }
@@ -179,7 +179,7 @@ public class FixturesTable extends VisTable {
 
     /** P2-14: the picture of a neutral ground (the home and away grounds are implied by "home" / "away") */
     private Actor neutralGroundThumb(Match match) {
-        Stadium ground = NeutralVenues.stadiumOf(match, game.getCurrentGame());
+        Stadium ground = NeutralVenues.stadiumOf(match, game.getSession().getGame());
         Actor thumb = game.getGroundArt().picture(GroundArt.groundId(ground), true, UiTheme.size("art.thumb.w"),
                 UiTheme.size("art.thumb.h"));
         if (ground != null) {

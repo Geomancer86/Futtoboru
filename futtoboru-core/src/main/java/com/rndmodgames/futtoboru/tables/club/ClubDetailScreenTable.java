@@ -55,7 +55,7 @@ public class ClubDetailScreenTable extends VisTable {
         Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] ===== CONSTRUCTOR CALLED =====");
         
         this.game = ((Futtoboru) parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
         this.jobManager = game.getJobManager();
         this.clubStaffManager = game.getClubStaffManager();
         
@@ -494,7 +494,7 @@ public class ClubDetailScreenTable extends VisTable {
         VisTable side = new VisTable(true);
         side.add(game.getGroundArt().panel(club.getStadium(), UiTheme.size("art.ground.panel.w"),
                 UiTheme.size("art.ground.panel.h"))).top().right();
-        VisTable historyPanel = ClubHistoryPanel.build(club, game.getCurrentGame(), menuManager);
+        VisTable historyPanel = ClubHistoryPanel.build(club, game.getSession(), menuManager);
         if (historyPanel != null) {
             side.row();
             side.add(historyPanel).top().left();

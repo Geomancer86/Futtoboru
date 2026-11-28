@@ -71,7 +71,7 @@ public final class SaveMigrations {
      * entry). The random attributes stay as saved.
      */
     static JsonValue addPositionAndDribbling(JsonValue root) {
-        GameData data = DatabaseLoader.getGameData();
+        GameData data = DatabaseLoader.getInstance().getGameData();
         Map<Long, String> personDataId = new HashMap<>();
         for (JsonValue p = child(root, "persons"); p != null; p = p.next) {
             if (p.has("id") && p.has("dataId")) {
@@ -119,7 +119,7 @@ public final class SaveMigrations {
      * saved country and birth date. A save without a seed is left as it is (the load fills the gap afterwards).
      */
     static JsonValue addLanguages(JsonValue root) {
-        return addLanguages(root, DatabaseLoader.getLanguageData(), DatabaseLoader.getGameData());
+        return addLanguages(root, DatabaseLoader.getInstance().getLanguageData(), DatabaseLoader.getInstance().getGameData());
     }
 
     /** The v2 -> v3 step with the data given (public for tests). */

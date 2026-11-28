@@ -41,7 +41,7 @@ public class CurrentDateAndTimeWidget extends VisTable {
         super(false);
         
         //
-        this.saveGame = ((Futtoboru)(game)).getCurrentGame();
+        this.saveGame = ((Futtoboru)(game)).getSession().getGame();
                 
         /**
          * TODO: format should come from Settings page

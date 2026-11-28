@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.data;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -32,7 +34,7 @@ public class Message implements Serializable {
     private String messageType;  // Specific type within category (e.g., "LEAGUE_CREATION", "FIXTURE_RELEASE")
     private MessagePriority priority;
     private LocalDateTime scheduledDate;  // For scheduled messages (when to deliver)
-    private Integer actionScreen;  // Screen ID to link to (e.g., MainMenuManager.LEAGUE_STANDINGS_SCREEN)
+    private Integer actionScreen;  // GameScreenId number to link to (saves store the number)
     private Serializable actionData;  // Data to pass to action screen (e.g., league ID)
     private LocalDateTime expirationDate;  // When message expires (optional)
     private String sender;  // Authority id when the message is an official circular or press item (e.g. "ifab"); null otherwise
@@ -128,12 +130,13 @@ public class Message implements Serializable {
         this.scheduledDate = scheduledDate;
     }
 
-    public Integer getActionScreen() {
-        return actionScreen;
+    /** @return the screen the message links to, or null (RF-01: saves keep its number, {@link GameScreenId#id()}) */
+    public GameScreenId getActionScreen() {
+        return actionScreen == null ? null : GameScreenId.fromId(actionScreen);
     }
 
-    public void setActionScreen(Integer actionScreen) {
-        this.actionScreen = actionScreen;
+    public void setActionScreen(GameScreenId actionScreen) {
+        this.actionScreen = actionScreen == null ? null : actionScreen.id();
     }
 
     public Serializable getActionData() {

@@ -54,7 +54,7 @@ class RecruitmentGameTests extends BaseTest {
     void everyClubHasATrainerAndASecretaryAndThePlayerIsHisClubsSecretary() {
         SaveGame game = newGame(1888L);
         Club mine = game.getCurrentClub();
-        Profession secretaryPost = DatabaseLoader.getProfessionByDataId(Profession.SECRETARY);
+        Profession secretaryPost = DatabaseLoader.getInstance().getProfessionByDataId(Profession.SECRETARY);
         Set<Long> holders = new HashSet<>();
         for (Club club : ContractManager.uniqueClubs(game)) {
             Person trainer = StaffRoles.trainerOf(game, club);
@@ -97,7 +97,7 @@ class RecruitmentGameTests extends BaseTest {
 
         // the player leaves: the AI club gets a secretary of its own the next time
         game.getOwner().setCurrentClubId(null);
-        mine.setStaffId(DatabaseLoader.getProfessionByDataId(Profession.MANAGER).getId(), null);
+        mine.setStaffId(DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER).getId(), null);
         assertEquals(1, StaffRoles.ensure(game, game.getGameDate().plusDays(1), application.random()));
         assertTrue(StaffRoles.secretaryOf(game, mine).getPrimaryProfession().is(Profession.SECRETARY));
     }
@@ -159,7 +159,7 @@ class RecruitmentGameTests extends BaseTest {
         SaveGame game = newGame(1888L);
         // the fixture's manager has no languages (R-11a fills them on load): give them now so the text compares
         com.rndmodgames.futtoboru.system.generators.LanguageGenerator.fillMissing(game.getAllPersons(),
-                DatabaseLoader.getLanguageData(), DatabaseLoader.getGameData(), DatabaseLoader.getRandom());
+                DatabaseLoader.getInstance().getLanguageData(), DatabaseLoader.getInstance().getGameData(), DatabaseLoader.getRandom());
         List<String> before = staffAndPools(game);
         LocalDateTime at = LocalDateTime.of(2000, 1, 1, 0, 0);
         String text = SaveCodec.encode(game, "R-03", at);

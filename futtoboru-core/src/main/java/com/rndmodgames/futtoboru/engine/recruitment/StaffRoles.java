@@ -63,8 +63,8 @@ public final class StaffRoles {
         if (game == null || root == null) {
             return 0;
         }
-        Profession trainer = DatabaseLoader.getProfessionByDataId(Profession.TRAINER);
-        Profession secretary = DatabaseLoader.getProfessionByDataId(Profession.SECRETARY);
+        Profession trainer = DatabaseLoader.getInstance().getProfessionByDataId(Profession.TRAINER);
+        Profession secretary = DatabaseLoader.getInstance().getProfessionByDataId(Profession.SECRETARY);
         if (trainer == null || secretary == null || trainer.getId() == null || secretary.getId() == null) {
             return 0;
         }
@@ -94,7 +94,7 @@ public final class StaffRoles {
                 appointed++;
             }
         }
-        Profession manager = DatabaseLoader.getProfessionByDataId(Profession.MANAGER);
+        Profession manager = DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER);
         for (Club club : ContractManager.uniqueClubs(game)) {
             // the secretary-manager the committee judges (G-05), appointed by the job market
             Person secretaryManager = holder(game, club, manager);
@@ -115,7 +115,7 @@ public final class StaffRoles {
 
     /** @return the club's trainer, or null */
     public static Person trainerOf(SaveGame game, Club club) {
-        return holder(game, club, DatabaseLoader.getProfessionByDataId(Profession.TRAINER));
+        return holder(game, club, DatabaseLoader.getInstance().getProfessionByDataId(Profession.TRAINER));
     }
 
     /**
@@ -126,11 +126,11 @@ public final class StaffRoles {
         if (game != null && club != null && club == game.getCurrentClub() && game.getOwner() != null) {
             return game.getOwner();
         }
-        Person secretaryManager = holder(game, club, DatabaseLoader.getProfessionByDataId(Profession.MANAGER));
+        Person secretaryManager = holder(game, club, DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER));
         if (secretaryManager != null) {
             return secretaryManager;
         }
-        return holder(game, club, DatabaseLoader.getProfessionByDataId(Profession.SECRETARY));
+        return holder(game, club, DatabaseLoader.getInstance().getProfessionByDataId(Profession.SECRETARY));
     }
 
     /** G-05's committee men get their judgement once their committee exists ({@code fork("judge:committee:...")}). */
@@ -171,9 +171,9 @@ public final class StaffRoles {
         String key = (club.getDataId() != null ? club.getDataId() : "id" + club.getId()) + ":" + today.toLocalDate();
         RandomSource rng = root.fork("staff:" + post.getDataId() + ":" + key);
         Country country = club.getCountry();
-        if (country == null || DatabaseLoader.getFirstNames(country).size() < 2
-                || DatabaseLoader.getLastNames(country).size() < 2) {
-            country = DatabaseLoader.getCountryByDataId("england");
+        if (country == null || DatabaseLoader.getInstance().getFirstNames(country).size() < 2
+                || DatabaseLoader.getInstance().getLastNames(country).size() < 2) {
+            country = DatabaseLoader.getInstance().getCountryByDataId("england");
         }
         Person person = new Person();
         String[] name = NameGenerator.generateName(country, rng);
@@ -190,13 +190,13 @@ public final class StaffRoles {
         club.setStaffId(post.getId(), person.getId());
         person.setJudgement(judgementFor(post.getDataId(), networkOf(club), root.fork("judge:" + person.getId())));
         RandomSource languages = DatabaseLoader.getRandom() != null ? DatabaseLoader.getRandom() : root;
-        LanguageGenerator.assign(person, DatabaseLoader.getLanguageData(), null, languages);
+        LanguageGenerator.assign(person, DatabaseLoader.getInstance().getLanguageData(), null, languages);
     }
 
     /** @return the pool regions a man at this club knows men in: the club's region, or none */
     static List<String> networkOf(Club club) {
         List<String> out = new ArrayList<>();
-        RecruitmentData data = DatabaseLoader.getRecruitmentData();
+        RecruitmentData data = DatabaseLoader.getInstance().getRecruitmentData();
         if (club != null && data != null) {
             PoolRegion region = data.poolOfClub(club.getDataId());
             if (region != null) {

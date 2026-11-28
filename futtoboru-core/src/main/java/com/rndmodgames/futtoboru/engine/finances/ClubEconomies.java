@@ -18,7 +18,7 @@ public final class ClubEconomies {
     /** @return the economy of {@code club}'s standing in the season of {@code day} (built-in without game data) */
     public static ClubEconomy of(SaveGame game, Club club, LocalDate day) {
         int season = ContractCalendar.seasonOf(day);
-        return ClubEconomy.forStanding(DatabaseLoader.getEconomies(season),
+        return ClubEconomy.forStanding(DatabaseLoader.getInstance().getEconomies(season),
                 ContractManager.standingOf(game, club, season));
     }
 }

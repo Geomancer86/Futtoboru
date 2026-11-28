@@ -88,8 +88,8 @@ class NeutralVenuesTests extends BaseTest {
         assertEquals(NeutralVenues.Gate.ASSOCIATION, r1888.getGate());
         assertEquals(r1888, NeutralVenues.rulesFor("fa-cup", 1890), "a later season keeps 1888-89's rules");
         assertNull(NeutralVenues.rulesFor("fa-cup", 1887));
-        assertNotNull(DatabaseLoader.getGroundByDataId("kennington-oval"), "the Oval is a ground record");
-        assertEquals("Kennington Oval", DatabaseLoader.getGroundByDataId("kennington-oval").getName());
+        assertNotNull(DatabaseLoader.getInstance().getGroundByDataId("kennington-oval"), "the Oval is a ground record");
+        assertEquals("Kennington Oval", DatabaseLoader.getInstance().getGroundByDataId("kennington-oval").getName());
     }
 
     @Test

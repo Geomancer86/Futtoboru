@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.contracts;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.util.List;
 
 import com.badlogic.gdx.Game;
@@ -60,7 +62,7 @@ public class RetainedListScreenTable extends VisTable {
 
     public void updateDynamicComponents() {
         this.clear();
-        SaveGame save = game.getCurrentGame();
+        SaveGame save = game.getSession().getGame();
         ContractManager manager = contracts();
         if (currentClub == null || save == null || manager == null) {
             this.add(new VisLabel(text("finances_no_club"))).pad(UiTheme.space("lg"));
@@ -157,14 +159,14 @@ public class RetainedListScreenTable extends VisTable {
             public void clicked(String url) {
                 if (menuManager != null) {
                     menuManager.setSelectedPlayer(p);
-                    menuManager.setActiveMainScreen(MainMenuManager.PLAYER_DETAIL_SCREEN);
+                    menuManager.setActiveMainScreen(GameScreenId.PLAYER_DETAIL);
                 }
             }
         });
         rows.add(name).left().width(UiTheme.size("col.label"));
         rows.add(new VisLabel(p.getPosition() != null ? text(p.getPosition().labelKey()) : text("position_unknown")))
                 .left();
-        rows.add(new VisLabel(String.valueOf(ContractTerms.age(p, game.getCurrentGame().getGameDate().toLocalDate()))))
+        rows.add(new VisLabel(String.valueOf(ContractTerms.age(p, game.getSession().getGame().getGameDate().toLocalDate()))))
                 .left();
         rows.add(new VisLabel(text(ContractType.labelKey(c.getContractType())))).left();
         rows.add(new VisLabel(ContractManager.terms(c))).left();

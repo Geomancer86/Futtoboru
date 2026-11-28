@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import com.rndmodgames.localization.LanguageModLoader;
 import java.util.List;
 
@@ -14,7 +16,6 @@ import com.rndmodgames.futtoboru.data.jobs.JobApplication;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.ui.UiTheme;
@@ -40,7 +41,7 @@ public class MyApplicationsScreenTable extends VisTable {
         super(true);
         
         this.game = parent;
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
         this.jobManager = ((Futtoboru)game).getJobManager();
         
         // Title
@@ -94,7 +95,7 @@ public class MyApplicationsScreenTable extends VisTable {
             }
             
             Club club = currentGame.getClubById(jobOpening.getClubId());
-            Profession profession = DatabaseLoader.getProfessionById(jobOpening.getProfessionId());
+            Profession profession = ((Futtoboru) game).getSession().database().getProfessionById(jobOpening.getProfessionId());
             
             if (club == null || profession == null) {
                 continue;
@@ -142,7 +143,7 @@ public class MyApplicationsScreenTable extends VisTable {
                             
                             if (offer != null && menuManager != null) {
                                 menuManager.setCurrentNegotiationOffer(offer);
-                                menuManager.setActiveMainScreen(MainMenuManager.JOB_OFFER_SCREEN);
+                                menuManager.setActiveMainScreen(GameScreenId.JOB_OFFER);
                             }
                         }
                     }

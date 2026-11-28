@@ -15,7 +15,6 @@ import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.history.HistoryProvider;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
@@ -74,7 +73,7 @@ public class AuthorityScreenTable extends VisTable {
 
         //
         this.game = parent;
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
 
         /**
          * Main Authority
@@ -120,7 +119,7 @@ public class AuthorityScreenTable extends VisTable {
     public void updateDynamicComponents() {
 
         //
-        this.currentGame = ((Futtoboru) game).getCurrentGame();
+        this.currentGame = ((Futtoboru) game).getSession().getGame();
         seasonValueLabel.setText(seasonLabel(currentGame));
         listActiveLeagues();
         listActiveTeams();
@@ -155,7 +154,7 @@ public class AuthorityScreenTable extends VisTable {
     /** The clubs of the current season ({@link #seasonClubs}), each with its year and source link. */
     public void listActiveTeams() {
 
-        List<Club> clubs = seasonClubs(currentGame);
+        List<Club> clubs = seasonClubs(currentGame, () -> ((Futtoboru) game).getSession().database().getSeasons());
 
         Log.info(Log.UI_COMPETITIONS, "LISTING SEASON " + clubs.size() + " ACTIVE TEAMS");
 
@@ -210,9 +209,10 @@ public class AuthorityScreenTable extends VisTable {
 
     /**
      * The clubs of the current season, as the game holds them: the current edition's entrants, else the league's
-     * clubs, else (before the league is founded) the starting season's clubs.
+     * clubs, else (before the league is founded) the starting season's clubs ({@code dataSeasons}: the database's
+     * seasons, asked for only then).
      */
-    static List<Club> seasonClubs(SaveGame game) {
+    static List<Club> seasonClubs(SaveGame game, java.util.function.Supplier<List<Season>> dataSeasons) {
         List<Club> clubs = new ArrayList<>();
         League league = topLeague(game);
         CompetitionEdition edition = currentEdition(league);
@@ -231,7 +231,7 @@ public class AuthorityScreenTable extends VisTable {
                 }
             }
         }
-        Season starting = clubs.isEmpty() ? startingSeason(game) : null;
+        Season starting = clubs.isEmpty() ? startingSeason(game, dataSeasons.get()) : null;
         if (starting != null && starting.getClubs() != null) {
             for (Club club : starting.getClubs()) {
                 Club inGame = game != null ? game.getClubById(club.getId()) : null;
@@ -242,8 +242,7 @@ public class AuthorityScreenTable extends VisTable {
     }
 
     /** The season the game started in (by its start date), else the first one in the data. */
-    private static Season startingSeason(SaveGame game) {
-        List<Season> seasons = DatabaseLoader.getInstance().getSeasons();
+    private static Season startingSeason(SaveGame game, List<Season> seasons) {
         if (seasons == null || seasons.isEmpty()) {
             return null;
         }

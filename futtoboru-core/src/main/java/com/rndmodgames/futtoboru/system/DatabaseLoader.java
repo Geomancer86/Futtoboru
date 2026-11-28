@@ -60,81 +60,99 @@ import com.rndmodgames.futtoboru.system.loaders.ScriptsLoader;
 public class DatabaseLoader {
 
     //
-    private static List<Season> seasons = new ArrayList<>();
-    private static List<Authority> authorities = new ArrayList<>();
-    private static List<Competition> competitions = new ArrayList<>();
-    private static List<Continent> continents = new ArrayList<>();
-    private static List<Country> countries = new ArrayList<>();
-    private static List<Club> clubs = new ArrayList<>();
-    private static List<Person> persons = new ArrayList<>();
+    private List<Season> seasons = new ArrayList<>();
+    private List<Authority> authorities = new ArrayList<>();
+    private List<Competition> competitions = new ArrayList<>();
+    private List<Continent> continents = new ArrayList<>();
+    private List<Country> countries = new ArrayList<>();
+    private List<Club> clubs = new ArrayList<>();
+    private List<Person> persons = new ArrayList<>();
 
     //
-    private static HashMap<Long, Continent> continentsById = new HashMap<>();
-    private static HashMap<Long, Country> countriesById = new HashMap<>();
-    private static HashMap<Long, Club> clubsById = new HashMap<>();
-    private static HashMap<Long, Profession> professionsById = new HashMap<>();
+    private HashMap<Long, Continent> continentsById = new HashMap<>();
+    private HashMap<Long, Country> countriesById = new HashMap<>();
+    private HashMap<Long, Club> clubsById = new HashMap<>();
+    private HashMap<Long, Profession> professionsById = new HashMap<>();
 
-    private static HashMap<Long, List<Country>> countriesByContinent = new HashMap<>();
-    private static HashMap<Long, List<League>> leaguesByCountry = new HashMap<>();
-    private static HashMap<Long, List<Club>> clubsByLeague = new HashMap<>();
-    private static HashMap<Long, List<Club>> clubsByCountry = new HashMap<>();
+    private HashMap<Long, List<Country>> countriesByContinent = new HashMap<>();
+    private HashMap<Long, List<League>> leaguesByCountry = new HashMap<>();
+    private HashMap<Long, List<Club>> clubsByLeague = new HashMap<>();
+    private HashMap<Long, List<Club>> clubsByCountry = new HashMap<>();
 
     // by data id (canonical objects)
-    private static HashMap<String, Country> countriesByDataId = new HashMap<>();
-    private static HashMap<String, Club> clubsByDataId = new HashMap<>();
-    private static HashMap<String, Person> personsByDataId = new HashMap<>();
-    private static HashMap<String, Profession> professionsByDataId = new HashMap<>();
-    private static HashMap<String, Competition> competitionsByDataId = new HashMap<>();
-    private static HashMap<String, Season> seasonsByDataId = new HashMap<>();
-    private static HashMap<String, Continent> continentsByDataId = new HashMap<>();
-    private static HashMap<String, PlayerProfession> playerProfessionsByDataId = new HashMap<>();
+    private HashMap<String, Country> countriesByDataId = new HashMap<>();
+    private HashMap<String, Club> clubsByDataId = new HashMap<>();
+    private HashMap<String, Person> personsByDataId = new HashMap<>();
+    private HashMap<String, Profession> professionsByDataId = new HashMap<>();
+    private HashMap<String, Competition> competitionsByDataId = new HashMap<>();
+    private HashMap<String, Season> seasonsByDataId = new HashMap<>();
+    private HashMap<String, Continent> continentsByDataId = new HashMap<>();
+    private HashMap<String, PlayerProfession> playerProfessionsByDataId = new HashMap<>();
     /** P2-14: every ground by data id (a club's season ground object, else one built from grounds.json) */
-    private static HashMap<String, Stadium> groundsByDataId = new HashMap<>();
+    private HashMap<String, Stadium> groundsByDataId = new HashMap<>();
 
     //
-    private static List<Profession> professions = new ArrayList<>();
-    private static List<Profession> selectableProfessions = new ArrayList<>();
+    private List<Profession> professions = new ArrayList<>();
+    private List<Profession> selectableProfessions = new ArrayList<>();
 
     // occupations of amateur players (PlayerProfession), modifiers, generator names
-    private static Map<Long, PlayerProfession> playerProfessions = new LinkedHashMap<>();
-    private static Map<Long, NationalityModifier> nationalityModifiers = new HashMap<>();
-    private static Map<String, RegionModifier> regionModifiers = new LinkedHashMap<>(); // key: REGION_countryId
-    private static Map<Long, List<String>> firstNamesByCountry = new HashMap<>();
-    private static Map<Long, List<String>> lastNamesByCountry = new HashMap<>();
+    private Map<Long, PlayerProfession> playerProfessions = new LinkedHashMap<>();
+    private Map<Long, NationalityModifier> nationalityModifiers = new HashMap<>();
+    private Map<String, RegionModifier> regionModifiers = new LinkedHashMap<>(); // key: REGION_countryId
+    private Map<Long, List<String>> firstNamesByCountry = new HashMap<>();
+    private Map<Long, List<String>> lastNamesByCountry = new HashMap<>();
 
     // number of squad places that are runtime copies of a person already in another squad
-    private static int personCopies;
+    private int personCopies;
 
     // G-04: the wage bands of each data season, by the year it starts (1888 = 1888-89)
     /** G-12a: each data season's club economies ({@code economy.json}) and League clubs, by its start year */
-    private static java.util.TreeMap<Integer, List<com.rndmodgames.futtoboru.data.ClubEconomy>> economies =
+    private java.util.TreeMap<Integer, List<com.rndmodgames.futtoboru.data.ClubEconomy>> economies =
             new java.util.TreeMap<>();
-    private static java.util.TreeMap<Integer, Set<String>> seasonLeagueClubs = new java.util.TreeMap<>();
-    private static java.util.TreeMap<Integer, List<com.rndmodgames.futtoboru.data.ContractBand>> contractBands =
+    private java.util.TreeMap<Integer, Set<String>> seasonLeagueClubs = new java.util.TreeMap<>();
+    private java.util.TreeMap<Integer, List<com.rndmodgames.futtoboru.data.ContractBand>> contractBands =
             new java.util.TreeMap<>();
 
     // keep track of main/top authority
-    private static Authority mainAuthority;
+    private Authority mainAuthority;
 
     // the data the database was built from
-    private static GameData gameData;
-    private static LanguageData languageData;
-    private static RecruitmentData recruitmentData;
-
-    // singleton
-    private static DatabaseLoader instance;
+    private GameData gameData;
+    private LanguageData languageData;
+    private RecruitmentData recruitmentData;
 
     /**
-     * The random source the database is generated from (P2-0). {@code Futtoboru.create()} injects
+     * The random source this database is generated from (P2-0). {@code Futtoboru.create()} injects
      * {@code game.random().fork("database")} before the first {@link #getInstance()}; without a game (tests, tools)
      * it is a freshly seeded source. Every player draws from its own fork ("player:" + id), so the data of one
      * player does not depend on load order.
      */
-    private static RandomSource random = RandomSource.seeded(RandomSource.newSeed());
+    private RandomSource random = RandomSource.seeded(RandomSource.newSeed());
+
+    /** True once built (what the old singleton's "instance != null" meant); {@link #resetDatabaseLoaderInstance()} clears it. */
+    private boolean loaded;
+
+    /** True while {@link #reload} runs: the generators it calls look the database up and get it as it is so far. */
+    private boolean loading;
+
+    /**
+     * RF-01: the game's database. The only static field of the class: the one place the engine, screens and tools
+     * look the database up ({@link #getInstance()}); all data is instance state. It is created once and rebuilt in
+     * place ({@link #rebuild()}, {@link #load}), so a reference to it never goes stale.
+     */
+    private static DatabaseLoader current;
+
+    /** The database object, built or not (never loads). */
+    private static synchronized DatabaseLoader holder() {
+        if (current == null) {
+            current = new DatabaseLoader();
+        }
+        return current;
+    }
 
     /** The source the next {@link #getInstance()} load uses (and the fallback when code runs without a game). */
     public static synchronized RandomSource getRandom() {
-        return random;
+        return holder().random;
     }
 
     /** Sets the source for the next load; call before {@link #getInstance()} (or after {@link #resetDatabaseLoaderInstance()}). */
@@ -142,32 +160,26 @@ public class DatabaseLoader {
         if (source == null) {
             throw new IllegalArgumentException("random source is required");
         }
-        random = source;
+        holder().random = source;
     }
 
-    public DatabaseLoader() {
+    private DatabaseLoader() {
 
     }
 
     /**
-     * Initialize the Game Data and Scripts in required order
+     * The game's database, built from the default game data on first use.
      *
      * Synchronized and published only after loading: the headless create() thread and a test thread may both
      * ask for the database, and neither may see it half-loaded.
      */
     public static synchronized DatabaseLoader getInstance() {
-
-        if (instance == null) {
-
-            DatabaseLoader loaded = new DatabaseLoader();
-
-            load(GameData.loadDefault(), random);
-
-            instance = loaded;
+        DatabaseLoader db = holder();
+        if (!db.loaded && !db.loading) {
+            db.reload(GameData.loadDefault(), db.random);
+            db.loaded = true;
         }
-
-        //
-        return instance;
+        return db;
     }
 
     /**
@@ -175,11 +187,21 @@ public class DatabaseLoader {
      * a saved game is loaded so nothing of an earlier game in this session is left in the lookups.
      */
     public static synchronized void rebuild() {
-        if (instance == null || gameData == null) {
+        DatabaseLoader db = holder();
+        if (!db.loaded || db.gameData == null) {
             getInstance();
             return;
         }
-        load(gameData, random);
+        db.reload(db.gameData, db.random);
+    }
+
+    /**
+     * Builds the whole database from {@code data}, drawing from {@code rng} (tests and tools that want a given seed).
+     */
+    public static synchronized void load(GameData data, RandomSource rng) {
+        DatabaseLoader db = holder();
+        db.reload(data, rng);
+        db.loaded = true;
     }
 
     /**
@@ -188,71 +210,74 @@ public class DatabaseLoader {
      * the main authority) return the game's objects, so there is one object per club, person and competition.
      * Data objects the save doesn't hold (clubs of countries not played) stay as they are.
      */
-    public static synchronized void bindGame(List<Club> gameClubs, List<Person> gamePersons,
+    public void bindGame(List<Club> gameClubs, List<Person> gamePersons,
             List<Competition> gameCompetitions, Authority gameAuthority) {
-        for (Club club : gameClubs) {
-            Club byId = clubsById.get(club.getId());
-            final Club fresh = byId == null && club.getDataId() != null
-                    ? clubsByDataId.get(canonical(GameData.CLUB, club.getDataId())) : byId;
-            if (fresh == club) {
-                continue;
-            }
-            if (fresh != null) {
-                clubsById.remove(fresh.getId());
-                replace(clubs, fresh, club);
-                for (List<Club> byCountry : clubsByCountry.values()) {
-                    replace(byCountry, fresh, club);
+        synchronized (DatabaseLoader.class) {
+            for (Club club : gameClubs) {
+                Club byId = clubsById.get(club.getId());
+                final Club fresh = byId == null && club.getDataId() != null
+                        ? clubsByDataId.get(canonical(GameData.CLUB, club.getDataId())) : byId;
+                if (fresh == club) {
+                    continue;
                 }
-                for (Season season : seasons) {
-                    replace(season.getClubs(), fresh, club);
+                if (fresh != null) {
+                    clubsById.remove(fresh.getId());
+                    replace(clubs, fresh, club);
+                    for (List<Club> byCountry : clubsByCountry.values()) {
+                        replace(byCountry, fresh, club);
+                    }
+                    for (Season season : seasons) {
+                        replace(season.getClubs(), fresh, club);
+                    }
+                    clubsByDataId.values().removeIf(c -> c == fresh);
+                } else {
+                    clubs.add(club);
+                    if (club.getCountry() != null) {
+                        clubsByCountry.computeIfAbsent(club.getCountry().getId(), k -> new ArrayList<>()).add(club);
+                    }
                 }
-                clubsByDataId.values().removeIf(c -> c == fresh);
-            } else {
-                clubs.add(club);
-                if (club.getCountry() != null) {
-                    clubsByCountry.computeIfAbsent(club.getCountry().getId(), k -> new ArrayList<>()).add(club);
+                clubsById.put(club.getId(), club);
+                if (club.getDataId() != null) {
+                    clubsByDataId.put(canonical(GameData.CLUB, club.getDataId()), club);
                 }
             }
-            clubsById.put(club.getId(), club);
-            if (club.getDataId() != null) {
-                clubsByDataId.put(canonical(GameData.CLUB, club.getDataId()), club);
+            Map<Long, Person> personsById = new HashMap<>();
+            for (Person person : gamePersons) {
+                personsById.put(person.getId(), person);
             }
-        }
-        Map<Long, Person> personsById = new HashMap<>();
-        for (Person person : gamePersons) {
-            personsById.put(person.getId(), person);
-        }
-        for (int i = 0; i < persons.size(); i++) {
-            Person saved = personsById.get(persons.get(i).getId());
-            if (saved != null) {
-                persons.set(i, saved);
+            for (int i = 0; i < persons.size(); i++) {
+                Person saved = personsById.get(persons.get(i).getId());
+                if (saved != null) {
+                    persons.set(i, saved);
+                }
             }
-        }
-        for (Map.Entry<String, Person> e : personsByDataId.entrySet()) {
-            Person saved = personsById.get(e.getValue().getId());
-            if (saved != null) {
-                e.setValue(saved);
+            for (Map.Entry<String, Person> e : personsByDataId.entrySet()) {
+                Person saved = personsById.get(e.getValue().getId());
+                if (saved != null) {
+                    e.setValue(saved);
+                }
             }
-        }
-        for (Competition competition : gameCompetitions) {
-            for (int i = 0; i < competitions.size(); i++) {
-                Competition fresh = competitions.get(i);
-                if (fresh.getId() != null && fresh.getId().equals(competition.getId())) {
-                    competitions.set(i, competition);
-                    competitionsByDataId.values().removeIf(c -> c == fresh);
-                    if (competition.getDataId() != null) {
-                        competitionsByDataId.put(canonical(GameData.COMPETITION, competition.getDataId()), competition);
+            for (Competition competition : gameCompetitions) {
+                for (int i = 0; i < competitions.size(); i++) {
+                    Competition fresh = competitions.get(i);
+                    if (fresh.getId() != null && fresh.getId().equals(competition.getId())) {
+                        competitions.set(i, competition);
+                        competitionsByDataId.values().removeIf(c -> c == fresh);
+                        if (competition.getDataId() != null) {
+                            competitionsByDataId.put(canonical(GameData.COMPETITION, competition.getDataId()), competition);
+                        }
                     }
                 }
             }
-        }
-        if (gameAuthority != null) {
-            for (int i = 0; i < authorities.size(); i++) {
-                if (authorities.get(i).getId() != null && authorities.get(i).getId().equals(gameAuthority.getId())) {
-                    authorities.set(i, gameAuthority);
+            if (gameAuthority != null) {
+                for (int i = 0; i < authorities.size(); i++) {
+                    if (authorities.get(i).getId() != null && authorities.get(i).getId().equals(gameAuthority.getId())) {
+                        authorities.set(i, gameAuthority);
+                    }
                 }
+                mainAuthority = gameAuthority;
             }
-            mainAuthority = gameAuthority;
+    
         }
     }
 
@@ -271,15 +296,25 @@ public class DatabaseLoader {
      * Used between some unit tests to avoid issues with missing data
      */
     public static synchronized void resetDatabaseLoaderInstance() {
-
-        instance = null;
+        if (current != null) {
+            current.loaded = false;
+        }
     }
 
     /**
      * Builds the whole database from game data. Missing month/day of birth dates, generated attributes, contracts
      * and occupations are drawn from forks of {@code rng}.
      */
-    public static synchronized void load(GameData data, RandomSource rng) {
+    private void reload(GameData data, RandomSource rng) {
+        loading = true;
+        try {
+            build(data, rng);
+        } finally {
+            loading = false;
+        }
+    }
+
+    private void build(GameData data, RandomSource rng) {
 
         clear();
         gameData = data;
@@ -319,7 +354,7 @@ public class DatabaseLoader {
         }
     }
 
-    private static void clear() {
+    private void clear() {
         seasons = new ArrayList<>();
         authorities = new ArrayList<>();
         competitions = new ArrayList<>();
@@ -360,7 +395,7 @@ public class DatabaseLoader {
 
     // ------------------------------------------------------------------------------------------------- builders
 
-    private static void loadContinents(GameData data) {
+    private void loadContinents(GameData data) {
         for (DataRecord r : data.all(GameData.CONTINENT)) {
             Continent continent = new Continent();
             continent.setId(r.runtimeId());
@@ -374,7 +409,7 @@ public class DatabaseLoader {
         Log.info(Log.DATA_LOADING, "FINISHED LOADING " + continents.size() + " CONTINENTS");
     }
 
-    private static void loadCountries(GameData data) {
+    private void loadCountries(GameData data) {
         for (DataRecord r : data.all(GameData.COUNTRY)) {
             Country country = new Country();
             country.setId(r.runtimeId());
@@ -393,7 +428,7 @@ public class DatabaseLoader {
         Log.info(Log.DATA_LOADING, "FINISHED LOADING " + countries.size() + " COUNTRIES");
     }
 
-    private static void loadNames(GameData data) {
+    private void loadNames(GameData data) {
         for (DataRecord r : data.records("names", null)) {
             Country country = countriesByDataId.get(r.ref("country"));
             firstNamesByCountry.computeIfAbsent(country.getId(), k -> new ArrayList<>()).addAll(r.strs("firstNames"));
@@ -404,7 +439,7 @@ public class DatabaseLoader {
     /**
      * TODO: authorities are not in the data yet; the IFAB is the only (hard-coded) one
      */
-    private static void loadAuthorities(IdAllocator dataIds) {
+    private void loadAuthorities(IdAllocator dataIds) {
         Authority ifab = new Authority();
         ifab.setId(dataIds.nextId());
         ifab.setName("International Football Association Board");
@@ -417,7 +452,7 @@ public class DatabaseLoader {
         mainAuthority = ifab;
     }
 
-    private static void loadProfessions(GameData data) {
+    private void loadProfessions(GameData data) {
         for (DataRecord r : data.all(GameData.PROFESSION)) {
             Profession profession = new Profession();
             profession.setId(r.runtimeId());
@@ -431,7 +466,7 @@ public class DatabaseLoader {
         Log.info(Log.DATA_LOADING, "FINISHED LOADING " + professions.size() + " PROFESSIONS");
     }
 
-    private static void loadOccupations(GameData data) {
+    private void loadOccupations(GameData data) {
         for (DataRecord r : data.all(GameData.OCCUPATION)) {
             PlayerProfession occupation = new PlayerProfession();
             occupation.setId(r.runtimeId());
@@ -446,7 +481,7 @@ public class DatabaseLoader {
         Log.info(Log.DATA_LOADING, "Loaded " + playerProfessions.size() + " player professions");
     }
 
-    private static void loadModifiers(GameData data, IdAllocator dataIds) {
+    private void loadModifiers(GameData data, IdAllocator dataIds) {
         // TODO: modifiers belong to a season; with one season they are global, as before
         for (DataRecord r : data.records("nationality_modifier", null)) {
             Country country = countriesByDataId.get(r.ref("country"));
@@ -480,7 +515,7 @@ public class DatabaseLoader {
                 + " nationality modifiers and " + regionModifiers.size() + " region modifiers");
     }
 
-    private static void loadCompetitions(GameData data) {
+    private void loadCompetitions(GameData data) {
         for (DataRecord r : data.all(GameData.COMPETITION)) {
             Competition competition = new Competition();
             competition.setId(r.runtimeId());
@@ -496,7 +531,7 @@ public class DatabaseLoader {
     }
 
     /** The canonical Person of every record in people.json (birth dates completed from {@code rng.fork("born:" + id)}). */
-    private static void loadPeople(GameData data, RandomSource rng) {
+    private void loadPeople(GameData data, RandomSource rng) {
         for (DataRecord r : data.all(GameData.PERSON)) {
             Person person = new Person();
             person.setId(r.runtimeId());
@@ -517,7 +552,7 @@ public class DatabaseLoader {
      * grounds (engine/cup/NeutralVenues), by the season's start year. A season without them keeps the latest
      * earlier season's; none at all = the code defaults.
      */
-    private static void loadCalendars(GameData data) {
+    private void loadCalendars(GameData data) {
         Map<Integer, com.rndmodgames.futtoboru.engine.temporal.CalendarRules> calendars = new HashMap<>();
         Map<String, java.util.NavigableMap<Integer, com.rndmodgames.futtoboru.engine.cup.NeutralVenues.Rules>> neutral =
                 new HashMap<>();
@@ -541,7 +576,7 @@ public class DatabaseLoader {
         Log.info(Log.DATA_LOADING, "Season calendars: " + calendars.keySet() + "; neutral grounds: " + neutral.keySet());
     }
 
-    private static String first(List<String> ids) {
+    private String first(List<String> ids) {
         return ids.isEmpty() ? null : ids.get(0);
     }
 
@@ -549,7 +584,7 @@ public class DatabaseLoader {
      * P2-14: every ground by data id, for a match's venue. A club's season ground is that club's object; a ground
      * no club plays at (the neutral cup grounds) gets one built from grounds.json with its data number.
      */
-    private static void loadGrounds(GameData data) {
+    private void loadGrounds(GameData data) {
         for (Club club : clubs) {
             if (club.getStadium() != null && club.getStadium().getDataId() != null) {
                 groundsByDataId.putIfAbsent(club.getStadium().getDataId(), club.getStadium());
@@ -576,11 +611,11 @@ public class DatabaseLoader {
     }
 
     /** @return a ground by data id (aliases followed), or null (P2-14: a match's neutral venue) */
-    public static Stadium getGroundByDataId(String dataId) {
+    public Stadium getGroundByDataId(String dataId) {
         return dataId == null ? null : groundsByDataId.get(canonical(GameData.GROUND, dataId));
     }
 
-    private static void loadSeasons(GameData data, IdAllocator dataIds, RandomSource rng) {
+    private void loadSeasons(GameData data, IdAllocator dataIds, RandomSource rng) {
         for (DataRecord r : data.all(GameData.SEASON)) {
             Season season = new Season();
             season.setId(r.runtimeId());
@@ -656,7 +691,7 @@ public class DatabaseLoader {
      * data id. Lookups by data id return the canonical one.
      */
     /** G-04: the wage bands of a season's {@code contracts.json} (money read in shillings, kept in pounds). */
-    private static List<com.rndmodgames.futtoboru.data.ContractBand> loadContractBands(GameData data, String season) {
+    private List<com.rndmodgames.futtoboru.data.ContractBand> loadContractBands(GameData data, String season) {
         List<com.rndmodgames.futtoboru.data.ContractBand> bands = new ArrayList<>();
         for (DataRecord r : data.records("contract_band", season)) {
             com.rndmodgames.futtoboru.data.ContractBand b = new com.rndmodgames.futtoboru.data.ContractBand();
@@ -678,7 +713,7 @@ public class DatabaseLoader {
     }
 
     /** G-12a: the club economies of a season's {@code economy.json} (admission in pence, money in pounds). */
-    private static List<com.rndmodgames.futtoboru.data.ClubEconomy> loadEconomies(GameData data, String season) {
+    private List<com.rndmodgames.futtoboru.data.ClubEconomy> loadEconomies(GameData data, String season) {
         List<com.rndmodgames.futtoboru.data.ClubEconomy> out = new ArrayList<>();
         for (DataRecord r : data.records("economy", season)) {
             com.rndmodgames.futtoboru.data.ClubEconomy e = new com.rndmodgames.futtoboru.data.ClubEconomy();
@@ -698,7 +733,7 @@ public class DatabaseLoader {
         return out;
     }
 
-    private static void loadSquads(GameData data, Season season, IdAllocator dataIds, RandomSource rng, int startYear,
+    private void loadSquads(GameData data, Season season, IdAllocator dataIds, RandomSource rng, int startYear,
             Set<String> leagueClubs) {
         Set<String> listed = new HashSet<>();
         Set<String> usedGrounds = new HashSet<>();
@@ -785,7 +820,7 @@ public class DatabaseLoader {
         Log.info(Log.DATA_LOADING, "FINISHED LOADING " + season.getClubs().size() + " SEASON CLUBS");
     }
 
-    private static Person copyOf(Person canonical, long runtimeId) {
+    private Person copyOf(Person canonical, long runtimeId) {
         Person copy = new Person();
         copy.setId(runtimeId);
         copy.setDataId(canonical.getDataId());
@@ -804,7 +839,7 @@ public class DatabaseLoader {
      * A loaded player: attributes, his engagement for the season (G-04: one season to 30 April, terms from the club's
      * wage band) and an occupation.
      */
-    private static Player createPlayer(Person person, Club club, Season season, IdAllocator dataIds, RandomSource rng,
+    private Player createPlayer(Person person, Club club, Season season, IdAllocator dataIds, RandomSource rng,
             int startYear, com.rndmodgames.futtoboru.data.ContractBand band) {
         Player player = new Player();
 
@@ -838,7 +873,7 @@ public class DatabaseLoader {
     }
 
     /** Sets {@code set<Attribute><suffix>(Integer)} for each attribute (e.g. setStrengthBonus). */
-    private static void applyAttributes(Object target, Map<String, Integer> attrs, String suffix) {
+    private void applyAttributes(Object target, Map<String, Integer> attrs, String suffix) {
         for (Map.Entry<String, Integer> a : attrs.entrySet()) {
             String name = "set" + Character.toUpperCase(a.getKey().charAt(0)) + a.getKey().substring(1) + suffix;
             try {
@@ -851,29 +886,29 @@ public class DatabaseLoader {
         }
     }
 
-    private static String regionKey(String regionName, Long countryId) {
+    private String regionKey(String regionName, Long countryId) {
         return (regionName == null ? "" : regionName.toUpperCase(Locale.ROOT)) + "_" + countryId;
     }
 
     // ------------------------------------------------------------------------------------------------- getters
 
     /** @return the game data the database was built from (with its error/warning report) */
-    public static GameData getGameData() {
+    public GameData getGameData() {
         return gameData;
     }
 
     /** R-11a: the languages, rate areas and rates of the data (null before the first load) */
-    public static LanguageData getLanguageData() {
+    public LanguageData getLanguageData() {
         return languageData;
     }
 
     /** R-02: the registration rules, wages, origins and origin clubs of the data (null before the first load) */
-    public static RecruitmentData getRecruitmentData() {
+    public RecruitmentData getRecruitmentData() {
         return recruitmentData;
     }
 
     /** @return how many squad places are runtime copies of a person already listed in another squad */
-    public static int getPersonCopies() {
+    public int getPersonCopies() {
         return personCopies;
     }
 
@@ -883,7 +918,7 @@ public class DatabaseLoader {
      * the built-in bands.
      */
     /** G-12a: the starting balance of a club of the season starting in {@code startYear}, by its standing */
-    private static BigDecimal startingBalance(int startYear, String clubDataId, boolean leagueClub) {
+    private BigDecimal startingBalance(int startYear, String clubDataId, boolean leagueClub) {
         String standing = com.rndmodgames.futtoboru.data.ContractBand.forClub(getContractBands(startYear), clubDataId,
                 leagueClub).getStanding();
         return com.rndmodgames.futtoboru.data.ClubEconomy.forStanding(getEconomies(startYear), standing)
@@ -891,29 +926,35 @@ public class DatabaseLoader {
     }
 
     /** G-12a: the club economies of the latest data season starting on or before {@code startYear} (may be empty) */
-    public static synchronized List<com.rndmodgames.futtoboru.data.ClubEconomy> getEconomies(int startYear) {
-        Map.Entry<Integer, List<com.rndmodgames.futtoboru.data.ClubEconomy>> e = economies.floorEntry(startYear);
-        if (e == null) {
-            e = economies.firstEntry();
+    public List<com.rndmodgames.futtoboru.data.ClubEconomy> getEconomies(int startYear) {
+        synchronized (DatabaseLoader.class) {
+            Map.Entry<Integer, List<com.rndmodgames.futtoboru.data.ClubEconomy>> e = economies.floorEntry(startYear);
+            if (e == null) {
+                e = economies.firstEntry();
+            }
+            return e != null ? e.getValue() : java.util.Collections.emptyList();
         }
-        return e != null ? e.getValue() : java.util.Collections.emptyList();
     }
 
     /** G-12a: the League clubs (data ids) of the latest data season starting on or before {@code startYear} */
-    public static synchronized Set<String> getSeasonLeagueClubs(int startYear) {
-        Map.Entry<Integer, Set<String>> e = seasonLeagueClubs.floorEntry(startYear);
-        if (e == null) {
-            e = seasonLeagueClubs.firstEntry();
+    public Set<String> getSeasonLeagueClubs(int startYear) {
+        synchronized (DatabaseLoader.class) {
+            Map.Entry<Integer, Set<String>> e = seasonLeagueClubs.floorEntry(startYear);
+            if (e == null) {
+                e = seasonLeagueClubs.firstEntry();
+            }
+            return e != null ? e.getValue() : java.util.Collections.emptySet();
         }
-        return e != null ? e.getValue() : java.util.Collections.emptySet();
     }
 
-    public static synchronized List<com.rndmodgames.futtoboru.data.ContractBand> getContractBands(int startYear) {
-        Map.Entry<Integer, List<com.rndmodgames.futtoboru.data.ContractBand>> e = contractBands.floorEntry(startYear);
-        if (e == null) {
-            e = contractBands.firstEntry();
+    public List<com.rndmodgames.futtoboru.data.ContractBand> getContractBands(int startYear) {
+        synchronized (DatabaseLoader.class) {
+            Map.Entry<Integer, List<com.rndmodgames.futtoboru.data.ContractBand>> e = contractBands.floorEntry(startYear);
+            if (e == null) {
+                e = contractBands.firstEntry();
+            }
+            return e != null ? e.getValue() : com.rndmodgames.futtoboru.data.ContractBand.defaults();
         }
-        return e != null ? e.getValue() : com.rndmodgames.futtoboru.data.ContractBand.defaults();
     }
 
     /**
@@ -939,12 +980,12 @@ public class DatabaseLoader {
     }
 
     /** @return every country, in data order */
-    public static List<Country> getCountries() {
+    public List<Country> getCountries() {
         return countries;
     }
 
     /** @return every club that has a squad, in data order */
-    public static List<Club> getClubs() {
+    public List<Club> getClubs() {
         return clubs;
     }
 
@@ -956,12 +997,12 @@ public class DatabaseLoader {
     }
 
     /** @return the canonical loaded people (one per record of people.json) */
-    public static List<Person> getPersons() {
+    public List<Person> getPersons() {
         return persons;
     }
 
-    public static void setPersons(List<Person> persons) {
-        DatabaseLoader.persons = persons;
+    public void setPersons(List<Person> persons) {
+        this.persons = persons;
     }
 
     /**
@@ -998,22 +1039,22 @@ public class DatabaseLoader {
     /**
      * Returns a Country by runtime ID or null if doesn't exist
      */
-    public static Country getCountryById(Long id) {
+    public Country getCountryById(Long id) {
         return id == null ? null : countriesById.get(id);
     }
 
     /** @return a Continent by data id (aliases followed) or null */
-    public static Continent getContinentByDataId(String dataId) {
+    public Continent getContinentByDataId(String dataId) {
         return continentsByDataId.get(canonical(GameData.CONTINENT, dataId));
     }
 
     /** @return an occupation of amateur players by data id (aliases followed) or null */
-    public static PlayerProfession getPlayerProfessionByDataId(String dataId) {
+    public PlayerProfession getPlayerProfessionByDataId(String dataId) {
         return playerProfessionsByDataId.get(canonical(GameData.OCCUPATION, dataId));
     }
 
     /** @return a Country by data id (e.g. {@code england}, aliases followed) or null */
-    public static Country getCountryByDataId(String dataId) {
+    public Country getCountryByDataId(String dataId) {
         return countriesByDataId.get(canonical(GameData.COUNTRY, dataId));
     }
 
@@ -1055,27 +1096,27 @@ public class DatabaseLoader {
      * @param id
      * @return a Club by runtime ID or null
      */
-    public static Club getClubById(Long id) {
+    public Club getClubById(Long id) {
         return id == null ? null : clubsById.get(id);
     }
 
     /** @return a Club by data id (aliases followed) or null */
-    public static Club getClubByDataId(String dataId) {
+    public Club getClubByDataId(String dataId) {
         return clubsByDataId.get(canonical(GameData.CLUB, dataId));
     }
 
     /** @return the canonical Person with this data id (aliases followed) or null */
-    public static Person getPersonByDataId(String dataId) {
+    public Person getPersonByDataId(String dataId) {
         return personsByDataId.get(canonical(GameData.PERSON, dataId));
     }
 
     /** @return a Competition by data id (aliases followed) or null */
-    public static Competition getCompetitionByDataId(String dataId) {
+    public Competition getCompetitionByDataId(String dataId) {
         return competitionsByDataId.get(canonical(GameData.COMPETITION, dataId));
     }
 
     /** @return a Season by data id (aliases followed) or null */
-    public static Season getSeasonByDataId(String dataId) {
+    public Season getSeasonByDataId(String dataId) {
         return seasonsByDataId.get(canonical(GameData.SEASON, dataId));
     }
 
@@ -1083,16 +1124,16 @@ public class DatabaseLoader {
      * @param id
      * @return a Profession by runtime ID or null
      */
-    public static Profession getProfessionById(Long id) {
+    public Profession getProfessionById(Long id) {
         return id == null ? null : professionsById.get(id);
     }
 
     /** @return a Profession by data id (e.g. {@link Profession#MANAGER}) or null */
-    public static Profession getProfessionByDataId(String dataId) {
+    public Profession getProfessionByDataId(String dataId) {
         return professionsByDataId.get(canonical(GameData.PROFESSION, dataId));
     }
 
-    private static String canonical(String kind, String dataId) {
+    private String canonical(String kind, String dataId) {
         if (dataId == null) {
             return null;
         }
@@ -1101,28 +1142,28 @@ public class DatabaseLoader {
     }
 
     /** @return the occupations of amateur players by runtime id (data order) */
-    public static Map<Long, PlayerProfession> getAllPlayerProfessions() {
+    public Map<Long, PlayerProfession> getAllPlayerProfessions() {
         return Collections.unmodifiableMap(playerProfessions);
     }
 
     /** @return the nationality modifier for a country runtime id, or null */
-    public static NationalityModifier getNationalityModifier(Long countryId) {
+    public NationalityModifier getNationalityModifier(Long countryId) {
         return nationalityModifiers.get(countryId);
     }
 
     /** @return the region modifier for a region name (any case) in a country, or null */
-    public static RegionModifier getRegionModifier(String regionName, Long countryId) {
+    public RegionModifier getRegionModifier(String regionName, Long countryId) {
         return regionModifiers.get(regionKey(regionName, countryId));
     }
 
     /** @return the first names the generator uses for a country (empty when there are none) */
-    public static List<String> getFirstNames(Country country) {
+    public List<String> getFirstNames(Country country) {
         List<String> names = country == null ? null : firstNamesByCountry.get(country.getId());
         return names == null ? Collections.emptyList() : names;
     }
 
     /** @return the last names the generator uses for a country (empty when there are none) */
-    public static List<String> getLastNames(Country country) {
+    public List<String> getLastNames(Country country) {
         List<String> names = country == null ? null : lastNamesByCountry.get(country.getId());
         return names == null ? Collections.emptyList() : names;
     }
@@ -1130,7 +1171,7 @@ public class DatabaseLoader {
     /**
      * Add a Club
      */
-    public static void addClub(Club club) {
+    public void addClub(Club club) {
 
         //
         if (!clubsById.containsKey(club.getId())) {
@@ -1139,27 +1180,27 @@ public class DatabaseLoader {
         }
     }
 
-    public static HashMap<Long, List<Club>> getClubsByCountry() {
+    public HashMap<Long, List<Club>> getClubsByCountry() {
         return clubsByCountry;
     }
 
-    public static void setClubsByCountry(HashMap<Long, List<Club>> clubsByCountry) {
-        DatabaseLoader.clubsByCountry = clubsByCountry;
+    public void setClubsByCountry(HashMap<Long, List<Club>> clubsByCountry) {
+        this.clubsByCountry = clubsByCountry;
     }
 
-    public static List<Competition> getCompetitions() {
+    public List<Competition> getCompetitions() {
         return competitions;
     }
 
-    public static void setCompetitions(List<Competition> competitions) {
-        DatabaseLoader.competitions = competitions;
+    public void setCompetitions(List<Competition> competitions) {
+        this.competitions = competitions;
     }
 
-    public static Authority getMainAuthority() {
+    public Authority getMainAuthority() {
         return mainAuthority;
     }
 
-    public static void setMainAuthority(Authority mainAuthority) {
-        DatabaseLoader.mainAuthority = mainAuthority;
+    public void setMainAuthority(Authority mainAuthority) {
+        this.mainAuthority = mainAuthority;
     }
 }

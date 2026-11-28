@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.inbox;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import java.time.format.DateTimeFormatter;
@@ -60,7 +62,7 @@ public class InboxScreenTable extends VisTable {
         
         //
         this.game = parent;
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
         
         // Initialize layout components
         filtersTable = new VisTable(true);
@@ -124,7 +126,7 @@ public class InboxScreenTable extends VisTable {
     public void updateDynamicComponents() {
         
         // Refresh currentGame reference to avoid stale references
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
         
         // Clear all tables
         this.clear();
@@ -341,7 +343,7 @@ public class InboxScreenTable extends VisTable {
         
         // Check if navigating to draw screen
         if (message.getActionScreen() != null && 
-            message.getActionScreen() == com.rndmodgames.futtoboru.menu.MainMenuManager.LEAGUE_DRAW_SCREEN) {
+            message.getActionScreen() == GameScreenId.LEAGUE_DRAW) {
             
             com.rndmodgames.futtoboru.data.League league = null;
             

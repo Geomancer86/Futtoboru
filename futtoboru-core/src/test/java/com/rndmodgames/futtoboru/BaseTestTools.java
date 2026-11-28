@@ -40,7 +40,7 @@ public class BaseTestTools {
         saveGame.getGameScripts().addAll(dbLoader.getSeasons().get(0).getSeasonScripts());
         
         // game authority
-        saveGame.setMainAuthority(DatabaseLoader.getMainAuthority());
+        saveGame.setMainAuthority(DatabaseLoader.getInstance().getMainAuthority());
         
         // game owner
         saveGame.setOwner(new Person());
