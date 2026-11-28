@@ -236,6 +236,35 @@ public class LeagueDetailScreenTable extends VisTable {
         
         contentTable.add().height(UiTheme.space("sm")).row();
         
+        // Latest results (G-03): every club's matches, each score opens its result and report
+        List<Match> latestResults = getLatestResults(selectedLeague);
+        if (!latestResults.isEmpty()) {
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("league_latest_results"))).pad(UiTheme.space("xs")).row();
+            contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
+            for (Match match : latestResults) {
+                Club homeClub = currentGame.getClubById(match.getHomeClubId());
+                Club awayClub = currentGame.getClubById(match.getAwayClubId());
+                if (homeClub == null || awayClub == null) {
+                    continue;
+                }
+                VisTable row = new VisTable(true);
+                row.add(new VisLabel(match.getMatchDateTime() != null ? match.getMatchDateTime().format(dateFormatter) : ""))
+                    .width(UiTheme.size("col.number"));
+                row.add(new VisLabel(homeClub.getName())).width(UiTheme.size("table.league.club")).right();
+                com.kotcrab.vis.ui.widget.LinkLabel scoreLink = new com.kotcrab.vis.ui.widget.LinkLabel(
+                    match.getHomeGoals() + " - " + match.getAwayGoals());
+                scoreLink.setListener(url -> {
+                    if (menuManager != null) {
+                        menuManager.showMatchResult(match);
+                    }
+                });
+                row.add(scoreLink).width(UiTheme.size("col.score")).center();
+                row.add(new VisLabel(awayClub.getName())).width(UiTheme.size("table.league.club")).left();
+                contentTable.add(row).left().pad(UiTheme.space("xxs")).row();
+            }
+            contentTable.add().height(UiTheme.space("sm")).row();
+        }
+
         // Upcoming Fixtures Section
         List<Match> upcomingMatches = getUpcomingMatches(selectedLeague);
         if (!upcomingMatches.isEmpty()) {
@@ -266,6 +295,33 @@ public class LeagueDetailScreenTable extends VisTable {
         
     }
     
+    /** How many played league matches "Latest Results" lists (a 12-club matchday is 6 matches). */
+    private static final int LATEST_RESULTS = 6;
+
+    /** The league's most recently played matches, newest first (G-03). */
+    private List<Match> getLatestResults(League league) {
+        List<Match> played = new java.util.ArrayList<>();
+        if (league == null || league.getLeagueClubs() == null) {
+            return played;
+        }
+        java.util.Set<Long> seen = new java.util.HashSet<>();
+        for (Club club : league.getLeagueClubs()) {
+            if (club == null || club.getPlayedMatches() == null) {
+                continue;
+            }
+            for (Match match : club.getPlayedMatches()) {
+                if (match != null && match.getId() != null && match.getIsPlayed() != null && match.getIsPlayed()
+                        && match.getMatchType() != null && match.getMatchType() == Match.LEAGUE_MATCH
+                        && match.getHomeGoals() != null && match.getAwayGoals() != null && seen.add(match.getId())) {
+                    played.add(match);
+                }
+            }
+        }
+        played.sort(Comparator.comparing(Match::getMatchDateTime, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .reversed());
+        return played.size() > LATEST_RESULTS ? new java.util.ArrayList<>(played.subList(0, LATEST_RESULTS)) : played;
+    }
+
     /**
      * Get upcoming matches for the league
      */

@@ -529,8 +529,9 @@ public class MainGameMenuTable extends VisTable {
         
         // Simulate Match and Advance Time
         ((Futtoboru)(game)).getGameEngine().getMatchResult();
-        
-        mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_RESULT_SCREEN);
+
+        // the match just played (not one opened earlier from Match History, G-03)
+        mainMenuManager.showLatestMatchResult();
         
         mainButtonContainer.clear();
         mainButtonContainer.add(continueGameButton);
