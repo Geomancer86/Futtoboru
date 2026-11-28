@@ -14,7 +14,8 @@ import com.rndmodgames.futtoboru.ui.gfx.TickGate;
 
 /**
  * Crowd CR1 (D26): individual figures on the bank behind the far touchline (this pass, drawn behind the players) and
- * a thinner line at the near touchline ({@link Near}, drawn in front of them). Spectators are arrays, not entities
+ * a thinner line at the near touchline ({@link Near}, drawn in front of them: two close rows between it and the
+ * camera at a capped scale, {@link #drawScale}). Spectators are arrays, not entities
  * (plan §5 rule 4): places on a grid of rows with a little jitter, filled at the share {@link ViewFrame#crowdSize()} /
  * {@link #CAPACITY}; each figure has one of the 12 baked looks, a mood threshold and an animation phase. Positions and
  * looks come from the viewer's cosmetic random source, never the match.
@@ -48,9 +49,18 @@ public class CrowdPass extends EntitySystem implements DrawPass {
     static final double FAR_BACK_M = 9.3;
     static final double ROW_M = 0.75;
     static final double PLACE_M = 0.55;
-    /** Near side: rows in front of the near touchline. */
-    static final double NEAR_FRONT_M = 2.4;
+    /**
+     * Near side (E-21e): two close rows just in front of the near touchline (between it and the camera), so the first
+     * row stands whole above the bottom edge and only their heads and shoulders rise over the touchline.
+     */
+    static final double NEAR_FRONT_M = 0.45;
+    static final double NEAR_ROW_M = 0.55;
     static final int NEAR_ROWS = 2;
+    /**
+     * The near line is drawn at the near touchline's perspective scale, capped at this multiple of the view's halfway
+     * scale: a thin row that never covers much of the pitch (uncapped it would be over twice the halfway size).
+     */
+    static final double NEAR_MAX_SCALE = 1.5;
     /** The near line is thinner (it must not hide the play). */
     static final double NEAR_SHARE = 0.55;
     /** How far past each goal line the banks run. */
@@ -117,7 +127,7 @@ public class CrowdPass extends EntitySystem implements DrawPass {
         int mag = cam.magnification();
         if (mag != builtMagnification || cam.pixelsPerMetre() != builtViewScale) {
             for (int i = 0; i < count; i++) {
-                choices[i] = SpriteScale.choose(cam.scale(ys[i]), mag, 1, cam.pixelsPerMetre());
+                choices[i] = SpriteScale.choose(drawScale(cam, ys[i]), mag, 1, cam.pixelsPerMetre());
             }
             builtMagnification = mag;
             builtViewScale = cam.pixelsPerMetre();
@@ -161,6 +171,17 @@ public class CrowdPass extends EntitySystem implements DrawPass {
         }
     }
 
+    /**
+     * Art pixels per metre a figure on ground line {@code y} is drawn at: its perspective scale on the far bank; on
+     * the near line the near touchline's scale, capped at {@link #NEAR_MAX_SCALE} times the halfway scale.
+     */
+    double drawScale(ViewCamera cam, double y) {
+        if (!near) {
+            return cam.scale(y);
+        }
+        return Math.min(cam.scale(-cam.halfWidth()), NEAR_MAX_SCALE * cam.pixelsPerMetre());
+    }
+
     /** A figure's mood for the crowd's mood and his threshold (0.15..0.85). */
     public static int mood(double crowdMood, float threshold) {
         if (crowdMood >= threshold) {
@@ -193,12 +214,12 @@ public class CrowdPass extends EntitySystem implements DrawPass {
         count = 0;
         // far to near (descending y): the far bank from its back row, the near line from the touchline outward
         for (int r = 0; r < rows; r++) {
-            double y = near ? -(hw + NEAR_FRONT_M + r * ROW_M) : hw + FAR_BACK_M - r * ROW_M;
+            double y = near ? -(hw + NEAR_FRONT_M + r * NEAR_ROW_M) : hw + FAR_BACK_M - r * ROW_M;
             double offset = (r & 1) * PLACE_M * 0.5;
             for (int k = 0; k < places; k++) {
                 double fill = rng.nextDouble();
                 double jx = (rng.nextDouble() - 0.5) * PLACE_M * 0.6;
-                double jy = (rng.nextDouble() - 0.5) * ROW_M * 0.3;
+                double jy = (rng.nextDouble() - 0.5) * (near ? NEAR_ROW_M : ROW_M) * 0.3;
                 int look = rng.nextInt(LOOKS);
                 float phase = rng.nextFloat();
                 float threshold = 0.15f + 0.7f * rng.nextFloat();
