@@ -2,8 +2,12 @@ package com.rndmodgames.desktop;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Preferences;
+import com.rndmodgames.PreferencesManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.BuildInfo;
+import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.futtoboru.ui.UiScale;
 
 /**
  * RndModGames Desktop Launcher v1
@@ -74,13 +78,42 @@ public class DesktopLauncher {
         // If you remove the above line and set Vsync to false, you can get unlimited FPS, which can be
         // useful for testing performance, but can also be very stressful to some hardware.
         // You may also need to configure GPU drivers to fully disable Vsync; this can cause screen tearing.
-        configuration.setWindowedMode(1920, 1080);
-//        configuration.setWindowedMode(320, 240);
+
+        // Auto UI scale follows the monitor's OS scale (Windows 200% -> 2x); GLFW is initialized by getDisplayMode()
+        UiScale.setSystemScale(readMonitorContentScale());
+        Log.info(Log.SYSTEM_INIT, "DesktopLauncher", "monitor content scale " + UiScale.getSystemScale());
+
+        // U-03a / D18: one source for the window size, the saved preference (default and minimum 1280x720), so
+        // Futtoboru.create() does not resize the window a second time
+        Lwjgl3Preferences saved = new Lwjgl3Preferences(PreferencesManager.PREFERENCES_NAME, ".prefs/");
+        int[] size = UiScale.windowSize(saved.getString(PreferencesManager.SETTINGS_RESOLUTION_PREF, null));
+        configuration.setWindowedMode(size[0], size[1]);
+        configuration.setWindowSizeLimits(UiScale.MIN_WIDTH, UiScale.MIN_HEIGHT, -1, -1);
+        if (PreferencesManager.ENABLED.equals(saved.getString(PreferencesManager.SETTINGS_FULLSCREEN_PREF, null))) {
+            configuration.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
+        }
 
         // TODO: set Futtoboru icon
 //        configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         
         //
         return configuration;
+    }
+
+    /** the primary monitor's content scale (1 = 100%), 1 when it cannot be read */
+    private static float readMonitorContentScale() {
+        try {
+            long monitor = org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor();
+            if (monitor == 0L) {
+                return 1f;
+            }
+            float[] x = new float[1];
+            float[] y = new float[1];
+            org.lwjgl.glfw.GLFW.glfwGetMonitorContentScale(monitor, x, y);
+            float scale = Math.max(x[0], y[0]);
+            return scale > 0f ? scale : 1f;
+        } catch (Throwable unavailable) {
+            return 1f;
+        }
     }
 }

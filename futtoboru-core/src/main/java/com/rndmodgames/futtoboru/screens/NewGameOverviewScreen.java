@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.rndmodgames.futtoboru.ui.UiScale;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -87,10 +87,10 @@ public class NewGameOverviewScreen implements Screen {
         // Keep track of selected Countries
         this.selectedCountries = selectedCountries;
         
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(UiScale.newViewport());
         
         VisTable mainContainer = new VisTable(true);
-        mainContainer.pad(UiTheme.space("xl")).setFillParent(true);
+        mainContainer.pad(UiTheme.space("xl")); // root of UiScale.addOverflowScroll below: scrolls when it does not fit (200%)
     
         // 
         final VisTable table = new VisTable(true);
@@ -845,7 +845,7 @@ public class NewGameOverviewScreen implements Screen {
         mainContainer.add(table);
         
         // Add Settings Screen Main Container to Stage
-        stage.addActor(mainContainer);
+        UiScale.addOverflowScroll(stage, mainContainer);
     }
 
     @Override
@@ -870,7 +870,7 @@ public class NewGameOverviewScreen implements Screen {
     public void resize(int width, int height) {
 
         // Update viewport on resize to keep event coordinate for buttons/widgets
-        stage.getViewport().update(width, height, true);
+        UiScale.updateStageViewport(stage, width, height);
     }
 
     @Override

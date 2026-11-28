@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.rndmodgames.darkblade.screens.tables.SoundSettingsTable;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.futtoboru.ui.UiScale;
 
 /**
  * Preferences Manager v1
@@ -33,6 +34,8 @@ public class PreferencesManager {
 	// GRAPHIC SETTINGS
 	public static final String SETTINGS_FULLSCREEN_PREF = "settings.fullscreen";
 	public static final String SETTINGS_RESOLUTION_PREF = "settings.resolution";
+	/** U-03a: "0" = Auto (UiScale.AUTO), "1.0" = 100%, "2.0" = 200%; global, not per save game */
+	public static final String SETTINGS_UI_SCALE_PREF = "settings.ui_scale";
 	public static final String SETTINGS_DAY_NIGHT_RENDERING_PREF = "settings.day_night_cycle_rendering";
 	public static final String SETTINGS_DAMAGE_COUNTERS_RENDERING_PREF = "settings.damage_counters_rendering";
 	public static final String SETTINGS_DEBUG_SIGHT_PREF = "settings.debug_sight_rendering";
@@ -48,7 +51,7 @@ public class PreferencesManager {
 	public static final String DISABLED = "disabled";
 	
 	// DEFAULT VALUES
-	public static String DEFAULT_RESOLUTION = "1280x1024";
+	public static String DEFAULT_RESOLUTION = UiScale.DEFAULT_RESOLUTION; // D18: 1280x720 minimum and default
 	public static String DEFAULT_LOCALE = "en_US";
 	
 	public PreferencesManager() {
@@ -153,19 +156,43 @@ public class PreferencesManager {
 	}
 	
 	/**
-	 * Returns the RESOLUTION preference
+	 * Returns the RESOLUTION preference, at least 1280x720 (D18): a missing, malformed or smaller saved value (an old
+	 * "640x480") is replaced by the default and saved.
 	 */
 	public String getResolution() {
 
-		String resolution = null;
+		String saved = prefs.getString(SETTINGS_RESOLUTION_PREF, null);
+		String resolution = UiScale.sanitizeResolution(saved);
 		
-		if (prefs.getString(SETTINGS_RESOLUTION_PREF) != null) {
-			resolution = prefs.getString(SETTINGS_RESOLUTION_PREF);
-		} else {
-			prefs.putString(SETTINGS_RESOLUTION_PREF, DEFAULT_RESOLUTION);
+		if (!resolution.equals(saved)) {
+			updateUserPreference(SETTINGS_RESOLUTION_PREF, resolution);
 		}
 		
 		return resolution;
+	}
+	
+	/**
+	 * Returns the UI scale setting (U-03a): {@link UiScale#AUTO} (the default) or 1 / 2
+	 */
+	public float getUiScale() {
+		
+		String raw = prefs.getString(SETTINGS_UI_SCALE_PREF, null);
+		if (raw != null && !raw.isEmpty()) {
+			try {
+				return UiScale.normalize(Float.parseFloat(raw));
+			} catch (NumberFormatException malformed) {
+				Log.warn(Log.SYSTEM_CONFIG, "[PreferencesManager] bad UI scale '" + raw + "', using Auto");
+			}
+		}
+		return UiScale.AUTO;
+	}
+	
+	/**
+	 * Saves the UI scale setting: {@link UiScale#AUTO} or a step (snapped to 1 or 2)
+	 */
+	public void updateUiScale(float scale) {
+		
+		updateUserPreference(SETTINGS_UI_SCALE_PREF, Float.toString(UiScale.normalize(scale)));
 	}
 	
 	/**
