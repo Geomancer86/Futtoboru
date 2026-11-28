@@ -10,7 +10,6 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 | E-17 match events: event list (key/extended/full), minute ticker data, period report; injuries weaken ECS players | WORKSTATION | `ws/E-17-events` | 2026-11-28 |
 | G-12 club budget and debt | WORKSTATION | `ws/G-12-budget` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
-| R-09 staff roles + R-03 candidate pools | BOOK3PRO | `b3/R-03-pools` | 2026-11-28 |
 | G-12a economy: non-League clubs fall into debt | BOOK3PRO | `b3/G-12a-economy` | 2026-11-28 |
 | G-11 follow-up: era via `GameData`, instant-result rules read `EraProfile`, more 1888-1900 events | BOOK3PRO | `b3/G-11-era-events` | 2026-11-28 |
 | G-10 history and fan tiers on screen (club facts, prose en+es, fan-tier meter) | BOOK3PRO | `b3/G-10-history-ui` | 2026-11-28 |
