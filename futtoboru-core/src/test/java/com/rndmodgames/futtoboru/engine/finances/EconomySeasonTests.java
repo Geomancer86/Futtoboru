@@ -310,6 +310,7 @@ class EconomySeasonTests extends BaseTest {
                     add(r, "office", w.getAdministrativeExpenses());
                     add(r, "rent", w.getStadiumRent());
                     add(r, "other", w.getOtherExpenses());
+                    add(r, "interest", w.getInterestExpenses());
                 }
                 for (MatchIncome mi : c.getMatchIncomes()) {
                     gateByMatch.merge(mi.getMatchId(), mi.getTicketRevenue(), BigDecimal::add);
