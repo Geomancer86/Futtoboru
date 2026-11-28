@@ -15,13 +15,14 @@ import com.rndmodgames.futtoboru.engine.random.RandomSource;
  * <p>History: E-13 (ecs-0.2) 22 standing bodies; E-14 (ecs-0.3) skills, action command, possession; E-16 (ecs-0.4)
  * officials and the laws' play state, nobody kicks off. Re-pinned by E-15 (ecs-0.5): the player AI plays the match
  * (TeamTacticsComponent on two TEAM entities and a PerceptionComponent per player appended to the hashed components),
- * so the hash now pins a full match with goals.
+ * so the hash now pins a full match with goals. Re-pinned by E-16b (ecs-0.6): AthleteComponent keeper flag hashed,
+ * the ball bounces off posts and bars, forwards play up and run in behind, offsides are given.
  */
 @Tag("slow")
 class EcsPlayGoldenTest {
 
-    static final long GOLDEN_PLAY_DRY = 0xff0bf56e03cc1336L;
-    static final long GOLDEN_PLAY_RAIN = 0x656a3f35f32613f7L;
+    static final long GOLDEN_PLAY_DRY = 0x8b80e80648a77bfbL;
+    static final long GOLDEN_PLAY_RAIN = 0x1791b733d6ca708eL;
 
     @Test
     void playIsDeterministicAndPinnedByAGoldenHash() {
