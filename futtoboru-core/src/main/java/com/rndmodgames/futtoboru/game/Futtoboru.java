@@ -108,6 +108,9 @@ public class Futtoboru extends Game {
      */
     private ClubStaffManager clubStaffManager = null;
     private JobManager jobManager = null;
+
+    /** Ground illustrations (U-11), loaded on first use and disposed with the game. */
+    private final com.rndmodgames.futtoboru.ui.GroundArt groundArt = new com.rndmodgames.futtoboru.ui.GroundArt();
     
     /**
      * The one seeded random source of the game (P2-0). Game logic forks it ({@code random().fork("match:" + id)});
@@ -217,18 +220,9 @@ public class Futtoboru extends Game {
         DatabaseLoader.setRandom(random.fork("database"));
         DatabaseLoader.getInstance();
 
-        // Initialize the Script Manager
-        this.scriptsManager = new ScriptsManager(this);
-        
-        // Initialize the Person Generator
-        this.setPersonGenerator(new PersonGenerator(this));
-        
-        // Initialize the Authority Manager
-        this.authorityManager = new AuthorityManager(this);
-        
-        // Initialize the Game Engine
-        this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager, authorityManager));
-        
+        // Script Manager, Person Generator, Authority Manager and Game Engine
+        createEngine();
+
         // Show Main Menu 
         // NOTE: this fails during unit tests because "com.badlogic.gdx.Gdx.gl" is null
         if (com.badlogic.gdx.Gdx.gl != null) {
@@ -236,9 +230,34 @@ public class Futtoboru extends Game {
         }
     }
     
+    /** The engine managers of a game: none of them keeps anything of a previous game. */
+    private void createEngine() {
+        this.scriptsManager = new ScriptsManager(this);
+        this.setPersonGenerator(new PersonGenerator(this));
+        this.authorityManager = new AuthorityManager(this);
+        this.setGameEngine(new FuttoboruGameEngine(this, scriptsManager, authorityManager));
+        this.jobManager = null;
+        this.clubStaffManager = null;
+    }
+
+    /**
+     * Before the New Game screens (P2-10): a game played or loaded earlier in this session changed the database's
+     * clubs, people, competitions, editions, tables and balances (the game plays with those objects). This drops the
+     * current game, rebuilds every database object fresh from the game data already read (same runtime ids: data
+     * records keep their {@code ids.json} number and derived ids are handed out the same way on every build) and
+     * makes new engine managers, so the new game starts from the data as it is in gamedata.
+     */
+    public void prepareNewGame() {
+        Log.info(Log.SYSTEM_INIT, "Futtoboru", "New game: rebuilding the database from game data");
+        this.currentGame = null;
+        DatabaseLoader.setRandom(random.fork("database"));
+        DatabaseLoader.rebuild();
+        createEngine();
+    }
+
     /**
      * Manage the Active Screen
-     * 
+     *
      * NOTE: each screen handles if dispose() itself at the end
      * 
      * @param screen
@@ -384,6 +403,7 @@ public class Futtoboru extends Game {
     @Override
     public void dispose () {
      
+        groundArt.dispose();
         VisUI.dispose();
     }
 
@@ -490,6 +510,11 @@ public class Futtoboru extends Game {
     /**
      * Get Job Manager
      */
+    /** Ground pictures (U-11): {@code art/grounds/<id>.png}, Nearest filter, whole-number scale. */
+    public com.rndmodgames.futtoboru.ui.GroundArt getGroundArt() {
+        return groundArt;
+    }
+
     public JobManager getJobManager() {
         return jobManager;
     }

@@ -70,6 +70,8 @@ public class MenuScreen implements Screen {
 				
 			    if (newGameButton.isPressed()) {
 
+					// P2-10: fresh database objects, not the ones a game played or loaded before changed
+					((Futtoboru)game).prepareNewGame();
 					((Futtoboru)game).changeScreen(Futtoboru.NEW_GAME_SCREEN);
 				}
 			}

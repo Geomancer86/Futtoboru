@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
@@ -18,6 +17,8 @@ import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.futtoboru.system.save.LoadResult;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiDialogs;
 
 /**
  * Load Game Dialog v2 (P2-5)
@@ -66,7 +67,7 @@ public class LoadGameDialog extends VisDialog {
         this.add(scrollPane).grow();
 
         this.row();
-        this.add(closeButton).pad(5).align(Align.bottom);
+        this.add(closeButton).pad(UiTheme.space("xs")).align(Align.bottom);
 
         refresh();
     }
@@ -75,6 +76,7 @@ public class LoadGameDialog extends VisDialog {
     @Override
     public VisDialog show(Stage stage) {
         refresh();
+        UiDialogs.track(this);
         return super.show(stage);
     }
 
@@ -88,11 +90,11 @@ public class LoadGameDialog extends VisDialog {
         for (final SaveSummary save : SaveLoadSystem.listSaves()) {
 
             table.row().grow();
-            table.add(new VisLabel(save.getName())).pad(5);
-            table.add(new VisLabel(save.isLoadable() ? describe(save) : reason(save.getStatus()))).pad(5);
+            table.add(new VisLabel(save.getName())).pad(UiTheme.space("xs"));
+            table.add(new VisLabel(save.isLoadable() ? describe(save) : reason(save.getStatus()))).pad(UiTheme.space("xs"));
 
             if (!save.isLoadable()) {
-                table.add().pad(5);
+                table.add().pad(UiTheme.space("xs"));
                 continue;
             }
 
@@ -114,7 +116,7 @@ public class LoadGameDialog extends VisDialog {
                     LoadResult result = SaveLoadSystem.loadGame(save.getFile());
 
                     if (!result.isLoaded()) {
-                        Dialogs.showOKDialog(getStage(), LanguageModLoader.getValue("load_game"), reason(result.getStatus()));
+                        UiDialogs.info(getStage(), LanguageModLoader.getValue("load_game"), reason(result.getStatus()));
                         return;
                     }
 
@@ -132,7 +134,7 @@ public class LoadGameDialog extends VisDialog {
                 }
             });
 
-            table.add(loadGame).pad(5);
+            table.add(loadGame).pad(UiTheme.space("xs"));
         }
     }
 

@@ -20,6 +20,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiTooltips;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -259,6 +260,10 @@ public class PlayersListTable extends VisTable {
      */
     private VisLabel createSortableHeader(String text, final String columnName) {
         VisLabel header = new VisLabel(text);
+        // abbreviated attribute columns explain themselves on hover (U-09)
+        if (UiTooltips.SQUAD_ATTRIBUTE_COLUMNS.contains(columnName)) {
+            UiTooltips.tip(header, "tip_attr_" + columnName);
+        }
         
         // Add click listener for sorting
         header.addCaptureListener(new InputListener() {

@@ -30,6 +30,20 @@ public final class NewGameFixture {
     /** Builds a fresh database and a new game, made the application's current game with fresh managers. */
     public static SaveGame newGame(Futtoboru application) {
         DatabaseLoader.resetDatabaseLoaderInstance();
+        DatabaseLoader.getInstance();
+        return setUp(application);
+    }
+
+    /**
+     * A new game started the way the player does after playing or loading another one in the same session (P2-10):
+     * the main menu's New Game button calls {@link Futtoboru#prepareNewGame()}; the game data is not read again.
+     */
+    public static SaveGame newGameInSession(Futtoboru application) {
+        application.prepareNewGame();
+        return setUp(application);
+    }
+
+    private static SaveGame setUp(Futtoboru application) {
         DatabaseLoader db = DatabaseLoader.getInstance();
         Season season = DatabaseLoader.getSeasonByDataId("1888-89");
 
