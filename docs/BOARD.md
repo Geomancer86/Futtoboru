@@ -6,7 +6,6 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
-| R-04 hidden ratings and perception (observers, ranges, consensus, words + numeric toggle) | BOOK3PRO | `b3/R-04-perception` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 | G-10 history and fan tiers on screen (club facts, prose en+es, fan-tier meter) | BOOK3PRO (parked) | `b3/G-10-history-ui` | 2026-11-28 |
 | G-13 AI-to-AI friendlies and away guarantees | BOOK3PRO (parked) | `b3/G-13-ai-friendlies` | 2026-11-28 |
