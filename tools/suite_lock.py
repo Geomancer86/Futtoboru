@@ -19,9 +19,6 @@ T-01 (D27): ONE heavy test run at a time per machine (ported from DarkBlade tool
 - Every Maven verify of the fast/full tier and every smoke run goes through it (tools/test_level.py does this);
   tools/test-changed (a few -Dtest classes while coding) does not.
 - Every run appends one JSON line to <lock dir>/history.jsonl (wait and run seconds, branch, command).
-- Re-entrant: the command runs with FUTTOBORU_LOCK_<NAME>=<token> in its environment, so a nested
-  `suite_lock.py run` (e.g. `suite_lock.py run -- python tools/test_level.py --run`, which locks its Maven run itself)
-  sees that its parent holds the lock and runs at once instead of waiting for itself until --wait-min.
 - Exit code: the command's; 75 when the lock could not be taken within --wait-min (60).
 """
 import argparse
@@ -46,18 +43,12 @@ WAIT_MIN = 60
 POLL_S = 15
 HEARTBEAT_S = 60
 NOT_TAKEN = 75
-# the environment variable that tells a nested run its parent holds the lock (with the lock's token)
-HELD_ENV = "FUTTOBORU_LOCK_%s"
 # a process created this long after the lock was taken holds a reused pid, not the lock
 REUSE_SLACK_S = 5
 
 
 def lock_path(name):
     return os.path.join(LOCK_DIR, name + ".lock")
-
-
-def held_env(name):
-    return HELD_ENV % "".join(c if c.isalnum() else "_" for c in name.upper())
 
 
 def now():
@@ -259,30 +250,17 @@ class Held:
         self.owner = None
         self.exit = None
         self.requested = None
-        self.nested = False
         self.stop = threading.Event()
 
     def __enter__(self):
         self.requested = now()
-        inherited = os.environ.get(held_env(self.name))
-        held = read_owner(lock_path(self.name)) if inherited else None
-        if held is not None and held.get("token") == inherited:
-            # our parent process holds the lock (and keeps its heartbeat): run inside it, release nothing
-            self.nested, self.owner = True, held
-            return self
         self.owner = acquire(self.name, self.command, self.wait_min, self.expire_min)
         if self.owner is None:
             raise NotTaken(self.name)
         threading.Thread(target=beat, args=(self.name, self.owner, self.stop), daemon=True).start()
         return self
 
-    def child_env(self):
-        """The environment for the command: ours plus the token, so a nested run does not wait for us"""
-        return dict(os.environ, **{held_env(self.name): self.owner["token"]})
-
     def __exit__(self, *exc):
-        if self.nested:
-            return
         self.stop.set()
         if ours(lock_path(self.name), self.owner):
             shutil.rmtree(lock_path(self.name), ignore_errors=True)
@@ -293,29 +271,65 @@ class Held:
                      "at": datetime.datetime.now().isoformat(timespec="seconds")})
 
 
-def runnable(command):
-    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows"""
+def windows_twin(first, is_windows=None):
+    """On Windows an extensionless shell script (./mvnw) cannot be started: use its .cmd/.bat twin if there is one"""
+    if is_windows is None:
+        is_windows = os.name == "nt"
+    if not is_windows or os.path.splitext(first)[1]:
+        return first
+    for ext in (".cmd", ".bat"):
+        if os.path.isfile(first + ext):
+            return first + ext
+    return first
+
+
+def runnable(command, cwd=None):
+    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows; ./mvnw becomes mvnw.cmd there.
+    A relative program path is resolved against cwd (the command's working directory) when given"""
     first = command[0]
+    if cwd and not os.path.isabs(first) and os.path.dirname(first):
+        first = os.path.join(cwd, first)
+    first = windows_twin(first)
     if os.path.isfile(first) and not os.path.isabs(first):
-        return [os.path.abspath(first)] + command[1:]
-    return command
+        first = os.path.abspath(first)
+    return [first] + command[1:]
+
+
+# set for the command's process tree while it holds a lock: a nested run_locked of the same lock (e.g.
+# `suite_lock.py run -- python tools/test_level.py --run`, where test_level takes the lock itself) runs directly
+HELD_ENV = "FUTTOBORU_SUITE_LOCK_HELD"
+
+
+def held_by_parent(lock):
+    return lock in os.environ.get(HELD_ENV, "").split(",")
+
+
+def call(command, cwd, env=None):
+    argv = runnable(command, cwd)
+    return subprocess.call(argv, cwd=cwd, env=env, shell=os.name == "nt" and argv[0].lower().endswith((".bat", ".cmd")))
 
 
 def run_locked(command, lock="suite", wait_min=WAIT_MIN, expire_min=EXPIRE_MIN, cwd=ROOT):
-    """Runs the command (a list) under the lock; @return its exit code, or NOT_TAKEN"""
+    """Runs the command (a list) under the lock; @return its exit code, or NOT_TAKEN. Re-entrant: inside a command
+    that already holds this lock, the command just runs (no deadlock)"""
+    if held_by_parent(lock):
+        try:
+            return call(command, cwd)
+        except KeyboardInterrupt:
+            return 130
+    env = dict(os.environ)
+    env[HELD_ENV] = ",".join(filter(None, [env.get(HELD_ENV), lock]))
     try:
         with Held(lock, " ".join(command), wait_min, expire_min) as held:
             started = now()
             try:
-                code = subprocess.call(runnable(command), cwd=cwd, env=held.child_env(),
-                                       shell=os.name == "nt" and command[0].lower().endswith((".bat", ".cmd")))
+                code = call(command, cwd, env)
             except KeyboardInterrupt:
                 code = 130
             held.exit = code
     except NotTaken:
         return NOT_TAKEN
-    if not held.nested:
-        print("suite_lock: %s released after %d s (exit %d)" % (lock, now() - started, code), flush=True)
+    print("suite_lock: %s released after %d s (exit %d)" % (lock, now() - started, code), flush=True)
     return code
 
 
