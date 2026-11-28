@@ -70,7 +70,7 @@ public final class SkylinePass extends EntitySystem implements DrawPass {
         ViewColors.set(batch, SkylineArt.SKY_TOP, 1f);
         if (!skyline) {
             batch.draw(white, 0, base, width, Math.max(0, top - base));
-            batch.setColor(1f, 1f, 1f, 1f);
+            ViewColors.white(batch);
             batch.end();
             return;
         }
@@ -79,13 +79,13 @@ public final class SkylinePass extends EntitySystem implements DrawPass {
         if (stripTop < top) {
             batch.draw(white, 0, stripTop, width, top - stripTop);
         }
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         int offset = Math.floorMod((int) Math.round(cam.x() * PARALLAX), sky.width);
         strip(batch, art.skyline(), sky, offset, base, width);
         if (smoke) {
             smoke(batch, white, sky, offset, base, width, frame.viewSeconds());
         }
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         batch.end();
     }
 

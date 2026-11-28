@@ -40,6 +40,9 @@ public final class RuntimeAtlas implements Disposable {
     public static final int PAGE = 2048;
     public static final int PADDING = 2;
     public static final int WHITE = 4;
+    /** Pixmap colours (RGBA8888) of a blank page and of its white piece. */
+    private static final int CLEAR_RGBA = 0x00000000;
+    private static final int WHITE_RGBA = 0xFFFFFFFF;
 
     private final TextureFilter filter;
     private final int pageWidth;
@@ -203,12 +206,12 @@ public final class RuntimeAtlas implements Disposable {
     private void openPage() {
         Pixmap blank = new Pixmap(pageWidth, pageHeight, Format.RGBA8888);
         blank.setBlending(Pixmap.Blending.None);
-        blank.setColor(0f, 0f, 0f, 0f);
+        blank.setColor(CLEAR_RGBA);
         blank.fill();
         // every page starts with a white piece (WHITE plus its border, all white) that flat shapes stretch and tint
         ShelfPacker fresh = new ShelfPacker(pageWidth, pageHeight);
         int[] white = fresh.place(WHITE + PADDING * 2, WHITE + PADDING * 2);
-        blank.setColor(1f, 1f, 1f, 1f);
+        blank.setColor(WHITE_RGBA);
         blank.fillRectangle(white[0], white[1], WHITE + PADDING * 2, WHITE + PADDING * 2);
         Texture page = new Texture(blank);
         page.setFilter(filter, filter);

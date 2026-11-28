@@ -16,26 +16,34 @@ import com.rndmodgames.futtoboru.ui.gfx.CameraZoom;
  *   screenY = horizonY - (height - z) * f / d          (art pixels, y up, origin bottom left)
  * </pre>
  *
- * with {@code f = PIXELS_PER_METRE * distance}, so the halfway line across the middle of the pitch draws at exactly
- * {@link #PIXELS_PER_METRE} (S1, 5 px/m); the near touchline is larger, the far one smaller. Each screen row below the
+ * with {@code f = pixelsPerMetre * distance}, so the halfway line across the middle of the pitch draws at exactly
+ * {@link #pixelsPerMetre()}: {@link #PIXELS_PER_METRE} (10 px/m, D28: the 2x sheets) by default, or
+ * {@link #WIDE_PIXELS_PER_METRE} (5 px/m, the 1x sheets) in the optional wide view ({@link #setWide(boolean)}); the
+ * near touchline is larger, the far one smaller. Each screen row below the
  * horizon is one ground depth ({@link #groundYAtRow(double)}), which is how the pitch pass draws the ground texture one
  * row at a time.
  *
  * <p>Art pixels land on whole screen pixels: the screen is divided by an integer magnification
- * ({@link #magnification()}, {@link CameraZoom}); {@link #magnificationFor(int)} picks one from the window height.
+ * ({@link #magnification()}, {@link CameraZoom}); {@link #magnificationFor(int, int)} picks the one that shows about
+ * {@link #TARGET_VIEW_M} metres of the halfway depth at the default scale (1280x720 and 1920x1080: 2, i.e. 64 and
+ * 96 m; 2560x1440: 3, 85 m), never so large that the pitch no longer fits the window height.
  */
 public final class ViewCamera {
 
-    /** S1 (D26): art pixels per metre at the middle of the pitch. */
-    public static final double PIXELS_PER_METRE = 5.0;
+    /** D28: art pixels per metre at the middle of the pitch (the 2x sprite sheets). */
+    public static final double PIXELS_PER_METRE = 10.0;
+    /** The optional wide view (D26 S1, the 1x sheets): half the default scale, twice the field of view. */
+    public static final double WIDE_PIXELS_PER_METRE = 5.0;
+    /** Metres of the halfway depth the automatic magnification aims to show across the window. */
+    public static final double TARGET_VIEW_M = 80.0;
     /** How far behind the near touchline the camera stands. */
     public static final double BEHIND_TOUCHLINE_M = 30.0;
     /** Camera height above the pitch. */
     public static final double HEIGHT_M = 20.0;
     /** Where the near touchline sits, as a share of the view height from the bottom. */
-    public static final double NEAR_TOUCHLINE_SHARE = 0.08;
-    /** How many art pixels of window height one magnification step stands for (720 px -> 3, 1080 -> 4, 1440 -> 6). */
-    public static final int ROWS_PER_MAGNIFICATION = 220;
+    public static final double NEAR_TOUCHLINE_SHARE = 0.04;
+    /** Art rows the view needs at least (pitch from the near touchline to the skyline at the default scale). */
+    public static final int MIN_VIEW_ROWS = 340;
     /** Follow rate of the critically smoothed ball follow, per second. */
     public static final double FOLLOW_RATE = 2.2;
     /** How far past the goal line the near edge of the view may go. */
@@ -45,7 +53,8 @@ public final class ViewCamera {
     private final double halfWidth;
     private final double distance;
     private final double height;
-    private final double focal;
+    private double focal;
+    private double pixelsPerMetre = PIXELS_PER_METRE;
 
     private int magnification = 1;
     private boolean fixedMagnification;
@@ -73,19 +82,41 @@ public final class ViewCamera {
         this.halfWidth = halfWidth;
         this.distance = distance;
         this.height = height;
-        this.focal = PIXELS_PER_METRE * distance;
+        this.focal = pixelsPerMetre * distance;
         resizeView(320, 180);
     }
 
-    /** Integer magnification for a window this tall (at least 1). */
-    public static int magnificationFor(int screenHeight) {
-        return Math.max(1, screenHeight / ROWS_PER_MAGNIFICATION);
+    /**
+     * Integer magnification for a window: the one whose view is closest to {@link #TARGET_VIEW_M} metres wide at the
+     * default scale, capped so the view keeps {@link #MIN_VIEW_ROWS} rows (at least 1).
+     */
+    public static int magnificationFor(int screenWidth, int screenHeight) {
+        int byWidth = (int) Math.round(Math.max(1, screenWidth) / (TARGET_VIEW_M * PIXELS_PER_METRE));
+        int byHeight = Math.max(1, screenHeight) / MIN_VIEW_ROWS;
+        return Math.max(1, Math.min(byWidth, byHeight));
+    }
+
+    /** The wide view (5 px/m, 1x sheets) or the default (10 px/m); same magnification, takes effect at once. */
+    public void setWide(boolean wide) {
+        pixelsPerMetre = wide ? WIDE_PIXELS_PER_METRE : PIXELS_PER_METRE;
+        focal = pixelsPerMetre * distance;
+        horizonY = NEAR_TOUCHLINE_SHARE * viewHeight + height * focal / (distance - halfWidth);
+        x = clampX(x);
+    }
+
+    public boolean wide() {
+        return pixelsPerMetre < PIXELS_PER_METRE;
+    }
+
+    /** Art pixels per metre at the halfway depth ({@link #PIXELS_PER_METRE}, or {@link #WIDE_PIXELS_PER_METRE}). */
+    public double pixelsPerMetre() {
+        return pixelsPerMetre;
     }
 
     /** Fits the view to a window: picks the magnification (unless fixed) and the art-pixel view size. */
     public void resize(int screenWidth, int screenHeight) {
         if (!fixedMagnification) {
-            magnification = magnificationFor(screenHeight);
+            magnification = magnificationFor(screenWidth, screenHeight);
         }
         resizeView(ceilDiv(Math.max(1, screenWidth), magnification), ceilDiv(Math.max(1, screenHeight), magnification));
         orthoWidth = Math.max(1, screenWidth) / (double) magnification;

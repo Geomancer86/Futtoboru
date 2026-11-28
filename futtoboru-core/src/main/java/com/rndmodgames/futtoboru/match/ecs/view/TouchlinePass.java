@@ -104,7 +104,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
         table(sprites);
         Batch batch = view.batch();
         batch.begin();
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         if (buildings) {
             // back to front
             prop(batch, POLE, 0.12 * hl, hw + 9.8, t);
@@ -133,7 +133,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
             person(batch, sprites, art.white(), TRAINER, -7, hw + PEOPLE_M, false, -1, t);
             prop(batch, BUCKET, -6.2, hw + PEOPLE_M - 0.1, t);
         }
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         batch.end();
     }
 
@@ -197,7 +197,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
         ActorSprites.Sprite s = frames[Math.floorMod((int) Math.floor(t * 2), frames.length)];
         ViewCamera cam = view.viewCamera();
         int mag = cam.magnification();
-        int choice = SpriteScale.choose(cam.scale(y), mag, 1);
+        int choice = SpriteScale.choose(cam.scale(y), mag, 1, cam.pixelsPerMetre());
         SpriteScale.draw(batch, s, cam.screenX(x, y), cam.screenY(y, 0), SpriteScale.texel(choice), mag);
         pieces++;
     }
@@ -210,7 +210,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
         }
         ViewCamera cam = view.viewCamera();
         int mag = cam.magnification();
-        int texel = SpriteScale.texel(SpriteScale.choose(cam.scale(y), mag, 1));
+        int texel = SpriteScale.texel(SpriteScale.choose(cam.scale(y), mag, 1, cam.pixelsPerMetre()));
         double step = s.width * texel / (double) mag;
         double sy = cam.screenY(y, 0);
         double from = Math.max(cam.screenX(x0, y), -step);
@@ -231,7 +231,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
             boolean moving, int dir, double t) {
         ViewCamera cam = view.viewCamera();
         int mag = cam.magnification();
-        int choice = SpriteScale.choose(cam.scale(y), mag, 2);
+        int choice = SpriteScale.choose(cam.scale(y), mag, 2, cam.pixelsPerMetre());
         double sx = cam.screenX(x, y);
         double sy = cam.screenY(y, 0);
         int d = dir >= 0 ? dir : IndexActorSprites.direction(Math.atan2(-y, cam.x() - x));
@@ -240,7 +240,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
             float k = SpriteScale.texel(choice) * SpriteScale.sheet(choice) / (float) mag;
             ViewColors.set(batch, who == CONSTABLE ? ArtMath.NAVY : ArtMath.SOOT, 1f);
             batch.draw(white, SpriteScale.snap(sx, mag) - 2 * k, SpriteScale.snap(sy, mag), 4 * k, 8 * k);
-            batch.setColor(1f, 1f, 1f, 1f);
+            ViewColors.white(batch);
             pieces++;
             return;
         }

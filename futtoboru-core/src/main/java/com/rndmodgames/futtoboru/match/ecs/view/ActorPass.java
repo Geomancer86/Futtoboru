@@ -88,7 +88,7 @@ public final class ActorPass extends EntitySystem implements DrawPass {
                 default -> flag(batch, art.white(), refs[e], frame.viewSeconds());
             }
         }
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         batch.end();
     }
 
@@ -182,6 +182,7 @@ public final class ActorPass extends EntitySystem implements DrawPass {
         p.z = t.z;
         p.pixelsPerMetre = scale;
         p.magnification = view.viewCamera().magnification();
+        p.viewPixelsPerMetre = view.viewCamera().pixelsPerMetre();
         if (ballView != null) {
             p.ballX = ballView.x;
             p.ballY = ballView.y;
@@ -214,12 +215,12 @@ public final class ActorPass extends EntitySystem implements DrawPass {
 
     /** A chosen frame (and its overlay) with the feet pivot at (sx, sy), texels on whole screen pixels. */
     static void drawFrame(Batch batch, ActorSprites.Frame f, double sx, double sy, int magnification) {
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         SpriteScale.draw(batch, f.sprite, sx, sy, f.texel, magnification);
         if (f.overlay != null && f.overlayAlpha > 0) {
-            batch.setColor(1f, 1f, 1f, f.overlayAlpha);
+            ViewColors.white(batch, f.overlayAlpha);
             SpriteScale.draw(batch, f.overlay, sx, sy, f.texel, magnification);
-            batch.setColor(1f, 1f, 1f, 1f);
+            ViewColors.white(batch);
         }
     }
 
@@ -273,7 +274,7 @@ public final class ActorPass extends EntitySystem implements DrawPass {
         int size = ball.getRegionWidth();
         float x = (float) Math.round(cam.screenX(t.x, t.y) - size / 2.0);
         float y = (float) Math.round(cam.screenY(t.y, Math.max(0, t.z)));
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         batch.draw(ball, x, y);
     }
 

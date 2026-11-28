@@ -11,7 +11,7 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
 import com.rndmodgames.futtoboru.match.ecs.pitch.Rect;
 
 /**
- * Pitch P1 (D26): the whole ground as one generated top-down image at {@link #PIXELS_PER_METRE} (S1), grass A1
+ * Pitch P1 (D26): the whole ground as one generated top-down image at {@link #PIXELS_PER_METRE} (D28), grass A1
  * (the ground_art palette in dithered flat bands), wear and mud as parameters, slope SL1 (dithered darker bands
  * downhill) and, optionally, the markings of the era from {@link PitchGeometry}: touchlines and goal lines always; the
  * halfway line only when {@link Style#halfwayLine} asks for it (none in 1888-89, D26); later {@link EraMarking}s when
@@ -22,7 +22,8 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.Rect;
  */
 public final class PitchArt {
 
-    public static final int PIXELS_PER_METRE = 5;
+    /** D28: the pitch is baked at the default view scale (10 px/m). */
+    public static final int PIXELS_PER_METRE = 10;
     /** Ground beyond each goal line inside the image. */
     public static final double END_MARGIN_M = 16;
     /** Ground beyond the near touchline. */

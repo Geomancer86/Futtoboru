@@ -19,14 +19,21 @@ class ViewCameraTest {
     }
 
     @Test
-    void halfwayDepthDrawsAtFivePixelsPerMetre() {
+    void halfwayDepthDrawsAtTenPixelsPerMetreAndFiveInTheWideView() {
         ViewCamera cam = camera();
-        assertEquals(5.0, cam.scale(0), 1e-12);
+        assertEquals(10.0, cam.scale(0), 1e-12, "D28 default");
         double a = cam.screenX(10, 0);
         double b = cam.screenX(11, 0);
-        assertEquals(5.0, b - a, 1e-9, "one metre along the halfway depth");
-        assertTrue(cam.scale(-cam.halfWidth()) > 9, "near touchline larger");
-        assertTrue(cam.scale(cam.halfWidth()) < 4, "far touchline smaller");
+        assertEquals(10.0, b - a, 1e-9, "one metre along the halfway depth");
+        assertTrue(cam.scale(-cam.halfWidth()) > 18, "near touchline larger");
+        assertTrue(cam.scale(cam.halfWidth()) < 8, "far touchline smaller");
+        cam.setWide(true);
+        assertTrue(cam.wide());
+        assertEquals(5.0, cam.scale(0), 1e-12, "wide view: S1");
+        assertEquals(ViewCamera.NEAR_TOUCHLINE_SHARE * cam.viewHeight(), cam.screenY(-cam.halfWidth(), 0), 1e-9,
+                "the near touchline stays put");
+        cam.setWide(false);
+        assertEquals(10.0, cam.scale(0), 1e-12);
     }
 
     @Test
@@ -53,22 +60,30 @@ class ViewCameraTest {
     }
 
     @Test
-    void magnificationIsWholeAndFollowsTheWindowHeight() {
-        assertEquals(3, ViewCamera.magnificationFor(720));
-        assertEquals(4, ViewCamera.magnificationFor(1080));
-        assertEquals(6, ViewCamera.magnificationFor(1440));
-        assertEquals(1, ViewCamera.magnificationFor(100));
+    void magnificationIsWholeAndShowsAbout64To96MetresAtHalfway() {
+        assertEquals(2, ViewCamera.magnificationFor(1280, 720));
+        assertEquals(2, ViewCamera.magnificationFor(1920, 1080));
+        assertEquals(3, ViewCamera.magnificationFor(2560, 1440));
+        assertEquals(1, ViewCamera.magnificationFor(100, 100));
+        assertEquals(1, ViewCamera.magnificationFor(2560, 400), "a short window keeps the pitch in view");
+        for (int[] window : new int[][] { { 1280, 720 }, { 1920, 1080 }, { 2560, 1440 }, { 1600, 900 } }) {
+            ViewCamera cam = new ViewCamera(new PitchGeometry(PitchParams.defaults1888()));
+            cam.resize(window[0], window[1]);
+            double metres = cam.orthoWidth() / cam.scale(0);
+            assertTrue(metres >= 64 - 1e-9 && metres <= 96 + 1e-9, window[0] + "x" + window[1] + ": " + metres + " m");
+            assertTrue(cam.screenY(cam.halfWidth(), 0) < cam.orthoHeight(), "far touchline inside the view");
+        }
         ViewCamera cam = camera();
-        assertEquals(3, cam.magnification());
-        assertEquals(1280 / 3.0, cam.orthoWidth(), 1e-9, "each art pixel exactly 3 screen pixels");
-        assertEquals(427, cam.viewWidth());
-        assertEquals(1f / 3, cam.zoom(), 1e-6);
-        cam.setMagnification(2);
-        cam.resize(1280, 720);
+        assertEquals(2, cam.magnification());
+        assertEquals(1280 / 2.0, cam.orthoWidth(), 1e-9, "each art pixel exactly 2 screen pixels");
         assertEquals(640, cam.viewWidth());
+        assertEquals(1f / 2, cam.zoom(), 1e-6);
+        cam.setMagnification(3);
+        cam.resize(1280, 720);
+        assertEquals(427, cam.viewWidth());
         cam.autoMagnification();
         cam.resize(2560, 1440);
-        assertEquals(6, cam.magnification());
+        assertEquals(3, cam.magnification());
     }
 
     @Test
