@@ -9,7 +9,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BUILD_BRANCH', defaultValue: 'ws/INF-01-jenkins', description: 'Branch to soak (develop once INF-01 is merged)')
+        string(name: 'BUILD_BRANCH', defaultValue: 'develop', description: 'Branch to soak')
         string(name: 'SOAK_SEEDS', defaultValue: '16', description: 'Number of seeds')
         string(name: 'SOAK_SEASONS', defaultValue: '3', description: 'Seasons played per seed')
         string(name: 'SOAK_FIRST_SEED', defaultValue: '1', description: 'First seed (seeds are consecutive)')
