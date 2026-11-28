@@ -72,7 +72,7 @@ public class PlayerProfessionAssigner {
      * Future: Use regional availability from profession data
      */
     private static PlayerProfession selectRandomProfessionForClub(Club club, RandomSource rng) {
-        Map<Long, PlayerProfession> allProfessions = DatabaseLoader.getAllPlayerProfessions();
+        Map<Long, PlayerProfession> allProfessions = DatabaseLoader.getInstance().getAllPlayerProfessions();
         
         if (allProfessions == null || allProfessions.isEmpty()) {
             Log.info(Log.DATA_GENERATION, "PlayerProfessionAssigner", "No professions loaded, cannot assign profession");

@@ -45,7 +45,7 @@ class SeededGameTests extends BaseTest {
     private static String databaseFingerprint(long seed) {
         DatabaseLoader.load(GameData.loadDefault(), RandomSource.seeded(seed));
         StringBuilder sb = new StringBuilder();
-        for (Person person : DatabaseLoader.getPersons()) {
+        for (Person person : DatabaseLoader.getInstance().getPersons()) {
             sb.append(person.getId()).append(person.getBirthDate()).append(';');
         }
         for (Season season : DatabaseLoader.getInstance().getSeasons()) {
@@ -79,7 +79,7 @@ class SeededGameTests extends BaseTest {
 
     private static List<Club> clubsWithPlayers() {
         List<Club> clubs = new ArrayList<>();
-        Season season = DatabaseLoader.getSeasonByDataId("1888-89");
+        Season season = DatabaseLoader.getInstance().getSeasonByDataId("1888-89");
         for (Club club : season.getClubs()) {
             if (club.getPlayers() != null && !club.getPlayers().isEmpty()) {
                 clubs.add(club);
@@ -136,7 +136,7 @@ class SeededGameTests extends BaseTest {
 
     @Test
     void sameSeedGeneratesTheSamePeopleAndDraws() {
-        Country england = DatabaseLoader.getCountryByDataId("england");
+        Country england = DatabaseLoader.getInstance().getCountryByDataId("england");
         List<String> a = new ArrayList<>();
         List<String> b = new ArrayList<>();
         PersonGenerator genA = new PersonGenerator(new Futtoboru(11L));
@@ -162,7 +162,7 @@ class SeededGameTests extends BaseTest {
         for (Club club : clubsWithPlayers()) {
             ids.add(club.getId());
         }
-        com.rndmodgames.futtoboru.data.Competition comp = DatabaseLoader.getCompetitions().get(0);
+        com.rndmodgames.futtoboru.data.Competition comp = DatabaseLoader.getInstance().getCompetitions().get(0);
         assertEquals(pairings(new CompetitionScheduler(new Futtoboru(3L)).competitionDraw(comp, ids)),
                 pairings(new CompetitionScheduler(new Futtoboru(3L)).competitionDraw(comp, ids)));
         assertNotEquals(pairings(new CompetitionScheduler(new Futtoboru(3L)).competitionDraw(comp, ids)),

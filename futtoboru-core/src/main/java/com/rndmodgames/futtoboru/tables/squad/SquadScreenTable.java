@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.squad;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.time.temporal.ChronoUnit;
 
 import com.badlogic.gdx.Game;
@@ -72,7 +74,7 @@ public class SquadScreenTable extends VisTable{
         
         //
         this.game = ((Futtoboru)parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
         
         // 
         playersList = new PlayersListTable(game);
@@ -158,7 +160,7 @@ public class SquadScreenTable extends VisTable{
             public void changed(ChangeEvent event, Actor actor) {
                 if (game.getGameEngine() != null && game.getGameEngine().getMainMenuManager() != null) {
                     game.getGameEngine().getMainMenuManager().setActiveMainScreen(
-                            com.rndmodgames.futtoboru.menu.MainMenuManager.RETAINED_LIST_SCREEN);
+                            GameScreenId.RETAINED_LIST);
                 }
             }
         });
@@ -187,7 +189,7 @@ public class SquadScreenTable extends VisTable{
     private void showTab() {
         if (teamSheetTab.isChecked()) {
             if (displayedClub != null) {
-                boolean own = TeamSheets.isManaged(displayedClub, game.getCurrentGame());
+                boolean own = TeamSheets.isManaged(displayedClub, game.getSession().getGame());
                 teamSheetEditor.show(displayedClub, TeamSheets.standing(displayedClub), own, null);
             }
             contentCell.setActor(teamSheetScrollPane);
@@ -226,7 +228,7 @@ public class SquadScreenTable extends VisTable{
             
             for (Player player : displayedClub.getPlayers()) {
                 
-                long yearsOld = ChronoUnit.YEARS.between(player.getPerson().getBirthDate(), game.getCurrentGame().getGameDate());
+                long yearsOld = ChronoUnit.YEARS.between(player.getPerson().getBirthDate(), game.getSession().getGame().getGameDate());
                 
                 // add up players age
                 accumulatedAge += yearsOld;

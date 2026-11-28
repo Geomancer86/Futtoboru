@@ -43,11 +43,15 @@ public class SaveGameDialog extends VisDialog {
     /** Run once after the next successful save (U-04d "save first, then quit"); cleared on every show. */
     private Runnable onSaved;
 
-    public SaveGameDialog(SaveGame saveGame, VisTextButton continueGameButton) {
+    /** RF-01: which game was last saved, kept by the session */
+    private final com.rndmodgames.futtoboru.menu.UnsavedProgress progress;
+
+    public SaveGameDialog(com.rndmodgames.futtoboru.game.GameSession session, VisTextButton continueGameButton) {
 
         super(LanguageModLoader.getValue("save_game"));
 
-        this.saveGame = saveGame;
+        this.saveGame = session.getGame();
+        this.progress = session.progress();
         this.continueGameButton = continueGameButton;
 
         final VisTextButton cancelButton = new VisTextButton(LanguageModLoader.getValue("cancel"));
@@ -159,7 +163,7 @@ public class SaveGameDialog extends VisDialog {
     private void write(Stage stage, String name, Runnable after) {
         try {
             SaveLoadSystem.saveGame(saveGame, name);
-            UnsavedProgress.markSaved(saveGame);
+            progress.markSaved(saveGame);
 
             // Enable the Continue Game Button
             if (continueGameButton != null) {

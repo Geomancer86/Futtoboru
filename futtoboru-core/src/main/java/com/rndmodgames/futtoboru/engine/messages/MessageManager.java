@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.engine.messages;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.time.LocalDateTime;
 import com.rndmodgames.futtoboru.engine.finances.Money;
 import java.util.ArrayList;
@@ -414,7 +416,7 @@ public class MessageManager {
         message.setRemitent(null);
         message.setIsRead(false);
         message.setIsDeleted(false);
-        message.setActionScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.LEAGUE_DRAW_SCREEN);
+        message.setActionScreen(GameScreenId.LEAGUE_DRAW);
         message.setActionData(league.getId());  // Store league ID for navigation
         
         // Set message ID if not set
@@ -454,7 +456,7 @@ public class MessageManager {
         message.setIsDeleted(false);
         
         // Action: Link to schedule screen
-        // message.setActionScreen(MainMenuManager.SCHEDULE_SCREEN);
+        // message.setActionScreen(GameScreenId.SCHEDULE);
         
         return message;
     }
@@ -650,7 +652,7 @@ public class MessageManager {
         message.setIsDeleted(false);
         
         // Link to cup draw screen (shared or specific)
-        message.setActionScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.CUP_DRAW_SCREEN);
+        message.setActionScreen(GameScreenId.CUP_DRAW);
         message.setActionData(edition.getId()); // Pass edition ID to show relevant matches
         
         return message;
@@ -720,7 +722,7 @@ public class MessageManager {
             content.append(LanguageModLoader.getValue("msg_match_drawn"));
         }
 
-        message.setActionScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.MATCH_RESULT_SCREEN);
+        message.setActionScreen(GameScreenId.MATCH_RESULT);
         message.setActionData(match.getId());
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);

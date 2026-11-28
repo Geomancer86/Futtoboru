@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.competitions;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.util.List;
 
 import com.badlogic.gdx.Game;
@@ -59,7 +61,7 @@ public class CompetitionsScreenTable extends VisTable {
         
         //
         this.game = ((Futtoboru) parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
     }
     
     public void setMenuManager(com.rndmodgames.futtoboru.menu.MainMenuManager menuManager) {
@@ -143,7 +145,7 @@ public class CompetitionsScreenTable extends VisTable {
                     // Navigate to league detail screen
                     if (menuManager != null) {
                         menuManager.setSelectedLeague(leagueForClick);
-                        menuManager.setActiveMainScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.LEAGUE_DETAIL_SCREEN);
+                        menuManager.setActiveMainScreen(GameScreenId.LEAGUE_DETAIL);
                     }
                 }
             });
@@ -193,7 +195,7 @@ public class CompetitionsScreenTable extends VisTable {
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         if (menuManager != null) {
                             menuManager.setSelectedCup(cupForClick);
-                            menuManager.setActiveMainScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.CUP_DETAIL_SCREEN);
+                            menuManager.setActiveMainScreen(GameScreenId.CUP_DETAIL);
                         }
                     }
                 });

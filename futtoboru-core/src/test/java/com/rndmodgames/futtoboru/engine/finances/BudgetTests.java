@@ -221,7 +221,7 @@ class BudgetTests extends BaseTest {
         assertTrue(club.getBudget().isCommitteeConcern());
 
         com.rndmodgames.futtoboru.system.generators.LanguageGenerator.fillMissing(game.getAllPersons(),
-                DatabaseLoader.getLanguageData(), DatabaseLoader.getGameData(), DatabaseLoader.getRandom());
+                DatabaseLoader.getInstance().getLanguageData(), DatabaseLoader.getInstance().getGameData(), DatabaseLoader.getRandom());
         String before = com.rndmodgames.futtoboru.system.save.GameFingerprint.of(game).toString();
         String text = SaveCodec.encode(game, "G-12", LocalDateTime.of(2000, 1, 1, 0, 0));
         LoadResult loaded = SaveCodec.decode(text);

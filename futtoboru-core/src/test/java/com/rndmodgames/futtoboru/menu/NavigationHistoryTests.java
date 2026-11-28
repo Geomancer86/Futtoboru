@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 /** U-04b: what Back and Esc go back through in the game screen. */
 class NavigationHistoryTests {
 
-    private static final int HOME = MainMenuManager.HOME_SCREEN;
-    private static final int COMPETITIONS = MainMenuManager.COMPETITIONS_SCREEN;
-    private static final int CUP = MainMenuManager.CUP_DETAIL_SCREEN;
-    private static final int PLAYOFFS = MainMenuManager.CUP_PLAYOFFS_SCREEN;
-    private static final int SQUAD = MainMenuManager.MAIN_SQUAD_SCREEN;
-    private static final int PLAYER = MainMenuManager.PLAYER_DETAIL_SCREEN;
+    private static final GameScreenId HOME = GameScreenId.HOME;
+    private static final GameScreenId COMPETITIONS = GameScreenId.COMPETITIONS;
+    private static final GameScreenId CUP = GameScreenId.CUP_DETAIL;
+    private static final GameScreenId PLAYOFFS = GameScreenId.CUP_PLAYOFFS;
+    private static final GameScreenId SQUAD = GameScreenId.MAIN_SQUAD;
+    private static final GameScreenId PLAYER = GameScreenId.PLAYER_DETAIL;
 
     @Test
     void menuEntryHasNoBack() {
@@ -24,7 +24,7 @@ class NavigationHistoryTests {
         history.reset(HOME);
         history.visit(HOME); // the entry's own screen being shown
         assertFalse(history.canGoBack());
-        assertEquals(-1, history.back());
+        assertEquals(GameScreenId.NONE, history.back());
         assertEquals(HOME, history.current());
     }
 

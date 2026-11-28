@@ -77,7 +77,7 @@ final class SaveLinks {
             club.setStaff(longKeys(club.getStaff(), club, problems));
         }
 
-        DatabaseLoader.bindGame(reading.all(Club.class), reading.all(Person.class), reading.all(Competition.class),
+        DatabaseLoader.getInstance().bindGame(reading.all(Club.class), reading.all(Person.class), reading.all(Competition.class),
                 game.getMainAuthority());
 
         checkNumberReferences(game, reading, problems);
@@ -115,11 +115,11 @@ final class SaveLinks {
         for (Person p : reading.all(Person.class)) {
             persons.add(p.getId());
         }
-        for (Person p : DatabaseLoader.getPersons()) {
+        for (Person p : DatabaseLoader.getInstance().getPersons()) {
             persons.add(p.getId());
         }
         Person owner = game.getOwner();
-        if (owner != null && owner.getCurrentClubId() != null && DatabaseLoader.getClubById(owner.getCurrentClubId()) == null) {
+        if (owner != null && owner.getCurrentClubId() != null && DatabaseLoader.getInstance().getClubById(owner.getCurrentClubId()) == null) {
             problems.add("the manager's club " + owner.getCurrentClubId() + " doesn't exist");
         }
         for (Match m : reading.all(Match.class)) {
@@ -135,13 +135,13 @@ final class SaveLinks {
         }
         for (JobOpening j : game.getActiveJobOpenings()) {
             club(j.getClubId(), "job " + j.getId(), problems);
-            if (j.getProfessionId() != null && DatabaseLoader.getProfessionById(j.getProfessionId()) == null) {
+            if (j.getProfessionId() != null && DatabaseLoader.getInstance().getProfessionById(j.getProfessionId()) == null) {
                 problems.add("job " + j.getId() + ": profession " + j.getProfessionId() + " doesn't exist");
             }
         }
         for (Club club : reading.all(Club.class)) {
             for (Map.Entry<Long, Long> s : club.getStaff().entrySet()) {
-                if (DatabaseLoader.getProfessionById(s.getKey()) == null) {
+                if (DatabaseLoader.getInstance().getProfessionById(s.getKey()) == null) {
                     problems.add("club " + club.getId() + ": staff profession " + s.getKey() + " doesn't exist");
                 }
                 if (s.getValue() != null && !persons.contains(s.getValue())) {
@@ -152,7 +152,7 @@ final class SaveLinks {
     }
 
     private static void club(Long id, String where, List<String> problems) {
-        if (id != null && DatabaseLoader.getClubById(id) == null) {
+        if (id != null && DatabaseLoader.getInstance().getClubById(id) == null) {
             problems.add(where + ": club " + id + " doesn't exist");
         }
     }

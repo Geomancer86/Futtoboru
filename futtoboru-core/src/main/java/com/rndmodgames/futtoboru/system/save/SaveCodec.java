@@ -150,7 +150,7 @@ public final class SaveCodec {
         json.writeObjectStart();
         json.writeValue(SAVE_VERSION_FIELD, SAVE_VERSION);
         json.writeValue("gameVersion", BuildInfo.getVersion());
-        GameData data = DatabaseLoader.getGameData();
+        GameData data = DatabaseLoader.getInstance().getGameData();
         json.writeValue("dataVersion", data != null ? data.getDataVersion() : 0);
         json.writeArrayStart("packs");
         if (data != null) {
@@ -214,11 +214,11 @@ public final class SaveCodec {
                 tables.put(kind, new TreeMap<>());
                 register(kind);
             }
-            json.setSerializer(Country.class, new StaticRef<>(Country::getDataId, DatabaseLoader::getCountryByDataId, "country"));
-            json.setSerializer(Continent.class, new StaticRef<>(Continent::getDataId, DatabaseLoader::getContinentByDataId, "continent"));
-            json.setSerializer(Profession.class, new StaticRef<>(Profession::getDataId, DatabaseLoader::getProfessionByDataId, "profession"));
+            json.setSerializer(Country.class, new StaticRef<>(Country::getDataId, (id -> DatabaseLoader.getInstance().getCountryByDataId(id)), "country"));
+            json.setSerializer(Continent.class, new StaticRef<>(Continent::getDataId, (id -> DatabaseLoader.getInstance().getContinentByDataId(id)), "continent"));
+            json.setSerializer(Profession.class, new StaticRef<>(Profession::getDataId, (id -> DatabaseLoader.getInstance().getProfessionByDataId(id)), "profession"));
             json.setSerializer(PlayerProfession.class, new StaticRef<>(PlayerProfession::getDataId,
-                    DatabaseLoader::getPlayerProfessionByDataId, "occupation"));
+                    (id -> DatabaseLoader.getInstance().getPlayerProfessionByDataId(id)), "occupation"));
             json.setSerializer(Stadium.class, new StadiumSerializer(null));
             json.setSerializer(BasicScript.class, new ScriptSerializer(null));
         }
@@ -307,8 +307,8 @@ public final class SaveCodec {
                 com.rndmodgames.futtoboru.engine.contracts.ContractManager.deriveOldContracts(result.getGame());
                 // R-11a: a person the save gives no languages (no seed to migrate with) gets them as a new game would
                 com.rndmodgames.futtoboru.system.generators.LanguageGenerator.fillMissing(
-                        result.getGame().getAllPersons(), DatabaseLoader.getLanguageData(),
-                        DatabaseLoader.getGameData(), DatabaseLoader.getRandom());
+                        result.getGame().getAllPersons(), DatabaseLoader.getInstance().getLanguageData(),
+                        DatabaseLoader.getInstance().getGameData(), DatabaseLoader.getRandom());
                 // R-09 + R-03: a save made before them gets its trainers, secretaries and pools as on its day
                 // (optional fields, no format change), from the game's own root source
                 SaveGame loaded = result.getGame();
@@ -340,11 +340,11 @@ public final class SaveCodec {
                 tables.put(kind, new HashMap<>());
                 register(kind);
             }
-            json.setSerializer(Country.class, new StaticRef<>(Country::getDataId, DatabaseLoader::getCountryByDataId, "country", problems));
-            json.setSerializer(Continent.class, new StaticRef<>(Continent::getDataId, DatabaseLoader::getContinentByDataId, "continent", problems));
-            json.setSerializer(Profession.class, new StaticRef<>(Profession::getDataId, DatabaseLoader::getProfessionByDataId, "profession", problems));
+            json.setSerializer(Country.class, new StaticRef<>(Country::getDataId, (id -> DatabaseLoader.getInstance().getCountryByDataId(id)), "country", problems));
+            json.setSerializer(Continent.class, new StaticRef<>(Continent::getDataId, (id -> DatabaseLoader.getInstance().getContinentByDataId(id)), "continent", problems));
+            json.setSerializer(Profession.class, new StaticRef<>(Profession::getDataId, (id -> DatabaseLoader.getInstance().getProfessionByDataId(id)), "profession", problems));
             json.setSerializer(PlayerProfession.class, new StaticRef<>(PlayerProfession::getDataId,
-                    DatabaseLoader::getPlayerProfessionByDataId, "occupation", problems));
+                    (id -> DatabaseLoader.getInstance().getPlayerProfessionByDataId(id)), "occupation", problems));
             json.setSerializer(Stadium.class, new StadiumSerializer(problems));
             json.setSerializer(BasicScript.class, new ScriptSerializer(problems));
         }
@@ -554,7 +554,7 @@ public final class SaveCodec {
             String dataId = v.getString("dataId", null);
             s.setDataId(dataId);
             if (dataId != null) {
-                GameData data = DatabaseLoader.getGameData();
+                GameData data = DatabaseLoader.getInstance().getGameData();
                 DataRecord g = data != null ? data.get(GameData.GROUND, dataId) : null;
                 if (g != null) {
                     s.setName(g.str("name"));

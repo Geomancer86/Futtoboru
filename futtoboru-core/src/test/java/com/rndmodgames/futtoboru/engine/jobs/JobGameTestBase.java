@@ -36,8 +36,8 @@ abstract class JobGameTestBase extends BaseTest {
         jobs = application.getJobManager();
         staff = application.getClubStaffManager();
         owner = game.getOwner();
-        manager = DatabaseLoader.getProfessionByDataId(Profession.MANAGER);
-        director = DatabaseLoader.getProfessionByDataId(Profession.DIRECTOR);
+        manager = DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER);
+        director = DatabaseLoader.getInstance().getProfessionByDataId(Profession.DIRECTOR);
         jobs.setStaffDeparturePerDay(0.0);
     }
 
@@ -46,12 +46,12 @@ abstract class JobGameTestBase extends BaseTest {
         Club preston = game.getCurrentClub();
         staff.vacatePostsOf(preston, owner);
         owner.setCurrentClubId(null);
-        owner.setPrimaryProfession(DatabaseLoader.getProfessionByDataId(Profession.RETIRED_PLAYER));
+        owner.setPrimaryProfession(DatabaseLoader.getInstance().getProfessionByDataId(Profession.RETIRED_PLAYER));
         jobs.updateJobOpenings();
     }
 
     protected JobOpening opening(String clubDataId, Profession profession) {
-        Club club = DatabaseLoader.getClubByDataId(clubDataId);
+        Club club = DatabaseLoader.getInstance().getClubByDataId(clubDataId);
         for (JobOpening job : jobs.getAvailableJobs(club)) {
             if (job.getProfessionId().equals(profession.getId())) {
                 return job;

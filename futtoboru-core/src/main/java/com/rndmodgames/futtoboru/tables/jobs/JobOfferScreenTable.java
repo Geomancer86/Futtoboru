@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -20,7 +22,6 @@ import com.rndmodgames.futtoboru.engine.finances.Money;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiDialogs;
@@ -54,7 +55,7 @@ public class JobOfferScreenTable extends VisTable {
         super(true);
 
         this.game = parent;
-        this.currentGame = ((Futtoboru)game).getCurrentGame();
+        this.currentGame = ((Futtoboru)game).getSession().getGame();
         this.jobManager = ((Futtoboru)game).getJobManager();
 
         // Title
@@ -109,7 +110,7 @@ public class JobOfferScreenTable extends VisTable {
         for (JobOffer offer : offers) {
             JobOpening jobOpening = jobManager.getJobOpeningById(offer.getJobOpeningId());
             Club club = jobOpening != null ? currentGame.getClubById(jobOpening.getClubId()) : null;
-            Profession profession = jobOpening != null ? DatabaseLoader.getProfessionById(jobOpening.getProfessionId()) : null;
+            Profession profession = jobOpening != null ? ((Futtoboru) game).getSession().database().getProfessionById(jobOpening.getProfessionId()) : null;
             if (club == null || profession == null) {
                 continue;
             }
@@ -133,7 +134,7 @@ public class JobOfferScreenTable extends VisTable {
                 buttonsTable.add(button("jobs_negotiate", () -> {
                     if (menuManager != null) {
                         menuManager.setCurrentNegotiationOffer(offer);
-                        menuManager.setActiveMainScreen(MainMenuManager.NEGOTIATION_SCREEN);
+                        menuManager.setActiveMainScreen(GameScreenId.NEGOTIATION);
                     }
                 }));
             }
@@ -150,7 +151,7 @@ public class JobOfferScreenTable extends VisTable {
                     LanguageModLoader.format("jobs_accepted_text", profession.getName(), club.getName()));
             if (menuManager != null) {
                 menuManager.setDynamicButtonsMenu();
-                menuManager.openMenuEntry(MainMenuManager.HOME_SCREEN);
+                menuManager.openMenuEntry(GameScreenId.HOME);
             }
         } else {
             Log.info(Log.UI_JOBS, "JobOfferScreenTable", "Offer could not be accepted: " + offer.getId());

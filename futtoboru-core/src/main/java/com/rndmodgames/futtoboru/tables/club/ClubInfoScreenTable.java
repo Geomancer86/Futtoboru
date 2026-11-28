@@ -37,7 +37,7 @@ public class ClubInfoScreenTable extends VisTable {
         
         //
         this.game = ((Futtoboru) parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
     }
     
     /**
@@ -233,7 +233,7 @@ public class ClubInfoScreenTable extends VisTable {
         VisTable side = new VisTable(true);
         side.add(game.getGroundArt().panel(club.getStadium(), UiTheme.size("art.ground.panel.w"),
                 UiTheme.size("art.ground.panel.h"))).top().right();
-        VisTable historyPanel = ClubHistoryPanel.build(club, game.getCurrentGame(), game.getGameEngine().getMainMenuManager());
+        VisTable historyPanel = ClubHistoryPanel.build(club, game.getSession(), game.getGameEngine().getMainMenuManager());
         if (historyPanel != null) {
             side.row();
             side.add(historyPanel).top().left();

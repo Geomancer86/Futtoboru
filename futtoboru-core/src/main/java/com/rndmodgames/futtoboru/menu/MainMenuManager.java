@@ -56,74 +56,16 @@ public class MainMenuManager {
     
     //
     private VisTable buttonsMenu = new VisTable();
-    
-    /**
-     * Screen Ids
-     * 
-     * NOTE: screen ids don't make any sense, we will keep this scheme for v1 but needs rework (with menu system)
-     */
-    public static final int HOME_SCREEN             =  100;
-    public static final int INBOX_SCREEN            =  200;
-    public static final int PERSON_DETAILS_SCREEN   =  300;
-    public static final int AUTHORITY_SCREEN        =  400;
-    
-    private static final int LEAGUE_SCREEN           =  500;
-    public static final int LEAGUE_DETAIL_SCREEN      =  501;    
-    public static final int CUP_DETAIL_SCREEN         =  502;
-    public static final int CUP_PLAYOFFS_SCREEN       =  503;
-    private static final int WORLD_SCREEN            =  600;
-    
-    //
-    public static final int MAIN_SQUAD_SCREEN   = 1000;
-    public static final int SCHEDULE_SCREEN     = 2000;
-    public static final int CLUB_INFO_SCREEN    = 3000;
-    public static final int CANDIDATES_SCREEN   = 3002;   // R-03 (G-05 has 3001)
-    public static final int FINANCES_SCREEN     = 4000;
-    public static final int COMMITTEE_SCREEN    = 3001;   // G-05
-    public static final int COMPETITIONS_SCREEN = 5000;
-    
-    //
-    public static final int MATCH_PREVIEW_SCREEN = 10000;
-    public static final int MATCH_RESULT_SCREEN  = 20000;
-    public static final int MATCH_HISTORY_SCREEN = 30000;
-    public static final int HISTORY_SCREEN       = 40000;   // U-07 champions, cup winners, final tables
-    
-    // Job System Screens (v1.0)
-    public static final int CLUB_BROWSER_SCREEN = 10001;
-    public static final int CLUB_DETAIL_SCREEN = 10002;
-    public static final int JOB_BOARD_SCREEN = 10003;
-    public static final int MY_APPLICATIONS_SCREEN = 10004;
-    public static final int JOB_OFFER_SCREEN = 10005;
-    public static final int NEGOTIATION_SCREEN = 10006;
-    
-    // Player Detail Screen (v1.0)
-    public static final int PLAYER_DETAIL_SCREEN = 10007;
-    
-    // Draw Screen (v1.0)
-    public static final int LEAGUE_DRAW_SCREEN = 10008;
-    public static final int CUP_DRAW_SCREEN = 10009;
 
-    // G-04: the retained list (from the Squad screen or the club's April letter)
-    public static final int RETAINED_LIST_SCREEN = 10010;
-
-        
-    //
-    public static int PREVIOUS_SCREEN = -1; //
-    public static int BEFORE_MATCH_SCREEN = -1; //
-    public static int CURRENT_SCREEN = HOME_SCREEN; // default to home screen
-
-    /** A new or loaded game opens on Home (the static screen ids above outlive one MainGameScreen). */
-    public static void resetNavigation() {
-        PREVIOUS_SCREEN = -1;
-        BEFORE_MATCH_SCREEN = -1;
-        CURRENT_SCREEN = HOME_SCREEN;
-    }
+    /** RF-01: the screen shown, the one before and the one before a match result (the game session's, so it
+     * outlives this manager and its MainGameScreen) */
+    private final ScreenNavigation navigation;
     
     // Current negotiation offer (v1.0)
     private com.rndmodgames.futtoboru.data.jobs.JobOffer currentNegotiationOffer = null;
     
     /** Left menu buttons by screen id, built from {@link MenuEntries} (U-04b) */
-    private final Map<Integer, VisTextButton> entryButtons = new LinkedHashMap<>();
+    private final Map<GameScreenId, VisTextButton> entryButtons = new LinkedHashMap<>();
 
     /** Screens visited since the last menu entry: what Back and Esc go through (U-04b) */
     private final NavigationHistory history = new NavigationHistory();
@@ -187,6 +129,7 @@ public class MainMenuManager {
         
         //
         this.currentGame = currentGame;
+        this.navigation = ((com.rndmodgames.futtoboru.game.Futtoboru) game).getSession().navigation();
         
         // this will always .grow()
         this.parentTable = parentTable;
@@ -254,8 +197,8 @@ public class MainMenuManager {
         
         
         // set the current screen by default; a drill-down (e.g. back from Settings) can still go Back to its entry
-        history.reset(MenuEntries.entryScreenFor(CURRENT_SCREEN));
-        setActiveMainScreen(CURRENT_SCREEN);
+        history.reset(MenuEntries.entryScreenFor(navigation.current()));
+        setActiveMainScreen(navigation.current());
         
         /**
          * Dynamic Buttons Menu depending on the CURRENT_JOB
@@ -308,9 +251,9 @@ public class MainMenuManager {
     }
 
     /** A menu entry was picked: its screen starts a new Back history. */
-    public void openMenuEntry(int screen) {
+    public void openMenuEntry(GameScreenId screen) {
         history.reset(screen);
-        if (screen == MAIN_SQUAD_SCREEN && squadScreenTable != null) {
+        if (screen == GameScreenId.MAIN_SQUAD && squadScreenTable != null) {
             squadScreenTable.showPlayers(); // G-01: the menu entry opens on the players list
         }
         setActiveMainScreen(screen);
@@ -318,8 +261,8 @@ public class MainMenuManager {
 
     /** G-01: the Squad screen on its Team Sheet tab. */
     public void openTeamSheet() {
-        openMenuEntry(MAIN_SQUAD_SCREEN);
-        if (CURRENT_SCREEN == MAIN_SQUAD_SCREEN) {
+        openMenuEntry(GameScreenId.MAIN_SQUAD);
+        if (navigation.current() == GameScreenId.MAIN_SQUAD) {
             squadScreenTable.showTeamSheet();
         }
     }
@@ -330,8 +273,8 @@ public class MainMenuManager {
      * @return false if there was nothing to go back to
      */
     public boolean goBack() {
-        int previous = history.back();
-        if (previous < 0) {
+        GameScreenId previous = history.back();
+        if (previous == GameScreenId.NONE) {
             return false;
         }
         setActiveMainScreen(previous);
@@ -344,15 +287,15 @@ public class MainMenuManager {
     }
 
     /** The screen asked for cannot be shown (no club, nothing selected): show {@code screen} in its place. */
-    private void redirectTo(int screen) {
+    private void redirectTo(GameScreenId screen) {
         history.dropCurrent();
         setActiveMainScreen(screen);
     }
 
     /** Highlights the menu entry of the current screen and shows or hides the Back button. */
     private void syncMenuState() {
-        int active = MenuEntries.entryScreenFor(CURRENT_SCREEN);
-        for (Map.Entry<Integer, VisTextButton> e : entryButtons.entrySet()) {
+        GameScreenId active = MenuEntries.entryScreenFor(navigation.current());
+        for (Map.Entry<GameScreenId, VisTextButton> e : entryButtons.entrySet()) {
             e.getValue().setChecked(e.getKey() == active);
         }
         if (topMenuTable != null) {
@@ -363,16 +306,13 @@ public class MainMenuManager {
     /**
      * Handle the Table Switching for the Main Screen
      */
-    public void setActiveMainScreen(int screen) {
+    public void setActiveMainScreen(GameScreenId screen) {
 
         // Clear the main table
         parentTable.clear();
         
-        // Set it before changing it
-        PREVIOUS_SCREEN = CURRENT_SCREEN;
-        
-        // Set/Change the active screen
-        CURRENT_SCREEN = screen;
+        // Set/Change the active screen (the shown one becomes the previous one)
+        navigation.show(screen);
         history.visit(screen);
 
         /**
@@ -384,19 +324,19 @@ public class MainMenuManager {
         switch (screen) {
 
         //
-        case HOME_SCREEN:
+        case HOME:
             homeScreenTable.updateDynamicComponents();
             parentTable.add(homeScreenTable).grow();
             break;
             
         // 
-        case INBOX_SCREEN:
+        case INBOX:
             // Update inbox to show latest messages
             inboxScreenTable.updateDynamicComponents();
             parentTable.add(inboxScreenTable).grow();
             break;
             
-        case LEAGUE_DRAW_SCREEN:
+        case LEAGUE_DRAW:
             
             // Ensure selected league is set before showing draw screen
             if (selectedLeague == null) {
@@ -515,7 +455,7 @@ public class MainMenuManager {
                     // Failed to recover league, fallback to inbox
                     Log.info(Log.UI_MENU, "MainMenuManager: ERROR - Could not recover league from message, falling back to inbox");
                     Log.error(Log.UI_MENU, "MainMenuManager", "Cannot show draw screen: selectedLeague is null and recovery failed");
-                    redirectTo(INBOX_SCREEN);
+                    redirectTo(GameScreenId.INBOX);
                     return;
                 }
             }
@@ -533,7 +473,7 @@ public class MainMenuManager {
             
             break;
             
-        case CUP_DRAW_SCREEN:
+        case CUP_DRAW:
             Log.info(Log.UI_MENU, "MainMenuManager: Showing cup draw screen");
             
             // Try to find edition ID from draw message
@@ -568,13 +508,13 @@ public class MainMenuManager {
                 parentTable.add(cupDrawScreenTable).grow().fill();
             } else {
                 Log.error(Log.UI_MENU, "MainMenuManager", "Could not find competition edition for cup draw");
-                redirectTo(INBOX_SCREEN);
+                redirectTo(GameScreenId.INBOX);
             }
             
             break;
            
         // 
-        case AUTHORITY_SCREEN:
+        case AUTHORITY:
             
             //
             authorityScreenTable.updateDynamicComponents();
@@ -583,7 +523,7 @@ public class MainMenuManager {
             break;
         
         //  
-        case PERSON_DETAILS_SCREEN:
+        case PERSON_DETAILS:
             
             //
             personDetailsScreenTable.updateDynamicPersonComponents(currentGame.getOwner());
@@ -592,13 +532,13 @@ public class MainMenuManager {
             break;
 
         //
-        case MAIN_SQUAD_SCREEN:
+        case MAIN_SQUAD:
             
             // Set the Squad that player controls to show on Squad Screen
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Squad screen: player is unemployed (no club)");
-                redirectTo(HOME_SCREEN);
+                redirectTo(GameScreenId.HOME);
                 return;
             }
             squadScreenTable.setCurrentClub(currentClub);
@@ -611,10 +551,10 @@ public class MainMenuManager {
 
             break;
 
-        case RETAINED_LIST_SCREEN:
+        case RETAINED_LIST:
             // G-04: the club's retained list (from the Squad screen or the April letter)
             if (currentClub == null) {
-                redirectTo(HOME_SCREEN);
+                redirectTo(GameScreenId.HOME);
                 return;
             }
             retainedListScreenTable.setCurrentClub(currentClub);
@@ -622,10 +562,10 @@ public class MainMenuManager {
             parentTable.add(retainedListScreenTable).grow();
             break;
 
-        case CANDIDATES_SCREEN:
+        case CANDIDATES:
             // R-03: the candidate pools of the club's region (read-only until R-05/R-07)
             if (currentClub == null) {
-                redirectTo(HOME_SCREEN);
+                redirectTo(GameScreenId.HOME);
                 return;
             }
             candidatesScreenTable.setCurrentClub(currentClub);
@@ -633,7 +573,7 @@ public class MainMenuManager {
             parentTable.add(candidatesScreenTable).grow();
             break;
 
-        case SCHEDULE_SCREEN:
+        case SCHEDULE:
 
             /**
              * TODO: fix the calendar/fixtures screen not filling the complete width until we click or do continue game.
@@ -644,7 +584,7 @@ public class MainMenuManager {
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Schedule screen: player is unemployed (no club)");
-                redirectTo(HOME_SCREEN);
+                redirectTo(GameScreenId.HOME);
                 return;
             }
             scheduleScreenTable.setCurrentClub(currentClub);
@@ -657,7 +597,7 @@ public class MainMenuManager {
             
             break;
             
-        case MATCH_PREVIEW_SCREEN:
+        case MATCH_PREVIEW:
             
             // Update dynamic components
             matchPreviewScreenTable.updateDynamicComponents();
@@ -666,11 +606,11 @@ public class MainMenuManager {
             parentTable.add(matchPreviewScreenTable).grow();
             
             // to get back to the previous screen after the match
-            BEFORE_MATCH_SCREEN = PREVIOUS_SCREEN;
+            navigation.setBeforeMatch(navigation.previous());
             
             break;
             
-        case MATCH_RESULT_SCREEN:
+        case MATCH_RESULT:
 
             // Update dynamic components
             matchResultScreenTable.updateDynamicComponents();
@@ -680,13 +620,13 @@ public class MainMenuManager {
             
             break;
             
-        case MATCH_HISTORY_SCREEN:
+        case MATCH_HISTORY:
 
             // Set Match History Current Club
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Match History screen: player is unemployed (no club)");
-                redirectTo(HOME_SCREEN);
+                redirectTo(GameScreenId.HOME);
                 return;
             }
             matchHistoryScreenTable.setCurrentClub(currentClub);
@@ -699,13 +639,13 @@ public class MainMenuManager {
             
             break;
             
-        case HISTORY_SCREEN:
+        case HISTORY:
             // V-01: the menu entry showed an empty panel (the case was missing here)
             historyScreenTable.updateDynamicComponents();
             parentTable.add(historyScreenTable).grow();
             break;
 
-        case COMPETITIONS_SCREEN:
+        case COMPETITIONS:
             
             // Update dynamic components
             competitionsScreenTable.updateDynamicComponents();
@@ -715,13 +655,13 @@ public class MainMenuManager {
             
             break;
             
-        case LEAGUE_DETAIL_SCREEN:
+        case LEAGUE_DETAIL:
             
             // Ensure selected league is set before showing league detail screen
             if (selectedLeague == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager: WARNING - selectedLeague is null for league detail screen");
                 Log.info(Log.UI_MENU, "MainMenuManager", "No league selected for detail view, redirecting to competitions");
-                redirectTo(COMPETITIONS_SCREEN);
+                redirectTo(GameScreenId.COMPETITIONS);
                 return;
             }
             
@@ -735,18 +675,18 @@ public class MainMenuManager {
             
             break;
             
-        case CUP_DETAIL_SCREEN:
+        case CUP_DETAIL:
             if (selectedCup == null) {
-                redirectTo(COMPETITIONS_SCREEN);
+                redirectTo(GameScreenId.COMPETITIONS);
                 return;
             }
             cupDetailScreenTable.setSelectedCup(selectedCup);
             parentTable.add(cupDetailScreenTable).grow().fill();
             break;
             
-        case CUP_PLAYOFFS_SCREEN:
+        case CUP_PLAYOFFS:
             if (selectedCup == null) {
-                redirectTo(COMPETITIONS_SCREEN);
+                redirectTo(GameScreenId.COMPETITIONS);
                 return;
             }
             // Find current edition
@@ -767,17 +707,17 @@ public class MainMenuManager {
                 cupPlayoffsTable.setCompetitionEdition(cupEd);
                 parentTable.add(cupPlayoffsTable).grow().fill();
             } else {
-                redirectTo(COMPETITIONS_SCREEN);
+                redirectTo(GameScreenId.COMPETITIONS);
             }
             break;
             
-        case CLUB_INFO_SCREEN:
+        case CLUB_INFO:
             
             // Update dynamic components
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Club Info screen: player is unemployed (no club)");
-                redirectTo(HOME_SCREEN);
+                redirectTo(GameScreenId.HOME);
                 return;
             }
             clubInfoScreenTable.updateDynamicComponents();
@@ -787,23 +727,23 @@ public class MainMenuManager {
             
             break;
             
-        case COMMITTEE_SCREEN:
+        case COMMITTEE:
             // G-05: the club's committee (expectations, confidence in words, members)
             if (currentClub == null) {
-                redirectTo(HOME_SCREEN);
+                redirectTo(GameScreenId.HOME);
                 return;
             }
             committeeScreenTable.updateDynamicComponents();
             parentTable.add(committeeScreenTable).grow();
             break;
 
-        case FINANCES_SCREEN:
+        case FINANCES:
             
             // Update dynamic components
             // NOTE: Redirect to home if unemployed (no club)
             if (currentClub == null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Cannot access Finances screen: player is unemployed (no club)");
-                redirectTo(HOME_SCREEN);
+                redirectTo(GameScreenId.HOME);
                 return;
             }
             financesScreenTable.updateDynamicComponents();
@@ -814,14 +754,14 @@ public class MainMenuManager {
             break;
         
         // Job System Screens (v1.0)
-        case CLUB_BROWSER_SCREEN:
+        case CLUB_BROWSER:
             clubBrowserScreenTable.updateDynamicComponents();
             parentTable.add(clubBrowserScreenTable).grow();
             break;
             
-        case CLUB_DETAIL_SCREEN:
-            Log.info(Log.UI_MENU, "MainMenuManager", "=== Switching to CLUB_DETAIL_SCREEN ===");
-            Log.info(Log.UI_MENU, "[MainMenuManager] ===== Switching to CLUB_DETAIL_SCREEN =====");
+        case CLUB_DETAIL:
+            Log.info(Log.UI_MENU, "MainMenuManager", "=== Switching to GameScreenId.CLUB_DETAIL ===");
+            Log.info(Log.UI_MENU, "[MainMenuManager] ===== Switching to GameScreenId.CLUB_DETAIL =====");
             Log.info(Log.UI_MENU, "[MainMenuManager] clubDetailScreenTable: " + (clubDetailScreenTable != null ? "OK" : "NULL"));
             Log.info(Log.UI_MENU, "[MainMenuManager] selectedClubForDetail: " + (selectedClubForDetail != null ? selectedClubForDetail.getName() : "NULL"));
             
@@ -835,21 +775,21 @@ public class MainMenuManager {
                 parentTable.add(clubDetailScreenTable).grow();
                 
                 Log.info(Log.UI_MENU, "MainMenuManager", "Screen added successfully");
-                Log.info(Log.UI_MENU, "[MainMenuManager] CLUB_DETAIL_SCREEN added to parentTable");
+                Log.info(Log.UI_MENU, "[MainMenuManager] GameScreenId.CLUB_DETAIL added to parentTable");
             } else {
                 Log.error(Log.UI_MENU, "MainMenuManager", "No club selected for detail view");
-                Log.error(Log.UI_MENU, "[MainMenuManager] ERROR: No club selected, redirecting to CLUB_BROWSER_SCREEN");
-                redirectTo(CLUB_BROWSER_SCREEN);
+                Log.error(Log.UI_MENU, "[MainMenuManager] ERROR: No club selected, redirecting to GameScreenId.CLUB_BROWSER");
+                redirectTo(GameScreenId.CLUB_BROWSER);
             }
             break;
             
-        case JOB_BOARD_SCREEN:
-            Log.error(Log.UI_MENU, "[MainMenuManager] ===== Switching to JOB_BOARD_SCREEN =====");
+        case JOB_BOARD:
+            Log.error(Log.UI_MENU, "[MainMenuManager] ===== Switching to GameScreenId.JOB_BOARD =====");
             Log.error(Log.UI_MENU, "[MainMenuManager] jobBoardScreenTable: " + (jobBoardScreenTable != null ? "OK" : "NULL"));
             System.err.flush();
-            Log.info(Log.UI_MENU, "[MainMenuManager] ===== Switching to JOB_BOARD_SCREEN =====");
+            Log.info(Log.UI_MENU, "[MainMenuManager] ===== Switching to GameScreenId.JOB_BOARD =====");
             System.out.flush();
-            Log.info(Log.UI_MENU, "MainMenuManager", "=== Switching to JOB_BOARD_SCREEN ===");
+            Log.info(Log.UI_MENU, "MainMenuManager", "=== Switching to GameScreenId.JOB_BOARD ===");
             
             if (jobBoardScreenTable != null) {
                 Log.info(Log.UI_MENU, "MainMenuManager", "Calling updateDynamicComponents...");
@@ -861,24 +801,24 @@ public class MainMenuManager {
                 parentTable.add(jobBoardScreenTable).grow();
                 
                 Log.info(Log.UI_MENU, "MainMenuManager", "Screen added successfully");
-                Log.info(Log.UI_MENU, "[MainMenuManager] JOB_BOARD_SCREEN added to parentTable");
+                Log.info(Log.UI_MENU, "[MainMenuManager] GameScreenId.JOB_BOARD added to parentTable");
             } else {
                 Log.error(Log.UI_MENU, "MainMenuManager", "jobBoardScreenTable is NULL!");
                 Log.error(Log.UI_MENU, "[MainMenuManager] ERROR: jobBoardScreenTable is NULL!");
             }
             break;
             
-        case MY_APPLICATIONS_SCREEN:
+        case MY_APPLICATIONS:
             myApplicationsScreenTable.updateDynamicComponents();
             parentTable.add(myApplicationsScreenTable).grow();
             break;
             
-        case JOB_OFFER_SCREEN:
+        case JOB_OFFER:
             jobOfferScreenTable.updateDynamicComponents();
             parentTable.add(jobOfferScreenTable).grow();
             break;
             
-        case NEGOTIATION_SCREEN:
+        case NEGOTIATION:
             if (currentNegotiationOffer != null) {
                 negotiationScreenTable.setCurrentOffer(currentNegotiationOffer);
             }
@@ -886,13 +826,13 @@ public class MainMenuManager {
             parentTable.add(negotiationScreenTable).grow();
             break;
             
-        case PLAYER_DETAIL_SCREEN:
+        case PLAYER_DETAIL:
             if (selectedPlayer != null) {
                 playerDetailScreenTable.updateDynamicComponents(selectedPlayer);
                 parentTable.add(playerDetailScreenTable).grow();
             } else {
                 Log.error(Log.UI_MENU, "MainMenuManager", "No player selected for detail view");
-                redirectTo(MAIN_SQUAD_SCREEN);
+                redirectTo(GameScreenId.MAIN_SQUAD);
             }
             break;
         
@@ -961,66 +901,66 @@ public class MainMenuManager {
         if (menuForClub != isManager()) {
             setDynamicButtonsMenu();
             if (!isManager() && MenuEntries.forProfession(false).stream()
-                    .noneMatch(e -> e.screen() == MenuEntries.entryScreenFor(CURRENT_SCREEN))) {
-                openMenuEntry(HOME_SCREEN);
+                    .noneMatch(e -> e.screen() == MenuEntries.entryScreenFor(navigation.current()))) {
+                openMenuEntry(GameScreenId.HOME);
                 return;
             }
         }
         
-        switch(CURRENT_SCREEN) {
+        switch(navigation.current()) {
         
-        case HOME_SCREEN:
+        case HOME:
             homeScreenTable.updateDynamicComponents();
             break;
 
-        case MAIN_SQUAD_SCREEN:
+        case MAIN_SQUAD:
             squadScreenTable.updateDynamicComponents();
             break;
 
-        case RETAINED_LIST_SCREEN:
+        case RETAINED_LIST:
             retainedListScreenTable.updateDynamicComponents();
             break;
 
-        case CANDIDATES_SCREEN:
+        case CANDIDATES:
             candidatesScreenTable.updateDynamicComponents();
             break;
         
-        case AUTHORITY_SCREEN:
+        case AUTHORITY:
             authorityScreenTable.updateDynamicComponents();
             break;
         
-        case SCHEDULE_SCREEN:
+        case SCHEDULE:
             scheduleScreenTable.updateDynamicComponents();
             break;
             
-        case FINANCES_SCREEN:
+        case FINANCES:
             financesScreenTable.updateDynamicComponents();
             break;
 
-        case COMMITTEE_SCREEN:
+        case COMMITTEE:
             committeeScreenTable.updateDynamicComponents();
             break;
             
-        case PLAYER_DETAIL_SCREEN:
+        case PLAYER_DETAIL:
             // Refresh player detail screen if a player is selected
             if (selectedPlayer != null) {
                 playerDetailScreenTable.updateDynamicComponents(selectedPlayer);
             }
             break;
             
-        case INBOX_SCREEN:
+        case INBOX:
             inboxScreenTable.updateDynamicComponents();
             break;
             
-        case COMPETITIONS_SCREEN:
+        case COMPETITIONS:
             competitionsScreenTable.updateDynamicComponents();
             break;
             
-        case HISTORY_SCREEN:
+        case HISTORY:
             historyScreenTable.updateDynamicComponents();
             break;
             
-        case LEAGUE_DETAIL_SCREEN:
+        case LEAGUE_DETAIL:
             
             // Update dynamic components with selected league
             // Note: Only update if league is selected - don't re-add screen to parentTable
@@ -1033,24 +973,24 @@ public class MainMenuManager {
             } else {
                 // If selectedLeague is null, redirect to competitions screen
                 Log.info(Log.UI_MENU, "MainMenuManager: selectedLeague is null during updateDynamicComponents, redirecting to competitions");
-                setActiveMainScreen(COMPETITIONS_SCREEN);
+                setActiveMainScreen(GameScreenId.COMPETITIONS);
             }
             
             break;
             
-        case CUP_DETAIL_SCREEN:
+        case CUP_DETAIL:
             if (selectedCup != null) {
                 cupDetailScreenTable.updateDynamicComponents();
             }
             break;
             
-        case CUP_PLAYOFFS_SCREEN:
+        case CUP_PLAYOFFS:
             if (selectedCup != null) {
                 cupPlayoffsTable.updateDynamicComponents();
             }
             break;
             
-        case LEAGUE_DRAW_SCREEN:
+        case LEAGUE_DRAW:
             
             // Update dynamic components with selected league
             if (selectedLeague != null) {
@@ -1062,12 +1002,12 @@ public class MainMenuManager {
             
             break;
             
-        case CUP_DRAW_SCREEN:
+        case CUP_DRAW:
             // Content is already updated in setCompetitionEdition
             parentTable.add(cupDrawScreenTable).grow();
             break;
             
-        case MATCH_HISTORY_SCREEN:
+        case MATCH_HISTORY:
             
             // Update match history screen with current club
             Club currentClub = currentGame != null ? currentGame.getCurrentClub() : null;
@@ -1079,29 +1019,29 @@ public class MainMenuManager {
             break;
 
         // J-01: the job screens follow the day too (offers lapse, posts are filled and advertised)
-        case CLUB_BROWSER_SCREEN:
+        case CLUB_BROWSER:
             clubBrowserScreenTable.updateDynamicComponents();
             break;
 
-        case CLUB_DETAIL_SCREEN:
+        case CLUB_DETAIL:
             if (selectedClubForDetail != null) {
                 clubDetailScreenTable.updateDynamicComponents(selectedClubForDetail);
             }
             break;
 
-        case JOB_BOARD_SCREEN:
+        case JOB_BOARD:
             jobBoardScreenTable.updateDynamicComponents();
             break;
 
-        case MY_APPLICATIONS_SCREEN:
+        case MY_APPLICATIONS:
             myApplicationsScreenTable.updateDynamicComponents();
             break;
 
-        case JOB_OFFER_SCREEN:
+        case JOB_OFFER:
             jobOfferScreenTable.updateDynamicComponents();
             break;
 
-        case NEGOTIATION_SCREEN:
+        case NEGOTIATION:
             negotiationScreenTable.updateDynamicComponents();
             break;
 
@@ -1178,16 +1118,16 @@ public class MainMenuManager {
             return;
         }
         matchResultScreenTable.setSelectedMatch(match);
-        if (CURRENT_SCREEN != MATCH_RESULT_SCREEN) {
-            BEFORE_MATCH_SCREEN = CURRENT_SCREEN;
+        if (navigation.current() != GameScreenId.MATCH_RESULT) {
+            navigation.setBeforeMatch(navigation.current());
         }
-        setActiveMainScreen(MATCH_RESULT_SCREEN);
+        setActiveMainScreen(GameScreenId.MATCH_RESULT);
     }
 
     /** The result screen shows the current club's latest played match again (the top bar's Match Result). */
     public void showLatestMatchResult() {
         matchResultScreenTable.setSelectedMatch(null);
-        setActiveMainScreen(MATCH_RESULT_SCREEN);
+        setActiveMainScreen(GameScreenId.MATCH_RESULT);
     }
 
     /** @return the played match with this id (any club's), or null */

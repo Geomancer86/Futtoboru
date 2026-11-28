@@ -180,7 +180,7 @@ public class NewManagerScreen implements Screen {
          */
         VisLabel placeOfBirthLabel = new VisLabel(LanguageModLoader.getValue("place_of_birth"));
 
-        CountryAndCitySelectBox placeOfBirthSelectBox = new CountryAndCitySelectBox();
+        CountryAndCitySelectBox placeOfBirthSelectBox = new CountryAndCitySelectBox(((Futtoboru) game).getSession().database().getCountries());
         
         mainContainer.row();
         mainContainer.add(placeOfBirthLabel);

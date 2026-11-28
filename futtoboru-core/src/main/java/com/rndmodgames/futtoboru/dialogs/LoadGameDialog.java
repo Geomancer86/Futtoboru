@@ -12,7 +12,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.menu.UnsavedProgress;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.futtoboru.system.save.LoadResult;
 import com.rndmodgames.futtoboru.system.save.SaveSlots;
@@ -132,8 +131,8 @@ public class LoadGameDialog extends VisDialog {
                     }
 
                     ((Futtoboru) game).startLoadedGame(result.getGame());
-                    UnsavedProgress.markSaved(result.getGame());
-                    MainMenuManager.resetNavigation();
+                    ((Futtoboru) game).getSession().progress().markSaved(result.getGame());
+                    ((Futtoboru) game).getSession().navigation().reset();
 
                     /**
                      * Redirect to Main Game Screen with Game Loaded

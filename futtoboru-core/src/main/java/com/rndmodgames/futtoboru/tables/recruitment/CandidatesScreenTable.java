@@ -21,7 +21,6 @@ import com.rndmodgames.futtoboru.data.recruitment.PoolRegion;
 import com.rndmodgames.futtoboru.engine.recruitment.CandidatePools;
 import com.rndmodgames.futtoboru.engine.recruitment.Recruitment;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.data.RecruitmentData;
 import com.rndmodgames.futtoboru.ui.UiTheme;
@@ -54,8 +53,8 @@ public class CandidatesScreenTable extends VisTable {
 
     public void updateDynamicComponents() {
         this.clear();
-        SaveGame save = game.getCurrentGame();
-        RecruitmentData data = DatabaseLoader.getRecruitmentData();
+        SaveGame save = game.getSession().getGame();
+        RecruitmentData data = game.getSession().database().getRecruitmentData();
         if (currentClub == null || save == null || data == null || data.getPools().isEmpty()) {
             this.add(new VisLabel(text("finances_no_club"))).pad(UiTheme.space("lg"));
             return;

@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tools;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -259,7 +261,7 @@ public final class ScreenshotTour extends Futtoboru {
         for (MenuEntries.MenuEntry entry : MenuEntries.forProfession(true)) {
             once("game-" + entry.labelKey().replace('_', '-'), () -> menu().openMenuEntry(entry.screen()));
         }
-        once(null, () -> menu().openMenuEntry(MainMenuManager.MAIN_SQUAD_SCREEN));
+        once(null, () -> menu().openMenuEntry(GameScreenId.MAIN_SQUAD));
         waitFrames(5);
         once(null, () -> hover(LanguageModLoader.getValue("squad_col_acceleration")));
         waitFrames(40);
@@ -267,9 +269,9 @@ public final class ScreenshotTour extends Futtoboru {
         });
         once("game-squad-team-sheet", () -> menu().openTeamSheet());
         once("game-player-detail", () -> {
-            menu().openMenuEntry(MainMenuManager.MAIN_SQUAD_SCREEN);
+            menu().openMenuEntry(GameScreenId.MAIN_SQUAD);
             menu().setSelectedPlayer(game.getCurrentClub().getPlayers().get(0));
-            menu().setActiveMainScreen(MainMenuManager.PLAYER_DETAIL_SCREEN);
+            menu().setActiveMainScreen(GameScreenId.PLAYER_DETAIL);
         });
         // G-04: the retained list as it looks on 16 April (the date moved there for the picture, then back)
         java.time.LocalDateTime[] tourDate = new java.time.LocalDateTime[1];
@@ -281,22 +283,22 @@ public final class ScreenshotTour extends Futtoboru {
             contracts.retain(ending.get(0));
             contracts.changeOfferedWage(game.getCurrentClub(), ending.get(0), 3);
             contracts.release(ending.get(1));
-            menu().setActiveMainScreen(MainMenuManager.RETAINED_LIST_SCREEN);
+            menu().setActiveMainScreen(GameScreenId.RETAINED_LIST);
         });
         once(null, () -> game.setGameDate(tourDate[0]));
         once("game-league-detail", () -> {
-            menu().openMenuEntry(MainMenuManager.COMPETITIONS_SCREEN);
+            menu().openMenuEntry(GameScreenId.COMPETITIONS);
             menu().setSelectedLeague(game.getMainAuthority().getLeagues().get(0));
-            menu().setActiveMainScreen(MainMenuManager.LEAGUE_DETAIL_SCREEN);
+            menu().setActiveMainScreen(GameScreenId.LEAGUE_DETAIL);
         });
         once("game-cup-detail", () -> {
-            menu().openMenuEntry(MainMenuManager.COMPETITIONS_SCREEN);
+            menu().openMenuEntry(GameScreenId.COMPETITIONS);
             menu().setSelectedCup(firstCup());
-            menu().setActiveMainScreen(MainMenuManager.CUP_DETAIL_SCREEN);
+            menu().setActiveMainScreen(GameScreenId.CUP_DETAIL);
         });
-        once("game-cup-playoffs", () -> menu().setActiveMainScreen(MainMenuManager.CUP_PLAYOFFS_SCREEN));
+        once("game-cup-playoffs", () -> menu().setActiveMainScreen(GameScreenId.CUP_PLAYOFFS));
         once("game-toast-f12", () -> {
-            menu().openMenuEntry(MainMenuManager.HOME_SCREEN);
+            menu().openMenuEntry(GameScreenId.HOME);
             ((MainGameScreen) getScreen()).toastShort(LanguageModLoader.getValue("screenshot_taken"));
         });
         once("game-save-dialog", () -> runOption(1));
@@ -313,9 +315,9 @@ public final class ScreenshotTour extends Futtoboru {
         // U-12: Esc on a question is its Cancel and stops there: the screen behind (a drill-down) does not go Back
         once(null, () -> {
             UiDialogs.closeOpen();
-            menu().openMenuEntry(MainMenuManager.MAIN_SQUAD_SCREEN);
+            menu().openMenuEntry(GameScreenId.MAIN_SQUAD);
             menu().setSelectedPlayer(game.getCurrentClub().getPlayers().get(0));
-            menu().setActiveMainScreen(MainMenuManager.PLAYER_DETAIL_SCREEN);
+            menu().setActiveMainScreen(GameScreenId.PLAYER_DETAIL);
             runOption(2);
         });
         waitFrames(SETTLE_FRAMES);
@@ -324,15 +326,15 @@ public final class ScreenshotTour extends Futtoboru {
         waitFrames(SETTLE_FRAMES);
         once(null, () -> {
             expect(!UiDialogs.isOpen(), "Esc did not close the unsaved-progress question");
-            expect(MainMenuManager.CURRENT_SCREEN == MainMenuManager.PLAYER_DETAIL_SCREEN,
-                    "Esc on a dialog also went Back (screen " + MainMenuManager.CURRENT_SCREEN + ")");
+            expect(getSession().navigation().current() == GameScreenId.PLAYER_DETAIL,
+                    "Esc on a dialog also went Back (screen " + getSession().navigation().current() + ")");
             pressEscape(); // no dialog now: Esc is Back again, to the squad
         });
         waitFrames(5);
         once(null, () -> {
-            expect(MainMenuManager.CURRENT_SCREEN == MainMenuManager.MAIN_SQUAD_SCREEN,
+            expect(getSession().navigation().current() == GameScreenId.MAIN_SQUAD,
                     "Esc without a dialog did not go Back to the squad");
-            menu().openMenuEntry(MainMenuManager.HOME_SCREEN);
+            menu().openMenuEntry(GameScreenId.HOME);
             runOption(2);
         });
         waitFrames(SETTLE_FRAMES);
@@ -347,19 +349,19 @@ public final class ScreenshotTour extends Futtoboru {
             once("jobs-" + entry.labelKey().replace('_', '-'), () -> menu().openMenuEntry(entry.screen()));
         }
         once("jobs-club-detail", () -> {
-            menu().openMenuEntry(MainMenuManager.CLUB_BROWSER_SCREEN);
-            menu().setSelectedClubForDetail(DatabaseLoader.getClubByDataId("preston-north-end"));
-            menu().setActiveMainScreen(MainMenuManager.CLUB_DETAIL_SCREEN);
+            menu().openMenuEntry(GameScreenId.CLUB_BROWSER);
+            menu().setSelectedClubForDetail(DatabaseLoader.getInstance().getClubByDataId("preston-north-end"));
+            menu().setActiveMainScreen(GameScreenId.CLUB_DETAIL);
         });
         once("jobs-my-applications-offer", () -> {
             JobOpening opening = getJobManager().getAvailableJobs().get(0);
             getJobManager().applyForJob(game.getOwner(), opening);
             JobOffer offer = getJobManager().makeOffer(opening, game.getOwner());
             menu().setCurrentNegotiationOffer(offer);
-            menu().openMenuEntry(MainMenuManager.MY_APPLICATIONS_SCREEN);
+            menu().openMenuEntry(GameScreenId.MY_APPLICATIONS);
         });
-        once("jobs-job-offer", () -> menu().setActiveMainScreen(MainMenuManager.JOB_OFFER_SCREEN));
-        once("jobs-negotiation", () -> menu().setActiveMainScreen(MainMenuManager.NEGOTIATION_SCREEN));
+        once("jobs-job-offer", () -> menu().setActiveMainScreen(GameScreenId.JOB_OFFER));
+        once("jobs-negotiation", () -> menu().setActiveMainScreen(GameScreenId.NEGOTIATION));
     }
 
     /** a fresh new game: manager at Preston, or a retired player without a club */
@@ -368,7 +370,7 @@ public final class ScreenshotTour extends Futtoboru {
         game = NewGameFixture.newGameInSession(this);
         game.getOwner().setBirthDate(java.time.LocalDateTime.of(1850, 6, 1, 0, 0)); // the fixture's owner has none
         if (!manager) {
-            game.getOwner().setPrimaryProfession(DatabaseLoader.getProfessionByDataId(Profession.RETIRED_PLAYER));
+            game.getOwner().setPrimaryProfession(DatabaseLoader.getInstance().getProfessionByDataId(Profession.RETIRED_PLAYER));
             game.getOwner().setCurrentClubId(null);
         }
         // what NewGameOverviewScreen's Start does after the fixture's part
@@ -382,13 +384,13 @@ public final class ScreenshotTour extends Futtoboru {
         if (welcome != null) {
             getGameEngine().getMessageManager().deliverMessage(welcome);
         }
-        MainMenuManager.resetNavigation();
+        getSession().navigation().reset();
         changeScreen(GAME_SCREEN);
     }
 
     /** a new game screen after days were played outside it (the date widget only updates through Continue) */
     private void refreshGameScreen() {
-        MainMenuManager.resetNavigation();
+        getSession().navigation().reset();
         changeScreen(GAME_SCREEN);
     }
 
@@ -447,9 +449,9 @@ public final class ScreenshotTour extends Futtoboru {
     private void openDraw() {
         deliverScheduledDraws();
         if (mandatoryDraw("CUP_DRAW") != null) {
-            menu().setActiveMainScreen(MainMenuManager.CUP_DRAW_SCREEN);
+            menu().setActiveMainScreen(GameScreenId.CUP_DRAW);
         } else {
-            menu().setActiveMainScreen(MainMenuManager.LEAGUE_DRAW_SCREEN);
+            menu().setActiveMainScreen(GameScreenId.LEAGUE_DRAW);
         }
     }
 
@@ -533,12 +535,12 @@ public final class ScreenshotTour extends Futtoboru {
     }
 
     private Season season() {
-        return DatabaseLoader.getSeasonByDataId("1888-89");
+        return DatabaseLoader.getInstance().getSeasonByDataId("1888-89");
     }
 
     private List<Country> england() {
         List<Country> countries = new ArrayList<>();
-        countries.add(DatabaseLoader.getCountryByDataId("england"));
+        countries.add(DatabaseLoader.getInstance().getCountryByDataId("england"));
         return countries;
     }
 

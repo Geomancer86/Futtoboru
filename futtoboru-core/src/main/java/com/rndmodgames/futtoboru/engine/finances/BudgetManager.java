@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.engine.finances;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -280,7 +282,7 @@ public class BudgetManager {
         m.setTitle(title);
         m.setPlainTextMessage(body);
         m.setMessageTime(now);
-        m.setActionScreen(MainMenuManager.FINANCES_SCREEN);
+        m.setActionScreen(GameScreenId.FINANCES);
         m.setIsRead(false);
         m.setIsDeleted(false);
         m.setIsMandatory(false);

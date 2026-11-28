@@ -29,8 +29,8 @@ public class NameGenerator {
     public static String [] generateName(Country country, RandomSource rng) {
         
         //
-        java.util.List<String> names = DatabaseLoader.getFirstNames(country);
-        java.util.List<String> lastnames = DatabaseLoader.getLastNames(country);
+        java.util.List<String> names = DatabaseLoader.getInstance().getFirstNames(country);
+        java.util.List<String> lastnames = DatabaseLoader.getInstance().getLastNames(country);
         int numberOfNames = names.size();
         int numberOfLastnames = lastnames.size();
         if (numberOfNames < 2 || numberOfLastnames < 2) {

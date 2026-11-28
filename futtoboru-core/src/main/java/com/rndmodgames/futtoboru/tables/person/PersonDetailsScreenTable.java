@@ -8,7 +8,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -113,7 +112,7 @@ public class PersonDetailsScreenTable extends VisTable {
                 
             } else {
                 
-                Club currentClub = ((Futtoboru)game).getCurrentGame().getCurrentClub();
+                Club currentClub = ((Futtoboru)game).getSession().getGame().getCurrentClub();
                 
                 currentClubValueLabel.setText(currentClub.getName());
             }

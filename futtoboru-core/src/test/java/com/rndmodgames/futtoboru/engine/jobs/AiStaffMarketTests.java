@@ -39,7 +39,7 @@ class AiStaffMarketTests extends JobGameTestBase {
     @Test
     void aiClubsAppointStaffAtTheDeadline() {
         becomeJobSeeker();
-        Club bolton = DatabaseLoader.getClubByDataId("bolton-wanderers");
+        Club bolton = DatabaseLoader.getInstance().getClubByDataId("bolton-wanderers");
         JobOpening job = opening("bolton-wanderers", manager);
         long days = ChronoUnit.DAYS.between(game.getGameDate(), job.getApplicationDeadline());
         assertTrue(days >= JobConstants.JOB_OPENING_MIN_DEADLINE_DAYS && days <= JobConstants.JOB_OPENING_MAX_DEADLINE_DAYS,
@@ -62,7 +62,7 @@ class AiStaffMarketTests extends JobGameTestBase {
     @Test
     void aClubWaitsForTheSeekersAnswerBeforeAppointingAnother() {
         becomeJobSeeker();
-        Club bolton = DatabaseLoader.getClubByDataId("bolton-wanderers");
+        Club bolton = DatabaseLoader.getInstance().getClubByDataId("bolton-wanderers");
         JobOpening job = opening("bolton-wanderers", manager);
         game.setGameDate(job.getApplicationDeadline().minusDays(1));
         jobs.applyForJob(owner, job);
@@ -75,7 +75,7 @@ class AiStaffMarketTests extends JobGameTestBase {
 
     @Test
     void aiStaffLeaveAndThePostIsAdvertisedAgain() {
-        Club bolton = DatabaseLoader.getClubByDataId("bolton-wanderers");
+        Club bolton = DatabaseLoader.getInstance().getClubByDataId("bolton-wanderers");
         passDays(JobConstants.JOB_OPENING_MAX_DEADLINE_DAYS + 1);
         Long first = bolton.getStaffId(manager.getId());
         assertNotNull(first, "every advert is filled after the longest deadline");
@@ -144,7 +144,7 @@ class AiStaffMarketTests extends JobGameTestBase {
     @Test
     void appointedStaffSurviveASaveAndLoad() {
         passDays(JobConstants.JOB_OPENING_MAX_DEADLINE_DAYS + 1);
-        Club bolton = DatabaseLoader.getClubByDataId("bolton-wanderers");
+        Club bolton = DatabaseLoader.getInstance().getClubByDataId("bolton-wanderers");
         Person held = staff.getClubStaff(bolton, manager);
         assertNotNull(held);
         String text = SaveCodec.encode(game, "Staff", LocalDateTime.of(2000, 1, 1, 0, 0));

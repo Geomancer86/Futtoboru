@@ -14,50 +14,51 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 /** U-04d: when the in-game Options must ask before Load / Quit. */
 class UnsavedProgressTests {
 
+    private final UnsavedProgress progress = new UnsavedProgress();
     private SaveGame game;
 
     @BeforeEach
     void setUp() {
-        UnsavedProgress.reset();
+        progress.reset();
         game = new SaveGame();
         game.setGameDate(LocalDateTime.of(1888, 9, 8, 9, 0));
     }
 
     @AfterEach
     void tearDown() {
-        UnsavedProgress.reset();
+        progress.reset();
     }
 
     @Test
     void newGameNeverSavedIsUnsaved() {
-        assertTrue(UnsavedProgress.isUnsaved(game));
+        assertTrue(progress.isUnsaved(game));
     }
 
     @Test
     void savedGameOnSameDayIsSaved() {
-        UnsavedProgress.markSaved(game);
-        assertFalse(UnsavedProgress.isUnsaved(game));
+        progress.markSaved(game);
+        assertFalse(progress.isUnsaved(game));
     }
 
     @Test
     void continuingAfterSaveIsUnsaved() {
-        UnsavedProgress.markSaved(game);
+        progress.markSaved(game);
         game.setGameDate(game.getGameDate().plusDays(1));
-        assertTrue(UnsavedProgress.isUnsaved(game));
-        UnsavedProgress.markSaved(game);
-        assertFalse(UnsavedProgress.isUnsaved(game));
+        assertTrue(progress.isUnsaved(game));
+        progress.markSaved(game);
+        assertFalse(progress.isUnsaved(game));
     }
 
     @Test
     void anotherGameOnTheSameDateIsUnsaved() {
-        UnsavedProgress.markSaved(game);
+        progress.markSaved(game);
         SaveGame other = new SaveGame();
         other.setGameDate(game.getGameDate());
-        assertTrue(UnsavedProgress.isUnsaved(other));
+        assertTrue(progress.isUnsaved(other));
     }
 
     @Test
     void noGameHasNothingToLose() {
-        assertFalse(UnsavedProgress.isUnsaved(null));
+        assertFalse(progress.isUnsaved(null));
     }
 }

@@ -143,7 +143,7 @@ public final class NeutralVenues {
         }
         if (isNeutral(match)) {
             com.rndmodgames.futtoboru.data.Stadium venue =
-                    com.rndmodgames.futtoboru.system.DatabaseLoader.getGroundByDataId(match.getVenue());
+                    com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getGroundByDataId(match.getVenue());
             if (venue != null) {
                 return venue;
             }
@@ -155,7 +155,7 @@ public final class NeutralVenues {
         }
         Club home = game != null ? game.getClubById(match.getHomeClubId()) : null;
         if (home == null) {
-            home = com.rndmodgames.futtoboru.system.DatabaseLoader.getClubById(match.getHomeClubId());
+            home = com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getClubById(match.getHomeClubId());
         }
         return home != null ? home.getStadium() : null;
     }
@@ -217,7 +217,7 @@ public final class NeutralVenues {
     private static String homeGround(SaveGame game, Long clubId) {
         Club club = game != null ? game.getClubById(clubId) : null;
         if (club == null) {
-            club = com.rndmodgames.futtoboru.system.DatabaseLoader.getClubById(clubId);
+            club = com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getClubById(clubId);
         }
         return club != null && club.getStadium() != null ? club.getStadium().getDataId() : null;
     }
@@ -239,7 +239,7 @@ public final class NeutralVenues {
             }
         }
         if (competition == null && match.getCompetitionId() != null) {
-            for (Competition c : com.rndmodgames.futtoboru.system.DatabaseLoader.getCompetitions()) {
+            for (Competition c : com.rndmodgames.futtoboru.system.DatabaseLoader.getInstance().getCompetitions()) {
                 if (match.getCompetitionId().equals(c.getId())) {
                     competition = c.getDataId();
                     break;

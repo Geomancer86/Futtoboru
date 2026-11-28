@@ -290,7 +290,7 @@ final class GameInvariants {
      * at least 11 registered men.
      */
     static void clubsAtSeasonStart(String where, SaveGame game, List<JobOpening> openings) {
-        Profession secretary = DatabaseLoader.getProfessionByDataId(Profession.MANAGER);
+        Profession secretary = DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER);
         Set<Long> advertised = new HashSet<>();
         for (JobOpening o : openings) {
             if (secretary.getId().equals(o.getProfessionId())) {

@@ -50,7 +50,7 @@ public final class NewGameClubs {
                         continue;
                     }
                     for (Long clubId : edition.getParticipantClubsIds()) {
-                        Club club = DatabaseLoader.getClubById(clubId);
+                        Club club = DatabaseLoader.getInstance().getClubById(clubId);
                         if (club != null && game.addClub(club)) {
                             Log.debug(Log.UI_MENU, "NewGameClubs", "participant " + club.getName() + " (" + clubId
                                     + ") of " + comp.getName());
@@ -59,7 +59,7 @@ public final class NewGameClubs {
                 }
             }
         }
-        Map<Long, List<Club>> byCountry = DatabaseLoader.getClubsByCountry();
+        Map<Long, List<Club>> byCountry = DatabaseLoader.getInstance().getClubsByCountry();
         if (selectedCountries != null && byCountry != null) {
             for (Country country : selectedCountries) {
                 if (country == null || country.getId() == null) {

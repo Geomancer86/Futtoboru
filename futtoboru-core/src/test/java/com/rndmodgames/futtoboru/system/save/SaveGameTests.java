@@ -129,20 +129,20 @@ class SaveGameTests {
         // clubs: the game's, the league's, the fixtures' and the database lookups are the same instance
         Club preston = game.getCurrentClub();
         assertNotNull(preston);
-        assertSame(preston, DatabaseLoader.getClubById(preston.getId()));
-        assertSame(preston, DatabaseLoader.getClubByDataId("preston-north-end"));
+        assertSame(preston, DatabaseLoader.getInstance().getClubById(preston.getId()));
+        assertSame(preston, DatabaseLoader.getInstance().getClubByDataId("preston-north-end"));
         League league = game.getMainAuthority().getLeagues().get(0);
-        assertSame(game.getMainAuthority(), DatabaseLoader.getMainAuthority());
+        assertSame(game.getMainAuthority(), DatabaseLoader.getInstance().getMainAuthority());
         for (Club c : league.getLeagueClubs()) {
             assertSame(c, game.getClubById(c.getId()));
-            assertSame(c, DatabaseLoader.getClubById(c.getId()));
-            assertSame(c, DatabaseLoader.getClubByDataId(c.getDataId()));
+            assertSame(c, DatabaseLoader.getInstance().getClubById(c.getId()));
+            assertSame(c, DatabaseLoader.getInstance().getClubByDataId(c.getDataId()));
         }
         Map<Long, Club> byId = new HashMap<>();
         Map<Club, Boolean> clubs = new IdentityHashMap<>();
         List<Club> everywhere = new ArrayList<>(game.getAllClubs());
         everywhere.addAll(league.getLeagueClubs());
-        everywhere.addAll(DatabaseLoader.getClubs());
+        everywhere.addAll(DatabaseLoader.getInstance().getClubs());
         for (Club c : everywhere) {
             Club prev = byId.putIfAbsent(c.getId(), c);
             assertTrue(prev == null || prev == c, "two objects for club " + c.getId());
@@ -156,8 +156,8 @@ class SaveGameTests {
                 if (m.getHomeClubId() == null || m.getAwayClubId() == null) {
                     continue; // a cup tie not drawn yet
                 }
-                Club home = DatabaseLoader.getClubById(m.getHomeClubId());
-                Club away = DatabaseLoader.getClubById(m.getAwayClubId());
+                Club home = DatabaseLoader.getInstance().getClubById(m.getHomeClubId());
+                Club away = DatabaseLoader.getInstance().getClubById(m.getAwayClubId());
                 assertTrue(clubs.containsKey(home) && clubs.containsKey(away), "match " + m.getId() + ": "
                         + m.getHomeClubId() + " " + home + " - " + m.getAwayClubId() + " " + away);
                 Club other = home == c ? away : home;
@@ -169,7 +169,7 @@ class SaveGameTests {
         assertTrue(fixtures > 0);
 
         // editions: the league's and its competition's are the same object
-        Competition footballLeague = DatabaseLoader.getCompetitionByDataId("football-league");
+        Competition footballLeague = DatabaseLoader.getInstance().getCompetitionByDataId("football-league");
         assertTrue(game.getAllLeagues().stream().anyMatch(x -> x == footballLeague));
         for (CompetitionEdition e : league.getEditions()) {
             assertTrue(footballLeague.getEditions().stream().anyMatch(x -> x == e));
@@ -177,30 +177,30 @@ class SaveGameTests {
 
         // data is never copied: countries, professions and occupations are the database's objects
         for (Club c : game.getAllClubs()) {
-            assertSame(DatabaseLoader.getCountryByDataId(c.getCountry().getDataId()), c.getCountry());
+            assertSame(DatabaseLoader.getInstance().getCountryByDataId(c.getCountry().getDataId()), c.getCountry());
             for (Player p : c.getPlayers()) {
                 Person person = p.getPerson();
-                assertSame(DatabaseLoader.getCountryByDataId(person.getCountry().getDataId()), person.getCountry());
+                assertSame(DatabaseLoader.getInstance().getCountryByDataId(person.getCountry().getDataId()), person.getCountry());
                 if (p.getPlayerProfession() != null) {
-                    assertSame(DatabaseLoader.getPlayerProfessionByDataId(p.getPlayerProfession().getDataId()),
+                    assertSame(DatabaseLoader.getInstance().getPlayerProfessionByDataId(p.getPlayerProfession().getDataId()),
                             p.getPlayerProfession());
                 }
-                if (person.getDataId() != null && person.getId().equals(DatabaseLoader.getPersonByDataId(person.getDataId()).getId())) {
-                    assertSame(person, DatabaseLoader.getPersonByDataId(person.getDataId()));
+                if (person.getDataId() != null && person.getId().equals(DatabaseLoader.getInstance().getPersonByDataId(person.getDataId()).getId())) {
+                    assertSame(person, DatabaseLoader.getInstance().getPersonByDataId(person.getDataId()));
                 }
             }
             if (c.getStadium() != null && c.getStadium().getDataId() != null) {
                 assertNotNull(c.getStadium().getName());
             }
         }
-        assertSame(DatabaseLoader.getProfessionByDataId(Profession.MANAGER), game.getOwner().getPrimaryProfession());
+        assertSame(DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER), game.getOwner().getPrimaryProfession());
     }
 
     @Test
     void staffKeysComeBackAsLongs() throws IOException {
         SaveGame game = NewGameFixture.newGame(application);
         Club preston = game.getCurrentClub();
-        Long manager = DatabaseLoader.getProfessionByDataId(Profession.MANAGER).getId();
+        Long manager = DatabaseLoader.getInstance().getProfessionByDataId(Profession.MANAGER).getId();
         preston.setStaffId(manager, game.getOwner().getId());
 
         Club loaded = saveAndLoad(game, "Staff").getGame().getCurrentClub();
@@ -324,7 +324,7 @@ class SaveGameTests {
         SaveGame game = result.getGame();
         assertEquals("Test", game.getOwner().getName());
         assertEquals(LocalDateTime.of(1888, 4, 1, 4, 0), game.getGameDate());
-        assertSame(game.getCurrentClub(), DatabaseLoader.getClubByDataId("preston-north-end"));
+        assertSame(game.getCurrentClub(), DatabaseLoader.getInstance().getClubByDataId("preston-north-end"));
         assertFalse(game.getAllClubs().isEmpty());
 
         // v1 -> v2 (E-01): positions from the squad data, dribbling sourced or derived from the saved attributes
@@ -360,8 +360,8 @@ class SaveGameTests {
         fresh.setDataId(dewhurst.getPerson().getDataId());
         fresh.setBirthDate(dewhurst.getPerson().getBirthDate());
         fresh.setCountry(dewhurst.getPerson().getCountry());
-        com.rndmodgames.futtoboru.system.generators.LanguageGenerator.assign(fresh, DatabaseLoader.getLanguageData(),
-                DatabaseLoader.getGameData(),
+        com.rndmodgames.futtoboru.system.generators.LanguageGenerator.assign(fresh, DatabaseLoader.getInstance().getLanguageData(),
+                DatabaseLoader.getInstance().getGameData(),
                 com.rndmodgames.futtoboru.engine.random.RandomSource.seeded(game.getSeed()).fork("database"));
         assertEquals(fresh.getLanguages(), dewhurst.getPerson().getLanguages());
         assertEquals(fresh.getBirthArea(), dewhurst.getPerson().getBirthArea());

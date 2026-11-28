@@ -114,7 +114,7 @@ public class PersonGenerator {
             // If Generating Before Game Running
             if (game == null) {
                                 
-                for (Person check : DatabaseLoader.getPersons()) {
+                for (Person check : DatabaseLoader.getInstance().getPersons()) {
                     
 
                     if (person.getName().equals(check.getName()) && person.getLastname().equals(check.getLastname())) {
@@ -153,7 +153,7 @@ public class PersonGenerator {
         }
 
         // R-11a: languages on the person's own fork of the people stream (a fork draws nothing from it)
-        LanguageGenerator.assign(person, DatabaseLoader.getLanguageData(), null, rng);
+        LanguageGenerator.assign(person, DatabaseLoader.getInstance().getLanguageData(), null, rng);
 
         return person;
     }

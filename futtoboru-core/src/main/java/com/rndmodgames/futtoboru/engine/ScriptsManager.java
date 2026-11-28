@@ -154,7 +154,7 @@ public class ScriptsManager {
             Log.error(Log.ENGINE_SCRIPTS, "League country ID is null in script!");
             return;
         }
-        league.setCountry(DatabaseLoader.getCountryById(countryId));
+        league.setCountry(DatabaseLoader.getInstance().getCountryById(countryId));
         if (league.getCountry() == null) {
             Log.error(Log.ENGINE_SCRIPTS, "Country with ID " + countryId + " not found!");
             return;
@@ -199,7 +199,7 @@ public class ScriptsManager {
             
             if (club == null) {
                 // Fallback to DatabaseLoader
-                club = DatabaseLoader.getClubById(clubId);
+                club = DatabaseLoader.getInstance().getClubById(clubId);
                 
                 if (club != null) {
                     // Add to SaveGame so fixture generator can find it
@@ -655,7 +655,7 @@ public class ScriptsManager {
             Long id = participantIds.get(i);
             // Ensure club is in SaveGame
             if (currentGame.getClubById(id) == null) {
-                Club club = DatabaseLoader.getClubById(id);
+                Club club = DatabaseLoader.getInstance().getClubById(id);
                 if (club != null) {
                     Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager: Adding missing cup club " + club.getName() + " (ID: " + id + ") to SaveGame");
                     currentGame.getAllClubs().add(club);
@@ -755,7 +755,7 @@ public class ScriptsManager {
                     return comp;
                 }
             }
-            for (Competition comp : DatabaseLoader.getCompetitions()) {
+            for (Competition comp : DatabaseLoader.getInstance().getCompetitions()) {
                 if (competitionId.equals(comp.getId())) {
                     competitions.add(comp);
                     return comp;

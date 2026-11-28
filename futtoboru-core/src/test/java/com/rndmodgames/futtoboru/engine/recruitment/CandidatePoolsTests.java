@@ -39,7 +39,7 @@ class CandidatePoolsTests extends BaseTest {
     private static final LocalDateTime START = LocalDateTime.of(1888, 9, 8, 0, 0);
 
     private static RecruitmentData data() {
-        return DatabaseLoader.getRecruitmentData();
+        return DatabaseLoader.getInstance().getRecruitmentData();
     }
 
     private static SaveGame build(long seed, int season, LocalDateTime now) {

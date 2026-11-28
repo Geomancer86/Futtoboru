@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.draw;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import com.rndmodgames.localization.LanguageModLoader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +59,7 @@ public class CupDrawScreenTable extends VisTable {
         super(true);
         
         this.game = ((Futtoboru) parent);
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
         
         // Create scrollable content table
         contentTable = new VisTable(true);
@@ -174,7 +176,7 @@ public class CupDrawScreenTable extends VisTable {
             Log.info(Log.UI_DRAW, "CupDrawScreenTable: No matches found for this edition, generating draw now...");
             generateCupDraw();
             // Re-collect matches after generation - refresh currentGame reference first
-            currentGame = game.getCurrentGame();
+            currentGame = game.getSession().getGame();
             editionMatches = new ArrayList<>();
             for (Club club : currentGame.getAllClubs()) {
                 if (club != null && club.getScheduledMatches() != null) {
@@ -507,7 +509,7 @@ public class CupDrawScreenTable extends VisTable {
                 public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                     markDrawMessageAsComplete();
                     if (menuManager != null) {
-                        menuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                        menuManager.setActiveMainScreen(GameScreenId.INBOX);
                     }
                     if (game.getGameEngine() != null) {
                         game.getGameEngine().getNextGameAction();

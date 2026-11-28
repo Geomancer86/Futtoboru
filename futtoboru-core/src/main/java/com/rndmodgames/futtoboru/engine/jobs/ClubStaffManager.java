@@ -118,7 +118,7 @@ public class ClubStaffManager {
     public List<Profession> getStaffPositions() {
         List<Profession> posts = new ArrayList<>();
         for (String dataId : STAFF_POSITIONS) {
-            Profession profession = DatabaseLoader.getProfessionByDataId(dataId);
+            Profession profession = DatabaseLoader.getInstance().getProfessionByDataId(dataId);
             if (profession != null && profession.getId() != null) {
                 posts.add(profession);
             }
@@ -214,8 +214,8 @@ public class ClubStaffManager {
     /** A person generated for a post: a name of the club's country (English without one), 28 to 57 years old. */
     private Person newCandidate(Club club, Profession profession, RandomSource rng) {
         Country country = club.getCountry();
-        if (DatabaseLoader.getFirstNames(country).size() < 2 || DatabaseLoader.getLastNames(country).size() < 2) {
-            country = DatabaseLoader.getCountryByDataId("england");
+        if (DatabaseLoader.getInstance().getFirstNames(country).size() < 2 || DatabaseLoader.getInstance().getLastNames(country).size() < 2) {
+            country = DatabaseLoader.getInstance().getCountryByDataId("england");
         }
         Person person = new Person();
         String[] name = NameGenerator.generateName(country, rng);

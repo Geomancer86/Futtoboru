@@ -7,7 +7,6 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.data.Stadium;
 import com.rndmodgames.futtoboru.engine.team.TeamSheets;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -89,8 +88,8 @@ public class MatchPreviewScreenTable extends VisTable {
         
         // Find the next playable match (both teams determined, not played, date is today or past)
         Match match = null;
-        Club currentClub = game.getCurrentGame().getCurrentClub();
-        java.time.LocalDateTime today = game.getCurrentGame().getGameDate();
+        Club currentClub = game.getSession().getGame().getCurrentClub();
+        java.time.LocalDateTime today = game.getSession().getGame().getGameDate();
         
         if (currentClub.getScheduledMatches() != null) {
             for (Match m : currentClub.getScheduledMatches()) {
@@ -124,9 +123,9 @@ public class MatchPreviewScreenTable extends VisTable {
         
         // Get clubs with null checks
         Club homeClub = match.getHomeClubId() != null ? 
-            DatabaseLoader.getClubById(match.getHomeClubId()) : null;
+            game.getSession().database().getClubById(match.getHomeClubId()) : null;
         Club awayClub = match.getAwayClubId() != null ? 
-            DatabaseLoader.getClubById(match.getAwayClubId()) : null;
+            game.getSession().database().getClubById(match.getAwayClubId()) : null;
         
         if (homeClub == null || awayClub == null) {
             this.row();
@@ -147,7 +146,7 @@ public class MatchPreviewScreenTable extends VisTable {
 
         // Venue: the match's neutral ground (P2-14: a cup semi-final or final, e.g. Kennington Oval), else the home
         // club's season ground
-        Stadium venue = NeutralVenues.stadiumOf(match, game.getCurrentGame());
+        Stadium venue = NeutralVenues.stadiumOf(match, game.getSession().getGame());
         if (venue != null) {
             this.row();
             String line = LanguageModLoader.getValue("ground_venue") + ": " + venue.getName();
@@ -169,7 +168,7 @@ public class MatchPreviewScreenTable extends VisTable {
     }
 
     private void addSheet(VisTable sheets, Match match, Club fallback, boolean home) {
-        SaveGame save = game.getCurrentGame();
+        SaveGame save = game.getSession().getGame();
         Club club = save.getClubById(home ? match.getHomeClubId() : match.getAwayClubId());
         if (club == null) {
             club = fallback;

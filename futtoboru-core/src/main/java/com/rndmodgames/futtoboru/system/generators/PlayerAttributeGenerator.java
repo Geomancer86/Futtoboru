@@ -50,7 +50,7 @@ public class PlayerAttributeGenerator {
         // Get nationality modifier (attribute-specific)
         NationalityModifier natMod = null;
         if (person.getCountry() != null && person.getCountry().getId() != null) {
-            natMod = DatabaseLoader.getNationalityModifier(person.getCountry().getId());
+            natMod = DatabaseLoader.getInstance().getNationalityModifier(person.getCountry().getId());
         }
         
         // Get region modifier (attribute-specific, based on state/city)
@@ -59,7 +59,7 @@ public class PlayerAttributeGenerator {
         if (person.getState() != null && person.getState().getName() != null && 
             person.getCountry() != null && person.getCountry().getId() != null) {
             // Try to find region by state name
-            regMod = DatabaseLoader.getRegionModifier(
+            regMod = DatabaseLoader.getInstance().getRegionModifier(
                 person.getState().getName(), person.getCountry().getId());
         }
         

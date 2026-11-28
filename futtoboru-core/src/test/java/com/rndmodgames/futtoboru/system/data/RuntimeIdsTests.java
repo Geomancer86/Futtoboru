@@ -79,13 +79,13 @@ class RuntimeIdsTests {
         // data objects (built at startup)
         List<Object> data = new ArrayList<>();
         data.addAll(DatabaseLoader.getInstance().getContinents());
-        data.addAll(DatabaseLoader.getCountries());
+        data.addAll(DatabaseLoader.getInstance().getCountries());
         data.addAll(DatabaseLoader.getInstance().getProfessions());
-        data.addAll(DatabaseLoader.getAllPlayerProfessions().values());
+        data.addAll(DatabaseLoader.getInstance().getAllPlayerProfessions().values());
         data.addAll(DatabaseLoader.getInstance().getSeasons());
         data.addAll(DatabaseLoader.getInstance().getAuthorities());
-        data.addAll(DatabaseLoader.getPersons());
-        for (Club club : DatabaseLoader.getClubs()) {
+        data.addAll(DatabaseLoader.getInstance().getPersons());
+        for (Club club : DatabaseLoader.getInstance().getClubs()) {
             data.add(club);
             if (club.getStadium() != null) {
                 data.add(club.getStadium());
@@ -95,7 +95,7 @@ class RuntimeIdsTests {
             }
             data.addAll(club.getPlayerContracts());
         }
-        for (Competition comp : DatabaseLoader.getCompetitions()) {
+        for (Competition comp : DatabaseLoader.getInstance().getCompetitions()) {
             data.add(comp);
             for (CompetitionEdition e : comp.getEditions()) {
                 if (e.getDataId() != null) {
@@ -127,7 +127,7 @@ class RuntimeIdsTests {
         made.addAll(game.getPendingOffers());
 
         // the cup opened by its script (the season's data edition, P2-9), with a full bracket
-        Competition faCup = DatabaseLoader.getCompetitionByDataId("fa-cup");
+        Competition faCup = DatabaseLoader.getInstance().getCompetitionByDataId("fa-cup");
         CompetitionEdition cupEdition = faCup.getEditions().get(faCup.getEditions().size() - 1);
         assertEquals("fa-cup-1888-89", cupEdition.getDataId(), "the cup script should open the data edition");
         assertEquals(1, faCup.getEditions().size(), "no second 1888-89 edition");
@@ -206,7 +206,7 @@ class RuntimeIdsTests {
     void leagueFoundersAndCupEntrantsComeFromSeasonData() {
         DatabaseLoader.resetDatabaseLoaderInstance();
         DatabaseLoader.getInstance();
-        Season season = DatabaseLoader.getSeasonByDataId("1888-89");
+        Season season = DatabaseLoader.getInstance().getSeasonByDataId("1888-89");
 
         BasicScript league = null;
         BasicScript cup = null;
@@ -223,9 +223,9 @@ class RuntimeIdsTests {
         @SuppressWarnings("unchecked")
         Array<Long> founders = (Array<Long>) league.getScriptValues().get(ScriptsLoader.LEAGUE_FOUNDING_TEAMS);
         assertEquals(12, founders.size);
-        assertEquals(DatabaseLoader.getClubByDataId("preston-north-end").getId(), founders.get(0));
-        assertEquals(DatabaseLoader.getClubByDataId("stoke").getId(), founders.get(11));
-        assertEquals(DatabaseLoader.getCompetitionByDataId("football-league").getId(),
+        assertEquals(DatabaseLoader.getInstance().getClubByDataId("preston-north-end").getId(), founders.get(0));
+        assertEquals(DatabaseLoader.getInstance().getClubByDataId("stoke").getId(), founders.get(11));
+        assertEquals(DatabaseLoader.getInstance().getCompetitionByDataId("football-league").getId(),
                 league.getScriptValues().get(ScriptsLoader.LEAGUE_COMPETITION));
 
         @SuppressWarnings("unchecked")
@@ -237,9 +237,9 @@ class RuntimeIdsTests {
         }
         assertEquals(32, ids.size());
         // the data's list, not the old hard-coded 1..32: Small Heath and Heeley are in, Everton is not
-        assertTrue(ids.contains(DatabaseLoader.getClubByDataId("small-heath").getId()));
-        assertTrue(ids.contains(DatabaseLoader.getClubByDataId("heeley").getId()));
-        assertFalse(ids.contains(DatabaseLoader.getClubByDataId("everton").getId()));
+        assertTrue(ids.contains(DatabaseLoader.getInstance().getClubByDataId("small-heath").getId()));
+        assertTrue(ids.contains(DatabaseLoader.getInstance().getClubByDataId("heeley").getId()));
+        assertFalse(ids.contains(DatabaseLoader.getInstance().getClubByDataId("everton").getId()));
     }
 
     @Test
@@ -247,15 +247,15 @@ class RuntimeIdsTests {
         DatabaseLoader.resetDatabaseLoaderInstance();
         DatabaseLoader.getInstance();
 
-        Person canonical = DatabaseLoader.getPersonByDataId("archie-goodall-1865");
-        Player atPreston = playerOf(DatabaseLoader.getClubByDataId("preston-north-end"), "archie-goodall-1865");
-        Player atVilla = playerOf(DatabaseLoader.getClubByDataId("aston-villa"), "archie-goodall-1865");
+        Person canonical = DatabaseLoader.getInstance().getPersonByDataId("archie-goodall-1865");
+        Player atPreston = playerOf(DatabaseLoader.getInstance().getClubByDataId("preston-north-end"), "archie-goodall-1865");
+        Player atVilla = playerOf(DatabaseLoader.getInstance().getClubByDataId("aston-villa"), "archie-goodall-1865");
 
         assertSame(canonical, atPreston.getPerson());
         assertNotSame(canonical, atVilla.getPerson());
         assertEquals(canonical.getDataId(), atVilla.getPerson().getDataId());
         assertTrue(atVilla.getPerson().getId() < IdAllocator.GAME_START);
-        assertTrue(DatabaseLoader.getPersonCopies() > 0);
+        assertTrue(DatabaseLoader.getInstance().getPersonCopies() > 0);
     }
 
     private static Player playerOf(Club club, String personDataId) {

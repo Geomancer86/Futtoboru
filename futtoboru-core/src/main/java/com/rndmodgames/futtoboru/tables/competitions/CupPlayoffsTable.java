@@ -45,7 +45,7 @@ public class CupPlayoffsTable extends VisTable {
     public CupPlayoffsTable(Game parent) {
         super(true);
         this.game = (Futtoboru) parent;
-        this.currentGame = game.getCurrentGame();
+        this.currentGame = game.getSession().getGame();
         
         bracketContainer = new VisTable(true);
         scrollPane = new VisScrollPane(bracketContainer);
@@ -77,7 +77,7 @@ public class CupPlayoffsTable extends VisTable {
     public void updateDynamicComponents() {
         // Refresh currentGame reference
         if (game != null) {
-            this.currentGame = game.getCurrentGame();
+            this.currentGame = game.getSession().getGame();
         }
         
         bracketContainer.clear();

@@ -96,7 +96,7 @@ class JobOffersTests extends JobGameTestBase {
                 .filter(o -> o.getJobOpeningId().equals(boltonJob.getId())).findFirst().orElseThrow();
 
         assertTrue(jobs.acceptOffer(bolton));
-        Club club = DatabaseLoader.getClubByDataId("bolton-wanderers");
+        Club club = DatabaseLoader.getInstance().getClubByDataId("bolton-wanderers");
         assertSame(club, game.getCurrentClub());
         assertEquals(owner.getId(), club.getStaffId(manager.getId()));
         assertTrue(owner.getPrimaryProfession().is(Profession.MANAGER));
@@ -135,7 +135,7 @@ class JobOffersTests extends JobGameTestBase {
         JobOffer derby = jobs.makeOffer(opening("derby-county", manager), owner);
         assertTrue(jobs.acceptOffer(derby));
         assertNull(bolton.getStaffId(director.getId()), "the old post is vacant again");
-        assertEquals(DatabaseLoader.getClubByDataId("derby-county").getId(), owner.getCurrentClubId());
+        assertEquals(DatabaseLoader.getInstance().getClubByDataId("derby-county").getId(), owner.getCurrentClubId());
         assertNull(bolton.getStaffId(manager.getId()), "nobody was taken off a post the director did not hold");
     }
 

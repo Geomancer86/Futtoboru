@@ -127,7 +127,7 @@ class NewGameFreshDataTests {
             assertTrue(club.getExpensesHistory().isEmpty(), c + " expenses");
             assertNull(club.getCurrentLeague(), c + " league (the league is created by a script during play)");
         }
-        for (Competition comp : DatabaseLoader.getCompetitions()) {
+        for (Competition comp : DatabaseLoader.getInstance().getCompetitions()) {
             for (CompetitionEdition edition : comp.getEditions()) {
                 assertTrue(edition.getId() < IdAllocator.GAME_START, "only data editions: " + edition.getName());
                 assertNull(edition.getChampionsId(), edition.getName() + " champion");
@@ -215,10 +215,10 @@ class NewGameFreshDataTests {
                 ids.put("contract " + club.getDataId() + "/" + contract.getPlayerId(), contract.getId());
             }
         }
-        for (Competition comp : DatabaseLoader.getCompetitions()) {
+        for (Competition comp : DatabaseLoader.getInstance().getCompetitions()) {
             ids.put("competition " + comp.getDataId(), comp.getId());
         }
-        ids.put("authority", DatabaseLoader.getMainAuthority().getId());
+        ids.put("authority", DatabaseLoader.getInstance().getMainAuthority().getId());
         return ids;
     }
 }
