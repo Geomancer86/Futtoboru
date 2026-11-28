@@ -1,5 +1,7 @@
 # Futtoboru: rules for every session (WORKSTATION and BOOK3PRO)
 
+Read docs/CODE_GUIDE.md first; ROADMAP only for decisions.
+
 Futtoboru is a football manager that starts with the 1888-89 Football League.
 Java 17, Maven (`futtoboru-core`, `futtoboru-desktop`), libGDX 1.12 + VisUI.
 Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, see `docs/DATA_MODEL.md`).
