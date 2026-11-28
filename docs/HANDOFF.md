@@ -9,27 +9,28 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | E-21a viewer scaffold (DarkBlade port: quality, TickGate, interpolation, NoGl, ArtGuard) | WORKSTATION | `ws/E-21a-viewer-scaffold` | 2026-11-28 |
 | E-13 player bodies, contacts, injuries (sim) | WORKSTATION | `ws/E-13-bodies` | 2026-11-28 |
 | Match-engine art direction: sprite / pixel-art prototypes for producer choice (players, ball, goals, pitch, crowd, officials, weather, sidelines) → then E-21 viewer sprites | WORKSTATION | (prototypes local/private; code later on `ws/E-21-sprites`) | 2026-11-27 |
+| S-01 fresh seed per new game (D25) + E-01b dribbling in ageing/drift + `PlayerAttributeSnapshot`, positions for generated players | BOOK3PRO | `b3/E-01b-seed-dribbling-positions` | 2026-11-28 |
+| H-04 source the 384 placeholder positions (period line-ups) in `seasons/1888-89/squads.json` | BOOK3PRO | `b3/H-04-positions-sources` | 2026-11-28 |
+| U-08 friendlies finished or hidden + sound settings hidden | BOOK3PRO | `b3/U-08-friendlies` | 2026-11-28 |
+| U-10 hard-coded labels → language files + guard test | BOOK3PRO | `b3/U-10-labels` | 2026-11-28 |
+| V-01 visual check 100%/200% (fix clipping) → U-05 interface guide with screenshots | BOOK3PRO | `b3/V-01-visual-check` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
 |---|---|---|
+| BOOK3PRO | E-01b, H-04 | `Futtoboru` seed / new-game path, attribute drift + `PlayerAttributeSnapshot` (outside `match/ecs`), person generator, `seasons/1888-89/squads.json` positions |
+| BOOK3PRO | U-08, U-10, V-01 | `tables/schedule/**` (U-08), `SettingsScreen` sound row, label lines in screens/tables + 4 language bundles (U-10), small layout fixes (V-01), new `docs/design/INTERFACE_GUIDE.md` + `docs/design/img/` |
 | WORKSTATION | Engine (E-10..E-22) | `match/ecs/**` (new ECS engine; BOOK3PRO: E-01 `Position`/`dribbling` data is yours, ask before editing `match/ecs`) |
 
 ## Ready to take (from docs/ROADMAP.md)
 Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 minimum, autosave, labels in language files). Details in `docs/ROADMAP.md` Phase 2 close-out + Phase 3.
 
-**Suggested for BOOK3PRO** (saves / ids / data area):
-- (nothing listed; next from `docs/ROADMAP.md`)
-
-**Suggested for WORKSTATION** (menus / screens):
-- **P2-11** era calendar (league Sep-Apr, cup in winter; generated dates)
-- **U-04d** in-game Options (Load, Settings, Quit to menu/desktop + unsaved confirm) → **U-04b** menu list, highlight, Back/Esc → **U-04c** Home dashboard
-- **E-00b** 1888-89 results JSON (D17 reference only), then **U-07** history screens
-
-**Either:** U-08 friendlies or hide + hide sound · U-09 tooltips + `UiDialogs` · U-10 labels to language files (per screen as touched) · U-05 guide last.
-**Producer:** push v0.4.0 to `main`; tag v0.5.0-alpha after P2-9..11, v0.5.0 after Phase 3. Engine answers are in D19 (Phase 4 can be designed in parallel).
+**v0.5.0-alpha released** (tag on `main`, 7d7727f). Remaining for v0.5.0: U-08, U-10, V-01 → U-05 (all claimed by BOOK3PRO above). Tag v0.5.0 when they are merged.
+**Unclaimed:** nothing for v0.5; Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md` (WORKSTATION).
 
 ## Log
+- 2026-11-28 · BOOK3PRO · CLAIM · S-01 + E-01b, H-04, U-08, U-10, V-01 → U-05 · Five parallel lanes (producer picks). D25: a fresh seed per new game.
+- 2026-11-28 · BOOK3PRO · DONE · release · **v0.5.0-alpha** tagged and `main` fast-forwarded to it (7d7727f; `main` showed 2023 before). `develop` now 0.5.0-SNAPSHOT; desktop pom depends on core via `${project.version}`. The `v0.4.0` tag stays (its commit is on an older line, not in develop). `feature/ui-auto-scale` deleted after archiving it as tag `archive/ui-auto-scale-2026-07`. Producer: agents may push releases to `main` (D25).
 - 2026-11-28 · WORKSTATION · NOTE · D24 + plan · `docs/design/MATCH_VIEWER_PLAN.md` (E-21a..m, DarkBlade copy-port). Sprite slices wait for the producer's art checklist.
 - 2026-11-28 · WORKSTATION · CLAIM · E-21a, E-13 · `match/ecs/**` only (+ `ui/gfx/**` for E-21a).
 - 2026-11-27 · BOOK3PRO · DONE · U-06 dialogs · Merged 02f57ff (commit 6df7b98). `LoadGameDialog`: a Delete button on every row (autosave and unreadable saves too) asks "Delete Save?" through `UiDialogs.confirm` (replaces the list, one modal at a time), deletes via `SaveLoadSystem.deleteSave`, then the list opens again freshly read (a failed delete says so); the autosave row shows its `autosave` label in `text.heading`. `SaveGameDialog`: empty name refused with an inline message (`state.negative`); an existing name asks "Overwrite Save?" first (Cancel reopens the dialog with the typed name and keeps the Save-First action). Quit: `Futtoboru.awaitAutosave()` (max 5 s, `SaveSlots.QUIT_WAIT_MILLIS`, warns on timeout) on Quit to menu, new game, load, delete and in `dispose()` (window close + Quit to desktop). Headless helpers `system/save/SaveSlots` (`check` EMPTY/NEW/OVERWRITE, `delete`, `awaitAutosave`) + `SaveSlotsTests` (6). 7 labels in all 4 bundles; sp bundles now also translate save_game/load_game/load/close/cancel. `./mvnw -B verify` green (269 core + 1 desktop). Not checked by eye in the running app yet. No lock left for U-06.

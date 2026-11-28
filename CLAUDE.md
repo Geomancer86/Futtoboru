@@ -13,7 +13,7 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
 - One item = one branch from `origin/develop`: `ws/<item>` on WORKSTATION, `b3/<item>` on BOOK3PRO.
 - Before every push: `git fetch origin && git merge origin/develop`, then `mvn -B verify`. Push only green builds.
 - Each machine merges its own green branches into `develop` (no waiting on the other machine).
-- Never force-push. Never rewrite `develop` or `main`. `main` only gets tagged releases, done by the producer.
+- Never force-push. Never rewrite `develop` or `main`. `main` only gets tagged releases (fast-forward from a green `develop`); agents may do them (D25).
 - Parallel agents on one machine: one `git worktree` per item; never work in another session's worktree.
 - Record a handover line in `docs/HANDOFF.md` when you stop mid-item.
 

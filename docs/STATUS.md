@@ -1,6 +1,6 @@
 # Status (update in place, don't add new summary files)
 
-_Last updated 2026-11-27 (BOOK3PRO)._ Version 0.4.0-SNAPSHOT.
+_Last updated 2026-11-27 (BOOK3PRO)._ Version 0.5.0-SNAPSHOT.
 
 | System | Status | Notes |
 |---|---|---|
