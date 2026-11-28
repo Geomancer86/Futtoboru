@@ -1,0 +1,82 @@
+[
+  {
+    "id": "appearance",
+    "rule": "appearance",
+    "value": 3,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: meter points for a man on his club's frozen team sheet (League, Cup or friendly). Gameplay estimate: a regular all season (~22 League games) earns about two thirds of a tier band from appearances alone."
+  },
+  {
+    "id": "goal",
+    "rule": "goal",
+    "value": 8,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: points per goal for his club. Estimate: a ten-goal season lifts a man about one tier."
+  },
+  {
+    "id": "derby-goal",
+    "rule": "derby-goal",
+    "value": 6,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: extra points per goal against a club listed in his club's `rivals` (clubs.json). Estimate."
+  },
+  {
+    "id": "cup-tie-won",
+    "rule": "cup-tie-won",
+    "value": 6,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: points for each man on the sheet when his club wins a cup tie (a cup run). Estimate."
+  },
+  {
+    "id": "cup-final-won",
+    "rule": "cup-final-won",
+    "value": 40,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: points for each man on the sheet when his club wins a cup final (on top of the tie); the scorers also get their goal points. Estimate."
+  },
+  {
+    "id": "absence",
+    "rule": "absence",
+    "value": -1.5,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: points for a squad man left out when his club plays (negative: fans forget a man they never see). Estimate."
+  },
+  {
+    "id": "band",
+    "rule": "band",
+    "value": 100,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: meter points per tier: a tier's start value is the middle of its band (t * band + band / 2); the meter runs from 0 to 6 * band. Estimate."
+  },
+  {
+    "id": "hysteresis",
+    "rule": "hysteresis",
+    "value": 20,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: a tier goes up only at (t + 1) * band + hysteresis and down only below t * band - hysteresis, so it does not flip every week. Must be below band / 2. Estimate."
+  },
+  {
+    "id": "legend-damping",
+    "rule": "legend-damping",
+    "value": 0.25,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: a legend (tier 5) loses points at this share of the normal rate (legends stay legends; H-01 proposal section 4). 0..1. Estimate."
+  },
+  {
+    "id": "jitter",
+    "rule": "jitter",
+    "value": 0.25,
+    "confidence": "estimate",
+    "sources": [],
+    "notes": "G-10: each match's points are scaled by 1 +/- this share, drawn from the game seed per match and club (the crowd's mood). 0..1. Estimate."
+  }
+]

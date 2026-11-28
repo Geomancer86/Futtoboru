@@ -52,8 +52,10 @@ public final class HistoryFacts {
         /** canonical ids of the rival clubs */
         public final List<String> rivals;
         public final List<HistoryName> nameHistory;
+        /** G-10: how the club began ({@code club_origin} enum: church, cricket, works...), or null */
+        public final String origin;
 
-        ClubHistory(String hook, List<String> history, Map<String, String> seasons, List<HistoryName> nicknames,
+        ClubHistory(String origin, String hook, List<String> history, Map<String, String> seasons, List<HistoryName> nicknames,
                 List<String> rivals, List<HistoryName> nameHistory) {
             this.hook = hook;
             this.history = history;
@@ -61,11 +63,12 @@ public final class HistoryFacts {
             this.nicknames = nicknames;
             this.rivals = rivals;
             this.nameHistory = nameHistory;
+            this.origin = origin;
         }
 
         public boolean isEmpty() {
             return (hook == null || hook.isEmpty()) && history.isEmpty() && seasons.isEmpty() && nicknames.isEmpty()
-                    && rivals.isEmpty() && nameHistory.isEmpty();
+                    && rivals.isEmpty() && nameHistory.isEmpty() && origin == null;
         }
     }
 
@@ -84,13 +87,18 @@ public final class HistoryFacts {
             this.knownAs = knownAs;
             this.bio = bio;
         }
+
+        /** G-10: the same facts with the tier the fans give him now (the runtime meter). */
+        public PersonHistory withTier(int tier) {
+            return new PersonHistory(Math.max(0, Math.min(MAX_TIER, tier)), nicknames, knownAs, bio);
+        }
     }
 
     /** @return the history of a club by data id (never null) */
     public ClubHistory club(String clubDataId) {
         DataRecord rec = data == null || clubDataId == null ? null : data.get(GameData.CLUB, clubDataId);
         if (rec == null) {
-            return new ClubHistory(null, Collections.<String>emptyList(), Collections.<String, String>emptyMap(),
+            return new ClubHistory(null, null, Collections.<String>emptyList(), Collections.<String, String>emptyMap(),
                     Collections.<HistoryName>emptyList(), Collections.<String>emptyList(),
                     Collections.<HistoryName>emptyList());
         }
@@ -102,7 +110,7 @@ public final class HistoryFacts {
                 rivals.add(canonical);
             }
         }
-        return new ClubHistory(t == null ? null : t.getHook(),
+        return new ClubHistory(rec.str("origin"), t == null ? null : t.getHook(),
                 t == null ? Collections.<String>emptyList() : t.getHistory(),
                 t == null ? Collections.<String, String>emptyMap() : t.getSeasons(),
                 data.nicknames(rec), rivals, data.nameHistory(rec));
@@ -137,6 +145,20 @@ public final class HistoryFacts {
         }
         Integer tier = tiers.get(person);
         return tier == null ? 0 : Math.max(0, Math.min(MAX_TIER, tier));
+    }
+
+    /** @return the bundle key of a club origin's label ({@code club_origin_other} for an unknown value) */
+    public static String originKey(String origin) {
+        switch (origin == null ? "" : origin) {
+        case "church": return "club_origin_church";
+        case "cricket": return "club_origin_cricket";
+        case "works": return "club_origin_works";
+        case "school": return "club_origin_school";
+        case "old-boys": return "club_origin_old_boys";
+        case "rugby": return "club_origin_rugby";
+        case "merger": return "club_origin_merger";
+        default: return "club_origin_other";
+        }
     }
 
     /** @return the club's name from the data, or the id when unknown */

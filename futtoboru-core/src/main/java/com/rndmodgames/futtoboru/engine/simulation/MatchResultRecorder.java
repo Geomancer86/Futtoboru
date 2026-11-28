@@ -134,8 +134,11 @@ public class MatchResultRecorder {
 
         updateLeagueTable(match, homeClub, awayClub);
 
-        if (match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH
-                && match.getCompetitionEditionId() != null) {
+        boolean cup = match.getMatchType() != null && match.getMatchType() == Match.CUP_MATCH
+                && match.getCompetitionEditionId() != null;
+        com.rndmodgames.futtoboru.data.CompetitionEdition cupEdition = cup ? cupEdition(game, match) : null;
+        Long championBefore = cupEdition != null ? cupEdition.getChampionsId() : null;
+        if (cup) {
             Match next = new CupBracketManager(game, gameInstance).advanceWinner(match);
             Log.info(Log.ENGINE_CUP, "MatchResultRecorder",
                 "Cup match " + match.getBracketPath() + " recorded"
@@ -155,9 +158,34 @@ public class MatchResultRecorder {
         // G-02: the men hurt in the match get their days out (every club), the player's club its injury letter
         com.rndmodgames.futtoboru.engine.injuries.InjuryManager.applyAfterMatch(game, match, messageManager);
 
+        // G-10: both clubs' fans think again about the men who played (and those left out); cup runs count extra
+        Long champion = cupEdition != null && championBefore == null ? cupEdition.getChampionsId() : null;
+        boolean homeTie = cup && match.getHomeGoals() > match.getAwayGoals();
+        boolean awayTie = cup && match.getAwayGoals() > match.getHomeGoals();
+        com.rndmodgames.futtoboru.engine.fans.FanMeter.applyAfterMatch(game, match, Futtoboru.randomOf(gameInstance),
+                homeTie, awayTie, homeClub.getId().equals(champion), awayClub.getId().equals(champion));
+
         Log.info(Log.ENGINE_MATCH, "MatchResultRecorder",
             "Recorded " + homeClub.getName() + " " + match.getHomeGoals() + " - " + match.getAwayGoals()
             + " " + awayClub.getName());
+    }
+
+    /** G-10: the cup edition a cup match belongs to (null when not found). */
+    private static com.rndmodgames.futtoboru.data.CompetitionEdition cupEdition(SaveGame game, Match match) {
+        if (game.getAllCups() == null) {
+            return null;
+        }
+        for (com.rndmodgames.futtoboru.data.Competition c : game.getAllCups()) {
+            if (c == null || c.getEditions() == null) {
+                continue;
+            }
+            for (com.rndmodgames.futtoboru.data.CompetitionEdition e : c.getEditions()) {
+                if (e != null && match.getCompetitionEditionId().equals(e.getId())) {
+                    return e;
+                }
+            }
+        }
+        return null;
     }
 
     private static boolean isRecorded(Match match, Club club) {

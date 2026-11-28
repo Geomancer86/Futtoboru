@@ -73,10 +73,12 @@ public class GameData {
     public static final String LANGUAGE = "language";
     // G-02 injury kinds
     public static final String INJURY = "injury";
+    // G-10 fan-love meter rules
+    public static final String FAN_RULE = "fan-rule";
 
     static final List<String> KINDS = Arrays.asList(CONTINENT, COUNTRY, PROFESSION, OCCUPATION, COMPETITION, CLUB,
             GROUND, PERSON, REGION, SEASON, EDITION, RULE, WAGE, ORIGIN, ORIGIN_CLUB, AREA, LANGUAGE,
-            INJURY);
+            INJURY, FAN_RULE);
 
     /** R-02 / R-11a: the grades that may have no source (validate.py UNSOURCED_OK). */
     static final Set<String> UNSOURCED_OK = new HashSet<>(Arrays.asList("estimate", "placeholder"));
@@ -125,6 +127,9 @@ public class GameData {
         ENUMS.put("club_standing", new TreeSet<>(Arrays.asList("league", "other", "amateur")));
         // R-02 / R-11a (same lists as tools/data/validate.py)
         ENUMS.put("injury_kind", new TreeSet<>(Arrays.asList("knock", "passenger", "carried-off")));
+        // G-10: the fan-love meter's rules (same list as tools/data/validate.py)
+        ENUMS.put("fan_rule_kind", new TreeSet<>(Arrays.asList("appearance", "goal", "derby-goal", "cup-tie-won",
+                "cup-final-won", "absence", "band", "hysteresis", "legend-damping", "jitter")));
         ENUMS.put("data_confidence", new TreeSet<>(Arrays.asList("high", "medium", "low", "estimate", "placeholder")));
         ENUMS.put("rule_kind", new TreeSet<>(Arrays.asList("registration", "residence", "second-registration-consent",
                 "registration-wait", "scottish-professional-ban", "retain-and-transfer", "max-wage")));
@@ -282,6 +287,9 @@ public class GameData {
         spec("injury", "id", "str!", "kind", "enum:injury_kind!", "chancePerMatch", "num!", "minDays", "int!",
                 "maxDays", "int!", "returnChance", "num", "strengthWhileHurt", "num", "confidence",
                 "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        // G-10: one record per fan-meter rule
+        spec("fan_rule", "id", "str!", "rule", "enum:fan_rule_kind!", "value", "num!", "confidence",
+                "enum:data_confidence!", "sources", "strs!", "notes", "str");
         spec("language_rate", "area", "ref:area", "countries", "refs:country", "bornFrom", "int!", "bornUntil",
                 "int!", "speaks", "shares:language", "only", "shares:language", "signsMen", "num", "signsWomen",
                 "num", "parentsBorn", "shares:country", "readWriteIfSigns", "nums", "confidence",
@@ -310,6 +318,7 @@ public class GameData {
         PACK_FILES.put("areas.json", new String[] { "area", AREA });
         PACK_FILES.put("language_rates.json", new String[] { "language_rate", null });
         PACK_FILES.put("injuries.json", new String[] { "injury", INJURY });
+        PACK_FILES.put("fans.json", new String[] { "fan_rule", FAN_RULE });
         SEASON_FILES.put("squads.json", new String[] { "squad", null });
         SEASON_FILES.put("nationality_modifiers.json", new String[] { "nationality_modifier", null });
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
@@ -1270,6 +1279,10 @@ public class GameData {
             checkSourced(v, where);
             checkInjury(v, where);
             return;
+        case "fan_rule":
+            checkSourced(v, where);
+            checkFanRule(v, where);
+            return;
         case "rule":
         case "wage":
         case "origin":
@@ -1471,6 +1484,21 @@ public class GameData {
     }
 
     /** G-02: 0 <= minDays <= maxDays; chances and strengthWhileHurt in 0..1 (each kind once: validate.py). */
+    /** G-10: legend-damping and jitter are shares 0..1, the band positive (the cross-rule checks are validate.py's). */
+    private void checkFanRule(JsonValue v, String where) {
+        String rule = v.getString("rule", "");
+        JsonValue x = v.get("value");
+        if (x == null || !x.isNumber()) {
+            return;
+        }
+        if (("legend-damping".equals(rule) || "jitter".equals(rule)) && (x.asDouble() < 0 || x.asDouble() > 1)) {
+            report.error(where + ".value", "must be from 0 to 1");
+        }
+        if ("band".equals(rule) && x.asDouble() <= 0) {
+            report.error(where + ".value", "must be positive");
+        }
+    }
+
     private void checkInjury(JsonValue v, String where) {
         int lo = v.getInt("minDays", 0);
         int hi = v.getInt("maxDays", 0);

@@ -398,7 +398,7 @@ public class PlayersListTable extends VisTable {
         com.rndmodgames.futtoboru.data.Person person = player.getPerson();
         com.rndmodgames.futtoboru.data.Club club = person.getCurrentClubId() == null || game.getCurrentGame() == null ? null
                 : game.getCurrentGame().getClubById(person.getCurrentClubId());
-        int tier = facts.fanTier(person.getDataId(), club == null ? null : club.getDataId());
+        int tier = com.rndmodgames.futtoboru.engine.fans.FanMeter.tierOf(player, club); // G-10: the runtime meter
         VisLabel label = new VisLabel(String.valueOf(tier));
         label.setColor(UiTheme.color(com.rndmodgames.futtoboru.tables.player.PlayerDetailScreenTable.fanTierColor(tier)));
         return label;

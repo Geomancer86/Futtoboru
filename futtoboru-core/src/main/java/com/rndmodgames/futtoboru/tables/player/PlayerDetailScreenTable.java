@@ -799,11 +799,26 @@ public class PlayerDetailScreenTable extends VisTable {
                 com.rndmodgames.futtoboru.history.HistoryFacts.dataLanguage(LanguageModLoader.getCurrentLanguage().getId()));
         com.rndmodgames.futtoboru.history.HistoryFacts.PersonHistory h =
                 facts.person(person.getDataId(), club == null ? null : club.getDataId());
+        // G-10: the tier the club's fans give him now (the runtime meter; the data's tier until his first match)
+        h = h.withTier(com.rndmodgames.futtoboru.engine.fans.FanMeter.tierOf(currentPlayer, club));
         infoTable.row();
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_fan_tier"))).left().width(UiTheme.size("col.label"));
         VisLabel badge = new VisLabel(LanguageModLoader.getValue(com.rndmodgames.futtoboru.history.HistoryFacts.tierKey(h.tier)));
         badge.setColor(UiTheme.color(fanTierColor(h.tier)));
         infoTable.add(badge).left();
+        // G-10: the fans' meter towards the next tier (the tier itself has hysteresis, FanMeter)
+        infoTable.row();
+        infoTable.add(new VisLabel(LanguageModLoader.getValue("player_fan_meter"))).left().width(UiTheme.size("col.label"));
+        int toNext = com.rndmodgames.futtoboru.engine.fans.FanMeter.percentToNext(currentPlayer, club);
+        VisTable meter = new VisTable(true);
+        com.kotcrab.vis.ui.widget.VisProgressBar bar = new com.kotcrab.vis.ui.widget.VisProgressBar(0, 100, 1, false);
+        bar.setValue(toNext < 0 ? 100 : toNext);
+        meter.add(bar).width(UiTheme.size("col.label")).left();
+        meter.add(new VisLabel(toNext < 0 ? LanguageModLoader.getValue("player_fan_meter_top")
+                : LanguageModLoader.format("player_fan_meter_line", toNext,
+                        LanguageModLoader.getValue(com.rndmodgames.futtoboru.history.HistoryFacts.tierKey(h.tier + 1)))))
+                .left();
+        infoTable.add(meter).left();
         if (h.knownAs != null) {
             infoTable.row();
             infoTable.add(new VisLabel(LanguageModLoader.getValue("player_known_as"))).left().width(UiTheme.size("col.label"));

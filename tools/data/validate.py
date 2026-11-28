@@ -59,7 +59,9 @@ KINDS = ["continent", "country", "profession", "occupation", "competition", "clu
          # R-02 recruitment data, R-11a languages (DATA_MODEL.md "Recruitment and languages")
          "rule", "wage", "origin", "origin-club", "area", "language",
          # G-02 injury kinds (DATA_MODEL.md "Injuries")
-         "injury"]
+         "injury",
+         # G-10 fan-love meter rules (DATA_MODEL.md "Fan-love meter")
+         "fan-rule"]
 # R-02 / R-11a: research grade of a rule, wage, origin, area or rate row (RECRUITMENT_1888-1900.md H/M/L; `estimate` =
 # no direct source, the reasoning is in `sources`; `placeholder` = gameplay tuning, D30 A3)
 DATA_CONFIDENCE = {"high", "medium", "low", "estimate", "placeholder"}
@@ -78,6 +80,9 @@ ORIGIN_CLUB_KINDS = {"church", "sunday-school", "works", "junior", "school", "sc
 NUDGE_MAX = 2                 # an origin's attribute nudge is small (D28 Q12): -2..+2
 LITERACY_SHIFT_MAX = 1        # an origin moves literacy by at most one level
 RATE_FIELDS = ("speaks", "only", "signsMen", "signsWomen", "parentsBorn", "readWriteIfSigns")
+# G-10: the fan-love meter's weights and shape (fans.json, one record each)
+FAN_RULES = {"appearance", "goal", "derby-goal", "cup-tie-won", "cup-final-won", "absence", "band", "hysteresis",
+             "legend-damping", "jitter"}
 INJURY_KINDS = {"knock", "passenger", "carried-off"}  # D19-3: plays on / stays on hurt / leaves, may return
 READ_WRITE_LEVELS = 4         # readWriteIfSigns: signs his name / reads slowly / reads well / writes well
 
@@ -103,7 +108,7 @@ ENUMS = {"era_kind": ERA_KINDS, "era_authority": ERA_AUTHORITIES, "era_confidenc
          "rule_kind": RULE_KINDS, "rule_body": RULE_BODIES, "applies_to": APPLIES_TO, "wage_type": WAGE_TYPES,
          "standing": STANDINGS, "source_kind": SOURCE_KINDS, "origin_club_kind": ORIGIN_CLUB_KINDS,
          "weekday": WEEKDAYS, "cup_round": CUP_ROUNDS, "neutral_gate": NEUTRAL_GATES, "later_draws": LATER_DRAWS,
-         "club_origin": CLUB_ORIGINS, "injury_kind": INJURY_KINDS,
+         "club_origin": CLUB_ORIGINS, "injury_kind": INJURY_KINDS, "fan_rule_kind": FAN_RULES,
          "club_standing": CLUB_STANDINGS}
 SPECS = {
     "era_event": {"id": ("str", True), "kind": ("enum:era_kind", True), "authority": ("enum:era_authority", True),
@@ -243,6 +248,9 @@ SPECS = {
                "minDays": ("int", True), "maxDays": ("int", True), "returnChance": ("num", False),
                "strengthWhileHurt": ("num", False), "confidence": ("enum:data_confidence", True),
                "sources": ("strs", True), "notes": ("str", False)},
+    # G-10: one record per fan-meter rule (points per event, or the meter's band / hysteresis / damping / jitter)
+    "fan_rule": {"id": ("str", True), "rule": ("enum:fan_rule_kind", True), "value": ("num", True),
+                 "confidence": ("enum:data_confidence", True), "sources": ("strs", True), "notes": ("str", False)},
     "pack": {"id": ("str", True), "name": ("str", True), "version": ("int", True), "dataVersion": ("int", True),
              "seasons": ("strs", True), "files": ("strs", True)},
 }
@@ -257,6 +265,7 @@ PACK_FILES = {
     "languages.json": ("language", "language"), "areas.json": ("area", "area"),
     "language_rates.json": ("language_rate", None),
     "injuries.json": ("injury", "injury"),
+    "fans.json": ("fan_rule", "fan-rule"),
 }
 SEASON_FILES = {
     "squads.json": ("squad", None), "nationality_modifiers.json": ("nationality_modifier", None),
@@ -703,11 +712,35 @@ def check_injuries(data, where: str, rep: Report):
                 rep.error(f"{w}.{f}", "must be from 0 to 1")
 
 
+def check_fans(data, where: str, rep: Report):
+    """G-10: each rule once; a positive band, hysteresis from 0 to below band / 2, legend-damping and jitter 0..1."""
+    seen: dict = {}
+    vals: dict = {}
+    for i, r in enumerate(data if isinstance(data, list) else []):
+        w = f"{where}[{i}]"
+        if not isinstance(r, dict):
+            continue
+        k = r.get("rule")
+        if k in seen:
+            rep.error(w, f"fan rule `{k}` is listed twice (also {seen[k]})")
+        seen[k] = w
+        if is_num(r.get("value")):
+            vals[k] = r["value"]
+            if k in ("legend-damping", "jitter") and not 0 <= r["value"] <= 1:
+                rep.error(f"{w}.value", "must be from 0 to 1")
+    band = vals.get("band")
+    if band is not None and band <= 0:
+        rep.error(where, "`band` must be positive")
+    hyst = vals.get("hysteresis")
+    if hyst is not None and (hyst < 0 or (band is not None and band > 0 and hyst >= band / 2)):
+        rep.error(where, "`hysteresis` must be from 0 to below band / 2")
+
+
 # pack file -> its extra checks (beyond the field spec)
 FILE_CHECKS = {"recruitment/rules.json": check_rule_records, "recruitment/wages.json": check_wages,
                "recruitment/origins.json": check_origins, "recruitment/origin_clubs.json": check_sources_listed,
                "languages.json": check_sources_listed, "areas.json": check_areas, "language_rates.json": check_rates,
-               "injuries.json": check_injuries}
+               "injuries.json": check_injuries, "fans.json": check_fans}
 
 
 def check_results(data: list, where: str, sid: str, season: dict | None, rep: Report):

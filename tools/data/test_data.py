@@ -131,6 +131,7 @@ def test_removed_record_keeps_its_number_reserved(pack):
                               fanTiers={k: v for k, v in sq.get("fanTiers", {}).items() if k != "fred-dewhurst-1863"})
                     for sq in d])
     edit(pack / "core" / "text" / "en" / "history.json", lambda d: d["person"].pop("fred-dewhurst-1863", None))
+    edit(pack / "core" / "text" / "es" / "history.json", lambda d: d["person"].pop("fred-dewhurst-1863", None))
     assert "person `fred-dewhurst-1863` (" in errors(pack) and "has no record" in errors(pack)
     edit(pack / "core" / "ids.json", lambda d: d["retired"].setdefault("person", []).append("fred-dewhurst-1863"))
     assert errors(pack) == ""
@@ -467,13 +468,13 @@ def test_history_season_key_must_be_a_season(pack):
 
 
 def test_translation_may_only_hold_keys_of_en(pack):
-    add_lang(pack, "es", ("stoke",))
+    add_lang(pack, "fr", ("stoke",))  # Spanish ships complete (G-10), so a partial French file
     rep = validate.validate(pack)
     assert rep.errors == [] and any("not translated" in w for w in rep.warnings)
-    edit(pack / "core" / "text" / "es" / "history.json", lambda d: d["club"].update({"everton-9": d["club"]["stoke"]}))
+    edit(pack / "core" / "text" / "fr" / "history.json", lambda d: d["club"].update({"everton-9": d["club"]["stoke"]}))
     assert "unknown club `everton-9`" in errors(pack)
     # a key that resolves but has no English entry is an orphan
-    edit(pack / "core" / "text" / "es" / "history.json",
+    edit(pack / "core" / "text" / "fr" / "history.json",
          lambda d: (d["club"].pop("everton-9"), d["club"].update({"swifts": d["club"]["stoke"]})))
     edit(pack / "core" / "text" / "en" / "history.json", lambda d: d["club"].pop("swifts", None))
     assert "`swifts` has no entry in text/en (orphan translation)" in errors(pack)
@@ -722,4 +723,36 @@ def test_injury_typos_are_errors(pack):
     assert "minDays 9 is above maxDays 3" in out
     assert "must be from 0 to 1" in out
     assert "injury kind `knock` is listed twice" in out
+    assert "no source" in out
+
+
+# G-10 fan-love meter rules and the Spanish history text
+def test_shipped_fan_rules_and_spanish_text():
+    rep = validate.validate(ROOT)
+    assert rep.errors == []
+    assert not any("not translated" in w for w in rep.warnings), "Spanish history is complete"
+    data = json.loads((ROOT / "core" / "fans.json").read_text(encoding="utf-8"))
+    assert sorted(r["rule"] for r in data) == sorted(validate.FAN_RULES)
+    en = json.loads((ROOT / "core" / "text" / "en" / "history.json").read_text(encoding="utf-8"))
+    es = json.loads((ROOT / "core" / "text" / "es" / "history.json").read_text(encoding="utf-8"))
+    for kind in ("club", "person"):
+        assert set(es[kind]) == set(en[kind])
+
+
+def test_fan_rule_typos_are_errors(pack):
+    def bad(d):
+        d[1]["rule"] = "appearance"
+        d[2]["rule"] = "cheering"
+        for r in d:
+            if r["rule"] == "jitter":
+                r["value"] = 1.5
+            if r["rule"] == "hysteresis":
+                r["value"] = 60
+        d[0]["confidence"] = "high"
+    edit(pack.joinpath("core", "fans.json"), bad)
+    out = errors(pack)
+    assert "fan rule `appearance` is listed twice" in out
+    assert "cheering" in out
+    assert "must be from 0 to 1" in out
+    assert "`hysteresis` must be from 0 to below band / 2" in out
     assert "no source" in out

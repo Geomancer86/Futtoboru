@@ -27,8 +27,15 @@ class HistoryFactsTests {
         assertEquals("The Invincibles", preston.nicknames.get(0).getName());
         assertTrue(preston.rivals.contains("blackburn-rovers"));
         assertEquals("Preston North End", facts.clubName("preston-north-end"));
-        // another language falls back to English text
-        assertEquals(preston.hook, new HistoryFacts(DATA, "es").club("preston-north-end").hook);
+        assertEquals("cricket", preston.origin);
+        assertEquals("club_origin_cricket", HistoryFacts.originKey(preston.origin));
+        assertEquals("club_origin_old_boys", HistoryFacts.originKey("old-boys"));
+        // G-10: Spanish has its own text (text/es/history.json); a language without a file falls back to English
+        String es = new HistoryFacts(DATA, "es").club("preston-north-end").hook;
+        assertNotNull(es);
+        assertFalse(es.equals(preston.hook));
+        assertNotNull(new HistoryFacts(DATA, "es").person("fred-dewhurst-1863", "preston-north-end").bio);
+        assertEquals(preston.hook, new HistoryFacts(DATA, "fr").club("preston-north-end").hook);
     }
 
     @Test

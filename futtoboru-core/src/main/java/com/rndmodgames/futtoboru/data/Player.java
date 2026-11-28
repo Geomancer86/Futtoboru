@@ -94,7 +94,18 @@ public class Player implements Serializable {
      * {@link com.rndmodgames.futtoboru.engine.injuries.Availability}; set after a match, cleared by the daily recovery.
      */
     private PlayerInjury injury;
-    
+
+    /** G-10: his club's fans' meter and tier (null until the first match after a new game or an older save). */
+    private FanStanding fans;
+
+    public FanStanding getFans() {
+        return fans;
+    }
+
+    public void setFans(FanStanding fans) {
+        this.fans = fans;
+    }
+
     //
     public Player() {
         

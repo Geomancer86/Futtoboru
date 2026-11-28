@@ -3,7 +3,7 @@
     1,
     99999
   ],
-  "next": 999,
+  "next": 1009,
   "ids": {
     "continent": {
       "africa": 38,
@@ -1038,6 +1038,18 @@
       "knock": 996,
       "passenger": 997,
       "carried-off": 998
+    },
+    "fan-rule": {
+      "appearance": 999,
+      "goal": 1000,
+      "derby-goal": 1001,
+      "cup-tie-won": 1002,
+      "cup-final-won": 1003,
+      "absence": 1004,
+      "band": 1005,
+      "hysteresis": 1006,
+      "legend-damping": 1007,
+      "jitter": 1008
     }
   },
   "retired": {

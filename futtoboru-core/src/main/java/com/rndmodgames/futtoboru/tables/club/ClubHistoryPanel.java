@@ -41,6 +41,11 @@ public final class ClubHistoryPanel {
         if (h.hook != null && !h.hook.isEmpty()) {
             body.add(wrapped(h.hook, "text.primary")).left().width(wrap).row();
         }
+        if (h.origin != null) {
+            body.add(wrapped(LanguageModLoader.getValue("history_origin") + ": "
+                    + LanguageModLoader.getValue(HistoryFacts.originKey(h.origin)), "text.primary"))
+                    .left().width(wrap).row();
+        }
         for (String paragraph : h.history) {
             body.add(wrapped(paragraph, "text.secondary")).left().width(wrap).row();
         }
