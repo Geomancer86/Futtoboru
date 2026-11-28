@@ -6,7 +6,6 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
-| E-DET cross-JDK determinism: own Gaussian in RandomSource, re-pin goldens once, guard | WORKSTATION | `ws/E-DET-gaussian` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 | G-05 committee and the secretary's job | BOOK3PRO | `b3/G-05-committee` | 2026-11-28 |
 | R-09 staff roles + R-03 candidate pools | BOOK3PRO | `b3/R-03-pools` | 2026-11-28 |
