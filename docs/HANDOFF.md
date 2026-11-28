@@ -8,7 +8,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 |---|---|---|---|
 | Match-engine art direction: sprite / pixel-art prototypes for producer choice (players, ball, goals, pitch, crowd, officials, weather, sidelines) → then E-21 viewer sprites | WORKSTATION | (prototypes local/private; code later on `ws/E-21-sprites`) | 2026-11-27 |
 | U-03a UI scale (port only the scaling from `feature/ui-auto-scale`, not its July history) | BOOK3PRO | `b3/U-03a-ui-scale` | 2026-11-27 |
-| P2-9 one edition per competition and season | BOOK3PRO | `b3/P2-9-one-edition` | 2026-11-27 |
 | U-06 saves backend: autosave slot (monthly + rollover), delete, overwrite API (dialog UI after WORKSTATION's U-11 lock) | BOOK3PRO | `b3/U-06-saves` | 2026-11-27 |
 | E-01 data: `position` + `dribbling` on people (data, validator, ids, saves; no `match/ecs` edits) | BOOK3PRO | `b3/E-01-position-dribbling` | 2026-11-27 |
 
@@ -16,7 +15,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Machine | Item | Paths |
 |---|---|---|
 | BOOK3PRO | U-03a | `ui/UiScale` (new), `PreferencesManager` (UI scale), `SettingsScreen` (scale row), `DesktopLauncher`, `mods/resolutions.txt`, `new Stage(...)`/`resize` lines in screens (one-line viewport swap) |
-| BOOK3PRO | P2-9 | `ScriptsManager` (createCup/createLeague), `RuntimeIdsTests`, `FullSeasonTests` (un-@Disable) |
 | BOOK3PRO | U-06, E-01 | `SaveLoadSystem`/`SaveGame` (autosave, delete), `tools/data/validate.py` + `GameData` + people JSON (`position`, `dribbling`) |
 | WORKSTATION | Engine (E-10..E-22) | `match/ecs/**` (new ECS engine; BOOK3PRO: E-01 `Position`/`dribbling` data is yours, ask before editing `match/ecs`) |
 
@@ -24,7 +22,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 minimum, autosave, labels in language files). Details in `docs/ROADMAP.md` Phase 2 close-out + Phase 3.
 
 **Suggested for BOOK3PRO** (saves / ids / data area):
-- **P2-9** one edition per competition and season (`RuntimeIdsTests` ~130, re-enable `FullSeasonTests.oneEditionPerCompetitionAndSeason`)
 - **U-06** saves: name, overwrite confirm, delete, autosave slot (monthly + rollover)
 - **U-03a** UI scale Auto/1×/2×, default 1280×720, drop sub-720p from `mods/resolutions.txt`
 
@@ -37,6 +34,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Producer:** push v0.4.0 to `main`; tag v0.5.0-alpha after P2-9..11, v0.5.0 after Phase 3. Engine answers are in D19 (Phase 4 can be designed in parallel).
 
 ## Log
+- 2026-11-27 · BOOK3PRO · DONE · P2-9 · Cause: `ScriptsManager.createLeague/createCup` always made a new edition, so the 1888-89 Football League and FA Cup each had the season.json edition plus a script-made one (never drawn or finished). Now the creation scripts carry the season's edition id (`ScriptsLoader.LEAGUE_EDITION`/`CUP_EDITION`) and open that data edition (dates, participants without duplicates); v1 saves whose scripts lack the id fall back to the competition's data edition of the season (no save version bump). Later seasons unchanged (`AuthorityManager` makes 1889-90 once). `RuntimeIdsTests` expects `fa-cup-1888-89`; `FullSeasonTests.oneEditionPerCompetitionAndSeason` re-enabled (cups + league, 1889-90 once); `SaveGameTests.theV1FixtureScriptsOpenTheDataEditions` (fails on the old code). `./mvnw -B verify` green (246 core + 1 desktop). No lock left for P2-9.
 - 2026-11-28 · WORKSTATION · NOTE · D23 · Producer: DarkBlade code may be reused or re-implemented in Futtoboru (public repo OK); PRIVACY.md rules on secrets/personal/business data and asset licences still apply. A DarkBlade engine deep dive is running to plan the E-21 match viewer port.
 - 2026-11-27 · BOOK3PRO · DONE · P2-10 · Cause: the New Game screens set the new game up from the `DatabaseLoader` objects (clubs, players, competitions, editions, season scripts) that the game played or loaded before had changed; only a load rebuilt them. Now the main menu's New Game calls `Futtoboru.prepareNewGame()`: drops the current game, `DatabaseLoader.rebuild()` from the data already read, new engine managers. Also fixed: every rebuild (also the one before each load) shifted the derived ids (contracts, squad copies, shared grounds, the IFAB, 900000+); `load` now uses a copy of the data allocator, so they are the same on every build. `NewGameFreshDataTests` (play 170 days or load the v1 fixture and play, then a new game: no played fixtures, zeroed tables, starting balances, unexecuted scripts, only data editions, no shared objects, same ids, and B replays A's 170 days exactly); `NewGameFixture.newGameInSession`. `./mvnw -B verify` green (245 core, 1 skipped + 1 desktop). No lock left for P2-10.
 - 2026-11-28 · WORKSTATION · DONE · U-11 + U-09 · `ui/GroundArt` (cache via `Futtoboru.getGroundArt()`, Nearest, integer scale, placeholder panel) on Club Info, Club Detail, Match Preview header (2×) and the new-game picker; `ui/UiTooltips` (league/history table headers, squad attribute abbreviations) and `ui/UiDialogs` (one modal at a time; unsaved-progress, Load/Save and their errors, application messages); save/load dialog pads → tokens (allow-list now only `UiTheme`); `MainGameScreen.hide()` disposes next frame (Settings leak fixed). 36 labels. Jenkins #91 green (243 core + 1 desktop). **BOOK3PRO:** neutral cup venues need a venue field on `Match` (saves/schedule area) for the preview to show them.
