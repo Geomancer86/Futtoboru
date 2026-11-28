@@ -30,6 +30,7 @@ import com.rndmodgames.futtoboru.system.save.SaveCodec;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
 import com.rndmodgames.futtoboru.system.serializers.BigDecimalSerializer;
 import com.rndmodgames.futtoboru.system.serializers.JsonDateSerializer;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Saving & Loading Game Systems
@@ -51,6 +52,13 @@ public class SaveLoadSystem {
     private static final String SAVEGAMES_FOLDER = "savegames";
 
     public static final String SAVE_EXTENSION = ".json";
+
+    /** U-06 / D18: the one rotating autosave slot's file in the saves folder (player names never map to it). */
+    public static final String AUTOSAVE_FILE_NAME = "autosave" + SAVE_EXTENSION;
+    /** The name written into the autosave's summary; the load list shows {@link #AUTOSAVE_LABEL_KEY} instead. */
+    public static final String AUTOSAVE_NAME = "Autosave";
+    /** Language-file key of the autosave's label in the load list. */
+    public static final String AUTOSAVE_LABEL_KEY = "autosave";
 
     private static final boolean PRODUCTION_MODE_ENCRYPT = false;
 
@@ -147,8 +155,9 @@ public class SaveLoadSystem {
         if (base.isEmpty()) {
             base = "save";
         }
-        if (base.toUpperCase(Locale.ROOT).matches("(CON|PRN|AUX|NUL|COM\\d|LPT\\d)(\\..*)?")) {
-            base = "save_" + base;
+        if (base.toUpperCase(Locale.ROOT).matches("(CON|PRN|AUX|NUL|COM\\d|LPT\\d)(\\..*)?")
+                || (base + SAVE_EXTENSION).equalsIgnoreCase(AUTOSAVE_FILE_NAME)) {
+            base = "save_" + base; // a device name, or the autosave slot (U-06)
         }
         return base + SAVE_EXTENSION;
     }
@@ -169,14 +178,64 @@ public class SaveLoadSystem {
         Files.createDirectories(file.getParentFile().toPath());
         String name = saveName == null || saveName.trim().isEmpty() ? file.getName() : saveName.trim();
         String text = SaveCodec.encode(saveGame, name, LocalDateTime.now());
-        // write next to it first, so a failed write never destroys the slot's previous save
-        File tmp = new File(file.getParentFile(), file.getName() + ".tmp");
-        Files.write(tmp.toPath(), text.getBytes(StandardCharsets.UTF_8));
-        Files.move(tmp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        writeSaveFile(file, text);
         saveGame.setIsSaved(true);
         saveGame.setSaveName(name);
         log("game saved to " + file);
         return file;
+    }
+
+    /**
+     * Writes a save's text to {@code file}: next to it first, then moved over it, so a failed write never destroys
+     * the slot's previous save. The folder is made when missing.
+     */
+    public static void writeSaveFile(File file, String text) throws IOException {
+        Files.createDirectories(file.getParentFile().toPath());
+        File tmp = new File(file.getParentFile(), file.getName() + ".tmp");
+        Files.write(tmp.toPath(), text.getBytes(StandardCharsets.UTF_8));
+        Files.move(tmp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    /** @return the autosave slot's file (U-06; it may not exist yet) */
+    public static File autosaveFile() {
+        return new File(getSavesFolder(), AUTOSAVE_FILE_NAME);
+    }
+
+    /** @return true when {@code file} is the autosave slot */
+    public static boolean isAutosave(File file) {
+        return file != null && AUTOSAVE_FILE_NAME.equalsIgnoreCase(file.getName());
+    }
+
+    /** @return true when saving under {@code saveName} would overwrite an existing save (ask the player first) */
+    public static boolean saveExists(String saveName) {
+        return saveFileFor(saveName).isFile();
+    }
+
+    /**
+     * Deletes a save file of the saves folder (a row of {@link #listSaves()}, the autosave included). Files outside
+     * the saves folder or not ending in {@value #SAVE_EXTENSION} are never deleted.
+     *
+     * @return true when the file is gone
+     */
+    public static boolean deleteSave(File file) {
+        if (file == null) {
+            return false;
+        }
+        File folder = getSavesFolder().getAbsoluteFile();
+        File target = file.getAbsoluteFile();
+        if (!folder.equals(target.getParentFile())
+                || !target.getName().toLowerCase(Locale.ROOT).endsWith(SAVE_EXTENSION)) {
+            Log.warn(Log.SYSTEM_INIT, "SaveLoadSystem", "not a save of " + folder + ", not deleted: " + file);
+            return false;
+        }
+        try {
+            boolean deleted = Files.deleteIfExists(target.toPath());
+            log((deleted ? "deleted " : "nothing to delete at ") + target);
+            return true;
+        } catch (IOException e) {
+            Log.error(Log.SYSTEM_INIT, "SaveLoadSystem", "could not delete " + target, e);
+            return false;
+        }
     }
 
     /** Loads a save file; never throws (see {@link LoadResult}). */
@@ -190,7 +249,8 @@ public class SaveLoadSystem {
         }
         LoadResult result = SaveCodec.decode(text);
         if (result.isLoaded()) {
-            result.getGame().setSaveName(readSummary(file, text).getName());
+            // a loaded autosave has no player slot: the next Save asks for a name (U-06)
+            result.getGame().setSaveName(isAutosave(file) ? null : readSummary(file, text).getName());
             result.getGame().setIsSaved(true);
         }
         for (String problem : result.getProblems()) {
@@ -240,6 +300,9 @@ public class SaveLoadSystem {
         LoadResult.Status status = version > SaveCodec.SAVE_VERSION ? LoadResult.Status.NEWER_VERSION : LoadResult.Status.OK;
         JsonValue s = root.get("summary");
         String name = s != null ? s.getString("name", fallbackName) : fallbackName;
+        if (isAutosave(file)) {
+            name = LanguageModLoader.getValue(AUTOSAVE_LABEL_KEY); // shown in the player's language (U-06)
+        }
         String manager = s != null ? s.getString("manager", null) : null;
         String club = s != null ? s.getString("club", null) : null;
         LocalDateTime gameDate = s != null ? parse(s.getString("gameDate", null)) : null;

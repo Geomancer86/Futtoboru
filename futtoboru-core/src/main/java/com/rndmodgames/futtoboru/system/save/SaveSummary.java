@@ -70,6 +70,11 @@ public class SaveSummary {
         return status == LoadResult.Status.OK;
     }
 
+    /** @return true for the rotating autosave slot (U-06; its name is the localized "Autosave" label) */
+    public boolean isAutosave() {
+        return com.rndmodgames.futtoboru.system.SaveLoadSystem.isAutosave(file);
+    }
+
     @Override
     public String toString() {
         return name + " (" + file.getName() + ")";
