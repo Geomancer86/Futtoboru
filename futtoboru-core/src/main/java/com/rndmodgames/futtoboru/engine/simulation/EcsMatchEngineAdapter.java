@@ -31,7 +31,8 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.Team;
  *   place's position ({@link TeamShape} maps to the engine's {@link Shape} by label, {@link ClubStyle} to
  *   {@link TeamStyle} by name). The engine needs eleven bodies, so an empty place (a club playing short) gets a
  *   stand-in at the bottom of the rating scale who never scores (interim, until the engine can play with ten).
- * - Ground and weather: {@link MatchFixture#weather()}; home side defends west and kicks off; 2 x 45 minutes.
+ * - Ground and weather: {@link MatchFixture#weather()}; home side defends west and kicks off; 2 x 45 minutes; the away
+ *   side carries the home advantage ({@code ActionParams.awayNoiseGain}) unless the ground is neutral (E-20).
  * - Scorers: the last player of the scoring side to play the ball; an own goal has no scorer.
  * - Injuries: the G-02 injuries {@link MatchSimulator} rolls are recorded on the match for both engines, but the ECS
  *   play does not weaken the hurt men yet (its own contact injuries, E-13, are the later source; E-17 wires them).
@@ -61,10 +62,7 @@ public final class EcsMatchEngineAdapter implements MatchEngine {
     public MatchOutcome play(MatchFixture fixture, RandomSource rng) {
         Eleven home = Eleven.of(fixture.homeSheet(), fixture.home(), fixture);
         Eleven away = Eleven.of(fixture.awaySheet(), fixture.away(), fixture);
-        EcsMatchInput input = new EcsMatchInput(fixture.matchKey(),
-                new UniformPitch(fixture.weather().surface(), fixture.weather().wetness()), 0.0, HALF_MINUTES,
-                new EcsMatchInput.Side(home.sheet, home.style), new EcsMatchInput.Side(away.sheet, away.style));
-        EcsMatchResult r = engine.play(input, rng);
+        EcsMatchResult r = engine.play(input(fixture, home, away), rng);
         List<Long> homeScorers = new ArrayList<>();
         List<Long> awayScorers = new ArrayList<>();
         for (EcsMatchResult.Goal g : r.goals()) {
@@ -78,6 +76,14 @@ public final class EcsMatchEngineAdapter implements MatchEngine {
             }
         }
         return new MatchOutcome(r.homeGoals(), r.awayGoals(), homeScorers, awayScorers);
+    }
+
+    /** The engine's input for the fixture with these two sides (also the calibration harness's, E-20). */
+    static EcsMatchInput input(MatchFixture fixture, Eleven home, Eleven away) {
+        return new EcsMatchInput(fixture.matchKey(),
+                new UniformPitch(fixture.weather().surface(), fixture.weather().wetness()), 0.0, HALF_MINUTES,
+                new EcsMatchInput.Side(home.sheet, home.style), new EcsMatchInput.Side(away.sheet, away.style),
+                fixture.neutral());
     }
 
     /** {@link Shape} of the engine for a sheet's {@link TeamShape} (same label, same slot positions). */

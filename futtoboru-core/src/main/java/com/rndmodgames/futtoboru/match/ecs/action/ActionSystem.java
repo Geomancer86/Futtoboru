@@ -88,6 +88,7 @@ public final class ActionSystem extends EntitySystem implements SimSystem {
     private final RandomSource noise;
     private final RandomSource lace;
     private MatchEnds ends = new MatchEnds(Team.HOME);
+    private boolean homeGround;
     private PitchGeometry pitch = new PitchGeometry(PitchParams.defaults1888());
 
     private final ActionRecord[] records = new ActionRecord[MAX_RECORDS_PER_TICK];
@@ -139,6 +140,14 @@ public final class ActionSystem extends EntitySystem implements SimSystem {
     public void addedToEngine(Engine engine) {
         players = engine.getEntitiesFor(family());
         balls = engine.getEntitiesFor(Family.all(BallComponent.class).get());
+    }
+
+    /**
+     * Played on the home club's ground (E-20): the away side's input noise grows by
+     * {@link ActionParams#awayNoiseGain}. Default false (a neutral ground, as in drills and scenarios).
+     */
+    public void setHomeGround(boolean homeGround) {
+        this.homeGround = homeGround;
     }
 
     /** Which side defends which goal (keeper's own half); change at half-time. Default: home defends west. */
@@ -702,7 +711,8 @@ public final class ActionSystem extends EntitySystem implements SimSystem {
         double d = Math.sqrt(dx * dx + dy * dy);
         double awkward = d > 1e-9 ? 0.5 * (1 - (b.fx * dx + b.fy * dy) / d) : 0;
         double f = (1 + a.fatigueGain * fatigue) * (1 + a.pressureGain * pressure) * (1 + a.wetBallGain * sat)
-                * (1 + a.awkwardGain * awkward) * (b.stumbleTicks > 0 ? 1 + a.stumbleGain : 1);
+                * (1 + a.awkwardGain * awkward) * (b.stumbleTicks > 0 ? 1 + a.stumbleGain : 1)
+                * (homeGround && b.team == Team.AWAY ? 1 + a.awayNoiseGain : 1);
         lastNoiseFactor = f;
         return f;
     }
