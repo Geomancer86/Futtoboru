@@ -7,7 +7,16 @@ import com.rndmodgames.futtoboru.match.ecs.action.ActionCommand;
 import com.rndmodgames.futtoboru.match.ecs.action.ActionSystem;
 import com.rndmodgames.futtoboru.match.ecs.action.PossessionComponent;
 import com.rndmodgames.futtoboru.match.ecs.action.SkillComponent;
+import com.rndmodgames.futtoboru.match.ecs.ai.AiSetup;
+import com.rndmodgames.futtoboru.match.ecs.ai.DecisionSystem;
+import com.rndmodgames.futtoboru.match.ecs.ai.PerceptionComponent;
+import com.rndmodgames.futtoboru.match.ecs.ai.PerceptionSystem;
+import com.rndmodgames.futtoboru.match.ecs.ai.PlayStateComponent;
+import com.rndmodgames.futtoboru.match.ecs.ai.StandInRestartSystem;
+import com.rndmodgames.futtoboru.match.ecs.ai.TeamTacticsComponent;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
+import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
+import com.rndmodgames.futtoboru.match.ecs.pitch.PitchParams;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallSystem;
 import com.rndmodgames.futtoboru.match.ecs.view.ActorPass;
 import com.rndmodgames.futtoboru.match.ecs.view.BallPose;
@@ -54,17 +63,32 @@ public final class MatchSystems {
             // E-14 ball actions
             ActionCommand.class,
             SkillComponent.class,
-            PossessionComponent.class);
+            PossessionComponent.class,
+            // E-15 player AI (and its stand-in referee's play state)
+            TeamTacticsComponent.class,
+            PlayStateComponent.class,
+            PerceptionComponent.class);
 
     private MatchSystems() {
     }
 
-    /** Adds every simulation system to {@code world}. */
+    /** Adds every simulation system to {@code world}, on the default 1888 ground (110 x 70 yd). */
     public static void installSimulation(MatchWorld world) {
+        installSimulation(world, new PitchGeometry(PitchParams.defaults1888()));
+    }
+
+    /**
+     * Adds every simulation system to {@code world}. The AI systems act only once {@link AiSetup#install} has given
+     * the world its team entities; worlds without them (drills, tests) are driven by hand as before.
+     */
+    public static void installSimulation(MatchWorld world, PitchGeometry pitch) {
+        world.addSimulation(new PerceptionSystem(world));
+        world.addSimulation(new DecisionSystem(world, pitch));
         world.addSimulation(new LocomotionSystem(world));
         world.addSimulation(new ActionSystem(world));
         world.addSimulation(new BallSystem(world));
         world.addSimulation(new ContactSystem(world));
+        world.addSimulation(new StandInRestartSystem(world, pitch));
     }
 
     /**

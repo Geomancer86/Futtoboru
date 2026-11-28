@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.match.ecs;
 
 import com.rndmodgames.futtoboru.match.ecs.action.ActionParams;
+import com.rndmodgames.futtoboru.match.ecs.ai.AiParams;
 import com.rndmodgames.futtoboru.match.ecs.body.BodyParams;
 
 /**
@@ -112,6 +113,11 @@ public final class PhysicsParams {
     /** Reach, control, kicks, input noise, headers and lace, keeper handling and carrying, throws. */
     public ActionParams action = new ActionParams();
 
+    // ---- player AI (E-15, §4.1) ----------------------------------------------------------------------------------
+
+    /** Perception noise and delay, utility weights by style, keeper release, dead-ball waits. */
+    public AiParams ai = new AiParams();
+
     /** The parameters of a surface. */
     public SurfaceParams surface(Surface s) {
         switch (s) {
@@ -152,6 +158,8 @@ public final class PhysicsParams {
         body.validate();
         require(action != null, "action params");
         action.validate();
+        require(ai != null, "ai params");
+        ai.validate();
         return this;
     }
 

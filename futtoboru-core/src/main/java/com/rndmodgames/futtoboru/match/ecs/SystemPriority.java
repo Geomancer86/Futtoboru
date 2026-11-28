@@ -17,6 +17,8 @@ public final class SystemPriority {
     public static final int BALL = 70;
     public static final int CONTACT = 80;
     public static final int LAWS = 90;
+    /** E-15 stand-in referee (line crossings, goals, restart placement) until the E-16 laws system replaces it. */
+    public static final int RESTART_STAND_IN = 92;
     public static final int CROWD = 100;
     public static final int EVENT_DETECTION = 110;
     public static final int CLOCK = 120;
