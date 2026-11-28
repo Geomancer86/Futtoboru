@@ -154,7 +154,7 @@ public interface RandomSource {
     double nextDouble();            // [0,1)
     int nextInt(int bound);         // [0,bound)
     long nextLong();
-    RandomSource fork(String stream); // independent, deterministic child stream (SplittableRandom inside)
+    RandomSource fork(String stream); // independent, deterministic child stream (own SplitMix64 + polar Gaussian: same on every JDK, E-DET)
 }
 // Per match: rng = game.random().fork("match:" + matchRuntimeId). A match's result then depends only on
 // (game seed, match id, input), never on the order in which the day's matches are simulated.
