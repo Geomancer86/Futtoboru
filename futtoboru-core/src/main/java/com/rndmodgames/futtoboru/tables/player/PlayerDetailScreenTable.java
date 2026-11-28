@@ -568,7 +568,8 @@ public class PlayerDetailScreenTable extends VisTable {
         technicalAttributesTable.add(new VisLabel("Technical Attributes")).colspan(3).left().padBottom(UiTheme.space("xs"));
         technicalAttributesTable.row();
         
-        addAttributeRow(technicalAttributesTable, LanguageModLoader.getValue("player_dribbling"), currentPlayer.getDribbling());
+        addAttributeRow(technicalAttributesTable, LanguageModLoader.getValue("player_dribbling"), "Dribbling",
+                currentPlayer.getDribbling());
         addAttributeRow(technicalAttributesTable, "Passing", currentPlayer.getPassing());
         addAttributeRow(technicalAttributesTable, "Kicking", currentPlayer.getKicking());
         addAttributeRow(technicalAttributesTable, "Long Shots", currentPlayer.getLongShots());
@@ -609,10 +610,15 @@ public class PlayerDetailScreenTable extends VisTable {
      * Add an attribute row with change tracking
      */
     private void addAttributeRow(VisTable table, String attributeName, Float currentValue) {
+        addAttributeRow(table, attributeName, attributeName, currentValue);
+    }
+
+    /** @param attributeKey the attribute's name for the change tracking (the label may be translated) */
+    private void addAttributeRow(VisTable table, String label, String attributeKey, Float currentValue) {
         table.row();
-        
+
         // Attribute name
-        table.add(new VisLabel(attributeName + ":")).left().width(UiTheme.size("col.label"));
+        table.add(new VisLabel(label + ":")).left().width(UiTheme.size("col.label"));
         
         // Current value (v2.0 - 3d6 system: display as integer)
         String valueText;
@@ -643,7 +649,7 @@ public class PlayerDetailScreenTable extends VisTable {
         table.add(valueLabel).left().width(UiTheme.size("col.value"));
         
         // Change indicator (30-day tracking)
-        String changeText = formatAttributeChange(attributeName, currentValue);
+        String changeText = formatAttributeChange(attributeKey, currentValue);
         VisLabel changeLabel = new VisLabel(changeText);
         
         // Color coding based on trend

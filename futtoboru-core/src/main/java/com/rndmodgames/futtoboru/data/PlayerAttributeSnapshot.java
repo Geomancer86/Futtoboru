@@ -46,6 +46,8 @@ public class PlayerAttributeSnapshot implements Serializable {
     /**
      * Technical Attributes
      */
+    /** E-01b; null in snapshots of saves before it (read back as derived, see {@link #getAttributeValue}) */
+    private Float dribbling;
     private Float passing;
     private Float kicking;
     private Float longShots;
@@ -106,6 +108,7 @@ public class PlayerAttributeSnapshot implements Serializable {
         snapshot.setPositioning(player.getPositioning());
         snapshot.setTeamwork(player.getTeamwork());
         
+        snapshot.setDribbling(player.getDribbling());
         snapshot.setPassing(player.getPassing());
         snapshot.setKicking(player.getKicking());
         snapshot.setLongShots(player.getLongShots());
@@ -153,6 +156,10 @@ public class PlayerAttributeSnapshot implements Serializable {
             case "teamwork": return teamwork;
             
             // Technical
+            case "dribbling": return dribbling != null ? dribbling
+                    // a snapshot saved before E-01b: derived from its own attributes, as the v1 -> v2 save step does
+                    : com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator.deriveDribbling(
+                            dexterity, acceleration, trickShots, speed);
             case "passing": return passing;
             case "kicking": return kicking;
             case "longshots": case "long_shots": return longShots;
@@ -257,6 +264,8 @@ public class PlayerAttributeSnapshot implements Serializable {
     public Float getLongShots() { return longShots; }
     public void setLongShots(Float longShots) { this.longShots = longShots; }
     
+    public Float getDribbling() { return dribbling; }
+    public void setDribbling(Float dribbling) { this.dribbling = dribbling; }
     public Float getTrickShots() { return trickShots; }
     public void setTrickShots(Float trickShots) { this.trickShots = trickShots; }
     

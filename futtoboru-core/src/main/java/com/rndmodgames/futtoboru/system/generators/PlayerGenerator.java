@@ -47,7 +47,10 @@ public class PlayerGenerator {
             // Fallback: use current date
             attributeGenerator.generatePlayerAttributes(player, person, LocalDateTime.now(), attributeRandom(person));
         }
-        
+
+        // E-01b: the line his seeded attributes suit best (no dice)
+        player.setPosition(PositionAssigner.forGenerated(player));
+
         return player;
     }
     
