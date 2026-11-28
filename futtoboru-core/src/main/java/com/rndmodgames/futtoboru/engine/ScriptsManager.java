@@ -434,9 +434,20 @@ public class ScriptsManager {
             
             Log.info(Log.ENGINE_SCRIPTS, "ScriptsManager: MessageManager found, creating messages...");
             
+            // P2-13: the day of the first league matches, from the fixtures just generated (era calendar)
+            java.time.LocalDateTime firstLeagueDay = null;
+            if (fixtures != null) {
+                for (com.rndmodgames.futtoboru.data.Match fixture : fixtures) {
+                    if (fixture != null && fixture.getMatchDateTime() != null
+                            && (firstLeagueDay == null || fixture.getMatchDateTime().isBefore(firstLeagueDay))) {
+                        firstLeagueDay = fixture.getMatchDateTime();
+                    }
+                }
+            }
+
             // Create league creation message
-                    com.rndmodgames.futtoboru.data.Message leagueMessage = 
-                        messageManager.createLeagueCreationMessage(league);
+                    com.rndmodgames.futtoboru.data.Message leagueMessage =
+                        messageManager.createLeagueCreationMessage(league, firstLeagueDay);
                     
                     // Schedule for current date (will be delivered immediately or next day)
                     // Use current date so it appears in inbox right away
@@ -548,7 +559,7 @@ public class ScriptsManager {
                             
                             // Also create a non-mandatory fixture release message for reference
                             com.rndmodgames.futtoboru.data.Message fixtureMessage = 
-                                messageManager.createFixtureReleaseMessage(league);
+                                messageManager.createFixtureReleaseMessage(league, firstLeagueDay);
                             if (fixtureMessage != null) {
                                 fixtureMessage.setScheduledDate(drawDate);
                                 messageManager.scheduleMessage(fixtureMessage);

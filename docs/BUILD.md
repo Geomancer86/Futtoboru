@@ -94,7 +94,8 @@ runs what the merge brought).
   the affected tests; **simulation** (engine, system, data model, match, POMs) the whole fast tier under the lock,
   one module when only core changed. Prints the decision; `--run` runs it and records the green tree.
 - **`python tools/suite_lock.py run -- <command>`**: one heavy run per machine (lock folder `%TEMP%/futtoboru-locks`,
-  `FUTTOBORU_LOCK_DIR`); waits inside, a dead or 20-minute-silent holder loses it; `status`, `release`.
+  `FUTTOBORU_LOCK_DIR`); waits inside, a dead or 20-minute-silent holder loses it; `status`, `release`. Re-entrant: a
+  run inside a locked command (`suite_lock.py run -- python tools/test_level.py --run`) does not wait for its parent.
 - `SeasonMemo` (test code) plays the seeded season once per test JVM and hands copies (save codec) to AutosaveTests
   and SaveGameTests.
 - No `clean` locally (a deleted test resource can survive in `target/` until you clean). One surefire fork: measured
@@ -108,15 +109,14 @@ git worktree add .worktrees/<item> -b b3/<item> origin/develop
 ```
 
 ## CI
-- **GitHub Actions** (`.github/workflows/ci.yml`, JDK 17 + Xvfb): a feature-branch push runs the level of what the
-  branch changed (`test_level.py --base origin/develop`: docs-only skips Java, data-only runs the data job and the Java
-  data tests, code runs the fast tier); develop, main and PRs into develop run `-Pfull`; nightly and manual runs
-  `-Pfull,smoke`. pytest + `validate.py` when data, art or tools changed (always on develop/main).
+- **GitHub is git storage only (D32):** no GitHub Actions (the workflow was removed), no PRs, Releases or API use.
 - **Local Jenkins**, job "Futtoboru DEV" (`Jenkinsfile`, agent `EXECUTOR_BACKUP` on WORKSTATION): `TEST_TIER=auto`
   runs the slow tier + coverage after each develop commit (polls every 15 min), full + smoke + coverage at night
   (cron) with a first-parent `git bisect` between the last green nightly and HEAD when red, full + smoke for main,
   the fast tier for other branches. **To verify a lane's branch without a local full run:** "Build with Parameters",
-  `BUILD_BRANCH=b3/<item>`, `TEST_TIER=full` (from a script: `POST <jenkins>/job/Futtoboru%20DEV/buildWithParameters?BUILD_BRANCH=...&TEST_TIER=full`
-  with a user API token; URL and token are not in the repo, see HANDOFF). Publishes JUnit results and archives the
-  desktop jar. Job setup (once): Pipeline job, "Pipeline script from SCM", this repo, script path `Jenkinsfile`,
-  credentials `GITHUB_GEOMANCER86`.
+  `BUILD_BRANCH=b3/<item>`, `TEST_TIER=full`, or on the home LAN `python tools/ci_jenkins.py run --branch b3/<item>
+  [--tier full]` (`status`: the last builds), which reads `~/.futtoboru/jenkins.properties` (`url=`, and `user=` + `token=` or
+  `credentials=<file with them>`; never in the repo). Publishes JUnit results and archives the desktop jar. Job setup
+  (once): Pipeline job, "Pipeline script from SCM", this repo, script path `Jenkinsfile`, credentials
+  `GITHUB_GEOMANCER86`. The job loads the Jenkinsfile from develop on every build, so a Jenkinsfile change (T-01's
+  parameters and the nightly cron, whose `BUILD_BRANCH` default is `develop`) applies itself on the next develop build.

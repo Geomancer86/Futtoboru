@@ -511,6 +511,8 @@ public class InboxScreenTable extends VisTable {
             String buttonText = LanguageModLoader.getValue("inbox_view_draw");
             if (message.getMessageType() != null && message.getMessageType().equals("LEAGUE_DRAW")) {
                 buttonText = LanguageModLoader.getValue("inbox_view_league_draw");
+            } else if ("MATCH_RESULT".equals(message.getMessageType())) {
+                buttonText = LanguageModLoader.getValue("inbox_read_report"); // G-03
             } else {
                 buttonText = LanguageModLoader.getValue("inbox_view_related");
             }
@@ -542,6 +544,12 @@ public class InboxScreenTable extends VisTable {
                                 menuManager.setActiveMainScreen(message.getActionScreen());
                             } else {
                                 Log.info(Log.UI_INBOX, "InboxScreenTable: ERROR - menuManager is null");
+                            }
+                        } else if ("MATCH_RESULT".equals(message.getMessageType())) {
+                            // G-03: the report of this message's match (actionData = match id)
+                            if (menuManager != null && message.getActionData() instanceof Number) {
+                                menuManager.showMatchResult(menuManager.findPlayedMatch(
+                                        ((Number) message.getActionData()).longValue()));
                             }
                         } else {
                             // Generic action for other message types

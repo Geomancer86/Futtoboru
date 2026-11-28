@@ -47,12 +47,18 @@ public final class SeasonMemo {
     private SeasonMemo() {
     }
 
-    /** The memo, played on the first call with {@code application} (constructed with {@link #SEED}). */
+    /**
+     * The memo, played on the first call with {@code application} (constructed with {@link #SEED}). The application
+     * is re-seeded with its forced seed first, as a New Game does: an earlier test of the same class may have loaded a
+     * save, which replaces the seed with the save's (the memo then depended on the order the test classes ran in, red
+     * on Linux CI only, P2-13 sweep).
+     */
     public static synchronized SeasonMemo get(Futtoboru application) {
         if (played == null) {
-            if (application.getSeed() != SEED) {
+            long seed = application.isSeedForced() ? application.reseedForNewGame() : application.getSeed();
+            if (!application.isSeedForced() || seed != SEED) {
                 throw new IllegalArgumentException("the season memo is played with seed " + SEED + ", not "
-                        + application.getSeed() + ": construct the application with new Futtoboru(SEED)");
+                        + seed + ": construct the application with new Futtoboru(SEED)");
             }
             played = play(application);
         }

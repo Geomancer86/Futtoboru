@@ -17,6 +17,7 @@ import com.rndmodgames.futtoboru.match.ecs.body.BodyComponent;
 import com.rndmodgames.futtoboru.match.ecs.body.InjuryComponent;
 import com.rndmodgames.futtoboru.match.ecs.body.KitComponent;
 import com.rndmodgames.futtoboru.match.ecs.body.Studs;
+import com.rndmodgames.futtoboru.match.ecs.laws.RulesProfile;
 import com.rndmodgames.futtoboru.match.ecs.pitch.Team;
 
 /** E-14: kicks, touches, headers, keeper handling and carrying, lace cuts, records. */
@@ -319,13 +320,12 @@ class ActionSystemTest {
         assertEquals(ActionCommand.RESULT_ILLEGAL_HANDLING, keeperCatch(p1888, 10, 0), "not in the opponents' half");
 
         PhysicsParams p1912 = Actions.params(0);
-        p1912.action = ActionParams.forSeason(1912);
-        p1912.action.noiseScale = 0;
+        p1912.rules = RulesProfile.forSeason(1912);
         assertEquals(ActionCommand.RESULT_DONE, keeperCatch(p1912, -45, 0));
         assertEquals(ActionCommand.RESULT_ILLEGAL_HANDLING, keeperCatch(p1912, -25, 0), "outside the area");
         assertEquals(ActionCommand.RESULT_ILLEGAL_HANDLING, keeperCatch(p1912, -45, 25), "wide of the area");
-        assertEquals(ActionParams.KeeperHandling.OWN_HALF, ActionParams.forSeason(1888).keeperHandling);
-        assertEquals(ActionParams.KeeperHandling.OWN_HALF, ActionParams.forSeason(1911).keeperHandling);
+        assertEquals(ActionParams.KeeperHandling.OWN_HALF, RulesProfile.forSeason(1888).keeperHandling());
+        assertEquals(ActionParams.KeeperHandling.OWN_HALF, RulesProfile.forSeason(1911).keeperHandling());
     }
 
     @Test

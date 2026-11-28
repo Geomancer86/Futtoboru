@@ -101,16 +101,31 @@ class PositionsAndDribblingTests {
         assertEquals(player.getDribbling(), again.getDribbling());
     }
 
+    /**
+     * P2-13: the age decline is a year's rate spread over the days (1-2 steps a year from 40). It used to take that
+     * whole step every day: a 45-year-old lost one point a day in every physical, technical and keeping attribute.
+     * Same streams for both players, so the daily drift is the same and the difference is the decline.
+     */
     @Test
-    void dribblingDeclinesWithAge() {
+    void dribblingDeclinesWithAgeAtAYearlyRate() {
         PlayerAttributeGenerator generator = new PlayerAttributeGenerator();
-        Player veteran = player(20f);
+        Player veteran = player(15f);
         veteran.getPerson().setBirthDate(DAY.minusYears(45));
-        for (int day = 0; day < 30; day++) {
+        Player young = player(15f);
+        for (int day = 0; day < 2 * 365; day++) {
             generator.applyDailyAttributeChanges(veteran, DAY.plusDays(day),
                     RandomSource.seeded(7L).fork("training:1:" + day));
+            generator.applyDailyAttributeChanges(young, DAY.plusDays(day),
+                    RandomSource.seeded(7L).fork("training:1:" + day));
+            if (day == 364) {
+                // keeping attributes do not drift: only the decline moves them
+                float lost = AVG - veteran.getShotStopping();
+                assertTrue(lost >= 1 && lost <= 4, "a 45-year-old's year of decline: " + lost + " steps");
+                assertEquals(AVG, young.getShotStopping(), "no decline at 24");
+            }
         }
-        assertTrue(veteran.getDribbling() < 20f, "a 45-year-old's dribbling declines: " + veteran.getDribbling());
+        float lost = young.getDribbling() - veteran.getDribbling();
+        assertTrue(lost >= 1 && lost <= 8, "a 45-year-old's dribbling declines over two years: " + lost + " steps");
     }
 
     @Test

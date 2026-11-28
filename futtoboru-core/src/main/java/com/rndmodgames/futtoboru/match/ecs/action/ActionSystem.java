@@ -388,7 +388,7 @@ public final class ActionSystem extends EntitySystem implements SimSystem {
     /** May a keeper of {@code team} use his hands at (x, y) under this season's law? */
     public boolean handsAllowed(Team team, double x, double y) {
         int s = ends.endDefendedBy(team).sign();
-        if (a.keeperHandling == ActionParams.KeeperHandling.OWN_HALF) {
+        if (pp.rules.keeperHandling() == ActionParams.KeeperHandling.OWN_HALF) {
             return x * s >= 0;
         }
         double depth = pitch.halfLength() - x * s;

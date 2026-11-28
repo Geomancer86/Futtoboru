@@ -140,11 +140,6 @@ public final class BodyParams {
     public double groundFrictionPerS = 6.0;
     /** A charge is "from behind" when the contact comes within this angle of the victim's back, rad (D, 1869 law). */
     public double fromBehindHalfAngle = StrictMath.toRadians(60);
-    /**
-     * Keeper protected from charges (1892 IFAB / 1894 FA, ERA_TIMELINE). False in 1888-89: charging the keeper is a
-     * fair charge. Moves to the RulesProfile (V2) when it exists.
-     */
-    public boolean keeperChargeProtected = false;
 
     // ---- injuries (§3.3, D19-3: knock / passenger / off) -------------------------------------------------------------
 

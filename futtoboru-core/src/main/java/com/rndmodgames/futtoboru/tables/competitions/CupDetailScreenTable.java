@@ -227,11 +227,21 @@ public class CupDetailScreenTable extends VisTable {
                     
                     // Score or vs
                     String score = " " + LanguageModLoader.getValue("match_vs") + " ";
-                    if (match.getIsPlayed() != null && match.getIsPlayed() && 
+                    if (match.getIsPlayed() != null && match.getIsPlayed() &&
                         match.getHomeGoals() != null && match.getAwayGoals() != null) {
-                        score = " " + match.getHomeGoals() + " - " + match.getAwayGoals() + " ";
+                        // G-03: a played tie opens its result and report
+                        final Match played = match;
+                        com.kotcrab.vis.ui.widget.LinkLabel scoreLink = new com.kotcrab.vis.ui.widget.LinkLabel(
+                            match.getHomeGoals() + " - " + match.getAwayGoals());
+                        scoreLink.setListener(url -> {
+                            if (menuManager != null) {
+                                menuManager.showMatchResult(played);
+                            }
+                        });
+                        row.add(scoreLink).width(UiTheme.size("col.score")).center();
+                    } else {
+                        row.add(new VisLabel(score)).width(UiTheme.size("col.score")).center();
                     }
-                    row.add(new VisLabel(score)).width(UiTheme.size("col.score")).center();
                     
                     // Away team or "Winner of X"
                     String awayName = getTeamNameOrWinner(match, false);

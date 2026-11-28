@@ -29,6 +29,7 @@ import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.data.scripts.BasicScript;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.system.NewGameClubs;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
@@ -498,64 +499,11 @@ public class NewGameOverviewScreen implements Screen {
                      * even if their country wasn't selected (e.g., Linfield in FA Cup).
                      * This ensures AuthorityManager can find and process them correctly.
                      */
-                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6a: Adding competitions and participant clubs to SaveGame...");
-                    List<Competition> allCompetitions = DatabaseLoader.getCompetitions();
-                    if (allCompetitions != null) {
-                        for (Competition comp : allCompetitions) {
-                            if (comp == null) continue;
-                            
-                            // Add competition to SaveGame lists
-                            if (Competition.COMPETITION_CUP.equals(comp.getCompetitionType())) {
-                                if (!currentGame.getAllCups().contains(comp)) {
-                                    currentGame.getAllCups().add(comp);
-                                }
-                            } else if (Competition.COMPETITION_LEAGUE.equals(comp.getCompetitionType())) {
-                                if (!currentGame.getAllLeagues().contains(comp)) {
-                                    currentGame.getAllLeagues().add(comp);
-                                }
-                            }
-                            
-                            // Ensure all participant clubs from all editions are in SaveGame.allClubs
-                            if (comp.getEditions() != null) {
-                                for (com.rndmodgames.futtoboru.data.CompetitionEdition edition : comp.getEditions()) {
-                                    if (edition != null && edition.getParticipantClubsIds() != null) {
-                                        for (Long clubId : edition.getParticipantClubsIds()) {
-                                            if (clubId != null && currentGame.getClubById(clubId) == null) {
-                                                Club club = DatabaseLoader.getClubById(clubId);
-                                                if (club != null) {
-                                                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Adding participant club " + club.getName() + " (ID: " + clubId + ") to SaveGame for competition: " + comp.getName());
-                                                    currentGame.getAllClubs().add(club);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6a: OK - Total cups: " + currentGame.getAllCups().size() + ", leagues: " + currentGame.getAllLeagues().size() + ", total clubs: " + currentGame.getAllClubs().size());
-                    }
-                    
-                    for (Country country : selectedCountries) {
-                        if (country == null) {
-                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "country in selectedCountries is NULL!");
-                            continue;
-                        }
-                        if (country.getId() == null) {
-                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "country.getId() is NULL for country: " + country.getCommonName());
-                            continue;
-                        }
-                        
-                        List<Club> clubsForCountry = DatabaseLoader.getClubsByCountry().get(country.getId());
-                        if (clubsForCountry == null) {
-                            Log.error(Log.UI_MENU, "NewGameOverviewScreen", "No clubs found for country ID: " + country.getId() + " (" + country.getCommonName() + ")");
-                            continue;
-                        }
-                        
-                        // Add all Clubs for the selected countries to be simulated
-                        currentGame.getAllClubs().addAll(clubsForCountry);
-                        Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: Added " + clubsForCountry.size() + " clubs for country: " + country.getCommonName());
-                    }
-                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: OK - Total clubs loaded: " + currentGame.getAllClubs().size());
+                    // P2-13: the participants first, then the clubs of the selected countries not listed yet: each
+                    // club once (it was twice for the selected countries, so the daily club steps ran twice)
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6a: Adding competitions, their participants and the selected countries' clubs...");
+                    NewGameClubs.addTo(currentGame, DatabaseLoader.getCompetitions(), selectedCountries);
+                    Log.info(Log.UI_MENU, "NewGameOverviewScreen", "Step 6: OK - Total cups: " + currentGame.getAllCups().size() + ", leagues: " + currentGame.getAllLeagues().size() + ", total clubs: " + currentGame.getAllClubs().size());
 
                     /**
                      * Starting Club
