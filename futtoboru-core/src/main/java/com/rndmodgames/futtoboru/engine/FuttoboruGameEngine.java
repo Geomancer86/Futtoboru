@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -412,15 +411,10 @@ public class FuttoboruGameEngine {
          *       
          *       - simulate all clubs, not only player controlled
          *
-         * P2-12: each club once a day. A new game lists the clubs of the selected countries a second time
-         * (NewGameOverviewScreen adds the competitions' participants, then all clubs of each country), so every
-         * home club sold tickets twice a day and booked each gate twice.
+         * P2-13: the game lists each club once (NewGameClubs for a new game, SaveGame.removeDuplicateClubs on
+         * load), so this and every other per-club step runs once per club a day.
          */
-        Set<Club> processedClubs = Collections.newSetFromMap(new IdentityHashMap<>());
         for (Club currentClub : gameInstance.getCurrentGame().getAllClubs()) {
-            if (!processedClubs.add(currentClub)) {
-                continue;
-            }
 
             //
             Log.debug(Log.ENGINE_GAME, "FuttoboruGameEngine", "PROCESSING CLUB: " + currentClub.getName());

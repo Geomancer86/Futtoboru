@@ -89,7 +89,8 @@ runs what the merge brought).
   the affected tests; **simulation** (engine, system, data model, match, POMs) the whole fast tier under the lock,
   one module when only core changed. Prints the decision; `--run` runs it and records the green tree.
 - **`python tools/suite_lock.py run -- <command>`**: one heavy run per machine (lock folder `%TEMP%/futtoboru-locks`,
-  `FUTTOBORU_LOCK_DIR`); waits inside, a dead or 20-minute-silent holder loses it; `status`, `release`.
+  `FUTTOBORU_LOCK_DIR`); waits inside, a dead or 20-minute-silent holder loses it; `status`, `release`. Re-entrant: a
+  run inside a locked command (`suite_lock.py run -- python tools/test_level.py --run`) does not wait for its parent.
 - `SeasonMemo` (test code) plays the seeded season once per test JVM and hands copies (save codec) to AutosaveTests
   and SaveGameTests.
 - No `clean` locally (a deleted test resource can survive in `target/` until you clean). One surefire fork: measured

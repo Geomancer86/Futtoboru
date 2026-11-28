@@ -487,12 +487,22 @@ public class PlayerAttributeGenerator {
             case 12: if (player.getDribbling() != null) player.setDribbling(clampAttribute3d6((int)(player.getDribbling() + change))); break;
         }
         
-        // Apply age-based decline (v1.0)
+        // Age-based decline. The factor is a year's decline (x10 = steps per attribute and year: 30-34 0.1-0.5,
+        // 35-39 0.5-1, 40+ 1-2), spread over the days as a daily chance of one step (P2-13: applied whole every day,
+        // it took a player of 40 down one step a day in every physical, technical and keeping attribute, to 3 within
+        // weeks); mental attributes at half that rate, leadership/positioning/teamwork at a third
         float declineFactor = calculateDeclineFactor(age, rng);
         if (declineFactor > 0) {
-            applyAgeDecline(player, declineFactor);
+            float stepChance = declineFactor * 10f / DAYS_PER_YEAR;
+            int steps = rng.nextFloat() < stepChance ? 1 : 0;
+            int mental = rng.nextFloat() < stepChance / 2f ? 1 : 0;
+            int experience = rng.nextFloat() < stepChance / 3f ? 1 : 0;
+            applyAgeDecline(player, steps, mental, experience);
         }
     }
+
+    /** The daily age decline spreads a year's decline over this many days. */
+    static final float DAYS_PER_YEAR = 365f;
     
     /**
      * Calculate age-based decline factor
@@ -510,14 +520,12 @@ public class PlayerAttributeGenerator {
     }
     
     /**
-     * Apply age-based decline to all attributes (v2.0 - 3d6 system)
-     * 
-     * Decline is now in integer steps (not float) to match 3-18+ scale
+     * Apply age-based decline to all attributes (v2.0 - 3d6 system), in integer steps to match the 3-23 scale:
+     * {@code declineSteps} for physical, technical and keeping attributes, {@code mentalDecline} for concentration,
+     * courage, determination and perception, {@code expDecline} for leadership, positioning and teamwork.
      */
-    private void applyAgeDecline(Player player, float declineFactor) {
-        // Convert decline factor to integer steps (roughly -1 per 0.1 decline factor)
-        int declineSteps = Math.max(0, (int)(declineFactor * 10));
-        if (declineSteps == 0) {
+    private void applyAgeDecline(Player player, int declineSteps, int mentalDecline, int expDecline) {
+        if (declineSteps == 0 && mentalDecline == 0 && expDecline == 0) {
             return; // No decline
         }
         
@@ -530,8 +538,7 @@ public class PlayerAttributeGenerator {
         if (player.getJumping() != null) player.setJumping(clampAttribute3d6((int)(player.getJumping() - declineSteps)));
         if (player.getDexterity() != null) player.setDexterity(clampAttribute3d6((int)(player.getDexterity() - declineSteps)));
         
-        // Mental attributes decline slower (half steps)
-        int mentalDecline = Math.max(0, declineSteps / 2);
+        // Mental attributes decline slower (half the rate, see applyDailyAttributeChanges)
         if (mentalDecline > 0) {
             if (player.getConcentration() != null) player.setConcentration(clampAttribute3d6((int)(player.getConcentration() - mentalDecline)));
             if (player.getCourage() != null) player.setCourage(clampAttribute3d6((int)(player.getCourage() - mentalDecline)));
@@ -540,7 +547,6 @@ public class PlayerAttributeGenerator {
         }
         
         // Leadership and positioning decline even slower (experience helps)
-        int expDecline = Math.max(0, declineSteps / 3);
         if (expDecline > 0) {
             if (player.getLeadership() != null) player.setLeadership(clampAttribute3d6((int)(player.getLeadership() - expDecline)));
             if (player.getPositioning() != null) player.setPositioning(clampAttribute3d6((int)(player.getPositioning() - expDecline)));
