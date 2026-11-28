@@ -55,6 +55,13 @@ public final class EraEventScheduler {
         return out;
     }
 
+    private static final String TITLE = ".title";
+    private static final String BODY = ".body";
+
+    private static String text(EraProfile.Event e, String part, Object[] args) {
+        return LanguageModLoader.format(e.messageKey() + part, args);
+    }
+
     static Message build(EraProfile.Event e, LocalDate today) {
         Message m = new Message();
         m.setCategory(MessageCategory.AUTHORITY);
@@ -64,8 +71,8 @@ public final class EraEventScheduler {
         m.setPriority(e.mandatory() ? MessagePriority.URGENT
                 : "LOW".equals(e.priority()) ? MessagePriority.LOW : MessagePriority.NORMAL);
         Object[] args = e.messageArgs().toArray();
-        m.setTitle(LanguageModLoader.format(e.messageKey() + ".title", args));
-        m.setPlainTextMessage(LanguageModLoader.format(e.messageKey() + ".body", args));
+        m.setTitle(text(e, TITLE, args));
+        m.setPlainTextMessage(text(e, BODY, args));
         m.setMessageTime(today.atStartOfDay());
         m.setIsRead(false);
         m.setIsDeleted(false);
