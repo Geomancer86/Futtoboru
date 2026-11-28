@@ -13,6 +13,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | U-10 hard-coded labels → language files + guard test | BOOK3PRO | `b3/U-10-labels` | 2026-11-28 |
 | V-01 visual check 100%/200% (fix clipping) → U-05 interface guide with screenshots | BOOK3PRO | `b3/V-01-visual-check` | 2026-11-28 |
 | P2-12 gate income: only the home club sells tickets | BOOK3PRO | `b3/P2-12-gate-home-only` | 2026-11-28 |
+| T-01 test tiers + path-aware gates (D27) | BOOK3PRO | `b3/T-01-test-tiers` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -28,6 +29,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Unclaimed:** nothing for v0.5; Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md` (WORKSTATION).
 
 ## Log
+- 2026-11-28 · BOOK3PRO · CLAIM · T-01 · Test tiers (fast default / slow / smoke JUnit tags), `-Pfull`/`-Psmoke` profiles, `tools/dev/check.{sh,ps1}`, tiered CI + Jenkins `TEST_TIER`. Recorded as **D27** (D26 is already the art direction). Slow test classes get `@Tag("slow")` annotations: other lanes expect trivial conflicts on annotation/import lines.
 - 2026-11-28 · WORKSTATION · DONE · E-21a · Viewer scaffold ported from DarkBlade (origin line per class): `ui.gfx` GraphicsQuality (`gfx/quality.json`, live levels, per-module/master/`-D` switches, software renderer → low), VfxSwitches, TickGate, CameraZoom, ArtGuard (sim ticks run in a no-art scope), test NoGl; `match.ecs.view` ViewFrame, MatchViewer, ViewerClock (step cap + time budget, carry), InterpolationPass/BallPose; `FrameContext`; `SystemPriority` draw bands (DRAW_* replaced by ACTORS/PARTICLES/…); `MatchSystems.installDrawPasses`. Jenkins #96 green (288 core + 1 desktop).
 - 2026-11-28 · WORKSTATION · NOTE · D26 · Producer picked the match art (side-on V3 camera, horizontal pitch, 5 px/m, procedural doll players in 8 dirs, hand-drawn officials, individual crowd figures, newspaper HUD, no GPT art). CLAIM E-21s (sprite baker + art) and E-21b (viewer pitch/camera/atlas).
 - 2026-11-28 · BOOK3PRO · CLAIM · P2-12 · Gate income for league/cup matches: only the home club sells tickets (as U-08 did for friendlies); `MatchScheduler` + finances + tests.
