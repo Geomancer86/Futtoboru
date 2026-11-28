@@ -70,3 +70,18 @@ def test_run_locked_returns_the_exit_code_and_logs_history(tmp_path, monkeypatch
     assert not os.path.exists(suite_lock.lock_path("suite")), "released"
     with open(os.path.join(str(tmp_path), suite_lock.HISTORY), encoding="utf-8") as handle:
         assert json.loads(handle.readline())["exit"] == 3
+
+
+def test_a_nested_run_inside_the_lock_does_not_wait_for_its_parent(tmp_path, monkeypatch):
+    # `suite_lock.py run -- python tools/test_level.py --run` deadlocked: test_level locks its Maven run itself
+    monkeypatch.setattr(suite_lock, "LOCK_DIR", str(tmp_path))
+    monkeypatch.setenv("FUTTOBORU_LOCK_DIR", str(tmp_path))
+    script = os.path.join(os.path.dirname(os.path.abspath(suite_lock.__file__)), "suite_lock.py")
+    inner = [sys.executable, script, "run", "--wait-min", "0", "--", sys.executable, "-c", "import sys; sys.exit(4)"]
+    code = suite_lock.run_locked(inner, cwd=str(tmp_path))
+    assert code == 4, "the inner command ran (75 = the inner run could not take the lock)"
+    assert not os.path.exists(suite_lock.lock_path("suite")), "released once, by the outer run"
+    # a stranger's token in the environment does not let a run in
+    owner = suite_lock.acquire("suite", "other", wait_min=0, expire_min=20)
+    monkeypatch.setenv(suite_lock.held_env("suite"), "not-" + owner["token"])
+    assert suite_lock.run_locked([sys.executable, "-c", "pass"], wait_min=0, cwd=str(tmp_path)) == suite_lock.NOT_TAKEN
