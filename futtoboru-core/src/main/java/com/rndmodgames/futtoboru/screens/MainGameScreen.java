@@ -14,6 +14,7 @@ import com.kotcrab.vis.ui.util.ToastManager;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.match.watch.MatchWatchView;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -104,6 +105,9 @@ public class MainGameScreen implements Screen {
          * TODO: fix / decouple / couple the menu managers to avoid too much passing objects around
          */
         mainGameMenu.setMainMenuManager(menuManager);
+
+        // E-21f: the preview's Watch match opens the match screen over this one
+        menuManager.setWatchLauncher(this::startWatch);
         
         // Set the reference to allow MainMenuManager to refresh button state
         menuManager.setTopMenuTable(mainGameMenu);
@@ -182,13 +186,43 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        
+
+        // E-21f: a watched match takes the whole window until it ends
+        if (watch != null) {
+            watch.render(delta);
+            if (!watch.active()) {
+                endWatch();
+            }
+            return;
+        }
+
         // Clear blit
         UiTheme.clearScreen();
-        
+
         // Draw
         stage.act();
         stage.draw();
+    }
+
+    /** The match screen of a watched match (E-21f), null while the game screen itself shows. */
+    private MatchWatchView watch;
+    private FuttoboruGameEngine.WatchSession watchSession;
+
+    private void startWatch(FuttoboruGameEngine.WatchSession session) {
+        watchSession = session;
+        watch = new MatchWatchView((Futtoboru) game, session, () -> { });
+        Gdx.input.setInputProcessor(watch.input());
+    }
+
+    /** The watched match is over: record it, show its result and give the game screen its input back. */
+    private void endWatch() {
+        MatchWatchView ended = watch;
+        FuttoboruGameEngine.WatchSession session = watchSession;
+        watch = null;
+        watchSession = null;
+        ended.dispose();
+        show(); // the game screen's input again
+        menuManager.matchWatched(session);
     }
 
     @Override
@@ -196,6 +230,9 @@ public class MainGameScreen implements Screen {
         
         // Update viewport on resize to keep event coordinate for buttons/widgets
         UiScale.updateStageViewport(stage, width, height);
+        if (watch != null) {
+            watch.resize(width, height);
+        }
     }
 
     @Override
@@ -223,6 +260,10 @@ public class MainGameScreen implements Screen {
             return;
         }
         disposed = true;
+        if (watch != null) {
+            watch.dispose();
+            watch = null;
+        }
         stage.dispose();
     }
 

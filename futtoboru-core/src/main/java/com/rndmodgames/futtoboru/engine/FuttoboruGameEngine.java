@@ -22,7 +22,10 @@ import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
 import com.rndmodgames.futtoboru.engine.finances.ExpenseCalculator;
 import com.rndmodgames.futtoboru.engine.messages.MessageManager;
 import com.rndmodgames.futtoboru.engine.simulation.MatchResultRecorder;
+import com.rndmodgames.futtoboru.engine.simulation.MatchEngine;
+import com.rndmodgames.futtoboru.engine.simulation.MatchEngines;
 import com.rndmodgames.futtoboru.engine.simulation.MatchSimulator;
+import com.rndmodgames.futtoboru.engine.simulation.WatchedMatch;
 import com.rndmodgames.futtoboru.engine.temporal.CompetitionScheduler;
 import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -260,21 +263,86 @@ public class FuttoboruGameEngine {
     }
     
     /**
-     * Process match result - simulate match and update game state
-     * 
-     * v1.0: Uses MatchSimulator to generate actual match results
+     * E-21f: a match readied to be watched in the viewer: prepared once (sheets frozen, injuries rolled) and played on
+     * the ECS world, then recorded through {@link #finishWatch}, so the recorded result is the one watched.
      */
-    public void getMatchResult() {
-        
-        Log.info(Log.ENGINE_MATCH, "MATCH RESULT - SIMULATING MATCH");
-        
+    public static final class WatchSession {
+        private final MatchSimulator simulator;
+        private final MatchSimulator.Prepared prepared;
+        private final WatchedMatch watched;
+
+        private WatchSession(MatchSimulator simulator, MatchSimulator.Prepared prepared, WatchedMatch watched) {
+            this.simulator = simulator;
+            this.prepared = prepared;
+            this.watched = watched;
+        }
+
+        public MatchSimulator.Prepared prepared() {
+            return prepared;
+        }
+
+        public WatchedMatch watched() {
+            return watched;
+        }
+
+        /** Writes the finished match's outcome on the match, the same step the unwatched result takes. */
+        public void apply() {
+            simulator.apply(prepared, watched.outcome());
+        }
+    }
+
+    /** True when the selected engine can show the match (the ECS engine) and the player has a match to play. */
+    public boolean canWatchMatch() {
+        if (!MatchEngine.ECS.equals(MatchEngines.selectedId())) {
+            return false;
+        }
+        Club club = gameInstance.getCurrentGame().getCurrentClub();
+        return club != null && club.getScheduledMatches() != null && !club.getScheduledMatches().isEmpty();
+    }
+
+    /**
+     * Prepares the player's next match to be watched; null when the engine has nothing to watch or there is no
+     * playable match. Nothing is recorded until {@link #finishWatch}.
+     */
+    public WatchSession startWatch() {
+        if (!canWatchMatch()) {
+            return null;
+        }
+        Match match = nextPlayerMatch();
+        if (match == null || !resultRecorder().isPlayable(match)) {
+            return null;
+        }
+        MatchSimulator simulator = new MatchSimulator(gameInstance);
+        MatchSimulator.Prepared prepared = simulator.prepare(match);
+        WatchedMatch watched = prepared != null ? simulator.watch(prepared) : null;
+        if (watched == null) {
+            return null;
+        }
+        Log.info(Log.ENGINE_MATCH, "FuttoboruGameEngine", "Watching match " + match.getId());
+        return new WatchSession(simulator, prepared, watched);
+    }
+
+    /** Records the watched (finished) match through the single result path and refreshes the screens. */
+    public void finishWatch(WatchSession session) {
+        session.apply();
+        resultRecorder().record(session.prepared().match());
+        if (mainMenuManager != null) {
+            mainMenuManager.updateDynamicComponents();
+        }
+    }
+
+    /**
+     * The current club's next playable match (both teams determined, not played, today or past), after sorting its
+     * schedule; null (and logged) when there is none or the player is unemployed.
+     */
+    private Match nextPlayerMatch() {
         // Get Current Club
         Club currentClub = gameInstance.getCurrentGame().getCurrentClub();
         
         // Null check: unemployed players don't have a club
         if (currentClub == null || currentClub.getScheduledMatches() == null) {
             Log.info(Log.ENGINE_MATCH, "FuttoboruGameEngine", "Cannot process match result: player is unemployed (no club)");
-            return;
+            return null;
         }
         
         // Sort matches chronologically
@@ -285,7 +353,7 @@ public class FuttoboruGameEngine {
         // Check we have at least one match
         if (currentClub.getScheduledMatches().isEmpty()) {
             Log.info(Log.ENGINE_MATCH, "FuttoboruGameEngine", "No scheduled matches to simulate");
-            return;
+            return null;
         }
         
         // Find the next playable match (both teams determined, not played, date is today or past)
@@ -322,9 +390,24 @@ public class FuttoboruGameEngine {
         
         if (nextMatch == null) {
             Log.info(Log.ENGINE_MATCH, "FuttoboruGameEngine", "No playable matches found for club: " + currentClub.getName());
+        }
+        return nextMatch;
+    }
+
+    /**
+     * Process match result - simulate match and update game state
+     * 
+     * v1.0: Uses MatchSimulator to generate actual match results
+     */
+    public void getMatchResult() {
+
+        Log.info(Log.ENGINE_MATCH, "MATCH RESULT - SIMULATING MATCH");
+
+        Match nextMatch = nextPlayerMatch();
+        if (nextMatch == null) {
             return;
         }
-        
+
         // Create match simulator
         MatchSimulator simulator = new MatchSimulator(gameInstance);
         

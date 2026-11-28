@@ -130,6 +130,7 @@ public class MainMenuManager {
         //
         this.currentGame = currentGame;
         this.navigation = ((com.rndmodgames.futtoboru.game.Futtoboru) game).getSession().navigation();
+        this.gameRef = game;
         
         // this will always .grow()
         this.parentTable = parentTable;
@@ -1175,5 +1176,47 @@ public class MainMenuManager {
     public void setTopMenuTable(com.rndmodgames.futtoboru.menu.topmenu.MainGameMenuTable topMenuTable) {
         this.topMenuTable = topMenuTable;
         syncMenuState();
+    }
+
+    /** E-21f: the game screen's way to show a watched match (set by {@code MainGameScreen}). */
+    public void setWatchLauncher(java.util.function.Consumer<com.rndmodgames.futtoboru.engine.FuttoboruGameEngine.WatchSession> launcher) {
+        this.watchLauncher = launcher;
+    }
+
+    private java.util.function.Consumer<com.rndmodgames.futtoboru.engine.FuttoboruGameEngine.WatchSession> watchLauncher;
+    private Game gameRef;
+
+    /** True when the player's match can be watched (ECS engine, a match to play, a screen to show it on). */
+    public boolean canWatchMatch() {
+        return watchLauncher != null && ((com.rndmodgames.futtoboru.game.Futtoboru) gameRef).getGameEngine().canWatchMatch();
+    }
+
+    /**
+     * E-21f: opens the match screen for the player's next match; when it ends the match is recorded and the result
+     * screen opens ({@link #matchWatched}).
+     *
+     * @return false when there is nothing to watch
+     */
+    public boolean watchMatch() {
+        if (watchLauncher == null) {
+            return false;
+        }
+        com.rndmodgames.futtoboru.engine.FuttoboruGameEngine.WatchSession session =
+                ((com.rndmodgames.futtoboru.game.Futtoboru) gameRef).getGameEngine().startWatch();
+        if (session == null) {
+            return false;
+        }
+        watchLauncher.accept(session);
+        return true;
+    }
+
+    /** The watched match is over: record it and show its result, as the top bar's Match Result does. */
+    public void matchWatched(com.rndmodgames.futtoboru.engine.FuttoboruGameEngine.WatchSession session) {
+        ((com.rndmodgames.futtoboru.game.Futtoboru) gameRef).getGameEngine().finishWatch(session);
+        if (topMenuTable != null) {
+            topMenuTable.matchResultShown();
+        } else {
+            showLatestMatchResult();
+        }
     }
 }

@@ -30,7 +30,16 @@ public final class MatchViewer {
 
     /** With extra pose sources (bodies without a simulation pose source yet; the debug viewer's stand-ins). */
     public MatchViewer(MatchWorld world, ViewFrame frame, ViewerClock clock, PoseSource... extraPoses) {
-        if (world == null || frame == null || clock == null) {
+        this(world, frame, clock, world::tick, extraPoses);
+    }
+
+    /**
+     * With the step that runs one simulation tick (default {@code world::tick}): a match screen passes the engine's
+     * own per-tick step (events, goals) so the watched match is the one the engine records (E-21f). The step must
+     * tick the world once and nothing else that changes it.
+     */
+    public MatchViewer(MatchWorld world, ViewFrame frame, ViewerClock clock, Runnable tick, PoseSource... extraPoses) {
+        if (world == null || frame == null || clock == null || tick == null) {
             throw new IllegalArgumentException("world, frame and clock are required");
         }
         if (clock.stepSeconds() != world.tickSeconds()) {
@@ -46,7 +55,7 @@ public final class MatchViewer {
             throw new IllegalStateException("MatchSystems.installDrawPasses must install the InterpolationPass");
         }
         this.step = () -> {
-            world.tick();
+            tick.run();
             interpolation.capture();
         };
     }
