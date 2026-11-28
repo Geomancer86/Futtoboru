@@ -97,3 +97,5 @@
 - 2026-11-28 · CLAIM · E-20b, E-19a · small Sonnet lanes with exact file pointers.
 - 2026-11-28 · DONE · E-19a · ECS matchday on a thread pool: `MatchSimulator` prepare (single thread) / compute (`engine.play`, parallel) / apply (single thread, original order); 10-match day 36.1 s → 3.6 s on 32 cores; `MatchDayPoolTests` (slow) proves parallel = sequential (scores, scorers, minutes, attendance, event logs, table). Instant engine unchanged. Sonnet, ~45 min.
 - 2026-11-28 · DONE · E-20b · `history/ClubStrength` (2·(ppg−0.5) from the real 1888-89 table, D19-1; non-League 0) shifts club starters' ratings by `STRENGTH`=3 (`-Dfuttoboru.strength`). N=264: H/D/A 53/22/25 → 59.5/15.5/25 (target 59/17/24), margin 1.87 → 2.04 (2.07); goals/game 4.55 → 4.74 (4.45), histogram distance 0.144 → 0.136 (band 0.08), mode 3-1 → needs an engine-side change to the goals distribution. Sonnet, ~25 min.
+- 2026-11-28 · NOTE · D33-1 · A seeded 1888-89 season completed on ECS under the flag (E-17a) → the pause on viewer/art lanes is lifted.
+- 2026-11-28 · CLAIM · E-21f, E-20c (Sonnet).
