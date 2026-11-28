@@ -58,6 +58,12 @@ public class ClubExpenses implements Serializable {
     
     // Calculated Total
     private BigDecimal totalExpenses = BigDecimal.ZERO;
+
+    /**
+     * G-12a: the week's share of the members' subscriptions, booked with the week's expenses. Income, so not part of
+     * {@link #calculateTotal()}; absent (zero) in older saves.
+     */
+    private BigDecimal subscriptions = BigDecimal.ZERO;
     
     /**
      * Metadata for calculation context
@@ -206,6 +212,15 @@ public class ClubExpenses implements Serializable {
 
     public void setStadiumRent(BigDecimal stadiumRent) {
         this.stadiumRent = stadiumRent;
+    }
+
+    /** G-12a: the week's subscriptions income (never an expense) */
+    public BigDecimal getSubscriptions() {
+        return subscriptions != null ? subscriptions : BigDecimal.ZERO;
+    }
+
+    public void setSubscriptions(BigDecimal subscriptions) {
+        this.subscriptions = subscriptions != null ? subscriptions : BigDecimal.ZERO;
     }
 
     public BigDecimal getOtherExpenses() {

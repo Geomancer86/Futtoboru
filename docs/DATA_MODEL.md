@@ -20,9 +20,10 @@ futtoboru-core/src/main/resources/gamedata/
     ids.json                 data id -> runtime number, per kind, append-only (P2-5)
     seasons/1888-89/
       season.json            start, countries, editions (league + cup, with participants), calendar (P2-14)
-      squads.json            per club this season: ground, balance, players (person ids), positions, dribbling (E-01)
+      squads.json            per club this season: ground, balance (optional), players (person ids), positions, dribbling (E-01)
       nationality_modifiers.json  region_modifiers.json
       contracts.json         wage bands per club standing, squad sizes (G-04, see below)
+      economy.json           money per club standing outside wages: balance, admission, subscriptions (G-12a)
       results.json           real results of the season: reference data only (D17), see below
 ```
 What changes from season to season (ground, balance, squad) lives in the season folder; what is permanent
@@ -167,6 +168,16 @@ negative money, min above max, `minimumSquad` under 11, two bands of one standin
 Saves: the new `PlayerContract` fields (`season`, `summerWage`, `weeklyExpenses`, retained-list marks) and
 `SaveGame.freeAgents` are optional; an older save derives the season from the start, the end on 30 April, no summer
 pay (no `saveVersion` bump).
+## Club economy (G-12a): `seasons/<id>/economy.json`
+One record per club **standing** (the contract band's: `league`, `other`, `amateur`). `startingBalance` (pounds, a
+new game; a squad's own `balance` wins), admission in pence `leagueAdmissionPence`, `cupAdmissionPence`,
+`friendlyAdmissionPence` (charged by the club selling the gate); shares 0-1: `friendlyCrowd` (a friendly's daily
+sale against a League match's; `friendlyCrowdMax`, an int, the most it draws, 0 = the ground), `overheads` (of the base staff, ground upkeep, kit, office and sundry costs; rent is
+the ground's), `friendlyChance` (an AI club with a free Saturday Sep-Apr seeks a friendly); `subscriptions` (members,
+pounds a year, booked weekly with the week's expenses as income); `confidence`, `sources`, `notes`. Sourced: League
+admission 4d (Burnley 1888-89; Bolton 3d/6d); the rest is `placeholder` (D30). A later season without the file uses
+the latest earlier one. No ids. Errors: negative money or admission, a share outside 0-1, two records of one standing.
+Saves: `ClubExpenses.subscriptions` is optional (no `saveVersion` bump).
 ## History facts and texts (H-05, D30)
 Approved shape of `docs/design/HISTORY_DATA_PROPOSAL.md`; the research is in `docs/data/history/`. Nothing here is
 used by gameplay yet; `GameData` only loads and exposes it (`nicknames`, `nameHistory`, `squadFanTiers`,

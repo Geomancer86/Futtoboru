@@ -68,6 +68,11 @@ public class FriendlyArrangerTests extends BaseTest {
      * End to end in a new 1888-89 game (the manager at Preston, 1 Apr 1888, before the league starts): arrange,
      * the other club accepts, the days are played through the engine and the friendly through the one result path.
      */
+    private static BigDecimal gates(Club club) {
+        return club.getMatchIncomes().stream().map(MatchIncome::getTicketRevenue).reduce(BigDecimal.ZERO,
+                BigDecimal::add);
+    }
+
     @Test
     void acceptedFriendlyIsPlayedOnceWithoutTouchingTheTableAndTheGateIsBooked() {
         SaveGame game = NewGameFixture.newGame(application);
@@ -81,6 +86,8 @@ public class FriendlyArrangerTests extends BaseTest {
         Map<Long, int[]> tableBefore = table(game);
         BigDecimal incomeBefore = preston.getSeasonIncome();
         BigDecimal visitorsIncomeBefore = visitors.getSeasonIncome();
+        int visitorsWeeksBefore = visitors.getExpensesHistory().size();
+        BigDecimal visitorsGatesBefore = gates(visitors);
 
         Match friendly = arranger.propose(preston, visitors, day, true);
         assertNotNull(friendly);
@@ -118,7 +125,13 @@ public class FriendlyArrangerTests extends BaseTest {
                 "the gate is in the club's income");
         assertTrue(visitors.getMatchIncomes().stream().noneMatch(i -> friendly.getId().equals(i.getMatchId())),
                 "the visitors sell no tickets for a friendly at the other club's ground");
-        assertEquals(0, visitors.getSeasonIncome().compareTo(visitorsIncomeBefore));
+        // G-12a: their income moved only by their own gates and members' subscriptions, never by this gate
+        BigDecimal subscriptions = visitors.getExpensesHistory()
+                .subList(visitorsWeeksBefore, visitors.getExpensesHistory().size()).stream()
+                .map(com.rndmodgames.futtoboru.data.ClubExpenses::getSubscriptions)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        assertEquals(0, visitors.getSeasonIncome().subtract(visitorsIncomeBefore)
+                .compareTo(subscriptions.add(gates(visitors)).subtract(visitorsGatesBefore)));
 
         NewGameFixture.play(application, game, 1, true);
         assertEquals(1, preston.getPlayedMatches().stream().filter(m -> m == friendly).count(), "recorded once");

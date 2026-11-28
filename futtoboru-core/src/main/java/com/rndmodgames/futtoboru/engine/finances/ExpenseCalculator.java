@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.ClubEconomy;
 import com.rndmodgames.futtoboru.data.ClubExpenses;
 import com.rndmodgames.futtoboru.data.PlayerContract;
 import com.rndmodgames.futtoboru.data.Stadium;
@@ -96,14 +97,21 @@ public class ExpenseCalculator {
         Random monthlyRandom = Futtoboru.randomOf(game)
                 .fork("expenses:" + club.getId() + ":" + gameDate.getYear() + "-" + gameDate.getMonthValue()).asRandom();
         
+        // G-12a: the club's standing pays its share of the base overheads (a League club all, an amateur club
+        // little: no paid trainer or groundsman) and takes its members' subscriptions (economy.json)
+        ClubEconomy economy = ClubEconomies.of(game != null ? game.getCurrentGame() : null, club,
+                gameDate.toLocalDate());
+        BigDecimal share = BigDecimal.valueOf(economy.getOverheads());
+
         // Calculate each expense category
-        expenses.setStadiumMaintenance(calculateStadiumMaintenance(stadiumValue, monthlyRandom));
-        expenses.setPitchMaintenance(calculatePitchMaintenance(stadiumValue, gameDate, monthlyRandom));
-        expenses.setMaterialsEquipment(calculateMaterialsEquipment(rosterSize, monthlyRandom));
-        expenses.setStaffWages(calculateStaffWages(stadiumCapacity, monthlyRandom));
-        expenses.setAdministrativeExpenses(calculateAdministrativeExpenses(rosterSize, monthlyRandom));
+        expenses.setStadiumMaintenance(scaled(calculateStadiumMaintenance(stadiumValue, monthlyRandom), share));
+        expenses.setPitchMaintenance(scaled(calculatePitchMaintenance(stadiumValue, gameDate, monthlyRandom), share));
+        expenses.setMaterialsEquipment(scaled(calculateMaterialsEquipment(rosterSize, monthlyRandom), share));
+        expenses.setStaffWages(scaled(calculateStaffWages(stadiumCapacity, monthlyRandom), share));
+        expenses.setAdministrativeExpenses(scaled(calculateAdministrativeExpenses(rosterSize, monthlyRandom), share));
         expenses.setStadiumRent(calculateStadiumRent(stadium));
-        expenses.setOtherExpenses(calculateOtherExpenses(monthlyRandom));
+        expenses.setOtherExpenses(scaled(calculateOtherExpenses(monthlyRandom), share));
+        expenses.setSubscriptions(economy.weeklySubscriptions());
         
         // Player wages (v1.0: from PlayerContract system)
         expenses.setPlayerWages(calculatePlayerWages(club, gameDate));
@@ -120,6 +128,11 @@ public class ExpenseCalculator {
         return expenses;
     }
     
+    /** A base overhead times the club's share of it, to the penny */
+    private static BigDecimal scaled(BigDecimal amount, BigDecimal share) {
+        return amount.multiply(share).setScale(2, RoundingMode.HALF_UP);
+    }
+
     /**
      * Calculate stadium maintenance (stands, facilities)
      * Base: 5% of stadium value annually

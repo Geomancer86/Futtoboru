@@ -472,6 +472,9 @@ public class FuttoboruGameEngine {
          * P2-13: the game lists each club once (NewGameClubs for a new game, SaveGame.removeDuplicateClubs on
          * load), so this and every other per-club step runs once per club a day.
          */
+        // D31 / G-12a: the AI clubs fix their friendlies (Mondays of the playing season), before the clashes check
+        new com.rndmodgames.futtoboru.engine.temporal.FriendlyArranger(gameInstance).arrangeAiFriendlies();
+
         for (Club currentClub : gameInstance.getCurrentGame().getAllClubs()) {
 
             //
@@ -629,6 +632,15 @@ public class FuttoboruGameEngine {
             // Add to expense history
             club.addExpense(expenses);
             
+            // G-12a: the week's subscriptions come in with the week's books (income, not an expense)
+            BigDecimal subscriptions = expenses.getSubscriptions();
+            if (subscriptions.signum() > 0) {
+                BigDecimal balanceBefore = club.getClubBalance() != null ? club.getClubBalance() : BigDecimal.ZERO;
+                club.setClubBalance(balanceBefore.add(subscriptions));
+                club.setSeasonIncome(club.getSeasonIncome().add(subscriptions));
+                club.setMonthIncome(club.getMonthIncome().add(subscriptions));
+            }
+
             // Deduct from club balance
             BigDecimal totalExpenses = expenses.getTotalExpenses();
             if (totalExpenses.compareTo(BigDecimal.ZERO) > 0) {

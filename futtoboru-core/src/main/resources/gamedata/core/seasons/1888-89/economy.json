@@ -1,0 +1,56 @@
+[
+  {
+    "standing": "league",
+    "startingBalance": 300,
+    "leagueAdmissionPence": 4,
+    "cupAdmissionPence": 4,
+    "friendlyAdmissionPence": 3,
+    "friendlyCrowd": 0.3,
+    "friendlyCrowdMax": 5000,
+    "subscriptions": 40,
+    "overheads": 1.0,
+    "friendlyChance": 0.7,
+    "confidence": "placeholder",
+    "sources": [
+      "docs/data/history/GROUNDS_1888-89.md: Burnley 4d admission in 1888-89; Bolton 3d and 6d, stand extra; Everton v Accrington 8 Sep 1888, 8,000-12,000 and receipts 'considerably over £100' (about 3d a head)",
+      "docs/data/history/RECRUITMENT_1888-1900.md 4.4: by 1894 over 70% of gross receipts went on wages, outfits and travel"
+    ],
+    "notes": "Admission 4d for League and Cup (Burnley's sourced price, between Bolton's 3d and 6d); friendlies 3d and the friendly crowd share (30% of a League sale; U-08 had 15%) are estimates. Starting balance, members' subscriptions (season tickets and members, pounds a year) and the friendly chance are estimates (D30)."
+  },
+  {
+    "standing": "other",
+    "startingBalance": 50,
+    "leagueAdmissionPence": 3,
+    "cupAdmissionPence": 3,
+    "friendlyAdmissionPence": 3,
+    "friendlyCrowd": 0.6,
+    "friendlyCrowdMax": 1500,
+    "subscriptions": 60,
+    "overheads": 0.25,
+    "friendlyChance": 0.85,
+    "confidence": "placeholder",
+    "sources": [
+      "docs/data/history/GROUNDS_1888-89.md: 2d-4d admission at the smaller grounds found (2d once fenced; Burnley 4d)",
+      "docs/data/history/clubs/south-shore.md: South Shore paid players half-a-crown a match"
+    ],
+    "notes": "Clubs outside the League lived on friendlies (most Saturdays of the season) and the Cup: friendlies were their main gates, so a friendly draws a larger share of the ground than a League club's, up to its local following (1,500; Everton's 1888 practice game drew 4,000, RECRUITMENT_1888-1900.md 2.2). They paid a part-time groundsman and trainer at most, so a quarter of the base overheads. Every figure is an estimate (D30)."
+  },
+  {
+    "standing": "amateur",
+    "startingBalance": 30,
+    "leagueAdmissionPence": 2,
+    "cupAdmissionPence": 2,
+    "friendlyAdmissionPence": 2,
+    "friendlyCrowd": 0.2,
+    "friendlyCrowdMax": 600,
+    "subscriptions": 75,
+    "overheads": 0.1,
+    "friendlyChance": 0.7,
+    "confidence": "placeholder",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Old_Carthusians_F.C.",
+      "https://en.wikipedia.org/wiki/Old_Westminsters_F.C."
+    ],
+    "notes": "Old boys' clubs: amateurs paying their own way, run on members' subscriptions with small gates; no paid staff, so little of the base overheads. Every figure is an estimate (D30)."
+  }
+]

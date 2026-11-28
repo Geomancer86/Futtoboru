@@ -257,6 +257,12 @@ public class GameData {
                 "seasonWageMin", "num!", "seasonWageMax", "num!", "summerWageMin", "num!", "summerWageMax", "num!",
                 "summerPayShare", "num!", "amateurExpenses", "num!", "minimumSquad", "int!", "squadSize", "int!",
                 "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
+        // G-12a: a club standing's money outside its players' wages: starting balance and subscriptions in pounds,
+        // admission in pence, shares 0-1 (DATA_MODEL.md)
+        spec("economy", "standing", "enum:club_standing!", "startingBalance", "num!", "leagueAdmissionPence", "num!",
+                "cupAdmissionPence", "num!", "friendlyAdmissionPence", "num!", "friendlyCrowd", "num!",
+                "friendlyCrowdMax", "int!", "subscriptions", "num!", "overheads", "num!", "friendlyChance", "num!",
+                "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
         spec("pack", "id", "str!", "name", "str!", "version", "int!", "dataVersion", "int!", "seasons", "strs!",
                 "files", "strs!");
         // R-02 (docs/design/RECRUITMENT_AND_TRIALS.md §6): money in pence (240 to the pound)
@@ -315,6 +321,7 @@ public class GameData {
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
         SEASON_FILES.put("results.json", new String[] { "result", null });
         SEASON_FILES.put("contracts.json", new String[] { "contract_band", null });
+        SEASON_FILES.put("economy.json", new String[] { "economy", null });
     }
 
     // ------------------------------------------------------------------------------------------------------------
@@ -890,6 +897,9 @@ public class GameData {
         if ("contract_band".equals(specName)) {
             checkContractBand(v, where);
         }
+        if ("economy".equals(specName)) {
+            checkEconomy(v, where);
+        }
         if (SOURCED.contains(specName)) {
             checkHistorySourced(v, specName, where);
         }
@@ -1186,6 +1196,23 @@ public class GameData {
      * G-04 (same rules as tools/data/validate.py): shares 0-1, money not negative and min &lt;= max, squads that can
      * field eleven; only the {@code amateur} band lists clubs. (One band per standing is checked by validate.py.)
      */
+    /** G-12a: money and admission are not negative; the crowd, overheads and friendly chance are shares 0-1. */
+    private void checkEconomy(JsonValue b, String where) {
+        for (String f : new String[] { "startingBalance", "leagueAdmissionPence", "cupAdmissionPence",
+                "friendlyAdmissionPence", "subscriptions", "friendlyCrowdMax" }) {
+            JsonValue v = b.get(f);
+            if (v != null && v.isNumber() && v.asDouble() < 0) {
+                report.error(where, "`" + f + "` " + v.asDouble() + " is negative");
+            }
+        }
+        for (String f : new String[] { "friendlyCrowd", "overheads", "friendlyChance" }) {
+            JsonValue v = b.get(f);
+            if (v != null && v.isNumber() && (v.asDouble() < 0 || v.asDouble() > 1)) {
+                report.error(where, "`" + f + "` " + v.asDouble() + " is outside 0-1");
+            }
+        }
+    }
+
     private void checkContractBand(JsonValue b, String where) {
         for (String f : new String[] { "professionalShare", "summerPayShare" }) {
             JsonValue v = b.get(f);

@@ -208,6 +208,14 @@ SPECS = {
                       "summerPayShare": ("num", True), "amateurExpenses": ("num", True),
                       "minimumSquad": ("int", True), "squadSize": ("int", True),
                       "confidence": ("enum:confidence", True), "sources": ("strs", True), "notes": ("str", False)},
+    # G-12a: a club standing's money outside its players' wages (seasons/<id>/economy.json): starting balance and
+    # subscriptions in pounds, admission in pence, shares 0-1 (docs/DATA_MODEL.md)
+    "economy": {"standing": ("enum:club_standing", True), "startingBalance": ("num", True),
+                "leagueAdmissionPence": ("num", True), "cupAdmissionPence": ("num", True),
+                "friendlyAdmissionPence": ("num", True), "friendlyCrowd": ("num", True),
+                "friendlyCrowdMax": ("int", True),
+                "subscriptions": ("num", True), "overheads": ("num", True), "friendlyChance": ("num", True),
+                "confidence": ("enum:confidence", True), "sources": ("strs", True), "notes": ("str", False)},
     # R-02 (docs/design/RECRUITMENT_AND_TRIALS.md §6): registration rules by date, wages, origin backstories and
     # clubs. Money in pence (240 to the pound).
     "rule": {"id": ("str", True), "rule": ("enum:rule_kind", True), "from": ("date", True), "until": ("date", False),
@@ -263,6 +271,7 @@ SEASON_FILES = {
     "region_modifiers.json": ("region", "region"),
     "results.json": ("result", None),
     "contracts.json": ("contract_band", None),
+    "economy.json": ("economy", None),
 }
 
 
@@ -732,6 +741,29 @@ def check_results(data: list, where: str, sid: str, season: dict | None, rep: Re
             rep.error(rw, f"edition `{r['edition']}` is not an edition of season {sid}")
 
 
+def check_economies(data: list, where: str, rep: Report):
+    """G-12a: money and admission are not negative, the crowd, overheads and friendly chance are shares 0-1, one
+    record per standing."""
+    seen = Counter()
+    for i, e in enumerate(data):
+        if not isinstance(e, dict):
+            continue
+        rw = f"{where}[{i}]"
+        seen[e.get("standing")] += 1
+        for f in ("startingBalance", "leagueAdmissionPence", "cupAdmissionPence", "friendlyAdmissionPence",
+                  "subscriptions", "friendlyCrowdMax"):
+            v = e.get(f)
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and v < 0:
+                rep.error(rw, f"`{f}` {v} is negative")
+        for f in ("friendlyCrowd", "overheads", "friendlyChance"):
+            v = e.get(f)
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and not 0 <= v <= 1:
+                rep.error(rw, f"`{f}` {v} is outside 0-1")
+    for standing, n in seen.items():
+        if n > 1:
+            rep.error(where, f"standing `{standing}` has {n} economies")
+
+
 def check_contract_bands(data: list, where: str, rep: Report):
     """G-04: shares are 0-1, money is not negative and min <= max, squads can field eleven, one band per standing;
     only the `amateur` band lists clubs."""
@@ -1067,6 +1099,8 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
                 results.append((data, where, parts[1]))
             if spec_name == "contract_band":
                 check_contract_bands(data, where, rep)
+            if spec_name == "economy":
+                check_economies(data, where, rep)
             if f in FILE_CHECKS:
                 FILE_CHECKS[f](data, where, rep)
         for sid in manifest.get("seasons", []):

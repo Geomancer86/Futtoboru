@@ -304,6 +304,32 @@ def test_contract_band_typos_and_bad_ranges_are_errors(pack):
     assert "only the `amateur` band lists clubs" in out
     assert "unknown club `atlantis-fc`" in out
     assert "standing `league` has 2 bands" in out
+
+
+# ---------------------------------------------------------------------------------------------- G-12a club economy
+ECONOMY = ("core", "seasons", "1888-89", "economy.json")
+
+
+def test_shipped_economy_covers_every_standing_with_the_sourced_league_admission():
+    rows = {e["standing"]: e for e in json.loads(ROOT.joinpath(*ECONOMY).read_text(encoding="utf-8"))}
+    assert set(rows) == {"league", "other", "amateur"}
+    # Burnley charged 4d in 1888-89, Bolton 3d and 6d (docs/data/history/GROUNDS_1888-89.md)
+    assert 3 <= rows["league"]["leagueAdmissionPence"] <= 6
+    assert rows["amateur"]["overheads"] < rows["other"]["overheads"] < rows["league"]["overheads"]
+
+
+def test_economy_typos_and_bad_values_are_errors(pack):
+    def bad(d):
+        d[0]["gatePence"] = 4
+        d[0]["friendlyCrowd"] = 1.5
+        d[1]["subscriptions"] = -5
+        d.append(dict(d[0]))
+    edit(pack.joinpath(*ECONOMY), bad)
+    out = errors(pack)
+    assert "unknown field `gatePence`" in out
+    assert "`friendlyCrowd` 1.5 is outside 0-1" in out
+    assert "`subscriptions` -5 is negative" in out
+    assert "standing `league` has 2 economies" in out
 # ---- H-06: era events -------------------------------------------------------------------------------------------
 
 def era(pack_root, name):
