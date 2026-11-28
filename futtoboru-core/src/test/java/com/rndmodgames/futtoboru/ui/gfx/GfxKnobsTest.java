@@ -29,7 +29,7 @@ class GfxKnobsTest {
     void theShippedFileLoadsWithEveryPlannedModule() {
         GraphicsQuality q = GraphicsQuality.load();
         assertEquals(GraphicsQuality.HIGH, q.quality());
-        assertEquals(List.of("particles", "crowd", "weather", "fog", "light", "shadows", "marks", "smoke", "camera_fx"),
+        assertEquals(List.of("particles", "crowd", "weather", "fog", "light", "shadows", "marks", "skyline", "smoke", "camera_fx"),
                 q.modules());
         for (String module : q.modules()) {
             assertTrue(q.knobs(module).contains(GraphicsQuality.ON), module + " has no on knob");
