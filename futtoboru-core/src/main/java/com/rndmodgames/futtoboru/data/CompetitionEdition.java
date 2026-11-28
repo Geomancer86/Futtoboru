@@ -52,6 +52,17 @@ public class CompetitionEdition implements Serializable {
     // final league table of this season, written when the season completes (P2-6); empty for cups and running seasons
     private List<LeagueStandingRow> finalStandings = new ArrayList<>();
 
+    // G-08: the re-election vote after this season (null when the League's rule has none for it)
+    private ReElection reElection;
+
+    public ReElection getReElection() {
+        return reElection;
+    }
+
+    public void setReElection(ReElection reElection) {
+        this.reElection = reElection;
+    }
+
     // 
     public Long getId() {
         return id;

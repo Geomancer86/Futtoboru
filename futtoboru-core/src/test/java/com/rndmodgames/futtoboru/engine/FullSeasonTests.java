@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,6 +37,7 @@ import com.rndmodgames.futtoboru.data.MatchIncome;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Profession;
+import com.rndmodgames.futtoboru.data.ReElection;
 import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar;
@@ -293,6 +295,42 @@ class FullSeasonTests extends BaseTest {
             assertEquals(0, club.getPoints(), club.getName() + " points in the new table");
             assertEquals(0, club.getGoalsScored() + club.getGoalsConceded(), club.getName() + " goals");
         }
+    }
+
+    /**
+     * G-08: with the real data the bottom four of 1888-89 went to the vote at the annual meeting, exactly four places
+     * were filled, and the 1889-90 season has the League's clubs after the vote (twelve, the losers gone).
+     */
+    @Test
+    void theBottomFourWentToTheVoteAndTheNextSeasonHasTheElectedClubs() {
+        ReElection vote = first.leagueEdition.getReElection();
+        assertNotNull(vote, "re-election opened for 1888-89");
+        assertTrue(vote.isHeld(), "the annual meeting voted");
+        List<LeagueStandingRow> table = first.leagueEdition.getFinalStandings();
+        List<Long> bottomFour = new ArrayList<>();
+        for (int i = 8; i < 12; i++) {
+            bottomFour.add(table.get(i).getClubId());
+        }
+        assertEquals(bottomFour, vote.getRetiringIds(), "the bottom four retire");
+        assertEquals(4, vote.getElectedIds().size(), "four places filled");
+        assertEquals(4, new HashSet<>(vote.getElectedIds()).size(), "four different clubs");
+        assertTrue(vote.getMeeting().isAfter(first.leagueEdition.getEndDate().minusDays(1)), "meeting after the season");
+
+        Set<Long> expected = new HashSet<>();
+        for (int i = 0; i < 8; i++) {
+            expected.add(table.get(i).getClubId());
+        }
+        expected.addAll(vote.getElectedIds());
+        Set<Long> members = new HashSet<>();
+        for (Club c : first.league.getLeagueClubs()) {
+            members.add(c.getId());
+        }
+        assertEquals(expected, members, "the League after the vote");
+        CompetitionEdition next = first.league.getEditions().get(first.league.getEditions().indexOf(first.leagueEdition) + 1);
+        assertEquals(expected, new HashSet<>(next.getParticipantClubsIds()), "1889-90 participants");
+        assertFalse(next.getStartDate().isBefore(vote.getMeeting()), "the next season after the meeting");
+        assertEquals(second.leagueEdition.getReElection().getElectedIds(), vote.getElectedIds(), "same seed, same vote");
+        assertEquals(second.leagueEdition.getReElection().getVotes(), vote.getVotes(), "same seed, same votes");
     }
 
     /**
@@ -720,8 +758,9 @@ class FullSeasonTests extends BaseTest {
             league = league();
             leagueEdition = leagueEdition();
             cupEdition = cupEdition();
-            for (Club c : league.getLeagueClubs()) {
-                leagueClubIds.add(c.getId());
+            // the 1888-89 clubs: the final table (G-08: the League's clubs now are the ones voted in for 1889-90)
+            for (LeagueStandingRow row : leagueEdition.getFinalStandings()) {
+                leagueClubIds.add(row.getClubId());
             }
             Map<Long, Match> league188889 = new LinkedHashMap<>();
             Map<Long, Match> cupTies = new LinkedHashMap<>();

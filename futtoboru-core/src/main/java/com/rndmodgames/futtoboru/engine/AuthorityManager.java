@@ -74,6 +74,15 @@ public class AuthorityManager {
         this.game = parent;
         this.currentGame = game.getCurrentGame();
         this.fixtureGenerator = new LeagueFixtureGenerator(parent);
+        this.reElection = new com.rndmodgames.futtoboru.engine.season.ReElectionManager(parent);
+    }
+
+    /** G-08: the re-election vote after each League season the data's rule covers. */
+    private final com.rndmodgames.futtoboru.engine.season.ReElectionManager reElection;
+
+    /** @return the re-election manager (G-08) */
+    public com.rndmodgames.futtoboru.engine.season.ReElectionManager getReElectionManager() {
+        return reElection;
     }
     
     /**
@@ -156,6 +165,12 @@ public class AuthorityManager {
         // Check league completion and awards
         checkLeagueCompletion();
         
+        // G-08: annual meetings due today vote on League membership; then the next season can be generated
+        List<League> voted = reElection.holdDueMeetings(mainAuthority.getLeagues(), currentGame.getGameDate());
+        for (League league : voted) {
+            checkAndGenerateNextSeasonForLeague(league);
+        }
+
         // Check for new season generation
         checkNewSeasonGeneration();
     }
@@ -342,7 +357,19 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
             }
         }
 
-        // 5. Season rollover (P2-6): the final table is kept on the edition, the new season starts from zero
+        // 5. G-08: the committee's season letter to the player's club, then the re-election (if the rule covers
+        // this season: the next season waits for the annual meeting)
+        Club ownClub = currentGame.getCurrentClub();
+        if (ownClub != null && league.getLeagueClubs() != null && league.getLeagueClubs().contains(ownClub)) {
+            Message summary = com.rndmodgames.futtoboru.engine.season.SeasonSummaryLetter.build(ownClub, league,
+                    edition, standings, currentGame.getGameDate());
+            if (summary != null) {
+                messageManager.deliverMessage(summary);
+            }
+        }
+        reElection.open(league, edition, standings, currentGame.getGameDate());
+
+        // 6. Season rollover (P2-6): the final table is kept on the edition, the new season starts from zero
         resetLeagueTable(league);
         // E-01b: whoever joined a squad without a position gets the slot his squad is shortest of
         if (game.getCurrentGame() != null) {
@@ -670,6 +697,14 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
                 
                 Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "League " + league.getName() + " has " + league.getLeagueClubs().size() + " clubs");
                 
+                // G-08: between the last League day and the annual meeting there are no fixtures, by design; and a
+                // league that has played is scheduled season by season (generateNextSeason), never from the game's
+                // start date again (once the 1889-90 season was no longer made in January, the day the last
+                // 1888-89 match was played got a second 1888-89 fixture list)
+                if (reElection.isPending(league) || hasPlayedLeagueMatches(league)) {
+                    continue;
+                }
+
                 // Check if fixtures are already scheduled
                 boolean hasFixtures = fixtureGenerator.hasFixturesScheduled(league);
                 Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "League " + league.getName() + " has fixtures scheduled: " + hasFixtures);
@@ -1809,6 +1844,11 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         // This ensures seasons are generated even if league completes outside of July
         if (currentGame.getMainAuthority() != null && currentGame.getMainAuthority().getLeagues() != null) {
             for (League league : currentGame.getMainAuthority().getLeagues()) {
+                // G-08: never while a season is still being played (the 1889-90 season was generated on 1 January
+                // 1889 with the old clubs) or while its re-election waits for the annual meeting
+                if (league == null || isSeasonRunning(league) || reElection.isPending(league)) {
+                    continue;
+                }
                 if (needsNextSeasonGeneration(league, currentDate)) {
                     generateNextSeason(league, currentDate);
                 }
@@ -1835,10 +1875,34 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         LocalDateTime currentDate = currentGame.getGameDate();
         if (currentDate == null) return;
         
-        if (needsNextSeasonGeneration(league, currentDate)) {
+        if (!reElection.isPending(league) && needsNextSeasonGeneration(league, currentDate)) {
             Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generating next season for " + league.getName() + " after completion");
             generateNextSeason(league, currentDate);
         }
+    }
+
+    /** @return true when a club of the league has a played league match */
+    private static boolean hasPlayedLeagueMatches(League league) {
+        for (Club club : league.getLeagueClubs()) {
+            if (club == null || club.getPlayedMatches() == null) {
+                continue;
+            }
+            for (Match m : club.getPlayedMatches()) {
+                if (m != null && m.getMatchType() != null && m.getMatchType() == Match.LEAGUE_MATCH) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** @return true when the league's latest season has no final table yet (it is being played or about to be) */
+    private static boolean isSeasonRunning(League league) {
+        if (league.getEditions() == null || league.getEditions().isEmpty()) {
+            return false;
+        }
+        CompetitionEdition last = league.getEditions().get(league.getEditions().size() - 1);
+        return last != null && last.getFinalStandings().isEmpty();
     }
 
     private boolean needsNextSeasonGeneration(League league, LocalDateTime currentDate) {
@@ -1866,13 +1930,16 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         nextEdition.setStartDate(LocalDateTime.of(startYear, 9, 1, 0, 0));
         nextEdition.setEndDate(SeasonCalendar.forSeason(startYear).leagueEnd()); // P2-11: mid-April
         
-        // Copy participants from previous edition if applicable
-        if (!league.getEditions().isEmpty()) {
-            CompetitionEdition lastEdition = league.getEditions().get(league.getEditions().size() - 1);
-            nextEdition.getParticipantClubsIds().addAll(lastEdition.getParticipantClubsIds());
-            nextEdition.setParticipantClubs(lastEdition.getParticipantClubs());
+        // The League's clubs now (G-08: after the re-election vote, if there was one), not a copy of the last season
+        if (league.getLeagueClubs() != null) {
+            for (Club club : league.getLeagueClubs()) {
+                if (club != null && !nextEdition.getParticipantClubsIds().contains(club.getId())) {
+                    nextEdition.getParticipantClubsIds().add(club.getId());
+                }
+            }
+            nextEdition.setParticipantClubs(nextEdition.getParticipantClubsIds().size());
         }
-        
+
         league.getEditions().add(nextEdition);
         
         // CRITICAL: Generate fixtures for the new season
