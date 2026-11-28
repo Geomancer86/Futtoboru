@@ -530,3 +530,67 @@ Cited in `RECRUITMENT_1888-1900.md` (numbered there), used by `docs/design/RECRU
 - https://en.wikipedia.org/wiki/Tom_Watson_(football_manager)
 - https://lfchistory.net/articles/2845
 - https://www.playingpasts.co.uk/?p=9331
+
+## Player data sources (R-10, 27)
+
+Cited in `PLAYER_SOURCES.md` (numbered there): database and licence assessment for era player data.
+
+- https://en.wikipedia.org/wiki/Database_right
+- https://www.gov.uk/guidance/sui-generis-database-rights
+- https://www.wikidata.org/wiki/Wikidata:Licensing
+- https://www.wikidata.org/wiki/Special:EntityData/Q1028592.json
+- https://www.wikidata.org/wiki/Special:EntityData/Q5494996.json
+- https://en.wikipedia.org/wiki/Wikipedia:Copyrights
+- https://en.wikipedia.org/wiki/List_of_Preston_North_End_F.C._players
+- https://en.wikipedia.org/wiki/List_of_Doncaster_Rovers_F.C._players_(1879%E2%80%931918)
+- https://www.enfa.co.uk/
+- https://www.rsssf.org/
+- https://www.rsssf.org/tablese/eng-intres.html
+- https://www.evertonresults.com/
+- https://www.lfchistory.net/
+- https://avdb.co.uk/
+- https://playupliverpool.com/
+- https://londonhearts.com/Scotland/clubs/playersbyclub.html
+- https://www.thescotsfootballhistoriansgroup.org/scotch-professors
+- https://scottishsporthistory.com/
+- https://www.welshsoccerarchive.co.uk/
+- https://nifootball.blogspot.com/2023/11/northern-ireland-players-roll-of-honour.html
+- https://www.englandstats.com/
+- https://www.worldfootball.net/robots.txt
+- https://www.national-football-teams.com/robots.txt
+- https://www.11v11.com/robots.txt
+- https://www.freebmd.org.uk/terms.html
+- https://www.freecen.org.uk/
+- https://www.familysearch.org/en/legal/terms
+
+## Languages and literacy (R-11, 27)
+
+Cited in `LANGUAGES_LITERACY_1880-1914.md` (numbered there), used by `docs/design/RECRUITMENT_AND_TRIALS.md` §10.
+
+- https://oro.open.ac.uk/69072/3/69072.pdf
+- https://archive.org/stream/sid14148770/sid14148770_djvu.txt
+- https://upload.wikimedia.org/wikipedia/commons/1/1a/Annual_report_of_the_Registrar-General_of_births,_deaths,_and_marriages_in_England._Forty-Fifth_Report,_1882._(IA_sid14148600).pdf
+- https://mpra.ub.uni-muenchen.de/119319/1/MPRA_paper_119319.pdf
+- https://www.cso.ie/en/media/csoie/releasespublications/documents/birthsdm/archivedreports/P-VS_1882.pdf
+- https://www.cso.ie/en/releasesandpublications/ep/p-c1911/storiesfromcensus1911literacy/literacy
+- https://en.wikipedia.org/wiki/Elementary_Education_Act_1870
+- https://en.wikipedia.org/wiki/Education_(Scotland)_Act_1872
+- https://en.wikipedia.org/wiki/National_school_(Ireland)
+- https://api.parliament.uk/historic-hansard/commons/1893/feb/14/school-fees-in-ireland
+- https://en.wikipedia.org/wiki/Welsh_language
+- https://en.wikipedia.org/wiki/History_of_the_Welsh_language
+- http://ysbrydpenderyn.blogspot.com/2012/11/welsh-language-census-1891-adroddiad-ar.html
+- https://doc.ukdataservice.ac.uk/doc/3821
+- https://en.wikipedia.org/wiki/1881_United_Kingdom_census
+- https://db.nomics.world/CSO/C0901
+- https://livrepository.liverpool.ac.uk/3176267/1/258705.pdf
+- https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics
+- https://en.wikipedia.org/wiki/Historical_immigration_to_Great_Britain
+- https://en.wikipedia.org/wiki/History_of_the_Jews_in_Leeds
+- https://en.wikipedia.org/wiki/Italians_in_the_United_Kingdom
+- https://en.wikipedia.org/wiki/Lithuanians_in_the_United_Kingdom
+- https://en.wikipedia.org/wiki/Andrew_Watson_(footballer,_born_1856)
+- https://en.wikipedia.org/wiki/Arthur_Wharton
+- https://en.wikipedia.org/wiki/Max_Seeburg
+- https://en.wikipedia.org/wiki/Nils_Middelboe
+- https://nation.cymru/sport/here-be-dragons-how-the-football-association-of-wales-was-founded
