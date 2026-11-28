@@ -64,9 +64,33 @@ public class GameData {
     public static final String REGION = "region";
     public static final String SEASON = "season";
     public static final String EDITION = "edition";
+    // R-02 recruitment data, R-11a languages
+    public static final String RULE = "rule";
+    public static final String WAGE = "wage";
+    public static final String ORIGIN = "origin";
+    public static final String ORIGIN_CLUB = "origin-club";
+    public static final String AREA = "area";
+    public static final String LANGUAGE = "language";
 
     static final List<String> KINDS = Arrays.asList(CONTINENT, COUNTRY, PROFESSION, OCCUPATION, COMPETITION, CLUB,
-            GROUND, PERSON, REGION, SEASON, EDITION);
+            GROUND, PERSON, REGION, SEASON, EDITION, RULE, WAGE, ORIGIN, ORIGIN_CLUB, AREA, LANGUAGE);
+
+    /** R-02 / R-11a: the grades that may have no source (validate.py UNSOURCED_OK). */
+    static final Set<String> UNSOURCED_OK = new HashSet<>(Arrays.asList("estimate", "placeholder"));
+    /** R-02: the value fields a rule of each kind needs. */
+    static final Map<String, String[]> RULE_VALUES = new HashMap<>();
+    static {
+        RULE_VALUES.put("residence", new String[] { "miles", "years" });
+        RULE_VALUES.put("registration-wait", new String[] { "days" });
+        RULE_VALUES.put("max-wage", new String[] { "pence" });
+    }
+    /** D28 Q12: an origin's attribute nudge is a whole number in -2..2; literacy moves one level at most. */
+    static final int NUDGE_MAX = 2;
+    static final int LITERACY_SHIFT_MAX = 1;
+    /** R-11a: the rate fields of a language_rate row; readWriteIfSigns has one share per level 1..4. */
+    static final String[] RATE_FIELDS = { "speaks", "only", "signsMen", "signsWomen", "parentsBorn",
+            "readWriteIfSigns" };
+    static final int READ_WRITE_LEVELS = 4;
 
     static final Pattern ID_RE = Pattern.compile("^([a-z0-9]+(-[a-z0-9]+)*\\.)?[a-z0-9]+(-[a-z0-9]+)*$");
     static final Pattern DATE_RE = Pattern.compile("^\\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\\d|3[01]))?)?$");
@@ -91,11 +115,41 @@ public class GameData {
         ENUMS.put("position_source", new TreeSet<>(Arrays.asList("players-1888-89", "players-1888-89-line",
                 "placeholder", "wp-season-1888-89", "wp-season-1888-89-line", "wp-player", "wp-player-line",
                 "fa-cup-final-1889")));
+        // R-02 / R-11a (same lists as tools/data/validate.py)
+        ENUMS.put("data_confidence", new TreeSet<>(Arrays.asList("high", "medium", "low", "estimate", "placeholder")));
+        ENUMS.put("rule_kind", new TreeSet<>(Arrays.asList("registration", "residence", "second-registration-consent",
+                "registration-wait", "scottish-professional-ban", "retain-and-transfer", "max-wage")));
+        ENUMS.put("rule_body", new TreeSet<>(Arrays.asList("fa", "fa-council", "football-league", "sfa")));
+        ENUMS.put("applies_to", new TreeSet<>(Arrays.asList("professional", "amateur", "all")));
+        ENUMS.put("wage_type", new TreeSet<>(Arrays.asList("example", "band")));
+        ENUMS.put("standing", new TreeSet<>(Arrays.asList("leading", "middling", "small", "any")));
+        ENUMS.put("source_kind", new TreeSet<>(Arrays.asList("local-junior", "works-team", "scottish-import",
+                "league-poach", "released", "amateur", "veteran", "schoolboy")));
+        ENUMS.put("origin_club_kind", new TreeSet<>(Arrays.asList("church", "sunday-school", "works", "junior",
+                "school", "scottish")));
+        // P2-14: the season calendar and a cup's neutral grounds (same lists as tools/data/validate.py)
+        ENUMS.put("weekday", new TreeSet<>(Arrays.asList("monday", "tuesday", "wednesday", "thursday", "friday",
+                "saturday", "sunday")));
+        ENUMS.put("cup_round", new TreeSet<>(Arrays.asList("quarter-final", "semi-final", "final")));
+        ENUMS.put("neutral_gate", new TreeSet<>(Arrays.asList("association", "shared", "home")));
+        ENUMS.put("later_draws", new TreeSet<>(Arrays.asList("open-draw", "bracket")));
     }
 
     /** The attribute scale (3d6 plus modifiers, PlayerAttributeGenerator): a sourced dribbling value is inside. */
     static final int ATTR_MIN = 3;
     static final int ATTR_MAX = 23;
+
+    static final Pattern MONTHDAY_RE = Pattern.compile("^(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$");
+    private static final int[] DAYS_IN_MONTH = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+    /** @return true for a valid month-day {@code MM-DD} (29 February allowed) */
+    static boolean isMonthDay(JsonValue v) {
+        if (v == null || !v.isString() || !MONTHDAY_RE.matcher(v.asString()).matches()) {
+            return false;
+        }
+        String s = v.asString();
+        return Integer.parseInt(s.substring(3)) <= DAYS_IN_MONTH[Integer.parseInt(s.substring(0, 2)) - 1];
+    }
 
     /** A field of a record spec: its type and whether it is required. */
     static final class Field {
@@ -129,19 +183,38 @@ public class GameData {
         spec("occupation", "id", "str!", "name", "str!", "category", "enum:occupation_category!", "bonuses", "attrs!",
                 "notes", "str");
         spec("names", "country", "ref:country!", "firstNames", "strs!", "lastNames", "strs!");
+        // G-08: the bottom clubs seek re-election at the annual meeting (seasons starting in From..Until)
         spec("competition", "id", "str!", "name", "str!", "longName", "str", "type", "enum:competition_type!",
-                "sources", "strs!", "notes", "str");
+                "sources", "strs!", "notes", "str", "reElectionPlaces", "int", "reElectionFrom", "int",
+                "reElectionUntil", "int", "annualMeetingAfterDays", "int", "annualMeetingConfidence",
+                "enum:confidence");
         spec("club", "id", "str!", "name", "str!", "fullName", "str", "founded", "int", "country", "ref:country!",
                 "sources", "strs!", "notes", "str");
         spec("ground", "id", "str!", "name", "str!", "opened", "int", "capacity", "int", "value", "num",
                 "description", "str", "landValue", "num", "ownedByClub", "bool", "annualRent", "num",
                 "sources", "strs!", "notes", "str");
         spec("person", "id", "str!", "firstName", "str!", "lastName", "str!", "born", "date!", "country",
-                "ref:country!", "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
+                "ref:country!", "confidence", "enum:confidence!", "sources", "strs!", "notes", "str",
+                "birthArea", "ref:area");
         spec("season", "id", "str!", "name", "str!", "description", "str", "start", "datetime!", "sources", "strs!",
-                "countries", "refs:country!", "editions", "list:edition!");
+                "countries", "refs:country!", "editions", "list:edition!", "calendar", "obj:calendar");
         spec("edition", "id", "str!", "competition", "ref:competition!", "name", "str!", "participants",
-                "refs:club!", "sources", "strs!", "notes", "str");
+                "refs:club!", "sources", "strs!", "notes", "str", "neutralVenues", "obj:neutral_venues");
+        // P2-14 (D30 A9): the season calendar (engine/temporal/CalendarRules) and a cup's neutral grounds
+        // (engine/cup/NeutralVenues); a date rule needs exactly one anchor (checkRules), as in validate.py
+        spec("calendar", "league", "obj:calendar_league", "cups", "list:calendar_cup", "notes", "str");
+        spec("calendar_league", "opens", "obj:day_rule!", "closes", "obj:day_rule!", "midweek", "enum:weekday",
+                "noMatchOn", "monthdays", "sources", "strs!", "notes", "str");
+        spec("calendar_cup", "competition", "ref:competition!", "opens", "obj:day_rule!", "firstDraw", "obj:day_rule!",
+                "laterDraws", "enum:later_draws!", "drawDaysAfterRound", "int", "final", "obj:day_rule!",
+                "properFrom", "monthday!", "daysBetweenRounds", "int!", "earlyRoundsOn", "enum:weekday",
+                "maxEarlyRounds", "int", "sources", "strs!", "notes", "str");
+        spec("day_rule", "onOrAfter", "monthday", "onOrBefore", "monthday", "weekday", "enum:weekday!",
+                "confidence", "enum:confidence!", "source", "str", "notes", "str");
+        spec("neutral_venues", "rounds", "list:neutral_round!", "gate", "enum:neutral_gate!", "gateConfidence",
+                "enum:confidence!", "sources", "strs!", "notes", "str");
+        spec("neutral_round", "round", "enum:cup_round!", "grounds", "refs:ground!", "confidence", "enum:confidence!",
+                "notes", "str");
         // E-01 positions / dribbling: keyed by a person id of `players` (checked in checkSquadRoles)
         spec("squad", "club", "ref:club!", "ground", "ref:ground", "balance", "num", "players", "refs:person!",
                 "notes", "str", "positions", "map:squad_position", "dribbling", "map:squad_dribbling");
@@ -158,6 +231,29 @@ public class GameData {
                 "venue", "str", "source", "str!", "notes", "str");
         spec("pack", "id", "str!", "name", "str!", "version", "int!", "dataVersion", "int!", "seasons", "strs!",
                 "files", "strs!");
+        // R-02 (docs/design/RECRUITMENT_AND_TRIALS.md §6): money in pence (240 to the pound)
+        spec("rule", "id", "str!", "rule", "enum:rule_kind!", "from", "date!", "until", "date", "body",
+                "enum:rule_body!", "appliesTo", "enum:applies_to!", "days", "int", "miles", "int", "years", "int",
+                "pence", "int", "confidence", "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        spec("wage", "id", "str!", "type", "enum:wage_type!", "from", "date!", "until", "date", "standing",
+                "enum:standing!", "club", "ref:club", "person", "ref:person", "weeklyPence", "int",
+                "summerWeeklyPence", "int", "minWeeklyPence", "int", "maxWeeklyPence", "int", "confidence",
+                "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        spec("origin", "id", "str!", "name", "str!", "occupations", "refs:occupation!", "sourceKinds",
+                "enums:source_kind!", "nudges", "attrs!", "literacyShift", "int!", "confidence",
+                "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        spec("origin_club", "id", "str!", "name", "str!", "kind", "enum:origin_club_kind!", "place", "str!",
+                "country", "ref:country!", "area", "ref:area", "founded", "int", "club", "ref:club", "origins",
+                "refs:origin", "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
+        // R-11a (design §10)
+        spec("language", "id", "str!", "name", "str!", "countries", "refs:country!", "sources", "strs!", "notes",
+                "str");
+        spec("area", "id", "str!", "name", "str!", "country", "ref:country!", "weight", "num!", "places", "strs",
+                "confidence", "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        spec("language_rate", "area", "ref:area", "countries", "refs:country", "bornFrom", "int!", "bornUntil",
+                "int!", "speaks", "shares:language", "only", "shares:language", "signsMen", "num", "signsWomen",
+                "num", "parentsBorn", "shares:country", "readWriteIfSigns", "nums", "confidence",
+                "enum:data_confidence!", "sources", "strs!", "notes", "str");
     }
 
     /** Pack-level file -> {record spec, id kind or null}. */
@@ -174,6 +270,13 @@ public class GameData {
         PACK_FILES.put("clubs.json", new String[] { "club", CLUB });
         PACK_FILES.put("grounds.json", new String[] { "ground", GROUND });
         PACK_FILES.put("people.json", new String[] { "person", PERSON });
+        PACK_FILES.put("recruitment/rules.json", new String[] { "rule", RULE });
+        PACK_FILES.put("recruitment/wages.json", new String[] { "wage", WAGE });
+        PACK_FILES.put("recruitment/origins.json", new String[] { "origin", ORIGIN });
+        PACK_FILES.put("recruitment/origin_clubs.json", new String[] { "origin_club", ORIGIN_CLUB });
+        PACK_FILES.put("languages.json", new String[] { "language", LANGUAGE });
+        PACK_FILES.put("areas.json", new String[] { "area", AREA });
+        PACK_FILES.put("language_rates.json", new String[] { "language_rate", null });
         SEASON_FILES.put("squads.json", new String[] { "squad", null });
         SEASON_FILES.put("nationality_modifiers.json", new String[] { "nationality_modifier", null });
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
@@ -391,6 +494,7 @@ public class GameData {
         }
         checkAliases();
         resolveReferences();
+        checkLanguageTables();
         warnings();
         assignRuntimeIds();
     }
@@ -586,6 +690,8 @@ public class GameData {
         if ("squad".equals(specName)) {
             checkSquadRoles(v, where);
         }
+        checkRecruitmentRecord(specName, v, where);
+        checkRules(v, specName, where);
         if (spec.containsKey("id")) {
             JsonValue id = v.get("id");
             if (id != null && id.isString() && !ID_RE.matcher(id.asString()).matches()) {
@@ -619,6 +725,25 @@ public class GameData {
         case "strs":
             expect(isListOfStrings(v), v, where, "a list of texts");
             break;
+        case "nums": {
+            boolean ok = v.isArray();
+            for (JsonValue x = ok ? v.child : null; x != null; x = x.next) {
+                ok &= x.isNumber();
+            }
+            expect(ok, v, where, "a list of numbers");
+            break;
+        }
+        case "monthday":
+            expect(isMonthDay(v), v, where, "a month-day MM-DD");
+            break;
+        case "monthdays": {
+            boolean ok = v.isArray();
+            for (JsonValue x = ok ? v.child : null; x != null; x = x.next) {
+                ok &= isMonthDay(x);
+            }
+            expect(ok, v, where, "a list of month-days MM-DD");
+            break;
+        }
         case "attrs":
             if (!v.isObject()) {
                 expect(false, v, where, "an object of attribute numbers");
@@ -636,23 +761,55 @@ public class GameData {
             if (type.startsWith("enum:")) {
                 Set<String> allowed = ENUMS.get(type.substring(5));
                 expect(v.isString() && allowed.contains(v.asString()), v, where, "one of " + allowed);
+            } else if (type.startsWith("enums:")) {
+                Set<String> allowed = ENUMS.get(type.substring(6));
+                if (!isListOfStrings(v)) {
+                    expect(false, v, where, "a list of texts");
+                    break;
+                }
+                for (JsonValue x = v.child; x != null; x = x.next) {
+                    if (!allowed.contains(x.asString())) {
+                        report.error(where, "`" + x.asString() + "` is not one of " + allowed);
+                    }
+                }
+            } else if (type.startsWith("shares:")) {
+                // an object id -> share (a rate row's languages or countries): a key that doesn't resolve is
+                // reported and left out, like an entry of a list of references
+                if (!v.isObject()) {
+                    expect(false, v, where, "an object of id -> share");
+                    break;
+                }
+                int i = 0;
+                for (JsonValue x = v.child; x != null; x = x.next, i++) {
+                    if (!x.isNumber() || x.asDouble() < 0 || x.asDouble() > 1) {
+                        report.error(where + "." + x.name, "expected a share between 0 and 1");
+                    }
+                    if (rec != null) {
+                        rec.refs.add(new DataRecord.Ref(field, type.substring(7), x.name, i, where + "." + x.name));
+                    }
+                }
             } else if (type.startsWith("ref:")) {
+                String path = refPath(field, where, rec);
                 if (!v.isString()) {
                     expect(false, v, where, "an id");
                 } else if (rec != null) {
-                    rec.refs.add(new DataRecord.Ref(field, type.substring(4), v.asString(), -1, where));
+                    // a reference inside a nested object (P2-14: calendar.cups[0].competition) is kept by its path
+                    // and only dropped when it doesn't resolve; a top-level one skips its record
+                    rec.refs.add(new DataRecord.Ref(path, type.substring(4), v.asString(), path.equals(field) ? -1 : 0,
+                            where));
                 }
             } else if (type.startsWith("refs:")) {
                 if (!isListOfStrings(v)) {
                     expect(false, v, where, "a list of ids");
                     break;
                 }
+                String path = refPath(field, where, rec);
                 Map<String, Integer> seen = new LinkedHashMap<>();
                 int i = 0;
                 for (JsonValue x = v.child; x != null; x = x.next, i++) {
                     seen.merge(x.asString(), 1, Integer::sum);
                     if (rec != null) {
-                        rec.refs.add(new DataRecord.Ref(field, type.substring(5), x.asString(), i, where + "[" + i + "]"));
+                        rec.refs.add(new DataRecord.Ref(path, type.substring(5), x.asString(), i, where + "[" + i + "]"));
                     }
                 }
                 for (Map.Entry<String, Integer> s : seen.entrySet()) {
@@ -661,8 +818,19 @@ public class GameData {
                     }
                 }
             } else if (type.startsWith("list:")) {
-                // nested records (a season's editions) are checked one by one as records of their own
-                expect(v.isArray(), v, where, "a list");
+                if (!v.isArray()) {
+                    expect(false, v, where, "a list");
+                } else if (!"edition".equals(type.substring(5))) {
+                    // small nested records (P2-14: a calendar's cups): each checked against its spec, references
+                    // kept on the enclosing record by path; a season's editions are records of their own
+                    int i = 0;
+                    for (JsonValue x = v.child; x != null; x = x.next, i++) {
+                        checkRecord(x, type.substring(5), where + "[" + i + "]", rec);
+                    }
+                }
+            } else if (type.startsWith("obj:")) {
+                // one nested object (P2-14: a season's calendar, an edition's neutral grounds)
+                checkRecord(v, type.substring(4), where, rec);
             } else if (type.startsWith("map:")) {
                 // an object id -> small record (a squad's positions): each value is checked against its spec
                 if (!v.isObject()) {
@@ -674,6 +842,76 @@ public class GameData {
                 }
             }
             break;
+        }
+    }
+
+    /**
+     * The key a reference is kept under on its record: the field name at the top level, else the path inside the
+     * record ({@code calendar.cups[0].competition}, {@code neutralVenues.rounds[1].grounds}).
+     */
+    private static String refPath(String field, String where, DataRecord rec) {
+        if (rec == null || !where.startsWith(rec.where + ".")) {
+            return field;
+        }
+        return where.substring(rec.where.length() + 1);
+    }
+
+    /** P2-14: what a field spec can't say about the calendar and neutral grounds (same checks in validate.py). */
+    private void checkRules(JsonValue v, String specName, String where) {
+        switch (specName) {
+        case "day_rule": {
+            int anchors = (v.get("onOrAfter") != null && !v.get("onOrAfter").isNull() ? 1 : 0)
+                    + (v.get("onOrBefore") != null && !v.get("onOrBefore").isNull() ? 1 : 0);
+            if (anchors != 1) {
+                report.error(where, "a date rule needs exactly one of `onOrAfter` / `onOrBefore`");
+            }
+            break;
+        }
+        case "calendar_cup": {
+            String[] keys = { "daysBetweenRounds", "maxEarlyRounds", "drawDaysAfterRound" };
+            int[] lows = { 1, 0, 0 };
+            for (int i = 0; i < keys.length; i++) {
+                JsonValue x = v.get(keys[i]);
+                if (x != null && x.isLong() && (x.asLong() < lows[i] || x.asLong() > 60)) {
+                    report.error(where + "." + keys[i], x.asLong() + " is outside " + lows[i] + "-60");
+                }
+            }
+            break;
+        }
+        case "calendar":
+            countTwice(v.get("cups"), "competition", where + ".cups", " calendars");
+            break;
+        case "neutral_venues": {
+            countTwice(v.get("rounds"), "round", where + ".rounds", " times");
+            JsonValue rounds = v.get("rounds");
+            int i = 0;
+            for (JsonValue r = rounds == null || !rounds.isArray() ? null : rounds.child; r != null; r = r.next, i++) {
+                JsonValue g = r.isObject() ? r.get("grounds") : null;
+                if (g != null && g.isArray() && g.size == 0) {
+                    report.error(where + ".rounds[" + i + "].grounds", "a neutral round needs at least one ground");
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    /** Reports a value of {@code key} that two entries of a list share ({@code `fa-cup` has 2 calendars}). */
+    private void countTwice(JsonValue list, String key, String where, String what) {
+        Map<String, Integer> seen = new LinkedHashMap<>();
+        for (JsonValue x = list == null || !list.isArray() ? null : list.child; x != null; x = x.next) {
+            JsonValue k = x.isObject() ? x.get(key) : null;
+            if (k != null && k.isString()) {
+                seen.merge(k.asString(), 1, Integer::sum);
+            }
+        }
+        for (Map.Entry<String, Integer> s : seen.entrySet()) {
+            if (s.getValue() > 1) {
+                report.error(where, "`" + s.getKey() + "` " + (" times".equals(what) ? "listed " + s.getValue() + what
+                        : "has " + s.getValue() + what));
+            }
         }
     }
 
@@ -717,6 +955,251 @@ public class GameData {
                 report.warn(where + " `" + pid + "`", "no position");
             }
         }
+    }
+
+    /**
+     * R-02 / R-11a record checks beyond the field spec (same as validate.py): a source unless {@code estimate} or
+     * {@code placeholder}; {@code until} not before {@code from}; a rule's value fields; a wage example's wage and a
+     * band's min <= max; small origin nudges; a rate row's target, band, rates, {@code only} within {@code speaks},
+     * no English listed, readWriteIfSigns as 4 shares adding up to 1.
+     */
+    private void checkRecruitmentRecord(String specName, JsonValue v, String where) {
+        switch (specName) {
+        case "rule":
+        case "wage":
+        case "origin":
+        case "area":
+        case "language_rate":
+            checkSourced(v, where);
+            break;
+        case "origin_club":
+        case "language":
+            if (countSources(v) == 0) {
+                report.error(where, "no source");
+            }
+            return;
+        default:
+            return;
+        }
+        String from = v.getString("from", null);
+        String until = v.getString("until", null);
+        if (from != null && until != null && dateKey(until) < dateKey(from)) {
+            report.error(where, "`until` " + until + " is before `from` " + from);
+        }
+        if ("rule".equals(specName)) {
+            for (String f : RULE_VALUES.getOrDefault(v.getString("rule", ""), new String[0])) {
+                if (!v.has(f)) {
+                    report.error(where, "a `" + v.getString("rule", "") + "` rule needs `" + f + "`");
+                }
+            }
+            for (String f : new String[] { "days", "miles", "years", "pence" }) {
+                JsonValue x = v.get(f);
+                if (x != null && x.isNumber() && x.asDouble() <= 0) {
+                    report.error(where + "." + f, "must be above 0");
+                }
+            }
+        } else if ("wage".equals(specName)) {
+            if ("example".equals(v.getString("type", null)) && !v.has("weeklyPence")) {
+                report.error(where, "an `example` needs `weeklyPence`");
+            }
+            if ("band".equals(v.getString("type", null))) {
+                JsonValue lo = v.get("minWeeklyPence");
+                JsonValue hi = v.get("maxWeeklyPence");
+                if (lo == null || hi == null) {
+                    report.error(where, "a `band` needs `minWeeklyPence` and `maxWeeklyPence`");
+                } else if (lo.isNumber() && hi.isNumber() && lo.asLong() > hi.asLong()) {
+                    report.error(where, "minWeeklyPence " + lo.asLong() + " is above maxWeeklyPence " + hi.asLong());
+                }
+            }
+            for (String f : new String[] { "weeklyPence", "summerWeeklyPence", "minWeeklyPence", "maxWeeklyPence" }) {
+                JsonValue x = v.get(f);
+                if (x != null && x.isNumber() && x.asDouble() < 0) {
+                    report.error(where + "." + f, "must not be negative");
+                }
+            }
+        } else if ("origin".equals(specName)) {
+            JsonValue n = v.get("nudges");
+            for (JsonValue x = n == null || !n.isObject() ? null : n.child; x != null; x = x.next) {
+                if (x.isNumber() && (x.asDouble() != Math.rint(x.asDouble()) || Math.abs(x.asDouble()) > NUDGE_MAX)) {
+                    report.error(where + ".nudges." + x.name,
+                            "a nudge is a whole number from -" + NUDGE_MAX + " to " + NUDGE_MAX);
+                }
+            }
+            JsonValue ls = v.get("literacyShift");
+            if (ls != null && ls.isNumber() && Math.abs(ls.asLong()) > LITERACY_SHIFT_MAX) {
+                report.error(where + ".literacyShift", "from -" + LITERACY_SHIFT_MAX + " to " + LITERACY_SHIFT_MAX);
+            }
+        } else if ("area".equals(specName)) {
+            JsonValue w = v.get("weight");
+            if (w != null && w.isNumber() && (w.asDouble() <= 0 || w.asDouble() > 1)) {
+                report.error(where + ".weight", "expected a share above 0 and at most 1");
+            }
+        } else if ("language_rate".equals(specName)) {
+            checkRateRow(v, where);
+        }
+    }
+
+    private void checkRateRow(JsonValue v, String where) {
+        JsonValue lo = v.get("bornFrom");
+        JsonValue hi = v.get("bornUntil");
+        if (lo != null && hi != null && lo.isLong() && hi.isLong() && lo.asLong() > hi.asLong()) {
+            report.error(where, "bornFrom " + lo.asLong() + " is after bornUntil " + hi.asLong());
+        }
+        if (v.has("area") && v.has("countries")) {
+            report.error(where, "a row has an `area` or `countries`, not both");
+        }
+        boolean any = false;
+        for (String f : RATE_FIELDS) {
+            any |= v.has(f);
+        }
+        if (!any) {
+            report.error(where, "no rate (one of " + String.join(", ", RATE_FIELDS) + ")");
+        }
+        JsonValue speaks = v.get("speaks");
+        JsonValue only = v.get("only");
+        for (JsonValue t : new JsonValue[] { speaks, only }) {
+            if (t != null && t.isObject() && t.has("english")) {
+                report.error(where + "." + t.name, "English is the default language: list only the others");
+            }
+        }
+        if (sum(speaks) > 1 + 1e-9) {
+            report.error(where + ".speaks", "the shares add up to more than 1 (one home language besides English)");
+        }
+        if (sum(v.get("parentsBorn")) > 1 + 1e-9) {
+            report.error(where + ".parentsBorn", "the shares add up to more than 1");
+        }
+        for (JsonValue x = only == null || !only.isObject() ? null : only.child; x != null; x = x.next) {
+            JsonValue s = speaks == null || !speaks.isObject() ? null : speaks.get(x.name);
+            if (s == null) {
+                report.error(where + ".only." + x.name, "a language in `only` must be in `speaks`");
+            } else if (x.isNumber() && s.isNumber() && x.asDouble() > s.asDouble()) {
+                report.error(where + ".only." + x.name, x.asDouble() + " speak only it but " + s.asDouble() + " speak it");
+            }
+        }
+        for (String f : new String[] { "signsMen", "signsWomen" }) {
+            JsonValue x = v.get(f);
+            if (x != null && x.isNumber() && (x.asDouble() < 0 || x.asDouble() > 1)) {
+                report.error(where + "." + f, "expected a share between 0 and 1");
+            }
+        }
+        JsonValue rw = v.get("readWriteIfSigns");
+        if (rw != null && rw.isArray()) {
+            boolean ok = rw.size == READ_WRITE_LEVELS;
+            double total = 0;
+            for (JsonValue x = rw.child; x != null; x = x.next) {
+                ok &= x.isNumber() && x.asDouble() >= 0;
+                total += x.isNumber() ? x.asDouble() : 0;
+            }
+            if (!ok || Math.abs(total - 1) > 0.001) {
+                report.error(where + ".readWriteIfSigns", "expected " + READ_WRITE_LEVELS
+                        + " shares (signs his name, reads slowly, reads well, writes well) adding up to 1");
+            }
+        }
+    }
+
+    /**
+     * R-11a checks across records (same as validate.py): the area weights of a country add up to 1; for one target
+     * (area, country, or the default) and rate field the birth-year bands never overlap; a default row with
+     * {@code signsMen} exists.
+     */
+    private void checkLanguageTables() {
+        Map<String, Double> weights = new LinkedHashMap<>();
+        for (DataRecord a : all(AREA)) {
+            weights.merge(a.ref("country"), a.json.getDouble("weight", 0), Double::sum);
+        }
+        for (Map.Entry<String, Double> e : weights.entrySet()) {
+            if (Math.abs(e.getValue() - 1) > 0.005) {
+                report.error("areas.json", "the area weights of `" + e.getKey() + "` add up to "
+                        + String.format(java.util.Locale.ROOT, "%.3f", e.getValue()) + ", not 1");
+            }
+        }
+        List<DataRecord> rows = records("language_rate", null);
+        Map<String, List<DataRecord>> spans = new HashMap<>();
+        boolean hasDefault = false;
+        for (DataRecord r : rows) {
+            List<String> targets = new ArrayList<>();
+            if (r.ref("area") != null) {
+                targets.add("area " + r.ref("area"));
+            } else if (r.has("countries")) {
+                for (String c : r.refs("countries")) {
+                    targets.add("country " + c);
+                }
+            } else {
+                targets.add("default");
+                hasDefault |= r.has("signsMen");
+            }
+            int lo = r.integer("bornFrom");
+            int hi = r.integer("bornUntil");
+            for (String t : targets) {
+                for (String f : RATE_FIELDS) {
+                    if (!r.has(f)) {
+                        continue;
+                    }
+                    List<DataRecord> seen = spans.computeIfAbsent(t + "|" + f, k -> new ArrayList<>());
+                    for (DataRecord o : seen) {
+                        if (lo <= o.integer("bornUntil") && o.integer("bornFrom") <= hi) {
+                            report.error(r.where, "`" + f + "` for " + t + " overlaps " + o.where + " (born "
+                                    + o.integer("bornFrom") + "-" + o.integer("bornUntil") + ")");
+                        }
+                    }
+                    seen.add(r);
+                }
+            }
+        }
+        if (!rows.isEmpty() && !hasDefault) {
+            report.error("language_rates.json",
+                    "no default row (no area, no countries) with `signsMen`: a man born abroad has no rate");
+        }
+    }
+
+    /** @return a share table of a record ({@code speaks}, {@code parentsBorn}...) by canonical id; bad keys left out */
+    public Map<String, Double> shares(DataRecord r, String field, String kind) {
+        Map<String, Double> out = new LinkedHashMap<>();
+        JsonValue t = r == null ? null : r.json.get(field);
+        for (JsonValue x = t == null || !t.isObject() ? null : t.child; x != null; x = x.next) {
+            String id = resolve(kind, x.name);
+            if (id != null && x.isNumber()) {
+                out.put(id, x.asDouble());
+            }
+        }
+        return out;
+    }
+
+    private void checkSourced(JsonValue v, String where) {
+        if (countSources(v) == 0 && !UNSOURCED_OK.contains(v.getString("confidence", ""))) {
+            report.error(where, "no source (only an `estimate` or `placeholder` may have none)");
+        }
+    }
+
+    private static int countSources(JsonValue v) {
+        JsonValue s = v.get("sources");
+        int n = 0;
+        for (JsonValue x = s == null || !s.isArray() ? null : s.child; x != null; x = x.next) {
+            if (x.isString() && !x.asString().trim().isEmpty()) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    private static double sum(JsonValue t) {
+        double total = 0;
+        for (JsonValue x = t == null || !t.isObject() ? null : t.child; x != null; x = x.next) {
+            total += x.isNumber() ? x.asDouble() : 0;
+        }
+        return total;
+    }
+
+    /** yyyy / yyyy-mm / yyyy-mm-dd as yyyymmdd (a missing month or day counts as 0), to compare dates. */
+    static int dateKey(String d) {
+        if (d == null || !DATE_RE.matcher(d).matches()) {
+            return 0;
+        }
+        String[] p = d.split("-");
+        int y = Integer.parseInt(p[0]);
+        int m = p.length > 1 ? Integer.parseInt(p[1]) : 0;
+        int day = p.length > 2 ? Integer.parseInt(p[2]) : 0;
+        return y * 10000 + m * 100 + day;
     }
 
     private void expect(boolean ok, JsonValue v, String where, String expected) {

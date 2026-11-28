@@ -31,7 +31,7 @@ public class AttributeTrackingConstants {
     
     /**
      * Significant change threshold (in attribute points)
-     * Changes larger than this show double arrows (↑↑ or ↓↓)
+     * Changes larger than this count as significant (trend IMPROVING_SIGNIFICANT / DECLINING_SIGNIFICANT)
      */
     public static final float SIGNIFICANT_CHANGE_THRESHOLD = 2.0f;  // 2.0 points
     

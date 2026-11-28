@@ -14,6 +14,7 @@ import com.rndmodgames.futtoboru.data.MessagePriority;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -696,7 +697,7 @@ public class MessageManager {
         }
 
         if (match.getAttendance() != null) {
-            content.append(LanguageModLoader.format("msg_match_attendance", match.getAttendance()));
+            content.append(LanguageModLoader.format("msg_match_attendance", GameFormat.integer(match.getAttendance()))); // U-12: "12,000"
             content.append("\n");
         }
 
@@ -753,8 +754,14 @@ public class MessageManager {
         content.append(LanguageModLoader.format("msg_match_away", awayClub.getName()));
         content.append("\n");
 
-        if (homeClub.getStadium() != null) {
-            content.append(LanguageModLoader.format("msg_match_venue", homeClub.getStadium().getName()));
+        // P2-14: the ground played at (a neutral venue, else the home club's)
+        com.rndmodgames.futtoboru.data.Stadium ground = com.rndmodgames.futtoboru.engine.cup.NeutralVenues.stadiumOf(
+                match, getCurrentGame());
+        if (ground == null) {
+            ground = homeClub.getStadium();
+        }
+        if (ground != null) {
+            content.append(LanguageModLoader.format("msg_match_venue", ground.getName()));
             content.append("\n");
         }
 

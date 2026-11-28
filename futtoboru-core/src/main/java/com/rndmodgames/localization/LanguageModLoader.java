@@ -43,12 +43,29 @@ public class LanguageModLoader {
 		return allAvailableLanguages;
 	}
 
+	/**
+	 * U-12: the language of the loaded bundle among {@link #getAllAvailableLanguages()} (ids compared without case:
+	 * the preference and the bundle loader keep "en_us"); English (US) when no bundle is loaded or it is unknown.
+	 */
+	public static Language getCurrentLanguage() {
+		String loaded = baseBundle != null && baseBundle.getLocale() != null ? baseBundle.getLocale().toString() : "";
+		for (Language language : allAvailableLanguages) {
+			if (language.getId().equalsIgnoreCase(loaded)) {
+				return language;
+			}
+		}
+		return ENGLISH_US;
+	}
+
 	public static void setBundle(I18NBundle bundle) {
 	
 		baseBundle = bundle;
-		
+
 		// DO NOT FAIL ON MISSING KEY
         I18NBundle.setExceptionOnMissingKey(false);
+
+        // dates and numbers follow the game language, not the machine's locale (U-12)
+        GameFormat.setLanguage(bundle != null ? bundle.getLocale() : null);
 	}
 	
 	/**

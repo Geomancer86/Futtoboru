@@ -1,7 +1,6 @@
 package com.rndmodgames.futtoboru.tables.person;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -10,6 +9,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -42,7 +42,7 @@ public class PersonDetailsScreenTable extends VisTable {
     VisLabel currentClubValueLabel = new VisLabel();
     
     //
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
+    DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.NUMERIC); // U-12: the game language
     
     public PersonDetailsScreenTable(Game parent) {
         

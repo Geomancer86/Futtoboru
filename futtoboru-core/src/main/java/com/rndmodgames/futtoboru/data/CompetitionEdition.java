@@ -52,6 +52,26 @@ public class CompetitionEdition implements Serializable {
     // final league table of this season, written when the season completes (P2-6); empty for cups and running seasons
     private List<LeagueStandingRow> finalStandings = new ArrayList<>();
 
+    /**
+     * P2-14: a cup drawn round by round (the season calendar's {@code open-draw}): the last round drawn so far; null
+     * for a cup paired by its first draw's bracket (and every cup of an older save).
+     */
+    private Integer drawnRounds;
+
+    /** P2-14: the clubs through to the next round, waiting for its draw (open-draw cups only) */
+    private List<Long> drawPool = new ArrayList<>();
+
+    // G-08: the re-election vote after this season (null when the League's rule has none for it)
+    private ReElection reElection;
+
+    public ReElection getReElection() {
+        return reElection;
+    }
+
+    public void setReElection(ReElection reElection) {
+        this.reElection = reElection;
+    }
+
     // 
     public Long getId() {
         return id;
@@ -174,5 +194,29 @@ public class CompetitionEdition implements Serializable {
 
     public void setFinalStandings(List<LeagueStandingRow> finalStandings) {
         this.finalStandings = finalStandings;
+    }
+
+    public Integer getDrawnRounds() {
+        return drawnRounds;
+    }
+
+    public void setDrawnRounds(Integer drawnRounds) {
+        this.drawnRounds = drawnRounds;
+    }
+
+    /** True when the cup is drawn round by round (P2-14): later ties get their clubs at their round's draw */
+    public boolean isOpenDraw() {
+        return drawnRounds != null;
+    }
+
+    public List<Long> getDrawPool() {
+        if (drawPool == null) {
+            drawPool = new ArrayList<>();
+        }
+        return drawPool;
+    }
+
+    public void setDrawPool(List<Long> drawPool) {
+        this.drawPool = drawPool;
     }
 }

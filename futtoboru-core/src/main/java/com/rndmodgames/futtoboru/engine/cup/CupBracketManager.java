@@ -207,10 +207,22 @@ public class CupBracketManager {
             }
         }
         
-        Log.info(Log.ENGINE_CUP, "CupBracketManager: Found next round match: " + nextRoundMatch.getBracketPath() + 
-            " (ID: " + nextRoundMatch.getId() + ", Round: " + nextRoundMatch.getRound() + 
+        Log.info(Log.ENGINE_CUP, "CupBracketManager: Found next round match: " + nextRoundMatch.getBracketPath() +
+            " (ID: " + nextRoundMatch.getId() + ", Round: " + nextRoundMatch.getRound() +
             ", Date: " + nextRoundMatch.getMatchDateTime() + ")");
-        
+
+        // P2-14: a cup drawn round by round: the winner waits for the next round's draw (AuthorityManager)
+        // instead of taking the bracket slot of this tie
+        com.rndmodgames.futtoboru.data.CompetitionEdition openDraw = getEdition(completedMatch.getCompetitionEditionId());
+        if (openDraw != null && openDraw.isOpenDraw()) {
+            if (!openDraw.getDrawPool().contains(winner.getId())) {
+                openDraw.getDrawPool().add(winner.getId());
+            }
+            Log.info(Log.ENGINE_CUP, "CupBracketManager", winner.getName() + " through to the draw of round "
+                    + nextRoundMatch.getRound() + " of " + openDraw.getName());
+            return nextRoundMatch;
+        }
+
         // Determine which parent slot this match fills (use parentMatchId which is original match ID for replays)
         if (nextRoundMatch.getParentMatch1Id() != null && nextRoundMatch.getParentMatch1Id().equals(parentMatchId)) {
             // This match's winner goes to home position
@@ -234,6 +246,16 @@ public class CupBracketManager {
             // Note: Match might already be in lists from initial generation, but we ensure it's there
             Club homeClub = currentGame.getClubById(nextRoundMatch.getHomeClubId());
             Club awayClub = currentGame.getClubById(nextRoundMatch.getAwayClubId());
+
+            // P2-14: a tie of a neutral round (semi-final, final) gets its ground now its clubs are known
+            List<Match> editionMatches = getAllMatchesForEdition(nextRoundMatch.getCompetitionEditionId());
+            int lastRound = 0;
+            for (Match m : editionMatches) {
+                lastRound = Math.max(lastRound, m.getRound() != null ? m.getRound() : 0);
+            }
+            NeutralVenues.assign(currentGame, getCupForEdition(nextRoundMatch.getCompetitionEditionId()),
+                    nextRoundMatch, editionMatches, lastRound,
+                    com.rndmodgames.futtoboru.game.Futtoboru.randomOf(gameInstance));
             
             // Use match ID to check if already in list (more reliable than contains())
             boolean homeHasMatch = false;
@@ -389,6 +411,8 @@ public class CupBracketManager {
         // Swap home/away for replay
         replayMatch.setHomeClubId(originalMatch.getAwayClubId());
         replayMatch.setAwayClubId(originalMatch.getHomeClubId());
+        // P2-14: a tie at a neutral ground is replayed there (the 1889 semi-final replay was at Crewe again)
+        replayMatch.setVenue(originalMatch.getVenue());
         
         // Set competition info
         replayMatch.setCompetitionId(originalMatch.getCompetitionId());

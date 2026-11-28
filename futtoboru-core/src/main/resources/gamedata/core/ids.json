@@ -3,7 +3,7 @@
     1,
     99999
   ],
-  "next": 930,
+  "next": 996,
   "ids": {
     "continent": {
       "africa": 38,
@@ -389,7 +389,9 @@
       "the-meadow-belfast": 915,
       "great-lines-chatham": 916,
       "clee-park": 917,
-      "meadow-lane-1886": 918
+      "meadow-lane-1886": 918,
+      "kennington-oval": 930,
+      "bramall-lane": 931
     },
     "person": {
       "fred-dewhurst-1863": 361,
@@ -955,6 +957,82 @@
     "edition": {
       "football-league-1888-89": 913,
       "fa-cup-1888-89": 914
+    },
+    "rule": {
+      "fa-professional-registration-1885": 979,
+      "fa-birth-or-residence-1885": 980,
+      "fa-one-club-per-season-1885": 981,
+      "fa-council-second-registration-1888": 982,
+      "league-registration-wait-1890": 983,
+      "sfa-professional-ban": 984,
+      "league-retain-and-transfer-1893": 985,
+      "fa-maximum-wage-1901": 986
+    },
+    "wage": {
+      "holt-everton-1888": 987,
+      "ross-everton-1888": 988,
+      "band-leading-1885": 989,
+      "band-middling-1885": 990,
+      "band-small-1885": 991,
+      "band-leading-1893": 992,
+      "band-middling-1893": 993,
+      "band-small-1893": 994,
+      "band-capped-1901": 995
+    },
+    "origin": {
+      "mill": 967,
+      "pit": 968,
+      "docks": 969,
+      "ironworks": 970,
+      "railway": 971,
+      "farm": 972,
+      "tradesman": 973,
+      "publican": 974,
+      "clerk": 975,
+      "schoolmaster": 976,
+      "gentleman-amateur": 977,
+      "soldier": 978
+    },
+    "origin-club": {
+      "newton-heath-lyr": 955,
+      "ardwick": 956,
+      "royal-arsenal": 957,
+      "singers": 958,
+      "renton": 959,
+      "vale-of-leven": 960,
+      "dumbarton": 961,
+      "partick-thistle": 962,
+      "queens-park": 963,
+      "kilmarnock": 964,
+      "hibernian": 965,
+      "heart-of-midlothian": 966
+    },
+    "area": {
+      "liverpool": 932,
+      "lancashire": 933,
+      "england-other": 934,
+      "glamorgan": 935,
+      "monmouthshire": 936,
+      "denbighshire": 937,
+      "wales-west": 938,
+      "wales-other": 939,
+      "scotland-lowlands": 940,
+      "scotland-highlands": 941,
+      "scotland-other": 942,
+      "leinster": 943,
+      "munster": 944,
+      "connacht": 945,
+      "ulster": 946
+    },
+    "language": {
+      "english": 947,
+      "welsh": 948,
+      "scottish-gaelic": 949,
+      "irish": 950,
+      "german": 951,
+      "yiddish": 952,
+      "italian": 953,
+      "lithuanian": 954
     }
   },
   "retired": {

@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.club;
 
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import java.math.BigDecimal;
 import com.rndmodgames.futtoboru.engine.finances.Money;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -22,7 +24,6 @@ import com.rndmodgames.futtoboru.engine.jobs.ClubStaffManager;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiDialogs;
@@ -138,7 +139,7 @@ public class ClubDetailScreenTable extends VisTable {
             // Capacity
             if (club.getStadium().getCapacity() != null) {
                 details.add(new VisLabel(LanguageModLoader.getValue("club_capacity"))).left();
-                details.add(new VisLabel(club.getStadium().getCapacity().toString())).left().expandX();
+                details.add(new VisLabel(GameFormat.integer(club.getStadium().getCapacity()))).left().expandX(); // U-12: "10,000"
                 details.row();
             }
             
@@ -211,32 +212,9 @@ public class ClubDetailScreenTable extends VisTable {
                 details.row();
                 details.add(new VisLabel(LanguageModLoader.getValue("club_source"))).left();
                 
+                // U-12: a VisUI LinkLabel like every other link (skin colour, hand cursor, opens the browser)
                 final String url = club.getStadium().getUrlSource();
-                final VisLabel urlLabel = new VisLabel(url);
-                urlLabel.setColor(UiTheme.color("link.normal")); // Blue for link
-                
-                // Make URL clickable and add hover feedback
-                urlLabel.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
-                    @Override
-                    public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
-                        com.badlogic.gdx.Gdx.net.openURI(url);
-                        return true;
-                    }
-                    
-                    @Override
-                    public void enter(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor fromActor) {
-                        urlLabel.setColor(UiTheme.color("link.hover")); // Brighter blue on hover
-                        com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Hand);
-                    }
-                    
-                    @Override
-                    public void exit(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, com.badlogic.gdx.scenes.scene2d.Actor toActor) {
-                        urlLabel.setColor(UiTheme.color("link.normal")); // Original blue
-                        com.badlogic.gdx.Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Arrow);
-                    }
-                });
-                
-                details.add(urlLabel).left().expandX();
+                details.add(new LinkLabel(url, url)).left().expandX();
                 details.row();
             }
         }
@@ -258,7 +236,7 @@ public class ClubDetailScreenTable extends VisTable {
         
         if (clubStaffManager != null) {
             List<Profession> vacantPositions = clubStaffManager.getVacantPositions(club);
-            List<Profession> allStaffPositions = DatabaseLoader.getInstance().getSelectableProfessions();
+            List<Profession> allStaffPositions = clubStaffManager.getStaffPositions(); // J-01: manager, director, scout
             
             for (Profession profession : allStaffPositions) {
                 // Skip Player and Retired Player (not staff positions)
@@ -290,23 +268,14 @@ public class ClubDetailScreenTable extends VisTable {
                         Person owner = currentGame.getOwner();
                         boolean alreadyApplied = false;
                         ApplicationStatus applicationStatus = null;
-                        com.rndmodgames.futtoboru.data.jobs.JobOpening existingOpening = jobManager.getAvailableJobs(club).stream()
-                            .filter(job -> job != null && job.getProfessionId() != null && job.getProfessionId().equals(profession.getId()))
-                            .findFirst()
-                            .orElse(null);
+                        com.rndmodgames.futtoboru.data.jobs.JobOpening existingOpening = jobManager.getOpenOpening(club, profession);
                         
                         if (existingOpening != null) {
-                            List<com.rndmodgames.futtoboru.data.jobs.JobApplication> playerApps = jobManager.getPlayerApplications(owner);
-                            Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Checking " + playerApps.size() + " existing applications for opening ID: " + existingOpening.getId());
-                            Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Checking " + playerApps.size() + " existing applications");
-                            for (com.rndmodgames.futtoboru.data.jobs.JobApplication app : playerApps) {
-                                if (app != null && app.getJobOpeningId() != null && app.getJobOpeningId().equals(existingOpening.getId()) && app.isActive()) {
-                                    alreadyApplied = true;
-                                    applicationStatus = app.getStatus();
-                                    Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
-                                    Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
-                                    break;
-                                }
+                            // J-01: one application per post, also after a refusal or a declined or lapsed offer
+                            com.rndmodgames.futtoboru.data.jobs.JobApplication app = jobManager.getApplicationFor(owner, existingOpening);
+                            if (app != null) {
+                                alreadyApplied = true;
+                                applicationStatus = app.getStatus();
                             }
                         }
                         Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Already applied: " + alreadyApplied + ", Status: " + applicationStatus);
@@ -322,6 +291,8 @@ public class ClubDetailScreenTable extends VisTable {
                                 statusText = LanguageModLoader.getValue("club_rejected");
                             } else if (applicationStatus == ApplicationStatus.PENDING) {
                                 statusText = LanguageModLoader.getValue("club_pending");
+                            } else if (applicationStatus != null) {
+                                statusText = com.rndmodgames.futtoboru.tables.jobs.JobBoardScreenTable.statusName(applicationStatus);
                             }
                             applyButton = new VisTextButton(statusText);
                             applyButton.setDisabled(true); // Disable the button

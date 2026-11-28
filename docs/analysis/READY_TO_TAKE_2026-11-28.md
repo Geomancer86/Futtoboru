@@ -1,0 +1,40 @@
+# Proposed "Ready to take" for docs/BOARD.md (DOC-01, 2026-11-28)
+
+PM: paste this over the current "Ready to take" section. Sources: ROADMAP (D30, D33), logs of both machines.
+
+**Released:** v0.5.0-alpha (`main` = 7d7727f). **v0.5.0** is tagged when P2-13 (done), J-01 (done), U-12 and P2-14 are merged.
+Model tier per D33: Sonnet for docs/data/research/art tools/merges, Opus for core sim, saves, determinism, hard bugs.
+
+## Unblocked, unclaimed
+| Item | Suggested owner | Tier | Notes |
+|---|---|---|---|
+| G-02 injuries and availability | BOOK3PRO (gameplay lead) | Opus | needs G-01 team sheet merged for the XI effect; data part can start |
+| G-05 committee and the secretary's job (sacking, job seeker) | BOOK3PRO | Opus | J-01 job system is merged |
+| R-03..R-07 recruitment without trials | BOOK3PRO | Opus | after R-02 data merges (D28 answered) |
+| G-09 training, G-11 era events in the inbox, G-12 budget and debt | WORKSTATION (D33-7) | Sonnet/Opus | G-11 has data proposal `docs/design/ERA_EVENTS_PROPOSAL.md` |
+| G-10 history / fan tiers on screen | WORKSTATION | Sonnet | after H-05 (claimed) puts the history texts into gamedata |
+| G-13 AI-to-AI friendlies and away guarantees | WORKSTATION | Opus | D31: AI clubs get every system; U-08 `FriendlyArranger` is the base |
+| R-08 AI recruitment/poaching | BOOK3PRO | Opus | after R-02..R-07 |
+| E-17 events + `MatchResult` stats (after E-17a) | WORKSTATION | Opus | `match/ecs/**` is WORKSTATION's lock |
+| E-18 crowd sections, E-19 performance (zero-alloc, spatial grid, benchmark) | WORKSTATION | Opus | E-19 needed: ~1.5-2.5 s a match estimated |
+| P2-4 data review of the copied cup rosters | WORKSTATION | Sonnet | `docs/data/REVIEW_1888-89.md`; ~204 placeholder cup positions; placeholders allowed (D30 A3) |
+| Source the 4 placeholder League positions (Villa, Blackburn, Burnley x2) | WORKSTATION | Sonnet | H-04 leftovers |
+| E-01 follow-up: sourced positions for generated players beyond `PositionAssigner` | BOOK3PRO | Sonnet | queued in D25 |
+| Weekly 10-minute producer play session on `playable-latest` | PM / producer | - | needs INF-01 `playable-latest` |
+
+## Blocked
+| Item | Blocker |
+|---|---|
+| E-20 calibration (= E-05) | E-17 events, E-19 performance; calibration data pack needs BOOK3PRO (1888-89 results already in `seasons/1888-89/results.json`) |
+| E-22 saves with events/seed/engine version | E-17; touches saves (BOOK3PRO owns) |
+| E-06 switch the game to ECS | E-20 + 7 green nightly soaks (INF-01), flipped by the producer (D33-8) |
+| Trial scenes (R-09 and later) | ECS engine in the game (D28 Q4) |
+| New viewer/art lanes (E-21f..m, extra art) | D33-1: a seeded season must first complete on ECS behind the engine flag |
+| G-01 gate run, G-04, R-02 + R-11a merge | parked by the producer (max two code lanes on BOOK3PRO); G-04 waits for G-01 |
+| AGM date for G-08 | unsourced (placeholder: one week after the league ends) |
+| G1 path-aware gate, G3 nightly soak, G4 red-develop rule | INF-01 (WORKSTATION, claimed) + `test_level.py` (BOOK3PRO) |
+| Phase 5 (season 2, 1889-90 as a release) | v0.5.0 tag, G-04 contracts, G-05 |
+| Marketing | a full season playing end to end on the shipped build (ROADMAP Phase 5 rule) |
+
+## Already claimed (do not take)
+E-17a, INF-01, E-16b, H-05, DOC-01 (WORKSTATION); U-12, P2-14, G-01, G-04, R-02 + R-11a (BOOK3PRO).

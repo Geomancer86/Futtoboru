@@ -134,14 +134,14 @@ public final class HistoryProvider {
                 runnerUp, table, new ArrayList<>());
     }
 
-    /** "1888-89" from the edition's name ("Football League 1889-90"), else from its start year */
-    static String season(CompetitionEdition ed) {
+    /** "1888-89" from the edition's name ("Football League 1889-90"), else from its start year (Authorities, U-12) */
+    public static String season(CompetitionEdition ed) {
         Matcher m = ed.getName() != null ? SEASON.matcher(ed.getName()) : null;
         if (m != null && m.find()) {
             return m.group();
         }
         int y = startYear(ed);
-        return y + "-" + String.format("%02d", (y + 1) % 100);
+        return com.rndmodgames.futtoboru.data.Season.label(y);
     }
 
     static int startYear(CompetitionEdition ed) {

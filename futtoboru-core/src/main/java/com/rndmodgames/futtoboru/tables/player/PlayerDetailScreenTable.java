@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -42,7 +43,7 @@ public class PlayerDetailScreenTable extends VisTable {
     private AttributeChangeCalculator changeCalculator;
     
     // Formatting
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
+    private DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.NUMERIC); // U-12: the game language
     
     // UI Components
     private VisLabel playerNameLabel;
@@ -124,6 +125,12 @@ public class PlayerDetailScreenTable extends VisTable {
         contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
         contentTable.row();
         
+        // R-11a: languages and literacy, in words
+        buildLanguagesSection();
+        contentTable.row();
+        contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
+        contentTable.row();
+
         // Modifiers & Bonuses Section (v2.0 - 3d6 system)
         buildModifiersSection();
         contentTable.row();
@@ -257,6 +264,43 @@ public class PlayerDetailScreenTable extends VisTable {
         contentTable.add(infoTable).left().pad(UiTheme.space("sm"));
     }
     
+    /**
+     * R-11a (design §10.1): the languages he speaks, understands and reads/writes, home language first, in words
+     * ("speaks a little, understands well; reads slowly"). They describe skills, never origins.
+     */
+    private void buildLanguagesSection() {
+        VisTable table = new VisTable(true);
+        table.add(new VisLabel(LanguageModLoader.getValue("player_languages"))).colspan(2).left();
+        table.row();
+        com.rndmodgames.futtoboru.data.Person person = currentPlayer.getPerson();
+        table.add(new VisLabel(LanguageModLoader.getValue("player_home_language"))).left().width(UiTheme.size("col.label"));
+        table.add(new VisLabel(person.getHomeLanguage() == null ? LanguageModLoader.getValue("player_languages_none")
+                : languageName(person.getHomeLanguage()))).left();
+        for (com.rndmodgames.futtoboru.data.language.LanguageSkill s : person.getLanguages()) {
+            table.row();
+            table.add(new VisLabel(LanguageModLoader.format("player_language_line", languageName(s.getLanguage()),
+                    bundleWord(LANGUAGE_LEVEL_KEY, s.getSpeak()), bundleWord(LANGUAGE_LEVEL_KEY, s.getUnderstand()),
+                    bundleWord(READ_WRITE_KEY, s.getReadWrite())))).colspan(2).left();
+        }
+        contentTable.add(table).left().pad(UiTheme.space("sm"));
+    }
+
+    /** Bundle key prefixes of the level words (0..4), checked by LanguageLabelsTest. */
+    public static final String LANGUAGE_LEVEL_KEY = "language_level_";
+    public static final String READ_WRITE_KEY = "language_read_write_";
+    public static final String LANGUAGE_NAME_KEY = "language_";
+
+    private static String bundleWord(String prefix, int level) {
+        String key = prefix + level;
+        return LanguageModLoader.getValue(key);
+    }
+
+    /** @return the bundle name of a language data id ({@code scottish-gaelic} -> {@code language_scottish_gaelic}) */
+    public static String languageName(String languageId) {
+        String key = LANGUAGE_NAME_KEY + languageId.replace('-', '_');
+        return LanguageModLoader.getValue(key);
+    }
+
     /**
      * Build contract details section (v1.0)
      * Shows contract type, wages, bonuses, and expiry
@@ -673,9 +717,9 @@ public class PlayerDetailScreenTable extends VisTable {
         VisLabel changeLabel = new VisLabel(changeText);
         
         // Color coding based on trend
-        if (changeText.contains("↑↑") || changeText.contains("↑")) {
+        if (changeText.contains("[+")) { // U-12: the font has no arrows; the sign and the colour say it
             changeLabel.setColor(UiTheme.color("trend.up")); // Green for improvement
-        } else if (changeText.contains("↓↓") || changeText.contains("↓")) {
+        } else if (changeText.contains("[-")) {
             changeLabel.setColor(UiTheme.color("trend.down")); // Red for decline
         } else if (changeText.contains("=")) {
             changeLabel.setColor(UiTheme.color("trend.flat")); // Gray for stable
