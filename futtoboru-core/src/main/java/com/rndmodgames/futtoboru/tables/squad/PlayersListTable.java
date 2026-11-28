@@ -123,6 +123,7 @@ public class PlayersListTable extends VisTable {
         this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_name"), "name")).width(UiTheme.size("table.squad.name"));
         this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_age"), "age")).width(UiTheme.size("table.squad.age"));
         this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_country"), "country")).width(UiTheme.size("table.squad.country"));
+        this.add(new VisLabel(LanguageModLoader.getValue("squad_col_fan"))).width(UiTheme.size("table.squad.fan")); // G-10
         
         // Physical attribute columns
         if (showAcceleration) {
@@ -176,6 +177,9 @@ public class PlayersListTable extends VisTable {
         /**
          * Player Rows
          */
+        com.rndmodgames.futtoboru.history.HistoryFacts facts = new com.rndmodgames.futtoboru.history.HistoryFacts(
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getGameData(),
+                com.rndmodgames.futtoboru.history.HistoryFacts.dataLanguage(LanguageModLoader.getCurrentLanguage().getId()));
         for (Player player : sortedPlayers) {
             this.row();
             
@@ -205,6 +209,9 @@ public class PlayersListTable extends VisTable {
             String countryName = player.getPerson().getCountry() != null ? 
                 player.getPerson().getCountry().getCommonName() : LanguageModLoader.getValue("not_available");
             this.add(new VisLabel(countryName)).width(UiTheme.size("table.squad.country"));
+            
+            // G-10: fan-love tier marker (0-5), shown as the tier number in the tier colour
+            this.add(fanMarker(player, facts)).width(UiTheme.size("table.squad.fan"));
             
             // Physical attributes (with change indicators)
             if (showAcceleration) {
@@ -367,8 +374,19 @@ public class PlayersListTable extends VisTable {
     /**
      * Calculates the total number of columns currently displayed.
      */
+    /** G-10: the tier of a player at his club as a small coloured number; empty when he has no data id. */
+    private VisLabel fanMarker(Player player, com.rndmodgames.futtoboru.history.HistoryFacts facts) {
+        com.rndmodgames.futtoboru.data.Person person = player.getPerson();
+        com.rndmodgames.futtoboru.data.Club club = person.getCurrentClubId() == null || game.getCurrentGame() == null ? null
+                : game.getCurrentGame().getClubById(person.getCurrentClubId());
+        int tier = facts.fanTier(person.getDataId(), club == null ? null : club.getDataId());
+        VisLabel label = new VisLabel(String.valueOf(tier));
+        label.setColor(UiTheme.color(com.rndmodgames.futtoboru.tables.player.PlayerDetailScreenTable.fanTierColor(tier)));
+        return label;
+    }
+
     private int getColumnCount() {
-        int count = 3; // Name, Age, Country (always shown)
+        int count = 4; // Name, Age, Country, Fans (G-10; always shown)
         
         // Physical
         if (showAcceleration) count++;

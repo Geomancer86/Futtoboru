@@ -260,6 +260,7 @@ public class PlayerDetailScreenTable extends VisTable {
             }
         }
         infoTable.add(new VisLabel(contractInfo)).left();
+        addHistoryRows(sheetClub);
         
         contentTable.add(infoTable).left().pad(UiTheme.space("sm"));
     }
@@ -754,6 +755,57 @@ public class PlayerDetailScreenTable extends VisTable {
     
     public void setMenuManager(MainMenuManager menuManager) {
         this.menuManager = menuManager;
+    }
+
+    /** G-10: fan-love badge, known-as name, nicknames and bio from the history data (rows that have data only). */
+    private void addHistoryRows(com.rndmodgames.futtoboru.data.Club club) {
+        com.rndmodgames.futtoboru.data.Person person = currentPlayer.getPerson();
+        if (person.getDataId() == null) {
+            return;
+        }
+        com.rndmodgames.futtoboru.history.HistoryFacts facts = new com.rndmodgames.futtoboru.history.HistoryFacts(
+                com.rndmodgames.futtoboru.system.DatabaseLoader.getGameData(),
+                com.rndmodgames.futtoboru.history.HistoryFacts.dataLanguage(LanguageModLoader.getCurrentLanguage().getId()));
+        com.rndmodgames.futtoboru.history.HistoryFacts.PersonHistory h =
+                facts.person(person.getDataId(), club == null ? null : club.getDataId());
+        infoTable.row();
+        infoTable.add(new VisLabel(LanguageModLoader.getValue("player_fan_tier"))).left().width(UiTheme.size("col.label"));
+        VisLabel badge = new VisLabel(LanguageModLoader.getValue(com.rndmodgames.futtoboru.history.HistoryFacts.tierKey(h.tier)));
+        badge.setColor(UiTheme.color(fanTierColor(h.tier)));
+        infoTable.add(badge).left();
+        if (h.knownAs != null) {
+            infoTable.row();
+            infoTable.add(new VisLabel(LanguageModLoader.getValue("player_known_as"))).left().width(UiTheme.size("col.label"));
+            infoTable.add(new VisLabel(h.knownAs)).left();
+        }
+        if (!h.nicknames.isEmpty()) {
+            StringBuilder names = new StringBuilder();
+            for (com.rndmodgames.futtoboru.system.data.HistoryName n : h.nicknames) {
+                names.append(names.length() == 0 ? "" : ", ").append(n.getName());
+            }
+            infoTable.row();
+            infoTable.add(new VisLabel(LanguageModLoader.getValue("player_nicknames"))).left().width(UiTheme.size("col.label"));
+            infoTable.add(new VisLabel(names.toString())).left();
+        }
+        if (h.bio != null && !h.bio.isEmpty()) {
+            infoTable.row();
+            infoTable.add(new VisLabel(LanguageModLoader.getValue("player_bio"))).left().top().width(UiTheme.size("col.label"));
+            VisLabel bio = new VisLabel(h.bio);
+            bio.setWrap(true);
+            infoTable.add(bio).left().width(UiTheme.size("text.wrap.narrow"));
+        }
+    }
+
+    /** The theme colour token of a fan-love tier badge (0 unknown, muted, up to 5 legend, gold). */
+    public static String fanTierColor(int tier) {
+        switch (tier) {
+        case 0: return "text.muted";
+        case 1: return "text.secondary";
+        case 2: return "text.primary";
+        case 3: return "accent";
+        case 4: return "state.warning";
+        default: return "state.winner";
+        }
     }
 
     /** G-01: the club whose squad holds this very player (a person listed twice has a copy per squad). */
