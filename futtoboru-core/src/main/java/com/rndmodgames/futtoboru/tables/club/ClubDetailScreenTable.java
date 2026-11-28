@@ -24,7 +24,6 @@ import com.rndmodgames.futtoboru.engine.jobs.ClubStaffManager;
 import com.rndmodgames.futtoboru.engine.jobs.JobManager;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiDialogs;
@@ -237,7 +236,7 @@ public class ClubDetailScreenTable extends VisTable {
         
         if (clubStaffManager != null) {
             List<Profession> vacantPositions = clubStaffManager.getVacantPositions(club);
-            List<Profession> allStaffPositions = DatabaseLoader.getInstance().getSelectableProfessions();
+            List<Profession> allStaffPositions = clubStaffManager.getStaffPositions(); // J-01: manager, director, scout
             
             for (Profession profession : allStaffPositions) {
                 // Skip Player and Retired Player (not staff positions)
@@ -269,23 +268,14 @@ public class ClubDetailScreenTable extends VisTable {
                         Person owner = currentGame.getOwner();
                         boolean alreadyApplied = false;
                         ApplicationStatus applicationStatus = null;
-                        com.rndmodgames.futtoboru.data.jobs.JobOpening existingOpening = jobManager.getAvailableJobs(club).stream()
-                            .filter(job -> job != null && job.getProfessionId() != null && job.getProfessionId().equals(profession.getId()))
-                            .findFirst()
-                            .orElse(null);
+                        com.rndmodgames.futtoboru.data.jobs.JobOpening existingOpening = jobManager.getOpenOpening(club, profession);
                         
                         if (existingOpening != null) {
-                            List<com.rndmodgames.futtoboru.data.jobs.JobApplication> playerApps = jobManager.getPlayerApplications(owner);
-                            Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Checking " + playerApps.size() + " existing applications for opening ID: " + existingOpening.getId());
-                            Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Checking " + playerApps.size() + " existing applications");
-                            for (com.rndmodgames.futtoboru.data.jobs.JobApplication app : playerApps) {
-                                if (app != null && app.getJobOpeningId() != null && app.getJobOpeningId().equals(existingOpening.getId()) && app.isActive()) {
-                                    alreadyApplied = true;
-                                    applicationStatus = app.getStatus();
-                                    Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
-                                    Log.info(Log.UI_CLUB, "[ClubDetailScreenTable] Found existing application: ID=" + app.getId() + ", Status=" + applicationStatus);
-                                    break;
-                                }
+                            // J-01: one application per post, also after a refusal or a declined or lapsed offer
+                            com.rndmodgames.futtoboru.data.jobs.JobApplication app = jobManager.getApplicationFor(owner, existingOpening);
+                            if (app != null) {
+                                alreadyApplied = true;
+                                applicationStatus = app.getStatus();
                             }
                         }
                         Log.info(Log.UI_CLUB, "ClubDetailScreenTable", "Already applied: " + alreadyApplied + ", Status: " + applicationStatus);
@@ -301,6 +291,8 @@ public class ClubDetailScreenTable extends VisTable {
                                 statusText = LanguageModLoader.getValue("club_rejected");
                             } else if (applicationStatus == ApplicationStatus.PENDING) {
                                 statusText = LanguageModLoader.getValue("club_pending");
+                            } else if (applicationStatus != null) {
+                                statusText = com.rndmodgames.futtoboru.tables.jobs.JobBoardScreenTable.statusName(applicationStatus);
                             }
                             applyButton = new VisTextButton(statusText);
                             applyButton.setDisabled(true); // Disable the button

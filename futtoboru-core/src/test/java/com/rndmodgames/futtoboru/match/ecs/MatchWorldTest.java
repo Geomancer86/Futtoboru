@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.ashley.core.ComponentMapper;
@@ -20,7 +19,6 @@ import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallSystem;
 
 /** E-10: world, registration rules, draw passes vs simulation, clock, state hash, entry point golden hash. */
-@Tag("slow") // 5.4 s for 8 tests on BOOK3PRO (test_tiers.py: over 5 s untagged fails every gate)
 class MatchWorldTest {
 
     static MatchWorld world(PitchConditions pitch) {
@@ -239,33 +237,22 @@ class MatchWorldTest {
     // ---- entry point ---------------------------------------------------------------------------------------------
 
     /**
-     * Golden hashes of the {@code play} stub over a full match (162,000 ticks); see BallPhysicsTest for the rule.
-     * Re-pinned by E-13 (ecs-0.2): {@code play} now lines up 22 bodies (body, athlete, kit, injury, command appended
-     * to the hashed components); they stand still, while boots soak in the rain. Re-pinned by E-14 (ecs-0.3): skill
-     * and action command per player and the ball's possession appended to the hashed components; nobody acts yet.
-     * Re-pinned by E-16 (ecs-0.4): the referee and two umpires (OfficialComponent) and the ball's PlayStateComponent
-     * appended; the laws await the kick-off all match (no AI yet), with half-time (change of ends, players mirrored,
-     * half-time recovery) and full time.
+     * Golden hash of {@code play} over a short match (two halves of 3 minutes, 10,800 ticks): the full loop with the
+     * player AI (E-15) and the laws (E-16); see BallPhysicsTest for the rule. The 90-minute goldens and the wet-ball
+     * masses are in {@link EcsPlayGoldenTest} (slow tier). Pinned by E-15 (ecs-0.5).
      */
-    static final long GOLDEN_PLAY_DRY = 0x874d1b9839313716L;
-    static final long GOLDEN_PLAY_RAIN = 0x1626d130f3919c52L;
+    static final long GOLDEN_SHORT_PLAY = 0x494f23dd79977cbL;
 
     @Test
-    void playIsDeterministicAndPinnedByAGoldenHash() {
+    void shortPlayIsDeterministicAndPinnedByAGoldenHash() {
         EcsMatchEngine engine = new EcsMatchEngine();
         RandomSource game = RandomSource.seeded(1888L);
-        EcsMatchInput dry = new EcsMatchInput("m1", new UniformPitch(Surface.DRY, PitchConditions.DRY));
-        EcsMatchInput rain = new EcsMatchInput("m2", new UniformPitch(Surface.WET, PitchConditions.RAIN));
-        EcsMatchResult a = engine.play(dry, game.fork("match:m1"));
-        EcsMatchResult b = engine.play(rain, game.fork("match:m2"));
-        assertEquals(a, engine.play(dry, game.fork("match:m1")));
-        assertEquals(162_000, a.ticks());
+        EcsMatchInput in = new EcsMatchInput("short", new UniformPitch(Surface.DRY, PitchConditions.DRY), 0, 3);
+        EcsMatchResult a = engine.play(in, game.fork("match:short"));
+        assertEquals(a, engine.play(in, game.fork("match:short")));
+        assertEquals(10_800, a.ticks());
         assertEquals(EcsMatchEngine.ENGINE_VERSION, a.engineVersion());
-        assertEquals(0.400, a.fullTimeBallMassKg(), 0);
-        // BKP §1.3 table, 400 g ball in rain: 476 g at half-time, 526 g at full time.
-        assertEquals(0.476, b.halfTimeBallMassKg(), 0.001);
-        assertEquals(0.526, b.fullTimeBallMassKg(), 0.001);
-        assertEquals(GOLDEN_PLAY_DRY, a.finalStateHash(), () -> "dry " + Long.toHexString(a.finalStateHash()));
-        assertEquals(GOLDEN_PLAY_RAIN, b.finalStateHash(), () -> "rain " + Long.toHexString(b.finalStateHash()));
+        assertTrue(a.ballActions() > 50, "the AI plays the ball: " + a.ballActions());
+        assertEquals(GOLDEN_SHORT_PLAY, a.finalStateHash(), () -> "short " + Long.toHexString(a.finalStateHash()));
     }
 }
