@@ -49,7 +49,7 @@ public final class EraProfile {
      */
     public record Event(String id, String kind, String authority, LocalDate announced, LocalDate effective,
             List<String> countries, List<String> competitions, List<Effect> effects, String messageKey,
-            List<String> requires) {
+            List<String> requires, List<String> messageArgs, String priority, boolean mandatory, boolean newsOnly) {
     }
 
     /** The parameters on one date, and the ids of the events that produced them. */
@@ -194,7 +194,9 @@ public final class EraProfile {
         return new Event(id, e.getString("kind"), e.getString("authority"), LocalDate.parse(e.getString("announced")),
                 LocalDate.parse(e.getString("effective")), strings(scope == null ? null : scope.get("countries")),
                 strings(scope == null ? null : scope.get("competitions")), Collections.unmodifiableList(effects),
-                e.get("message").getString("key"), strings(e.get("requires")));
+                e.get("message").getString("key"), strings(e.get("requires")), strings(e.get("message").get("args")),
+                e.get("message").getString("priority", "NORMAL"), e.get("message").getBoolean("mandatory", false),
+                e.get("message").getBoolean("newsOnly", false));
     }
 
     private static List<String> strings(JsonValue list) {

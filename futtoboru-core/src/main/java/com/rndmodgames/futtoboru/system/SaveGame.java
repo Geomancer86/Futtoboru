@@ -119,6 +119,11 @@ public class SaveGame implements Serializable {
     private List<Message> scheduledMessages = new ArrayList<>();
     
     /**
+     * Ids of the era events (EraProfile) already announced in the inbox (G-11). Optional: null in older saves.
+     */
+    private List<String> announcedEraEvents = new ArrayList<>();
+
+    /**
      * Scripts Support
      */
     private List<BasicScript> gameScripts = new ArrayList<>();
@@ -384,6 +389,14 @@ public class SaveGame implements Serializable {
 
     public void setIsSaved(Boolean isSaved) {
         this.isSaved = isSaved;
+    }
+
+    /** @return the ids of the era events already announced (never null) */
+    public List<String> getAnnouncedEraEvents() {
+        if (announcedEraEvents == null) {
+            announcedEraEvents = new ArrayList<>();
+        }
+        return announcedEraEvents;
     }
 
     public List<BasicScript> getGameScripts() {
