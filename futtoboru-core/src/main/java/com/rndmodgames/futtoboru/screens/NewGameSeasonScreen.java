@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.rndmodgames.futtoboru.ui.UiScale;
 import com.kotcrab.vis.ui.widget.LinkLabel;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
@@ -61,10 +61,10 @@ public class NewGameSeasonScreen implements Screen {
         //
         this.game = parent;
         
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(UiScale.newViewport());
         
         VisTable mainContainer = new VisTable();
-        mainContainer.pad(UiTheme.space("xl")).setFillParent(true);
+        mainContainer.pad(UiTheme.space("xl")); // root of UiScale.addOverflowScroll below: scrolls when it does not fit (200%)
     
         // 
         final VisTable table = new VisTable(true);
@@ -267,7 +267,7 @@ public class NewGameSeasonScreen implements Screen {
         mainContainer.add(table);
         
         // Add Settings Screen Main Container to Stage
-        stage.addActor(mainContainer);
+        UiScale.addOverflowScroll(stage, mainContainer);
     }
     
     /**
@@ -307,8 +307,9 @@ public class NewGameSeasonScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        // TODO Auto-generated method stub
-        
+
+        // Update viewport on resize to keep event coordinate for buttons/widgets (and the UI scale, U-03a)
+        UiScale.updateStageViewport(stage, width, height);
     }
 
     @Override

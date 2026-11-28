@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
@@ -31,6 +30,7 @@ import com.rndmodgames.darkblade.screens.tables.SoundSettingsTable;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.tables.settings.DebugLoggingSettingsTable;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.ui.UiScale;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -52,6 +52,9 @@ public class SettingsScreen implements Screen {
 	
 	// Debug Logging Settings Table (stored for refresh)
 	private DebugLoggingSettingsTable debugLoggingSettings;
+
+	// UI scale select box (its Auto entry shows the scale Auto picks, refreshed on resize)
+	private VisSelectBox<String> uiScaleSelectBox;
 
 	/**
 	 * Settings Screen
@@ -81,8 +84,8 @@ public class SettingsScreen implements Screen {
         this.game = game;
         this.returnScreen = returnScreen;
         
-        stage = new Stage(new ScreenViewport());
-        
+        stage = new Stage(UiScale.newViewport());
+
         VisTable mainContainer = new VisTable();
 
         // TODO: padding relative to resolution so stays relatively centered
@@ -104,9 +107,10 @@ public class SettingsScreen implements Screen {
         VisLabel debugSightLabel = new VisLabel(LanguageModLoader.getValue("debug_sight"));
         VisLabel shadowsLabel = new VisLabel(LanguageModLoader.getValue("shadows"));
         
-        VisLabel gameplaySettingsLabel = new VisLabel("GAMEPLAY SETTINGS");
-        VisLabel modSettingsLabel = new VisLabel("MOD SETTINGS");
-        
+        VisLabel uiScaleLabel = new VisLabel(LanguageModLoader.getValue("ui_scale"));
+
+        VisLabel gameplaySettingsLabel = new VisLabel(LanguageModLoader.getValue("gameplay_settings"));
+
         /**
          * Resolution Select Box:
          * 
@@ -130,8 +134,10 @@ public class SettingsScreen implements Screen {
                 // Use x as separator, ie: 640x480 (to add resolutions)
                 while (line != null) {
                     
-                    if (!line.startsWith("#")) {
-                        availableResolutions.add(line);
+                    // entries below the 1280x720 minimum (D18) are not offered
+                    String entry = line.trim();
+                    if (!entry.isEmpty() && !entry.startsWith("#") && UiScale.sanitizeResolution(entry).equals(entry)) {
+                        availableResolutions.add(entry);
                     }
                     
                     line = reader.readLine();
@@ -180,6 +186,30 @@ public class SettingsScreen implements Screen {
             }
         });
         
+        /**
+         * UI scale (U-03a): Auto (shows the scale it picks now), 100%, 200%. Integer steps only: the atlas is Nearest.
+         */
+        uiScaleSelectBox = new VisSelectBox<>();
+        final String[] uiScaleItems = new String[UiScale.PRESET_SCALES.length + 1];
+        uiScaleItems[0] = autoScaleItem();
+        for (int i = 0; i < UiScale.PRESET_SCALES.length; i++) {
+            uiScaleItems[i + 1] = UiScale.formatPercent(UiScale.PRESET_SCALES[i]);
+        }
+        uiScaleSelectBox.setItems(uiScaleItems);
+        uiScaleSelectBox.setSelectedIndex(uiScaleIndex(UiScale.getSetting()));
+        uiScaleSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+
+                int index = uiScaleSelectBox.getSelectedIndex();
+                float scale = index <= 0 ? UiScale.AUTO : UiScale.PRESET_SCALES[index - 1];
+                if (scale == UiScale.getSetting()) {
+                    return;
+                }
+                ((Futtoboru) game).updateUiScale(scale);
+            }
+        });
+
         // Set FullScreen to Saved Value
 //        fullScreenCheckBox.setChecked(DarkBlade.FULLSCREEN);
         fullScreenCheckBox.addListener(new ChangeListener() {
@@ -310,7 +340,12 @@ public class SettingsScreen implements Screen {
         graphicsSettings.add(fullScreenLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
         graphicsSettings.add(fullScreenCheckBox).pad(UiTheme.space("none")).align(Align.right);
         graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
-        
+
+        // UI scale
+        graphicsSettings.add(uiScaleLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(uiScaleSelectBox).pad(UiTheme.space("xs")).fill();
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
+
         // Day-Night Cycle Rendering
         graphicsSettings.add(dayNightTintLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
         graphicsSettings.add(dayNightTintCheckBox).pad(UiTheme.space("none")).align(Align.right);
@@ -351,7 +386,8 @@ public class SettingsScreen implements Screen {
         gameplaySettings.add(gameplaySettingsLabel).pad(UiTheme.space("xs"));
         
         // 5 Panel Layout (added Debug Logging)
-        // the panels scroll (the logging list is taller than 720 px) so the Back button below stays on screen (D18)
+        // the panels scroll (the logging list is taller than 720 px; at 200% they are also wider than the window)
+        // so the Back button below stays on screen (D18)
         VisTable panels = new VisTable();
         panels.add(graphicsSettings).pad(UiTheme.space("sm")).align(Align.top);
         panels.add(soundSettings).pad(UiTheme.space("sm")).align(Align.top);
@@ -360,7 +396,7 @@ public class SettingsScreen implements Screen {
         panels.add(debugLoggingSettings).pad(UiTheme.space("sm")).align(Align.top);
         VisScrollPane panelsScroll = new com.rndmodgames.components.AutoFocusScrollPane(panels);
         panelsScroll.setFadeScrollBars(false);
-        panelsScroll.setScrollingDisabled(true, false);
+        panelsScroll.setScrollingDisabled(false, false);
         panelsScroll.setOverscroll(false, false);
         mainContainer.add(panelsScroll).grow();
 
@@ -402,6 +438,24 @@ public class SettingsScreen implements Screen {
         stage.addActor(mainContainer);
     }
     
+    /** "Auto (200%)": the Auto entry with the scale Auto picks for this monitor and window now */
+    static String autoScaleItem() {
+        return LanguageModLoader.getValue("ui_scale_auto") + " (" + UiScale.formatPercent(UiScale.currentAutoScale()) + ")";
+    }
+
+    /** the select box row of a stored setting: 0 = Auto, then {@link UiScale#PRESET_SCALES} */
+    static int uiScaleIndex(float setting) {
+        if (UiScale.isAuto(setting)) {
+            return 0;
+        }
+        for (int i = 0; i < UiScale.PRESET_SCALES.length; i++) {
+            if (UiScale.PRESET_SCALES[i] == UiScale.normalize(setting)) {
+                return i + 1;
+            }
+        }
+        return 0;
+    }
+
     /** Leaves Settings for the screen it was opened from (after the current frame's input is handled). */
     private void goBack() {
         if (leaving) {
@@ -437,8 +491,17 @@ public class SettingsScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         
-        // Update viewport on resize to keep event coordinate for buttons/widgets
-        stage.getViewport().update(width, height, true);
+        // Update viewport on resize to keep event coordinate for buttons/widgets (and the UI scale, U-03a)
+        UiScale.updateStageViewport(stage, width, height);
+
+        // the window changed: Auto may pick another scale
+        if (uiScaleSelectBox != null && !autoScaleItem().equals(uiScaleSelectBox.getItems().first())) {
+            String[] items = uiScaleSelectBox.getItems().toArray(String.class);
+            int selected = uiScaleSelectBox.getSelectedIndex();
+            items[0] = autoScaleItem();
+            uiScaleSelectBox.setItems(items);
+            uiScaleSelectBox.setSelectedIndex(selected);
+        }
     }
 
     @Override
