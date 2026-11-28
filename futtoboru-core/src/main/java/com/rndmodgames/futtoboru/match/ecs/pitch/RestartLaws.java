@@ -57,6 +57,8 @@ public record RestartLaws(boolean goalDirectFromCorner, boolean goalDirectFromGo
                 return goalDirectFromThrowIn;
             case KICK_OFF:
                 return goalDirectFromKickOff;
+            case PENALTY_KICK:
+                return true;
             default:
                 return goalDirectFromFreeKick;
         }
@@ -73,6 +75,8 @@ public record RestartLaws(boolean goalDirectFromCorner, boolean goalDirectFromGo
                 return offsideFromThrowIn;
             case KICK_OFF:
                 return offsideFromKickOff;
+            case PENALTY_KICK:
+                return false;
             default:
                 return true;
         }
