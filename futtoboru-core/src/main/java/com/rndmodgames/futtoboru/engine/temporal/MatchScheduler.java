@@ -183,6 +183,10 @@ public class MatchScheduler {
             if (scheduled.getHomeClubId() == null || scheduled.getAwayClubId() == null) {
                 continue; // the opponent is not decided yet: no tickets until it is
             }
+            // U-08: the gate of a friendly goes to the home club (the visitors play at its ground)
+            if (FriendlyArranger.isFriendly(scheduled) && !club.getId().equals(scheduled.getHomeClubId())) {
+                continue;
+            }
             
             // BUG FIX: Only sell tickets for matches scheduled in the future
             if (scheduled.getMatchDateTime() == null) {
@@ -334,56 +338,16 @@ public class MatchScheduler {
     }
     
     /**
-     * Check Club Proposed Matches
-     * 
-     *  - TODO: to test propose many friendlies in a row to the same Club, 10 for example
-     *      
-     *      - after continuing the game the other Club should have accepted 1 match, wait a couple of days, accept other and succesively until all done and no scheduling conflicts
-     *      
-     *  - TODO: validate and avoid more than 1 friendly per day (to avoid too much scheduling)
+     * Friendlies (U-08): call off a club's friendlies that clash with a league or cup match, then let the other
+     * clubs answer its invitations ({@link FriendlyArranger}).
      */
     public void checkClubProposedMatches(Club club) {
-        
-        //
-        Log.info(Log.ENGINE_SCHEDULING, "CLUB PROPOSED MATCHES: " + club.getProposedMatches());
-        
-        //
-        for (Match match : club.getProposedMatches()) {
-            
-            boolean freeSchedule = true;
-            
-            // 
-            Log.info(Log.ENGINE_SCHEDULING, "CHECKING FRIENDY PROPOSAL AGAINST " + club.getScheduledMatches().size() + " SCHEDULED MATCHES");
-            
-            // TODO compare scheduled dates and proposed date
-            // TODO set freeschedule as needed
-            for (Match scheduled : club.getScheduledMatches()) {
-                
-            }
-            
-            // TODO: note they accept 100%
-            if (freeSchedule) {
-                
-                //
-                Log.info(Log.ENGINE_SCHEDULING, "Schedule is free, accepting friendly request!");
-                
-                match.setIsAccepted(true);
-                
-                // add to accepted matches
-                club.getScheduledMatches().add(match);
-                
-            } else {
-                
-                Log.info(Log.ENGINE_SCHEDULING, "Friendly request cannot be accepted, scheduling conflicts!");
-            }
-            
-            //LocalDateTime beforeDate = match.getProposeDateTime().minusDays(3).at;
-            //LocalDateTime afterDate = match.getProposeDateTime().plusDays(3).at;
-            
+        if (club == null) {
+            return;
         }
-        
-        // we clear the list and everything that is not accepted will be gone
-        club.getProposedMatches().clear();
+        FriendlyArranger friendlies = new FriendlyArranger(game);
+        friendlies.cancelClashes(club);
+        friendlies.answerProposals(club);
     }
     
     /**
