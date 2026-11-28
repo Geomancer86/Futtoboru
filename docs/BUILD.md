@@ -104,23 +104,13 @@ git worktree add .worktrees/<item> -b b3/<item> origin/develop
 ```
 
 ## CI
-- **GitHub Actions** (`.github/workflows/ci.yml`, JDK 17 + Xvfb): a feature-branch push runs the level of what the
-  branch changed (`test_level.py --base origin/develop`: docs-only skips Java, data-only runs the data job and the Java
-  data tests, code runs the fast tier); develop, main and PRs into develop run `-Pfull`; nightly and manual runs
-  `-Pfull,smoke`. pytest + `validate.py` when data, art or tools changed (always on develop/main). A failed Maven job
-  lists every failing test as a public annotation (`tools/ci_remote.py annotate`).
-- **Remote runs from any network (CI-01), no login:** `python tools/ci_remote.py run [--tier full|fast|smoke]` pushes
-  HEAD (as committed) to `ci/<tier>/<machine>-<utc stamp>`, GitHub runs that tier, the tool prints the verdict and each
-  failing test, then deletes the branch (`--keep` keeps it, `--no-wait` returns at once). `python tools/ci_remote.py
-  status [--branch develop]`: the last runs and the failing tests of the newest red one. Use it to verify a lane's
-  branch on the full tier instead of a local `-Pfull`, and to see why develop is red. Uses the public API (60 calls an
-  hour per network, so it polls once a minute).
+- **GitHub is git storage only (D32):** no GitHub Actions (the workflow was removed), no PRs, Releases or API use.
 - **Local Jenkins**, job "Futtoboru DEV" (`Jenkinsfile`, agent `EXECUTOR_BACKUP` on WORKSTATION): `TEST_TIER=auto`
   runs the slow tier + coverage after each develop commit (polls every 15 min), full + smoke + coverage at night
   (cron) with a first-parent `git bisect` between the last green nightly and HEAD when red, full + smoke for main,
   the fast tier for other branches. **To verify a lane's branch without a local full run:** "Build with Parameters",
-  `BUILD_BRANCH=b3/<item>`, `TEST_TIER=full`, or on the home LAN `python tools/ci_remote.py jenkins --branch b3/<item>
-  [--tier full] [--status]`, which reads `~/.futtoboru/jenkins.properties` (`url=`, and `user=` + `token=` or
+  `BUILD_BRANCH=b3/<item>`, `TEST_TIER=full`, or on the home LAN `python tools/ci_jenkins.py run --branch b3/<item>
+  [--tier full]` (`status`: the last builds), which reads `~/.futtoboru/jenkins.properties` (`url=`, and `user=` + `token=` or
   `credentials=<file with them>`; never in the repo). Publishes JUnit results and archives the desktop jar. Job setup
   (once): Pipeline job, "Pipeline script from SCM", this repo, script path `Jenkinsfile`, credentials
   `GITHUB_GEOMANCER86`. The job loads the Jenkinsfile from develop on every build, so a Jenkinsfile change (T-01's
