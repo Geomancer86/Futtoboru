@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -42,7 +43,7 @@ public class PlayerDetailScreenTable extends VisTable {
     private AttributeChangeCalculator changeCalculator;
     
     // Formatting
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
+    private DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.NUMERIC); // U-12: the game language
     
     // UI Components
     private VisLabel playerNameLabel;
@@ -657,9 +658,9 @@ public class PlayerDetailScreenTable extends VisTable {
         VisLabel changeLabel = new VisLabel(changeText);
         
         // Color coding based on trend
-        if (changeText.contains("↑↑") || changeText.contains("↑")) {
+        if (changeText.contains("[+")) { // U-12: the font has no arrows; the sign and the colour say it
             changeLabel.setColor(UiTheme.color("trend.up")); // Green for improvement
-        } else if (changeText.contains("↓↓") || changeText.contains("↓")) {
+        } else if (changeText.contains("[-")) {
             changeLabel.setColor(UiTheme.color("trend.down")); // Red for decline
         } else if (changeText.contains("=")) {
             changeLabel.setColor(UiTheme.color("trend.flat")); // Gray for stable

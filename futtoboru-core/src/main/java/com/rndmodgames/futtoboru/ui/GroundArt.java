@@ -18,6 +18,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Stadium;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -186,7 +187,7 @@ public final class GroundArt implements Disposable {
             if (stadium.getCapacity() != null) {
                 panel.row();
                 VisLabel capacity = new VisLabel(LanguageModLoader.getValue("ground_capacity") + ": "
-                        + String.format(java.util.Locale.UK, "%,d", stadium.getCapacity()));
+                        + GameFormat.integer(stadium.getCapacity()));
                 capacity.setColor(UiTheme.color("text.secondary"));
                 panel.add(capacity).center();
             }

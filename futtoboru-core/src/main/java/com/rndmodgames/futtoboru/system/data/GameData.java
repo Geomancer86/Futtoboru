@@ -91,11 +91,29 @@ public class GameData {
         ENUMS.put("position_source", new TreeSet<>(Arrays.asList("players-1888-89", "players-1888-89-line",
                 "placeholder", "wp-season-1888-89", "wp-season-1888-89-line", "wp-player", "wp-player-line",
                 "fa-cup-final-1889")));
+        // P2-14: the season calendar and a cup's neutral grounds (same lists as tools/data/validate.py)
+        ENUMS.put("weekday", new TreeSet<>(Arrays.asList("monday", "tuesday", "wednesday", "thursday", "friday",
+                "saturday", "sunday")));
+        ENUMS.put("cup_round", new TreeSet<>(Arrays.asList("quarter-final", "semi-final", "final")));
+        ENUMS.put("neutral_gate", new TreeSet<>(Arrays.asList("association", "shared", "home")));
+        ENUMS.put("later_draws", new TreeSet<>(Arrays.asList("open-draw", "bracket")));
     }
 
     /** The attribute scale (3d6 plus modifiers, PlayerAttributeGenerator): a sourced dribbling value is inside. */
     static final int ATTR_MIN = 3;
     static final int ATTR_MAX = 23;
+
+    static final Pattern MONTHDAY_RE = Pattern.compile("^(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$");
+    private static final int[] DAYS_IN_MONTH = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+    /** @return true for a valid month-day {@code MM-DD} (29 February allowed) */
+    static boolean isMonthDay(JsonValue v) {
+        if (v == null || !v.isString() || !MONTHDAY_RE.matcher(v.asString()).matches()) {
+            return false;
+        }
+        String s = v.asString();
+        return Integer.parseInt(s.substring(3)) <= DAYS_IN_MONTH[Integer.parseInt(s.substring(0, 2)) - 1];
+    }
 
     /** A field of a record spec: its type and whether it is required. */
     static final class Field {
@@ -142,9 +160,24 @@ public class GameData {
         spec("person", "id", "str!", "firstName", "str!", "lastName", "str!", "born", "date!", "country",
                 "ref:country!", "confidence", "enum:confidence!", "sources", "strs!", "notes", "str");
         spec("season", "id", "str!", "name", "str!", "description", "str", "start", "datetime!", "sources", "strs!",
-                "countries", "refs:country!", "editions", "list:edition!");
+                "countries", "refs:country!", "editions", "list:edition!", "calendar", "obj:calendar");
         spec("edition", "id", "str!", "competition", "ref:competition!", "name", "str!", "participants",
-                "refs:club!", "sources", "strs!", "notes", "str");
+                "refs:club!", "sources", "strs!", "notes", "str", "neutralVenues", "obj:neutral_venues");
+        // P2-14 (D30 A9): the season calendar (engine/temporal/CalendarRules) and a cup's neutral grounds
+        // (engine/cup/NeutralVenues); a date rule needs exactly one anchor (checkRules), as in validate.py
+        spec("calendar", "league", "obj:calendar_league", "cups", "list:calendar_cup", "notes", "str");
+        spec("calendar_league", "opens", "obj:day_rule!", "closes", "obj:day_rule!", "midweek", "enum:weekday",
+                "noMatchOn", "monthdays", "sources", "strs!", "notes", "str");
+        spec("calendar_cup", "competition", "ref:competition!", "opens", "obj:day_rule!", "firstDraw", "obj:day_rule!",
+                "laterDraws", "enum:later_draws!", "drawDaysAfterRound", "int", "final", "obj:day_rule!",
+                "properFrom", "monthday!", "daysBetweenRounds", "int!", "earlyRoundsOn", "enum:weekday",
+                "maxEarlyRounds", "int", "sources", "strs!", "notes", "str");
+        spec("day_rule", "onOrAfter", "monthday", "onOrBefore", "monthday", "weekday", "enum:weekday!",
+                "confidence", "enum:confidence!", "source", "str", "notes", "str");
+        spec("neutral_venues", "rounds", "list:neutral_round!", "gate", "enum:neutral_gate!", "gateConfidence",
+                "enum:confidence!", "sources", "strs!", "notes", "str");
+        spec("neutral_round", "round", "enum:cup_round!", "grounds", "refs:ground!", "confidence", "enum:confidence!",
+                "notes", "str");
         // E-01 positions / dribbling: keyed by a person id of `players` (checked in checkSquadRoles)
         spec("squad", "club", "ref:club!", "ground", "ref:ground", "balance", "num", "players", "refs:person!",
                 "notes", "str", "positions", "map:squad_position", "dribbling", "map:squad_dribbling");
@@ -589,6 +622,7 @@ public class GameData {
         if ("squad".equals(specName)) {
             checkSquadRoles(v, where);
         }
+        checkRules(v, specName, where);
         if (spec.containsKey("id")) {
             JsonValue id = v.get("id");
             if (id != null && id.isString() && !ID_RE.matcher(id.asString()).matches()) {
@@ -622,6 +656,17 @@ public class GameData {
         case "strs":
             expect(isListOfStrings(v), v, where, "a list of texts");
             break;
+        case "monthday":
+            expect(isMonthDay(v), v, where, "a month-day MM-DD");
+            break;
+        case "monthdays": {
+            boolean ok = v.isArray();
+            for (JsonValue x = ok ? v.child : null; x != null; x = x.next) {
+                ok &= isMonthDay(x);
+            }
+            expect(ok, v, where, "a list of month-days MM-DD");
+            break;
+        }
         case "attrs":
             if (!v.isObject()) {
                 expect(false, v, where, "an object of attribute numbers");
@@ -640,22 +685,27 @@ public class GameData {
                 Set<String> allowed = ENUMS.get(type.substring(5));
                 expect(v.isString() && allowed.contains(v.asString()), v, where, "one of " + allowed);
             } else if (type.startsWith("ref:")) {
+                String path = refPath(field, where, rec);
                 if (!v.isString()) {
                     expect(false, v, where, "an id");
                 } else if (rec != null) {
-                    rec.refs.add(new DataRecord.Ref(field, type.substring(4), v.asString(), -1, where));
+                    // a reference inside a nested object (P2-14: calendar.cups[0].competition) is kept by its path
+                    // and only dropped when it doesn't resolve; a top-level one skips its record
+                    rec.refs.add(new DataRecord.Ref(path, type.substring(4), v.asString(), path.equals(field) ? -1 : 0,
+                            where));
                 }
             } else if (type.startsWith("refs:")) {
                 if (!isListOfStrings(v)) {
                     expect(false, v, where, "a list of ids");
                     break;
                 }
+                String path = refPath(field, where, rec);
                 Map<String, Integer> seen = new LinkedHashMap<>();
                 int i = 0;
                 for (JsonValue x = v.child; x != null; x = x.next, i++) {
                     seen.merge(x.asString(), 1, Integer::sum);
                     if (rec != null) {
-                        rec.refs.add(new DataRecord.Ref(field, type.substring(5), x.asString(), i, where + "[" + i + "]"));
+                        rec.refs.add(new DataRecord.Ref(path, type.substring(5), x.asString(), i, where + "[" + i + "]"));
                     }
                 }
                 for (Map.Entry<String, Integer> s : seen.entrySet()) {
@@ -664,8 +714,19 @@ public class GameData {
                     }
                 }
             } else if (type.startsWith("list:")) {
-                // nested records (a season's editions) are checked one by one as records of their own
-                expect(v.isArray(), v, where, "a list");
+                if (!v.isArray()) {
+                    expect(false, v, where, "a list");
+                } else if (!"edition".equals(type.substring(5))) {
+                    // small nested records (P2-14: a calendar's cups): each checked against its spec, references
+                    // kept on the enclosing record by path; a season's editions are records of their own
+                    int i = 0;
+                    for (JsonValue x = v.child; x != null; x = x.next, i++) {
+                        checkRecord(x, type.substring(5), where + "[" + i + "]", rec);
+                    }
+                }
+            } else if (type.startsWith("obj:")) {
+                // one nested object (P2-14: a season's calendar, an edition's neutral grounds)
+                checkRecord(v, type.substring(4), where, rec);
             } else if (type.startsWith("map:")) {
                 // an object id -> small record (a squad's positions): each value is checked against its spec
                 if (!v.isObject()) {
@@ -677,6 +738,76 @@ public class GameData {
                 }
             }
             break;
+        }
+    }
+
+    /**
+     * The key a reference is kept under on its record: the field name at the top level, else the path inside the
+     * record ({@code calendar.cups[0].competition}, {@code neutralVenues.rounds[1].grounds}).
+     */
+    private static String refPath(String field, String where, DataRecord rec) {
+        if (rec == null || !where.startsWith(rec.where + ".")) {
+            return field;
+        }
+        return where.substring(rec.where.length() + 1);
+    }
+
+    /** P2-14: what a field spec can't say about the calendar and neutral grounds (same checks in validate.py). */
+    private void checkRules(JsonValue v, String specName, String where) {
+        switch (specName) {
+        case "day_rule": {
+            int anchors = (v.get("onOrAfter") != null && !v.get("onOrAfter").isNull() ? 1 : 0)
+                    + (v.get("onOrBefore") != null && !v.get("onOrBefore").isNull() ? 1 : 0);
+            if (anchors != 1) {
+                report.error(where, "a date rule needs exactly one of `onOrAfter` / `onOrBefore`");
+            }
+            break;
+        }
+        case "calendar_cup": {
+            String[] keys = { "daysBetweenRounds", "maxEarlyRounds", "drawDaysAfterRound" };
+            int[] lows = { 1, 0, 0 };
+            for (int i = 0; i < keys.length; i++) {
+                JsonValue x = v.get(keys[i]);
+                if (x != null && x.isLong() && (x.asLong() < lows[i] || x.asLong() > 60)) {
+                    report.error(where + "." + keys[i], x.asLong() + " is outside " + lows[i] + "-60");
+                }
+            }
+            break;
+        }
+        case "calendar":
+            countTwice(v.get("cups"), "competition", where + ".cups", " calendars");
+            break;
+        case "neutral_venues": {
+            countTwice(v.get("rounds"), "round", where + ".rounds", " times");
+            JsonValue rounds = v.get("rounds");
+            int i = 0;
+            for (JsonValue r = rounds == null || !rounds.isArray() ? null : rounds.child; r != null; r = r.next, i++) {
+                JsonValue g = r.isObject() ? r.get("grounds") : null;
+                if (g != null && g.isArray() && g.size == 0) {
+                    report.error(where + ".rounds[" + i + "].grounds", "a neutral round needs at least one ground");
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    /** Reports a value of {@code key} that two entries of a list share ({@code `fa-cup` has 2 calendars}). */
+    private void countTwice(JsonValue list, String key, String where, String what) {
+        Map<String, Integer> seen = new LinkedHashMap<>();
+        for (JsonValue x = list == null || !list.isArray() ? null : list.child; x != null; x = x.next) {
+            JsonValue k = x.isObject() ? x.get(key) : null;
+            if (k != null && k.isString()) {
+                seen.merge(k.asString(), 1, Integer::sum);
+            }
+        }
+        for (Map.Entry<String, Integer> s : seen.entrySet()) {
+            if (s.getValue() > 1) {
+                report.error(where, "`" + s.getKey() + "` " + (" times".equals(what) ? "listed " + s.getValue() + what
+                        : "has " + s.getValue() + what));
+            }
         }
     }
 

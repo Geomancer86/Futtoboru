@@ -8,10 +8,14 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.engine.report.MatchReport;
 import com.rndmodgames.futtoboru.engine.simulation.GoalMinutes;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.ui.GroundArt;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -91,8 +95,8 @@ public class MatchResultScreenTable extends VisTable {
         MatchReport report = MatchReport.of(game.getCurrentGame(), match);
 
         // Format date
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.MEDIUM); // U-12: the game language, not the machine's
+        DateTimeFormatter timeFormatter = GameFormat.formatter(GameFormat.TIME);
         String matchDate = match.getMatchDateTime() != null ? match.getMatchDateTime().format(dateFormatter) : LanguageModLoader.getValue("unknown");
         String matchTime = match.getMatchDateTime() != null ? match.getMatchDateTime().format(timeFormatter) : LanguageModLoader.getValue("unknown");
 
@@ -102,26 +106,42 @@ public class MatchResultScreenTable extends VisTable {
         headerLabel.setFontScale(UiTheme.fontScale("display"));
         this.add(headerLabel).padBottom(UiTheme.space("lg")).row();
 
-        // Details: date, ground, type, attendance, capacity
+        // Details: date, ground, type, attendance, capacity. P2-14: the ground played at is the match's neutral
+        // venue (a cup semi-final or final), else the home club's, shown with its picture
+        Stadium ground = NeutralVenues.stadiumOf(match, game.getCurrentGame());
         VisTable details = new VisTable(true);
         details.add(LanguageModLoader.getValue("match_date")).right().padRight(UiTheme.space("sm"));
         details.add(LanguageModLoader.format("match_date_time", matchDate, matchTime)).left().row();
         details.add(LanguageModLoader.getValue("match_venue")).right().padRight(UiTheme.space("sm"));
-        String venueName = homeClub.getStadium() != null && homeClub.getStadium().getName() != null
-            ? homeClub.getStadium().getName()
+        String venueName = ground != null && ground.getName() != null
+            ? ground.getName()
             : LanguageModLoader.getValue("match_unknown_ground");
-        details.add(venueName).left().row();
+        if (NeutralVenues.isNeutral(match)) {
+            venueName += " " + LanguageModLoader.getValue("ground_neutral_suffix");
+        }
+        VisTable venueCell = new VisTable(true);
+        venueCell.add(game.getGroundArt().picture(GroundArt.groundId(ground), true, UiTheme.size("art.thumb.w"),
+                UiTheme.size("art.thumb.h")));
+        venueCell.add(new VisLabel(venueName)).left();
+        details.add(venueCell).left().row();
         details.add(LanguageModLoader.getValue("match_type_label")).right().padRight(UiTheme.space("sm"));
         String matchType = match.getMatchType() != null && match.getMatchType() == Match.FRIENDLY_MATCH
             ? LanguageModLoader.getValue("match_type_friendly")
             : LanguageModLoader.getValue("match_type_competition");
         details.add(matchType).left().row();
         details.add(LanguageModLoader.getValue("match_attendance")).right().padRight(UiTheme.space("sm"));
-        String attendance = match.getAttendance() != null ? String.valueOf(match.getAttendance()) : LanguageModLoader.getValue("unknown");
+        String attendance = match.getAttendance() != null ? GameFormat.integer(match.getAttendance()) : LanguageModLoader.getValue("unknown");
         details.add(attendance).left().row();
-        if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
+        if (ground != null && ground.getCapacity() != null) {
             details.add(LanguageModLoader.getValue("match_capacity")).right().padRight(UiTheme.space("sm"));
-            details.add(String.valueOf(homeClub.getStadium().getCapacity())).left().row();
+            details.add(GameFormat.integer(ground.getCapacity())).left().row();
+        }
+        // P2-14: who took the gate at a neutral ground (1888-89: the Football Association)
+        if (NeutralVenues.isNeutral(match)) {
+            NeutralVenues.Gate gate = NeutralVenues.gateOf(match, game.getCurrentGame());
+            details.add(LanguageModLoader.getValue("match_gate")).right().padRight(UiTheme.space("sm"));
+            details.add(LanguageModLoader.getValue(gate == NeutralVenues.Gate.ASSOCIATION ? "match_gate_association"
+                    : gate == NeutralVenues.Gate.SHARED ? "match_gate_shared" : "match_gate_home")).left().row();
         }
         this.add(details).row();
 

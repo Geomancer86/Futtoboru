@@ -2,8 +2,11 @@ package com.rndmodgames.futtoboru.engine.simulation;
 
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -78,11 +81,13 @@ public class MatchSimulator {
         String matchKey = match.getId() != null ? String.valueOf(match.getId())
                 : match.getHomeClubId() + "-" + match.getAwayClubId() + "@" + match.getMatchDateTime();
         RandomSource gate = root.fork("gate:" + matchKey);
+        // P2-14: a neutral ground (cup semi-final or final) has no home advantage and its own weather
+        boolean neutral = NeutralVenues.isNeutral(match);
+        String groundKey = neutral && match.getVenue() != null ? match.getVenue() : MatchWeather.groundOf(homeClub);
         MatchWeather weather = MatchWeather.of(root,
-                match.getMatchDateTime() != null ? match.getMatchDateTime().toLocalDate() : null,
-                MatchWeather.groundOf(homeClub));
+                match.getMatchDateTime() != null ? match.getMatchDateTime().toLocalDate() : null, groundKey);
         MatchOutcome outcome = engine.play(
-                new MatchFixture(matchKey, homeClub, awayClub, match.getMatchDateTime(), weather),
+                new MatchFixture(matchKey, homeClub, awayClub, match.getMatchDateTime(), weather, neutral),
                 root.fork("match:" + matchKey));
 
         match.setHomeGoals(outcome.homeGoals());
@@ -96,10 +101,14 @@ public class MatchSimulator {
         // Goal minutes (G-03): after the scorers, on their own stream, so scores and scorers never depend on them
         GoalMinutes.assign(match, root.fork("minutes:" + matchKey));
 
-        // Calculate attendance (simple: based on stadium capacity if available)
-        if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
+        // Calculate attendance (simple: based on the capacity of the ground played at, P2-14: a neutral venue)
+        Stadium ground = neutral ? DatabaseLoader.getGroundByDataId(match.getVenue()) : null;
+        if (ground == null || ground.getCapacity() == null) {
+            ground = homeClub.getStadium();
+        }
+        if (ground != null && ground.getCapacity() != null) {
             // 60-90% attendance for v1.0
-            int capacity = homeClub.getStadium().getCapacity();
+            int capacity = ground.getCapacity();
             int attendance = (int)(capacity * (0.6 + gate.nextDouble() * 0.3));
             match.setAttendance(attendance);
         } else {

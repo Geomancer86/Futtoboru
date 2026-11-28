@@ -10,7 +10,7 @@ import com.rndmodgames.futtoboru.engine.random.RandomSource;
 /**
  * The instant result (v1.0, moved out of {@link MatchSimulator} by E-17a; same draws in the same order, so seeded
  * results are unchanged):
- * - team strength = average of key player attributes, home side x 1.15
+ * - team strength = average of key player attributes, home side x 1.15 (not at a neutral ground, P2-14)
  * - each side x a random 0.7..1.3
  * - goals from a base distribution (30 % 0, 30 % 1, 25 % 2, 10 % 3, 5 % 4-5) shifted by the strength ratio, cap 5
  * - each goal's scorer is any player of the squad
@@ -33,7 +33,10 @@ public final class InstantMatchEngine implements MatchEngine {
     public MatchOutcome play(MatchFixture fixture, RandomSource random) {
         Club homeClub = fixture.home();
         Club awayClub = fixture.away();
-        double homeStrength = calculateTeamStrength(homeClub) * HOME_ADVANTAGE_MULTIPLIER;
+        double homeStrength = calculateTeamStrength(homeClub);
+        if (!fixture.neutral()) {
+            homeStrength *= HOME_ADVANTAGE_MULTIPLIER; // P2-14: none at a neutral ground
+        }
         double awayStrength = calculateTeamStrength(awayClub);
 
         double homeRandom = RANDOMNESS_MIN + (random.nextDouble() * (RANDOMNESS_MAX - RANDOMNESS_MIN));

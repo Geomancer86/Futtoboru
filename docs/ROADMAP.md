@@ -44,59 +44,69 @@ Full audit with evidence: `docs/analysis/FUTTOBORU_ANALYSIS_2026-11-27.html` (op
 **Phase 0: consolidate git** (done 2026-11-27 except P0-4)
 - P0-1 archive the 4 local-only repos ✔ · P0-2 move root docs ✔ · P0-3 CLAUDE.md + HANDOFF/BUILD/ROADMAP/STATUS ✔
 - P0-4 competition-completion code + tests (D4) ✔
-- Sonar stage and its dead token removed from `Jenkinsfile` ✔ · Producer: push the v0.4.0 release to `main`.
+- Sonar stage and its dead token removed from `Jenkinsfile` ✔ · v0.4.0 push to `main`: superseded by the v0.5.0-alpha release (2026-11-28) ✔
 
 **Phase 1: builds anywhere** (2-3 days)
-- P1-1 Maven 3.9 build fix ✔ · P1-6 third-party notices (skin done; 3D assets with P1-4) · P1-2 `mvnw`, `.sh` scripts, `.gitattributes` · P1-3 GitHub Actions `mvn verify` · P1-4 dead 3D code, unused deps, PDFs out of resources · P1-5 one logging style
+- P1-1 Maven 3.9 build fix ✔ · P1-6 third-party notices (skin done; 3D assets with P1-4) ✔ · P1-2 `mvnw`, `.sh` scripts, `.gitattributes` ✔ 2026-11-27 · P1-3 GitHub Actions ✔ 2026-11-27, **removed again by D32 / CI-02 (2026-11-28)**; tests run on Jenkins · P1-4 dead 3D code, unused deps, PDFs out of resources ✔ 2026-11-27 · P1-5 one logging style ✔ 2026-11-27
 
 **Phase 2: one full season, cleanly** (~2 weeks if D10)
-- P2-0 one seeded, injected random source (needed by P2-3 and E-02)
-- P2-1 Continue double-click (cause: 200 ms cooldown vs ~50 ms processing) · P2-2 single match-result path (only one checks the draw blocker)
-- P2-3 headless seeded 1888-89 season test
-- **P2-4 data model v2** (D11, D14, D15; `docs/DATA_MODEL.md`): slice 1 JSON pack + converter + validator + review list ✔ · slice 2 Java loader + `IdAllocator` ✔ · slice 3 saves v1 (with P2-5) ✔ · slice 4 data review (copied cup rosters, placeholders, duplicates)
+- P2-0 one seeded, injected random source ✔ 2026-11-27
+- P2-1 Continue double-click ✔ 2026-11-27 · P2-2 single match-result path ✔ 2026-11-27
+- P2-3 headless seeded 1888-89 season test ✔ 2026-11-27
+- **P2-4 data model v2** (D11, D14, D15; `docs/DATA_MODEL.md`): slice 1 JSON pack + converter + validator + review list ✔ · slice 2 Java loader + `IdAllocator` ✔ · slice 3 saves v1 (with P2-5) ✔ · slice 4 data review ✔ 2026-11-27 (sourced fixes applied; the copied cup rosters stay on `docs/data/REVIEW_1888-89.md`)
 - P2-5 saves v1 ✔: ids not copies, `saveVersion`, slots, fix load path / folder name, round-trip test, append-only `ids.json` registry
 - P2-8 ✔ `AuthorityManager` kept the empty game from startup, so the daily competition check (league completion, cup draws/progression) never ran in real play
-- P2-6 season rollover resets the table (empty loop in `AuthorityManager`) · P2-7 £ not $ in prize messages, cup final from the bracket
+- P2-6 season rollover resets the table ✔ 2026-11-27 · P2-7 £ not $ in prize messages, cup final from the bracket ✔ 2026-11-27
 
 **Phase 2 close-out** (before tagging v0.5.0-alpha)
-- P2-9 one edition per competition and season (`ScriptsManager.createCup/createLeague` reuse the season.json edition; `RuntimeIdsTests` ~130; re-enable `FullSeasonTests.oneEditionPerCompetitionAndSeason`)
-- P2-10 a new game after playing/loading another starts from fresh data (no reused played objects)
-- P2-11 era calendar for the generated schedule: league September-April, FA Cup in the winter (dates generated, D17)
-- Producer: push v0.4.0 to `main` (still shows 0.2.0), then tag v0.5.0-alpha
+- P2-9 one edition per competition and season ✔ 2026-11-27
+- P2-10 a new game after playing/loading another starts from fresh data ✔ 2026-11-27
+- P2-11 era calendar for the generated schedule ✔ 2026-11-27
+- v0.5.0-alpha tagged and `main` fast-forwarded (7d7727f) ✔ 2026-11-28
 
 **Phase 3: UI/UX → v0.5.0** (1-2 weeks, D16, D18; skin unchanged, D12). Done = D18 (every button works, 1280×720 and 2560×1440).
 - U-01 theme tokens ✔ · U-02 debug lines and literals → tokens ✔ · U-04a stubs deleted ✔
-- U-03a UI scale Auto/1×/2×, one startup resolution (default 1280×720), sub-720p entries dropped
-- U-04b one menu-entry list for both professions, active highlight, Back button + Esc on drill-downs
-- U-04c Home dashboard (next fixture, unread messages, league position, balance)
-- U-04d in-game Options: Save, Load, Settings, Quit to menu, Quit to desktop, "unsaved progress" confirm
-- U-06 saves: name, overwrite confirm, delete; autosave slot monthly + season rollover (D18)
-- U-07 history screens: final tables (`CompetitionEdition.finalStandings`), champions / cup winners, earlier seasons from reference data (E-00b, D17)
-- U-08 friendlies finished (11 TODOs) or hidden; sound settings hidden until there is audio
-- U-09 one tooltip layer (table headers Pld/W/D/L/GF/GA/Pts) + one `UiDialogs` helper (one modal at a time)
-- U-10 labels into the language files, per screen as touched (D18); a guard test against new hard-coded labels
-- U-05 interface guide with our own screenshots (last, after U-03/U-04)
+- U-03a UI scale Auto/1×/2×, one startup resolution (default 1280×720), sub-720p entries dropped ✔ 2026-11-27
+- U-04b menu-entry list, Back + Esc ✔ · U-04c Home dashboard ✔ · U-04d in-game Options ✔ (all 2026-11-27)
+- U-06 saves: name, overwrite confirm, delete ✔ 2026-11-27; autosave slot monthly + season rollover ✔ 2026-11-27 (D18)
+- U-07 history screens ✔ 2026-11-27 (E-00b, D17)
+- U-08 friendlies finished, sound settings hidden ✔ 2026-11-28
+- U-09 one tooltip layer + one `UiDialogs` helper ✔ 2026-11-28 · U-11 ground pictures on the screens ✔ 2026-11-28
+- U-10 labels into the language files + guard test ✔ 2026-11-28 (~540 strings; month/day names in date patterns still English, in U-12)
+- U-05 interface guide with our own screenshots ✔ 2026-11-28 (V-01 screenshot tour ✔)
 
 **Phase 3b: quick fixes → v0.5.0, then gameplay on the instant result → v0.5.x** (D30, D31; BOOK3PRO leads, D21)
-- Quick fixes (tag v0.5.0 after them): P2-13 duplicate clubs in `allClubs` + sweep of every open bug · J-01 job system
+- Quick fixes (tag v0.5.0 after them): P2-13 duplicate clubs in `allClubs` + sweep of every open bug ✔ 2026-11-28 · J-01 job system ✔ 2026-11-28 · P2-12 gate income once, home club only ✔ 2026-11-28 
   (duplicate offer rows, offer/refresh bugs, salary as money) · U-12 UI polish (Esc closes dialogs, dates/decimals/month
   names from the game language, Authorities season, one link colour, inbox filter top-aligned, debug button behind a dev
   flag) · P2-14 neutral venues on `Match` + season calendar as data (FA Cup opens/drawn in its real month)
-- Now: G-01 team sheet (XI, shape, style, captain; AI picks its own; instant result uses the XI) · G-03 match report
-  stand-in (goal minutes, period paragraph from language files) · G-04 contracts through the season (30 April end,
+- Now: G-01 team sheet (XI, shape, style, captain; AI picks its own; instant result uses the XI; feature complete, parked, gate pending) · G-03 match report
+  stand-in ✔ 2026-11-28 (goal minutes, period paragraph from language files) · G-04 contracts through the season (30 April end,
   retained / not retained, re-signing, wages into expenses; AI clubs too)
 - Next: G-02 injuries and availability · G-05 committee and the secretary's job (sacking → job seeker) · R-02, R-09,
-  R-03, R-04, R-05, R-07 recruitment without trials · G-08 re-election vote at the rollover
+  R-03, R-04, R-05, R-07 recruitment without trials · G-08 re-election vote at the rollover ✔ 2026-11-28 (R-01 research ✔, R-10/R-11 sources ✔ 2026-11-28; R-02 data complete, parked)
 - Later: R-08 AI recruitment/poaching · G-09 training · G-10 history/fan tiers on screen · G-11 era events in the inbox ·
   G-12 budget and debt · G-13 AI-to-AI friendlies and away guarantees (friendlies were most of a club's 1888-89 calendar)
 
 **Phase 4: match engine v2 → v0.6.0** (4-6 weeks, larger because of D7 and D19)
-- E-01 `Position` + `dribbling` attribute (data, validator, `ids.json`, saves) ✔; the XI picker moved to G-01 (D30)
-- E-02 seeded possession/chance simulation, attack vs defence vs goalkeeper, club strength factor, weather from month + ground
+- E-01 `Position` + `dribbling` attribute (data, validator, `ids.json`, saves) ✔ 2026-11-27; E-01b dribbling drift/ageing ✔ and H-04 sourced positions ✔ 2026-11-28; the XI picker moved to G-01 (D30)
+- E-02 (= ECS E-10..E-15 + E-17 below) seeded possession/chance simulation, attack vs defence vs goalkeeper, club strength factor, weather from month + ground
 - E-03 era rules per season (sourced): 3-player offside, no penalties, keeper handling in own half, partisan umpires + referee, disputed goals, rare sendings-off, drawn ties per that season's rule
 - E-04 full `MatchEvent` list saved compactly; minute-ticker match screen + period-style report with key / extended / full filters
 - E-05 calibration against the real 1888-89 results (test data only, D17)
 - E-06 replace `MatchSimulator` internals; keep the 2D prototype as a future viewer
+
+**Phase 4 ECS slice status** (2026-11-28; slice ids from `docs/design/MATCH_ENGINE_ECS.md`; D20/D22/D33)
+- ✔ E-10 `MatchWorld` + clock + state hash · E-11 ball physics · E-12 pitch/goal geometry (2026-11-27) · E-13 bodies · E-14 actions · E-15 AI v1 (plays a full 90-minute match; 30 seeded stub matches 5.10 goals/game vs 4.45 target) · E-16 laws + officials (all 2026-11-28)
+- Viewer E-21a..e and sprite bakes E-21s ✔ 2026-11-28; per D33 (1) no new viewer/art lanes until a seeded season completes on the ECS engine
+- In progress (WORKSTATION): E-17a engine flag `-Dfuttoboru.match.engine=instant|ecs` + contract test + season soak entry · E-16b realism (posts/bar, runs onto passes, foul rate)
+- Open: E-17 events + `MatchResult` stats · E-18 crowd sections · E-19 performance (~1.5-2.5 s a match est., over budget) · E-20 calibration (= E-05) · E-22 saves with events/seed/engine version · E-06 switch the game to ECS after E-20 + 7 green nightly soaks (D33-8)
+- The game still plays every match on the instant result (`MatchSimulator`, D30 A2).
+
+**D33 process items** (R-FUT-1..9)
+- ✔ `HANDOFF.md` split into PM-only `BOARD.md` + `log/<MACHINE>.md` (2026-11-28) · ✔ GitHub is git storage only (D32)
+- In progress: INF-01 Jenkins (concurrent + branch builds, full + smoke per develop commit, `green/develop` + `playable-latest`, executors 4 day / 8 night, nightly soak 16 seeds x 3 seasons) · E-17a engine flag · DOC-01 board refresh
+- Open: G1 path-aware pre-merge gate in `test_level.py` (BOOK3PRO) · red develop fixed in 30 min or reverted · merge train per batch · two producer decision windows a day · weekly 10-minute play session on `playable-latest` · review 2026-12-01
 
 **Phase 5: season 2 (1889-90)**: re-election vote, contract expiry and free agents, then "seasons as releases".
 Marketing only once a full season plays end to end.
