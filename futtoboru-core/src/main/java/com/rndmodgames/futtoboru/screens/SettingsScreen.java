@@ -26,6 +26,8 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.MainMenuButton;
 import com.rndmodgames.darkblade.screens.tables.ModsSettingsTable;
+import com.rndmodgames.futtoboru.engine.simulation.MatchEngine;
+import com.rndmodgames.futtoboru.engine.simulation.MatchEngines;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.tables.settings.DebugLoggingSettingsTable;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -208,6 +210,27 @@ public class SettingsScreen implements Screen {
             }
         });
 
+        /**
+         * Match engine (U-13): Classic (instant result) or New (beta, ECS; enables Watch match)
+         */
+        final VisSelectBox<String> matchEngineSelectBox = new VisSelectBox<>();
+        matchEngineSelectBox.setItems(LanguageModLoader.getValue("match_engine_classic"),
+                LanguageModLoader.getValue("match_engine_new"));
+        matchEngineSelectBox.setSelectedIndex(MatchEngine.ECS.equals(MatchEngines.selectedId()) ? 1 : 0);
+        matchEngineSelectBox.setDisabled(MatchEngines.flagGiven());
+        matchEngineSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+
+                String id = matchEngineSelectBox.getSelectedIndex() == 1 ? MatchEngine.ECS : MatchEngine.INSTANT;
+                ((Futtoboru) game).preferences.updateMatchEngine(id);
+                Log.info(Log.SYSTEM_CONFIG, "Match engine setting " + id + " -> " + MatchEngines.selectedId());
+            }
+        });
+        VisLabel matchEngineLabel = new VisLabel(LanguageModLoader.getValue("match_engine"));
+        VisLabel matchEngineNote = new VisLabel(LanguageModLoader.getValue("match_engine_note"));
+        matchEngineNote.setWrap(true);
+
         // Set FullScreen to Saved Value
 //        fullScreenCheckBox.setChecked(DarkBlade.FULLSCREEN);
         fullScreenCheckBox.addListener(new ChangeListener() {
@@ -342,6 +365,13 @@ public class SettingsScreen implements Screen {
         // UI scale
         graphicsSettings.add(uiScaleLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
         graphicsSettings.add(uiScaleSelectBox).pad(UiTheme.space("xs")).fill();
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
+
+        // Match engine + its note
+        graphicsSettings.add(matchEngineLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
+        graphicsSettings.add(matchEngineSelectBox).pad(UiTheme.space("xs")).fill();
+        graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
+        graphicsSettings.add(matchEngineNote).pad(UiTheme.space("xs")).colspan(2).growX().prefWidth(1);
         graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
 
         // V-01: the DarkBlade rows (day-night tint, shadows, damage counters, debug physics / path finding / sight /

@@ -231,6 +231,9 @@ public class Futtoboru extends Game {
         // U-03a: Auto (default), 100% or 200%; every UI stage reads it through UiScale
         UiScale.setSetting(preferences.getUiScale());
 
+        // U-13: the saved match engine (the -Dfuttoboru.match.engine flag still wins)
+        com.rndmodgames.futtoboru.engine.simulation.MatchEngines.applyPreference(preferences.getMatchEngine());
+
         // The desktop launcher already opened the window from the same preferences; this only changes the mode
         // when it differs (no startup double resize)
         setScreen();

@@ -5,6 +5,7 @@ import java.util.Locale;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.rndmodgames.darkblade.screens.tables.SoundSettingsTable;
+import com.rndmodgames.futtoboru.engine.simulation.MatchEngines;
 import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.ui.UiScale;
 
@@ -40,6 +41,9 @@ public class PreferencesManager {
 	public static final String SETTINGS_DAMAGE_COUNTERS_RENDERING_PREF = "settings.damage_counters_rendering";
 	public static final String SETTINGS_DEBUG_SIGHT_PREF = "settings.debug_sight_rendering";
 	
+	/** U-13: "instant" (Classic, default) or "ecs" (New, beta) */
+	public static final String SETTINGS_MATCH_ENGINE_PREF = "settings.match_engine";
+
 	// SOUND SETTINGS
 	public static final String SETTINGS_MASTER_SOUND_LEVEL_PREF = "settings.master_sound_level";
 	
@@ -54,6 +58,12 @@ public class PreferencesManager {
 	public static String DEFAULT_RESOLUTION = UiScale.DEFAULT_RESOLUTION; // D18: 1280x720 minimum and default
 	public static String DEFAULT_LOCALE = "en_US";
 	
+	/** For tests: backed by the given preferences instead of the libGDX file */
+	public PreferencesManager(Preferences prefs) {
+
+		this.prefs = prefs;
+	}
+
 	public PreferencesManager() {
 		
 		prefs = Gdx.app.getPreferences(PREFERENCES_NAME);
@@ -233,6 +243,24 @@ public class PreferencesManager {
 		return fullscreen;
 	}
 	
+	/**
+	 * Returns the match engine setting (U-13): "ecs" or "instant" (the default)
+	 */
+	public String getMatchEngine() {
+
+		return "ecs".equals(prefs.getString(SETTINGS_MATCH_ENGINE_PREF, null)) ? "ecs" : "instant";
+	}
+
+	/**
+	 * Saves the match engine setting (U-13) and applies it to the matches played from now on
+	 */
+	public void updateMatchEngine(String id) {
+
+		String engine = "ecs".equals(id) ? "ecs" : "instant";
+		updateUserPreference(SETTINGS_MATCH_ENGINE_PREF, engine);
+		MatchEngines.applyPreference(engine);
+	}
+
 	/**
 	 * Updates Saved Resolution
 	 */
