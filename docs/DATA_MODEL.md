@@ -153,6 +153,27 @@ Two optional objects on a **squad entry** (`seasons/<id>/squads.json`), keyed by
 - **Saves v2:** `Player.position` (enum name) and `Player.dribbling`. The v1 -> v2 step in `SaveMigrations` adds
   dribbling (sourced, else derived from the saved attributes) and the position from the club's squad entry.
 
+## History facts and texts (H-05, D30)
+Approved shape of `docs/design/HISTORY_DATA_PROPOSAL.md`; the research is in `docs/data/history/`. Nothing here is
+used by gameplay yet; `GameData` only loads and exposes it (`nicknames`, `nameHistory`, `squadFanTiers`,
+`historyText`, `DataRecord.refs("rivals")`).
+- **`clubs.json`** (all optional): `origin` (`church cricket works school old-boys rugby merger other`), `nicknames`
+  (`{name, from?, to?, period?, sources}`; `period: true` = sourced as used at the time, else a later name; the game
+  shows only period names in-season), `rivals` (club ids; symmetric by convention, one-sided = warning),
+  `nameHistory` (`{name, from, to?, sources}`).
+- **`people.json`**: `nicknames` (same shape), `knownAs` (display name where it differs).
+- **`seasons/<id>/squads.json`**: `fanTiers` `{person-id: 0-5}`, the club's fans' tier of a player at the season start;
+  keys must be players of the squad; missing = derived default (1 sourced, 0 placeholder). Scale: 0 unknown, 1 squad
+  player, 2 local favourite, 3 crowd idol, 4 club hero, 5 legend (`PLAYERS_1888-89.md`).
+- **`text/<lang>/history.json`** (listed in `pack.json`, UTF-8; `en` is the fallback): `{"club": {id: {hook, history[],
+  seasons{season: text}, sources[]}}, "person": {id: {bio, sources[]}}}`. Keys are data ids (aliases followed); season
+  keys must be seasons; `sources` is required and must be http(s) links; another language may only hold keys that exist
+  in `en` (orphan = error, missing = warning).
+- **Not done:** `kit` (colours and patterns per season squad): its shape is to be agreed with H-03 (era kit) first.
+  Saves do not store a runtime fan meter yet.
+- Data filled so far: the 12 League clubs of 1888-89 (origin, nicknames, rivals, nameHistory), every tiered player,
+  club and season text for all 35 clubs, 178 player bios. Origin, nicknames and rivals of the FA Cup clubs are not done.
+
 ## Rename log
 | Date | Kind | Old id | New id | Why | Approved by |
 |---|---|---|---|---|---|

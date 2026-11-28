@@ -38,6 +38,10 @@ POSITIONS = {"goalkeeper", "full-back", "half-back", "right-wing", "inside-right
 # the 1889 FA Cup final line-up; docs/data/history/POSITIONS_1888-89.md lists each with its URLs
 POSITION_SOURCES = {"players-1888-89", "players-1888-89-line", "placeholder", "wp-season-1888-89",
                     "wp-season-1888-89-line", "wp-player", "wp-player-line", "fa-cup-final-1889"}
+# H-05 (HISTORY_DATA_PROPOSAL.md, D30): what kind of body a club grew out of, and the fan-love scale of a squad entry
+CLUB_ORIGINS = {"church", "cricket", "works", "school", "old-boys", "rugby", "merger", "other"}
+FAN_TIER_MIN, FAN_TIER_MAX = 0, 5
+LANG_RE = re.compile(r"^[a-z]{2,3}(-[A-Z]{2})?$")
 ATTR_MIN, ATTR_MAX = 3, 23  # the attribute scale (3d6 plus modifiers, PlayerAttributeGenerator)
 KINDS = ["continent", "country", "profession", "occupation", "competition", "club", "ground", "person", "region",
          "season", "edition"]
@@ -45,7 +49,7 @@ KINDS = ["continent", "country", "profession", "occupation", "competition", "clu
 # field spec: name -> (type, required). Types: str, int, num, bool, date, datetime, strs, attrs,
 # ref:<kind>, refs:<kind>, enum:<name>, list:<record spec name>, map:<record spec name> (an object: id -> record)
 ENUMS = {"confidence": CONFIDENCE, "occupation_category": OCCUPATION_CATEGORIES, "competition_type": COMPETITION_TYPES,
-         "position": POSITIONS, "position_source": POSITION_SOURCES}
+         "position": POSITIONS, "position_source": POSITION_SOURCES, "club_origin": CLUB_ORIGINS}
 SPECS = {
     "continent": {"id": ("str", True), "name": ("str", True)},
     "country": {"id": ("str", True), "name": ("str", True), "formalName": ("str", False),
@@ -62,14 +66,27 @@ SPECS = {
                     "annualMeetingConfidence": ("enum:confidence", False)},
     "club": {"id": ("str", True), "name": ("str", True), "fullName": ("str", False),
              "founded": ("int", False), "country": ("ref:country", True), "sources": ("strs", True),
-             "notes": ("str", False)},
+             "notes": ("str", False),
+             # H-05: identity facts (the prose is in text/<lang>/history.json)
+             "origin": ("enum:club_origin", False), "nicknames": ("list:nickname", False),
+             "rivals": ("refs:club", False), "nameHistory": ("list:club_name", False)},
+    # period: true = sourced as used at the time (the game shows only these in-season), false = a later name
+    "nickname": {"name": ("str", True), "from": ("int", False), "to": ("int", False), "period": ("bool", False),
+                 "sources": ("strs", True)},
+    "club_name": {"name": ("str", True), "from": ("int", True), "to": ("int", False), "sources": ("strs", True)},
+    # text/<lang>/history.json: prose keyed by data id, per kind (the structured facts stay in the records)
+    "history_club": {"hook": ("str", True), "history": ("strs", True), "seasons": ("seasontexts", False),
+                     "sources": ("strs", True)},
+    "history_person": {"bio": ("str", True), "sources": ("strs", True)},
     "ground": {"id": ("str", True), "name": ("str", True), "opened": ("int", False),
                "capacity": ("int", False), "value": ("num", False), "description": ("str", False),
                "landValue": ("num", False), "ownedByClub": ("bool", False), "annualRent": ("num", False),
                "sources": ("strs", True), "notes": ("str", False)},
     "person": {"id": ("str", True), "firstName": ("str", True), "lastName": ("str", True), "born": ("date", True),
                "country": ("ref:country", True), "confidence": ("enum:confidence", True), "sources": ("strs", True),
-               "notes": ("str", False)},
+               "notes": ("str", False),
+               # H-05: nicknames (same shape as a club's) and the display name where it differs
+               "nicknames": ("list:nickname", False), "knownAs": ("str", False)},
     "season": {"id": ("str", True), "name": ("str", True), "description": ("str", False),
                "start": ("datetime", True), "sources": ("strs", True), "countries": ("refs:country", True),
                "editions": ("list:edition", True)},
@@ -79,7 +96,9 @@ SPECS = {
     "squad": {"club": ("ref:club", True), "ground": ("ref:ground", False), "balance": ("num", False),
               "players": ("refs:person", True), "notes": ("str", False),
               # E-01, keyed by a person id of `players`: this season's position, and a sourced dribbling value
-              "positions": ("map:squad_position", False), "dribbling": ("map:squad_dribbling", False)},
+              "positions": ("map:squad_position", False), "dribbling": ("map:squad_dribbling", False),
+              # H-05: the club's fans' tier (0-5) of a player at the start of the season; missing = derived default
+              "fanTiers": ("tiers:person", False)},
     "squad_position": {"position": ("enum:position", True), "source": ("enum:position_source", True)},
     "squad_dribbling": {"value": ("int", True), "source": ("str", True)},
     "nationality_modifier": {"country": ("ref:country", True), "modifiers": ("attrs", True), "notes": ("str", False),
@@ -106,6 +125,10 @@ SEASON_FILES = {
     "region_modifiers.json": ("region", "region"),
     "results.json": ("result", None),
 }
+
+
+def is_int(n) -> bool:
+    return isinstance(n, int) and not isinstance(n, bool)
 
 
 class Report:
@@ -136,6 +159,32 @@ def check_record(rec, spec_name: str, where: str, rep: Report, refs: list):
         check_value(rec[k], typ, f"{where}.{k}", rep, refs)
     if "id" in spec and isinstance(rec.get("id"), str) and not ID_RE.match(rec["id"]):
         rep.error(where, f"bad id `{rec['id']}` (lower-case slug like `preston-north-end`; mods: `author.slug`)")
+    if spec_name in SOURCED:
+        check_sourced(rec, spec_name, where, rep)
+
+
+SOURCED = {"nickname", "club_name", "history_club", "history_person"}
+
+
+def check_sourced(rec: dict, spec_name: str, where: str, rep: Report):
+    """H-05: a history fact or text is only as good as its source: `sources` is a non-empty list of http(s) links;
+    names and prose are not empty; a period runs forwards."""
+    src = rec.get("sources")
+    if isinstance(src, list):
+        if not src:
+            rep.error(f"{where}.sources", "empty (every history fact and text needs a source)")
+        for i, u in enumerate(src):
+            if isinstance(u, str) and not u.startswith(("http://", "https://")):
+                rep.error(f"{where}.sources[{i}]", f"`{u[:40]}` is not a link")
+    for field in ("name", "hook", "bio"):
+        if isinstance(rec.get(field), str) and not rec[field].strip():
+            rep.error(f"{where}.{field}", "empty")
+    if spec_name == "history_club" and isinstance(rec.get("history"), list):
+        if not rec["history"] or any(isinstance(x, str) and not x.strip() for x in rec["history"]):
+            rep.error(f"{where}.history", "needs at least one non-empty paragraph")
+    a, b = rec.get("from"), rec.get("to")
+    if is_int(a) and is_int(b) and a > b:
+        rep.error(where, f"`from` {a} is after `to` {b}")
 
 
 def check_value(v, typ: str, where: str, rep: Report, refs: list):
@@ -186,6 +235,77 @@ def check_value(v, typ: str, where: str, rep: Report, refs: list):
             return bad("an object of id -> record")
         for k, x in v.items():
             check_record(x, typ[4:], f"{where}.{k}", rep, refs)
+    elif typ.startswith("tiers:"):
+        if not isinstance(v, dict):
+            return bad("an object of id -> tier")
+        for k, x in v.items():
+            refs.append((typ[6:], k, f"{where}.{k}"))
+            if not is_int(x) or not FAN_TIER_MIN <= x <= FAN_TIER_MAX:
+                rep.error(f"{where}.{k}", f"tier must be a whole number {FAN_TIER_MIN}-{FAN_TIER_MAX}")
+    elif typ == "seasontexts":
+        if not isinstance(v, dict):
+            return bad("an object of season id -> text")
+        for k, x in v.items():
+            refs.append(("season", k, f"{where}.{k}"))
+            if not isinstance(x, str) or not x.strip():
+                rep.error(f"{where}.{k}", "expected a non-empty text")
+
+
+def check_text_file(data, where: str, lang: str, name: str, s: "Scan", refs: list):
+    """H-05: `text/<lang>/history.json` = {"club": {id: history_club}, "person": {id: history_person}}. Keys are
+    data ids and must resolve (aliases followed); unknown fields are errors like in any record."""
+    rep = s.rep
+    if name != "history.json":
+        rep.error(where, "unknown text file (only history.json)")
+        return
+    if not LANG_RE.match(lang):
+        rep.error(where, f"`{lang}` is not a language code (like `en`, `es`, `pt-BR`)")
+    if not isinstance(data, dict):
+        rep.error(where, "expected an object of kinds (club, person)")
+        return
+    spec_of = {"club": "history_club", "person": "history_person"}
+    keys = s.texts.setdefault(lang, {})
+    for kind, table in data.items():
+        if kind not in spec_of:
+            rep.error(where, f"unknown kind `{kind}` (allowed: {', '.join(spec_of)})")
+            continue
+        if not isinstance(table, dict):
+            rep.error(f"{where}.{kind}", "expected an object of data id -> entry")
+            continue
+        for rid, entry in table.items():
+            refs.append((kind, rid, f"{where}.{kind}.{rid}"))
+            keys.setdefault(kind, set()).add(rid.lower())
+            check_record(entry, spec_of[kind], f"{where}.{kind}.{rid}", rep, refs)
+
+
+def check_rivals(s: "Scan"):
+    """H-05: rivals are other clubs, and symmetric by convention (a one-sided rivalry is a warning)."""
+    table = {}
+    for c in s.clubs:
+        if isinstance(c.get("id"), str) and isinstance(c.get("rivals"), list):
+            table[c["id"].lower()] = {resolve("club", r, s.aliases, s.ids) for r in c["rivals"] if isinstance(r, str)}
+    for cid, rs in table.items():
+        if cid in rs:
+            s.rep.error(f"club `{cid}`.rivals", "a club is not its own rival")
+        for r in sorted(x for x in rs if x):
+            if cid not in table.get(r, set()):
+                s.rep.warn(f"club `{cid}`.rivals", f"`{r}` does not list `{cid}` back (rivalries are symmetric)")
+
+
+def check_translations(s: "Scan"):
+    """H-05: `en` is the fallback for every language: another language may only translate keys that exist in `en`
+    (an orphan is an error); an untranslated key is a warning."""
+    base = s.texts.get("en", {})
+    for lang, kinds in s.texts.items():
+        if lang == "en":
+            continue
+        for kind, keys in kinds.items():
+            for k in sorted(keys - base.get(kind, set())):
+                s.rep.error(f"text/{lang}/history.json.{kind}", f"`{k}` has no entry in text/en (orphan translation)")
+        for kind, keys in base.items():
+            missing = keys - kinds.get(kind, set())
+            if missing:
+                s.rep.warn(f"text/{lang}/history.json.{kind}", f"{len(missing)} entries not translated (en is used)")
 
 
 def check_squad_roles(sq, where: str, rep: Report):
@@ -194,7 +314,7 @@ def check_squad_roles(sq, where: str, rep: Report):
     if not isinstance(sq, dict):
         return
     players = sq.get("players") if isinstance(sq.get("players"), list) else []
-    for field in ("positions", "dribbling"):
+    for field in ("positions", "dribbling", "fanTiers"):
         table = sq.get(field)
         if not isinstance(table, dict):
             continue
@@ -257,6 +377,8 @@ class Scan:
         self.registries: dict[str, tuple[dict, str]] = {}  # pack -> (ids.json content, where)
         self.packs: list[str] = []
         self.squads_by_season: dict[str, list] = {}
+        self.texts: dict[str, dict[str, set]] = {}   # language -> kind -> keys (text/<lang>/history.json)
+        self.clubs: list[dict] = []
 
 
 def scan(root: Path = DEFAULT_ROOT) -> Scan:
@@ -327,6 +449,9 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
                     for old, new in table.items():
                         aliases[kind][old.lower()] = new
                 continue
+            if len(parts) == 3 and parts[0] == "text":
+                check_text_file(data, where, parts[1], parts[2], s, refs)
+                continue
             if len(parts) == 3 and parts[0] == "seasons":
                 sid, name = parts[1], parts[2]
                 if name == "season.json":
@@ -357,6 +482,8 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
                 check_record(rec, spec_name, rw, rep, refs)
                 if kind:
                     register(kind, rec, rw)
+            if spec_name == "club":
+                s.clubs.extend(r for r in data if isinstance(r, dict))
             if spec_name == "squad":
                 squads_by_season[parts[1]] = data
                 for i, rec in enumerate(data):
@@ -380,6 +507,8 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
     for kind, rid, where in refs:
         if resolve(kind, rid, aliases, ids) is None:
             rep.error(where, f"unknown {kind} `{rid}`")
+    check_rivals(s)
+    check_translations(s)
 
     return s
 
@@ -442,10 +571,6 @@ def resolve(kind: str, rid: str, aliases, ids, depth: int = 0):
 REGISTRY_MAX = 899_999       # numbers 900 000+ are for objects the game derives at load; 1 000 000+ for play
 BLOCK = 100_000              # a new pack gets the next free block of numbers
 REGISTRY_FIELDS = {"range", "next", "ids", "retired"}
-
-
-def is_int(n) -> bool:
-    return isinstance(n, int) and not isinstance(n, bool)
 
 
 def registry_entries(s: Scan) -> dict:

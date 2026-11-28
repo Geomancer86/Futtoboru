@@ -22,6 +22,7 @@
     "seasons/1888-89/region_modifiers.json",
     "seasons/1888-89/results.json",
     "seasons/1888-89/season.json",
-    "seasons/1888-89/squads.json"
+    "seasons/1888-89/squads.json",
+    "text/en/history.json"
   ]
 }
