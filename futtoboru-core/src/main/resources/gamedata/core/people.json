@@ -5856,10 +5856,11 @@
     "firstName": "Andrew",
     "lastName": "Watson",
     "born": "1856-05-24",
-    "country": "scotland",
+    "country": "guyana",
     "confidence": "unverified",
     "sources": [
-      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)"
+      "https://en.wikipedia.org/wiki/Bootle_F.C._(1879)",
+      "https://en.wikipedia.org/wiki/Andrew_Watson_(footballer,_born_1856)"
     ],
     "notes": "Bootle 1887-92."
   },
