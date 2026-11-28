@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.draw;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -167,28 +168,28 @@ public class LeagueDrawScreenTable extends VisTable {
         contentTable.clear();
         
         if (selectedLeague == null) {
-            contentTable.add(new VisLabel("No league selected")).pad(UiTheme.space("lg")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("draw_no_league_selected"))).pad(UiTheme.space("lg")).row();
             return;
         }
         
         // Title
-        VisLabel titleLabel = new VisLabel(selectedLeague.getName() != null ? selectedLeague.getName() + " - Fixture Draw" : "Fixture Draw");
+        VisLabel titleLabel = new VisLabel(selectedLeague.getName() != null ? LanguageModLoader.format("draw_league_title", selectedLeague.getName()) : LanguageModLoader.getValue("draw_fixture_draw"));
         titleLabel.setFontScale(UiTheme.fontScale("title"));
         contentTable.add(titleLabel).pad(UiTheme.space("sm")).row();
         
         contentTable.addSeparator().pad(UiTheme.space("xs")).row();
         
         // Instructions
-        contentTable.add(new VisLabel("The fixture draw for " + selectedLeague.getName() + " is being revealed.")).pad(UiTheme.space("xs")).row();
-        contentTable.add(new VisLabel("Click 'Next' to reveal fixtures one by one, or 'Draw All' to see all fixtures at once.")).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.format("draw_league_revealing", selectedLeague.getName()))).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.getValue("draw_league_hint"))).pad(UiTheme.space("xs")).row();
         
         contentTable.add().height(UiTheme.space("sm")).row();
         
         // Fixtures table
         fixturesTable = new VisTable(true);
-        fixturesTable.add(new VisLabel("Date")).width(UiTheme.size("col.long"));
-        fixturesTable.add(new VisLabel("Home")).width(UiTheme.size("col.wide"));
-        fixturesTable.add(new VisLabel("Away")).width(UiTheme.size("col.wide")).row();
+        fixturesTable.add(new VisLabel(LanguageModLoader.getValue("history_date"))).width(UiTheme.size("col.long"));
+        fixturesTable.add(new VisLabel(LanguageModLoader.getValue("history_home"))).width(UiTheme.size("col.wide"));
+        fixturesTable.add(new VisLabel(LanguageModLoader.getValue("history_away"))).width(UiTheme.size("col.wide")).row();
         fixturesTable.addSeparator().colspan(3).row();
         
         // Show revealed fixtures
@@ -200,7 +201,7 @@ public class LeagueDrawScreenTable extends VisTable {
             
             if (homeClub != null && awayClub != null) {
                 String dateStr = match.getMatchDateTime() != null ? 
-                    dateFormatter.format(match.getMatchDateTime()) : "TBA";
+                    dateFormatter.format(match.getMatchDateTime()) : LanguageModLoader.getValue("draw_tba");
                 fixturesTable.add(new VisLabel(dateStr)).width(UiTheme.size("col.long"));
                 fixturesTable.add(new VisLabel(homeClub.getName())).width(UiTheme.size("col.wide"));
                 fixturesTable.add(new VisLabel(awayClub.getName())).width(UiTheme.size("col.wide")).row();
@@ -210,7 +211,7 @@ public class LeagueDrawScreenTable extends VisTable {
         // Show "..." for unrevealed fixtures
         if (!allRevealed && currentRevealedIndex < allFixtures.size()) {
             fixturesTable.add(new VisLabel("...")).colspan(3).pad(UiTheme.space("xs")).row();
-            fixturesTable.add(new VisLabel((allFixtures.size() - currentRevealedIndex) + " more fixtures to be revealed")).colspan(3).pad(UiTheme.space("xs")).row();
+            fixturesTable.add(new VisLabel(LanguageModLoader.format("draw_more_fixtures", allFixtures.size() - currentRevealedIndex))).colspan(3).pad(UiTheme.space("xs")).row();
         }
         
         contentTable.add(fixturesTable).growX().pad(UiTheme.space("sm")).row();
@@ -222,7 +223,7 @@ public class LeagueDrawScreenTable extends VisTable {
         
         // Next button (only show if not all revealed)
         if (!allRevealed && currentRevealedIndex < allFixtures.size()) {
-            nextButton = new VisTextButton("Next");
+            nextButton = new VisTextButton(LanguageModLoader.getValue("draw_next"));
             nextButton.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -244,7 +245,7 @@ public class LeagueDrawScreenTable extends VisTable {
         
         // Draw All button (only show if not all revealed)
         if (!allRevealed && currentRevealedIndex < allFixtures.size()) {
-            drawAllButton = new VisTextButton("Draw All");
+            drawAllButton = new VisTextButton(LanguageModLoader.getValue("draw_all"));
             drawAllButton.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -264,7 +265,7 @@ public class LeagueDrawScreenTable extends VisTable {
         
         // Continue button (only show when all fixtures are revealed)
         if (allRevealed) {
-            continueButton = new VisTextButton("Continue");
+            continueButton = new VisTextButton(LanguageModLoader.getValue("continue_game"));
             continueButton.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -404,24 +405,13 @@ public class LeagueDrawScreenTable extends VisTable {
         postDrawMessage.setCategory(com.rndmodgames.futtoboru.data.MessageCategory.LEAGUE);
         postDrawMessage.setMessageType("LEAGUE_FIXTURES_RELEASED");
         postDrawMessage.setPriority(com.rndmodgames.futtoboru.data.MessagePriority.NORMAL);
-        postDrawMessage.setTitle("League Fixtures Released - " + league.getName());
+        postDrawMessage.setTitle(LanguageModLoader.format("draw_msg_fixtures_released_title", league.getName()));
         postDrawMessage.setIsMandatory(false);
         
         StringBuilder content = new StringBuilder();
-        content.append("The fixture draw for the ");
-        content.append(league.getName());
-        content.append(" has been completed.\n\n");
-        content.append("A total of ");
-        content.append(totalFixtures);
-        content.append(" matches have been scheduled for the upcoming season.\n\n");
-        content.append("The season will feature ");
-        if (league.getLeagueClubs() != null) {
-            content.append(league.getLeagueClubs().size());
-        } else {
-            content.append("multiple");
-        }
-        content.append(" teams competing for the league title.\n\n");
-        content.append("Check your schedule to see all upcoming matches.");
+        content.append(LanguageModLoader.format("draw_msg_fixtures_released_text", league.getName(), totalFixtures,
+                league.getLeagueClubs() != null ? String.valueOf(league.getLeagueClubs().size())
+                        : LanguageModLoader.getValue("draw_msg_multiple")));
         
         postDrawMessage.setPlainTextMessage(content.toString());
         postDrawMessage.setRemitent(null);

@@ -21,6 +21,7 @@ import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiTooltips;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * League Detail Screen Table v1.0
@@ -91,39 +92,39 @@ public class LeagueDetailScreenTable extends VisTable {
         contentTable.clear();
         
         if (selectedLeague == null) {
-            contentTable.add(new VisLabel("No league selected")).pad(UiTheme.space("lg")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("league_none_selected"))).pad(UiTheme.space("lg")).row();
             return;
         }
         
         // Title
-        VisLabel titleLabel = new VisLabel(selectedLeague.getName() != null ? selectedLeague.getName() : "Unnamed League");
+        VisLabel titleLabel = new VisLabel(selectedLeague.getName() != null ? selectedLeague.getName() : LanguageModLoader.getValue("competitions_unnamed_league"));
         titleLabel.setFontScale(UiTheme.fontScale("title"));
         contentTable.add(titleLabel).pad(UiTheme.space("sm")).row();
         
         contentTable.addSeparator().pad(UiTheme.space("xs")).row();
         
         // League Info Section
-        contentTable.add(new VisLabel("League Information")).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.getValue("league_information"))).pad(UiTheme.space("xs")).row();
         
         // Country
         if (selectedLeague.getCountry() != null) {
-            contentTable.add(new VisLabel("Country: " + selectedLeague.getCountry().getCommonName())).left().pad(UiTheme.space("xxs")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.format("league_country", selectedLeague.getCountry().getCommonName()))).left().pad(UiTheme.space("xxs")).row();
         }
         
         // Number of clubs
         int clubCount = (selectedLeague.getLeagueClubs() != null) ? selectedLeague.getLeagueClubs().size() : 0;
-        contentTable.add(new VisLabel("Clubs: " + clubCount)).left().pad(UiTheme.space("xxs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.format("league_clubs", clubCount))).left().pad(UiTheme.space("xxs")).row();
         
         contentTable.add().height(UiTheme.space("sm")).row();
         
         // Clubs List Section
         if (selectedLeague.getLeagueClubs() != null && !selectedLeague.getLeagueClubs().isEmpty()) {
-            contentTable.add(new VisLabel("Participating Clubs")).pad(UiTheme.space("xs")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("league_participating"))).pad(UiTheme.space("xs")).row();
             contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             for (Club club : selectedLeague.getLeagueClubs()) {
                 if (club != null) {
-                    contentTable.add(new VisLabel(club.getName() != null ? club.getName() : "Unnamed Club")).left().pad(UiTheme.space("xxs")).row();
+                    contentTable.add(new VisLabel(club.getName() != null ? club.getName() : LanguageModLoader.getValue("competitions_unnamed_club"))).left().pad(UiTheme.space("xxs")).row();
                 }
             }
             
@@ -132,17 +133,16 @@ public class LeagueDetailScreenTable extends VisTable {
         
         // Competition Rules Section
         com.rndmodgames.futtoboru.data.CompetitionRules rules = selectedLeague.getRulesOrDefault();
-        contentTable.add(new VisLabel("Competition Rules")).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.getValue("league_rules"))).pad(UiTheme.space("xs")).row();
         contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
         
         // Points system
-        String pointsSystem = rules.getPointsForWin() + " points for win, " + 
-                              rules.getPointsForDraw() + " point" + (rules.getPointsForDraw() != 1 ? "s" : "") + 
-                              " for draw, " + rules.getPointsForLoss() + " for loss";
-        contentTable.add(new VisLabel("Points System: " + pointsSystem)).left().pad(UiTheme.space("xxs")).row();
+        String pointsSystem = LanguageModLoader.format("league_points_system", rules.getPointsForWin(),
+                rules.getPointsForDraw(), rules.getPointsForLoss());
+        contentTable.add(new VisLabel(pointsSystem)).left().pad(UiTheme.space("xxs")).row();
         
         // Tie-breaking criteria
-        StringBuilder tieBreakers = new StringBuilder("Tie-breakers: ");
+        StringBuilder tieBreakers = new StringBuilder();
         java.util.List<com.rndmodgames.futtoboru.data.CompetitionRules.TieBreaker> tieBreakingOrder = rules.getTieBreakingOrder();
         for (int i = 0; i < tieBreakingOrder.size(); i++) {
             if (i > 0) {
@@ -150,19 +150,19 @@ public class LeagueDetailScreenTable extends VisTable {
             }
             tieBreakers.append(formatTieBreaker(tieBreakingOrder.get(i)));
         }
-        contentTable.add(new VisLabel(tieBreakers.toString())).left().pad(UiTheme.space("xxs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.format("league_tie_breakers", tieBreakers))).left().pad(UiTheme.space("xxs")).row();
         
         // Match format
         String matchFormat = rules.getMatchFormat() == com.rndmodgames.futtoboru.data.CompetitionRules.MatchFormat.DOUBLE_ROUND_ROBIN 
-            ? "Double round-robin (home and away)" 
-            : "Single round-robin";
-        contentTable.add(new VisLabel("Format: " + matchFormat)).left().pad(UiTheme.space("xxs")).row();
+            ? LanguageModLoader.getValue("league_format_double")
+            : LanguageModLoader.getValue("league_format_single");
+        contentTable.add(new VisLabel(LanguageModLoader.format("league_format", matchFormat))).left().pad(UiTheme.space("xxs")).row();
         
         contentTable.add().height(UiTheme.space("sm")).row();
         
         // Past Champions Section
         if (selectedLeague.getEditions() != null && !selectedLeague.getEditions().isEmpty()) {
-            contentTable.add(new VisLabel("Past Champions")).pad(UiTheme.space("xs")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("competitions_past_champions"))).pad(UiTheme.space("xs")).row();
             contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             // Show completed editions (those with champions)
@@ -173,29 +173,29 @@ public class LeagueDetailScreenTable extends VisTable {
                     Club champion = currentGame.getClubById(edition.getChampionsId());
                     Club runnerUp = edition.getRunnersUpId() != null ? currentGame.getClubById(edition.getRunnersUpId()) : null;
                     
-                    String seasonInfo = edition.getName() != null ? edition.getName() : "Season " + completedCount;
-                    String championName = champion != null ? champion.getName() : "Unknown";
-                    String runnerUpName = runnerUp != null ? runnerUp.getName() : "N/A";
+                    String seasonInfo = edition.getName() != null ? edition.getName() : LanguageModLoader.format("competitions_season_n", completedCount);
+                    String championName = champion != null ? champion.getName() : LanguageModLoader.getValue("unknown");
+                    String runnerUpName = runnerUp != null ? runnerUp.getName() : LanguageModLoader.getValue("not_available");
                     
                     VisTable historyRow = new VisTable(true);
                     historyRow.add(new VisLabel(seasonInfo)).width(UiTheme.size("col.label")).left();
-                    historyRow.add(new VisLabel("Champion: " + championName)).expandX().left();
+                    historyRow.add(new VisLabel(LanguageModLoader.format("competitions_champion", championName))).expandX().left();
                     if (runnerUp != null) {
-                        historyRow.add(new VisLabel("Runner-up: " + runnerUpName)).expandX().left();
+                        historyRow.add(new VisLabel(LanguageModLoader.format("competitions_runner_up", runnerUpName))).expandX().left();
                     }
                     contentTable.add(historyRow).pad(UiTheme.space("xxs")).row();
                 }
             }
             
             if (completedCount == 0) {
-                contentTable.add(new VisLabel("No completed seasons yet.")).left().pad(UiTheme.space("xxs")).row();
+                contentTable.add(new VisLabel(LanguageModLoader.getValue("league_no_completed"))).left().pad(UiTheme.space("xxs")).row();
             }
             
             contentTable.add().height(UiTheme.space("sm")).row();
         }
         
         // Standings Section (always show, even if no matches played yet)
-        contentTable.add(new VisLabel("League Standings")).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.getValue("league_standings"))).pad(UiTheme.space("xs")).row();
         contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
         
         // Header
@@ -221,7 +221,7 @@ public class LeagueDetailScreenTable extends VisTable {
             
             VisTable row = new VisTable(true);
             row.add(new VisLabel(String.valueOf(position++))).width(UiTheme.size("table.league.pos"));
-            row.add(new VisLabel(club.getName() != null ? club.getName() : "Unnamed")).width(UiTheme.size("table.league.club"));
+            row.add(new VisLabel(club.getName() != null ? club.getName() : LanguageModLoader.getValue("competitions_unnamed_club"))).width(UiTheme.size("table.league.club"));
             row.add(new VisLabel(String.valueOf(club.getMatchesPlayed() != null ? club.getMatchesPlayed() : 0))).width(UiTheme.size("table.league.stat"));
             row.add(new VisLabel(String.valueOf(club.getMatchesWon() != null ? club.getMatchesWon() : 0))).width(UiTheme.size("table.league.stat"));
             row.add(new VisLabel(String.valueOf(club.getMatchesDrawn() != null ? club.getMatchesDrawn() : 0))).width(UiTheme.size("table.league.stat"));
@@ -239,7 +239,7 @@ public class LeagueDetailScreenTable extends VisTable {
         // Upcoming Fixtures Section
         List<Match> upcomingMatches = getUpcomingMatches(selectedLeague);
         if (!upcomingMatches.isEmpty()) {
-            contentTable.add(new VisLabel("Upcoming Fixtures (Next 5)")).pad(UiTheme.space("xs")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("league_upcoming"))).pad(UiTheme.space("xs")).row();
             contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             int count = 0;
@@ -254,7 +254,7 @@ public class LeagueDetailScreenTable extends VisTable {
                     if (match.getMatchDateTime() != null) {
                         matchText = match.getMatchDateTime().format(dateFormatter) + " - ";
                     }
-                    matchText += homeClub.getName() + " vs " + awayClub.getName();
+                    matchText += homeClub.getName() + " " + LanguageModLoader.getValue("match_vs") + " " + awayClub.getName();
                     
                     contentTable.add(new VisLabel(matchText)).left().pad(UiTheme.space("xxs")).row();
                     count++;
@@ -318,19 +318,19 @@ public class LeagueDetailScreenTable extends VisTable {
     private String formatTieBreaker(com.rndmodgames.futtoboru.data.CompetitionRules.TieBreaker breaker) {
         switch (breaker) {
             case POINTS:
-                return "Points";
+                return LanguageModLoader.getValue("league_tb_points");
             case GOAL_DIFFERENCE:
-                return "Goal Difference";
+                return LanguageModLoader.getValue("league_tb_goal_difference");
             case GOAL_AVERAGE:
-                return "Goal Average";
+                return LanguageModLoader.getValue("league_tb_goal_average");
             case GOALS_SCORED:
-                return "Goals Scored";
+                return LanguageModLoader.getValue("league_tb_goals_scored");
             case GOALS_CONCEDED:
-                return "Goals Conceded";
+                return LanguageModLoader.getValue("league_tb_goals_conceded");
             case HEAD_TO_HEAD:
-                return "Head-to-Head";
+                return LanguageModLoader.getValue("league_tb_head_to_head");
             case ALPHABETICAL:
-                return "Alphabetical";
+                return LanguageModLoader.getValue("league_tb_alphabetical");
             default:
                 return breaker.toString();
         }

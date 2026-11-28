@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.settings;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class DebugLoggingSettingsTable extends VisTable {
     
     private void buildUI() {
         // Title
-        VisLabel titleLabel = new VisLabel("DEBUG LOGGING SETTINGS");
+        VisLabel titleLabel = new VisLabel(LanguageModLoader.getValue("settings_debug_title"));
         titleLabel.setFontScale(UiTheme.fontScale("heading"));
         this.add(titleLabel).colspan(2).pad(UiTheme.space("sm")).row();
         
@@ -48,7 +49,7 @@ public class DebugLoggingSettingsTable extends VisTable {
         this.row().pad(UiTheme.space("xs"));
         
         // Engine Systems Section
-        addSection("Engine Systems", 
+        addSection(LanguageModLoader.getValue("settings_debug_engine"), 
             DebugLogManager.CATEGORY_ENGINE_GAME, 
             DebugLogManager.CATEGORY_ENGINE_MATCH, 
             DebugLogManager.CATEGORY_ENGINE_CUP,
@@ -60,7 +61,7 @@ public class DebugLoggingSettingsTable extends VisTable {
             DebugLogManager.CATEGORY_ENGINE_AUTHORITY);
         
         // UI Systems Section
-        addSection("UI Systems", 
+        addSection(LanguageModLoader.getValue("settings_debug_ui"), 
             DebugLogManager.CATEGORY_UI_CUP, 
             DebugLogManager.CATEGORY_UI_LEAGUE, 
             DebugLogManager.CATEGORY_UI_CLUB,
@@ -73,20 +74,20 @@ public class DebugLoggingSettingsTable extends VisTable {
             DebugLogManager.CATEGORY_UI_MENU);
         
         // Data Systems Section
-        addSection("Data Systems", 
+        addSection(LanguageModLoader.getValue("settings_debug_data"), 
             DebugLogManager.CATEGORY_DATA_LOADING,
             DebugLogManager.CATEGORY_DATA_SAVE, 
             DebugLogManager.CATEGORY_DATA_GENERATION);
         
         // System Section
-        addSection("System", 
+        addSection(LanguageModLoader.getValue("settings_debug_system"), 
             DebugLogManager.CATEGORY_SYSTEM_INIT,
             DebugLogManager.CATEGORY_SYSTEM_CONFIG);
         
         // Buttons row
         this.row().pad(UiTheme.space("sm"));
         
-        VisTextButton enableAllButton = new VisTextButton("Enable All");
+        VisTextButton enableAllButton = new VisTextButton(LanguageModLoader.getValue("settings_debug_enable_all"));
         enableAllButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -94,7 +95,7 @@ public class DebugLoggingSettingsTable extends VisTable {
             }
         });
         
-        VisTextButton disableAllButton = new VisTextButton("Disable All");
+        VisTextButton disableAllButton = new VisTextButton(LanguageModLoader.getValue("settings_debug_disable_all"));
         disableAllButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

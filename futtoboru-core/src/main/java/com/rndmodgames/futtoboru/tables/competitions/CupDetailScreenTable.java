@@ -19,6 +19,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Cup Detail Screen Table v1.0
@@ -97,32 +98,32 @@ public class CupDetailScreenTable extends VisTable {
         contentTable.clear();
         
         if (selectedCup == null) {
-            contentTable.add(new VisLabel("No cup selected")).pad(UiTheme.space("lg")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("cup_none_selected"))).pad(UiTheme.space("lg")).row();
             return;
         }
         
         // Title
-        VisLabel titleLabel = new VisLabel(selectedCup.getName() != null ? selectedCup.getName() : "Unnamed Cup");
+        VisLabel titleLabel = new VisLabel(selectedCup.getName() != null ? selectedCup.getName() : LanguageModLoader.getValue("competitions_unnamed_cup"));
         titleLabel.setFontScale(UiTheme.fontScale("title"));
         contentTable.add(titleLabel).pad(UiTheme.space("sm")).row();
         
         contentTable.addSeparator().pad(UiTheme.space("xs")).row();
         
         // Cup Info Section
-        contentTable.add(new VisLabel("Competition Information")).pad(UiTheme.space("xs")).row();
+        contentTable.add(new VisLabel(LanguageModLoader.getValue("cup_information"))).pad(UiTheme.space("xs")).row();
         
         if (currentEdition != null) {
-            contentTable.add(new VisLabel("Season: " + currentEdition.getName())).left().pad(UiTheme.space("xxs")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.format("cup_season", currentEdition.getName()))).left().pad(UiTheme.space("xxs")).row();
             Integer participants = currentEdition.getParticipantClubs();
             String participantsText = participants != null ? String.valueOf(participants) : "0";
-            contentTable.add(new VisLabel("Participants: " + participantsText)).left().pad(UiTheme.space("xxs")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.format("cup_participants", participantsText))).left().pad(UiTheme.space("xxs")).row();
         }
         
         contentTable.add().height(UiTheme.space("sm")).row();
         
         // Past Champions Section
         if (selectedCup.getEditions() != null && !selectedCup.getEditions().isEmpty()) {
-            contentTable.add(new VisLabel("Past Champions")).pad(UiTheme.space("xs")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("competitions_past_champions"))).pad(UiTheme.space("xs")).row();
             contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             // Show completed editions (those with champions)
@@ -133,29 +134,29 @@ public class CupDetailScreenTable extends VisTable {
                     Club champion = currentGame.getClubById(edition.getChampionsId());
                     Club runnerUp = edition.getRunnersUpId() != null ? currentGame.getClubById(edition.getRunnersUpId()) : null;
                     
-                    String seasonInfo = edition.getName() != null ? edition.getName() : "Edition " + completedCount;
-                    String championName = champion != null ? champion.getName() : "Unknown";
-                    String runnerUpName = runnerUp != null ? runnerUp.getName() : "N/A";
+                    String seasonInfo = edition.getName() != null ? edition.getName() : LanguageModLoader.format("competitions_edition_n", completedCount);
+                    String championName = champion != null ? champion.getName() : LanguageModLoader.getValue("unknown");
+                    String runnerUpName = runnerUp != null ? runnerUp.getName() : LanguageModLoader.getValue("not_available");
                     
                     VisTable historyRow = new VisTable(true);
                     historyRow.add(new VisLabel(seasonInfo)).width(UiTheme.size("col.label")).left();
-                    historyRow.add(new VisLabel("Champion: " + championName)).expandX().left();
+                    historyRow.add(new VisLabel(LanguageModLoader.format("competitions_champion", championName))).expandX().left();
                     if (runnerUp != null) {
-                        historyRow.add(new VisLabel("Runner-up: " + runnerUpName)).expandX().left();
+                        historyRow.add(new VisLabel(LanguageModLoader.format("competitions_runner_up", runnerUpName))).expandX().left();
                     }
                     contentTable.add(historyRow).pad(UiTheme.space("xxs")).row();
                 }
             }
             
             if (completedCount == 0) {
-                contentTable.add(new VisLabel("No completed editions yet.")).left().pad(UiTheme.space("xxs")).row();
+                contentTable.add(new VisLabel(LanguageModLoader.getValue("cup_no_completed"))).left().pad(UiTheme.space("xxs")).row();
             }
             
             contentTable.add().height(UiTheme.space("sm")).row();
         }
         
         // View Bracket Button
-        VisTextButton bracketButton = new VisTextButton("View Playoff Bracket");
+        VisTextButton bracketButton = new VisTextButton(LanguageModLoader.getValue("cup_view_bracket"));
         bracketButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -176,7 +177,7 @@ public class CupDetailScreenTable extends VisTable {
         // Fixtures and Results - Show ALL rounds (complete schedule)
         List<Match> matches = getEditionMatches();
         if (!matches.isEmpty()) {
-            contentTable.add(new VisLabel("Complete Tournament Schedule")).pad(UiTheme.space("xs")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("cup_schedule"))).pad(UiTheme.space("xs")).row();
             contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
             
             // Group matches by round
@@ -208,7 +209,7 @@ public class CupDetailScreenTable extends VisTable {
                 
                 // Round header
                 String roundName = getRoundName(round, roundMatches.size() * 2);
-                VisLabel roundLabel = new VisLabel(roundName + " (Round " + round + ")");
+                VisLabel roundLabel = new VisLabel(LanguageModLoader.format("cup_round_heading", roundName, round));
                 roundLabel.setColor(UiTheme.color("text.heading"));
                 contentTable.add(roundLabel).padTop(UiTheme.space("sm")).padBottom(UiTheme.space("xs")).row();
                 
@@ -217,7 +218,7 @@ public class CupDetailScreenTable extends VisTable {
                     VisTable row = new VisTable(true);
                     
                     // Date
-                    String dateStr = match.getMatchDateTime() != null ? match.getMatchDateTime().format(dateFormatter) : "TBD";
+                    String dateStr = match.getMatchDateTime() != null ? match.getMatchDateTime().format(dateFormatter) : LanguageModLoader.getValue("competitions_tbd");
                     row.add(new VisLabel(dateStr)).width(UiTheme.size("col.number"));
                     
                     // Home team or "Winner of X"
@@ -225,7 +226,7 @@ public class CupDetailScreenTable extends VisTable {
                     row.add(new VisLabel(homeName)).width(UiTheme.size("col.label")).right();
                     
                     // Score or vs
-                    String score = " vs ";
+                    String score = " " + LanguageModLoader.getValue("match_vs") + " ";
                     if (match.getIsPlayed() != null && match.getIsPlayed() && 
                         match.getHomeGoals() != null && match.getAwayGoals() != null) {
                         score = " " + match.getHomeGoals() + " - " + match.getAwayGoals() + " ";
@@ -240,7 +241,7 @@ public class CupDetailScreenTable extends VisTable {
                 }
             }
         } else {
-            contentTable.add(new VisLabel("No matches scheduled yet for this edition.")).pad(UiTheme.space("lg")).row();
+            contentTable.add(new VisLabel(LanguageModLoader.getValue("cup_no_matches"))).pad(UiTheme.space("lg")).row();
         }
         
         contentTable.add().height(UiTheme.space("lg")).row();
@@ -306,12 +307,12 @@ public class CupDetailScreenTable extends VisTable {
         if (parentMatchId != null) {
             Match parentMatch = findMatchById(parentMatchId);
             if (parentMatch != null && parentMatch.getBracketPath() != null) {
-                return "Winner of " + parentMatch.getBracketPath();
+                return LanguageModLoader.format("cup_winner_of", parentMatch.getBracketPath());
             }
-            return "Winner of Match " + parentMatchId;
+            return LanguageModLoader.format("cup_winner_of_match", parentMatchId);
         }
-        
-        return "TBD";
+
+        return LanguageModLoader.getValue("competitions_tbd");
     }
     
     /**
@@ -334,15 +335,17 @@ public class CupDetailScreenTable extends VisTable {
      * Get round name (First Round, Semi-Final, Final, etc.)
      */
     private String getRoundName(int roundNumber, int participants) {
-        if (participants == 2) return "Final";
-        if (participants == 4) return "Semi-Final";
-        if (participants == 8) return "Quarter-Final";
-        
-        String[] ordinals = {"", "First", "Second", "Third", "Fourth", "Fifth", "Sixth"};
+        if (participants == 2) return LanguageModLoader.getValue("cup_round_final");
+        if (participants == 4) return LanguageModLoader.getValue("cup_round_semi_final");
+        if (participants == 8) return LanguageModLoader.getValue("cup_round_quarter_final");
+
+        String[] ordinals = {"", LanguageModLoader.getValue("cup_round_first"), LanguageModLoader.getValue("cup_round_second"),
+                LanguageModLoader.getValue("cup_round_third"), LanguageModLoader.getValue("cup_round_fourth"),
+                LanguageModLoader.getValue("cup_round_fifth"), LanguageModLoader.getValue("cup_round_sixth")};
         if (roundNumber > 0 && roundNumber < ordinals.length) {
-            return ordinals[roundNumber] + " Round";
+            return ordinals[roundNumber];
         }
-        return "Round " + roundNumber;
+        return LanguageModLoader.format("cup_round_n", roundNumber);
     }
 }
 

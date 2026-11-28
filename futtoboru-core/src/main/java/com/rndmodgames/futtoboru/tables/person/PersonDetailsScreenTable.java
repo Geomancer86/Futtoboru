@@ -109,7 +109,7 @@ public class PersonDetailsScreenTable extends VisTable {
             //
             if (person.getCurrentClubId() == null) {
                 
-                currentClubValueLabel.setText("UNAVAILABLE");
+                currentClubValueLabel.setText(LanguageModLoader.getValue("person_no_club"));
                 
             } else {
                 

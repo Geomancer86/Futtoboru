@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -82,12 +83,12 @@ public class CupPlayoffsTable extends VisTable {
         bracketContainer.clear();
         
         if (currentEdition == null || currentCup == null) {
-            bracketContainer.add(new VisLabel("No edition selected")).pad(UiTheme.space("lg"));
+            bracketContainer.add(new VisLabel(LanguageModLoader.getValue("cup_no_edition"))).pad(UiTheme.space("lg"));
             return;
         }
         
         // Header
-        VisLabel titleLabel = new VisLabel(currentCup.getName() + " - " + currentEdition.getName() + " Bracket");
+        VisLabel titleLabel = new VisLabel(LanguageModLoader.format("cup_bracket_title", currentCup.getName(), currentEdition.getName()));
         titleLabel.setFontScale(UiTheme.fontScale("heading"));
         bracketContainer.add(titleLabel).colspan(10).pad(UiTheme.space("sm")).row();
         
@@ -106,7 +107,7 @@ public class CupPlayoffsTable extends VisTable {
         }
         
         if (maxRound == 0) {
-            bracketContainer.add(new VisLabel("The draw has not been conducted yet.")).pad(UiTheme.space("lg")).row();
+            bracketContainer.add(new VisLabel(LanguageModLoader.getValue("cup_not_drawn"))).pad(UiTheme.space("lg")).row();
             Log.info(Log.UI_COMPETITIONS, "CupPlayoffsTable: No matches found - edition ID: " + currentEdition.getId() + ", currentGame: " + (currentGame != null ? "not null" : "null"));
             return;
         }
@@ -135,7 +136,7 @@ public class CupPlayoffsTable extends VisTable {
             roundColumn.top();
             
             // Round Title
-            VisLabel roundTitle = new VisLabel("Round " + r);
+            VisLabel roundTitle = new VisLabel(LanguageModLoader.format("cup_round_n", r));
             roundTitle.setColor(UiTheme.color("state.winner"));
             roundColumn.add(roundTitle).pad(UiTheme.space("sm")).row();
             
@@ -168,7 +169,7 @@ public class CupPlayoffsTable extends VisTable {
             // Show "Winner of Match X"
             homeName = getWinnerLabel(match, match.getParentMatch1Id());
         } else {
-            homeName = "TBD";
+            homeName = LanguageModLoader.getValue("competitions_tbd");
         }
         
         if (away != null) {
@@ -177,7 +178,7 @@ public class CupPlayoffsTable extends VisTable {
             // Show "Winner of Match X"
             awayName = getWinnerLabel(match, match.getParentMatch2Id());
         } else {
-            awayName = "TBD";
+            awayName = LanguageModLoader.getValue("competitions_tbd");
         }
         
         VisLabel homeLabel = new VisLabel(homeName);
@@ -204,7 +205,7 @@ public class CupPlayoffsTable extends VisTable {
         }
         
         box.add(homeLabel).width(UiTheme.size("col.label")).left().pad(UiTheme.space("xxs")).row();
-        box.add(new VisLabel("vs")).center().pad(UiTheme.space("xxs")).row();
+        box.add(new VisLabel(LanguageModLoader.getValue("match_vs"))).center().pad(UiTheme.space("xxs")).row();
         box.add(awayLabel).width(UiTheme.size("col.label")).left().pad(UiTheme.space("xxs"));
         
         return box;
@@ -215,16 +216,16 @@ public class CupPlayoffsTable extends VisTable {
      */
     private String getWinnerLabel(Match currentMatch, Long parentMatchId) {
         if (parentMatchId == null) {
-            return "TBD";
+            return LanguageModLoader.getValue("competitions_tbd");
         }
         
         // Find the parent match to get its bracket path
         Match parentMatch = findMatchById(parentMatchId);
         if (parentMatch != null && parentMatch.getBracketPath() != null) {
-            return "Winner of " + parentMatch.getBracketPath();
+            return LanguageModLoader.format("cup_winner_of", parentMatch.getBracketPath());
         }
-        
-        return "Winner of Match " + parentMatchId;
+
+        return LanguageModLoader.format("cup_winner_of_match", parentMatchId);
     }
     
     /**

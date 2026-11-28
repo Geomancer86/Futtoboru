@@ -24,6 +24,7 @@ _Last updated 2026-11-28 (BOOK3PRO)._ Version 0.5.0-SNAPSHOT.
 | Settings | working | sound panel and the empty gameplay panel hidden until there is audio / a setting (U-08) |
 | UI scale / window | working | U-03a: `ui/UiScale` on every stage (Settings: Auto (shows %) / 100% / 200%, integer steps; Auto = OS content scale rounded to 1-2, else 2x from a 1920x1080 window); window default and minimum 1280x720 from the saved preference (launcher, no double resize); screen roots scroll when they do not fit |
 | Logging | working | one style (P1-5): `Log.info/debug/warn/error(Log.<CATEGORY>[, tag], msg[, e])`; info/debug/warn follow Settings > Debug Logging, errors always print with stack trace; `LoggingStyleGuardTest` blocks `System.out/err`, `printStackTrace`, `Gdx.app.log` in main code |
+| Labels / languages | working | U-10 (D18): every on-screen label and inbox message text comes from `mods/language/BaseBundle_{en_us,en_uk,sp_la,sp_sp}.properties` (Spanish translated; ASCII with `\uXXXX`); `LanguageModLoader.getValue/format("key", args)`, English fallback when no bundle is loaded; `LanguageBundleKeysTest` blocks hard-coded UI text and missing keys (dev-only: `MatchEngineDebugScreen`). Month/day names in screen date patterns still English |
 
 Full season: `engine/FullSeasonTests` plays 1888-89 headless and seeded to the 1889-90 rollover (P2-3, ~11 s, in `verify`).
 
