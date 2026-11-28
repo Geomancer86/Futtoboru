@@ -115,8 +115,8 @@ class SpriteSelectionTest {
     }
 
     @Test
-    void scalePicksTheClosestBakedSheetWithWholeScreenPixelTexels() {
-        // magnification 1: middle and far side 1x, near touchline 2x
+    void wideViewPicksTheClosestBakedSheetWithWholeScreenPixelTexels() {
+        // wide view (5 px/m), magnification 1: middle and far side 1x, near touchline 2x
         int mid = SpriteScale.choose(5.0, 1, 2);
         assertEquals(1, SpriteScale.sheet(mid));
         assertEquals(1, SpriteScale.texel(mid));
@@ -134,10 +134,10 @@ class SpriteSelectionTest {
         assertEquals(2, SpriteScale.sheet(zoom));
         assertEquals(1, SpriteScale.texel(zoom));
         assertEquals(5.0, SpriteScale.drawnPixelsPerMetre(zoom, 2), 1e-9);
-        // magnification 3 in the middle: 1x at three screen pixels per texel is exact
+        // magnification 3 (wide view 15 screen px/m at halfway, not zoomed out): 2x at whole texels
         int three = SpriteScale.choose(5.0, 3, 2);
-        assertEquals(1, SpriteScale.sheet(three));
-        assertEquals(3, SpriteScale.texel(three));
+        assertEquals(2, SpriteScale.sheet(three));
+        assertEquals(2, SpriteScale.texel(three));
         // 1x-only sheets (crowd, props) scale by whole texels
         int crowdNear = SpriteScale.choose(10.3, 1, 1);
         assertEquals(1, SpriteScale.sheet(crowdNear));
@@ -150,6 +150,32 @@ class SpriteSelectionTest {
                 assertTrue(drawn / p < 1.8 && p / drawn < 2.2, p + " @" + m + " drawn at " + drawn);
             }
         }
+    }
+
+    @Test
+    void theDefaultTenPixelViewDrawsTwoXEverywhereAndOneXSheetsAtDoubleTexels() {
+        double view = ViewCamera.PIXELS_PER_METRE;
+        for (double p : new double[] { 6.6, 10, 20.7 }) {
+            for (int m = 1; m <= 4; m++) {
+                int c = SpriteScale.choose(p, m, 2, view);
+                assertEquals(2, SpriteScale.sheet(c), "2x at " + p + " px/m, magnification " + m);
+                int crowd = SpriteScale.choose(p, m, 1, view);
+                assertEquals(1, SpriteScale.sheet(crowd));
+                assertEquals(2 * SpriteScale.texel(c), SpriteScale.texel(crowd), "1x crowd drawn the same size");
+                assertEquals(SpriteScale.drawnPixelsPerMetre(c, m), SpriteScale.drawnPixelsPerMetre(crowd, m), 1e-9);
+            }
+        }
+        int far = SpriteScale.choose(6.6, 1, 2, view);
+        assertEquals(1, SpriteScale.texel(far), "far side: never below one screen pixel per 2x texel");
+        int mid = SpriteScale.choose(10, 2, 2, view);
+        assertEquals(2, SpriteScale.texel(mid), "halfway at magnification 2: two screen pixels per texel");
+        int near = SpriteScale.choose(20.7, 1, 2, view);
+        assertEquals(2, SpriteScale.texel(near));
+        // the wide view (5 px/m) at magnification 1 falls back to the closest sheet: 1x in the middle
+        assertEquals(1, SpriteScale.sheet(SpriteScale.choose(5, 1, 2, ViewCamera.WIDE_PIXELS_PER_METRE)));
+        assertEquals(2, SpriteScale.sheet(SpriteScale.choose(10.3, 1, 2, ViewCamera.WIDE_PIXELS_PER_METRE)));
+        // wide view at magnification 2 is 10 screen px/m at halfway again: 2x
+        assertEquals(2, SpriteScale.sheet(SpriteScale.choose(5, 2, 2, ViewCamera.WIDE_PIXELS_PER_METRE)));
     }
 
     @Test

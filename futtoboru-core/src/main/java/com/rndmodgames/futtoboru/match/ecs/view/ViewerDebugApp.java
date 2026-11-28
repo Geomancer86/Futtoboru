@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,6 +25,7 @@ import com.rndmodgames.futtoboru.match.ecs.body.MoveCommand;
 import com.rndmodgames.futtoboru.match.ecs.body.Shape;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchParams;
+import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.ui.gfx.GraphicsQuality;
 
 /**
@@ -36,13 +36,13 @@ import com.rndmodgames.futtoboru.ui.gfx.GraphicsQuality;
  * who reaches the ball kicks it toward the other half. The officials are still {@link StandInPlayers} (E-16). Sprites
  * are the baked sheets ({@link IndexActorSprites}); the crowd cheers when the ball nears a goal.
  *
- * <p>Keys: {@code +}/{@code -} magnification, {@code A} automatic magnification, {@code SPACE} pause, {@code 1}-{@code 4}
- * quality level, {@code ESC} quit. System properties: {@code futtoboru.viewer.shot=<png>} saves a screenshot after
+ * <p>Keys: {@code +}/{@code -} magnification, {@code A} automatic magnification, {@code W} wide view (5 px/m) on/off,
+ * {@code SPACE} pause, {@code 1}-{@code 4} quality level, {@code ESC} quit. System properties: {@code futtoboru.viewer.shot=<png>} saves a screenshot after
  * {@code futtoboru.viewer.shotAfter} seconds (default 6); {@code futtoboru.viewer.seconds=<n>} quits after n seconds;
  * {@code futtoboru.seed} seeds the match fork and the kicks; {@code futtoboru.viewer.home} / {@code .away} pick the
  * clubs' kits (club ids of {@code art/match/index.json}); {@code futtoboru.viewer.crowd} the attendance;
  * {@code futtoboru.viewer.wetness} the pitch wetness (0..1, mud on the kits); {@code futtoboru.viewer.magnification}
- * fixes the magnification.
+ * fixes the magnification; {@code futtoboru.viewer.wide=true} starts in the wide view.
  */
 public final class ViewerDebugApp extends ApplicationAdapter {
 
@@ -91,6 +91,7 @@ public final class ViewerDebugApp extends ApplicationAdapter {
         viewer = new MatchViewer(world, frame, new ViewerClock(world.tickSeconds()),
                 new StandInPlayers(world, pitch.halfLength(), pitch.halfWidth()));
         world.setDrawGuard(Boolean.getBoolean("futtoboru.viewer.guard"));
+        viewer.view().viewCamera().setWide(Boolean.getBoolean("futtoboru.viewer.wide"));
         Integer fixed = Integer.getInteger("futtoboru.viewer.magnification");
         if (fixed != null) {
             viewer.view().viewCamera().setMagnification(fixed);
@@ -116,8 +117,7 @@ public final class ViewerDebugApp extends ApplicationAdapter {
             steer(dt);
             kickWhenIdle(dt);
         }
-        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ViewColors.clear(ArtMath.INK);
         viewer.frame(dt);
         screenshot();
         double quitAfter = Double.parseDouble(System.getProperty("futtoboru.viewer.seconds", "0"));
@@ -141,6 +141,9 @@ public final class ViewerDebugApp extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             cam.autoMagnification();
             cam.resize(w, h);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            cam.setWide(!cam.wide());
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             viewer.setPaused(!viewer.paused());
@@ -262,7 +265,7 @@ public final class ViewerDebugApp extends ApplicationAdapter {
                 pixels.put(i, (byte) 0xFF); // opaque, whatever the passes left in the alpha channel
             }
             PixmapIO.writePNG(Gdx.files.absolute(path), shot, 6, true);
-            System.out.println("viewer screenshot " + path);
+            Log.info(Log.UI_MATCH, "ViewerDebugApp", "viewer screenshot " + path);
         } finally {
             shot.dispose();
         }

@@ -24,6 +24,13 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
 - Parallel agents on one machine: one `git worktree` per item; never work in another session's worktree.
 - Record a handover line in `docs/HANDOFF.md` when you stop mid-item.
 
+## Bugs and AI clubs (D31)
+- **No open bugs.** A bug you find is fixed now (this lane, or a fix lane started at once), at most one or two prompt
+  rounds later, before more feature work. Never log "open, not fixed" and move on; never ask whether to fix a bug.
+  A fix that changes seeded expectations re-pins them. Start every session by fixing any bug HANDOFF/STATUS still lists.
+- **AI clubs get every system the player's club has** (friendlies, team sheet, contracts, recruitment...) unless sourced
+  history says clubs of that season didn't. Each gameplay lane builds the AI side too.
+
 ## Content rules
 - This repo is **public**: follow `PRIVACY.md`. Business-private material goes to the private Bitbucket repo
   `Geomancer/futtoboru-private`, cloned outside this clone (`C:\git\futtoboru-private`).
@@ -33,7 +40,9 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
 - Game data is JSON in `futtoboru-core/src/main/resources/gamedata/` (`docs/DATA_MODEL.md`): stable string ids that never change (renames via `aliases.json` + rename log), a source per record. Run `python tools/data/validate.py` and `python -m pytest tools/data` on every data change.
 - A new data record gets its runtime number with `python tools/data/assign_ids.py`; `ids.json` is append-only (never
   edit or delete a number; a removed record goes to `retired`).
-- Match results come from the event/possession engine (decision D5); the 2D prototype is only a viewer.
+- Match results come from the instant result (`MatchSimulator`) until the ECS engine (D20) passes calibration; then
+  the engine replaces it behind `MatchResultRecorder` (D30). Gameplay lanes never wait for the engine. Unresearched
+  gameplay data may be `placeholder` (listed for review) so research never blocks a lane (D30).
 - Real historical results/fixtures (`docs/data/results_*.csv`, later `seasons/*/results.json`) are reference data (D17):
   engine calibration in test code, and history for seasons before the start season. Game code must never read them
   to decide or schedule a match the player plays.

@@ -27,7 +27,7 @@ select,button{font:inherit}
 </style></head><body>
 <header><b>Baked match sprites</b>
 <label>Kit <select id="kit"></select></label>
-<label>Scale <select id="scale"><option value="1">1x (5 px/m)</option><option value="2">2x (10 px/m)</option></select></label>
+<label>Scale <select id="scale"><option value="2" selected>2x (10 px/m)</option><option value="1">1x (5 px/m)</option></select></label>
 <label>Zoom <select id="zoom"><option>2</option><option selected>3</option><option>4</option><option>6</option></select></label>
 <label><input type="checkbox" id="mud"> mud overlay</label>
 <button id="pause">pause</button><span class="note" id="meta"></span></header>

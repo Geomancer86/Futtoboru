@@ -54,7 +54,7 @@ public final class PitchPass extends EntitySystem implements DrawPass {
         batch.begin();
         ViewColors.set(batch, EARTH, 1f);
         batch.draw(white, 0, 0, width, Math.max(0, farRow));
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         for (int sy = 0; sy < farRow && sy < cam.viewHeight(); sy++) {
             double wy = cam.groundYAtRow(sy + 0.5);
             if (wy > image.maxY || wy < image.minY()) {
@@ -75,7 +75,7 @@ public final class PitchPass extends EntitySystem implements DrawPass {
             rowsDrawn++;
         }
         drawLines(batch, white, cam, image);
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         batch.end();
     }
 
