@@ -162,7 +162,7 @@ public class SquadScreenTable extends VisTable{
                 }
             }
         });
-        tabRow.add(retainedListButton).padLeft(20);
+        tabRow.add(retainedListButton);
 
         // Players List Component (wrapped in scroll pane for horizontal scrolling)
         this.addSeparator().colspan(2);
