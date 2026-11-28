@@ -486,3 +486,47 @@ Cited in `POSITIONS_1888-89.md` (the `wp-season-1888-89`, `wp-player` and `fa-cu
 - https://en.wikipedia.org/wiki/Will_Devey
 - https://en.wikipedia.org/wiki/Charlie_Shaw_(footballer,_born_1862)
 - https://en.wikipedia.org/wiki/Bob_Roberts_(footballer,_born_1863)
+
+## Recruitment, trials, signing (R-01, 39)
+
+Cited in `RECRUITMENT_1888-1900.md` (numbered there), used by `docs/design/RECRUITMENT_AND_TRIALS.md`.
+
+- https://bluecorrespondent.co.uk/1888-89/august1888.html
+- https://bluecorrespondent.co.uk/1888-89/september1888.html
+- https://en.wikipedia.org/wiki/Professionalism_in_association_football
+- https://spartacus-educational.com/Fsudell.htm
+- https://en.wikipedia.org/wiki/William_Sudell
+- https://www.thescotsfootballhistoriansgroup.org/scotch-professors
+- https://thescotsfootballhistoriansgroup.org/thescotchprofessors
+- https://warwick.ac.uk/services/library/mrc/archives_online/exhibitions/football/
+- https://scottishsporthistory.com/sports-history-news-and-blog/archives/09-2016
+- https://ptearlyyears.net/?p=945
+- https://en.wikipedia.org/wiki/Scotch_Professors
+- https://the1888letter.com/?p=137
+- https://spartacus-educational.com/FreligionG.htm
+- https://bluecorrespondent.co.uk/1889-90/august1889.html
+- https://en.wikipedia.org/wiki/Sunderland_Albion
+- https://bluecorrespondent.co.uk/February%201891.htm
+- https://en.wikipedia.org/wiki/1885_in_association_football
+- https://www.lfchistory.net/players/603
+- https://en.wikipedia.org/wiki/1890%E2%80%9391_Sunderland_A.F.C._season
+- https://en.wikipedia.org/wiki/Retain_and_transfer_system
+- https://leicestershirefootballarchive.com/?p=9220
+- https://en.wikipedia.org/wiki/Willie_Groves
+- https://premierleague.com/news/4212638
+- https://the1888letter.com/?p=3992
+- https://en.wikipedia.org/wiki/Scottish_Junior_Football_Association
+- https://schoolsfootball.org/about-us/esfa-history/
+- https://sfss.co.uk/history.html
+- https://atom.aim25.com/index.php/london-schools-football-association-2
+- https://vdoc.pub/documents/teachers-and-football-schoolboy-association-football-in-england-1885-1915-woburn-education-487uopkfrlj0
+- https://en.wikipedia.org/wiki/Harry_Plackett
+- https://en.wikipedia.org/wiki/Edwin_Wardle
+- https://www.national-football-teams.com/club/695/1888/Preston_North_End.html
+- https://spartacus-educational.com/Falcohol.htm
+- https://spartacus-educational.com/Fcoaching.htm
+- https://en.wikipedia.org/wiki/Aston_Villa_F.C._in_the_1880s
+- https://playupliverpool.com/1890/11/01/triumphs-of-the-football-field-aston-villa-archie-hunter
+- https://en.wikipedia.org/wiki/Tom_Watson_(football_manager)
+- https://lfchistory.net/articles/2845
+- https://www.playingpasts.co.uk/?p=9331
