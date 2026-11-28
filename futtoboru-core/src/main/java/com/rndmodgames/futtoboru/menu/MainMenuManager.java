@@ -1079,6 +1079,45 @@ public class MainMenuManager {
         return selectedLeague;
     }
 
+    /**
+     * G-03: opens the result and report of a played match (any club's: Match History, a cup's schedule, a league's
+     * latest results, an inbox result). Continue on the result screen comes back to the screen it was opened from.
+     */
+    public void showMatchResult(com.rndmodgames.futtoboru.data.Match match) {
+        if (match == null || match.getIsPlayed() == null || !match.getIsPlayed()) {
+            return;
+        }
+        matchResultScreenTable.setSelectedMatch(match);
+        if (CURRENT_SCREEN != MATCH_RESULT_SCREEN) {
+            BEFORE_MATCH_SCREEN = CURRENT_SCREEN;
+        }
+        setActiveMainScreen(MATCH_RESULT_SCREEN);
+    }
+
+    /** The result screen shows the current club's latest played match again (the top bar's Match Result). */
+    public void showLatestMatchResult() {
+        matchResultScreenTable.setSelectedMatch(null);
+        setActiveMainScreen(MATCH_RESULT_SCREEN);
+    }
+
+    /** @return the played match with this id (any club's), or null */
+    public com.rndmodgames.futtoboru.data.Match findPlayedMatch(Long matchId) {
+        if (matchId == null || currentGame == null || currentGame.getAllClubs() == null) {
+            return null;
+        }
+        for (Club club : currentGame.getAllClubs()) {
+            if (club == null || club.getPlayedMatches() == null) {
+                continue;
+            }
+            for (com.rndmodgames.futtoboru.data.Match m : club.getPlayedMatches()) {
+                if (m != null && matchId.equals(m.getId())) {
+                    return m;
+                }
+            }
+        }
+        return null;
+    }
+
     public void setSelectedCup(com.rndmodgames.futtoboru.data.Competition cup) {
         this.selectedCup = cup;
     }
