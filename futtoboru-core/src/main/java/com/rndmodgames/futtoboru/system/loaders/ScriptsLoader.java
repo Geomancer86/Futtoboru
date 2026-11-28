@@ -44,8 +44,8 @@ public class ScriptsLoader {
     /**
      * Load the Scripts bundled with a Season
      * 
-     * TODO: the execution dates are still fixed (17 April for the league, 1 May for the cup of the season's
-     *       start year); they belong in season.json
+     * The league is founded on 17 April of the season's start year (the Football League, 1888); a cup opens on its
+     * season calendar's opening day (P2-14, season.json `calendar`).
      * 
      * @param editions the season's editions (in data order) with their competition
      */
@@ -106,13 +106,15 @@ public class ScriptsLoader {
                 
                 /**
                  * 2) CUP_CREATION_SCRIPT (FA Cup)
-                 * Executed on May 1st, 1888
+                 * P2-14: executed on the day the season calendar opens the cup (season.json `calendar`): 6 Oct 1888,
+                 * with the qualifying rounds; it was 1 May until then. The draw comes later (SeasonCalendar).
                  */
                 BasicScript theCupCreationScript = new BasicScript();
                 theCupCreationScript.setName("The " + edition.getName() + " Creation");
                 theCupCreationScript.setDescription("This will create the " + edition.getName() + " edition and add all participants");
                 theCupCreationScript.setScriptType(BasicScript.CUP_CREATION_SCRIPT);
-                theCupCreationScript.setExecutionTime(LocalDateTime.of(year, Month.MAY, 1, 10, 0, 0));
+                theCupCreationScript.setExecutionTime(com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar
+                        .forSeason(year).withCup(competition.getDataId()).cupOpens().atStartOfDay());
                 
                 theCupCreationScript.getScriptValues().put(CUP_NAME, competition.getName());
                 theCupCreationScript.getScriptValues().put(CUP_COUNTRY, countryId);

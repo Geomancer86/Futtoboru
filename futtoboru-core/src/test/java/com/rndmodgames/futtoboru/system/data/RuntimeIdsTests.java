@@ -59,8 +59,10 @@ class RuntimeIdsTests {
     private static SaveGame newGame(int days) {
         SaveGame game = NewGameFixture.newGame(application);
         NewGameFixture.play(application, game, days, false);
-        // time stops at the mandatory draw message: jump to the cup creation date (1 May)
-        game.setGameDate(java.time.LocalDateTime.of(1888, java.time.Month.MAY, 1, 12, 0));
+        // time stops at the mandatory draw message: jump to the cup creation date (P2-14: the season calendar's
+        // opening day, 6 Oct 1888)
+        game.setGameDate(com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forSeason(1888).withCup("fa-cup")
+                .cupOpens().atTime(12, 0));
         application.getScriptsManager().checkGameScripts();
         return game;
     }

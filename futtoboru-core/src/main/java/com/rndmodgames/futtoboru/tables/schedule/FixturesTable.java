@@ -8,6 +8,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -16,10 +17,14 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.engine.temporal.FriendlyArranger;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.GroundArt;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiTooltips;
 import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -127,6 +132,10 @@ public class FixturesTable extends VisTable {
             cell.add(new VisLabel(typeLabel(match))).left();
             cell.row();
             cell.add(new VisLabel(opponentLine(match))).left();
+            if (NeutralVenues.isNeutral(match)) {
+                cell.row();
+                cell.add(neutralGroundThumb(match)).left();
+            }
             cell.row();
             cell.add(new VisLabel(stateLabel(match))).left();
         }
@@ -160,7 +169,23 @@ public class FixturesTable extends VisTable {
         Long opponentId = home ? match.getAwayClubId() : match.getHomeClubId();
         Club opponent = opponentId != null ? game.getCurrentGame().getClubById(opponentId) : null;
         String name = opponent != null ? opponent.getName() : text("schedule_opponent_tbd");
+        if (NeutralVenues.isNeutral(match)) { // P2-14: a cup semi-final or final at a neutral ground
+            Stadium ground = NeutralVenues.stadiumOf(match, game.getCurrentGame());
+            return FriendlyArranger.fill(text("schedule_vs_neutral"), name,
+                    ground != null ? ground.getName() : match.getVenue());
+        }
         return FriendlyArranger.fill(text(home ? "schedule_vs_home" : "schedule_vs_away"), name);
+    }
+
+    /** P2-14: the picture of a neutral ground (the home and away grounds are implied by "home" / "away") */
+    private Actor neutralGroundThumb(Match match) {
+        Stadium ground = NeutralVenues.stadiumOf(match, game.getCurrentGame());
+        Actor thumb = game.getGroundArt().picture(GroundArt.groundId(ground), true, UiTheme.size("art.thumb.w"),
+                UiTheme.size("art.thumb.h"));
+        if (ground != null) {
+            UiTooltips.tipText(thumb, ground.getName());
+        }
+        return thumb;
     }
 
     private String stateLabel(Match match) {

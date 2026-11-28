@@ -3,7 +3,7 @@
     1,
     99999
   ],
-  "next": 930,
+  "next": 932,
   "ids": {
     "continent": {
       "africa": 38,
@@ -389,7 +389,9 @@
       "the-meadow-belfast": 915,
       "great-lines-chatham": 916,
       "clee-park": 917,
-      "meadow-lane-1886": 918
+      "meadow-lane-1886": 918,
+      "kennington-oval": 930,
+      "bramall-lane": 931
     },
     "person": {
       "fred-dewhurst-1863": 361,

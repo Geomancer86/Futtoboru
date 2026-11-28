@@ -374,3 +374,68 @@ def test_era_baseline_is_strict(pack):
 def test_every_baseline_parameter_is_used_or_documented_in_a_group():
     base = json.loads((ROOT / "core" / "era" / "baseline.json").read_text(encoding="utf-8"))
     assert set(base["parameters"]) == {"rules", "ball", "kit", "league"}
+# ---- P2-14: the season calendar and the cup's neutral grounds (season.json) -------------------------------------
+SEASON = ("core", "seasons", "1888-89", "season.json")
+
+
+def fa_cup(d):
+    return next(e for e in d["editions"] if e["competition"] == "fa-cup")
+
+
+def test_shipped_calendar_and_neutral_grounds():
+    season = json.loads(ROOT.joinpath(*SEASON).read_text(encoding="utf-8"))
+    cal = season["calendar"]
+    assert cal["league"]["opens"]["onOrAfter"] == "09-08" and cal["league"]["opens"]["weekday"] == "saturday"
+    cup = cal["cups"][0]
+    assert cup["competition"] == "fa-cup" and cup["laterDraws"] == "open-draw"
+    assert cup["opens"]["onOrAfter"][:2] == "10", "the cup opens with the autumn qualifying rounds, not in May"
+    assert cup["firstDraw"]["onOrAfter"][:2] == "01" and cup["firstDraw"]["confidence"] == "placeholder"
+    neutral = fa_cup(season)["neutralVenues"]
+    assert {r["round"]: r["grounds"] for r in neutral["rounds"]}["final"] == ["kennington-oval"]
+    assert neutral["gate"] == "association"
+
+
+def test_calendar_typos_are_errors(pack):
+    def bad(d):
+        cal = d["calendar"]
+        cal["league"]["opens"]["weekday"] = "caturday"
+        cal["league"]["closes"]["onOrAfter"] = "04-01"  # both anchors
+        cal["league"]["noMatchOn"] = ["12-32"]
+        cup = cal["cups"][0]
+        cup["firstDraw"].pop("onOrAfter")  # no anchor
+        cup["laterDraws"] = "lottery"
+        cup["daysBetweenRounds"] = 0
+        cup["kickOff"] = "15:00"
+        cal["cups"].append(dict(cup))  # a second fa-cup calendar
+    edit(pack.joinpath(*SEASON), bad)
+    out = errors(pack)
+    assert "caturday" in out
+    assert out.count("exactly one of `onOrAfter` / `onOrBefore`") >= 2
+    assert "12-32" in out
+    assert "lottery" in out
+    assert "daysBetweenRounds: 0 is outside 1-60" in out
+    assert "unknown field `kickOff`" in out
+    assert "`fa-cup` has 2 calendars" in out
+
+
+def test_neutral_grounds_typos_are_errors(pack):
+    def bad(d):
+        neutral = fa_cup(d)["neutralVenues"]
+        neutral["rounds"][0]["grounds"] = ["wembley"]
+        neutral["rounds"][1]["round"] = "semi-final"  # listed twice
+        neutral["gate"] = "visitors"
+        neutral["rounds"].append({"round": "final", "grounds": [], "confidence": "unverified"})
+    edit(pack.joinpath(*SEASON), bad)
+    out = errors(pack)
+    assert "unknown ground `wembley`" in out
+    assert "`semi-final` listed 2 times" in out
+    assert "visitors" in out
+    assert "needs at least one ground" in out
+
+
+def test_a_season_without_calendar_is_valid(pack):
+    def drop(d):
+        d.pop("calendar")
+        fa_cup(d).pop("neutralVenues")
+    edit(pack.joinpath(*SEASON), drop)
+    assert errors(pack) == ""

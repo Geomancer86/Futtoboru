@@ -196,25 +196,29 @@ public class CupDrawScreenTable extends VisTable {
             return;
         }
         
-        // Find the latest round among unplayed matches (but only Round 1 for the draw screen)
+        // The round just drawn: the earliest round with an unplayed tie whose two clubs are known (round 1 at the
+        // first draw; P2-14: a later round of a cup drawn round by round). Replays are not part of a draw.
         int maxRound = 0;
         for (Match m : editionMatches) {
-            if (m.getRound() != null && m.getRound() > maxRound && m.getRound() == 1) {
+            if (m.getRound() != null && m.getHomeClubId() != null && m.getAwayClubId() != null
+                    && (m.getBracketPath() == null || !m.getBracketPath().endsWith("R"))
+                    && (maxRound == 0 || m.getRound() < maxRound)) {
                 maxRound = m.getRound();
             }
         }
-        
+
         // If no round found, default to round 1 (first round)
         if (maxRound == 0) {
             maxRound = 1;
             Log.info(Log.UI_DRAW, "CupDrawScreenTable: No round found in matches, defaulting to round 1");
         }
-        
-        Log.info(Log.UI_DRAW, "CupDrawScreenTable: Max round found: " + maxRound);
-        
-        // Collect matches for Round 1 only (for the draw screen)
+
+        Log.info(Log.UI_DRAW, "CupDrawScreenTable: Round drawn: " + maxRound);
+
+        // Collect the ties of that round (for the draw screen)
         for (Match m : editionMatches) {
-            if (m.getRound() != null && m.getRound() == 1) {
+            if (m.getRound() != null && m.getRound() == maxRound
+                    && (m.getBracketPath() == null || !m.getBracketPath().endsWith("R"))) {
                 roundFixtures.add(m);
             }
         }
