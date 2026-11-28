@@ -6,9 +6,9 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
-| E-21a viewer scaffold (DarkBlade port: quality, TickGate, interpolation, NoGl, ArtGuard) | WORKSTATION | `ws/E-21a-viewer-scaffold` | 2026-11-28 |
+| E-21b viewer: side-on camera V3, pitch P1/A1, skyline K1, RuntimeAtlas/ShelfPacker/DepthSort port, actor pass | WORKSTATION | `ws/E-21b-viewer-pitch` | 2026-11-28 |
 | E-13 player bodies, contacts, injuries (sim) | WORKSTATION | `ws/E-13-bodies` | 2026-11-28 |
-| Match-engine art direction: sprite / pixel-art prototypes for producer choice (players, ball, goals, pitch, crowd, officials, weather, sidelines) → then E-21 viewer sprites | WORKSTATION | (prototypes local/private; code later on `ws/E-21-sprites`) | 2026-11-27 |
+| E-21s sprite baker + art (doll players A2, keeper G2, ball BA2, officials O2, crowd CR1 figures, touchline T1) per D26 | WORKSTATION | `ws/E-21s-sprites` | 2026-11-27 |
 | S-01 fresh seed per new game (D25) + E-01b dribbling in ageing/drift + `PlayerAttributeSnapshot`, positions for generated players | BOOK3PRO | `b3/E-01b-seed-dribbling-positions` | 2026-11-28 |
 | H-04 source the 384 placeholder positions (period line-ups) in `seasons/1888-89/squads.json` | BOOK3PRO | `b3/H-04-positions-sources` | 2026-11-28 |
 | U-08 friendlies finished or hidden + sound settings hidden | BOOK3PRO | `b3/U-08-friendlies` | 2026-11-28 |
@@ -29,6 +29,8 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Unclaimed:** nothing for v0.5; Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md` (WORKSTATION).
 
 ## Log
+- 2026-11-28 · WORKSTATION · DONE · E-21a · Viewer scaffold ported from DarkBlade (origin line per class): `ui.gfx` GraphicsQuality (`gfx/quality.json`, live levels, per-module/master/`-D` switches, software renderer → low), VfxSwitches, TickGate, CameraZoom, ArtGuard (sim ticks run in a no-art scope), test NoGl; `match.ecs.view` ViewFrame, MatchViewer, ViewerClock (step cap + time budget, carry), InterpolationPass/BallPose; `FrameContext`; `SystemPriority` draw bands (DRAW_* replaced by ACTORS/PARTICLES/…); `MatchSystems.installDrawPasses`. Jenkins #96 green (288 core + 1 desktop).
+- 2026-11-28 · WORKSTATION · NOTE · D26 · Producer picked the match art (side-on V3 camera, horizontal pitch, 5 px/m, procedural doll players in 8 dirs, hand-drawn officials, individual crowd figures, newspaper HUD, no GPT art). CLAIM E-21s (sprite baker + art) and E-21b (viewer pitch/camera/atlas).
 - 2026-11-28 · BOOK3PRO · CLAIM · S-01 + E-01b, H-04, U-08, U-10, V-01 → U-05 · Five parallel lanes (producer picks). D25: a fresh seed per new game.
 - 2026-11-28 · BOOK3PRO · DONE · release · **v0.5.0-alpha** tagged and `main` fast-forwarded to it (7d7727f; `main` showed 2023 before). `develop` now 0.5.0-SNAPSHOT; desktop pom depends on core via `${project.version}`. The `v0.4.0` tag stays (its commit is on an older line, not in develop). `feature/ui-auto-scale` deleted after archiving it as tag `archive/ui-auto-scale-2026-07`. Producer: agents may push releases to `main` (D25).
 - 2026-11-28 · WORKSTATION · NOTE · D24 + plan · `docs/design/MATCH_VIEWER_PLAN.md` (E-21a..m, DarkBlade copy-port). Sprite slices wait for the producer's art checklist.
