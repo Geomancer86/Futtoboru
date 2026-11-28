@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.engine;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +58,9 @@ public class AuthorityManager {
     public static final java.math.BigDecimal LEAGUE_CHAMPION_PRIZE = new java.math.BigDecimal("500.00");
     public static final java.math.BigDecimal LEAGUE_RUNNER_UP_PRIZE = new java.math.BigDecimal("250.00");
 
-    /** The month a cup's season opens (its edition starts and is drawn): May, as for the 1888-89 FA Cup */
-    static final int CUP_SEASON_OPENS_MONTH = 5;
+    // P2-14: a cup opens and is drawn on its season calendar's days (season.json `calendar`, SeasonCalendar): the
+    // 1888-89 FA Cup opens on 6 Oct 1888 with the qualifying rounds and its proper rounds are drawn from January,
+    // each later round after the round before (it was opened and fully drawn in May until then)
 
     // for quick reference
     Futtoboru game;
@@ -149,7 +151,10 @@ public class AuthorityManager {
         
         // Check cup round progression
         checkCupRoundProgression();
-        
+
+        // P2-14: draw the next round of a cup drawn round by round
+        checkCupOpenDraws();
+
         // Check for cup replays (tied matches)
         checkCupReplays();
         
@@ -766,11 +771,12 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
                         }
                         edition = createNewCupEdition(cup, currentDate);
                     } else {
-                        // Activate the upcoming edition if it's time
-                        // FA Cup creation script runs on May 1st
-                        if (currentDate.getMonthValue() >= CUP_SEASON_OPENS_MONTH) {
+                        // Activate the upcoming edition on the calendar's opening day (P2-14; the cup creation
+                        // script runs that day too)
+                        SeasonCalendar opening = SeasonCalendar.forDate(currentDate).withCup(cup.getDataId());
+                        if (!currentDate.toLocalDate().isBefore(opening.cupOpens())) {
                             edition.setStartDate(currentDate);
-                            edition.setEndDate(SeasonCalendar.forDate(currentDate).cupEnd()); // P2-11: past the final
+                            edition.setEndDate(opening.cupEnd()); // P2-11: past the final
                             Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Activated upcoming cup edition: " + edition.getName());
                         } else {
                             continue; // Not yet time to start this cup
@@ -792,8 +798,13 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
                     }
                 }
                 
-                // Check if cup needs initial draw
+                // Check if cup needs initial draw: on or after the calendar's first draw day (P2-14)
                 if (needsCupDraw(edition)) {
+                    LocalDate drawDay = cupCalendar(cup, edition, currentDate).cupFirstDraw();
+                    if (currentDate.toLocalDate().isBefore(drawDay)) {
+                        Log.debug(Log.ENGINE_AUTHORITY, "AuthorityManager", cup.getName() + " is drawn on " + drawDay);
+                        continue;
+                    }
                     Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generating cup draw for: " + cup.getName());
                     generateCupDraw(cup, edition);
                 } else {
@@ -922,13 +933,18 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
      * season's calendar when its final has passed, else from two weeks on, two weeks apart (never in the past).
      */
     static List<LocalDateTime> cupRoundDates(int rounds, LocalDateTime today) {
-        SeasonCalendar calendar = SeasonCalendar.forDate(today);
+        return cupRoundDates(null, rounds, today);
+    }
+
+    /** {@link #cupRoundDates(int, LocalDateTime)} on the calendar of one cup competition (data id, P2-14) */
+    static List<LocalDateTime> cupRoundDates(String competition, int rounds, LocalDateTime today) {
+        SeasonCalendar calendar = SeasonCalendar.forDate(today).withCup(competition);
         List<LocalDateTime> dates = calendar.cupRoundDates(rounds);
         if (dates.get(0).toLocalDate().isAfter(today.toLocalDate())) {
             return dates;
         }
         if (!calendar.cupFinal().isAfter(today.toLocalDate())) {
-            return SeasonCalendar.forSeason(calendar.getStartYear() + 1).cupRoundDates(rounds);
+            return SeasonCalendar.forSeason(calendar.getStartYear() + 1).withCup(competition).cupRoundDates(rounds);
         }
         Log.warn(Log.ENGINE_SCHEDULING, "AuthorityManager", "Cup drawn on " + today
                 + " after the season's first round date; rounds two weeks apart from two weeks on");
@@ -940,6 +956,154 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
             late.add(first.plusWeeks(2L * r));
         }
         return late;
+    }
+
+    /** P2-14: the calendar of a cup edition's season (its start date's season, else today's), on that cup's rules */
+    static SeasonCalendar cupCalendar(Competition cup, CompetitionEdition edition, LocalDateTime today) {
+        LocalDateTime when = edition != null && edition.getStartDate() != null ? edition.getStartDate() : today;
+        return SeasonCalendar.forDate(when).withCup(cup != null ? cup.getDataId() : null);
+    }
+
+    /**
+     * P2-14: the open draw of a cup drawn round by round. When every tie of the last drawn round is decided (its
+     * winners wait in the edition's draw pool, CupBracketManager) and {@code drawDaysAfterRound} days have passed
+     * since that round's date, the next round is drawn: its clubs (the winners and any byes already placed in it)
+     * are paired at random from {@code fork("cup-draw:<cup>:<edition>:R<round>")}, first drawn at home, on the
+     * round's calendar date. A tie of a neutral round gets its ground. Real pairings are never read (D17).
+     */
+    private void checkCupOpenDraws() {
+        try {
+            if (currentGame == null || currentGame.getAllCups() == null) {
+                return;
+            }
+            LocalDateTime currentDate = currentGame.getGameDate();
+            for (Competition cup : currentGame.getAllCups()) {
+                if (cup == null || !Competition.COMPETITION_CUP.equals(cup.getCompetitionType())) {
+                    continue;
+                }
+                CompetitionEdition edition = getCurrentCupEdition(cup, currentDate);
+                if (edition == null || !edition.isOpenDraw() || edition.getChampionsId() != null) {
+                    continue;
+                }
+                drawNextRoundIfReady(cup, edition, currentDate);
+            }
+        } catch (Exception e) {
+            Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Error in checkCupOpenDraws()", e);
+        }
+    }
+
+    private void drawNextRoundIfReady(Competition cup, CompetitionEdition edition, LocalDateTime currentDate) {
+        int round = edition.getDrawnRounds() + 1;
+        List<Match> matches = getMatchesForEdition(edition);
+        List<Match> ties = new ArrayList<>();
+        LocalDate previousRoundDay = null;
+        int lastRound = 0;
+        for (Match m : matches) {
+            if (m.getRound() == null || isReplay(m)) {
+                continue;
+            }
+            lastRound = Math.max(lastRound, m.getRound());
+            if (m.getRound() == round) {
+                ties.add(m);
+            } else if (m.getRound() == round - 1 && m.getMatchDateTime() != null) {
+                LocalDate d = m.getMatchDateTime().toLocalDate();
+                previousRoundDay = previousRoundDay == null || d.isAfter(previousRoundDay) ? d : previousRoundDay;
+            }
+        }
+        if (ties.isEmpty()) {
+            return; // the final is drawn
+        }
+        ties.sort(java.util.Comparator.comparing(m -> m.getBracketPosition() != null ? m.getBracketPosition() : 0));
+        List<Long> clubs = new ArrayList<>();
+        for (Match tie : ties) {
+            if (Boolean.TRUE.equals(tie.getIsPlayed())) {
+                Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Round " + round + " of " + edition.getName()
+                        + " was played before its draw; the open draw stops for this edition");
+                edition.setDrawnRounds(lastRound);
+                return;
+            }
+            for (Long id : new Long[] { tie.getHomeClubId(), tie.getAwayClubId() }) {
+                if (id != null && !clubs.contains(id)) {
+                    clubs.add(id); // a bye placed in this round by the first draw
+                }
+            }
+        }
+        for (Long id : edition.getDrawPool()) {
+            if (id != null && !clubs.contains(id)) {
+                clubs.add(id);
+            }
+        }
+        if (clubs.size() < 2 * ties.size()) {
+            return; // a tie of the round before is not decided yet
+        }
+        SeasonCalendar calendar = cupCalendar(cup, edition, currentDate);
+        if (previousRoundDay != null
+                && currentDate.toLocalDate().isBefore(previousRoundDay.plusDays(calendar.drawDaysAfterRound()))) {
+            return; // drawn a few days after the round before (the Monday after a Saturday round)
+        }
+        drawRound(cup, edition, round, ties, clubs, lastRound);
+    }
+
+    private static boolean isReplay(Match m) {
+        return m.getBracketPath() != null && m.getBracketPath().endsWith("R");
+    }
+
+    private void drawRound(Competition cup, CompetitionEdition edition, int round, List<Match> ties, List<Long> clubs,
+            int lastRound) {
+        java.util.Collections.sort(clubs); // the draw does not depend on the order the ties finished in
+        com.rndmodgames.futtoboru.engine.random.RandomSource rng = Futtoboru.randomOf(game)
+                .fork("cup-draw:" + cup.getId() + ":" + edition.getId() + ":R" + round);
+        for (int i = clubs.size() - 1; i > 0; i--) {
+            int j = rng.nextInt(i + 1);
+            Long t = clubs.get(i);
+            clubs.set(i, clubs.get(j));
+            clubs.set(j, t);
+        }
+        MessageManager messageManager = game.getGameEngine() != null ? game.getGameEngine().getMessageManager() : null;
+        String roundName = getRoundName(round, ties.size() * 2);
+        Club player = currentGame.getCurrentClub();
+        boolean playerDrawn = false;
+        for (int i = 0; i < ties.size(); i++) {
+            Match tie = ties.get(i);
+            tie.setHomeClubId(clubs.get(2 * i));
+            tie.setAwayClubId(clubs.get(2 * i + 1));
+            Club home = currentGame.getClubById(tie.getHomeClubId());
+            Club away = currentGame.getClubById(tie.getAwayClubId());
+            for (Club c : new Club[] { home, away }) {
+                if (c == null) {
+                    continue;
+                }
+                if (c.getScheduledMatches() == null) {
+                    c.setScheduledMatches(new ArrayList<>());
+                }
+                if (!c.getScheduledMatches().contains(tie)) {
+                    c.getScheduledMatches().add(tie);
+                }
+                playerDrawn |= player != null && c == player;
+            }
+            if (messageManager != null && home != null && away != null) {
+                Message result = messageManager.createCupDrawResultMessage(cup, home, away, tie.getMatchDateTime(),
+                        roundName);
+                if (result != null) {
+                    messageManager.deliverMessage(result);
+                }
+            }
+        }
+        for (Match tie : ties) {
+            com.rndmodgames.futtoboru.engine.cup.NeutralVenues.assign(currentGame, cup, tie, ties, lastRound,
+                    Futtoboru.randomOf(game));
+        }
+        edition.getDrawPool().clear();
+        edition.setDrawnRounds(round);
+        // the manager's club in the draw: the draw screen opens as for the first round (time waits for it)
+        if (messageManager != null && playerDrawn) {
+            Message draw = messageManager.createCupDrawMessage(cup, edition, round, roundName);
+            if (draw != null) {
+                messageManager.deliverMessage(draw);
+            }
+        }
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Drew " + roundName + " of " + edition.getName() + ": "
+                + ties.size() + " ties");
     }
 
     /**
@@ -962,13 +1126,29 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
             edition.getParticipantClubsIds(),
             cup.getId(),
             edition.getId(),
-            rounds -> cupRoundDates(rounds, currentDate)
+            rounds -> cupRoundDates(cup.getDataId(), rounds, currentDate)
         );
-        
+
         if (allMatches == null || allMatches.isEmpty()) {
             Log.error(Log.ENGINE_AUTHORITY, "AuthorityManager", "Cup bracket generation produced no matches");
             Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: ERROR - Bracket generation returned null or empty!");
             return;
+        }
+
+        // P2-14: a cup drawn round by round (the calendar's open-draw) keeps only the first round's pairings and the
+        // byes; each later round is drawn after the round before (checkCupOpenDraws). Ties of a neutral round get
+        // their ground once their clubs are known (here only when the first round is already one, e.g. a final).
+        int lastRound = 0;
+        for (Match m : allMatches) {
+            lastRound = Math.max(lastRound, m.getRound() != null ? m.getRound() : 0);
+        }
+        if (cupCalendar(cup, edition, currentDate).isOpenDraw()) {
+            edition.setDrawnRounds(1);
+            edition.getDrawPool().clear();
+        }
+        for (Match m : allMatches) {
+            com.rndmodgames.futtoboru.engine.cup.NeutralVenues.assign(currentGame, cup, m, allMatches, lastRound,
+                    Futtoboru.randomOf(game));
         }
         
         Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager: *** BRACKET GENERATION COMPLETE ***");
@@ -1720,6 +1900,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         Match replay = new Match();
         replay.setHomeClubId(originalMatch.getAwayClubId()); // Swap home/away
         replay.setAwayClubId(originalMatch.getHomeClubId());
+        replay.setVenue(originalMatch.getVenue()); // P2-14: a neutral tie is replayed at its ground
         replay.setMatchType(Match.CUP_MATCH);
         replay.setCompetitionId(cup.getId());
         replay.setCompetitionEditionId(edition.getId());
@@ -1898,16 +2079,17 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
 
     private boolean needsNextCupStaging(Competition cup, LocalDateTime currentDate) {
         // P2-3: not on 1 January (a 1889-90 cup was drawn and played in January 1889, alongside the 1888-89
-        // season): the next edition opens in May, like the first one (the cup creation script and the 1888-89
-        // activation in checkAndScheduleCupDraws), and not while the edition being played has no winner yet
-        if (currentDate.getMonthValue() < CUP_SEASON_OPENS_MONTH) {
+        // season), and not while the edition being played has no winner yet. P2-14: the next edition opens on its
+        // season calendar's opening day (October, with the qualifying rounds), like the first one; it is drawn on
+        // the calendar's draw day (checkAndScheduleCupDraws), not at once
+        int nextYear = SeasonCalendar.startYearOf(currentDate.toLocalDate());
+        if (currentDate.toLocalDate().isBefore(SeasonCalendar.forSeason(nextYear).withCup(cup.getDataId()).cupOpens())) {
             return false;
         }
         CompetitionEdition current = getCurrentCupEdition(cup, currentDate);
         if (current != null && current.getChampionsId() == null) {
             return false;
         }
-        int nextYear = currentDate.getYear();
         String nextSeasonNameFragment = nextYear + "-" + ((nextYear + 1) % 100);
         
         for (CompetitionEdition edition : cup.getEditions()) {
@@ -1923,12 +2105,12 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         
         CompetitionEdition nextEdition = new CompetitionEdition();
         nextEdition.setId(ids().nextId());
-        int startYear = currentDate.getYear();
+        int startYear = SeasonCalendar.startYearOf(currentDate.toLocalDate());
         nextEdition.setName(cup.getName() + " " + startYear + "-" + ((startYear + 1) % 100));
-        
+
         // Set dates for cup staging
         nextEdition.setStartDate(currentDate);
-        nextEdition.setEndDate(SeasonCalendar.forDate(currentDate).cupEnd()); // P2-11: past the final
+        nextEdition.setEndDate(SeasonCalendar.forDate(currentDate).withCup(cup.getDataId()).cupEnd()); // P2-11
         
         // Copy participants from previous edition if applicable
         if (!cup.getEditions().isEmpty()) {
@@ -1943,10 +2125,9 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         }
         
         cup.getEditions().add(nextEdition);
-        
-        // CRITICAL: Generate cup draw for the new staging
-        // This ensures the cup can be played immediately
-        generateCupDraw(cup, nextEdition);
-        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Generated cup draw for new staging: " + nextEdition.getName());
+
+        // P2-14: drawn on the calendar's draw day by checkAndScheduleCupDraws (January), not on the opening day
+        Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Opened the next cup edition: " + nextEdition.getName()
+                + ", drawn from " + cupCalendar(cup, nextEdition, currentDate).cupFirstDraw());
     }
 }

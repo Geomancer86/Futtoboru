@@ -7,7 +7,10 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.game.Futtoboru;
+import com.rndmodgames.futtoboru.ui.GroundArt;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
@@ -82,13 +85,21 @@ public class MatchResultScreenTable extends VisTable {
         this.add(LanguageModLoader.getValue("match_date")).padRight(UiTheme.space("sm"));
         this.add(LanguageModLoader.format("match_date_time", matchDate, matchTime)).left();
         
-        // Venue
+        // Venue: the neutral ground of a cup semi-final or final (P2-14), else the home club's, with its picture
+        Stadium ground = NeutralVenues.stadiumOf(match, game.getCurrentGame());
         this.row().padTop(UiTheme.space("xs"));
         this.add(LanguageModLoader.getValue("match_venue")).padRight(UiTheme.space("sm"));
-        String venueName = homeClub.getStadium() != null && homeClub.getStadium().getName() != null 
-            ? homeClub.getStadium().getName() 
+        String venueName = ground != null && ground.getName() != null
+            ? ground.getName()
             : LanguageModLoader.getValue("match_unknown_ground");
-        this.add(venueName).left();
+        if (NeutralVenues.isNeutral(match)) {
+            venueName += " " + LanguageModLoader.getValue("ground_neutral_suffix");
+        }
+        VisTable venueCell = new VisTable(true);
+        venueCell.add(game.getGroundArt().picture(GroundArt.groundId(ground), true, UiTheme.size("art.thumb.w"),
+                UiTheme.size("art.thumb.h")));
+        venueCell.add(new VisLabel(venueName)).left();
+        this.add(venueCell).left();
         
         // Separator
         this.row().padTop(UiTheme.space("md")).padBottom(UiTheme.space("md"));
@@ -150,11 +161,20 @@ public class MatchResultScreenTable extends VisTable {
         String attendance = match.getAttendance() != null ? String.valueOf(match.getAttendance()) : LanguageModLoader.getValue("unknown");
         this.add(attendance).left();
         
-        // Stadium capacity if available
-        if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
+        // Capacity of the ground played at, if known
+        if (ground != null && ground.getCapacity() != null) {
             this.row().padTop(UiTheme.space("xs"));
             this.add(LanguageModLoader.getValue("match_capacity")).padRight(UiTheme.space("sm"));
-            this.add(String.valueOf(homeClub.getStadium().getCapacity())).left();
+            this.add(String.valueOf(ground.getCapacity())).left();
+        }
+
+        // P2-14: who took the gate at a neutral ground (1888-89: the Football Association)
+        if (NeutralVenues.isNeutral(match)) {
+            this.row().padTop(UiTheme.space("xs"));
+            this.add(LanguageModLoader.getValue("match_gate")).padRight(UiTheme.space("sm"));
+            NeutralVenues.Gate gate = NeutralVenues.gateOf(match, game.getCurrentGame());
+            this.add(LanguageModLoader.getValue(gate == NeutralVenues.Gate.ASSOCIATION ? "match_gate_association"
+                    : gate == NeutralVenues.Gate.SHARED ? "match_gate_shared" : "match_gate_home")).left();
         }
     }
 }

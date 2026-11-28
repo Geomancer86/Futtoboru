@@ -67,7 +67,13 @@ public class Match implements Serializable {
     
     // Match revenue (ticket sales for home club) (v1.0)
     private BigDecimal matchRevenue;
-    
+
+    /**
+     * P2-14: the ground data id of a neutral venue (a cup semi-final or final, engine/cup/NeutralVenues); null or
+     * empty = the home club's ground. Saved with the match (an older save has none: home ground).
+     */
+    private String venue;
+
     // Match Type Constants
     public static final int FRIENDLY_MATCH = 1;
     public static final int LEAGUE_MATCH = 2;
@@ -263,5 +269,14 @@ public class Match implements Serializable {
     
     public void setBracketPath(String bracketPath) {
         this.bracketPath = bracketPath;
+    }
+
+    /** @return the neutral ground's data id, or null when the match is at the home club's ground (P2-14) */
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
     }
 }

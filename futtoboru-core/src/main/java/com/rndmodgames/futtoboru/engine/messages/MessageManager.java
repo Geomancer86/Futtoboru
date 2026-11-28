@@ -735,8 +735,14 @@ public class MessageManager {
         content.append(LanguageModLoader.format("msg_match_away", awayClub.getName()));
         content.append("\n");
 
-        if (homeClub.getStadium() != null) {
-            content.append(LanguageModLoader.format("msg_match_venue", homeClub.getStadium().getName()));
+        // P2-14: the ground played at (a neutral venue, else the home club's)
+        com.rndmodgames.futtoboru.data.Stadium ground = com.rndmodgames.futtoboru.engine.cup.NeutralVenues.stadiumOf(
+                match, getCurrentGame());
+        if (ground == null) {
+            ground = homeClub.getStadium();
+        }
+        if (ground != null) {
+            content.append(LanguageModLoader.format("msg_match_venue", ground.getName()));
             content.append("\n");
         }
 

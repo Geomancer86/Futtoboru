@@ -38,9 +38,8 @@ def test_committed_png_matches_descriptor(path):
 
 def test_descriptor_ids_are_ground_ids():
     known = {r["id"] for r in json.loads(GROUNDS_JSON.read_text(encoding="utf-8"))}
-    proposed = {"kennington-oval", "bramall-lane", "clee-park"}  # venues proposed in GROUNDS_DATA_PROPOSAL.md
-    for p in DESCRIPTORS:
-        assert p.stem in known | proposed, f"{p.stem} is not a ground id"
+    for p in DESCRIPTORS:  # P2-14: the proposed venues (Oval, Bramall Lane, Clee Park) are ground records now
+        assert p.stem in known, f"{p.stem} is not a ground id"
 
 
 def test_different_grounds_differ():

@@ -246,6 +246,46 @@ class GameDataTests {
         assertNull(data.squadDribbling(blackburn).get("herby-arthur-1863")); // no source: derived in the game
     }
 
+    /** P2-14: the season calendar and the cup's neutral grounds are checked as strictly as validate.py does */
+    @Test
+    void theCalendarAndNeutralGroundsAreReadAndTyposAreErrors() {
+        GameData shipped = GameData.loadDefault();
+        DataRecord season = shipped.get(GameData.SEASON, "1888-89");
+        assertNotNull(season.raw("calendar"), "1888-89 has a calendar");
+        assertEquals(List.of("fa-cup"), season.refs("calendar.cups[0].competition"));
+        DataRecord cup = shipped.get(GameData.EDITION, "fa-cup-1888-89");
+        assertEquals(List.of("kennington-oval"), cup.refs("neutralVenues.rounds[1].grounds"));
+
+        GameData.Source base = new GameData.ClasspathSource("gamedata");
+        String text = base.read("core/seasons/1888-89/season.json")
+                .replace("\"midweek\": \"wednesday\"", "\"midweek\": \"caturday\"")
+                .replace("\"onOrAfter\": \"10-01\",", "") // the cup's opening rule without an anchor
+                .replace("\"properFrom\": \"02-01\"", "\"properFrom\": \"02-30\"")
+                .replace("\"laterDraws\": \"open-draw\"", "\"laterDraws\": \"open-draw\", \"kickOff\": \"15:00\"")
+                .replace("\"kennington-oval\"", "\"wembley\"");
+        GameData data = GameData.load(new GameData.Source() {
+            @Override
+            public String read(String path) {
+                return path.equals("core/seasons/1888-89/season.json") ? text : base.read(path);
+            }
+
+            @Override
+            public List<String> listJson(String folder) {
+                return base.listJson(folder);
+            }
+
+            @Override
+            public List<String> listFolders() {
+                return base.listFolders();
+            }
+        });
+        assertError(data, "caturday");
+        assertError(data, "exactly one of `onOrAfter` / `onOrBefore`");
+        assertError(data, "a month-day MM-DD");
+        assertError(data, "unknown field `kickOff`");
+        assertError(data, "unknown ground `wembley`");
+    }
+
     @Test
     void badPositionOrDribblingIsAnErrorAndTheSquadIsSkipped() {
         GameData.Source base = new GameData.ClasspathSource("gamedata");

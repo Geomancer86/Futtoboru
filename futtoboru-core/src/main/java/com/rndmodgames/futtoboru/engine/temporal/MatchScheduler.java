@@ -12,6 +12,7 @@ import java.util.List;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.MatchIncome;
+import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.Log;
@@ -189,6 +190,7 @@ public class MatchScheduler {
             // season). The FA required a gate share for the visitors in cup ties only after Chatham's open-ground
             // run of 1888-89 (docs/data/history/GROUNDS_1888-89.md, "Chatham: the Great Lines"; Wikipedia,
             // Chatham Town F.C.): a later season's rule, to come from data when seasons after 1888-89 need it.
+            // P2-14: at a neutral ground the club drawn at home runs the sale; the gate follows the season's rule.
             if (!club.getId().equals(scheduled.getHomeClubId())) {
                 continue;
             }
@@ -230,8 +232,16 @@ public class MatchScheduler {
                 scheduled.setAttendance(0);
             }
             
-            int maxTickets = club.getStadium().getCapacity() - currentAttendance;
-            
+            // P2-14: the ground the match is played at: a neutral venue (cup semi-final, final) or the home club's.
+            // At a neutral ground the club drawn at home still runs the sale (once per match and day), and the gate
+            // goes where the cup season's rule says (1888-89: to the Football Association, NeutralVenues.Gate).
+            com.rndmodgames.futtoboru.data.Stadium ground = NeutralVenues.stadiumOf(scheduled, game.getCurrentGame());
+            if (ground == null || ground.getCapacity() == null) {
+                ground = club.getStadium();
+            }
+            NeutralVenues.Gate gateRule = NeutralVenues.gateOf(scheduled, game.getCurrentGame());
+            int maxTickets = ground.getCapacity() - currentAttendance;
+
             // CRITICAL FIX: Add null checks to prevent NullPointerException
             Club homeClub = game.getCurrentGame().getClubById(scheduled.getHomeClubId());
             Club awayClub = game.getCurrentGame().getClubById(scheduled.getAwayClubId());
@@ -244,8 +254,8 @@ public class MatchScheduler {
             }
             
             Log.info(Log.ENGINE_SCHEDULING, "MATCH            : " + homeClub.getName() + " vs " + awayClub.getName());
-            Log.info(Log.ENGINE_SCHEDULING, "STADIUM NAME     : " + club.getStadium().getName());
-            Log.info(Log.ENGINE_SCHEDULING, "STADIUM CAPACITY : " + club.getStadium().getCapacity());
+            Log.info(Log.ENGINE_SCHEDULING, "STADIUM NAME     : " + ground.getName());
+            Log.info(Log.ENGINE_SCHEDULING, "STADIUM CAPACITY : " + ground.getCapacity());
             Log.info(Log.ENGINE_SCHEDULING, "TICKETS SOLD     : " + currentAttendance);
             Log.info(Log.ENGINE_SCHEDULING, "TICKETS AVAILABLE: " + maxTickets);
             
@@ -256,7 +266,7 @@ public class MatchScheduler {
                  * Friendly matches have drastically reduced attendance (15% of league matches)
                  * Based on historical research: 1888-89 friendlies had 500-700 vs much higher league attendance
                  */
-                int baseMaxPerDay = club.getStadium().getCapacity() / 7; // sell out on 7 days
+                int baseMaxPerDay = ground.getCapacity() / 7; // sell out on 7 days
                 
                 // Apply match type modifier
                 double attendanceMultiplier = 1.0;
@@ -324,16 +334,23 @@ public class MatchScheduler {
                 BigDecimal currentRevenue = scheduled.getMatchRevenue();
                 scheduled.setMatchRevenue(currentRevenue.add(dayCash));
                 
-                // Record match income for financial tracking (v1.0)
-                recordMatchIncome(scheduled, club, randomTickets, dayCash);
-                
-                // ADD TO CLUB BALANCE
-                club.setClubBalance(club.getClubBalance().add(dayCash));
-                
-                // Update period income tracking (v1.0)
-                club.setSeasonIncome(club.getSeasonIncome().add(dayCash));
-                club.setMonthIncome(club.getMonthIncome().add(dayCash));
-                
+                // P2-14: who books the day's gate (home ground: the home club; neutral ground: the season's rule)
+                switch (gateRule) {
+                case ASSOCIATION:
+                    // the Football Association takes the gate of its semi-finals and final: no club books it
+                    Log.info(Log.ENGINE_SCHEDULING, "GATE TO THE ASSOCIATION: " + Money.format(dayCash));
+                    break;
+                case SHARED: {
+                    BigDecimal half = dayCash.divide(new BigDecimal(2), dayCash.scale(), java.math.RoundingMode.DOWN);
+                    book(scheduled, club, randomTickets, half);
+                    book(scheduled, awayClub, 0, dayCash.subtract(half));
+                    break;
+                }
+                default:
+                    book(scheduled, club, randomTickets, dayCash);
+                    break;
+                }
+
             } else {
                 
                 //
@@ -355,6 +372,14 @@ public class MatchScheduler {
         friendlies.answerProposals(club);
     }
     
+    /** Books a share of a match's gate to a club: its gate entry, balance and period income (P2-12: once a day). */
+    private void book(Match match, Club club, int tickets, BigDecimal cash) {
+        recordMatchIncome(match, club, tickets, cash);
+        club.setClubBalance(club.getClubBalance().add(cash));
+        club.setSeasonIncome(club.getSeasonIncome().add(cash));
+        club.setMonthIncome(club.getMonthIncome().add(cash));
+    }
+
     /**
      * Record match income for financial tracking (v1.0)
      * 
