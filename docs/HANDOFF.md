@@ -9,6 +9,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | E-21c sprites in the viewer (ActorSprites from index.json, crowd + touchline layers, real E-13 bodies in the debug viewer) | WORKSTATION | `ws/E-21c-sprites-viewer` | 2026-11-28 |
 | E-14 actions: kicks/passes/crosses/shots/headers, keeper handling, lace cuts | WORKSTATION | `ws/E-14-actions` | 2026-11-28 |
 | T-01 test tiers + path-aware gates (D27) | BOOK3PRO | `b3/T-01-test-tiers` | 2026-11-28 |
+| R-10 + R-11 research: era player sources; languages and literacy (docs only) | BOOK3PRO | `b3/R-10-player-sources` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -22,6 +23,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Unclaimed:** nothing for v0.5; Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md` (WORKSTATION).
 
 ## Log
+- 2026-11-28 · BOOK3PRO · CLAIM · R-10 + R-11 · docs only: `docs/data/history/PLAYER_SOURCES.md`, `LANGUAGES_LITERACY_1880-1914.md`, `SOURCES.md`, R-11 section in `docs/design/RECRUITMENT_AND_TRIALS.md`.
 - 2026-11-28 · WORKSTATION · CLAIM · E-21c, E-14 · `match/ecs/view/**` + `ui/gfx/**` (E-21c), `match/ecs/action/**` + ball/body hooks (E-14).
 - 2026-11-28 · WORKSTATION · DONE · E-21s · `tools/art/match/` (stdlib, deterministic, `--check`; doll A2 port, O2 grids, CR1, BA2, T1) → `resources/art/match/` (81 files): kit sheets for all 35 clubs at 1× (5 px/m) and 2× (10 px/m), 9 player animations × 8 directions, keeper G2, mud overlay, officials, touchline people, ball 8 spins × 4 wetness, crowd 12 figures × 4 moods, props; `index.json` (format 1, regions + feet pivots) is the contract for the viewer's `ActorSprites`. Uncertain kits flagged (Villa, Bolton, Everton, Burnley, Derby + 12 cup clubs). Merged with no extra tests (files disjoint). Next: wire sheets into ActorPass (E-21c), E-14 actions.
 - 2026-11-28 · WORKSTATION · DONE · E-21b · Side-on V3 viewer: `ViewCamera` (perspective, 5 px/m at halfway, integer magnification = window height / 220, frame-rate-independent ball follow), DarkBlade ports `ShelfPacker`/`RuntimeAtlas`/`DepthSort` (+ tests), passes Camera / Skyline (K1 mill town + smoke, cosmetic seed only) / Pitch (P1 texture, A1 grass, SL1 slope, era markings, perspective by rows) / Shadow / Actor (depth-sorted placeholders; `ActorSprites` hook for E-21s sheets). Debug launcher `com.rndmodgames.desktop.MatchViewerLauncher`. Targeted tests only (121 match/ecs + ui/gfx green), per the no-over-testing rule.
