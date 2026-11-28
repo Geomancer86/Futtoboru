@@ -6,8 +6,6 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
-| G-11 era events in the inbox (EraProfile → AUTHORITY messages on announce dates; rules applied on effective dates) | WORKSTATION | `ws/G-11-era-inbox` | 2026-11-28 |
-| G-10 history + fan tiers on screen (club detail history/nicknames/rivals; player tier badge + bio) | WORKSTATION | `ws/G-10-history-ui` | 2026-11-28 |
 | E-DET cross-JDK determinism: own Gaussian in RandomSource, re-pin goldens once, guard | WORKSTATION | `ws/E-DET-gaussian` | 2026-11-28 |
 | E-17a ECS engine behind `-Dfuttoboru.match.engine=instant|ecs` (default instant) + MatchEngine contract test + ECS season soak entry | WORKSTATION | `ws/E-17a-engine-flag` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
@@ -28,7 +26,6 @@ Model tier per D33: Sonnet for docs/data/research/art tools/merges, Opus for cor
 | G-05 committee and the secretary's job (sacking, job seeker) | BOOK3PRO | Opus | J-01 job system is merged |
 | R-03..R-07 recruitment without trials | BOOK3PRO | Opus | after R-02 data merges (D28 answered) |
 | G-09 training, G-11 era events in the inbox, G-12 budget and debt | WORKSTATION (D33-7) | Sonnet/Opus | G-11 has data proposal `docs/design/ERA_EVENTS_PROPOSAL.md` |
-| G-10 history / fan tiers on screen | WORKSTATION | Sonnet | after H-05 (claimed) puts the history texts into gamedata |
 | G-13 AI-to-AI friendlies and away guarantees | WORKSTATION | Opus | D31: AI clubs get every system; U-08 `FriendlyArranger` is the base |
 | R-08 AI recruitment/poaching | BOOK3PRO | Opus | after R-02..R-07 |
 | E-17 events + `MatchResult` stats (after E-17a) | WORKSTATION | Opus | `match/ecs/**` is WORKSTATION's lock |
