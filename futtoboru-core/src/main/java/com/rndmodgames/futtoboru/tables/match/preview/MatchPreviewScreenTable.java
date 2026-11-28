@@ -1,11 +1,16 @@
 package com.rndmodgames.futtoboru.tables.match.preview;
 
 import com.badlogic.gdx.Game;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
+import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.ui.GroundArt;
+import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Match Preview Screen Table v1
@@ -129,8 +134,22 @@ public class MatchPreviewScreenTable extends VisTable {
             return;
         }
 
-        //
+        // Header: the two clubs, then the venue with its picture (U-11)
         this.row();
-        this.add(homeClub.getName() + " vs " + awayClub.getName());
+        VisLabel fixture = new VisLabel(homeClub.getName() + " " + LanguageModLoader.getValue("match_vs") + " "
+                + awayClub.getName());
+        fixture.setFontScale(UiTheme.fontScale("heading"));
+        this.add(fixture).center();
+
+        // Venue: the home club's season ground. Match has no venue field yet, so a neutral ground (e.g. a cup
+        // final at Kennington Oval) cannot be shown until the schedule records one; GroundArt takes any ground.
+        Stadium venue = homeClub.getStadium();
+        if (venue != null) {
+            this.row();
+            this.add(new VisLabel(LanguageModLoader.getValue("ground_venue") + ": " + venue.getName())).center();
+        }
+        this.row();
+        this.add(game.getGroundArt().picture(GroundArt.groundId(venue), false, UiTheme.size("art.ground.header.w"),
+                UiTheme.size("art.ground.header.h"))).center().pad(UiTheme.space("sm"));
     }
 }

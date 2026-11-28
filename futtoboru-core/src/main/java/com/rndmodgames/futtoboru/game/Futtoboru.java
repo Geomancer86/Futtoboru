@@ -108,6 +108,9 @@ public class Futtoboru extends Game {
      */
     private ClubStaffManager clubStaffManager = null;
     private JobManager jobManager = null;
+
+    /** Ground illustrations (U-11), loaded on first use and disposed with the game. */
+    private final com.rndmodgames.futtoboru.ui.GroundArt groundArt = new com.rndmodgames.futtoboru.ui.GroundArt();
     
     /**
      * The one seeded random source of the game (P2-0). Game logic forks it ({@code random().fork("match:" + id)});
@@ -384,6 +387,7 @@ public class Futtoboru extends Game {
     @Override
     public void dispose () {
      
+        groundArt.dispose();
         VisUI.dispose();
     }
 
@@ -490,6 +494,11 @@ public class Futtoboru extends Game {
     /**
      * Get Job Manager
      */
+    /** Ground pictures (U-11): {@code art/grounds/<id>.png}, Nearest filter, whole-number scale. */
+    public com.rndmodgames.futtoboru.ui.GroundArt getGroundArt() {
+        return groundArt;
+    }
+
     public JobManager getJobManager() {
         return jobManager;
     }
