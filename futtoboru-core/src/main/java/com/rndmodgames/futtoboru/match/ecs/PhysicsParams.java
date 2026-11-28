@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.match.ecs;
 
+import com.rndmodgames.futtoboru.match.ecs.action.ActionParams;
 import com.rndmodgames.futtoboru.match.ecs.body.BodyParams;
 
 /**
@@ -106,6 +107,11 @@ public final class PhysicsParams {
     /** Locomotion, stamina, contacts, injuries, physique by position, grip per surface and sole. */
     public BodyParams body = new BodyParams();
 
+    // ---- ball actions (E-14, §4.1) ---------------------------------------------------------------------------------
+
+    /** Reach, control, kicks, input noise, headers and lace, keeper handling and carrying, throws. */
+    public ActionParams action = new ActionParams();
+
     /** The parameters of a surface. */
     public SurfaceParams surface(Surface s) {
         switch (s) {
@@ -144,6 +150,8 @@ public final class PhysicsParams {
         }
         require(body != null, "body params");
         body.validate();
+        require(action != null, "action params");
+        action.validate();
         return this;
     }
 

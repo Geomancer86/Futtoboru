@@ -153,7 +153,7 @@ class BodyWorldTest {
      * Two minutes of the scripted scrimmage in rain. Same rule as BallPhysicsTest.GOLDEN: identical on every machine;
      * update only in a PR that changes body physics on purpose (and bump EcsMatchEngine.ENGINE_VERSION).
      */
-    static final long GOLDEN_SCRIMMAGE = 0xda6ad6de89c37ab9L;
+    static final long GOLDEN_SCRIMMAGE = 0x5b3cf8e2bf77b7cdL; // E-14 (ecs-0.3): skills, action command, possession hashed
 
     @Test
     void scrimmageIsDeterministicAndPinnedByAGoldenHash() {
