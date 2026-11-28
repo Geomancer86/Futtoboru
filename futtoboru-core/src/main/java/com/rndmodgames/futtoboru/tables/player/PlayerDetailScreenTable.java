@@ -658,9 +658,9 @@ public class PlayerDetailScreenTable extends VisTable {
         VisLabel changeLabel = new VisLabel(changeText);
         
         // Color coding based on trend
-        if (changeText.contains("↑↑") || changeText.contains("↑")) {
+        if (changeText.contains("[+")) { // U-12: the font has no arrows; the sign and the colour say it
             changeLabel.setColor(UiTheme.color("trend.up")); // Green for improvement
-        } else if (changeText.contains("↓↓") || changeText.contains("↓")) {
+        } else if (changeText.contains("[-")) {
             changeLabel.setColor(UiTheme.color("trend.down")); // Red for decline
         } else if (changeText.contains("=")) {
             changeLabel.setColor(UiTheme.color("trend.flat")); // Gray for stable

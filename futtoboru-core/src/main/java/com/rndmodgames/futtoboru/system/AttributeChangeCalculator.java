@@ -82,18 +82,18 @@ public class AttributeChangeCalculator {
         } else if (change > 0) {
             if (absChange >= AttributeTrackingConstants.SIGNIFICANT_CHANGE_THRESHOLD) {
                 trend = "IMPROVING_SIGNIFICANT";
-                displayText = GameFormat.format("[+%.1f ↑↑]", change);
+                displayText = GameFormat.format("[+%.1f]", change);
             } else {
                 trend = "IMPROVING";
-                displayText = GameFormat.format("[+%.1f ↑]", change);
+                displayText = GameFormat.format("[+%.1f]", change);
             }
         } else {
             if (absChange >= AttributeTrackingConstants.SIGNIFICANT_CHANGE_THRESHOLD) {
                 trend = "DECLINING_SIGNIFICANT";
-                displayText = GameFormat.format("[%.1f ↓↓]", change);
+                displayText = GameFormat.format("[%.1f]", change);
             } else {
                 trend = "DECLINING";
-                displayText = GameFormat.format("[%.1f ↓]", change);
+                displayText = GameFormat.format("[%.1f]", change);
             }
         }
         

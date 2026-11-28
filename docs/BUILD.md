@@ -23,6 +23,11 @@ Scripts at the repo root, each in a Windows `.bat` and a POSIX `.sh` version (Li
 | `run-game-debug-simple` | runs the jar, output only in `game-debug.log`, printed after exit |
 | `generate-build-info` | writes `futtoboru-core/src/main/resources/build.properties` (git-ignored), build number +1 |
 
+**Dev flag (D30 A8):** "Match Engine Debug" on the main menu (and other dev-only output) shows only with
+`-Dfuttoboru.dev=true` (`Futtoboru.isDevMode()`). The debug scripts pass it only on request:
+`FUTTOBORU_DEV=true ./run-game-debug.sh` (cmd: `set FUTTOBORU_DEV=true` then `run-game-debug.bat`), or
+`java -Dfuttoboru.dev=true -jar <jar>`. Without it the menu is the player's (New Game, Load Game, Settings, Quit).
+
 The `.sh` scripts take `JAR=<path>` to run another jar. Line endings are fixed by `.gitattributes`
 (`*.sh`, `mvnw`: LF; `*.bat`, `*.cmd`: CRLF), and `mvnw`/`*.sh` are executable in git.
 `build.bat` still calls a hard-coded `C:\apache-maven-3.6.3`; without it use `.\mvnw.cmd -B clean install -DskipTests`.

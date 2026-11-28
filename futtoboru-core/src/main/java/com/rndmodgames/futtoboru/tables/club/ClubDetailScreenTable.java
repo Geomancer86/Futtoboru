@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.club;
 
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import java.math.BigDecimal;
 import com.rndmodgames.futtoboru.engine.finances.Money;
@@ -139,7 +140,7 @@ public class ClubDetailScreenTable extends VisTable {
             // Capacity
             if (club.getStadium().getCapacity() != null) {
                 details.add(new VisLabel(LanguageModLoader.getValue("club_capacity"))).left();
-                details.add(new VisLabel(club.getStadium().getCapacity().toString())).left().expandX();
+                details.add(new VisLabel(GameFormat.integer(club.getStadium().getCapacity()))).left().expandX(); // U-12: "10,000"
                 details.row();
             }
             

@@ -288,7 +288,10 @@ public class PlayersListTable extends VisTable {
         
         // Add visual indicator if this is the current sort column
         if (columnName.equals(currentSortColumn)) {
-            header.setText(text + (sortAscending ? " ↑" : " ↓"));
+            // U-12: "^" / "v" from the bundles (the font has no arrow glyphs)
+            String mark = sortAscending ? LanguageModLoader.getValue("sort_ascending_mark")
+                    : LanguageModLoader.getValue("sort_descending_mark");
+            header.setText(text + " " + mark);
         }
         
         return header;
@@ -409,9 +412,9 @@ public class PlayersListTable extends VisTable {
         VisLabel label = new VisLabel(valueText + changeText);
         
         // Color coding based on change
-        if (changeText.contains("↑↑") || changeText.contains("↑")) {
+        if (changeText.contains("[+")) { // U-12: the font has no arrows; the sign and the colour say it
             label.setColor(UiTheme.color("trend.up")); // Green for improvement
-        } else if (changeText.contains("↓↓") || changeText.contains("↓")) {
+        } else if (changeText.contains("[-")) {
             label.setColor(UiTheme.color("trend.down")); // Red for decline
         }
         

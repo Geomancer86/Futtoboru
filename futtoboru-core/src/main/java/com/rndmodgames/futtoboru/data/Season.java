@@ -132,6 +132,14 @@ public class Season implements Serializable {
         return name != null ? name : "empty_season_name";
     }
 
+    /**
+     * The season label that starts in {@code startYear}: "1888-89", "1899-00", "1900-01" (always two digits after the
+     * dash; edition names and the history screens read it back with {@code (\d{4})-(\d{2})}).
+     */
+    public static String label(int startYear) {
+        return startYear + "-" + String.format(java.util.Locale.ROOT, "%02d", (startYear + 1) % 100);
+    }
+
     public String getDataId() {
         return dataId;
     }

@@ -2,7 +2,6 @@ package com.rndmodgames.futtoboru.tables.authority;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.LinkLabel;
@@ -206,7 +205,7 @@ public class AuthorityScreenTable extends VisTable {
             return "-";
         }
         int year = SeasonCalendar.forDate(game.getGameDate()).getStartYear();
-        return year + "-" + String.format(Locale.ROOT, "%02d", (year + 1) % 100);
+        return Season.label(year);
     }
 
     /**

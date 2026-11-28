@@ -207,7 +207,7 @@ public final class ScreenshotTour extends Futtoboru {
         // main menu and its screens
         once("menu", () -> changeScreen(MENU_SCREEN));
         once("menu-load-dialog", () -> UiDialogs.show(stage(), new LoadGameDialog(this)));
-        once("menu-load-delete-confirm", () -> click("Delete"));
+        once("menu-load-delete-confirm", () -> click(LanguageModLoader.getValue("delete")));
         // U-12: Esc on "Delete save?" is Cancel (the list comes back); Esc on the list closes it
         once(null, this::pressEscape);
         waitFrames(SETTLE_FRAMES);
@@ -236,7 +236,7 @@ public final class ScreenshotTour extends Futtoboru {
             topMenu().setMainContainerButton();
             openDraw();
         });
-        once("game-league-draw-done", () -> click("Draw All"));
+        once("game-league-draw-done", () -> click(LanguageModLoader.getValue("draw_all")));
         once("game-cup-draw", () -> {
             finishDraws();
             if (playUntilCupDraw(120)) {
@@ -245,7 +245,7 @@ public final class ScreenshotTour extends Futtoboru {
                 problems.add(passName + ": no cup draw within 120 days");
             }
         });
-        once("game-cup-draw-done", () -> click("Draw All"));
+        once("game-cup-draw-done", () -> click(LanguageModLoader.getValue("draw_all")));
         once("game-match-day-top-bar", () -> {
             finishDraws();
             playUntil(FuttoboruGameEngine.MATCH_PREVIEW_ACTION, 200);
@@ -261,7 +261,7 @@ public final class ScreenshotTour extends Futtoboru {
         }
         once(null, () -> menu().openMenuEntry(MainMenuManager.MAIN_SQUAD_SCREEN));
         waitFrames(5);
-        once(null, () -> hover("Accel"));
+        once(null, () -> hover(LanguageModLoader.getValue("squad_col_acceleration")));
         waitFrames(40);
         once("game-squad-tooltip", () -> {
         });

@@ -15,6 +15,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.CompetitionEdition;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.LeagueStandingRow;
+import com.rndmodgames.futtoboru.data.Season;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
 /**
@@ -79,6 +80,15 @@ class AuthorityScreenTableTest {
         assertSame(next, AuthorityScreenTable.currentEdition(league));
         assertEquals("1889-90", AuthorityScreenTable.seasonLabel(game));
         assertEquals(List.of(villa), AuthorityScreenTable.seasonClubs(game), "the new season's clubs");
+    }
+
+    @Test
+    void seasonLabelsKeepTwoDigitsAfterTheDash() {
+        // edition names used "1899-0" and "1900-1" (and needsNextSeasonGeneration looked for those)
+        assertEquals("1888-89", Season.label(1888));
+        assertEquals("1899-00", Season.label(1899));
+        assertEquals("1900-01", Season.label(1900));
+        assertEquals("1909-10", Season.label(1909));
     }
 
     @Test

@@ -141,7 +141,7 @@ public final class HistoryProvider {
             return m.group();
         }
         int y = startYear(ed);
-        return y + "-" + String.format(java.util.Locale.ROOT, "%02d", (y + 1) % 100);
+        return com.rndmodgames.futtoboru.data.Season.label(y);
     }
 
     static int startYear(CompetitionEdition ed) {

@@ -70,6 +70,7 @@ public class InboxScreenTable extends VisTable {
         // Wrap in scroll panes
         messagesScrollPane = new VisScrollPane(messagesListTable);
         messagesScrollPane.setFadeScrollBars(false);
+        messagesScrollPane.setScrollingDisabled(true, false); // U-12: rows fit the column (long titles end in "..."), dates stay visible
         
         messageDetailScrollPane = new VisScrollPane(messageDetailTable);
         messageDetailScrollPane.setFadeScrollBars(false);
@@ -308,7 +309,9 @@ public class InboxScreenTable extends VisTable {
                 updateDynamicComponents();
             }
         });
-        messageRow.add(titleButton).growX();
+        titleButton.getLabel().setEllipsis(true);
+        titleButton.getLabelCell().minWidth(UiTheme.space("none")); // a Label's min width is its whole text
+        messageRow.add(titleButton).growX().minWidth(UiTheme.space("none")); // may shrink: the label ends in "..."
         
         // Date
         String dateStr = LanguageModLoader.getValue("inbox_no_date");

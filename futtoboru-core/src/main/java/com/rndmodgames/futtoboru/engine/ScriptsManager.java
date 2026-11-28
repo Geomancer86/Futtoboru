@@ -297,7 +297,7 @@ public class ScriptsManager {
         
         // The season's edition: the one from the game data (season.json) if there is one (P2-9: a second,
         // script-made edition was never drawn or finished), else a new one
-        String seasonName = (startDate != null) ? startDate.getYear() + "-" + ((startDate.getYear() + 1) % 100) : "Season 1";
+        String seasonName = (startDate != null) ? com.rndmodgames.futtoboru.data.Season.label(startDate.getYear()) : "Season 1";
         com.rndmodgames.futtoboru.data.CompetitionEdition edition = findSeasonEdition(leagueCompetition,
                 (Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_EDITION), startDate);
         boolean fromData = edition != null;
@@ -630,7 +630,7 @@ public class ScriptsManager {
         if (!fromData) {
             edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
             edition.setId(currentGame.getIdAllocator().nextId());
-            String seasonName = gameDate.getYear() + "-" + ((gameDate.getYear() + 1) % 100);
+            String seasonName = com.rndmodgames.futtoboru.data.Season.label(gameDate.getYear());
             edition.setName(cupName + " " + seasonName);
         }
         edition.setStartDate(gameDate);
