@@ -14,9 +14,10 @@ import com.rndmodgames.futtoboru.match.ecs.body.TeamSheet;
  * @param halfMinutes    length of a half (45 in 1888-89)
  * @param home           home side: team sheet (shape + eleven) and style
  * @param away           away side
+ * @param neutral        played at a neutral ground (cup semi-final or final): no home advantage (E-20)
  */
 public record EcsMatchInput(String matchKey, PitchConditions pitch, double ballCarryShare, int halfMinutes, Side home,
-        Side away) {
+        Side away, boolean neutral) {
 
     /** One side: its eleven in their shape and its style (E-15). */
     public record Side(TeamSheet sheet, TeamStyle style) {
@@ -40,6 +41,12 @@ public record EcsMatchInput(String matchKey, PitchConditions pitch, double ballC
         if (!(ballCarryShare >= 0 && ballCarryShare <= 1) || halfMinutes < 0) {
             throw new IllegalArgumentException("carry " + ballCarryShare + ", half " + halfMinutes);
         }
+    }
+
+    /** On the home side's ground. */
+    public EcsMatchInput(String matchKey, PitchConditions pitch, double ballCarryShare, int halfMinutes, Side home,
+            Side away) {
+        this(matchKey, pitch, ballCarryShare, halfMinutes, home, away, false);
     }
 
     /** Two stub sides ({@link Side#stub()}). */
