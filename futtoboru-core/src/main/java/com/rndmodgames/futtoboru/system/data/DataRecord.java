@@ -91,6 +91,16 @@ public class DataRecord {
         return v != null && !v.isNull();
     }
 
+    /**
+     * @return a nested object or list as read (already checked against its spec), or null when absent. P2-14: a
+     *         season's {@code calendar}, an edition's {@code neutralVenues}; its references are {@link #refs(String)}
+     *         by path ({@code calendar.cups[0].competition}).
+     */
+    public JsonValue raw(String field) {
+        JsonValue v = json.get(field);
+        return v == null || v.isNull() ? null : v;
+    }
+
     public String str(String field) {
         return str(field, null);
     }

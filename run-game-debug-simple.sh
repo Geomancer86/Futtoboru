@@ -3,10 +3,13 @@
 # Port of run-game-debug-simple.bat.
 cd "$(dirname "$0")" || exit 1
 
-JAR=${JAR:-futtoboru-desktop/target/futtoboru-desktop-0.5.0-SNAPSHOT-jar-with-dependencies.jar}
+JAR=${JAR:-futtoboru-desktop/target/futtoboru-desktop-0.6.0-SNAPSHOT-jar-with-dependencies.jar}
 LOG=game-debug.log
 JAVA_OPTS_EXTRA=
 [ "$(uname -s)" = Darwin ] && JAVA_OPTS_EXTRA=-XstartOnFirstThread
+# dev tools (Match Engine Debug on the main menu) only on request: FUTTOBORU_DEV=true ./run-game-debug.sh
+DEV_FLAG=
+[ "${FUTTOBORU_DEV:-}" = true ] && DEV_FLAG=-Dfuttoboru.dev=true
 
 echo "========================================"
 echo "Futtoboru Game Launcher (Debug Mode)"
@@ -19,7 +22,7 @@ echo "========================================"
 echo
 
 # shellcheck disable=SC2086
-java -Dfuttoboru.dev=true $JAVA_OPTS_EXTRA -jar "$JAR" > "$LOG" 2>&1
+java $DEV_FLAG $JAVA_OPTS_EXTRA -jar "$JAR" > "$LOG" 2>&1
 status=$?
 
 echo

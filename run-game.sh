@@ -3,7 +3,7 @@
 # Override the jar with JAR=path/to.jar if the version changes.
 cd "$(dirname "$0")" || exit 1
 
-JAR=${JAR:-futtoboru-desktop/target/futtoboru-desktop-0.5.0-SNAPSHOT-jar-with-dependencies.jar}
+JAR=${JAR:-futtoboru-desktop/target/futtoboru-desktop-0.6.0-SNAPSHOT-jar-with-dependencies.jar}
 # LWJGL3 on macOS needs the first thread (macOS is not officially supported yet)
 JAVA_OPTS_EXTRA=
 [ "$(uname -s)" = Darwin ] && JAVA_OPTS_EXTRA=-XstartOnFirstThread

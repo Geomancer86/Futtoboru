@@ -297,7 +297,7 @@ public class ScriptsManager {
         
         // The season's edition: the one from the game data (season.json) if there is one (P2-9: a second,
         // script-made edition was never drawn or finished), else a new one
-        String seasonName = (startDate != null) ? startDate.getYear() + "-" + ((startDate.getYear() + 1) % 100) : "Season 1";
+        String seasonName = (startDate != null) ? com.rndmodgames.futtoboru.data.Season.label(startDate.getYear()) : "Season 1";
         com.rndmodgames.futtoboru.data.CompetitionEdition edition = findSeasonEdition(leagueCompetition,
                 (Long) script.getScriptValues().get(ScriptsLoader.LEAGUE_EDITION), startDate);
         boolean fromData = edition != null;
@@ -641,7 +641,7 @@ public class ScriptsManager {
         if (!fromData) {
             edition = new com.rndmodgames.futtoboru.data.CompetitionEdition();
             edition.setId(currentGame.getIdAllocator().nextId());
-            String seasonName = gameDate.getYear() + "-" + ((gameDate.getYear() + 1) % 100);
+            String seasonName = com.rndmodgames.futtoboru.data.Season.label(gameDate.getYear());
             edition.setName(cupName + " " + seasonName);
         }
         edition.setStartDate(gameDate);
@@ -681,20 +681,17 @@ public class ScriptsManager {
                 creationMsg.setCategory(com.rndmodgames.futtoboru.data.MessageCategory.CUP);
                 creationMsg.setPriority(com.rndmodgames.futtoboru.data.MessagePriority.URGENT);
                 creationMsg.setTitle(com.rndmodgames.localization.LanguageModLoader.format("msg_cup_created_title", cupName));
-                creationMsg.setPlainTextMessage(com.rndmodgames.localization.LanguageModLoader.format("msg_cup_created_text", edition.getName()));
+                // P2-14: the cup opens on its calendar day (October); its first round is drawn later (January), by
+                // AuthorityManager on the calendar's draw day, which then sends the mandatory draw message
+                java.time.LocalDate drawDay = com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(gameDate)
+                        .withCup(cup.getDataId()).cupFirstDraw();
+                creationMsg.setPlainTextMessage(com.rndmodgames.localization.LanguageModLoader.format("msg_cup_opened_text",
+                        edition.getName(), edition.getParticipantClubsIds().size(),
+                        com.rndmodgames.futtoboru.engine.messages.MessageManager.formatDay(drawDay.getDayOfMonth(),
+                                drawDay.getMonthValue(), drawDay.getYear())));
                 creationMsg.setScheduledDate(gameDate);
                 creationMsg.setIsMandatory(false);
                 messageManager.deliverMessage(creationMsg);
-                
-                // Mandatory Draw Message (blocks time advancement)
-                int roundNumber = 1;
-                com.rndmodgames.futtoboru.data.Message drawMessage = messageManager.createCupDrawMessage(cup, edition, roundNumber,
-                        com.rndmodgames.localization.LanguageModLoader.getValue("msg_round_first"));
-                if (drawMessage != null) {
-                    drawMessage.setScheduledDate(gameDate); 
-                    messageManager.deliverMessage(drawMessage);
-                    Log.info(Log.ENGINE_SCRIPTS, "Scheduled cup draw message for " + cupName);
-                }
             }
         }
         

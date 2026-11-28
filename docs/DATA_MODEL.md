@@ -11,14 +11,15 @@ futtoboru-core/src/main/resources/gamedata/
   core/                      the base pack; a mod is another folder with its own pack.json
     pack.json                id, name, version, dataVersion, seasons, files (every file, explicitly)
     continents.json countries.json professions.json occupations.json names.json
-    competitions.json        football-league, fa-cup (type LEAGUE / CUP)
+    competitions.json        football-league, fa-cup (type LEAGUE / CUP); optional re-election rule (G-08): reElectionPlaces,
+                             reElectionFrom/Until (season start years), annualMeetingAfterDays, annualMeetingConfidence
     clubs.json               identity only: name, fullName, founded, country, sources
     grounds.json             stadiums: capacity, value, rent, description, sources
     people.json              every real person once: firstName, lastName, born, country, confidence, sources
     aliases.json             old id -> new id, per kind, kept forever
     ids.json                 data id -> runtime number, per kind, append-only (P2-5)
     seasons/1888-89/
-      season.json            start, countries, editions (league + cup, with participants)
+      season.json            start, countries, editions (league + cup, with participants), calendar (P2-14)
       squads.json            per club this season: ground, balance, players (person ids), positions, dribbling (E-01)
       nationality_modifiers.json  region_modifiers.json
       results.json           real results of the season: reference data only (D17), see below
@@ -179,6 +180,38 @@ facts: `docs/data/history/RECRUITMENT_1888-1900.md`, `LANGUAGES_LITERACY_1880-19
   people stream), never from football attributes. The v2 -> v3 step in `SaveMigrations` runs the same generator.
 - Java: `GameData` checks the same rules; `RecruitmentData` and `LanguageData` (from `DatabaseLoader`) are the
   read-only lookups.
+
+## Season calendar and neutral grounds (P2-14, D30 A9)
+Two optional blocks in `seasons/<id>/season.json`; the rules the generated schedule follows (D17: never the real
+fixture list). A season without them keeps the latest earlier season's, one year on; no data at all = the code
+defaults in `CalendarRules.DEFAULTS` (the 1888-89 rules).
+```
+"calendar": {
+  "league": { "opens": {"onOrAfter": "09-08", "weekday": "saturday", "confidence": "unverified", "source": url},
+              "closes": {"onOrBefore": "04-20", ...}, "midweek": "wednesday", "noMatchOn": ["12-25"], "sources": [...] },
+  "cups": [ { "competition": "fa-cup", "opens": {...10-01 saturday...}, "firstDraw": {...01-01 monday, placeholder...},
+              "laterDraws": "open-draw", "drawDaysAfterRound": 2, "final": {"onOrBefore": "03-31", ...},
+              "properFrom": "02-01", "daysBetweenRounds": 14, "earlyRoundsOn": "wednesday", "maxEarlyRounds": 8,
+              "sources": [...] } ] }
+editions[fa-cup-1888-89].neutralVenues: { "rounds": [ {"round": "semi-final", "grounds": [...], "confidence": ...},
+              {"round": "final", "grounds": ["kennington-oval"], ...} ], "gate": "association", "gateConfidence": ...,
+              "sources": [...] }
+```
+- A **date rule** is a month-day (`MM-DD`) and a weekday: the first such weekday on or after it (`onOrAfter`) or the
+  last on or before it (`onOrBefore`), exactly one; July-December fall in the season's first year, January-June in
+  the next. Each rule has its own `confidence` (and `source`), so a placeholder day is marked where it is.
+- **Cup:** `opens` = the edition starts and its creation script runs (1888-89: 6 Oct, the first qualifying round);
+  `firstDraw` = the first round is drawn on or after it (7 Jan 1889, placeholder); `laterDraws` `open-draw` = each
+  later round is drawn once the round before is decided, `drawDaysAfterRound` days after its date at the earliest
+  (`bracket` = paired by the first draw); round dates as P2-11 (fortnightly Saturdays back from `final`, from
+  `properFrom`; extra rounds on `earlyRoundsOn`).
+- **Neutral grounds:** the cup rounds (`final`, `semi-final`, `quarter-final`, counted back from the final) played
+  at a neutral ground, with the candidate grounds; the game draws one per tie when its clubs are known
+  (`fork("venue:<match>")`), never a club's own nor one another tie uses that day; a replay stays there. `gate`:
+  `association` (the FA keeps it: 1888-89), `shared` (equal halves), `home` (the club drawn at home). The match
+  stores the ground id as `Match.venue` (saved; empty = the home club's ground).
+- Errors (both validators): an unknown field or weekday, a bad month-day, a rule with no or two anchors, two
+  calendars for one cup, a round listed twice, a round with no ground, an unknown ground or competition.
 
 ## Rename log
 | Date | Kind | Old id | New id | Why | Approved by |

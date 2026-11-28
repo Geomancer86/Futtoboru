@@ -39,6 +39,13 @@ POSITIONS = {"goalkeeper", "full-back", "half-back", "right-wing", "inside-right
 POSITION_SOURCES = {"players-1888-89", "players-1888-89-line", "placeholder", "wp-season-1888-89",
                     "wp-season-1888-89-line", "wp-player", "wp-player-line", "fa-cup-final-1889"}
 ATTR_MIN, ATTR_MAX = 3, 23  # the attribute scale (3d6 plus modifiers, PlayerAttributeGenerator)
+# P2-14: the season calendar (season.json `calendar`) and a cup's neutral grounds (edition `neutralVenues`)
+WEEKDAYS = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"}
+CUP_ROUNDS = {"quarter-final", "semi-final", "final"}  # counted back from the final
+NEUTRAL_GATES = {"association", "shared", "home"}  # who books the gate of a tie at a neutral ground
+LATER_DRAWS = {"open-draw", "bracket"}  # each round drawn after the one before, or paired by the first draw
+MONTHDAY_RE = re.compile(r"^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$")
+DAYS_IN_MONTH = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 KINDS = ["continent", "country", "profession", "occupation", "competition", "club", "ground", "person", "region",
          "season", "edition",
          # R-02 recruitment data, R-11a languages (DATA_MODEL.md "Recruitment and languages")
@@ -64,12 +71,14 @@ RATE_FIELDS = ("speaks", "only", "signsMen", "signsWomen", "parentsBorn", "readW
 READ_WRITE_LEVELS = 4         # readWriteIfSigns: signs his name / reads slowly / reads well / writes well
 
 # field spec: name -> (type, required). Types: str, int, num, bool, date, datetime, strs, nums, attrs,
-# ref:<kind>, refs:<kind>, enum:<name>, enums:<name> (a list), list:<record spec name>, map:<record spec name> (an
-# object: id -> record), shares:<kind> (an object: id of that kind -> a share 0..1)
+# monthday (MM-DD), monthdays, ref:<kind>, refs:<kind>, enum:<name>, enums:<name> (a list), list:<record spec
+# name>, map:<record spec name> (an object: id -> record), obj:<record spec name> (one nested object),
+# shares:<kind> (an object: id of that kind -> a share 0..1)
 ENUMS = {"confidence": CONFIDENCE, "occupation_category": OCCUPATION_CATEGORIES, "competition_type": COMPETITION_TYPES,
          "position": POSITIONS, "position_source": POSITION_SOURCES, "data_confidence": DATA_CONFIDENCE,
          "rule_kind": RULE_KINDS, "rule_body": RULE_BODIES, "applies_to": APPLIES_TO, "wage_type": WAGE_TYPES,
-         "standing": STANDINGS, "source_kind": SOURCE_KINDS, "origin_club_kind": ORIGIN_CLUB_KINDS}
+         "standing": STANDINGS, "source_kind": SOURCE_KINDS, "origin_club_kind": ORIGIN_CLUB_KINDS,
+         "weekday": WEEKDAYS, "cup_round": CUP_ROUNDS, "neutral_gate": NEUTRAL_GATES, "later_draws": LATER_DRAWS}
 SPECS = {
     "continent": {"id": ("str", True), "name": ("str", True)},
     "country": {"id": ("str", True), "name": ("str", True), "formalName": ("str", False),
@@ -79,7 +88,11 @@ SPECS = {
                    "category": ("enum:occupation_category", True), "bonuses": ("attrs", True), "notes": ("str", False)},
     "names": {"country": ("ref:country", True), "firstNames": ("strs", True), "lastNames": ("strs", True)},
     "competition": {"id": ("str", True), "name": ("str", True), "longName": ("str", False),
-                    "type": ("enum:competition_type", True), "sources": ("strs", True), "notes": ("str", False)},
+                    "type": ("enum:competition_type", True), "sources": ("strs", True), "notes": ("str", False),
+                    # G-08: the bottom clubs seek re-election at the annual meeting (seasons starting in From..Until)
+                    "reElectionPlaces": ("int", False), "reElectionFrom": ("int", False),
+                    "reElectionUntil": ("int", False), "annualMeetingAfterDays": ("int", False),
+                    "annualMeetingConfidence": ("enum:confidence", False)},
     "club": {"id": ("str", True), "name": ("str", True), "fullName": ("str", False),
              "founded": ("int", False), "country": ("ref:country", True), "sources": ("strs", True),
              "notes": ("str", False)},
@@ -94,10 +107,32 @@ SPECS = {
                "birthArea": ("ref:area", False)},
     "season": {"id": ("str", True), "name": ("str", True), "description": ("str", False),
                "start": ("datetime", True), "sources": ("strs", True), "countries": ("refs:country", True),
-               "editions": ("list:edition", True)},
+               "editions": ("list:edition", True), "calendar": ("obj:calendar", False)},
     "edition": {"id": ("str", True), "competition": ("ref:competition", True),
                 "name": ("str", True), "participants": ("refs:club", True), "sources": ("strs", True),
-                "notes": ("str", False)},
+                "notes": ("str", False), "neutralVenues": ("obj:neutral_venues", False)},
+    # P2-14 (D30 A9): the season's calendar rules; a later season without one keeps the latest earlier one's rules.
+    # A date rule is a month-day and a weekday: the first such weekday on or after it, or the last on or before it;
+    # months from July on fall in the season's first year, January to June in the next.
+    "calendar": {"league": ("obj:calendar_league", False), "cups": ("list:calendar_cup", False),
+                 "notes": ("str", False)},
+    "calendar_league": {"opens": ("obj:day_rule", True), "closes": ("obj:day_rule", True),
+                        "midweek": ("enum:weekday", False), "noMatchOn": ("monthdays", False),
+                        "sources": ("strs", True), "notes": ("str", False)},
+    "calendar_cup": {"competition": ("ref:competition", True), "opens": ("obj:day_rule", True),
+                     "firstDraw": ("obj:day_rule", True), "laterDraws": ("enum:later_draws", True),
+                     "drawDaysAfterRound": ("int", False), "final": ("obj:day_rule", True),
+                     "properFrom": ("monthday", True), "daysBetweenRounds": ("int", True),
+                     "earlyRoundsOn": ("enum:weekday", False), "maxEarlyRounds": ("int", False),
+                     "sources": ("strs", True), "notes": ("str", False)},
+    "day_rule": {"onOrAfter": ("monthday", False), "onOrBefore": ("monthday", False), "weekday": ("enum:weekday", True),
+                 "confidence": ("enum:confidence", True), "source": ("str", False), "notes": ("str", False)},
+    # the cup ties of this season played on a neutral ground (P2-14): candidate grounds per round, the gate rule
+    "neutral_venues": {"rounds": ("list:neutral_round", True), "gate": ("enum:neutral_gate", True),
+                       "gateConfidence": ("enum:confidence", True), "sources": ("strs", True),
+                       "notes": ("str", False)},
+    "neutral_round": {"round": ("enum:cup_round", True), "grounds": ("refs:ground", True),
+                      "confidence": ("enum:confidence", True), "notes": ("str", False)},
     "squad": {"club": ("ref:club", True), "ground": ("ref:ground", False), "balance": ("num", False),
               "players": ("refs:person", True), "notes": ("str", False),
               # E-01, keyed by a person id of `players`: this season's position, and a sourced dribbling value
@@ -192,6 +227,33 @@ def check_record(rec, spec_name: str, where: str, rep: Report, refs: list):
         check_value(rec[k], typ, f"{where}.{k}", rep, refs)
     if "id" in spec and isinstance(rec.get("id"), str) and not ID_RE.match(rec["id"]):
         rep.error(where, f"bad id `{rec['id']}` (lower-case slug like `preston-north-end`; mods: `author.slug`)")
+    check_rules(rec, spec_name, where, rep)
+
+
+def check_rules(rec: dict, spec_name: str, where: str, rep: Report):
+    """P2-14: what a field spec can't say about the calendar and neutral grounds (same checks in GameData)."""
+    if spec_name == "day_rule":
+        anchors = [k for k in ("onOrAfter", "onOrBefore") if rec.get(k) is not None]
+        if len(anchors) != 1:
+            rep.error(where, "a date rule needs exactly one of `onOrAfter` / `onOrBefore`")
+    elif spec_name == "calendar_cup":
+        for k, low in (("daysBetweenRounds", 1), ("maxEarlyRounds", 0), ("drawDaysAfterRound", 0)):
+            v = rec.get(k)
+            if isinstance(v, int) and not isinstance(v, bool) and not low <= v <= 60:
+                rep.error(f"{where}.{k}", f"{v} is outside {low}-60")
+    elif spec_name == "calendar":
+        cups = [c.get("competition") for c in rec.get("cups") or [] if isinstance(c, dict)]
+        for c, n in Counter(cups).items():
+            if n > 1:
+                rep.error(f"{where}.cups", f"`{c}` has {n} calendars")
+    elif spec_name == "neutral_venues":
+        rounds = [r.get("round") for r in rec.get("rounds") or [] if isinstance(r, dict)]
+        for r, n in Counter(rounds).items():
+            if n > 1:
+                rep.error(f"{where}.rounds", f"`{r}` listed {n} times")
+        for i, r in enumerate(rec.get("rounds") or []):
+            if isinstance(r, dict) and isinstance(r.get("grounds"), list) and not r["grounds"]:
+                rep.error(f"{where}.rounds[{i}].grounds", "a neutral round needs at least one ground")
 
 
 def check_value(v, typ: str, where: str, rep: Report, refs: list):
@@ -227,6 +289,10 @@ def check_value(v, typ: str, where: str, rep: Report, refs: list):
             refs.append((typ[7:], k, f"{where}.{k}"))
             if not is_num(x) or not 0 <= x <= 1:
                 rep.error(f"{where}.{k}", "expected a share between 0 and 1")
+    elif typ == "monthday":
+        is_monthday(v) or bad("a month-day MM-DD")
+    elif typ == "monthdays":
+        (isinstance(v, list) and all(is_monthday(x) for x in v)) or bad("a list of month-days MM-DD")
     elif typ == "attrs":
         if not isinstance(v, dict):
             return bad("an object of attribute numbers")
@@ -257,6 +323,15 @@ def check_value(v, typ: str, where: str, rep: Report, refs: list):
             return bad("an object of id -> record")
         for k, x in v.items():
             check_record(x, typ[4:], f"{where}.{k}", rep, refs)
+    elif typ.startswith("obj:"):
+        check_record(v, typ[4:], where, rep, refs)
+
+
+def is_monthday(v) -> bool:
+    if not isinstance(v, str) or not MONTHDAY_RE.match(v):
+        return False
+    month, day = int(v[:2]), int(v[3:])
+    return day <= DAYS_IN_MONTH[month - 1]
 
 
 def check_squad_roles(sq, where: str, rep: Report):
@@ -314,7 +389,7 @@ def check_span(r: dict, w: str, rep: Report):
         rep.error(w, f"`until` {r['until']} is before `from` {r.get('from')}")
 
 
-def check_rules(data, where: str, rep: Report):
+def check_rule_records(data, where: str, rep: Report):
     """R-02 rules: a rule kind's value fields are present and positive; a dated span; a source."""
     for r, w in recs(data, where):
         check_sourced(r, w, rep)
@@ -438,7 +513,7 @@ def check_rates(data, where: str, rep: Report):
 
 
 # pack file -> its extra checks (beyond the field spec)
-FILE_CHECKS = {"recruitment/rules.json": check_rules, "recruitment/wages.json": check_wages,
+FILE_CHECKS = {"recruitment/rules.json": check_rule_records, "recruitment/wages.json": check_wages,
                "recruitment/origins.json": check_origins, "recruitment/origin_clubs.json": check_sources_listed,
                "languages.json": check_sources_listed, "areas.json": check_areas, "language_rates.json": check_rates}
 

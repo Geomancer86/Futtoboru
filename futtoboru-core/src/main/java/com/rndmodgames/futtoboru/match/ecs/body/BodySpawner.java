@@ -55,6 +55,36 @@ public final class BodySpawner {
                 KitParams.season1888(), new MatchEnds(Team.HOME), Team.HOME);
     }
 
+    /**
+     * The kick-off spot of shape slot {@code slotIndex} (Laws 1888-89, see the class comment): writes x, y to
+     * {@code out}. {@code ownSign} is the sign of the side's own goal line (-1 west).
+     */
+    public static void kickOffSpot(PitchGeometry pitch, Shape shape, int slotIndex, double radius, double ballRadius,
+            int ownSign, boolean kicking, double[] out) {
+        Shape.Slot slot = shape.slot(slotIndex);
+        int s = ownSign;
+        double attack = -s;
+        double x;
+        double y = attack * slot.lateral() * pitch.halfWidth();
+        if (slot.depth() < 1) {
+            x = s * (pitch.halfLength() - slot.depth() * pitch.halfLength());
+        } else if (kicking) {
+            if (slotIndex == shape.kickerSlot()) {
+                x = s * (radius + ballRadius + 0.05);
+                y = 0;
+            } else {
+                x = s * (FRONT_GAP_M + radius);
+            }
+        } else {
+            double tenYards = 10 * PitchParams.YARD + radius + TEN_YARD_MARGIN_M;
+            double across = Math.min(Math.abs(y), tenYards);
+            x = s * Math.sqrt(tenYards * tenYards - across * across);
+            x = s * Math.max(Math.abs(x), FRONT_GAP_M + radius);
+        }
+        out[0] = x;
+        out[1] = y;
+    }
+
     private static Entity spawnOne(MatchWorld world, PitchGeometry pitch, TeamSheet sheet, int slotIndex, Team team,
             KitParams kit, MatchEnds ends, Team kickingOff) {
         BodyParams p = world.params().body;
@@ -67,24 +97,10 @@ public final class BodySpawner {
         PitchEnd own = ends.endDefendedBy(team);
         int s = own.sign(); // -1: own goal at west, attacks +x
         double attack = -s;
-        double x;
-        double y = attack * slot.lateral() * pitch.halfWidth();
-        if (slot.depth() < 1) {
-            x = s * (pitch.halfLength() - slot.depth() * pitch.halfLength());
-        } else if (team == kickingOff) {
-            if (slotIndex == sheet.shape().kickerSlot()) {
-                double ballRadius = world.params().ballRadiusM;
-                x = s * (radius + ballRadius + 0.05);
-                y = 0;
-            } else {
-                x = s * (FRONT_GAP_M + radius);
-            }
-        } else {
-            double tenYards = 10 * PitchParams.YARD + radius + TEN_YARD_MARGIN_M;
-            double across = Math.min(Math.abs(y), tenYards);
-            x = s * Math.sqrt(tenYards * tenYards - across * across);
-            x = s * Math.max(Math.abs(x), FRONT_GAP_M + radius);
-        }
+        double[] spot = new double[2];
+        kickOffSpot(pitch, sheet.shape(), slotIndex, radius, world.params().ballRadiusM, s, team == kickingOff, spot);
+        double x = spot[0];
+        double y = spot[1];
         double facing = attack > 0 ? 0 : StrictMath.PI;
 
         boolean pads = in.shinPads() != null ? in.shinPads()

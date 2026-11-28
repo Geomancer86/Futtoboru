@@ -7,6 +7,7 @@ import java.util.List;
 import com.rndmodgames.futtoboru.data.AttributeTrackingConstants;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot;
+import com.rndmodgames.localization.GameFormat;
 
 /**
  * Attribute Change Calculator (v1.0)
@@ -81,18 +82,18 @@ public class AttributeChangeCalculator {
         } else if (change > 0) {
             if (absChange >= AttributeTrackingConstants.SIGNIFICANT_CHANGE_THRESHOLD) {
                 trend = "IMPROVING_SIGNIFICANT";
-                displayText = String.format("[+%.1f ↑↑]", change);
+                displayText = GameFormat.format("[+%.1f]", change);
             } else {
                 trend = "IMPROVING";
-                displayText = String.format("[+%.1f ↑]", change);
+                displayText = GameFormat.format("[+%.1f]", change);
             }
         } else {
             if (absChange >= AttributeTrackingConstants.SIGNIFICANT_CHANGE_THRESHOLD) {
                 trend = "DECLINING_SIGNIFICANT";
-                displayText = String.format("[%.1f ↓↓]", change);
+                displayText = GameFormat.format("[%.1f]", change);
             } else {
                 trend = "DECLINING";
-                displayText = String.format("[%.1f ↓]", change);
+                displayText = GameFormat.format("[%.1f]", change);
             }
         }
         

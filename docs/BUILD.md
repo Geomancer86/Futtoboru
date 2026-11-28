@@ -10,7 +10,7 @@
 ```
 ./mvnw -B -DskipTests package       # fast build (PowerShell/cmd: .\mvnw.cmd ...)
 ./mvnw -B verify                    # build + fast tier tests (see "Test tiers"; the gate is tools/test_level.py)
-java -jar futtoboru-desktop/target/futtoboru-desktop-0.5.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar futtoboru-desktop/target/futtoboru-desktop-0.6.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 Scripts at the repo root, each in a Windows `.bat` and a POSIX `.sh` version (Linux, Git Bash, WSL):
 
@@ -22,6 +22,11 @@ Scripts at the repo root, each in a Windows `.bat` and a POSIX `.sh` version (Li
 | `run-game-debug` | runs the jar, output on screen and in `game-debug.log` |
 | `run-game-debug-simple` | runs the jar, output only in `game-debug.log`, printed after exit |
 | `generate-build-info` | writes `futtoboru-core/src/main/resources/build.properties` (git-ignored), build number +1 |
+
+**Dev flag (D30 A8):** "Match Engine Debug" on the main menu (and other dev-only output) shows only with
+`-Dfuttoboru.dev=true` (`Futtoboru.isDevMode()`). The debug scripts pass it only on request:
+`FUTTOBORU_DEV=true ./run-game-debug.sh` (cmd: `set FUTTOBORU_DEV=true` then `run-game-debug.bat`), or
+`java -Dfuttoboru.dev=true -jar <jar>`. Without it the menu is the player's (New Game, Load Game, Settings, Quit).
 
 The `.sh` scripts take `JAR=<path>` to run another jar. Line endings are fixed by `.gitattributes`
 (`*.sh`, `mvnw`: LF; `*.bat`, `*.cmd`: CRLF), and `mvnw`/`*.sh` are executable in git.
@@ -53,7 +58,7 @@ git config core.autocrlf true
 # private companion repo (business drafts, full history of the old local repos), OUTSIDE the clone
 git clone https://bitbucket.org/Geomancer/futtoboru-private.git C:\git\futtoboru-private
 ```
-Then read `CLAUDE.md`, `PRIVACY.md` and `docs/HANDOFF.md`, claim an item, and branch: `git switch -c b3/<item> origin/develop`.
+Then read `CLAUDE.md`, `PRIVACY.md` and `docs/BOARD.md`, claim an item, and branch: `git switch -c b3/<item> origin/develop`.
 
 ## Daily routine (both machines)
 ```

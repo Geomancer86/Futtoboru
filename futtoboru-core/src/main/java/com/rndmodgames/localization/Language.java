@@ -52,6 +52,11 @@ public class Language implements Serializable {
 	
 	@Override
 	public String toString() {
+		// U-12: the name in the language in use (the list is built once, before any bundle is loaded)
+		String label = id != null ? LanguageModLoader.getValue(id) : null;
+		if (label != null && !label.isEmpty() && !label.equals(id)) {
+			return label;
+		}
 		return name != null ? name : "no_bundled_name";
 	}
 }

@@ -89,8 +89,10 @@ public class MatchSimulator {
         double homeStrength = calculateTeamStrength(homeClub);
         double awayStrength = calculateTeamStrength(awayClub);
         
-        // Apply home advantage
-        homeStrength *= HOME_ADVANTAGE_MULTIPLIER;
+        // Apply home advantage (P2-14: none at a neutral ground, a cup semi-final or final)
+        if (!com.rndmodgames.futtoboru.engine.cup.NeutralVenues.isNeutral(match)) {
+            homeStrength *= HOME_ADVANTAGE_MULTIPLIER;
+        }
         
         // Add randomness
         double homeRandom = RANDOMNESS_MIN + (random.nextDouble() * (RANDOMNESS_MAX - RANDOMNESS_MIN));
@@ -114,10 +116,15 @@ public class MatchSimulator {
         // Goal minutes (G-03): after the scorers, on their own stream, so scores and scorers never depend on them
         GoalMinutes.assign(match, root.fork("minutes:" + matchKey));
 
-        // Calculate attendance (simple: based on stadium capacity if available)
-        if (homeClub.getStadium() != null && homeClub.getStadium().getCapacity() != null) {
+        // Calculate attendance (simple: based on the capacity of the ground played at, P2-14: a neutral venue)
+        com.rndmodgames.futtoboru.data.Stadium ground = com.rndmodgames.futtoboru.engine.cup.NeutralVenues.isNeutral(match)
+                ? com.rndmodgames.futtoboru.system.DatabaseLoader.getGroundByDataId(match.getVenue()) : null;
+        if (ground == null || ground.getCapacity() == null) {
+            ground = homeClub.getStadium();
+        }
+        if (ground != null && ground.getCapacity() != null) {
             // 60-90% attendance for v1.0
-            int capacity = homeClub.getStadium().getCapacity();
+            int capacity = ground.getCapacity();
             int attendance = (int)(capacity * (0.6 + gate.nextDouble() * 0.3));
             match.setAttendance(attendance);
         } else {

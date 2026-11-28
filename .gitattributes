@@ -6,3 +6,6 @@ mvnw text eol=lf
 # Windows scripts keep CRLF so cmd.exe parses them reliably
 *.bat text eol=crlf
 *.cmd text eol=crlf
+
+# Machine logs are append-only; union merge never conflicts (R-FUT-5)
+docs/log/*.md merge=union
