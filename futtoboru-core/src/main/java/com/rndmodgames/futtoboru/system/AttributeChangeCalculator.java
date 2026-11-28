@@ -168,6 +168,7 @@ public class AttributeChangeCalculator {
             case "Teamwork": return player.getTeamwork();
             
             // Technical
+            case "Dribbling": return player.getDribbling();
             case "Passing": return player.getPassing();
             case "Kicking": return player.getKicking();
             case "Long Shots": return player.getLongShots();

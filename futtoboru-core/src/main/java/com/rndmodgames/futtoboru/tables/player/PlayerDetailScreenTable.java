@@ -617,11 +617,12 @@ public class PlayerDetailScreenTable extends VisTable {
     /**
      * Add an attribute row with change tracking
      */
-    private void addAttributeRow(VisTable table, String attributeName, Float currentValue) {
+    /** @param attributeKey the attribute's id for the change tracking; the label comes from its attr_* key */
+    private void addAttributeRow(VisTable table, String attributeKey, Float currentValue) {
         table.row();
-        
+
         // Attribute name
-        table.add(new VisLabel(attributeLabel(attributeName))).left().width(UiTheme.size("col.label"));
+        table.add(new VisLabel(attributeLabel(attributeKey))).left().width(UiTheme.size("col.label"));
         
         // Current value (v2.0 - 3d6 system: display as integer)
         String valueText;
@@ -652,7 +653,7 @@ public class PlayerDetailScreenTable extends VisTable {
         table.add(valueLabel).left().width(UiTheme.size("col.value"));
         
         // Change indicator (30-day tracking)
-        String changeText = formatAttributeChange(attributeName, currentValue);
+        String changeText = formatAttributeChange(attributeKey, currentValue);
         VisLabel changeLabel = new VisLabel(changeText);
         
         // Color coding based on trend

@@ -344,6 +344,11 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
 
         // 5. Season rollover (P2-6): the final table is kept on the edition, the new season starts from zero
         resetLeagueTable(league);
+        // E-01b: whoever joined a squad without a position gets the slot his squad is shortest of
+        if (game.getCurrentGame() != null) {
+            com.rndmodgames.futtoboru.system.generators.PositionAssigner.fillMissing(
+                    game.getCurrentGame().getAllClubs(), "season rollover");
+        }
         seasonRollovers++; // U-06: the engine autosaves on a rollover day
     }
 

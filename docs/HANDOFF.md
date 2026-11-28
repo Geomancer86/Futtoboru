@@ -9,7 +9,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | E-21a viewer scaffold (DarkBlade port: quality, TickGate, interpolation, NoGl, ArtGuard) | WORKSTATION | `ws/E-21a-viewer-scaffold` | 2026-11-28 |
 | E-13 player bodies, contacts, injuries (sim) | WORKSTATION | `ws/E-13-bodies` | 2026-11-28 |
 | Match-engine art direction: sprite / pixel-art prototypes for producer choice (players, ball, goals, pitch, crowd, officials, weather, sidelines) → then E-21 viewer sprites | WORKSTATION | (prototypes local/private; code later on `ws/E-21-sprites`) | 2026-11-27 |
-| S-01 fresh seed per new game (D25) + E-01b dribbling in ageing/drift + `PlayerAttributeSnapshot`, positions for generated players | BOOK3PRO | `b3/E-01b-seed-dribbling-positions` | 2026-11-28 |
 | H-04 source the 384 placeholder positions (period line-ups) in `seasons/1888-89/squads.json` | BOOK3PRO | `b3/H-04-positions-sources` | 2026-11-28 |
 | U-08 friendlies finished or hidden + sound settings hidden | BOOK3PRO | `b3/U-08-friendlies` | 2026-11-28 |
 | U-10 hard-coded labels → language files + guard test | BOOK3PRO | `b3/U-10-labels` | 2026-11-28 |
@@ -18,7 +17,7 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
 |---|---|---|
-| BOOK3PRO | E-01b, H-04 | `Futtoboru` seed / new-game path, attribute drift + `PlayerAttributeSnapshot` (outside `match/ecs`), person generator, `seasons/1888-89/squads.json` positions |
+| BOOK3PRO | H-04 | `seasons/1888-89/squads.json` positions |
 | BOOK3PRO | U-08, U-10, V-01 | `tables/schedule/**` (U-08), `SettingsScreen` sound row, label lines in screens/tables + 4 language bundles (U-10), small layout fixes (V-01), new `docs/design/INTERFACE_GUIDE.md` + `docs/design/img/` |
 | WORKSTATION | Engine (E-10..E-22) | `match/ecs/**` (new ECS engine; BOOK3PRO: E-01 `Position`/`dribbling` data is yours, ask before editing `match/ecs`) |
 
@@ -29,6 +28,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Unclaimed:** nothing for v0.5; Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md` (WORKSTATION).
 
 ## Log
+- 2026-11-28 · BOOK3PRO · DONE · S-01 + E-01b · Merged d4a7aa4. **S-01 (D25):** `Futtoboru.prepareNewGame()` calls `reseedForNewGame()`: a fresh seed per new game (stored in the save as before), unless forced by `-Dfuttoboru.seed` or `Futtoboru(long)` (then every new game of the session uses that seed again, also after a load); `isSeedForced()`. **E-01b:** dribbling drifts daily like the other technical attributes (13th technical slot of the `training:` fork, so the drift stream of a seed changed once) and declines with age at the technical rate; `PlayerAttributeSnapshot.dribbling` (+ `getAttributeValue("dribbling")`, a pre-E-01b snapshot reads back derived); player screen change tracking uses the key `Dribbling`, not the translated label. **Positions:** `system/generators/PositionAssigner`: `fillMissing` gives a squad player without a position the 2-3-5 line, then slot, his squad is shortest of (no dice) at data load, after every save load and at the season rollover; `PlayerGenerator.generateRandomPlayer` sets `forGenerated` (best line from seeded attributes); `canFieldTwoThreeFive`. No save format change (`saveVersion` 2). Tests: `NewGameSeedTests` (3), `PositionsAndDribblingTests` (6), `FullSeasonTests` every squad fields a 2-3-5 at the start and after the 1889-90 rollover, v1 fixture load has 0 players without a position, `NewGameFreshDataTests` now forces seed 1888. `./mvnw -B verify` green (279 core + 1 desktop). **WORKSTATION (match/ecs):** `PlayerAttributeSnapshot.getDribbling()` is new; `Player.getPosition()` is now non-null for every squad player (generated ones too). No lock left for E-01b.
 - 2026-11-28 · BOOK3PRO · CLAIM · S-01 + E-01b, H-04, U-08, U-10, V-01 → U-05 · Five parallel lanes (producer picks). D25: a fresh seed per new game.
 - 2026-11-28 · BOOK3PRO · DONE · release · **v0.5.0-alpha** tagged and `main` fast-forwarded to it (7d7727f; `main` showed 2023 before). `develop` now 0.5.0-SNAPSHOT; desktop pom depends on core via `${project.version}`. The `v0.4.0` tag stays (its commit is on an older line, not in develop). `feature/ui-auto-scale` deleted after archiving it as tag `archive/ui-auto-scale-2026-07`. Producer: agents may push releases to `main` (D25).
 - 2026-11-28 · WORKSTATION · NOTE · D24 + plan · `docs/design/MATCH_VIEWER_PLAN.md` (E-21a..m, DarkBlade copy-port). Sprite slices wait for the producer's art checklist.
