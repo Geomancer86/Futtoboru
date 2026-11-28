@@ -7,7 +7,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | Item | Machine | Branch | Since |
 |---|---|---|---|
 | E-21b viewer: side-on camera V3, pitch P1/A1, skyline K1, RuntimeAtlas/ShelfPacker/DepthSort port, actor pass | WORKSTATION | `ws/E-21b-viewer-pitch` | 2026-11-28 |
-| E-13 player bodies, contacts, injuries (sim) | WORKSTATION | `ws/E-13-bodies` | 2026-11-28 |
 | E-21s sprite baker + art (doll players A2, keeper G2, ball BA2, officials O2, crowd CR1 figures, touchline T1) per D26 | WORKSTATION | `ws/E-21s-sprites` | 2026-11-27 |
 | H-04 source the 384 placeholder positions (period line-ups) in `seasons/1888-89/squads.json` | BOOK3PRO | `b3/H-04-positions-sources` | 2026-11-28 |
 | U-10 hard-coded labels → language files + guard test | BOOK3PRO | `b3/U-10-labels` | 2026-11-28 |
@@ -28,6 +27,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Unclaimed:** nothing for v0.5; Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md` (WORKSTATION).
 
 ## Log
+- 2026-11-28 · WORKSTATION · DONE · E-13 · `match/ecs/body`: Body/Athlete/Kit/Injury components + `MoveCommand`, `AthleteInputs` (3..23 ratings, uses `data.Position`), shapes 2-3-5/2-2-6/1-2-7, 1888 kick-off spawn, `LocomotionSystem` (accel/brake/turn limits, grip = surface × sole, stamina, wet boots heavier), `ContactSystem` (swept pairs, charges, knock-downs, injuries on a forked stream, keeper charge fair in 1888, `ContactRecord`s for laws/events); `BodyPose` for viewer interpolation. 10 µs/tick for 22 bodies, 0 alloc. Goldens re-pinned (ENGINE_VERSION ecs-0.2) + `BodyWorldTest.GOLDEN_SCRIMMAGE`. Jenkins #99 green (325 core + 1 desktop). Note: on this JDK `StrictMath.sin/cos` allocate; sim code avoids them per tick.
 - 2026-11-28 · WORKSTATION · DONE · E-21a · Viewer scaffold ported from DarkBlade (origin line per class): `ui.gfx` GraphicsQuality (`gfx/quality.json`, live levels, per-module/master/`-D` switches, software renderer → low), VfxSwitches, TickGate, CameraZoom, ArtGuard (sim ticks run in a no-art scope), test NoGl; `match.ecs.view` ViewFrame, MatchViewer, ViewerClock (step cap + time budget, carry), InterpolationPass/BallPose; `FrameContext`; `SystemPriority` draw bands (DRAW_* replaced by ACTORS/PARTICLES/…); `MatchSystems.installDrawPasses`. Jenkins #96 green (288 core + 1 desktop).
 - 2026-11-28 · WORKSTATION · NOTE · D26 · Producer picked the match art (side-on V3 camera, horizontal pitch, 5 px/m, procedural doll players in 8 dirs, hand-drawn officials, individual crowd figures, newspaper HUD, no GPT art). CLAIM E-21s (sprite baker + art) and E-21b (viewer pitch/camera/atlas).
 - 2026-11-28 · BOOK3PRO · CLAIM · P2-12 · Gate income for league/cup matches: only the home club sells tickets (as U-08 did for friendlies); `MatchScheduler` + finances + tests.
