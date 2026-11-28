@@ -352,6 +352,10 @@ public class FuttoboruGameEngine {
         LocalDateTime newDate = current.plusDays(1);
         gameInstance.getCurrentGame().setGameDate(newDate);
         
+        // G-02: the day's injury recovery, every club (a man fit again is available for today's matches)
+        com.rndmodgames.futtoboru.engine.injuries.InjuryManager.recoverDaily(gameInstance.getCurrentGame(), newDate,
+                messageManager);
+
         // Check Game Scripts (may create new scheduled messages)
         scriptsManager.checkGameScripts();
 

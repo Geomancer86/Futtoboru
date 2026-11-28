@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from datetime import date
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -53,7 +54,9 @@ DAYS_IN_MONTH = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 KINDS = ["continent", "country", "profession", "occupation", "competition", "club", "ground", "person", "region",
          "season", "edition",
          # R-02 recruitment data, R-11a languages (DATA_MODEL.md "Recruitment and languages")
-         "rule", "wage", "origin", "origin-club", "area", "language"]
+         "rule", "wage", "origin", "origin-club", "area", "language",
+         # G-02 injury kinds (DATA_MODEL.md "Injuries")
+         "injury"]
 # R-02 / R-11a: research grade of a rule, wage, origin, area or rate row (RECRUITMENT_1888-1900.md H/M/L; `estimate` =
 # no direct source, the reasoning is in `sources`; `placeholder` = gameplay tuning, D30 A3)
 DATA_CONFIDENCE = {"high", "medium", "low", "estimate", "placeholder"}
@@ -72,19 +75,45 @@ ORIGIN_CLUB_KINDS = {"church", "sunday-school", "works", "junior", "school", "sc
 NUDGE_MAX = 2                 # an origin's attribute nudge is small (D28 Q12): -2..+2
 LITERACY_SHIFT_MAX = 1        # an origin moves literacy by at most one level
 RATE_FIELDS = ("speaks", "only", "signsMen", "signsWomen", "parentsBorn", "readWriteIfSigns")
+INJURY_KINDS = {"knock", "passenger", "carried-off"}  # D19-3: plays on / stays on hurt / leaves, may return
 READ_WRITE_LEVELS = 4         # readWriteIfSigns: signs his name / reads slowly / reads well / writes well
+
+# H-06 era events (docs/design/ERA_EVENTS_PROPOSAL.md, D30): gamedata/<pack>/era/{baseline,events}.json
+ERA_KINDS = {"rule", "equipment", "ball", "authority"}
+ERA_AUTHORITIES = {"ifab", "fa", "football-league", "press"}
+ERA_CONFIDENCE = {"verified", "unverified", "disputed"}
+ERA_CERTAINTY = {"day", "month", "year", "season"}
+ERA_OPS = {"set", "scale", "add"}
+ERA_CATEGORIES = {"AUTHORITY", "LEAGUE", "SYSTEM"}
+ERA_PRIORITIES = {"LOW", "NORMAL", "HIGH"}
+ERA_GROUPS = ("rules", "ball", "kit", "league")
+BUNDLES = ("BaseBundle_en_us", "BaseBundle_en_uk", "BaseBundle_sp_sp", "BaseBundle_sp_la")
 
 # field spec: name -> (type, required). Types: str, int, num, bool, date, datetime, strs, nums, attrs,
 # monthday (MM-DD), monthdays, ref:<kind>, refs:<kind>, enum:<name>, enums:<name> (a list), list:<record spec
 # name>, map:<record spec name> (an object: id -> record), obj:<record spec name> (one nested object),
 # shares:<kind> (an object: id of that kind -> a share 0..1)
-ENUMS = {"confidence": CONFIDENCE, "occupation_category": OCCUPATION_CATEGORIES, "competition_type": COMPETITION_TYPES,
+ENUMS = {"era_kind": ERA_KINDS, "era_authority": ERA_AUTHORITIES, "era_confidence": ERA_CONFIDENCE,
+         "era_certainty": ERA_CERTAINTY, "era_op": ERA_OPS, "era_category": ERA_CATEGORIES,
+         "era_priority": ERA_PRIORITIES, "confidence": CONFIDENCE, "occupation_category": OCCUPATION_CATEGORIES, "competition_type": COMPETITION_TYPES,
          "position": POSITIONS, "position_source": POSITION_SOURCES, "data_confidence": DATA_CONFIDENCE,
          "rule_kind": RULE_KINDS, "rule_body": RULE_BODIES, "applies_to": APPLIES_TO, "wage_type": WAGE_TYPES,
          "standing": STANDINGS, "source_kind": SOURCE_KINDS, "origin_club_kind": ORIGIN_CLUB_KINDS,
          "weekday": WEEKDAYS, "cup_round": CUP_ROUNDS, "neutral_gate": NEUTRAL_GATES, "later_draws": LATER_DRAWS,
-         "club_origin": CLUB_ORIGINS}
+         "club_origin": CLUB_ORIGINS, "injury_kind": INJURY_KINDS}
 SPECS = {
+    "era_event": {"id": ("str", True), "kind": ("enum:era_kind", True), "authority": ("enum:era_authority", True),
+                  "announced": ("str", True), "effective": ("str", True),
+                  "dateCertainty": ("enum:era_certainty", False), "scope": ("obj:era_scope", False),
+                  "effects": ("list:era_effect", True), "message": ("obj:era_message", True),
+                  "requires": ("strs", False), "confidence": ("enum:era_confidence", True),
+                  "sources": ("strs", True), "notes": ("str", False)},
+    "era_scope": {"countries": ("refs:country", False), "competitions": ("refs:competition", False)},
+    "era_effect": {"param": ("str", True), "op": ("enum:era_op", True), "value": ("any", True), "adoption": ("obj:era_adoption", False)},
+    "era_adoption": {"seasons": ("int", True), "from": ("num", False)},
+    "era_message": {"key": ("str", True), "args": ("strs", False), "category": ("enum:era_category", False),
+                    "priority": ("enum:era_priority", False), "mandatory": ("bool", False),
+                    "newsOnly": ("bool", False)},
     "continent": {"id": ("str", True), "name": ("str", True)},
     "country": {"id": ("str", True), "name": ("str", True), "formalName": ("str", False),
                 "continent": ("ref:continent", True), "selectableByDefault": ("bool", False)},
@@ -198,6 +227,11 @@ SPECS = {
                       "parentsBorn": ("shares:country", False), "readWriteIfSigns": ("nums", False),
                       "confidence": ("enum:data_confidence", True), "sources": ("strs", True),
                       "notes": ("str", False)},
+    # G-02 (D19-3): one record per injury kind: chance per man per match, days out after it, in-match effect
+    "injury": {"id": ("str", True), "kind": ("enum:injury_kind", True), "chancePerMatch": ("num", True),
+               "minDays": ("int", True), "maxDays": ("int", True), "returnChance": ("num", False),
+               "strengthWhileHurt": ("num", False), "confidence": ("enum:data_confidence", True),
+               "sources": ("strs", True), "notes": ("str", False)},
     "pack": {"id": ("str", True), "name": ("str", True), "version": ("int", True), "dataVersion": ("int", True),
              "seasons": ("strs", True), "files": ("strs", True)},
 }
@@ -211,6 +245,7 @@ PACK_FILES = {
     "recruitment/origins.json": ("origin", "origin"), "recruitment/origin_clubs.json": ("origin_club", "origin-club"),
     "languages.json": ("language", "language"), "areas.json": ("area", "area"),
     "language_rates.json": ("language_rate", None),
+    "injuries.json": ("injury", "injury"),
 }
 SEASON_FILES = {
     "squads.json": ("squad", None), "nationality_modifiers.json": ("nationality_modifier", None),
@@ -363,6 +398,10 @@ def check_value(v, typ: str, where: str, rep: Report, refs: list):
         for x, n in Counter(v).items():
             if n > 1:
                 rep.error(where, f"`{x}` listed {n} times")
+    elif typ == "any":
+        pass
+    elif typ.startswith("obj:"):
+        check_record(v, typ[4:], where, rep, refs)
     elif typ.startswith("list:"):
         if not isinstance(v, list):
             return bad("a list")
@@ -633,10 +672,30 @@ def check_rates(data, where: str, rep: Report):
         rep.error(where, "no default row (no area, no countries) with `signsMen`: a man born abroad has no rate")
 
 
+def check_injuries(data, where: str, rep: Report):
+    """G-02: each kind once; 0 <= minDays <= maxDays; chances and strengthWhileHurt in 0..1; a source or `estimate`."""
+    seen = {}
+    for r, w in recs(data, where):
+        check_sourced(r, w, rep)
+        k = r.get("kind")
+        if k in seen:
+            rep.error(w, f"injury kind `{k}` is listed twice (also {seen[k]})")
+        seen[k] = w
+        lo, hi = r.get("minDays"), r.get("maxDays")
+        if is_num(lo) and lo < 0:
+            rep.error(f"{w}.minDays", "must not be negative")
+        if is_num(lo) and is_num(hi) and lo > hi:
+            rep.error(w, f"minDays {lo} is above maxDays {hi}")
+        for f in ("chancePerMatch", "returnChance", "strengthWhileHurt"):
+            if is_num(r.get(f)) and not 0 <= r[f] <= 1:
+                rep.error(f"{w}.{f}", "must be from 0 to 1")
+
+
 # pack file -> its extra checks (beyond the field spec)
 FILE_CHECKS = {"recruitment/rules.json": check_rule_records, "recruitment/wages.json": check_wages,
                "recruitment/origins.json": check_origins, "recruitment/origin_clubs.json": check_sources_listed,
-               "languages.json": check_sources_listed, "areas.json": check_areas, "language_rates.json": check_rates}
+               "languages.json": check_sources_listed, "areas.json": check_areas, "language_rates.json": check_rates,
+               "injuries.json": check_injuries}
 
 
 def check_results(data: list, where: str, sid: str, season: dict | None, rep: Report):
@@ -659,6 +718,163 @@ def check_results(data: list, where: str, sid: str, season: dict | None, rep: Re
             rep.error(rw, "home and away are the same club")
         if isinstance(r.get("edition"), str) and r["edition"] not in own:
             rep.error(rw, f"edition `{r['edition']}` is not an edition of season {sid}")
+
+
+def parse_date(v) -> date | None:
+    """A whole calendar date yyyy-mm-dd, or None."""
+    if not isinstance(v, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
+        return None
+    try:
+        return date.fromisoformat(v)
+    except ValueError:
+        return None
+
+
+def is_number(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def read_bundle_keys(root: Path) -> dict[str, set[str]] | None:
+    """Bundle name -> keys with a non-empty value (mods/language next to the gamedata folder), or None."""
+    folder = root.parent / "mods" / "language"
+    if not folder.is_dir():
+        return None
+    out: dict[str, set[str]] = {}
+    for b in BUNDLES:
+        keys: set[str] = set()
+        f = folder / f"{b}.properties"
+        if f.exists():
+            for line in f.read_text(encoding="utf-8").splitlines():
+                if "=" in line and not line.lstrip().startswith("#"):
+                    k, v = line.split("=", 1)
+                    if v.strip():
+                        keys.add(k.strip())
+        out[b] = keys
+    return out
+
+
+def check_era(root: Path, baselines: list, events: list, rep: Report, refs: list):
+    """H-06: era/baseline.json (the 1888-89 value of every parameter) and era/events.json (dated changes)."""
+    params: dict[str, object] = {}   # "rules.penaltyKick" -> baseline value
+    base_date = None
+    if len(baselines) > 1:
+        rep.error("era/baseline.json", "more than one pack has a baseline (only core does)")
+    for data, where in baselines:
+        if not isinstance(data, dict):
+            rep.error(where, "expected an object")
+            continue
+        for k in data:
+            if k not in ("date", "description", "parameters"):
+                rep.error(where, f"unknown field `{k}` (allowed: date, description, parameters)")
+        base_date = parse_date(data.get("date"))
+        if base_date is None:
+            rep.error(where, "`date` must be a calendar date yyyy-mm-dd")
+        if "description" in data and not isinstance(data["description"], str):
+            rep.error(where, "`description` must be text")
+        groups = data.get("parameters")
+        if not isinstance(groups, dict):
+            rep.error(where, "`parameters` must be an object of groups")
+            continue
+        for g, table in groups.items():
+            if g not in ERA_GROUPS:
+                rep.error(where, f"unknown parameter group `{g}` (allowed: {', '.join(ERA_GROUPS)})")
+                continue
+            if not isinstance(table, dict) or not table:
+                rep.error(f"{where}.{g}", "expected a non-empty object of parameters")
+                continue
+            for name, val in table.items():
+                if not re.fullmatch(r"[a-z][A-Za-z0-9]*", name):
+                    rep.error(f"{where}.{g}.{name}", "bad parameter name (camelCase)")
+                if not (isinstance(val, (bool, str)) or is_number(val)):
+                    rep.error(f"{where}.{g}.{name}", "value must be a number, true/false or text")
+                else:
+                    params[f"{g}.{name}"] = val
+        for g in ERA_GROUPS:
+            if g not in groups:
+                rep.error(where, f"missing parameter group `{g}`")
+
+    bundles = read_bundle_keys(root)
+    seen: dict[str, str] = {}      # event id -> where
+    eff_date: dict[str, date] = {}  # event id -> effective
+    pending_requires: list[tuple[str, str, str]] = []
+    for data, where in events:
+        if not isinstance(data, list):
+            rep.error(where, "expected a list of events")
+            continue
+        for i, ev in enumerate(data):
+            ew = f"{where}[{i}]" + (f" `{ev.get('id')}`" if isinstance(ev, dict) and ev.get("id") else "")
+            check_record(ev, "era_event", ew, rep, refs)
+            if not isinstance(ev, dict):
+                continue
+            eid = ev.get("id")
+            if isinstance(eid, str):
+                if eid.lower() in seen:
+                    rep.error(ew, f"duplicate event id `{eid}` (also {seen[eid.lower()]})")
+                seen[eid.lower()] = ew
+            ann, eff = parse_date(ev.get("announced")), parse_date(ev.get("effective"))
+            for fld, d in (("announced", ann), ("effective", eff)):
+                if fld in ev and d is None:
+                    rep.error(f"{ew}.{fld}", "must be a calendar date yyyy-mm-dd")
+            if ann and eff and eff < ann:
+                rep.error(ew, f"effective {eff} is before announced {ann}")
+            if isinstance(eid, str) and eff:
+                eff_date[eid.lower()] = eff
+            # sources: links
+            for j, src in enumerate(ev.get("sources") or []):
+                if isinstance(src, str) and not re.match(r"https?://\S+$", src):
+                    rep.error(f"{ew}.sources[{j}]", "expected an http(s) link")
+            if isinstance(ev.get("sources"), list) and not ev["sources"]:
+                rep.error(ew, "needs at least one source")
+            for r in ev.get("requires") or []:
+                pending_requires.append((ew, eid, r))
+            # effects
+            for j, ef in enumerate(ev.get("effects") or []):
+                fw = f"{ew}.effects[{j}]"
+                if not isinstance(ef, dict) or not isinstance(ef.get("param"), str):
+                    continue
+                p = ef["param"]
+                if p not in params:
+                    rep.error(fw, f"unknown parameter `{p}` (not in era/baseline.json)")
+                    continue
+                base, op, val = params[p], ef.get("op"), ef.get("value")
+                if "value" not in ef:
+                    continue
+                if op == "set":
+                    ok = (isinstance(base, bool) and isinstance(val, bool)) or \
+                         (isinstance(base, str) and isinstance(val, str)) or \
+                         (is_number(base) and is_number(val))
+                    if not ok:
+                        rep.error(fw, f"value {json.dumps(val)} does not match the type of `{p}` ({type(base).__name__})")
+                elif op in ("scale", "add"):
+                    if not (is_number(base) and is_number(val)):
+                        rep.error(fw, f"`{op}` needs a numeric parameter and a number (`{p}`)")
+                if "adoption" in ef:
+                    if not is_number(base):
+                        rep.error(fw, "`adoption` needs a numeric parameter")
+                    ad = ef["adoption"]
+                    if isinstance(ad, dict) and isinstance(ad.get("seasons"), int) and ad["seasons"] < 1:
+                        rep.error(f"{fw}.adoption", "`seasons` must be at least 1")
+            # messages
+            msg = ev.get("message")
+            if isinstance(msg, dict) and isinstance(msg.get("key"), str) and isinstance(eid, str):
+                key = msg["key"]
+                if key != f"era.{eid}":
+                    rep.error(f"{ew}.message.key", f"must be `era.{eid}` (language keys `<key>.title` and `<key>.body`)")
+                elif bundles is not None:
+                    for b, keys in bundles.items():
+                        for suffix in ("title", "body"):
+                            if f"{key}.{suffix}" not in keys:
+                                rep.error(f"{ew}.message", f"`{key}.{suffix}` missing or empty in {b}.properties")
+                args = msg.get("args")
+                if isinstance(args, list) and not args:
+                    rep.error(f"{ew}.message.args", "empty list: leave it out")
+    for ew, eid, r in pending_requires:
+        if r.lower() not in eff_date:
+            rep.error(ew, f"requires unknown event `{r}`")
+        elif eid and eid.lower() in eff_date and eff_date[r.lower()] > eff_date[eid.lower()]:
+            rep.error(ew, f"requires `{r}`, which takes effect later")
+        elif r.lower() == (eid or "").lower():
+            rep.error(ew, "requires itself")
 
 
 def load_json(path: Path, rep: Report, where: str):
@@ -695,6 +911,8 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
     seasons: dict[str, dict] = {}
     squads_by_season = s.squads_by_season
     results: list[tuple[list, str, str]] = []  # (records, where, season): checked once every season.json is read
+    era_baselines: list[tuple[object, str]] = []
+    era_events: list[tuple[object, str]] = []
 
     index = root / "index.txt"
     if not index.exists():
@@ -741,6 +959,14 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
             if data is None:
                 continue
             parts = f.split("/")
+            if parts[0] == "era":
+                if f == "era/baseline.json":
+                    era_baselines.append((data, where))
+                elif f == "era/events.json":
+                    era_events.append((data, where))
+                else:
+                    rep.error(where, "unknown era file (baseline.json, events.json)")
+                continue
             if f == "ids.json":
                 s.registries[pack] = (data, where)
                 continue
@@ -804,6 +1030,7 @@ def scan(root: Path = DEFAULT_ROOT) -> Scan:
 
     for data, where, sid in results:
         check_results(data, where, sid, seasons.get(sid), rep)
+    check_era(root, era_baselines, era_events, rep, refs)
 
     # aliases: an old id must be gone, its target must exist
     for kind, table in aliases.items():
