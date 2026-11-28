@@ -79,6 +79,8 @@ class SaveGameTests {
      * copy of the season memo's day-170 game (played once per test JVM, see {@link SeasonMemo}).
      */
     private static SaveGame playedGame() {
+        // J-01: a test before may have bound the v1 fixture save, whose seed then became the application's
+        application.setSeed(SeasonMemo.SEED);
         return SeasonMemo.get(application).copyAtSnapshot(application);
     }
 

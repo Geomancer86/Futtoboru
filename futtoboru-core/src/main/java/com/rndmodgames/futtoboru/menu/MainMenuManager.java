@@ -13,7 +13,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.components.AutoFocusScrollPane;
 import com.rndmodgames.futtoboru.data.Club;
-import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.menu.MenuEntries.MenuEntry;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.tables.authority.AuthorityScreenTable;
@@ -279,10 +278,9 @@ public class MainMenuManager {
         syncMenuState();
     }
 
-    /** @return true if the owner works as a manager (the manager menu), false for the job-seeker menu */
+    /** @return true if the owner works at a club (the club menu), false for the job-seeker menu (J-01) */
     private boolean isManager() {
-        return currentGame.getOwner() != null && currentGame.getOwner().getPrimaryProfession() != null
-                && currentGame.getOwner().getPrimaryProfession().is(Profession.MANAGER);
+        return MenuEntries.hasClub(currentGame);
     }
 
     /** A menu entry was picked: its screen starts a new Back history. */
@@ -988,6 +986,33 @@ public class MainMenuManager {
             }
             matchHistoryScreenTable.updateDynamicComponents();
             
+            break;
+
+        // J-01: the job screens follow the day too (offers lapse, posts are filled and advertised)
+        case CLUB_BROWSER_SCREEN:
+            clubBrowserScreenTable.updateDynamicComponents();
+            break;
+
+        case CLUB_DETAIL_SCREEN:
+            if (selectedClubForDetail != null) {
+                clubDetailScreenTable.updateDynamicComponents(selectedClubForDetail);
+            }
+            break;
+
+        case JOB_BOARD_SCREEN:
+            jobBoardScreenTable.updateDynamicComponents();
+            break;
+
+        case MY_APPLICATIONS_SCREEN:
+            myApplicationsScreenTable.updateDynamicComponents();
+            break;
+
+        case JOB_OFFER_SCREEN:
+            jobOfferScreenTable.updateDynamicComponents();
+            break;
+
+        case NEGOTIATION_SCREEN:
+            negotiationScreenTable.updateDynamicComponents();
             break;
 
         default:
