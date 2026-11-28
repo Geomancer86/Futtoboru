@@ -9,13 +9,15 @@ import java.util.Map;
 
 import com.rndmodgames.futtoboru.data.recruitment.Origin;
 import com.rndmodgames.futtoboru.data.recruitment.OriginClub;
+import com.rndmodgames.futtoboru.data.recruitment.PoolRegion;
 import com.rndmodgames.futtoboru.data.recruitment.RegistrationRule;
 import com.rndmodgames.futtoboru.data.recruitment.WageRecord;
 
 /**
  * R-02: the recruitment data of the packs ({@code recruitment/rules.json}, {@code wages.json}, {@code origins.json},
  * {@code origin_clubs.json}) as read-only objects, with the lookups later slices need (rules in force on a day, the
- * wage band of a standing). Built once per {@link GameData}; nothing in play uses it yet (R-03, R-07).
+ * wage band of a standing) and R-03's candidate pool regions ({@code recruitment/pools.json}). Built once per
+ * {@link GameData}.
  */
 public final class RecruitmentData {
 
@@ -23,6 +25,7 @@ public final class RecruitmentData {
     private final List<WageRecord> wages = new ArrayList<>();
     private final Map<String, Origin> origins = new LinkedHashMap<>();
     private final Map<String, OriginClub> originClubs = new LinkedHashMap<>();
+    private final Map<String, PoolRegion> pools = new LinkedHashMap<>();
 
     private RecruitmentData() {
     }
@@ -49,6 +52,37 @@ public final class RecruitmentData {
             out.originClubs.put(r.id(), new OriginClub(r.id(), r.runtimeId(), r.str("name"), r.str("kind"),
                     r.str("place"), r.ref("country"), r.ref("area"), r.integer("founded"), r.ref("club"),
                     r.refs("origins")));
+        }
+        // R-03 candidate pool regions
+        for (DataRecord r : data.all(GameData.POOL_REGION)) {
+            com.badlogic.gdx.utils.JsonValue up = r.raw("upbringing");
+            Map<String, Integer> tendencies = new LinkedHashMap<>();
+            JsonValueReader.attrs(up == null ? null : up.get("tendencies"), tendencies);
+            PoolRegion.Upbringing upbringing = new PoolRegion.Upbringing(up == null ? "" : up.getString("style", ""),
+                    tendencies, up == null ? 0 : up.getDouble("chance", 0));
+            Map<String, Double> foreign = new LinkedHashMap<>();
+            com.badlogic.gdx.utils.JsonValue fb = r.raw("foreignBorn");
+            for (com.badlogic.gdx.utils.JsonValue x = fb == null ? null : fb.child; x != null; x = x.next) {
+                foreign.put(x.name, x.asDouble());
+            }
+            List<PoolRegion.PoolPerson> people = new ArrayList<>();
+            com.badlogic.gdx.utils.JsonValue list = r.raw("people");
+            int i = 0;
+            for (com.badlogic.gdx.utils.JsonValue x = list == null ? null : list.child; x != null; x = x.next, i++) {
+                // a nested reference is kept by its path as a one-entry list (P2-14)
+                List<String> resolved = r.refs("people[" + i + "].person");
+                String person = resolved.isEmpty() ? null : resolved.get(0);
+                if (person == null) {
+                    continue; // an unresolved person (reported by the load)
+                }
+                com.badlogic.gdx.utils.JsonValue until = x.get("until");
+                people.add(new PoolRegion.PoolPerson(person, x.getInt("from"),
+                        until == null || until.isNull() ? null : until.asInt(), x.getString("kind"),
+                        x.getString("playsFor"), x.getString("position", null)));
+            }
+            out.pools.put(r.id(), new PoolRegion(r.id(), r.runtimeId(), r.str("name"), r.ref("country"), r.ref("area"),
+                    r.strs("places"), r.refs("clubs"), r.integer("size"), r.integer("monthly"), r.strs("sourceKinds"),
+                    r.refs("originClubs"), r.strs("localClubs"), foreign, upbringing, people));
         }
         return out;
     }
@@ -119,6 +153,31 @@ public final class RecruitmentData {
 
     public Map<String, OriginClub> getOriginClubs() {
         return Collections.unmodifiableMap(originClubs);
+    }
+
+    /** R-03: the candidate pool regions, in file order */
+    public Map<String, PoolRegion> getPools() {
+        return Collections.unmodifiableMap(pools);
+    }
+
+    /** @return the pool region of a game club (by its data id), or null when no region lists it */
+    public PoolRegion poolOfClub(String clubDataId) {
+        for (PoolRegion r : pools.values()) {
+            if (clubDataId != null && r.clubs().contains(clubDataId)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    /** Reads a JSON attribute object (name -> whole number). */
+    private static final class JsonValueReader {
+        static void attrs(com.badlogic.gdx.utils.JsonValue v, Map<String, Integer> out) {
+            for (com.badlogic.gdx.utils.JsonValue x = v == null || !v.isObject() ? null : v.child; x != null;
+                    x = x.next) {
+                out.put(x.name, (int) Math.round(x.asDouble()));
+            }
+        }
     }
 
     /** @return the origin clubs of a rate area, in file order */

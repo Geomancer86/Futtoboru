@@ -44,6 +44,10 @@ public class Profession implements Serializable {
     public static final String AGENT = "agent";
     public static final String INVESTOR = "investor";
     public static final String CLUB_OWNER = "club-owner";
+    // R-09 staff roles (docs/design/RECRUITMENT_AND_TRIALS.md §7)
+    public static final String TRAINER = "trainer";
+    public static final String SECRETARY = "secretary";
+    public static final String COMMITTEE_MEMBER = "committee-member";
 
     // stable data id from the game data (P2-4, D11); null for objects made during play
     private String dataId;

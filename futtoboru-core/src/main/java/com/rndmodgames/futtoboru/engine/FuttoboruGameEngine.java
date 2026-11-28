@@ -384,6 +384,10 @@ public class FuttoboruGameEngine {
         // G-04: engagements (retained list from 16 April, answers the next day, the 1 May rollover for every club)
         contractManager.afterDay(newDate);
 
+        // R-09 + R-03: trainers and secretaries for every club, the candidate pools (close-season refresh, arrivals)
+        com.rndmodgames.futtoboru.engine.recruitment.Recruitment.afterDay(gameInstance.getCurrentGame(), newDate,
+                gameInstance.random());
+
         /**
          * STEP 5: Deliver scheduled messages AFTER advancing date
          * This catches messages scheduled for the new date (same day events)

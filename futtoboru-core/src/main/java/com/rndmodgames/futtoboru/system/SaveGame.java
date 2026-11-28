@@ -176,6 +176,16 @@ public class SaveGame implements Serializable {
 
     /** G-04: the season whose retained list has been opened (its letter sent) */
     private Integer retainedListSeason;
+
+    /**
+     * R-03: the men of the candidate pools, every region (engine/recruitment/CandidatePools). Optional in saves: a
+     * save without them gets this season's pools on load.
+     */
+    private List<com.rndmodgames.futtoboru.data.recruitment.Candidate> candidates = new ArrayList<>();
+
+    /** R-03: the season (start year) the pools were last built for, and the month (yyyy-mm) of the last arrivals */
+    private Integer candidatePoolSeason;
+    private String candidateArrivalsMonth;
     
     /**
      * Proposed Matches
@@ -346,6 +356,34 @@ public class SaveGame implements Serializable {
 
     public Integer getRetainedListSeason() {
         return retainedListSeason;
+    }
+
+    /** @return the candidate pools, every region (never null) */
+    public List<com.rndmodgames.futtoboru.data.recruitment.Candidate> getCandidates() {
+        if (candidates == null) {
+            candidates = new ArrayList<>();
+        }
+        return candidates;
+    }
+
+    public void setCandidates(List<com.rndmodgames.futtoboru.data.recruitment.Candidate> candidates) {
+        this.candidates = candidates;
+    }
+
+    public Integer getCandidatePoolSeason() {
+        return candidatePoolSeason;
+    }
+
+    public void setCandidatePoolSeason(Integer candidatePoolSeason) {
+        this.candidatePoolSeason = candidatePoolSeason;
+    }
+
+    public String getCandidateArrivalsMonth() {
+        return candidateArrivalsMonth;
+    }
+
+    public void setCandidateArrivalsMonth(String candidateArrivalsMonth) {
+        this.candidateArrivalsMonth = candidateArrivalsMonth;
     }
 
     public void setRetainedListSeason(Integer retainedListSeason) {

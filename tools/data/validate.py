@@ -59,7 +59,9 @@ KINDS = ["continent", "country", "profession", "occupation", "competition", "clu
          # R-02 recruitment data, R-11a languages (DATA_MODEL.md "Recruitment and languages")
          "rule", "wage", "origin", "origin-club", "area", "language",
          # G-02 injury kinds (DATA_MODEL.md "Injuries")
-         "injury"]
+         "injury",
+         # R-03 candidate pool regions (DATA_MODEL.md "Recruitment and languages")
+         "pool-region"]
 # R-02 / R-11a: research grade of a rule, wage, origin, area or rate row (RECRUITMENT_1888-1900.md H/M/L; `estimate` =
 # no direct source, the reasoning is in `sources`; `placeholder` = gameplay tuning, D30 A3)
 DATA_CONFIDENCE = {"high", "medium", "low", "estimate", "placeholder"}
@@ -243,6 +245,20 @@ SPECS = {
                "minDays": ("int", True), "maxDays": ("int", True), "returnChance": ("num", False),
                "strengthWhileHurt": ("num", False), "confidence": ("enum:data_confidence", True),
                "sources": ("strs", True), "notes": ("str", False)},
+    # R-03 (RECRUITMENT_AND_TRIALS.md 3.2): a candidate pool region; `foreignBorn` = share of its men born in that
+    # country (D28 Q13), `upbringing` = the football culture he learned the game in (Q14), `people` = real men first (Q2)
+    "pool_region": {"id": ("str", True), "name": ("str", True), "country": ("ref:country", True),
+                    "area": ("ref:area", False), "places": ("strs", True), "clubs": ("refs:club", True),
+                    "size": ("int", True), "monthly": ("int", True), "sourceKinds": ("enums:source_kind", True),
+                    "originClubs": ("refs:origin-club", False), "localClubs": ("strs", True),
+                    "foreignBorn": ("shares:country", False), "upbringing": ("obj:upbringing", True),
+                    "people": ("list:pool_person", False), "confidence": ("enum:data_confidence", True),
+                    "sources": ("strs", True), "notes": ("str", False)},
+    "upbringing": {"style": ("str", True), "tendencies": ("attrs", True), "chance": ("num", True),
+                   "confidence": ("enum:data_confidence", True), "sources": ("strs", True), "notes": ("str", False)},
+    "pool_person": {"person": ("ref:person", True), "from": ("int", True), "until": ("int", False),
+                    "kind": ("enum:source_kind", True), "playsFor": ("str", True), "position": ("enum:position", False),
+                    "confidence": ("enum:confidence", True), "sources": ("strs", True), "notes": ("str", False)},
     "pack": {"id": ("str", True), "name": ("str", True), "version": ("int", True), "dataVersion": ("int", True),
              "seasons": ("strs", True), "files": ("strs", True)},
 }
@@ -257,6 +273,7 @@ PACK_FILES = {
     "languages.json": ("language", "language"), "areas.json": ("area", "area"),
     "language_rates.json": ("language_rate", None),
     "injuries.json": ("injury", "injury"),
+    "recruitment/pools.json": ("pool_region", "pool-region"),
 }
 SEASON_FILES = {
     "squads.json": ("squad", None), "nationality_modifiers.json": ("nationality_modifier", None),
@@ -703,11 +720,54 @@ def check_injuries(data, where: str, rep: Report):
                 rep.error(f"{w}.{f}", "must be from 0 to 1")
 
 
+def check_pools(data, where: str, rep: Report):
+    """R-03 pools: a size, foreign-born shares under 1, small whole tendencies with a chance 0-1, a club in one region,
+    a real man listed once with `from` <= `until`; sources unless an estimate or placeholder."""
+    clubs: dict[str, str] = {}
+    people: dict[str, str] = {}
+    for r, w in recs(data, where):
+        check_sourced(r, w, rep)
+        if is_int(r.get("size")) and r["size"] < 1:
+            rep.error(f"{w}.size", "must be at least 1")
+        if is_int(r.get("monthly")) and r["monthly"] < 0:
+            rep.error(f"{w}.monthly", "must not be negative")
+        fb = r.get("foreignBorn")
+        if isinstance(fb, dict) and sum(x for x in fb.values() if is_num(x)) >= 1:
+            rep.error(f"{w}.foreignBorn", "the shares must add up to less than 1")
+        up = r.get("upbringing")
+        if isinstance(up, dict):
+            check_sourced(up, f"{w}.upbringing", rep)
+            if is_num(up.get("chance")) and not 0 <= up["chance"] <= 1:
+                rep.error(f"{w}.upbringing.chance", "must be from 0 to 1")
+            t = up.get("tendencies")
+            for k, x in (t.items() if isinstance(t, dict) else ()):
+                if is_num(x) and (x != int(x) or abs(x) > NUDGE_MAX):
+                    rep.error(f"{w}.upbringing.tendencies.{k}",
+                              f"a tendency is a whole number from -{NUDGE_MAX} to {NUDGE_MAX}")
+        for c in r.get("clubs") or []:
+            if isinstance(c, str):
+                if c in clubs:
+                    rep.error(w, f"club `{c}` is already in pool region `{clubs[c]}`")
+                clubs[c] = r.get("id")
+        for i, p in enumerate(r.get("people") or []):
+            if not isinstance(p, dict):
+                continue
+            pw = f"{w}.people[{i}]"
+            check_sourced(p, pw, rep)
+            if is_int(p.get("until")) and is_int(p.get("from")) and p["until"] < p["from"]:
+                rep.error(pw, f"`until` {p['until']} is before `from` {p['from']}")
+            pid = p.get("person")
+            if isinstance(pid, str):
+                if pid in people:
+                    rep.error(pw, f"`{pid}` is already in pool region `{people[pid]}`")
+                people[pid] = r.get("id")
+
+
 # pack file -> its extra checks (beyond the field spec)
 FILE_CHECKS = {"recruitment/rules.json": check_rule_records, "recruitment/wages.json": check_wages,
                "recruitment/origins.json": check_origins, "recruitment/origin_clubs.json": check_sources_listed,
                "languages.json": check_sources_listed, "areas.json": check_areas, "language_rates.json": check_rates,
-               "injuries.json": check_injuries}
+               "injuries.json": check_injuries, "recruitment/pools.json": check_pools}
 
 
 def check_results(data: list, where: str, sid: str, season: dict | None, rep: Report):

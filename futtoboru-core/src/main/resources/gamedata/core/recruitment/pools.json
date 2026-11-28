@@ -1,0 +1,366 @@
+[
+  {
+    "id": "lancashire",
+    "name": "Lancashire",
+    "country": "england",
+    "area": "lancashire",
+    "places": ["Preston", "Blackburn", "Bolton", "Accrington", "Burnley", "Darwen", "Blackpool", "Manchester"],
+    "clubs": ["preston-north-end", "blackburn-rovers", "bolton-wanderers", "accrington", "burnley", "witton", "halliwell", "south-shore"],
+    "size": 30,
+    "monthly": 2,
+    "sourceKinds": ["local-junior", "works-team", "released", "amateur", "veteran"],
+    "originClubs": ["newton-heath-lyr", "ardwick"],
+    "localClubs": ["{place} Rovers", "{place} Swifts", "St John's ({place})", "{place} Wanderers", "{place} Olympic", "Christ Church ({place})", "{place} Excelsior"],
+    "foreignBorn": { "ireland": 0.042, "germany": 0.002 },
+    "upbringing": {
+      "style": "combination",
+      "tendencies": { "teamwork": 1, "perception": 1 },
+      "chance": 0.35,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/The_Invincibles_(English_football)"],
+      "notes": "Lancashire learned the Scots' passing game from the Scots professionals of the 1880s; a man takes each tendency with the chance (Q14: varied per person). Values are gameplay tuning."
+    },
+    "confidence": "estimate",
+    "sources": [
+      "https://livrepository.liverpool.ac.uk/3176267/1/258705.pdf",
+      "estimate: Germans in England and Wales 1891 about 50,599, Lancashire's foreigners 25,109 of about 3.9 million (docs/data/history/LANGUAGES_LITERACY_1880-1914.md 4.3)"
+    ],
+    "notes": "Irish-born 42 per 1,000 in 1891 (LANGUAGES_LITERACY 4.1). Pool size, monthly arrivals and local club name patterns are placeholders (D30 A3)."
+  },
+  {
+    "id": "liverpool",
+    "name": "Liverpool",
+    "country": "england",
+    "area": "liverpool",
+    "places": ["Liverpool", "Bootle", "Birkenhead"],
+    "clubs": ["everton", "bootle"],
+    "size": 24,
+    "monthly": 2,
+    "sourceKinds": ["local-junior", "works-team", "released", "veteran"],
+    "localClubs": ["{place} Rovers", "St Peter's ({place})", "{place} Wanderers", "Stanley ({place})", "Edge Hill ({place})"],
+    "foreignBorn": { "ireland": 0.091, "germany": 0.002 },
+    "upbringing": {
+      "style": "dribbling",
+      "tendencies": { "dexterity": 1, "courage": 1, "teamwork": -1 },
+      "chance": 0.35,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Harry_Cursham"],
+      "notes": "The English game of the 1880s still prized the dribbler over the combination game. Values are gameplay tuning."
+    },
+    "confidence": "estimate",
+    "sources": ["https://livrepository.liverpool.ac.uk/3176267/1/258705.pdf"],
+    "notes": "Irish-born 91 per 1,000 in 1891, about twice Lancashire's (LANGUAGES_LITERACY 4.1); 25 of 112 Liverpool clubs in 1885 had church links (RECRUITMENT_1888-1900.md 1.7). Sizes and club patterns are placeholders."
+  },
+  {
+    "id": "birmingham",
+    "name": "Birmingham and the Black Country",
+    "country": "england",
+    "area": "england-other",
+    "places": ["Birmingham", "West Bromwich", "Wolverhampton", "Walsall", "Smethwick", "Wednesbury"],
+    "clubs": ["aston-villa", "wolverhampton-wanderers", "west-bromwich-albion", "birmingham-st-georges", "small-heath", "walsall"],
+    "size": 30,
+    "monthly": 2,
+    "sourceKinds": ["local-junior", "works-team", "released", "veteran"],
+    "originClubs": ["singers"],
+    "localClubs": ["{place} Unity", "{place} Excelsior", "{place} Victoria", "St Luke's ({place})", "{place} Swifts", "{place} Strollers"],
+    "foreignBorn": { "ireland": 0.022, "germany": 0.001 },
+    "upbringing": {
+      "style": "dribbling",
+      "tendencies": { "dexterity": 1, "courage": 1, "teamwork": -1 },
+      "chance": 0.4,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Harry_Cursham"],
+      "notes": "The English dribbling game. Values are gameplay tuning."
+    },
+    "people": [
+      {
+        "person": "john-devey-1866",
+        "from": 1888,
+        "until": 1890,
+        "kind": "local-junior",
+        "playsFor": "Mitchell St George's",
+        "position": "centre-forward",
+        "confidence": "unverified",
+        "sources": ["https://en.wikipedia.org/wiki/John_Devey"]
+      }
+    ],
+    "confidence": "estimate",
+    "sources": [
+      "https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics",
+      "estimate: Germans in England and Wales 1891 about 50,599 of about 29 million, half of them in London (LANGUAGES_LITERACY 4.3)"
+    ],
+    "notes": "Irish-born in England and Wales 1881: 562,374 of about 26 million (LANGUAGES_LITERACY 4.2). Sizes and club patterns are placeholders."
+  },
+  {
+    "id": "derby-nottingham",
+    "name": "Derby and Nottingham",
+    "country": "england",
+    "area": "england-other",
+    "places": ["Derby", "Nottingham", "Long Eaton", "Chesterfield", "Staveley"],
+    "clubs": ["derby-county", "notts-county", "nottingham-forest", "derby-junction", "notts-rangers", "long-eaton-rangers"],
+    "size": 26,
+    "monthly": 2,
+    "sourceKinds": ["local-junior", "works-team", "released", "amateur", "veteran"],
+    "localClubs": ["{place} Rangers", "{place} Wanderers", "{place} Olympic", "St Andrew's ({place})", "{place} Town"],
+    "foreignBorn": { "ireland": 0.022, "germany": 0.001 },
+    "upbringing": {
+      "style": "dribbling",
+      "tendencies": { "dexterity": 1, "courage": 1, "teamwork": -1 },
+      "chance": 0.4,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Harry_Cursham"],
+      "notes": "Notts County's Harry Cursham was a voice for dribbling over combination. Values are gameplay tuning."
+    },
+    "people": [
+      {
+        "person": "ernest-needham-1873",
+        "from": 1888,
+        "until": 1890,
+        "kind": "local-junior",
+        "playsFor": "Staveley",
+        "position": "half-back",
+        "confidence": "unverified",
+        "sources": ["https://en.wikipedia.org/wiki/Ernest_Needham"]
+      }
+    ],
+    "confidence": "estimate",
+    "sources": ["https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics"],
+    "notes": "England-wide Irish-born share (LANGUAGES_LITERACY 4.2). Sizes and club patterns are placeholders."
+  },
+  {
+    "id": "stoke",
+    "name": "The Potteries and Cheshire",
+    "country": "england",
+    "area": "england-other",
+    "places": ["Stoke", "Hanley", "Burslem", "Crewe"],
+    "clubs": ["stoke", "crewe-alexandra"],
+    "size": 18,
+    "monthly": 1,
+    "sourceKinds": ["local-junior", "works-team", "released", "veteran"],
+    "localClubs": ["{place} Swifts", "{place} Rangers", "{place} Victoria", "{place} Excelsior"],
+    "foreignBorn": { "ireland": 0.022 },
+    "upbringing": {
+      "style": "dribbling",
+      "tendencies": { "dexterity": 1, "courage": 1, "teamwork": -1 },
+      "chance": 0.4,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Harry_Cursham"],
+      "notes": "The English dribbling game. Values are gameplay tuning."
+    },
+    "confidence": "estimate",
+    "sources": ["https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics"],
+    "notes": "England-wide Irish-born share (LANGUAGES_LITERACY 4.2). Sizes and club patterns are placeholders."
+  },
+  {
+    "id": "sheffield",
+    "name": "Sheffield and South Yorkshire",
+    "country": "england",
+    "area": "england-other",
+    "places": ["Sheffield", "Rotherham", "Heeley", "Attercliffe"],
+    "clubs": ["sheffield-wednesday", "heeley"],
+    "size": 22,
+    "monthly": 1,
+    "sourceKinds": ["local-junior", "works-team", "released", "amateur", "veteran"],
+    "localClubs": ["{place} Wanderers", "{place} Town", "{place} Albion", "{place} Swifts"],
+    "foreignBorn": { "ireland": 0.022, "germany": 0.001 },
+    "upbringing": {
+      "style": "dribbling",
+      "tendencies": { "dexterity": 1, "courage": 1, "teamwork": -1 },
+      "chance": 0.4,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Harry_Cursham"],
+      "notes": "The English dribbling game. Values are gameplay tuning."
+    },
+    "people": [
+      {
+        "person": "arthur-wharton-1865",
+        "from": 1889,
+        "until": 1893,
+        "kind": "released",
+        "playsFor": "Rotherham Town",
+        "position": "goalkeeper",
+        "confidence": "unverified",
+        "sources": ["https://en.wikipedia.org/wiki/Arthur_Wharton"]
+      }
+    ],
+    "confidence": "estimate",
+    "sources": ["https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics"],
+    "notes": "England-wide Irish-born share (LANGUAGES_LITERACY 4.2). Sizes and club patterns are placeholders."
+  },
+  {
+    "id": "lincolnshire",
+    "name": "Lincolnshire",
+    "country": "england",
+    "area": "england-other",
+    "places": ["Grimsby", "Cleethorpes", "Lincoln", "Gainsborough"],
+    "clubs": ["grimsby-town"],
+    "size": 14,
+    "monthly": 1,
+    "sourceKinds": ["local-junior", "works-team", "veteran"],
+    "localClubs": ["{place} Trinity", "{place} Wanderers", "{place} Rovers"],
+    "foreignBorn": { "ireland": 0.01, "germany": 0.001 },
+    "upbringing": {
+      "style": "dribbling",
+      "tendencies": { "dexterity": 1, "courage": 1, "teamwork": -1 },
+      "chance": 0.4,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Harry_Cursham"],
+      "notes": "The English dribbling game. Values are gameplay tuning."
+    },
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "No local rate found: about half the England-wide Irish-born share, a guess. Sizes and club patterns are placeholders."
+  },
+  {
+    "id": "north-east",
+    "name": "The North East",
+    "country": "england",
+    "area": "england-other",
+    "places": ["Sunderland", "Newcastle", "Middlesbrough", "Darlington"],
+    "clubs": ["sunderland-albion"],
+    "size": 20,
+    "monthly": 1,
+    "sourceKinds": ["local-junior", "works-team", "released", "veteran"],
+    "localClubs": ["{place} Rangers", "{place} West End", "{place} Albion", "{place} Swifts"],
+    "foreignBorn": { "ireland": 0.022, "germany": 0.001 },
+    "upbringing": {
+      "style": "dribbling",
+      "tendencies": { "dexterity": 1, "courage": 1, "teamwork": -1 },
+      "chance": 0.4,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Harry_Cursham"],
+      "notes": "The English dribbling game. Values are gameplay tuning."
+    },
+    "confidence": "estimate",
+    "sources": ["https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics"],
+    "notes": "England-wide Irish-born share (LANGUAGES_LITERACY 4.2). Sizes and club patterns are placeholders."
+  },
+  {
+    "id": "london",
+    "name": "London and the South",
+    "country": "england",
+    "area": "england-other",
+    "places": ["London", "Woolwich", "Chatham", "Brighton", "Westminster"],
+    "clubs": ["old-westminsters", "swifts", "old-brightonians", "chatham-town", "old-carthusians"],
+    "size": 24,
+    "monthly": 1,
+    "sourceKinds": ["amateur", "local-junior", "works-team", "veteran"],
+    "originClubs": ["royal-arsenal"],
+    "localClubs": ["{place} Rovers", "{place} Wanderers", "{place} Athletic", "St Mark's ({place})"],
+    "foreignBorn": { "ireland": 0.02, "germany": 0.006, "italy": 0.001 },
+    "upbringing": {
+      "style": "dribbling",
+      "tendencies": { "dexterity": 1, "strength": 1, "teamwork": -1 },
+      "chance": 0.4,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Harry_Cursham"],
+      "notes": "The public-school dribbling and charging game of the southern amateurs. Values are gameplay tuning."
+    },
+    "confidence": "estimate",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Historical_immigration_to_Great_Britain",
+      "https://en.wikipedia.org/wiki/Italians_in_the_United_Kingdom"
+    ],
+    "notes": "About half of England's 1891 Germans lived in London (about 25,000 of about 4.2 million); Italians in London 5,138 (LANGUAGES_LITERACY 4.3, 4.6). Sizes and club patterns are placeholders."
+  },
+  {
+    "id": "scotland-west",
+    "name": "Glasgow, Dunbartonshire and Ayrshire",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "places": ["Glasgow", "Dumbarton", "Renton", "Alexandria", "Kilmarnock", "Partick", "Paisley"],
+    "clubs": [],
+    "size": 30,
+    "monthly": 2,
+    "sourceKinds": ["scottish-import"],
+    "originClubs": ["renton", "vale-of-leven", "dumbarton", "partick-thistle", "queens-park", "kilmarnock"],
+    "localClubs": ["{place} Athletic", "{place} Thistle", "{place} Rangers", "{place} Union"],
+    "foreignBorn": { "ireland": 0.059, "lithuania": 0.0005 },
+    "upbringing": {
+      "style": "combination",
+      "tendencies": { "teamwork": 1, "perception": 1, "positioning": 1 },
+      "chance": 0.5,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Queen%27s_Park_F.C."],
+      "notes": "The Scottish passing (combination) game of Queen's Park. Values are gameplay tuning."
+    },
+    "confidence": "estimate",
+    "sources": [
+      "https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics",
+      "https://en.wikipedia.org/wiki/Lithuanians_in_the_United_Kingdom"
+    ],
+    "notes": "Irish-born in Scotland 1881: 218,745 of about 3.7 million (LANGUAGES_LITERACY 4.2); Lithuanians a few hundred in the 1880s (4.7). Recruits were mostly about 21 (RECRUITMENT_1888-1900.md 1.3). Sizes are placeholders."
+  },
+  {
+    "id": "scotland-east",
+    "name": "Edinburgh and the East",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "places": ["Edinburgh", "Leith", "Dundee"],
+    "clubs": [],
+    "size": 18,
+    "monthly": 1,
+    "sourceKinds": ["scottish-import"],
+    "originClubs": ["hibernian", "heart-of-midlothian"],
+    "localClubs": ["{place} Athletic", "{place} Wanderers", "St Bernard's ({place})"],
+    "foreignBorn": { "ireland": 0.059 },
+    "upbringing": {
+      "style": "combination",
+      "tendencies": { "teamwork": 1, "perception": 1, "positioning": 1 },
+      "chance": 0.5,
+      "confidence": "placeholder",
+      "sources": ["https://en.wikipedia.org/wiki/Queen%27s_Park_F.C."],
+      "notes": "The Scottish passing game. Values are gameplay tuning."
+    },
+    "confidence": "estimate",
+    "sources": ["https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics"],
+    "notes": "Scotland-wide Irish-born share (LANGUAGES_LITERACY 4.2). Sizes are placeholders."
+  },
+  {
+    "id": "north-wales",
+    "name": "North Wales",
+    "country": "wales",
+    "area": "denbighshire",
+    "places": ["Wrexham", "Ruabon", "Chirk", "Druids"],
+    "clubs": ["wrexham"],
+    "size": 14,
+    "monthly": 1,
+    "sourceKinds": ["local-junior", "works-team", "veteran"],
+    "localClubs": ["{place} Olympic", "{place} Victoria", "{place} Druids", "{place} Rovers"],
+    "foreignBorn": { "ireland": 0.01 },
+    "upbringing": {
+      "style": "dribbling",
+      "tendencies": { "dexterity": 1, "courage": 1, "teamwork": -1 },
+      "chance": 0.4,
+      "confidence": "placeholder",
+      "sources": [],
+      "notes": "No source on the North Wales game yet (LANGUAGES_LITERACY 4.9 lead: Johnes, The New Craze). Values are gameplay tuning."
+    },
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Irish-born share a guess; sizes and club patterns are placeholders."
+  },
+  {
+    "id": "ulster",
+    "name": "Belfast and Ulster",
+    "country": "ireland",
+    "area": "ulster",
+    "places": ["Belfast", "Lurgan", "Distillery"],
+    "clubs": ["linfield"],
+    "size": 12,
+    "monthly": 1,
+    "sourceKinds": ["local-junior", "works-team", "veteran"],
+    "localClubs": ["{place} Athletic", "{place} Rangers", "{place} Wanderers"],
+    "upbringing": {
+      "style": "combination",
+      "tendencies": { "teamwork": 1, "perception": 1 },
+      "chance": 0.35,
+      "confidence": "placeholder",
+      "sources": [],
+      "notes": "Belfast football came over from Scotland (1878-80); no source on its style yet. Values are gameplay tuning."
+    },
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "Sizes and club patterns are placeholders."
+  }
+]

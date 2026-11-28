@@ -8197,5 +8197,43 @@
     "confidence": "placeholder",
     "sources": [],
     "notes": "Placeholder filler: generated period name, not a historical person (producer short-squad rule, 2026-11-27, docs/data/REVIEW_1888-89_FINDINGS.md; added in H-01b after removing wrong people)."
+  },
+  {
+    "id": "arthur-wharton-1865",
+    "firstName": "Arthur",
+    "lastName": "Wharton",
+    "born": "1865-10-28",
+    "country": "ghana",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Arthur_Wharton"
+    ],
+    "notes": "R-03 pool man (recruitment/pools.json): a real person outside every 1888-89 squad; only his identity comes from the data, his ability is generated (D28 Q2). Born in Jamestown, Gold Coast; goalkeeper; Darlington, Preston 1886-88, Rotherham Town 1889-94 (LANGUAGES_LITERACY 4.8)."
+  },
+  {
+    "id": "john-devey-1866",
+    "firstName": "John",
+    "lastName": "Devey",
+    "born": "1866-12-26",
+    "country": "england",
+    "birthArea": "england-other",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/John_Devey"
+    ],
+    "notes": "R-03 pool man (recruitment/pools.json): a real person outside every 1888-89 squad; only his identity comes from the data, his ability is generated (D28 Q2). Birmingham forward with local clubs (Mitchell St George's) before Aston Villa in 1891; brother of Harry Devey."
+  },
+  {
+    "id": "ernest-needham-1873",
+    "firstName": "Ernest",
+    "lastName": "Needham",
+    "born": "1873-01-21",
+    "country": "england",
+    "birthArea": "england-other",
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ernest_Needham"
+    ],
+    "notes": "R-03 pool man (recruitment/pools.json): a real person outside every 1888-89 squad; only his identity comes from the data, his ability is generated (D28 Q2). Born at Newbold, Chesterfield; Staveley before Sheffield United in 1891. Under 17 until January 1890, so he enters the pools only from 1889-90 (D28 Q9)."
   }
 ]

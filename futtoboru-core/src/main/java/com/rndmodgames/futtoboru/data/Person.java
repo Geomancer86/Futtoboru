@@ -82,6 +82,9 @@ public class Person implements Serializable {
     private String birthArea;
     private String parentsOrigin;
 
+    /** R-09: how he judges a footballer (staff, the secretary), null for a man who has never been asked to judge */
+    private StaffJudgement judgement;
+
     //
     public Person() {
         
@@ -334,5 +337,14 @@ public class Person implements Serializable {
 
     public void setDataId(String dataId) {
         this.dataId = dataId;
+    }
+
+    /** @return his judging skills and bias (R-09), or null */
+    public StaffJudgement getJudgement() {
+        return judgement;
+    }
+
+    public void setJudgement(StaffJudgement judgement) {
+        this.judgement = judgement;
     }
 }
