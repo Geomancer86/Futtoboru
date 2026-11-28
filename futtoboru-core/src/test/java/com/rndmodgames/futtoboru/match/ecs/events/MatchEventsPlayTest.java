@@ -34,6 +34,8 @@ class MatchEventsPlayTest {
 
     private static EcsMatchResult dry;
     private static EcsMatchResult rain;
+    /** A third dry match for the offside appeals: since E-20 (ecs-0.8) the two golden matches have none. */
+    private static EcsMatchResult third;
 
     @BeforeAll
     static void play() {
@@ -43,6 +45,8 @@ class MatchEventsPlayTest {
                 game.fork("match:m1"));
         rain = engine.play(new EcsMatchInput("m2", new UniformPitch(Surface.WET, PitchConditions.RAIN)),
                 game.fork("match:m2"));
+        third = engine.play(new EcsMatchInput("m3", new UniformPitch(Surface.DRY, PitchConditions.DRY)),
+                game.fork("match:m3"));
     }
 
     private static Map<MatchEventType, Integer> counts(MatchEventLog log) {
@@ -131,6 +135,7 @@ class MatchEventsPlayTest {
     void shotsAndSavesAndAppealsAreSeen() {
         Map<MatchEventType, Integer> both = counts(rain.events());
         counts(dry.events()).forEach((k, v) -> both.merge(k, v, Integer::sum));
+        counts(third.events()).forEach((k, v) -> both.merge(k, v, Integer::sum));
         assertTrue(both.getOrDefault(MatchEventType.SHOT, 0) >= both.getOrDefault(MatchEventType.GOAL, 0),
                 both.toString());
         assertTrue(both.getOrDefault(MatchEventType.SHOT, 0) > 0, both.toString());
@@ -138,7 +143,7 @@ class MatchEventsPlayTest {
         for (MatchEvent s : dry.events().of(MatchEventType.SAVE)) {
             assertTrue(s.actor() >= 0 && s.other() >= 0 && s.side() != MatchEvent.refTeam(s.other()), s.toString());
         }
-        for (MatchEvent a : dry.events().of(MatchEventType.OFFSIDE_APPEAL)) {
+        for (MatchEvent a : third.events().of(MatchEventType.OFFSIDE_APPEAL)) {
             assertNotNull(a.side());
             assertEquals(a.side().other(), MatchEvent.refTeam(a.actor()), a.toString());
             assertTrue(a.homeUmpireVote() >= 0 || a.awayUmpireVote() >= 0 || a.refereeVote() >= 0, a.toString());

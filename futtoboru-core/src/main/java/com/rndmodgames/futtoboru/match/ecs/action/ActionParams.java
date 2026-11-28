@@ -90,6 +90,14 @@ public final class ActionParams {
     public double stumbleGain = 1.0;
     /** An opponent this close (body centres) gives full pressure; none at all beyond, m (D). */
     public double pressureRadiusM = 2.5;
+    /**
+     * Home advantage (E-20): the away side's noise x (1 + this) on the home club's ground, none at a neutral one. One
+     * knob for what made 1888-89 away days hard: a train journey on the morning of the match, a strange ground (sizes,
+     * slopes and turf varied club to club) and a hostile crowd at every ball. Partisan umpires are separate
+     * ({@code LawsParams.umpirePartisanship}). D: tuned by the E-20 harness to 1888-89's split (home 2.67 / away 1.77
+     * goals, H/D/A 59/17/24 %); without it the ECS played no home advantage (H/D/A 45/16/39, away 2.58 goals).
+     */
+    public double awayNoiseGain = 0.3;
 
     // ---- headers (BKP §1.5) -------------------------------------------------------------------------------------
 
@@ -154,7 +162,7 @@ public final class ActionParams {
                 && elevSigmaWorst >= 0 && speedSigmaBest >= 0 && speedSigmaWorst >= 0 && spinSigmaBest >= 0
                 && spinSigmaWorst >= 0, "noise");
         req(fatigueGain >= 0 && pressureGain >= 0 && wetBallGain >= 0 && awkwardGain >= 0 && stumbleGain >= 0
-                && pressureRadiusM > 0, "noise gains");
+                && pressureRadiusM > 0 && awayNoiseGain >= 0, "noise gains");
         req(headRestitution >= 0 && headDriveMax >= headDriveMin && headDriveMin >= 0, "header");
         req(laceStrikeShare >= 0 && laceStrikeShare <= 1 && laceCutChance >= 0 && laceCutChance <= 1
                 && laceCutWetFactor >= 0, "lace");

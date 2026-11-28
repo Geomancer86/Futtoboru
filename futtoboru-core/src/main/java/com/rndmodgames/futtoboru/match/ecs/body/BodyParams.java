@@ -145,8 +145,12 @@ public final class BodyParams {
 
     /** Contact impulse below which there is no injury roll, N·s (D: a firm fair charge ~150 N·s). */
     public double injuryThresholdNs = 120;
-    /** Injury chance at twice the threshold for an average player without shin pads (D). */
-    public double injuryRiskAtDouble = 0.02;
+    /**
+     * Injury chance at twice the threshold for an average player without shin pads (D; E-20: 0.02 hurt ~5 men a match
+     * and carried one off every 1.6 matches, in short scenarios within seconds; 0.004 gives ~1 injury a match and one
+     * man carried off in 8-9 matches).
+     */
+    public double injuryRiskAtDouble = 0.004;
     /** Upper bound of any single injury chance (D). */
     public double injuryRiskMax = 0.25;
     /** Shin pads multiply the contact injury risk (BKP §2 kit.shinPadInjuryScale 0.6, D). */

@@ -218,6 +218,14 @@ class MatchEngineContractTests {
             }
         }
 
+        // E-20: home advantage on the home ground only, none at a neutral one
+        EcsMatchEngineAdapter.Eleven h = EcsMatchEngineAdapter.Eleven.of(f.homeSheet(), f.home(), f);
+        EcsMatchEngineAdapter.Eleven a = EcsMatchEngineAdapter.Eleven.of(f.awaySheet(), f.away(), f);
+        assertTrue(!EcsMatchEngineAdapter.input(f, h, a).neutral(), "home ground");
+        MatchFixture neutral = new MatchFixture("n", f.home(), f.away(), KICK_OFF, MatchWeather.DRY, true,
+                f.homeSheet(), f.awaySheet());
+        assertTrue(EcsMatchEngineAdapter.input(neutral, h, a).neutral(), "neutral ground");
+
         TeamSheet shortSheet = sheet(f.away());
         shortSheet.setPlayerId(9, null);
         shortSheet.setPlayerId(10, null);
