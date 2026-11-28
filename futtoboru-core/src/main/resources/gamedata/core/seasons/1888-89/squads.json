@@ -22,7 +22,27 @@
       "sam-thomson-1862",
       "james-trainer-1863",
       "richard-whittle-1864"
-    ]
+    ],
+    "positions": {
+      "fred-dewhurst-1863": { "position": "inside-right", "source": "players-1888-89-line" },
+      "george-drummond-1865": { "position": "left-wing", "source": "players-1888-89" },
+      "jack-edwards-1867": { "position": "full-back", "source": "placeholder" },
+      "archie-goodall-1865": { "position": "half-back", "source": "placeholder" },
+      "john-goodall-1863": { "position": "centre-forward", "source": "players-1888-89" },
+      "jack-gordon-1861": { "position": "right-wing", "source": "players-1888-89-line" },
+      "johnny-graham-1857": { "position": "half-back", "source": "players-1888-89" },
+      "willie-graham-1866": { "position": "inside-right", "source": "placeholder" },
+      "robert-holmes-1867": { "position": "full-back", "source": "players-1888-89" },
+      "bob-howarth-1865": { "position": "full-back", "source": "players-1888-89" },
+      "jock-inglis-1859": { "position": "centre-forward", "source": "placeholder" },
+      "robert-mills-roberts-1862": { "position": "goalkeeper", "source": "players-1888-89" },
+      "sandy-robertson-1860": { "position": "half-back", "source": "players-1888-89" },
+      "jimmy-ross-1866": { "position": "inside-left", "source": "players-1888-89-line" },
+      "david-russel-1863": { "position": "half-back", "source": "players-1888-89" },
+      "sam-thomson-1862": { "position": "right-wing", "source": "players-1888-89-line" },
+      "james-trainer-1863": { "position": "goalkeeper", "source": "players-1888-89" },
+      "richard-whittle-1864": { "position": "inside-left", "source": "placeholder" }
+    }
   },
   {
     "club": "aston-villa",
@@ -48,7 +68,34 @@
       "arthur-wollaston-1865",
       "harry-yates-1861",
       "bob-thomas-1867"
-    ]
+    ],
+    "positions": {
+      "albert-allen-1867": { "position": "inside-right", "source": "players-1888-89-line" },
+      "walter-ashmore-1861": { "position": "goalkeeper", "source": "placeholder" },
+      "albert-brown-1862": { "position": "right-wing", "source": "players-1888-89" },
+      "john-burton-1863": { "position": "half-back", "source": "players-1888-89" },
+      "frank-coulton-1866": { "position": "full-back", "source": "players-1888-89" },
+      "gershom-cox-1863": { "position": "full-back", "source": "players-1888-89" },
+      "frankie-dawson-1862": { "position": "full-back", "source": "placeholder" },
+      "harry-devey-1864": { "position": "half-back", "source": "players-1888-89" },
+      "arthur-dixon-1867": { "position": "half-back", "source": "placeholder" },
+      "batty-garvey-1865": { "position": "right-wing", "source": "placeholder" },
+      "archie-goodall-1865": { "position": "inside-right", "source": "placeholder" },
+      "tommy-green-1863": { "position": "centre-forward", "source": "players-1888-89-line" },
+      "thomas-harrison-1866": { "position": "centre-forward", "source": "placeholder" },
+      "dennis-hodgetts-1863": { "position": "left-wing", "source": "players-1888-89-line" },
+      "archie-hunter-1859": { "position": "inside-left", "source": "players-1888-89-line" },
+      "jimmy-warner-1865": { "position": "goalkeeper", "source": "players-1888-89" },
+      "arthur-wollaston-1865": { "position": "inside-left", "source": "placeholder" },
+      "harry-yates-1861": { "position": "half-back", "source": "players-1888-89" },
+      "bob-thomas-1867": { "position": "left-wing", "source": "placeholder" }
+    },
+    "dribbling": {
+      "archie-hunter-1859": {
+        "value": 18,
+        "source": "docs/data/history/clubs/aston-villa.md: called \"a prince of dribblers\" (https://en.wikipedia.org/wiki/Archie_Hunter)"
+      }
+    }
   },
   {
     "club": "wolverhampton-wanderers",
@@ -74,7 +121,28 @@
       "nick-anderson-1867",
       "r-dudley-1865",
       "t-tomkyes-1866"
-    ]
+    ],
+    "positions": {
+      "harry-wood-1868": { "position": "inside-left", "source": "players-1888-89-line" },
+      "john-brodie-1862": { "position": "centre-forward", "source": "placeholder" },
+      "tommy-knight-1865": { "position": "inside-right", "source": "players-1888-89" },
+      "dickie-baugh-1864": { "position": "full-back", "source": "players-1888-89" },
+      "harry-allen-1866": { "position": "half-back", "source": "players-1888-89" },
+      "charlie-mason-1863": { "position": "full-back", "source": "players-1888-89" },
+      "david-wykes-1867": { "position": "left-wing", "source": "placeholder" },
+      "jack-baynton-1859": { "position": "goalkeeper", "source": "players-1888-89" },
+      "albert-fletcher-1867": { "position": "half-back", "source": "players-1888-89" },
+      "arthur-lowder-1863": { "position": "half-back", "source": "players-1888-89" },
+      "alec-cannon-1866": { "position": "goalkeeper", "source": "placeholder" },
+      "william-rose-1865": { "position": "full-back", "source": "placeholder" },
+      "walter-white-1866": { "position": "half-back", "source": "placeholder" },
+      "tommy-hunter-1863": { "position": "right-wing", "source": "players-1888-89-line" },
+      "joe-cooper-1865": { "position": "inside-right", "source": "players-1888-89-line" },
+      "john-benton-1866": { "position": "right-wing", "source": "placeholder" },
+      "nick-anderson-1867": { "position": "centre-forward", "source": "placeholder" },
+      "r-dudley-1865": { "position": "inside-left", "source": "placeholder" },
+      "t-tomkyes-1866": { "position": "left-wing", "source": "placeholder" }
+    }
   },
   {
     "club": "blackburn-rovers",
@@ -105,7 +173,38 @@
       "nat-walton-1867",
       "bernard-whittaker-1865"
     ],
-    "notes": "Leamington Road in 1888-89; Ewood Park only from 1890."
+    "notes": "Leamington Road in 1888-89; Ewood Park only from 1890.",
+    "positions": {
+      "willie-almond-1868": { "position": "half-back", "source": "players-1888-89" },
+      "herby-arthur-1863": { "position": "goalkeeper", "source": "players-1888-89" },
+      "john-barton-1866": { "position": "goalkeeper", "source": "placeholder" },
+      "james-beresford-1860": { "position": "half-back", "source": "placeholder" },
+      "joe-beverley-1856": { "position": "full-back", "source": "players-1888-89" },
+      "james-brown-1865": { "position": "right-wing", "source": "placeholder" },
+      "jimmy-douglas-1859": { "position": "half-back", "source": "players-1888-89" },
+      "james-duerden-1866": { "position": "inside-right", "source": "placeholder" },
+      "harry-fecitt-1864": { "position": "inside-right", "source": "players-1888-89-line" },
+      "john-forbes-1862": { "position": "full-back", "source": "players-1888-89" },
+      "jimmy-forrest-1864": { "position": "half-back", "source": "players-1888-89" },
+      "robert-haresnape-1866": { "position": "right-wing", "source": "players-1888-89-line" },
+      "william-holden-1860": { "position": "centre-forward", "source": "placeholder" },
+      "billy-mcowen-1871": { "position": "inside-left", "source": "placeholder" },
+      "w-mitchell-1866": { "position": "left-wing", "source": "placeholder" },
+      "robert-porter-1867": { "position": "half-back", "source": "placeholder" },
+      "jack-southworth-1866": { "position": "centre-forward", "source": "players-1888-89" },
+      "james-southworth-1864": { "position": "full-back", "source": "players-1888-89" },
+      "james-stothert-1870": { "position": "full-back", "source": "placeholder" },
+      "fergus-suter-1857": { "position": "half-back", "source": "placeholder" },
+      "william-townley-1866": { "position": "left-wing", "source": "players-1888-89" },
+      "nat-walton-1867": { "position": "inside-left", "source": "players-1888-89-line" },
+      "bernard-whittaker-1865": { "position": "goalkeeper", "source": "placeholder" }
+    },
+    "dribbling": {
+      "jack-southworth-1866": {
+        "value": 18,
+        "source": "docs/data/history/PLAYERS_1888-89.md: nickname \"Prince of Dribblers\" (https://en.wikipedia.org/wiki/Jack_Southworth)"
+      }
+    }
   },
   {
     "club": "bolton-wanderers",
@@ -136,7 +235,33 @@
       "frank-dyer-1867",
       "h-mcguinness-1866",
       "jim-parkinson-1865"
-    ]
+    ],
+    "positions": {
+      "james-brogan-1864": { "position": "centre-forward", "source": "players-1888-89-line" },
+      "kenny-davenport-1862": { "position": "inside-right", "source": "players-1888-89" },
+      "john-milne-1866": { "position": "inside-left", "source": "players-1888-89-line" },
+      "david-weir-1863": { "position": "half-back", "source": "players-1888-89" },
+      "bob-roberts-1864": { "position": "half-back", "source": "players-1888-89" },
+      "alexander-barbour-1862": { "position": "right-wing", "source": "players-1888-89-line" },
+      "harry-tyrer-1868": { "position": "left-wing", "source": "players-1888-89-line" },
+      "peter-bullough-1865": { "position": "half-back", "source": "players-1888-89" },
+      "charlie-harrison-1861": { "position": "goalkeeper", "source": "players-1888-89" },
+      "di-jones-1867": { "position": "full-back", "source": "players-1888-89" },
+      "bethel-robinson-1861": { "position": "full-back", "source": "players-1888-89" },
+      "thomas-coupar-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "g-owen-1865": { "position": "full-back", "source": "placeholder" },
+      "j-scowcroft-1861": { "position": "half-back", "source": "placeholder" },
+      "sam-gillam-1865": { "position": "right-wing", "source": "placeholder" },
+      "w-flitcroft-1864": { "position": "inside-right", "source": "placeholder" },
+      "d-mercer-1865": { "position": "centre-forward", "source": "placeholder" },
+      "john-mitchell-1861": { "position": "inside-left", "source": "placeholder" },
+      "jimmy-turner-1865": { "position": "left-wing", "source": "placeholder" },
+      "e-siddons-1866": { "position": "half-back", "source": "placeholder" },
+      "w-simmers-1865": { "position": "full-back", "source": "placeholder" },
+      "frank-dyer-1867": { "position": "half-back", "source": "placeholder" },
+      "h-mcguinness-1866": { "position": "goalkeeper", "source": "placeholder" },
+      "jim-parkinson-1865": { "position": "full-back", "source": "placeholder" }
+    }
   },
   {
     "club": "west-bromwich-albion",
@@ -163,7 +288,29 @@
       "luther-walker-1862",
       "joe-wilson-1865",
       "george-woodhall-1864"
-    ]
+    ],
+    "positions": {
+      "billy-bassett-1869": { "position": "right-wing", "source": "players-1888-89" },
+      "jem-bayliss-1865": { "position": "half-back", "source": "players-1888-89" },
+      "fredrick-crabtree-1866": { "position": "full-back", "source": "placeholder" },
+      "harry-green-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "george-haynes-1866": { "position": "full-back", "source": "placeholder" },
+      "billy-hendry-1865": { "position": "centre-forward", "source": "players-1888-89" },
+      "ezra-horton-1864": { "position": "half-back", "source": "players-1888-89" },
+      "jack-horton-1863": { "position": "full-back", "source": "players-1888-89" },
+      "albert-millard-1866": { "position": "right-wing", "source": "placeholder" },
+      "harold-oliver-1865": { "position": "inside-right", "source": "placeholder" },
+      "tom-pearson-1866": { "position": "inside-left", "source": "players-1888-89" },
+      "charlie-perry-1864": { "position": "half-back", "source": "players-1888-89" },
+      "walter-perry-1865": { "position": "inside-right", "source": "players-1888-89-line" },
+      "alexander-ramsey-1865": { "position": "inside-left", "source": "placeholder" },
+      "bob-roberts-1859": { "position": "goalkeeper", "source": "players-1888-89" },
+      "charlie-shaw-1866": { "position": "left-wing", "source": "placeholder" },
+      "george-timmins-1863": { "position": "half-back", "source": "players-1888-89" },
+      "luther-walker-1862": { "position": "half-back", "source": "placeholder" },
+      "joe-wilson-1865": { "position": "left-wing", "source": "players-1888-89" },
+      "george-woodhall-1864": { "position": "centre-forward", "source": "players-1888-89-line" }
+    }
   },
   {
     "club": "accrington",
@@ -192,7 +339,31 @@
       "arthur-wilkinson-1865",
       "jonathan-wilkinson-1864",
       "j-woods-1865"
-    ]
+    ],
+    "positions": {
+      "billy-barbour-1865": { "position": "centre-forward", "source": "players-1888-89" },
+      "jim-bonar-1866": { "position": "inside-right", "source": "players-1888-89-line" },
+      "bob-brand-1865": { "position": "inside-left", "source": "players-1888-89-line" },
+      "peter-chippendale-1864": { "position": "half-back", "source": "placeholder" },
+      "hugh-galbraith-1866": { "position": "goalkeeper", "source": "placeholder" },
+      "pat-gallocher-1865": { "position": "inside-right", "source": "players-1888-89-line" },
+      "george-haworth-1863": { "position": "half-back", "source": "players-1888-89" },
+      "j-holden-1865": { "position": "half-back", "source": "placeholder" },
+      "johnny-horne-1862": { "position": "goalkeeper", "source": "players-1888-89" },
+      "john-kirkham-1869": { "position": "right-wing", "source": "players-1888-89-line" },
+      "joe-lofthouse-1864": { "position": "left-wing", "source": "players-1888-89-line" },
+      "robert-macbeth-1866": { "position": "right-wing", "source": "placeholder" },
+      "john-mclellan-1863": { "position": "full-back", "source": "players-1888-89" },
+      "henry-parkinson-1865": { "position": "centre-forward", "source": "placeholder" },
+      "luther-pemberton-1864": { "position": "half-back", "source": "players-1888-89" },
+      "j-robertson-1865": { "position": "inside-left", "source": "placeholder" },
+      "stephen-smith-singleton-1863": { "position": "left-wing", "source": "placeholder" },
+      "john-stevenson-1862": { "position": "full-back", "source": "players-1888-89" },
+      "james-tattersall-1864": { "position": "full-back", "source": "players-1888-89-line" },
+      "arthur-wilkinson-1865": { "position": "half-back", "source": "placeholder" },
+      "jonathan-wilkinson-1864": { "position": "full-back", "source": "placeholder" },
+      "j-woods-1865": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "everton",
@@ -234,7 +405,44 @@
       "walter-wilson-1864",
       "frank-sugg-1862",
       "joe-davies-1870"
-    ]
+    ],
+    "positions": {
+      "edgar-chadwick-1869": { "position": "inside-left", "source": "players-1888-89" },
+      "johnny-holt-1865": { "position": "half-back", "source": "players-1888-89" },
+      "george-dobson-1862": { "position": "full-back", "source": "players-1888-89" },
+      "robert-smalley-1865": { "position": "goalkeeper", "source": "players-1888-89" },
+      "nick-ross-1863": { "position": "full-back", "source": "players-1888-89" },
+      "john-weir-1865": { "position": "half-back", "source": "players-1888-89" },
+      "george-farmer-1865": { "position": "half-back", "source": "players-1888-89" },
+      "robert-watson-1864": { "position": "inside-right", "source": "players-1888-89" },
+      "james-costley-1865": { "position": "right-wing", "source": "placeholder" },
+      "alec-dick-1865": { "position": "full-back", "source": "players-1888-89" },
+      "david-waugh-1864": { "position": "centre-forward", "source": "placeholder" },
+      "william-brown-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "alex-mckinnon-1864": { "position": "half-back", "source": "placeholder" },
+      "alf-milward-1865": { "position": "left-wing", "source": "players-1888-89" },
+      "jack-angus-1865": { "position": "right-wing", "source": "placeholder" },
+      "george-fleming-1864": { "position": "inside-right", "source": "placeholder" },
+      "charles-jolliffe-1865": { "position": "centre-forward", "source": "placeholder" },
+      "william-lewis-1865": { "position": "inside-left", "source": "placeholder" },
+      "william-briscoe-1864": { "position": "left-wing", "source": "placeholder" },
+      "albert-chadwick-1866": { "position": "half-back", "source": "placeholder" },
+      "jas-coyne-1865": { "position": "full-back", "source": "placeholder" },
+      "george-davie-1865": { "position": "half-back", "source": "placeholder" },
+      "mike-higgins-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "robert-jones-1864": { "position": "full-back", "source": "placeholder" },
+      "bob-kelso-1863": { "position": "half-back", "source": "placeholder" },
+      "jack-keys-1865": { "position": "right-wing", "source": "placeholder" },
+      "r-morris-1865": { "position": "inside-right", "source": "placeholder" },
+      "henry-parkinson-1865": { "position": "centre-forward", "source": "placeholder" },
+      "hugh-pollock-1864": { "position": "inside-left", "source": "placeholder" },
+      "roberts-1865": { "position": "left-wing", "source": "placeholder" },
+      "george-stephenson-1864": { "position": "half-back", "source": "placeholder" },
+      "harry-warmby-1864": { "position": "full-back", "source": "placeholder" },
+      "walter-wilson-1864": { "position": "half-back", "source": "placeholder" },
+      "frank-sugg-1862": { "position": "goalkeeper", "source": "placeholder" },
+      "joe-davies-1870": { "position": "full-back", "source": "placeholder" }
+    }
   },
   {
     "club": "burnley",
@@ -260,7 +468,28 @@
       "robert-kay-1865",
       "william-smith-1865",
       "robert-duckworth-1865"
-    ]
+    ],
+    "positions": {
+      "dan-friel-1860": { "position": "half-back", "source": "players-1888-89" },
+      "john-yates-1861": { "position": "left-wing", "source": "players-1888-89" },
+      "pat-gallocher-1865": { "position": "inside-right", "source": "players-1888-89-line" },
+      "sandy-lang-1865": { "position": "full-back", "source": "players-1888-89" },
+      "william-bury-1865": { "position": "full-back", "source": "players-1888-89" },
+      "jack-keenan-1865": { "position": "half-back", "source": "players-1888-89" },
+      "bill-mcfettridge-1865": { "position": "half-back", "source": "players-1888-89" },
+      "jack-abrahams-1865": { "position": "half-back", "source": "players-1888-89" },
+      "walter-cox-1865": { "position": "goalkeeper", "source": "players-1888-89" },
+      "william-tait-1864": { "position": "inside-left", "source": "players-1888-89-line" },
+      "ross-mcmahon-1865": { "position": "centre-forward", "source": "players-1888-89" },
+      "thomas-midgley-1860": { "position": "full-back", "source": "placeholder" },
+      "alec-brady-1865": { "position": "inside-right", "source": "players-1888-89-line" },
+      "fred-poland-1865": { "position": "centre-forward", "source": "players-1888-89" },
+      "william-mckay-1865": { "position": "inside-left", "source": "players-1888-89-line" },
+      "william-brady-1870": { "position": "right-wing", "source": "players-1888-89-line" },
+      "robert-kay-1865": { "position": "goalkeeper", "source": "players-1888-89" },
+      "william-smith-1865": { "position": "goalkeeper", "source": "players-1888-89" },
+      "robert-duckworth-1865": { "position": "right-wing", "source": "placeholder" }
+    }
   },
   {
     "club": "derby-county",
@@ -294,7 +523,36 @@
       "benjamin-spilsbury-1865",
       "albert-williamson-1864",
       "levi-wright-1864"
-    ]
+    ],
+    "positions": {
+      "george-bakewell-1865": { "position": "right-wing", "source": "players-1888-89-line" },
+      "ew-bellhouse-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "harold-bestwick-1865": { "position": "half-back", "source": "placeholder" },
+      "enos-bromage-1864": { "position": "right-wing", "source": "placeholder" },
+      "william-chatterton-1861": { "position": "inside-right", "source": "placeholder" },
+      "g-clifton-1865": { "position": "centre-forward", "source": "placeholder" },
+      "lewis-cooper-1864": { "position": "inside-right", "source": "players-1888-89-line" },
+      "archibald-ferguson-1863": { "position": "full-back", "source": "players-1888-89" },
+      "h-harbour-1865": { "position": "inside-left", "source": "placeholder" },
+      "ernest-hickinbottom-1864": { "position": "left-wing", "source": "placeholder" },
+      "alex-higgins-1863": { "position": "centre-forward", "source": "players-1888-89" },
+      "william-hopewell-1864": { "position": "half-back", "source": "placeholder" },
+      "arthur-latham-1863": { "position": "full-back", "source": "players-1888-89" },
+      "john-lees-1865": { "position": "full-back", "source": "placeholder" },
+      "joseph-marshall-1863": { "position": "goalkeeper", "source": "players-1888-89" },
+      "isaac-monks-1864": { "position": "half-back", "source": "placeholder" },
+      "haydn-morley-1864": { "position": "full-back", "source": "players-1888-89" },
+      "thomas-needham-1865": { "position": "inside-left", "source": "players-1888-89-line" },
+      "ruben-pitman-1864": { "position": "goalkeeper", "source": "placeholder" },
+      "harry-plackett-1866": { "position": "full-back", "source": "placeholder" },
+      "lawrence-plackett-1869": { "position": "left-wing", "source": "players-1888-89-line" },
+      "frank-roulstone-1865": { "position": "half-back", "source": "placeholder" },
+      "walter-roulstone-1864": { "position": "half-back", "source": "players-1888-89" },
+      "j-smith-1864": { "position": "half-back", "source": "players-1888-89" },
+      "benjamin-spilsbury-1865": { "position": "right-wing", "source": "placeholder" },
+      "albert-williamson-1864": { "position": "half-back", "source": "players-1888-89" },
+      "levi-wright-1864": { "position": "inside-right", "source": "placeholder" }
+    }
   },
   {
     "club": "notts-county",
@@ -336,7 +594,44 @@
       "edwin-wardle-1864",
       "fred-weightman-1865",
       "tom-widdowson-1863"
-    ]
+    ],
+    "positions": {
+      "thomas-allin-1865": { "position": "half-back", "source": "placeholder" },
+      "lf-bailey-1865": { "position": "right-wing", "source": "placeholder" },
+      "george-brown-1863": { "position": "half-back", "source": "players-1888-89" },
+      "hh-brown-1865": { "position": "inside-right", "source": "placeholder" },
+      "john-brown-1865": { "position": "inside-left", "source": "placeholder" },
+      "john-clements-1864": { "position": "full-back", "source": "players-1888-89" },
+      "henry-cursham-1863": { "position": "centre-forward", "source": "players-1888-89-line" },
+      "harry-daft-1866": { "position": "left-wing", "source": "players-1888-89" },
+      "charles-dobson-1865": { "position": "half-back", "source": "placeholder" },
+      "herbert-emmitt-1864": { "position": "half-back", "source": "placeholder" },
+      "galbraith-1865": { "position": "full-back", "source": "placeholder" },
+      "william-gunn-1865": { "position": "half-back", "source": "placeholder" },
+      "frank-guttridge-1863": { "position": "full-back", "source": "players-1888-89" },
+      "ted-harker-1865": { "position": "right-wing", "source": "placeholder" },
+      "bill-hodder-1864": { "position": "inside-right", "source": "players-1888-89-line" },
+      "jack-holland-1861": { "position": "goalkeeper", "source": "players-1888-89" },
+      "harry-jackson-1865": { "position": "inside-left", "source": "players-1888-89-line" },
+      "bob-jardine-1864": { "position": "right-wing", "source": "players-1888-89-line" },
+      "jt-marshall-1864": { "position": "inside-right", "source": "placeholder" },
+      "billy-may-1864": { "position": "centre-forward", "source": "placeholder" },
+      "edward-may-1865": { "position": "left-wing", "source": "players-1888-89" },
+      "tom-mclean-1863": { "position": "full-back", "source": "players-1888-89" },
+      "albert-moore-1865": { "position": "centre-forward", "source": "players-1888-89-line" },
+      "haydn-morley-1864": { "position": "full-back", "source": "players-1888-89" },
+      "hugh-owen-1864": { "position": "inside-left", "source": "placeholder" },
+      "albert-shaw-1865": { "position": "left-wing", "source": "placeholder" },
+      "alf-shelton-1865": { "position": "half-back", "source": "players-1888-89" },
+      "charlie-shelton-1864": { "position": "half-back", "source": "players-1888-89" },
+      "mordecai-sherwin-1862": { "position": "goalkeeper", "source": "players-1888-89" },
+      "herbert-snook-1865": { "position": "half-back", "source": "placeholder" },
+      "h-stevens-1865": { "position": "full-back", "source": "placeholder" },
+      "ben-warburton-1864": { "position": "half-back", "source": "placeholder" },
+      "edwin-wardle-1864": { "position": "goalkeeper", "source": "placeholder" },
+      "fred-weightman-1865": { "position": "full-back", "source": "placeholder" },
+      "tom-widdowson-1863": { "position": "goalkeeper", "source": "players-1888-89" }
+    }
   },
   {
     "club": "stoke",
@@ -375,7 +670,41 @@
       "billy-hutchinson-1865",
       "thomas-moore-1865",
       "bill-smalley-1865"
-    ]
+    ],
+    "positions": {
+      "bill-rowley-1863": { "position": "goalkeeper", "source": "players-1888-89" },
+      "wilf-merritt-1865": { "position": "half-back", "source": "placeholder" },
+      "charlie-hassall-1864": { "position": "goalkeeper", "source": "placeholder" },
+      "tommy-clare-1865": { "position": "full-back", "source": "players-1888-89" },
+      "alf-underwood-1869": { "position": "full-back", "source": "players-1888-89" },
+      "albert-bourne-1865": { "position": "half-back", "source": "placeholder" },
+      "edgar-montford-1864": { "position": "inside-right", "source": "placeholder" },
+      "bob-ramsay-1863": { "position": "full-back", "source": "players-1888-89" },
+      "george-shutt-1864": { "position": "half-back", "source": "players-1888-89" },
+      "elijah-smith-1863": { "position": "half-back", "source": "players-1888-89" },
+      "billy-hendry-1865": { "position": "full-back", "source": "players-1888-89-line" },
+      "albert-farmer-1864": { "position": "inside-left", "source": "placeholder" },
+      "will-holford-1865": { "position": "left-wing", "source": "placeholder" },
+      "bob-mcskimming-1864": { "position": "inside-right", "source": "players-1888-89-line" },
+      "alf-edge-1865": { "position": "inside-left", "source": "players-1888-89-line" },
+      "bob-milarvie-1864": { "position": "centre-forward", "source": "players-1888-89-line" },
+      "billy-tunnicliffe-1865": { "position": "left-wing", "source": "players-1888-89" },
+      "jimmy-sloane-1864": { "position": "centre-forward", "source": "players-1888-89" },
+      "frank-staton-1865": { "position": "half-back", "source": "placeholder" },
+      "george-lawton-1864": { "position": "right-wing", "source": "players-1888-89" },
+      "jimmy-sayer-1865": { "position": "right-wing", "source": "players-1888-89" },
+      "george-slater-1865": { "position": "half-back", "source": "placeholder" },
+      "harry-montford-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "tom-wainwright-1865": { "position": "full-back", "source": "placeholder" },
+      "charlie-baker-1865": { "position": "half-back", "source": "placeholder" },
+      "bob-barr-1864": { "position": "right-wing", "source": "placeholder" },
+      "alfred-dempsey-1865": { "position": "inside-right", "source": "placeholder" },
+      "tom-forrester-1865": { "position": "centre-forward", "source": "placeholder" },
+      "freddie-gee-1865": { "position": "inside-left", "source": "placeholder" },
+      "billy-hutchinson-1865": { "position": "left-wing", "source": "placeholder" },
+      "thomas-moore-1865": { "position": "half-back", "source": "placeholder" },
+      "bill-smalley-1865": { "position": "full-back", "source": "placeholder" }
+    }
   },
   {
     "club": "old-westminsters",
@@ -393,7 +722,20 @@
       "horatio-davies-1866",
       "edgar-phillips-1864",
       "timothy-king-1862"
-    ]
+    ],
+    "positions": {
+      "william-moon-1868": { "position": "goalkeeper", "source": "players-1888-89" },
+      "rupert-sandilands-1868": { "position": "full-back", "source": "placeholder" },
+      "william-ingram-1867": { "position": "half-back", "source": "placeholder" },
+      "charles-squire-1863": { "position": "right-wing", "source": "placeholder" },
+      "frederick-ingram-1866": { "position": "inside-right", "source": "placeholder" },
+      "francis-birley-1850": { "position": "centre-forward", "source": "placeholder" },
+      "joseph-moore-1865": { "position": "inside-left", "source": "placeholder" },
+      "isaac-morris-1864": { "position": "left-wing", "source": "placeholder" },
+      "horatio-davies-1866": { "position": "half-back", "source": "placeholder" },
+      "edgar-phillips-1864": { "position": "full-back", "source": "placeholder" },
+      "timothy-king-1862": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "swifts",
@@ -411,7 +753,20 @@
       "joseph-johnson-1868",
       "noah-carter-1865",
       "tom-jones-1866"
-    ]
+    ],
+    "positions": {
+      "bambridge-charles-1858": { "position": "right-wing", "source": "players-1888-89-line" },
+      "bambridge-arthur-1861": { "position": "goalkeeper", "source": "placeholder" },
+      "bambridge-ernest-1848": { "position": "full-back", "source": "placeholder" },
+      "wildam-hay-1851": { "position": "half-back", "source": "placeholder" },
+      "francis-pawson-1861": { "position": "inside-right", "source": "placeholder" },
+      "humphrey-tytheridge-1865": { "position": "centre-forward", "source": "placeholder" },
+      "robert-barker-1847": { "position": "inside-left", "source": "placeholder" },
+      "william-nicholl-1868": { "position": "left-wing", "source": "placeholder" },
+      "joseph-johnson-1868": { "position": "half-back", "source": "placeholder" },
+      "noah-carter-1865": { "position": "full-back", "source": "placeholder" },
+      "tom-jones-1866": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "old-brightonians",
@@ -429,7 +784,20 @@
       "rt-thornton-1853",
       "ac-stone-1867",
       "hm-walters-1866"
-    ]
+    ],
+    "positions": {
+      "nc-cooper-1864": { "position": "goalkeeper", "source": "placeholder" },
+      "gh-cotterill-1868": { "position": "full-back", "source": "placeholder" },
+      "am-daniel-1866": { "position": "half-back", "source": "placeholder" },
+      "wh-dixon-1865": { "position": "right-wing", "source": "placeholder" },
+      "ll-fernie-1867": { "position": "inside-right", "source": "placeholder" },
+      "fgj-ford-1866": { "position": "centre-forward", "source": "placeholder" },
+      "pj-de-paravicini-1862": { "position": "inside-left", "source": "placeholder" },
+      "co-gill-1868": { "position": "left-wing", "source": "placeholder" },
+      "rt-thornton-1853": { "position": "half-back", "source": "placeholder" },
+      "ac-stone-1867": { "position": "full-back", "source": "placeholder" },
+      "hm-walters-1866": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "wrexham",
@@ -447,7 +815,20 @@
       "william-turner-1866",
       "bob-davies-1863",
       "george-fearon-1866"
-    ]
+    ],
+    "positions": {
+      "george-owen-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "bob-roberts-1859-2": { "position": "full-back", "source": "placeholder" },
+      "seth-powell-1862": { "position": "half-back", "source": "placeholder" },
+      "john-price-1854": { "position": "right-wing", "source": "placeholder" },
+      "jack-powell-1860": { "position": "inside-right", "source": "placeholder" },
+      "albert-lloyd-1867": { "position": "centre-forward", "source": "placeholder" },
+      "dick-williams-1866": { "position": "inside-left", "source": "placeholder" },
+      "edward-evans-1860": { "position": "left-wing", "source": "placeholder" },
+      "william-turner-1866": { "position": "half-back", "source": "placeholder" },
+      "bob-davies-1863": { "position": "full-back", "source": "placeholder" },
+      "george-fearon-1866": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "nottingham-forest",
@@ -465,7 +846,20 @@
       "arthur-leighton-1863",
       "mark-wright-1861",
       "nathan-carter-1865"
-    ]
+    ],
+    "positions": {
+      "billy-gunn-1858": { "position": "goalkeeper", "source": "placeholder" },
+      "tinsley-lindley-1865": { "position": "centre-forward", "source": "players-1888-89" },
+      "albert-smith-1869": { "position": "full-back", "source": "placeholder" },
+      "bob-hancock-1866": { "position": "half-back", "source": "placeholder" },
+      "sam-widdowson-1851": { "position": "right-wing", "source": "placeholder" },
+      "frank-burton-1865": { "position": "inside-right", "source": "placeholder" },
+      "billy-fletcher-1866": { "position": "inside-left", "source": "placeholder" },
+      "enoch-tranter-1861": { "position": "left-wing", "source": "placeholder" },
+      "arthur-leighton-1863": { "position": "half-back", "source": "placeholder" },
+      "mark-wright-1861": { "position": "full-back", "source": "placeholder" },
+      "nathan-carter-1865": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "linfield",
@@ -483,7 +877,20 @@
       "william-mcvicker-1867",
       "joseph-thomas-1867",
       "elijah-walker-1861"
-    ]
+    ],
+    "positions": {
+      "jack-peden-1863": { "position": "left-wing", "source": "players-1888-89" },
+      "sam-johnston-1866": { "position": "goalkeeper", "source": "placeholder" },
+      "samuel-torrans-1869": { "position": "full-back", "source": "placeholder" },
+      "george-gaffikin-1868": { "position": "half-back", "source": "placeholder" },
+      "william-dalton-1864": { "position": "right-wing", "source": "placeholder" },
+      "robert-milne-1870": { "position": "inside-right", "source": "placeholder" },
+      "tom-strachan-1866": { "position": "centre-forward", "source": "placeholder" },
+      "harry-mcvicker-1865": { "position": "inside-left", "source": "placeholder" },
+      "william-mcvicker-1867": { "position": "half-back", "source": "placeholder" },
+      "joseph-thomas-1867": { "position": "full-back", "source": "placeholder" },
+      "elijah-walker-1861": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "witton",
@@ -501,7 +908,20 @@
       "fred-green-1869",
       "paul-williams-1869",
       "richard-martin-1868"
-    ]
+    ],
+    "positions": {
+      "morgan-cooper-1861": { "position": "goalkeeper", "source": "placeholder" },
+      "phillip-moore-1864": { "position": "full-back", "source": "placeholder" },
+      "morgan-jones-1862": { "position": "half-back", "source": "placeholder" },
+      "oliver-wright-1862": { "position": "right-wing", "source": "placeholder" },
+      "alexander-edwards-1868": { "position": "inside-right", "source": "placeholder" },
+      "lawrence-turner-1866": { "position": "centre-forward", "source": "placeholder" },
+      "ebenezer-lee-1863": { "position": "inside-left", "source": "placeholder" },
+      "amos-james-1867": { "position": "left-wing", "source": "placeholder" },
+      "fred-green-1869": { "position": "half-back", "source": "placeholder" },
+      "paul-williams-1869": { "position": "full-back", "source": "placeholder" },
+      "richard-martin-1868": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "bootle",
@@ -520,7 +940,21 @@
       "frank-sissons-1865",
       "walter-gillam-1866",
       "john-campbell-1869"
-    ]
+    ],
+    "positions": {
+      "andrew-watson-1856": { "position": "goalkeeper", "source": "placeholder" },
+      "bob-mcfarlane-1866": { "position": "full-back", "source": "placeholder" },
+      "job-wilding-1862": { "position": "half-back", "source": "placeholder" },
+      "david-jardine-1867": { "position": "right-wing", "source": "placeholder" },
+      "hugh-galbraith-1866": { "position": "inside-right", "source": "placeholder" },
+      "walter-evans-1867": { "position": "centre-forward", "source": "placeholder" },
+      "tom-veitch-1866": { "position": "inside-left", "source": "placeholder" },
+      "billy-jackson-1866": { "position": "left-wing", "source": "placeholder" },
+      "john-woods-1867": { "position": "half-back", "source": "placeholder" },
+      "frank-sissons-1865": { "position": "full-back", "source": "placeholder" },
+      "walter-gillam-1866": { "position": "half-back", "source": "placeholder" },
+      "john-campbell-1869": { "position": "goalkeeper", "source": "placeholder" }
+    }
   },
   {
     "club": "chatham-town",
@@ -538,7 +972,20 @@
       "george-ash-1865",
       "william-ash-1866",
       "charles-ash-1867"
-    ]
+    ],
+    "positions": {
+      "charles-miller-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "george-miller-1866": { "position": "full-back", "source": "placeholder" },
+      "william-miller-1867": { "position": "half-back", "source": "placeholder" },
+      "fred-ash-1868": { "position": "right-wing", "source": "placeholder" },
+      "harry-ash-1865": { "position": "inside-right", "source": "placeholder" },
+      "tom-ash-1866": { "position": "centre-forward", "source": "placeholder" },
+      "john-ash-1867": { "position": "inside-left", "source": "placeholder" },
+      "james-ash-1868": { "position": "left-wing", "source": "placeholder" },
+      "george-ash-1865": { "position": "half-back", "source": "placeholder" },
+      "william-ash-1866": { "position": "full-back", "source": "placeholder" },
+      "charles-ash-1867": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "south-shore",
@@ -556,7 +1003,20 @@
       "charles-birket-1865",
       "james-birket-1866",
       "harry-birket-1867"
-    ]
+    ],
+    "positions": {
+      "john-bond-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "bob-birket-1866": { "position": "full-back", "source": "placeholder" },
+      "tom-birket-1867": { "position": "half-back", "source": "placeholder" },
+      "jimmy-birket-1868": { "position": "right-wing", "source": "placeholder" },
+      "jack-birket-1865": { "position": "inside-right", "source": "placeholder" },
+      "fred-birket-1866": { "position": "centre-forward", "source": "placeholder" },
+      "george-birket-1867": { "position": "inside-left", "source": "placeholder" },
+      "william-birket-1868": { "position": "left-wing", "source": "placeholder" },
+      "charles-birket-1865": { "position": "half-back", "source": "placeholder" },
+      "james-birket-1866": { "position": "full-back", "source": "placeholder" },
+      "harry-birket-1867": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "grimsby-town",
@@ -574,7 +1034,20 @@
       "chris-taylor-1865",
       "chris-brown-1866",
       "chris-smith-1867"
-    ]
+    ],
+    "positions": {
+      "chris-short-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "tom-frith-1866": { "position": "full-back", "source": "placeholder" },
+      "chris-gibson-1867": { "position": "half-back", "source": "placeholder" },
+      "chris-johnston-1868": { "position": "right-wing", "source": "placeholder" },
+      "chris-atkinson-1865": { "position": "inside-right", "source": "placeholder" },
+      "chris-hulse-1866": { "position": "centre-forward", "source": "placeholder" },
+      "chris-higgins-1867": { "position": "inside-left", "source": "placeholder" },
+      "chris-wright-1868": { "position": "left-wing", "source": "placeholder" },
+      "chris-taylor-1865": { "position": "half-back", "source": "placeholder" },
+      "chris-brown-1866": { "position": "full-back", "source": "placeholder" },
+      "chris-smith-1867": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "sunderland-albion",
@@ -592,7 +1065,20 @@
       "david-grey-1867",
       "jimmy-hannah-1868",
       "benjamin-white-1863"
-    ]
+    ],
+    "positions": {
+      "james-allan-1857": { "position": "centre-forward", "source": "players-1888-89-line" },
+      "john-angus-1867": { "position": "goalkeeper", "source": "placeholder" },
+      "fred-mabane-1866": { "position": "full-back", "source": "placeholder" },
+      "billy-richardson-1867": { "position": "half-back", "source": "placeholder" },
+      "tom-pratt-1868": { "position": "right-wing", "source": "placeholder" },
+      "johnny-moore-1865": { "position": "inside-right", "source": "placeholder" },
+      "harry-garside-1866": { "position": "inside-left", "source": "placeholder" },
+      "peter-coupar-1866": { "position": "left-wing", "source": "placeholder" },
+      "david-grey-1867": { "position": "half-back", "source": "placeholder" },
+      "jimmy-hannah-1868": { "position": "full-back", "source": "placeholder" },
+      "benjamin-white-1863": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "halliwell",
@@ -610,7 +1096,20 @@
       "charles-smith-1865",
       "james-smith-1866",
       "harry-smith-1867"
-    ]
+    ],
+    "positions": {
+      "john-smith-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "bob-smith-1866": { "position": "full-back", "source": "placeholder" },
+      "tom-smith-1867": { "position": "half-back", "source": "placeholder" },
+      "jimmy-smith-1868": { "position": "right-wing", "source": "placeholder" },
+      "jack-smith-1865": { "position": "inside-right", "source": "placeholder" },
+      "fred-smith-1866": { "position": "centre-forward", "source": "placeholder" },
+      "george-smith-1867": { "position": "inside-left", "source": "placeholder" },
+      "william-smith-1868": { "position": "left-wing", "source": "placeholder" },
+      "charles-smith-1865": { "position": "half-back", "source": "placeholder" },
+      "james-smith-1866": { "position": "full-back", "source": "placeholder" },
+      "harry-smith-1867": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "crewe-alexandra",
@@ -628,7 +1127,20 @@
       "albert-carter-1866",
       "jeremiah-smith-1867",
       "nathaniel-harris-1864"
-    ]
+    ],
+    "positions": {
+      "william-bell-1860": { "position": "goalkeeper", "source": "placeholder" },
+      "john-pearson-1868": { "position": "full-back", "source": "placeholder" },
+      "alfred-davies-1863": { "position": "half-back", "source": "placeholder" },
+      "richard-jones-1867": { "position": "right-wing", "source": "placeholder" },
+      "billy-lewis-1864": { "position": "inside-right", "source": "placeholder" },
+      "arthur-whittaker-1866": { "position": "centre-forward", "source": "placeholder" },
+      "charles-sagar-1867": { "position": "inside-left", "source": "placeholder" },
+      "jack-hill-1866": { "position": "left-wing", "source": "placeholder" },
+      "albert-carter-1866": { "position": "half-back", "source": "placeholder" },
+      "jeremiah-smith-1867": { "position": "full-back", "source": "placeholder" },
+      "nathaniel-harris-1864": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "old-carthusians",
@@ -646,7 +1158,20 @@
       "george-gillingham-1865",
       "percy-walters-1863",
       "arthur-walters-1864"
-    ]
+    ],
+    "positions": {
+      "charles-wreford-brown-1866": { "position": "half-back", "source": "players-1888-89" },
+      "william-cobbold-1863": { "position": "goalkeeper", "source": "placeholder" },
+      "james-prinsep-1861": { "position": "full-back", "source": "placeholder" },
+      "arthur-amos-1863": { "position": "right-wing", "source": "placeholder" },
+      "edward-hagarty-parry-1855": { "position": "inside-right", "source": "placeholder" },
+      "maurice-stanbrough-1870": { "position": "centre-forward", "source": "placeholder" },
+      "william-page-1862": { "position": "inside-left", "source": "placeholder" },
+      "leonard-wilkinson-1868": { "position": "left-wing", "source": "placeholder" },
+      "george-gillingham-1865": { "position": "half-back", "source": "placeholder" },
+      "percy-walters-1863": { "position": "full-back", "source": "placeholder" },
+      "arthur-walters-1864": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "derby-junction",
@@ -664,7 +1189,20 @@
       "john-ward-1867",
       "horace-wright-1868",
       "israel-thompson-1867"
-    ]
+    ],
+    "positions": {
+      "s-smith-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "w-hopkins-1865": { "position": "full-back", "source": "placeholder" },
+      "morris-cooper-1869": { "position": "half-back", "source": "placeholder" },
+      "ernest-watson-1869": { "position": "right-wing", "source": "placeholder" },
+      "oliver-davies-1862": { "position": "inside-right", "source": "placeholder" },
+      "jeremiah-green-1861": { "position": "centre-forward", "source": "placeholder" },
+      "thomas-morris-1861": { "position": "inside-left", "source": "placeholder" },
+      "herbert-carter-1866": { "position": "left-wing", "source": "placeholder" },
+      "john-ward-1867": { "position": "half-back", "source": "placeholder" },
+      "horace-wright-1868": { "position": "full-back", "source": "placeholder" },
+      "israel-thompson-1867": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "notts-rangers",
@@ -682,7 +1220,20 @@
       "seth-wilson-1864",
       "james-baker-1861",
       "simon-evans-1861"
-    ]
+    ],
+    "positions": {
+      "fred-geary-1868": { "position": "centre-forward", "source": "players-1888-89" },
+      "arthur-elliott-1870": { "position": "goalkeeper", "source": "placeholder" },
+      "ellis-jones-1865": { "position": "full-back", "source": "placeholder" },
+      "seth-watson-1866": { "position": "half-back", "source": "placeholder" },
+      "cornelius-james-1867": { "position": "right-wing", "source": "placeholder" },
+      "phillip-brown-1861": { "position": "inside-right", "source": "placeholder" },
+      "benjamin-johnson-1869": { "position": "inside-left", "source": "placeholder" },
+      "eli-lewis-1863": { "position": "left-wing", "source": "placeholder" },
+      "seth-wilson-1864": { "position": "half-back", "source": "placeholder" },
+      "james-baker-1861": { "position": "full-back", "source": "placeholder" },
+      "simon-evans-1861": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "sheffield-wednesday",
@@ -701,7 +1252,21 @@
       "tom-cawley-1866",
       "albert-mumford-1865",
       "michael-whitham-1867"
-    ]
+    ],
+    "positions": {
+      "jim-smith-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "teddy-brayshaw-1864": { "position": "half-back", "source": "players-1888-89" },
+      "thompson-1865": { "position": "full-back", "source": "placeholder" },
+      "jack-dungworth-1866": { "position": "right-wing", "source": "placeholder" },
+      "billy-betts-1864": { "position": "half-back", "source": "players-1888-89" },
+      "george-waller-1864": { "position": "inside-right", "source": "placeholder" },
+      "winterbottom-1865": { "position": "centre-forward", "source": "placeholder" },
+      "william-ingram-1867-2": { "position": "inside-left", "source": "placeholder" },
+      "harry-woolhouse-1867": { "position": "left-wing", "source": "placeholder" },
+      "tom-cawley-1866": { "position": "full-back", "source": "placeholder" },
+      "albert-mumford-1865": { "position": "half-back", "source": "placeholder" },
+      "michael-whitham-1867": { "position": "goalkeeper", "source": "placeholder" }
+    }
   },
   {
     "club": "birmingham-st-georges",
@@ -719,7 +1284,20 @@
       "jacob-williams-1865",
       "john-johnson-1869",
       "leonard-cook-1865"
-    ]
+    ],
+    "positions": {
+      "billy-siddons-1864": { "position": "goalkeeper", "source": "placeholder" },
+      "jack-devey-1866": { "position": "full-back", "source": "placeholder" },
+      "edgar-carter-1864": { "position": "half-back", "source": "placeholder" },
+      "wilson-hughes-1865": { "position": "right-wing", "source": "placeholder" },
+      "edward-jackson-1869": { "position": "inside-right", "source": "placeholder" },
+      "abraham-hall-1863": { "position": "centre-forward", "source": "placeholder" },
+      "abel-turner-1863": { "position": "inside-left", "source": "placeholder" },
+      "josiah-brown-1867": { "position": "left-wing", "source": "placeholder" },
+      "jacob-williams-1865": { "position": "half-back", "source": "placeholder" },
+      "john-johnson-1869": { "position": "full-back", "source": "placeholder" },
+      "leonard-cook-1865": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "long-eaton-rangers",
@@ -737,7 +1315,20 @@
       "elijah-williams-1863",
       "roger-griffiths-1863",
       "leonard-wilson-1867"
-    ]
+    ],
+    "positions": {
+      "william-smith-1868-2": { "position": "goalkeeper", "source": "placeholder" },
+      "morris-james-1862": { "position": "full-back", "source": "placeholder" },
+      "tom-clark-1869": { "position": "half-back", "source": "placeholder" },
+      "aaron-brown-1863": { "position": "right-wing", "source": "placeholder" },
+      "gilbert-lee-1861": { "position": "inside-right", "source": "placeholder" },
+      "dennis-hill-1864": { "position": "centre-forward", "source": "placeholder" },
+      "jesse-harris-1865": { "position": "inside-left", "source": "placeholder" },
+      "dan-johnson-1866": { "position": "left-wing", "source": "placeholder" },
+      "elijah-williams-1863": { "position": "half-back", "source": "placeholder" },
+      "roger-griffiths-1863": { "position": "full-back", "source": "placeholder" },
+      "leonard-wilson-1867": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "small-heath",
@@ -755,7 +1346,20 @@
       "george-short-1866",
       "ted-hill-1865",
       "jonah-edwards-1868"
-    ]
+    ],
+    "positions": {
+      "chris-charsley-1864": { "position": "goalkeeper", "source": "players-1888-89" },
+      "fred-speller-1863": { "position": "half-back", "source": "placeholder" },
+      "caesar-jenkyns-1866": { "position": "full-back", "source": "players-1888-89-line" },
+      "harry-morris-1866": { "position": "right-wing", "source": "placeholder" },
+      "ted-devey-1871": { "position": "inside-right", "source": "placeholder" },
+      "charlie-simms-1865": { "position": "centre-forward", "source": "placeholder" },
+      "will-devey-1866": { "position": "inside-left", "source": "placeholder" },
+      "eddy-stanley-1866": { "position": "left-wing", "source": "placeholder" },
+      "george-short-1866": { "position": "half-back", "source": "placeholder" },
+      "ted-hill-1865": { "position": "full-back", "source": "placeholder" },
+      "jonah-edwards-1868": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "walsall",
@@ -773,7 +1377,20 @@
       "oliver-lewis-1869",
       "fred-martin-1861",
       "ben-lee-1865"
-    ]
+    ],
+    "positions": {
+      "albert-aldridge-1863": { "position": "full-back", "source": "players-1888-89" },
+      "alf-jones-1861": { "position": "full-back", "source": "players-1888-89" },
+      "charlie-shaw-1862": { "position": "goalkeeper", "source": "placeholder" },
+      "tom-bayley-1868": { "position": "half-back", "source": "placeholder" },
+      "fred-cook-1863": { "position": "right-wing", "source": "placeholder" },
+      "james-thomas-1869": { "position": "inside-right", "source": "placeholder" },
+      "benjamin-clark-1863": { "position": "centre-forward", "source": "placeholder" },
+      "amos-wilson-1869": { "position": "inside-left", "source": "placeholder" },
+      "oliver-lewis-1869": { "position": "left-wing", "source": "placeholder" },
+      "fred-martin-1861": { "position": "half-back", "source": "placeholder" },
+      "ben-lee-1865": { "position": "half-back", "source": "placeholder" }
+    }
   },
   {
     "club": "heeley",
@@ -791,6 +1408,19 @@
       "rowland-morgan-1863",
       "jabez-cooper-1868",
       "bernard-baker-1862"
-    ]
+    ],
+    "positions": {
+      "reuben-jones-1865": { "position": "goalkeeper", "source": "placeholder" },
+      "israel-hall-1868": { "position": "full-back", "source": "placeholder" },
+      "christopher-harrison-1862": { "position": "half-back", "source": "placeholder" },
+      "jeremiah-harris-1861": { "position": "right-wing", "source": "placeholder" },
+      "emanuel-wood-1868": { "position": "inside-right", "source": "placeholder" },
+      "william-davies-1869": { "position": "centre-forward", "source": "placeholder" },
+      "ephraim-ward-1867": { "position": "inside-left", "source": "placeholder" },
+      "matthew-watson-1865": { "position": "left-wing", "source": "placeholder" },
+      "rowland-morgan-1863": { "position": "half-back", "source": "placeholder" },
+      "jabez-cooper-1868": { "position": "full-back", "source": "placeholder" },
+      "bernard-baker-1862": { "position": "half-back", "source": "placeholder" }
+    }
   }
 ]

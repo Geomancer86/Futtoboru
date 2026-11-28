@@ -50,7 +50,7 @@ import com.rndmodgames.futtoboru.system.Log;
  * Save format v1 (P2-5, decisions D11/D15; the DarkBlade pattern).
  *
  * <pre>
- * { "saveVersion": 1, "gameVersion", "dataVersion", "packs": [{id, version, dataVersion}], "savedAt",
+ * { "saveVersion": 2, "gameVersion", "dataVersion", "packs": [{id, version, dataVersion}], "savedAt",
  *   "summary": {name, manager, club, clubDataId, gameDate},          (for the load list)
  *   "game": { the SaveGame's own fields },
  *   "authorities": [...], "competitions": [...], "editions": [...], "leagues": [...],
@@ -72,8 +72,8 @@ import com.rndmodgames.futtoboru.system.Log;
  */
 public final class SaveCodec {
 
-    /** The format written by this version of the game. */
-    public static final int SAVE_VERSION = 1;
+    /** The format written by this version of the game (2: players have {@code position} and {@code dribbling}, E-01). */
+    public static final int SAVE_VERSION = 2;
 
     static final String SAVE_VERSION_FIELD = "saveVersion";
 

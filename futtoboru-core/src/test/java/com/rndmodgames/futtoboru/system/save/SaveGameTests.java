@@ -40,6 +40,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
+import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 
 /**
  * Saves v1 (P2-5): save -> load gives the same game, one object per club/person/competition after a load, staff keys
@@ -323,6 +324,69 @@ class SaveGameTests {
         assertEquals(LocalDateTime.of(1888, 4, 1, 4, 0), game.getGameDate());
         assertSame(game.getCurrentClub(), DatabaseLoader.getClubByDataId("preston-north-end"));
         assertFalse(game.getAllClubs().isEmpty());
+
+        // v1 -> v2 (E-01): positions from the squad data, dribbling sourced or derived from the saved attributes
+        int players = 0;
+        int withoutPosition = 0;
+        for (Club club : game.getAllClubs()) {
+            for (Player p : club.getPlayers()) {
+                assertNotNull(p.getDribbling(), p.getPerson().getDataId());
+                // a person retired or moved to another club in the data since the fixture was written has no
+                // entry in that club's squad, so no position
+                withoutPosition += p.getPosition() == null ? 1 : 0;
+                players++;
+            }
+        }
+        assertTrue(players > 500, "players: " + players);
+        assertTrue(withoutPosition < players / 20, withoutPosition + " of " + players + " without a position");
+        Player southworth = player(game, "blackburn-rovers", "jack-southworth-1866");
+        assertEquals(com.rndmodgames.futtoboru.data.Position.CENTRE_FORWARD, southworth.getPosition());
+        assertEquals(18f, southworth.getDribbling());
+        Player dewhurst = player(game, "preston-north-end", "fred-dewhurst-1863");
+        assertEquals(PlayerAttributeGenerator.deriveDribbling(dewhurst.getDexterity(), dewhurst.getAcceleration(),
+                dewhurst.getTrickShots(), dewhurst.getSpeed()), dewhurst.getDribbling());
+    }
+
+    @Test
+    void positionAndDribblingSurviveSaveAndLoad() throws IOException {
+        SaveGame game = NewGameFixture.newGame(application);
+        Player southworth = player(game, "blackburn-rovers", "jack-southworth-1866");
+        assertEquals(com.rndmodgames.futtoboru.data.Position.CENTRE_FORWARD, southworth.getPosition());
+        assertEquals(18f, southworth.getDribbling());
+        Map<Long, String> before = new HashMap<>();
+        for (Club club : game.getAllClubs()) {
+            for (Player p : club.getPlayers()) {
+                assertNotNull(p.getDribbling());
+                assertTrue(p.getDribbling() >= 3 && p.getDribbling() <= 23, String.valueOf(p.getDribbling()));
+                before.put(p.getId(), p.getPosition() + " " + p.getDribbling());
+            }
+        }
+        String text = SaveCodec.encode(game, "E-01", LocalDateTime.of(2000, 1, 1, 0, 0));
+        assertTrue(text.contains("\"saveVersion\":" + SaveCodec.SAVE_VERSION)
+                || text.contains("\"saveVersion\": " + SaveCodec.SAVE_VERSION));
+
+        LoadResult result = SaveCodec.decode(text);
+        assertTrue(result.isLoaded(), result.toString());
+        Map<Long, String> after = new HashMap<>();
+        for (Club club : result.getGame().getAllClubs()) {
+            for (Player p : club.getPlayers()) {
+                after.put(p.getId(), p.getPosition() + " " + p.getDribbling());
+            }
+        }
+        assertEquals(before, after);
+    }
+
+    private static Player player(SaveGame game, String club, String person) {
+        for (Club c : game.getAllClubs()) {
+            if (club.equals(c.getDataId())) {
+                for (Player p : c.getPlayers()) {
+                    if (person.equals(p.getPerson().getDataId())) {
+                        return p;
+                    }
+                }
+            }
+        }
+        throw new AssertionError(person + " not at " + club);
     }
 
     private static File write(File dir, String name, String text) throws IOException {

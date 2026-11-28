@@ -81,7 +81,19 @@ public class GameData {
         ENUMS.put("occupation_category", new TreeSet<>(Arrays.asList("TEXTILE", "RAILWAY", "MINING", "CONSTRUCTION",
                 "FACTORY", "TRANSPORT", "EDUCATION", "SKILLED_TRADE", "AGRICULTURE", "SERVICE", "OTHER")));
         ENUMS.put("competition_type", new TreeSet<>(Arrays.asList("LEAGUE", "CUP")));
+        // E-01: the 2-3-5 slots (data/Position) and where a squad entry's position comes from
+        Set<String> positions = new TreeSet<>();
+        for (com.rndmodgames.futtoboru.data.Position p : com.rndmodgames.futtoboru.data.Position.values()) {
+            positions.add(p.getDataId());
+        }
+        ENUMS.put("position", positions);
+        ENUMS.put("position_source", new TreeSet<>(Arrays.asList("players-1888-89", "players-1888-89-line",
+                "placeholder")));
     }
+
+    /** The attribute scale (3d6 plus modifiers, PlayerAttributeGenerator): a sourced dribbling value is inside. */
+    static final int ATTR_MIN = 3;
+    static final int ATTR_MAX = 23;
 
     /** A field of a record spec: its type and whether it is required. */
     static final class Field {
@@ -128,8 +140,11 @@ public class GameData {
                 "countries", "refs:country!", "editions", "list:edition!");
         spec("edition", "id", "str!", "competition", "ref:competition!", "name", "str!", "participants",
                 "refs:club!", "sources", "strs!", "notes", "str");
+        // E-01 positions / dribbling: keyed by a person id of `players` (checked in checkSquadRoles)
         spec("squad", "club", "ref:club!", "ground", "ref:ground", "balance", "num", "players", "refs:person!",
-                "notes", "str");
+                "notes", "str", "positions", "map:squad_position", "dribbling", "map:squad_dribbling");
+        spec("squad_position", "position", "enum:position!", "source", "enum:position_source!");
+        spec("squad_dribbling", "value", "int!", "source", "str!");
         spec("nationality_modifier", "country", "ref:country!", "modifiers", "attrs!", "notes", "str",
                 "footballingStrength", "num");
         spec("region", "id", "str!", "name", "str!", "country", "ref:country!", "modifiers", "attrs!",
@@ -244,6 +259,59 @@ public class GameData {
     public DataRecord get(String kind, String id) {
         String canonical = resolve(kind, id);
         return canonical == null ? null : ids.get(kind).get(canonical);
+    }
+
+    /**
+     * E-01: a squad's positions by canonical person id (keys follow aliases like {@code players} does).
+     *
+     * @param squad a {@code squad} record
+     */
+    public Map<String, com.rndmodgames.futtoboru.data.Position> squadPositions(DataRecord squad) {
+        Map<String, com.rndmodgames.futtoboru.data.Position> out = new LinkedHashMap<>();
+        for (Map.Entry<String, JsonValue> e : squadTable(squad, "positions").entrySet()) {
+            String person = resolve(PERSON, e.getKey());
+            com.rndmodgames.futtoboru.data.Position p = com.rndmodgames.futtoboru.data.Position
+                    .fromDataId(e.getValue().getString("position", null));
+            if (person != null && p != null) {
+                out.put(person, p);
+            }
+        }
+        return out;
+    }
+
+    /** E-01: a squad's sourced dribbling values by canonical person id (most players have none: derived). */
+    public Map<String, Integer> squadDribbling(DataRecord squad) {
+        Map<String, Integer> out = new LinkedHashMap<>();
+        for (Map.Entry<String, JsonValue> e : squadTable(squad, "dribbling").entrySet()) {
+            String person = resolve(PERSON, e.getKey());
+            JsonValue v = e.getValue().get("value");
+            if (person != null && v != null && v.isLong()) {
+                out.put(person, v.asInt());
+            }
+        }
+        return out;
+    }
+
+    /** @return the first live squad of a club (any season, load order), or null */
+    public DataRecord squadOf(String clubId) {
+        String club = resolve(CLUB, clubId);
+        for (DataRecord sq : records("squad", null)) {
+            if (club != null && club.equals(sq.ref("club"))) {
+                return sq;
+            }
+        }
+        return null;
+    }
+
+    private static Map<String, JsonValue> squadTable(DataRecord squad, String field) {
+        Map<String, JsonValue> out = new LinkedHashMap<>();
+        JsonValue t = squad == null ? null : squad.json.get(field);
+        for (JsonValue x = t == null || !t.isObject() ? null : t.child; x != null; x = x.next) {
+            if (x.isObject()) {
+                out.put(x.name, x);
+            }
+        }
+        return out;
     }
 
     /** @return the canonical id for a data id (following aliases, ignoring case), or null when unknown */
@@ -513,6 +581,9 @@ public class GameData {
             }
             checkValue(x, e.getKey(), e.getValue().type, where + "." + e.getKey(), rec);
         }
+        if ("squad".equals(specName)) {
+            checkSquadRoles(v, where);
+        }
         if (spec.containsKey("id")) {
             JsonValue id = v.get("id");
             if (id != null && id.isString() && !ID_RE.matcher(id.asString()).matches()) {
@@ -590,8 +661,59 @@ public class GameData {
             } else if (type.startsWith("list:")) {
                 // nested records (a season's editions) are checked one by one as records of their own
                 expect(v.isArray(), v, where, "a list");
+            } else if (type.startsWith("map:")) {
+                // an object id -> small record (a squad's positions): each value is checked against its spec
+                if (!v.isObject()) {
+                    expect(false, v, where, "an object of id -> record");
+                    break;
+                }
+                for (JsonValue x = v.child; x != null; x = x.next) {
+                    checkRecord(x, type.substring(4), where + "." + x.name, null);
+                }
             }
             break;
+        }
+    }
+
+    /**
+     * E-01: the keys of a squad's {@code positions} / {@code dribbling} are players of that squad; a dribbling
+     * value is on the attribute scale and has a source. A player without a position is a warning.
+     */
+    private void checkSquadRoles(JsonValue sq, String where) {
+        Set<String> players = new HashSet<>();
+        JsonValue list = sq.get("players");
+        for (JsonValue x = list == null || !list.isArray() ? null : list.child; x != null; x = x.next) {
+            if (x.isString()) {
+                players.add(x.asString());
+            }
+        }
+        for (String field : new String[] { "positions", "dribbling" }) {
+            JsonValue table = sq.get(field);
+            if (table == null || !table.isObject()) {
+                continue;
+            }
+            for (JsonValue x = table.child; x != null; x = x.next) {
+                if (!players.contains(x.name)) {
+                    report.error(where + "." + field, "`" + x.name + "` is not a player of this squad");
+                }
+                if ("dribbling".equals(field) && x.isObject()) {
+                    JsonValue val = x.get("value");
+                    JsonValue src = x.get("source");
+                    if (val != null && val.isLong() && (val.asLong() < ATTR_MIN || val.asLong() > ATTR_MAX)) {
+                        report.error(where + ".dribbling." + x.name,
+                                "value " + val.asLong() + " is outside " + ATTR_MIN + "-" + ATTR_MAX);
+                    }
+                    if (src != null && src.isString() && src.asString().trim().isEmpty()) {
+                        report.error(where + ".dribbling." + x.name, "empty source (a sourced value needs its source)");
+                    }
+                }
+            }
+        }
+        JsonValue positions = sq.get("positions");
+        for (String pid : players) {
+            if (positions == null || !positions.isObject() || positions.get(pid) == null) {
+                report.warn(where + " `" + pid + "`", "no position");
+            }
         }
     }
 

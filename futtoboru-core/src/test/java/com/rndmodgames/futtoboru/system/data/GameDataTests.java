@@ -9,10 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+
+import com.rndmodgames.futtoboru.data.Position;
 
 /**
  * GameData (P2-4): the same rules as tools/data/validate.py, on the shipped data and on small fixture packs
@@ -227,6 +230,53 @@ class GameDataTests {
         assertEquals(LocalDateTime.of(1863, 12, 16, 0, 0), BirthDates.complete("1863-12-16", rng));
         // the same seed gives the same dates
         assertEquals(BirthDates.complete("1865", new Random(7)), BirthDates.complete("1865", new Random(7)));
+    }
+
+    @Test
+    void everyShippedSquadPlayerHasAPositionAndSourcedDribblingIsRead() {
+        GameData data = GameData.loadDefault();
+        for (DataRecord sq : data.records("squad", "1888-89")) {
+            Map<String, Position> positions = data.squadPositions(sq);
+            assertEquals(new HashSet<>(sq.refs("players")), positions.keySet(), sq.where());
+        }
+        assertFalse(data.getReport().getWarnings().toString().contains("no position"));
+        DataRecord blackburn = data.squadOf("blackburn-rovers");
+        assertEquals(Position.CENTRE_FORWARD, data.squadPositions(blackburn).get("jack-southworth-1866"));
+        assertEquals(Integer.valueOf(18), data.squadDribbling(blackburn).get("jack-southworth-1866"));
+        assertNull(data.squadDribbling(blackburn).get("herby-arthur-1863")); // no source: derived in the game
+    }
+
+    @Test
+    void badPositionOrDribblingIsAnErrorAndTheSquadIsSkipped() {
+        GameData.Source base = new GameData.ClasspathSource("gamedata");
+        String squads = base.read("core/seasons/1888-89/squads.json")
+                .replace("\"fred-dewhurst-1863\": { \"position\": \"inside-right\"",
+                        "\"fred-dewhurst-1863\": { \"position\": \"striker\"")
+                .replace("\"jack-edwards-1867\": {", "\"someone-else-1860\": {")
+                .replace("\"value\": 18,", "\"value\": 30,");
+        GameData data = GameData.load(new GameData.Source() {
+            @Override
+            public String read(String path) {
+                return path.equals("core/seasons/1888-89/squads.json") ? squads : base.read(path);
+            }
+
+            @Override
+            public List<String> listJson(String folder) {
+                return base.listJson(folder);
+            }
+
+            @Override
+            public List<String> listFolders() {
+                return base.listFolders();
+            }
+        });
+
+        assertError(data, "expected one of");
+        assertError(data, "`someone-else-1860` is not a player of this squad");
+        assertError(data, "value 30 is outside 3-23");
+        assertTrue(data.getReport().getWarnings().toString().contains("`jack-edwards-1867`: no position"));
+        assertNull(data.squadOf("preston-north-end")); // a broken record is skipped, like any other
+        assertNotNull(data.squadOf("everton"));
     }
 
     @Test

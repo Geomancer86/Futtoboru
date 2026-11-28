@@ -78,11 +78,34 @@ public class PlayerAttributeGenerator {
         // Apply profession bonuses (for amateur/semi-pro players)
         // Profession bonuses are applied directly (no conversion needed with 3-18 system)
         applyProfessionBonuses(player);
-        
+
+        // E-01 dribbling: derived, no dice (the random stream, and so every other attribute, is unchanged);
+        // a sourced squad value replaces it at load (DatabaseLoader)
+        player.setDribbling(deriveDribbling(player.getDexterity(), player.getAcceleration(), player.getTrickShots(),
+                player.getSpeed()));
+
         Log.debug(Log.DATA_GENERATION, "PlayerAttributeGenerator", "Generated attributes for: " + person.getName() + 
                      " (Age: " + age + ", Age Adj: " + ageAdjustment + ")");
     }
     
+    /**
+     * E-01: dribbling seeded from existing attributes where no source gives it (DATA_MODEL.md "Positions and
+     * dribbling"): close control (dexterity 35 %, trick shots 25 %) and getting away (acceleration 25 %, speed
+     * 15 %), rounded half up, clamped to the 3-23 scale. Whole-number arithmetic only, so it is the same on every
+     * platform; a missing attribute counts as the 3d6 mean (10.5 rounded down).
+     *
+     * @return the dribbling value, a whole number 3-23
+     */
+    public static float deriveDribbling(Float dexterity, Float acceleration, Float trickShots, Float speed) {
+        int sum = 35 * whole(dexterity) + 25 * whole(trickShots) + 25 * whole(acceleration) + 15 * whole(speed);
+        int value = (sum + 50) / 100;
+        return Math.min(23, Math.max(3, value));
+    }
+
+    private static int whole(Float v) {
+        return v == null ? 10 : Math.round(v);
+    }
+
     /**
      * Apply profession bonuses to player attributes (v2.0 - 3d6 system)
      * 

@@ -125,7 +125,9 @@ def test_removed_record_keeps_its_number_reserved(pack):
         d[:] = [p for p in d if p["id"] != "fred-dewhurst-1863"]
     edit(pack / "core" / "people.json", drop)
     edit(pack / "core" / "seasons" / "1888-89" / "squads.json",
-         lambda d: [sq.update(players=[p for p in sq["players"] if p != "fred-dewhurst-1863"]) for sq in d])
+         lambda d: [sq.update(players=[p for p in sq["players"] if p != "fred-dewhurst-1863"],
+                              positions={k: v for k, v in sq["positions"].items() if k != "fred-dewhurst-1863"})
+                    for sq in d])
     assert "person `fred-dewhurst-1863` (" in errors(pack) and "has no record" in errors(pack)
     edit(pack / "core" / "ids.json", lambda d: d["retired"].setdefault("person", []).append("fred-dewhurst-1863"))
     assert errors(pack) == ""
@@ -224,3 +226,44 @@ def test_result_is_played_or_walkover_and_in_its_own_season(pack):
     assert "is neither the home nor the away club" in out
     assert "results.json[2]" not in out
     assert "unknown edition `football-league-1889-90`" in out
+
+
+# ---------------------------------------------------------------------------------------------- E-01 positions, dribbling
+SQUADS = ("core", "seasons", "1888-89", "squads.json")
+
+
+def test_every_shipped_squad_player_has_a_position_of_the_2_3_5():
+    squads = json.loads(ROOT.joinpath(*SQUADS).read_text(encoding="utf-8"))
+    for sq in squads:
+        assert set(sq["positions"]) == set(sq["players"]), sq["club"]
+        lines = [e["position"] for e in sq["positions"].values()]
+        # every squad can field a 2-3-5: a keeper, two backs, three halves, each forward slot
+        for slot, need in {"goalkeeper": 1, "full-back": 2, "half-back": 3, "right-wing": 1, "inside-right": 1,
+                           "centre-forward": 1, "inside-left": 1, "left-wing": 1}.items():
+            assert lines.count(slot) >= need, (sq["club"], slot)
+    assert "no position" not in "\n".join(validate.validate(ROOT).warnings)
+
+
+def test_position_and_dribbling_typos_are_errors(pack):
+    def bad(d):
+        first = d[0]["players"][0]
+        d[0]["positions"][first] = {"position": "striker", "source": "players-1888-89", "foot": "left"}
+        d[0]["positions"]["someone-else-1860"] = {"position": "goalkeeper", "source": "guess"}
+        d[0]["dribbling"] = {first: {"value": 30, "source": ""}}
+    edit(pack.joinpath(*SQUADS), bad)
+    out = errors(pack)
+    assert "expected one of" in out and "striker" in out
+    assert "unknown field `foot`" in out
+    assert "guess" in out
+    assert "`someone-else-1860` is not a player of this squad" in out
+    assert "value 30 is outside 3-23" in out
+    assert "empty source" in out
+
+
+def test_player_without_position_is_a_warning(pack):
+    def drop(d):
+        d[0]["positions"].pop(d[0]["players"][0])
+    edit(pack.joinpath(*SQUADS), drop)
+    rep = validate.validate(pack)
+    assert rep.errors == []
+    assert any("no position" in w for w in rep.warnings)
