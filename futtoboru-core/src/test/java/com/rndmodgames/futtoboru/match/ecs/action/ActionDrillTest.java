@@ -181,14 +181,14 @@ class ActionDrillTest {
         return d.w.stateHash();
     }
 
-    /**
-     * Two minutes of the drill in rain. Same rule as BallPhysicsTest.GOLDEN: identical on every machine; update only
-     * in a PR that changes action, ball or body physics on purpose (and bump EcsMatchEngine.ENGINE_VERSION).
-     */
     /** Sanity bounds on actions in two minutes of drill (any seed gives 26..59; the golden pins the exact run). */
     static final int MIN_ACTIONS = 15;
     static final int MAX_ACTIONS = 150;
 
+    /**
+     * Two minutes of the drill in rain. Same rule as BallPhysicsTest.GOLDEN: identical on every machine; update only
+     * in a PR that changes action, ball or body physics on purpose (and bump EcsMatchEngine.ENGINE_VERSION).
+     */
     static final long GOLDEN_DRILL = 0x875d0939ac2edbd6L;
 
     @Test

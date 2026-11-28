@@ -15,6 +15,8 @@ import com.rndmodgames.futtoboru.match.ecs.PitchConditions;
 import com.rndmodgames.futtoboru.match.ecs.SpawnRole;
 import com.rndmodgames.futtoboru.match.ecs.Surface;
 import com.rndmodgames.futtoboru.match.ecs.UniformPitch;
+import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
+import com.rndmodgames.futtoboru.match.ecs.pitch.PitchParams;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -291,6 +293,64 @@ class BallPhysicsTest {
             }
         }
         return folded;
+    }
+
+    // ---- goal frame (E-16b) ----------------------------------------------------------------------------------------
+
+    /** A world with only the ball (no laws), ball rolling or flying from (x, y, z) at (vx, vy, vz). */
+    static BallComponent frameShot(MatchWorld[] out, double x, double y, double z, double vx, double vy, double vz) {
+        PhysicsParams p = vacuum();
+        MatchWorld w = new MatchWorld(p, new UniformPitch(Surface.DRY, 0), RandomSource.seeded(3).fork("match:frame"));
+        MatchSystems.installSimulation(w);
+        BallComponent b = BallComponent.atRest(x, y, p.ballDryMassKg);
+        b.z = z;
+        b.vx = vx;
+        b.vy = vy;
+        b.vz = vz;
+        b.state = z > 0 || vz > 0 ? BallComponent.AIR : BallComponent.ROLLING;
+        w.spawn(SpawnRole.BALL).add(b);
+        out[0] = w;
+        return b;
+    }
+
+    @Test
+    void aShotStraightAtThePostBouncesBackIntoPlayWithRigidRestitution() {
+        PitchGeometry g = new PitchGeometry(PitchParams.defaults1888());
+        MatchWorld[] w = new MatchWorld[1];
+        // rolling at 20 m/s along the pitch, dead centre on the north post of the east goal
+        BallComponent b = frameShot(w, g.halfLength() - 10, g.postCentreY(), 0, 20, 0, 0);
+        BallSystem balls = w[0].engine().getSystem(BallSystem.class);
+        boolean hit = false;
+        for (int t = 0; t < 30 && !hit; t++) {
+            w[0].runTicks(1);
+            hit = balls.frameContactThisTick();
+        }
+        assertTrue(hit, "the ball reached the post");
+        assertEquals(1, balls.frameContacts());
+        assertTrue(b.x < g.halfLength(), "still in front of the goal line: " + b.x);
+        // rolling resistance only slows it a little over 10 m: the rebound is about -e times the arrival speed
+        assertTrue(b.vx < -0.75 * 0.80 * 20 && b.vx > -0.80 * 20, "rebound " + b.vx);
+        assertEquals(0, b.vy, 1e-9);
+        w[0].runTicks(30);
+        assertTrue(b.x < g.halfLength() - 5, "it came back out: " + b.x);
+    }
+
+    @Test
+    void aBallUnderTheBarAndInsideThePostsIsNotTouchedAndOneOnTheBarComesDown() {
+        PitchGeometry g = new PitchGeometry(PitchParams.defaults1888());
+        MatchWorld[] w = new MatchWorld[1];
+        BallComponent in = frameShot(w, g.halfLength() - 10, g.goalMouthHalfWidth() - 0.2, 0, 20, 0, 0);
+        w[0].runTicks(40);
+        assertEquals(0, w[0].engine().getSystem(BallSystem.class).frameContacts());
+        assertTrue(in.x > g.halfLength() + 1, "went through the mouth: " + in.x);
+        // flat and fast at the height of the bar axis (ball centre = z + r): it hits the bar and comes back
+        double r = new PhysicsParams().ballRadiusM;
+        BallComponent bar = frameShot(w, g.halfLength() - 3, 0, g.crossbarCentreZ() - r, 25, 0, 0);
+        BallSystem balls = w[0].engine().getSystem(BallSystem.class);
+        w[0].runTicks(10);
+        assertTrue(balls.frameContacts() >= 1, "hit the bar");
+        assertTrue(bar.vx < 0, "rebounded: " + bar.vx);
+        assertTrue(bar.x < g.halfLength(), "in front of the line: " + bar.x);
     }
 
     /**

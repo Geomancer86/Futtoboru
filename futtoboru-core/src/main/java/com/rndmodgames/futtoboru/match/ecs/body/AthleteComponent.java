@@ -30,6 +30,8 @@ public final class AthleteComponent implements Component, HashedComponent {
     public double stamina = 1;
     /** Match reserve 0..1: everything above standing uses it; half-time returns a little. */
     public double reserve = 1;
+    /** In goal: may handle ({@link #isKeeper()}). */
+    private boolean keeper;
 
     private AthleteComponent(Position position, double topSpeed, double accel, double decel, double turnStanding,
             double turnAtTop, double strength01, double balance01, double capacity, double recovery,
@@ -45,6 +47,7 @@ public final class AthleteComponent implements Component, HashedComponent {
         this.capacity = capacity;
         this.recovery = recovery;
         this.fragility = fragility;
+        this.keeper = position == Position.GOALKEEPER;
     }
 
     /** Maps ratings to physics (all D, BodyParams). */
@@ -62,8 +65,18 @@ public final class AthleteComponent implements Component, HashedComponent {
                 0.7 + 0.6 * unit(in.stamina(), p), 0.7 + 0.6 * unit(in.endurance(), p), fragility);
     }
 
+    /**
+     * True for the man in goal, who may handle where the season's law allows ({@code RulesProfile#keeperHandling}).
+     * The Laws name no keeper by position, only "the goalkeeper": starts as the GOALKEEPER position, and the player
+     * AI hands it to whoever holds the keeper slot (E-16b: an outfielder replacing a keeper who went off).
+     */
     public boolean isKeeper() {
-        return position == Position.GOALKEEPER;
+        return keeper;
+    }
+
+    /** Puts this player in goal (or takes him out of it). */
+    public void setKeeper(boolean inGoal) {
+        this.keeper = inGoal;
     }
 
     /** Turn rate at speed v (fresh, unlimited grip): from standing to top-speed rate with (v/top)^2. */
@@ -102,5 +115,6 @@ public final class AthleteComponent implements Component, HashedComponent {
         h.mix("ath.fragility", fragility);
         h.mix("ath.stamina", stamina);
         h.mix("ath.reserve", reserve);
+        h.mix("ath.keeper", keeper ? 1L : 0L);
     }
 }

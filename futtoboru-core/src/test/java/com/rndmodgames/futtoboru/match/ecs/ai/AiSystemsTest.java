@@ -24,6 +24,7 @@ import com.rndmodgames.futtoboru.match.ecs.UniformPitch;
 import com.rndmodgames.futtoboru.match.ecs.action.ActionSystem;
 import com.rndmodgames.futtoboru.match.ecs.action.PossessionComponent;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
+import com.rndmodgames.futtoboru.match.ecs.body.AthleteComponent;
 import com.rndmodgames.futtoboru.match.ecs.body.BodyComponent;
 import com.rndmodgames.futtoboru.match.ecs.body.BodySpawner;
 import com.rndmodgames.futtoboru.match.ecs.body.InjuryComponent;
@@ -185,6 +186,30 @@ class AiSystemsTest {
         assertTrue(filler >= 6, "a forward drops back: " + filler);
         assertEquals(10, m.home.onField());
         assertEquals(11, m.away.onField());
+    }
+
+    @Test
+    void theOutfielderWhoTakesOverInGoalMayHandle() {
+        Match m = new Match(3, TeamStyle.DRIBBLING, TeamStyle.DRIBBLING, 45);
+        m.w.runTicks(100);
+        AthleteComponent keeper = m.players[0].getComponent(AthleteComponent.class);
+        assertTrue(keeper.isKeeper());
+        m.players[0].getComponent(InjuryComponent.class).state = InjuryComponent.OFF;
+        m.w.runTicks(3);
+        int k = m.home.playerIn(0);
+        assertTrue(k > 0, "an outfielder went in goal: " + k);
+        AthleteComponent stand = m.players[k].getComponent(AthleteComponent.class);
+        assertNotEquals(com.rndmodgames.futtoboru.data.Position.GOALKEEPER, stand.position);
+        assertTrue(stand.isKeeper(), "the slot-1 holder is the goalkeeper and may handle");
+        assertTrue(!keeper.isKeeper(), "the man who went off is not");
+        int keepers = 0;
+        for (int i = 0; i < 11; i++) {
+            keepers += m.players[i].getComponent(AthleteComponent.class).isKeeper() ? 1 : 0;
+        }
+        assertEquals(1, keepers);
+        ActionSystem actions = m.w.engine().getSystem(ActionSystem.class);
+        assertTrue(actions.handsAllowed(Team.HOME, -10, 0), "in his own half (1888-89 law)");
+        assertTrue(!actions.handsAllowed(Team.HOME, 10, 0), "not in the other half");
     }
 
     @Test

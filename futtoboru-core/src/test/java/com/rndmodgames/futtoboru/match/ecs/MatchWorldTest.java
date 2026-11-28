@@ -239,7 +239,7 @@ class MatchWorldTest {
     /**
      * Golden hash of {@code play} over a short match (two halves of 3 minutes, 10,800 ticks): the full loop with the
      * player AI (E-15) and the laws (E-16); see BallPhysicsTest for the rule. The 90-minute goldens and the wet-ball
-     * masses are in {@link EcsPlayGoldenTest} (slow tier). Pinned by E-15 (ecs-0.5).
+     * masses are in {@link EcsPlayGoldenTest} (slow tier). Pinned by E-15 (ecs-0.5); re-pinned by E-16b (ecs-0.6).
      */
     static final long GOLDEN_SHORT_PLAY = 0x33b802dfcc4d1d44L;
 
