@@ -1,0 +1,1055 @@
+[
+  {
+    "id": "press-1874-widdowson-shin-pads",
+    "kind": "equipment",
+    "authority": "press",
+    "announced": "1874-01-01",
+    "effective": "1874-01-01",
+    "dateCertainty": "year",
+    "effects": [],
+    "message": {
+      "key": "era.press-1874-widdowson-shin-pads",
+      "newsOnly": true
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Shin_guard",
+      "https://en.wikipedia.org/wiki/Kit_(association_football)"
+    ],
+    "notes": "Before the 1888-89 start: already folded into the baseline (kit.shinPadShare 0.6); kept for history screens."
+  },
+  {
+    "id": "ifab-1889-ball-weight",
+    "kind": "ball",
+    "authority": "ifab",
+    "announced": "1889-06-03",
+    "effective": "1889-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "ball.massMinG",
+        "op": "set",
+        "value": 369
+      },
+      {
+        "param": "ball.massMaxG",
+        "op": "set",
+        "value": 425
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1889-ball-weight"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://nachspielzeiten.de/law-2-the-ball-en/",
+      "https://en.wikisource.org/wiki/Laws_of_the_Game_(1890)"
+    ],
+    "notes": "The 1890 text says international matches; applied to all matches here (open question, ERA_TIMELINE section 4)."
+  },
+  {
+    "id": "ifab-1889-referee-free-kick",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1889-06-03",
+    "effective": "1889-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.refereeFreeKickWithoutAppeal",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1889-referee-free-kick"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://nachspielzeiten.de/law-5-the-referee-en/",
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "ifab-1890-no-goal-from-goal-kick",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1890-06-02",
+    "effective": "1890-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.goalFromGoalKick",
+        "op": "set",
+        "value": false
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1890-no-goal-from-goal-kick"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "league-1891-fourteen-clubs",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1891-06-01",
+    "effective": "1891-09-01",
+    "dateCertainty": "season",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.topDivisionClubs",
+        "op": "set",
+        "value": 14
+      }
+    ],
+    "message": {
+      "key": "era.league-1891-fourteen-clubs"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/English_Football_League"
+    ]
+  },
+  {
+    "id": "ifab-1891-penalty-kick",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1891-06-02",
+    "effective": "1891-09-01",
+    "effects": [
+      {
+        "param": "rules.penaltyKick",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1891-penalty-kick",
+      "priority": "HIGH",
+      "mandatory": true
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Penalty_kick_(association_football)",
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "ifab-1891-referee-linesmen",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1891-06-02",
+    "effective": "1891-09-01",
+    "effects": [
+      {
+        "param": "rules.officials",
+        "op": "set",
+        "value": "REFEREE_AND_LINESMEN"
+      },
+      {
+        "param": "rules.refereeActsWithoutAppeal",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1891-referee-linesmen",
+      "priority": "HIGH",
+      "mandatory": true
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://nachspielzeiten.de/law-5-the-referee-en/",
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "league-1891-goal-nets",
+    "kind": "equipment",
+    "authority": "football-league",
+    "announced": "1891-08-01",
+    "effective": "1891-09-01",
+    "dateCertainty": "season",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "rules.goalNets",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.league-1891-goal-nets"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/John_Alexander_Brodie"
+    ]
+  },
+  {
+    "id": "league-1892-second-division",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1892-04-01",
+    "effective": "1892-09-01",
+    "dateCertainty": "season",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.divisions",
+        "op": "set",
+        "value": 2
+      },
+      {
+        "param": "league.promotion",
+        "op": "set",
+        "value": "TEST_MATCHES"
+      }
+    ],
+    "message": {
+      "key": "era.league-1892-second-division"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/English_Football_League"
+    ]
+  },
+  {
+    "id": "ifab-1892-keeper-charge",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1892-06-01",
+    "effective": "1892-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.keeperChargeProtected",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1892-keeper-charge"
+    },
+    "confidence": "disputed",
+    "sources": [
+      "https://nachspielzeiten.de/law-12-fouls-and-misconduct-en",
+      "https://spartacus-educational.com/Fgoalkeeper.htm"
+    ],
+    "notes": "IFAB 1892 or FA 1894: sources disagree; 1892 used (same as RulesProfile)."
+  },
+  {
+    "id": "ifab-1893-referee-decision-final",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1893-06-01",
+    "effective": "1893-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.refereeDecisionFinal",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1893-referee-decision-final"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://nachspielzeiten.de/law-5-the-referee-en/"
+    ]
+  },
+  {
+    "id": "league-1893-retain-and-transfer",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1893-06-01",
+    "effective": "1893-09-01",
+    "dateCertainty": "season",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.retainAndTransfer",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.league-1893-retain-and-transfer"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Retain_and_transfer_system",
+      "https://spartacus-educational.com/Ftransfer.htm"
+    ]
+  },
+  {
+    "id": "league-1898-automatic-promotion",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1898-04-30",
+    "effective": "1898-09-01",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.promotion",
+        "op": "set",
+        "value": "AUTOMATIC"
+      },
+      {
+        "param": "league.topDivisionClubs",
+        "op": "set",
+        "value": 18
+      }
+    ],
+    "message": {
+      "key": "era.league-1898-automatic-promotion"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/English_Football_League"
+    ]
+  },
+  {
+    "id": "ifab-1898-added-time",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1898-06-01",
+    "effective": "1898-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.addedTime",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1898-added-time"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://nachspielzeiten.de/law-5-the-referee-en/"
+    ]
+  },
+  {
+    "id": "press-1900-shin-pads-common",
+    "kind": "equipment",
+    "authority": "press",
+    "announced": "1900-01-01",
+    "effective": "1900-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "kit.shinPadShare",
+        "op": "set",
+        "value": 0.9,
+        "adoption": {
+          "seasons": 15,
+          "from": 0.6
+        }
+      }
+    ],
+    "message": {
+      "key": "era.press-1900-shin-pads-common",
+      "newsOnly": true
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Shin_guard",
+      "https://en.wikipedia.org/wiki/Kit_(association_football)"
+    ],
+    "notes": "Timeline: smaller and inside the stockings by c.1900. The 0.9 target and the 15-season spread are a design estimate (BKP section 2), not sourced."
+  },
+  {
+    "id": "league-1901-maximum-wage",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1901-04-01",
+    "effective": "1901-09-01",
+    "dateCertainty": "year",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.maxWagePerWeek",
+        "op": "set",
+        "value": 4
+      }
+    ],
+    "message": {
+      "key": "era.league-1901-maximum-wage",
+      "priority": "HIGH"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Retain_and_transfer_system",
+      "https://the1888letter.com/a-short-history-of-wages-in-english-football/"
+    ]
+  },
+  {
+    "id": "ifab-1901-keeper-handling-any",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1901-06-01",
+    "effective": "1901-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.keeperHandlingPurpose",
+        "op": "set",
+        "value": "ANY"
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1901-keeper-handling-any"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "ifab-1903-direct-free-kicks",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1903-06-01",
+    "effective": "1903-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.directFreeKicks",
+        "op": "set",
+        "value": true
+      },
+      {
+        "param": "rules.advantage",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1903-direct-free-kicks"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "fa-1904-knees-uncovered",
+    "kind": "equipment",
+    "authority": "fa",
+    "announced": "1904-06-01",
+    "effective": "1904-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "kit.kneesCovered",
+        "op": "set",
+        "value": false
+      }
+    ],
+    "message": {
+      "key": "era.fa-1904-knees-uncovered"
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Kit_(association_football)"
+    ],
+    "notes": "Single secondary source (Wikipedia Kit)."
+  },
+  {
+    "id": "press-1905-alf-common-fee",
+    "kind": "authority",
+    "authority": "press",
+    "announced": "1905-02-01",
+    "effective": "1905-02-01",
+    "dateCertainty": "month",
+    "effects": [],
+    "message": {
+      "key": "era.press-1905-alf-common-fee",
+      "newsOnly": true
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://spartacus-educational.com/Ftransfer.htm"
+    ]
+  },
+  {
+    "id": "league-1905-twenty-clubs",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1905-06-01",
+    "effective": "1905-09-01",
+    "dateCertainty": "season",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.topDivisionClubs",
+        "op": "set",
+        "value": 20
+      }
+    ],
+    "message": {
+      "key": "era.league-1905-twenty-clubs"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/English_Football_League"
+    ]
+  },
+  {
+    "id": "ifab-1907-offside-own-half",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1907-06-01",
+    "effective": "1907-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.offsideOwnHalf",
+        "op": "set",
+        "value": false
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1907-offside-own-half"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)",
+      "https://en.wikipedia.org/wiki/Offside_(association_football)"
+    ]
+  },
+  {
+    "id": "league-1908-transfer-fee-cap",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1908-01-01",
+    "effective": "1908-01-01",
+    "dateCertainty": "month",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.transferFeeCap",
+        "op": "set",
+        "value": 350
+      }
+    ],
+    "message": {
+      "key": "era.league-1908-transfer-fee-cap"
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://spartacus-educational.com/Ftransfer.htm"
+    ],
+    "notes": "Secondary source; clubs evaded it by selling players in bundles."
+  },
+  {
+    "id": "league-1909-transfer-fee-cap-withdrawn",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1909-01-01",
+    "effective": "1909-01-01",
+    "dateCertainty": "year",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.transferFeeCap",
+        "op": "set",
+        "value": 0
+      }
+    ],
+    "message": {
+      "key": "era.league-1909-transfer-fee-cap-withdrawn"
+    },
+    "requires": [
+      "league-1908-transfer-fee-cap"
+    ],
+    "confidence": "unverified",
+    "sources": [
+      "https://spartacus-educational.com/Ftransfer.htm"
+    ],
+    "notes": "Withdrawal after about a year (one source); the exact date is not known."
+  },
+  {
+    "id": "press-1909-wet-ball-report",
+    "kind": "ball",
+    "authority": "press",
+    "announced": "1909-02-01",
+    "effective": "1909-02-01",
+    "dateCertainty": "year",
+    "effects": [],
+    "message": {
+      "key": "era.press-1909-wet-ball-report",
+      "newsOnly": true
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://doi.org/10.1007/s12283-025-00521-8"
+    ],
+    "notes": "Report of +47 % mass over 90 min (Sussex Express 1909, via PH-25); conditions unknown."
+  },
+  {
+    "id": "ifab-1909-keeper-colour",
+    "kind": "equipment",
+    "authority": "ifab",
+    "announced": "1909-06-01",
+    "effective": "1909-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "kit.keeperDistinct",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1909-keeper-colour"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Kit_(association_football)"
+    ]
+  },
+  {
+    "id": "league-1910-maximum-wage-five",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1910-06-01",
+    "effective": "1910-09-01",
+    "dateCertainty": "year",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.maxWagePerWeek",
+        "op": "set",
+        "value": 5
+      }
+    ],
+    "message": {
+      "key": "era.league-1910-maximum-wage-five"
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://the1888letter.com/a-short-history-of-wages-in-english-football/",
+      "https://en.wikipedia.org/wiki/Retain_and_transfer_system"
+    ],
+    "notes": "Secondary sources; the exact year is uncertain."
+  },
+  {
+    "id": "ifab-1912-keeper-penalty-area",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1912-06-01",
+    "effective": "1912-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.keeperHandling",
+        "op": "set",
+        "value": "PENALTY_AREA"
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1912-keeper-penalty-area",
+      "priority": "HIGH"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)",
+      "https://spartacus-educational.com/Fgoalkeeper.htm"
+    ]
+  },
+  {
+    "id": "league-1915-war-suspension",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1915-06-01",
+    "effective": "1915-06-01",
+    "dateCertainty": "year",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.suspended",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.league-1915-war-suspension",
+      "priority": "HIGH"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/English_Football_League"
+    ]
+  },
+  {
+    "id": "league-1919-resumption",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1919-06-01",
+    "effective": "1919-08-30",
+    "dateCertainty": "year",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.suspended",
+        "op": "set",
+        "value": false
+      },
+      {
+        "param": "league.topDivisionClubs",
+        "op": "set",
+        "value": 22
+      }
+    ],
+    "message": {
+      "key": "era.league-1919-resumption"
+    },
+    "requires": [
+      "league-1915-war-suspension"
+    ],
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/English_Football_League"
+    ]
+  },
+  {
+    "id": "ifab-1920-no-offside-throw-in",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1920-06-01",
+    "effective": "1920-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.offsideFromThrowIn",
+        "op": "set",
+        "value": false
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1920-no-offside-throw-in"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "league-1920-third-division",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1920-06-01",
+    "effective": "1920-09-01",
+    "dateCertainty": "year",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.divisions",
+        "op": "set",
+        "value": 3
+      }
+    ],
+    "message": {
+      "key": "era.league-1920-third-division"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/English_Football_League"
+    ]
+  },
+  {
+    "id": "league-1920-maximum-wage-nine",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1920-06-01",
+    "effective": "1920-09-01",
+    "dateCertainty": "year",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.maxWagePerWeek",
+        "op": "set",
+        "value": 9
+      }
+    ],
+    "message": {
+      "key": "era.league-1920-maximum-wage-nine"
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://the1888letter.com/a-short-history-of-wages-in-english-football/"
+    ]
+  },
+  {
+    "id": "league-1922-maximum-wage-eight",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1922-06-01",
+    "effective": "1922-09-01",
+    "dateCertainty": "year",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "league.maxWagePerWeek",
+        "op": "set",
+        "value": 8
+      }
+    ],
+    "message": {
+      "key": "era.league-1922-maximum-wage-eight"
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://the1888letter.com/a-short-history-of-wages-in-english-football/",
+      "https://markmetcalfwfb.blogspot.com/2023/03/1947-when-football-stars-then-being.html"
+    ],
+    "notes": "The summer figure (6) is not modelled: no parameter for it."
+  },
+  {
+    "id": "ifab-1924-goal-from-corner",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1924-06-01",
+    "effective": "1924-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.goalFromCorner",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1924-goal-from-corner"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "press-1925-dassler-studs",
+    "kind": "equipment",
+    "authority": "press",
+    "announced": "1925-01-01",
+    "effective": "1925-01-01",
+    "dateCertainty": "year",
+    "effects": [],
+    "message": {
+      "key": "era.press-1925-dassler-studs",
+      "newsOnly": true
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://satra.com/bulletin/article.php?id=2311"
+    ]
+  },
+  {
+    "id": "ifab-1925-offside-two",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1925-06-01",
+    "effective": "1925-09-01",
+    "dateCertainty": "month",
+    "effects": [
+      {
+        "param": "rules.offsideOpponents",
+        "op": "set",
+        "value": 2
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1925-offside-two",
+      "priority": "HIGH",
+      "mandatory": true
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)",
+      "https://en.wikipedia.org/wiki/Offside_(association_football)"
+    ]
+  },
+  {
+    "id": "press-1931-laceless-ball",
+    "kind": "ball",
+    "authority": "press",
+    "announced": "1931-06-01",
+    "effective": "1931-06-01",
+    "dateCertainty": "year",
+    "effects": [],
+    "message": {
+      "key": "era.press-1931-laceless-ball",
+      "newsOnly": true
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Ball_(association_football)"
+    ],
+    "notes": "Laceless ball not in England until the 1950s: ball.laced stays true."
+  },
+  {
+    "id": "ifab-1931-keeper-four-steps",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1931-06-01",
+    "effective": "1931-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "rules.keeperSteps",
+        "op": "set",
+        "value": 4
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1931-keeper-four-steps"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "ifab-1937-ball-weight",
+    "kind": "ball",
+    "authority": "ifab",
+    "announced": "1937-06-01",
+    "effective": "1937-09-01",
+    "dateCertainty": "year",
+    "effects": [
+      {
+        "param": "ball.massMinG",
+        "op": "set",
+        "value": 397
+      },
+      {
+        "param": "ball.massMaxG",
+        "op": "set",
+        "value": 454
+      }
+    ],
+    "message": {
+      "key": "era.ifab-1937-ball-weight"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://nachspielzeiten.de/law-2-the-ball-en/",
+      "https://doi.org/10.1007/s12283-025-00521-8"
+    ]
+  },
+  {
+    "id": "ifab-1938-laws-rewritten",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1938-06-01",
+    "effective": "1938-09-01",
+    "dateCertainty": "year",
+    "effects": [],
+    "message": {
+      "key": "era.ifab-1938-laws-rewritten",
+      "priority": "LOW"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ]
+  },
+  {
+    "id": "league-1939-numbered-shirts",
+    "kind": "equipment",
+    "authority": "football-league",
+    "announced": "1939-06-01",
+    "effective": "1939-09-01",
+    "dateCertainty": "year",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [
+      {
+        "param": "kit.numbers",
+        "op": "set",
+        "value": true
+      }
+    ],
+    "message": {
+      "key": "era.league-1939-numbered-shirts"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/English_Football_League",
+      "https://en.wikipedia.org/wiki/Kit_(association_football)"
+    ]
+  }
+]

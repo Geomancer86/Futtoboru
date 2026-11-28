@@ -327,6 +327,79 @@ class GameDataTests {
         assertNotNull(data.squadOf("everton"));
     }
 
+    /** The shipped pack with some files replaced by a function of their text (tests of broken data). */
+    private static GameData shippedWith(Map<String, java.util.function.UnaryOperator<String>> edits) {
+        GameData.Source base = new GameData.ClasspathSource("gamedata");
+        return GameData.load(new GameData.Source() {
+            @Override
+            public String read(String path) {
+                String text = base.read(path);
+                java.util.function.UnaryOperator<String> edit = edits.get(path);
+                return text == null || edit == null ? text : edit.apply(text);
+            }
+
+            @Override
+            public List<String> listJson(String folder) {
+                return base.listJson(folder);
+            }
+
+            @Override
+            public List<String> listFolders() {
+                return base.listFolders();
+            }
+        });
+    }
+
+    @Test
+    void historyFactsAndTextsAreLoadedAndExposed() {
+        GameData data = GameData.loadDefault();
+
+        DataRecord preston = data.get(GameData.CLUB, "preston-north-end");
+        assertEquals("cricket", preston.str("origin"));
+        assertTrue(preston.refs("rivals").contains("blackburn-rovers"));
+        // symmetric: Blackburn lists Preston back
+        assertTrue(data.get(GameData.CLUB, "blackburn-rovers").refs("rivals").contains("preston-north-end"));
+        List<HistoryName> nicknames = data.nicknames(preston);
+        assertEquals("The Invincibles", nicknames.get(0).getName());
+        assertTrue(nicknames.get(0).isPeriod() && nicknames.get(0).usedIn(1889) && !nicknames.get(0).usedIn(1880));
+        assertFalse(nicknames.get(1).isPeriod());
+        assertEquals("St Luke's", data.nameHistory(data.get(GameData.CLUB, "wolverhampton-wanderers")).get(0).getName());
+        assertEquals("The Old Warhorse",
+                data.nicknames(data.get(GameData.PERSON, "archie-hunter-1859")).get(0).getName());
+
+        DataRecord villa = data.squadOf("aston-villa");
+        assertEquals(5, data.squadFanTiers(villa).get("archie-hunter-1859").intValue());
+
+        HistoryText text = data.historyText(GameData.CLUB, "preston-north-end", "es"); // falls back to English
+        assertNotNull(text.getHook());
+        assertFalse(text.getHistory().isEmpty());
+        assertNotNull(text.getSeason("1888-89"));
+        assertTrue(text.getSources().get(0).startsWith("http"));
+        assertNotNull(data.historyText(GameData.PERSON, "john-goodall-1863", "en").getBio());
+        assertNull(data.historyText(GameData.CLUB, "nobody", "en"));
+    }
+
+    @Test
+    void brokenHistoryDataIsReported() {
+        GameData data = shippedWith(Map.of(
+                "core/text/en/history.json", t -> t.replace("\"preston-north-end\": {", "\"atlantis-fc\": {"),
+                "core/seasons/1888-89/squads.json", t -> t.replace("\"archie-hunter-1859\": 5", "\"archie-hunter-1859\": 7")));
+
+        assertError(data, "unknown club `atlantis-fc`");
+        assertError(data, "tier must be a whole number 0-5");
+        assertNull(data.historyText(GameData.CLUB, "atlantis-fc", "en"));
+    }
+
+    @Test
+    void brokenNicknameAndOriginAreReported() {
+        GameData data = shippedWith(Map.of("core/clubs.json",
+                t -> t.replace("\"name\": \"The Lilywhites\",", "\"name\": \"The Lilywhites\", \"to\": 1800, \"from\": 1900,")
+                        .replace("\"origin\": \"cricket\"", "\"origin\": \"pub\"")));
+
+        assertError(data, "`from` 1900 is after `to` 1800");
+        assertError(data, "expected one of");
+    }
+
     @Test
     void idAllocatorNeverRepeats() {
         IdAllocator ids = new IdAllocator();
