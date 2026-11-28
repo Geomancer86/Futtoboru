@@ -86,8 +86,8 @@ public class CommitteeScreenTable extends VisTable {
         body.row();
         for (CommitteeMember m : c.getMembers()) {
             body.add(new VisLabel(m.getFullName())).left();
-            body.add(new VisLabel(LanguageModLoader.getValue("committee_role_" + m.getRole()))).left();
-            body.add(new VisLabel(LanguageModLoader.getValue("committee_occupation_" + m.getOccupation()))).left();
+            body.add(new VisLabel(LanguageModLoader.getValue(Committee.roleKey(m.getRole())))).left();
+            body.add(new VisLabel(LanguageModLoader.getValue(Committee.occupationKey(m.getOccupation())))).left();
             body.add(new VisLabel(m.getBirthYear() != null ? String.valueOf(m.getBirthYear()) : "")).left();
             body.row();
         }

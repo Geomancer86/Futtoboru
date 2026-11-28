@@ -79,6 +79,35 @@ public final class Committee {
                 && club.getCommittee().getDismissedIds().contains(personId);
     }
 
+    private static final java.util.Map<String, String> ROLE_KEYS = java.util.Map.of(
+            CommitteeMember.PRESIDENT, "committee_role_president",
+            CommitteeMember.TREASURER, "committee_role_treasurer",
+            CommitteeMember.MEMBER, "committee_role_member");
+
+    private static final java.util.Map<String, String> OCCUPATION_KEYS = java.util.Map.ofEntries(
+            java.util.Map.entry("mill_owner", "committee_occupation_mill_owner"),
+            java.util.Map.entry("publican", "committee_occupation_publican"),
+            java.util.Map.entry("brewer", "committee_occupation_brewer"),
+            java.util.Map.entry("solicitor", "committee_occupation_solicitor"),
+            java.util.Map.entry("schoolmaster", "committee_occupation_schoolmaster"),
+            java.util.Map.entry("doctor", "committee_occupation_doctor"),
+            java.util.Map.entry("merchant", "committee_occupation_merchant"),
+            java.util.Map.entry("manufacturer", "committee_occupation_manufacturer"),
+            java.util.Map.entry("clergyman", "committee_occupation_clergyman"),
+            java.util.Map.entry("shopkeeper", "committee_occupation_shopkeeper"),
+            java.util.Map.entry("colliery_agent", "committee_occupation_colliery_agent"),
+            java.util.Map.entry("builder", "committee_occupation_builder"));
+
+    /** @return the bundle key of a member's role */
+    public static String roleKey(String role) {
+        return ROLE_KEYS.getOrDefault(role, "committee_role_member");
+    }
+
+    /** @return the bundle key of a member's occupation ({@code CommitteeManager.OCCUPATIONS}) */
+    public static String occupationKey(String occupation) {
+        return OCCUPATION_KEYS.getOrDefault(occupation, "committee_occupation_merchant");
+    }
+
     /** @return the bundle key of the confidence in words ({@code committee_confidence_*}) */
     public static String confidenceKey(int confidence) {
         if (confidence >= 80) {

@@ -385,25 +385,25 @@ public final class CommitteeManager {
         if (warnings == 1 && confidence < FINAL_WARNING_BELOW && sinceWarning >= FINAL_WARNING_AFTER_DAYS) {
             c.setWarnings(2);
             c.setLastWarning(today);
-            letterIf(ours, messages, game, club, c, MSG_FINAL_WARNING, today, "msg_committee_final_warning", name);
+            letterIf(ours, messages, game, club, c, MSG_FINAL_WARNING, today, "msg_committee_final_warning_title", "msg_committee_final_warning_text", name);
             return;
         }
         if (warnings == 0 && confidence < WARNING_BELOW) {
             c.setWarnings(1);
             c.setLastWarning(today);
-            letterIf(ours, messages, game, club, c, MSG_WARNING, today, "msg_committee_warning", name);
+            letterIf(ours, messages, game, club, c, MSG_WARNING, today, "msg_committee_warning_title", "msg_committee_warning_text", name);
             return;
         }
         if (warnings > 0 && confidence >= RELIEVED_AT) {
             c.setWarnings(0);
             c.setLastWarning(null);
-            letterIf(ours, messages, game, club, c, MSG_RELIEVED, today, "msg_committee_relieved", name);
+            letterIf(ours, messages, game, club, c, MSG_RELIEVED, today, "msg_committee_relieved_title", "msg_committee_relieved_text", name);
             return;
         }
         if (confidence >= PRAISE_AT && (c.getLastPraise() == null
                 || ChronoUnit.DAYS.between(c.getLastPraise(), today) >= PRAISE_EVERY_DAYS)) {
             c.setLastPraise(today);
-            letterIf(ours, messages, game, club, c, MSG_PRAISE, today, "msg_committee_praise", name);
+            letterIf(ours, messages, game, club, c, MSG_PRAISE, today, "msg_committee_praise_title", "msg_committee_praise_text", name);
         }
     }
 
@@ -411,7 +411,7 @@ public final class CommitteeManager {
     static void dismiss(SaveGame game, Club club, ClubCommittee c, LocalDateTime today, boolean ours,
             ClubStaffManager staff, Profession secretaryPost, Person secretary, MessageManager messages) {
         Message letter = ours && messages != null ? letter(game, club, c, MSG_DISMISSAL, today,
-                "msg_committee_dismissal", secretary != null ? fullName(secretary) : "") : null;
+                "msg_committee_dismissal_title", "msg_committee_dismissal_text", secretary != null ? fullName(secretary) : "") : null;
         if (letter != null) {
             letter.setPriority(MessagePriority.URGENT);
         }
@@ -492,7 +492,7 @@ public final class CommitteeManager {
         Log.info(Log.ENGINE_GAME, "CommitteeManager", club.getName() + " " + Season.label(year) + " judged: "
                 + delta + ", confidence " + c.getConfidence() + ", balance " + c.getStartBalance() + " -> " + balance);
         if (ours && messages != null) {
-            Message m = letter(game, club, c, MSG_REVIEW, today, "msg_committee_review", Season.label(year),
+            Message m = letter(game, club, c, MSG_REVIEW, today, "msg_committee_review_title", "msg_committee_review_text", Season.label(year),
                     lines.toString().trim(), LanguageModLoader.getValue(Committee.confidenceKey(c.getConfidence())));
             messages.deliverMessage(m);
         }
@@ -531,24 +531,24 @@ public final class CommitteeManager {
             lines.append("- ").append(line).append('\n');
         }
         Person secretary = person(game, c.getSecretaryId());
-        return letter(game, club, c, MSG_EXPECTATIONS, today, "msg_committee_expectations",
+        return letter(game, club, c, MSG_EXPECTATIONS, today, "msg_committee_expectations_title", "msg_committee_expectations_text",
                 secretary != null ? fullName(secretary) : "", Season.label(c.getSeasonYear()),
                 lines.toString().trim());
     }
 
     private static void letterIf(boolean ours, MessageManager messages, SaveGame game, Club club, ClubCommittee c,
-            String type, LocalDateTime today, String key, String name) {
+            String type, LocalDateTime today, String titleKey, String textKey, String name) {
         if (ours && messages != null) {
-            messages.deliverMessage(letter(game, club, c, type, today, key, name));
+            messages.deliverMessage(letter(game, club, c, type, today, titleKey, textKey, name));
         }
     }
 
     /**
-     * A committee letter: {@code <key>_title} ({0} club, {1} date) and {@code <key>_text} ({0} club, {1} president,
+     * A committee letter: title ({0} club, {1} date) and text ({0} club, {1} president,
      * then {@code args} from {2}).
      */
-    static Message letter(SaveGame game, Club club, ClubCommittee c, String type, LocalDateTime today, String key,
-            Object... args) {
+    static Message letter(SaveGame game, Club club, ClubCommittee c, String type, LocalDateTime today,
+            String titleKey, String textKey, Object... args) {
         CommitteeMember president = c.member(CommitteeMember.PRESIDENT);
         Object[] all = new Object[args.length + 2];
         all[0] = club.getName();
@@ -558,8 +558,8 @@ public final class CommitteeManager {
         m.setCategory(MessageCategory.JOB);
         m.setMessageType(type);
         m.setPriority(MessageType.isWarning(type) ? MessagePriority.URGENT : MessagePriority.NORMAL);
-        m.setTitle(LanguageModLoader.format(key + "_title", club.getName(), GameFormat.mediumDate(today.toLocalDate())));
-        m.setPlainTextMessage(LanguageModLoader.format(key + "_text", all));
+        m.setTitle(LanguageModLoader.format(titleKey, club.getName(), GameFormat.mediumDate(today.toLocalDate())));
+        m.setPlainTextMessage(LanguageModLoader.format(textKey, all));
         m.setActionData(club.getId());
         m.setIsRead(false);
         m.setIsDeleted(false);
