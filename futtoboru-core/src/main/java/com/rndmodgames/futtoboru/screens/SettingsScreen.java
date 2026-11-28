@@ -371,7 +371,7 @@ public class SettingsScreen implements Screen {
         graphicsSettings.add(matchEngineLabel).pad(UiTheme.space("xs")).fill().align(Align.center);
         graphicsSettings.add(matchEngineSelectBox).pad(UiTheme.space("xs")).fill();
         graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
-        graphicsSettings.add(matchEngineNote).pad(UiTheme.space("xs")).colspan(2).growX().prefWidth(1);
+        graphicsSettings.add(matchEngineNote).pad(UiTheme.space("xs")).colspan(2).growX();
         graphicsSettings.row().pad(UiTheme.space("xs")).expandX().align(Align.center);
 
         // V-01: the DarkBlade rows (day-night tint, shadows, damage counters, debug physics / path finding / sight /
