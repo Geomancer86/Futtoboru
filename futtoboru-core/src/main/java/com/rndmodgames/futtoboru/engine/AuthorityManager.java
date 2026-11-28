@@ -343,6 +343,15 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
 
         // 5. Season rollover (P2-6): the final table is kept on the edition, the new season starts from zero
         resetLeagueTable(league);
+        seasonRollovers++; // U-06: the engine autosaves on a rollover day
+    }
+
+    /** U-06: league seasons completed and rolled over by this manager (the autosave watches it change). */
+    private int seasonRollovers;
+
+    /** @return how many league seasons this manager has rolled over */
+    public int getSeasonRollovers() {
+        return seasonRollovers;
     }
 
     /**

@@ -28,6 +28,7 @@ import com.rndmodgames.futtoboru.engine.temporal.MatchScheduler;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.system.save.Autosave;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 import com.rndmodgames.futtoboru.system.Log;
 
@@ -91,6 +92,13 @@ public class FuttoboruGameEngine {
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
         this.expenseCalculator = new ExpenseCalculator(gameInstance);
+    }
+
+    /** U-06 / D18: the rotating autosave slot (1st of each month and season rollover) */
+    private final Autosave autosave = new Autosave();
+
+    public Autosave getAutosave() {
+        return autosave;
     }
     
     /**
@@ -416,9 +424,13 @@ public class FuttoboruGameEngine {
              * Check Scheduled Matches
              */
             scheduler.checkClubSheduledMatches(currentClub);
-            
+
         }
-        
+
+        // U-06 / D18: autosave on the 1st of a month and on a season rollover day (never blocks; errors logged)
+        autosave.afterDay(gameInstance.getCurrentGame(),
+                authorityManager != null ? authorityManager.getSeasonRollovers() : 0);
+
         /**
          * Update UI
          * NOTE: this will be null on Unit Tests
