@@ -104,7 +104,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
         table(sprites);
         Batch batch = view.batch();
         batch.begin();
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         if (buildings) {
             // back to front
             prop(batch, POLE, 0.12 * hl, hw + 9.8, t);
@@ -133,7 +133,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
             person(batch, sprites, art.white(), TRAINER, -7, hw + PEOPLE_M, false, -1, t);
             prop(batch, BUCKET, -6.2, hw + PEOPLE_M - 0.1, t);
         }
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         batch.end();
     }
 
@@ -240,7 +240,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
             float k = SpriteScale.texel(choice) * SpriteScale.sheet(choice) / (float) mag;
             ViewColors.set(batch, who == CONSTABLE ? ArtMath.NAVY : ArtMath.SOOT, 1f);
             batch.draw(white, SpriteScale.snap(sx, mag) - 2 * k, SpriteScale.snap(sy, mag), 4 * k, 8 * k);
-            batch.setColor(1f, 1f, 1f, 1f);
+            ViewColors.white(batch);
             pieces++;
             return;
         }

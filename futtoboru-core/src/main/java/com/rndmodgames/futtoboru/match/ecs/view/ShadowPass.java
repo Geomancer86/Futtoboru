@@ -63,7 +63,7 @@ public final class ShadowPass extends EntitySystem implements DrawPass {
             batch.setColor(RED, GREEN, BLUE, quads.get(i + 4));
             batch.draw(ellipse, quads.get(i), quads.get(i + 1), quads.get(i + 2), quads.get(i + 3));
         }
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
         batch.end();
     }
 

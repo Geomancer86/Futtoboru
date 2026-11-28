@@ -129,7 +129,7 @@ public class CrowdPass extends EntitySystem implements DrawPass {
             table(art.sprites());
             batch = view.batch();
             batch.begin();
-            batch.setColor(1f, 1f, 1f, 1f);
+            ViewColors.white(batch);
         }
         double width = cam.orthoWidth();
         for (int i = 0; i < count; i++) {
@@ -156,7 +156,7 @@ public class CrowdPass extends EntitySystem implements DrawPass {
             SpriteScale.draw(batch, frames[f], sx, sy, SpriteScale.texel(choices[i]), mag);
         }
         if (batch != null) {
-            batch.setColor(1f, 1f, 1f, 1f);
+            ViewColors.white(batch);
             batch.end();
         }
     }
@@ -275,7 +275,7 @@ public class CrowdPass extends EntitySystem implements DrawPass {
         batch.draw(white, x - 2 * k, y, 4 * k, 7 * k);
         ViewColors.set(batch, ArtMath.SKIN, 1f);
         batch.draw(white, x - k, y + 7 * k, 2 * k, 2 * k);
-        batch.setColor(1f, 1f, 1f, 1f);
+        ViewColors.white(batch);
     }
 
     // ---- inspection -------------------------------------------------------------------------------------------------
