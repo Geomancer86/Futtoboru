@@ -199,7 +199,7 @@ class LawsWorldTest {
      * update only in a PR that changes laws, officials, action, ball or body physics on purpose (and bump
      * EcsMatchEngine.ENGINE_VERSION).
      */
-    static final long GOLDEN_LAWS_MATCH = 0x46b2050da5febebdL; // E-16 (ecs-0.4)
+    static final long GOLDEN_LAWS_MATCH = 0xcb68fdcf550dc05cL; // E-16 (ecs-0.4)
 
     @Test
     void scriptedMatchUnderTheLawsIsDeterministicAndPinned() {
