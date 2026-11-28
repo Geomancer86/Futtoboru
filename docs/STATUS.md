@@ -20,7 +20,7 @@ _Last updated 2026-11-28 (BOOK3PRO)._ Version 0.5.0-SNAPSHOT.
 | Runtime ids | working | one saved `IdAllocator`; data numbers from the append-only `gamedata/core/ids.json` (never shift when data is corrected) |
 | Competition schedule | fixed | daily check runs on the current game (P2-8); full-season proof comes with the P2-3 test |
 | New season table | working | table reset when the season completes; final table kept on the edition (`CompetitionEdition.finalStandings`, P2-6), no screen shows it yet |
-| Tactics, Training, Transfers, Scouting, Staff, Board | stub | empty screens; recruitment, trials and scouting designed in `docs/design/RECRUITMENT_AND_TRIALS.md` (R-01, slices R-02..R-09, 11 producer questions) |
+| Tactics, Training, Transfers, Scouting, Staff, Board | stub | empty screens; recruitment, trials and scouting designed in `docs/design/RECRUITMENT_AND_TRIALS.md` (R-01, slices R-02..R-09, answered D28); era player sources assessed in `docs/data/history/PLAYER_SOURCES.md` (R-10), languages and literacy in `LANGUAGES_LITERACY_1880-1914.md` + design §10 (R-11) |
 | Settings | working | sound panel and the empty gameplay panel hidden until there is audio / a setting (U-08) |
 | UI scale / window | working | U-03a: `ui/UiScale` on every stage (Settings: Auto (shows %) / 100% / 200%, integer steps; Auto = OS content scale rounded to 1-2, else 2x from a 1920x1080 window); window default and minimum 1280x720 from the saved preference (launcher, no double resize); screen roots scroll when they do not fit |
 | Visual check / UI guide | working | V-01: `tools/ui/screenshots.sh` tours every screen and dialog at 1x and 2x; `docs/design/INTERFACE_GUIDE.md` (U-05) |
