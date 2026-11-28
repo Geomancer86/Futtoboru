@@ -38,6 +38,7 @@ public final class MatchViewer {
         }
         this.world = world;
         this.frame = frame;
+        frame.setTickSeconds(world.tickSeconds());
         this.clock = clock;
         MatchSystems.installDrawPasses(world, frame, extraPoses);
         this.interpolation = world.engine().getSystem(InterpolationPass.class);
@@ -60,6 +61,7 @@ public final class MatchViewer {
         int steps = paused ? 0 : clock.runFrame(frameSeconds, step);
         frame.setPaused(paused);
         frame.setMatchSpeed(clock.speed());
+        frame.setWetness(world.pitch().wetness());
         frame.begin(frameSeconds, paused ? 1.0 : clock.alpha(), world.tickCount());
         world.draw(frame);
         return steps;
