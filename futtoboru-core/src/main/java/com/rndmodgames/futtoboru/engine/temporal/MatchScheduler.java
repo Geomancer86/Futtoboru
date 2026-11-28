@@ -97,6 +97,11 @@ public class MatchScheduler {
                 if (match.getIsPlayed() != null && match.getIsPlayed()) {
                     continue;
                 }
+
+                // A-01: a cup tie of a later round, listed by every entrant, is the club's only when it plays in it
+                if (!club.getId().equals(match.getHomeClubId()) && !club.getId().equals(match.getAwayClubId())) {
+                    continue;
+                }
                 
                 // Check if match date is today
                 if (match.getMatchDateTime() != null && match.getMatchDateTime().toLocalDate().equals(today.toLocalDate())) {

@@ -91,6 +91,33 @@ public class LeagueFixtureGeneratorTest {
         return club;
     }
     
+    /**
+     * A-01 (PlayerBot, mid scenario): the engine's generator is built by prepareNewGame before New Game makes the
+     * game, so its copy of the game was null and the second season's fixtures failed with an NPE at the rollover.
+     */
+    @Test
+    void aGeneratorBuiltBeforeTheGameExistsUsesTheGameOfTheDay() {
+        SaveGame[] current = { null };
+        Futtoboru app = new Futtoboru() {
+            @Override
+            public SaveGame getCurrentGame() {
+                return current[0];
+            }
+        };
+        LeagueFixtureGenerator early = new LeagueFixtureGenerator(app);
+        current[0] = testGame;
+        League league = new League();
+        league.setName("Test League");
+        league.setLeagueClubs(new ArrayList<>());
+        for (int i = 0; i < 4; i++) {
+            league.getLeagueClubs().add(createTestClub("Club " + i, (long) i));
+        }
+        List<Match> fixtures = early.generateLeagueFixtures(league, LocalDateTime.of(1889, 9, 7, 0, 0),
+                LocalDateTime.of(1890, 4, 30, 0, 0));
+        assertEquals(12, fixtures.size());
+        assertEquals(6, league.getLeagueClubs().get(0).getScheduledMatches().size());
+    }
+
     @Test
     void testGenerateFixturesFor12Clubs() {
         // Create 12 clubs
