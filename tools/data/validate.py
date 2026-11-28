@@ -55,7 +55,11 @@ SPECS = {
                    "category": ("enum:occupation_category", True), "bonuses": ("attrs", True), "notes": ("str", False)},
     "names": {"country": ("ref:country", True), "firstNames": ("strs", True), "lastNames": ("strs", True)},
     "competition": {"id": ("str", True), "name": ("str", True), "longName": ("str", False),
-                    "type": ("enum:competition_type", True), "sources": ("strs", True), "notes": ("str", False)},
+                    "type": ("enum:competition_type", True), "sources": ("strs", True), "notes": ("str", False),
+                    # G-08: the bottom clubs seek re-election at the annual meeting (seasons starting in From..Until)
+                    "reElectionPlaces": ("int", False), "reElectionFrom": ("int", False),
+                    "reElectionUntil": ("int", False), "annualMeetingAfterDays": ("int", False),
+                    "annualMeetingConfidence": ("enum:confidence", False)},
     "club": {"id": ("str", True), "name": ("str", True), "fullName": ("str", False),
              "founded": ("int", False), "country": ("ref:country", True), "sources": ("strs", True),
              "notes": ("str", False)},
