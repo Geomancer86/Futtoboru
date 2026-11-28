@@ -5,6 +5,7 @@ import java.util.Random;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.rndmodgames.futtoboru.match.ecs.CrowdSystem;
 import com.rndmodgames.futtoboru.match.ecs.DrawPass;
 import com.rndmodgames.futtoboru.match.ecs.FrameContext;
 import com.rndmodgames.futtoboru.match.ecs.SystemPriority;
@@ -21,7 +22,8 @@ import com.rndmodgames.futtoboru.ui.gfx.TickGate;
  * looks come from the viewer's cosmetic random source, never the match.
  *
  * <ul>
- * <li>Mood ({@link ViewFrame#crowdMood()}, -1..1, view-side for now): a figure cheers when the mood reaches his
+ * <li>Mood (-1..1, the simulation's section nearest to the figure, {@link CrowdSystem#moodAt}; without crowd
+ * sections the view-side {@link ViewFrame#crowdMood()}): a figure cheers when the mood reaches his
  * threshold, turns angry when it falls that far below zero, and the least patient encroach when it is very low;
  * otherwise calm ({@link #mood(double, float)}).</li>
  * <li>Module {@code crowd} off: nothing. Its {@code ticks} knob gates the animation clock ({@link TickGate}); its
@@ -123,6 +125,8 @@ public class CrowdPass extends EntitySystem implements DrawPass {
         }
         float animated = quality.knob(MODULE, KNOB_ANIMATED);
         double mood = view.crowdMood();
+        CrowdSystem sim = view.crowd();
+        boolean simulated = sim != null && sim.present();
         ViewCamera cam = view.viewCamera();
         int mag = cam.magnification();
         if (mag != builtMagnification || cam.pixelsPerMetre() != builtViewScale) {
@@ -147,7 +151,7 @@ public class CrowdPass extends EntitySystem implements DrawPass {
             if (sx < -24 || sx > width + 24) {
                 continue;
             }
-            int m = mood(mood, thresholds[i]);
+            int m = mood(simulated ? sim.moodAt(xs[i], ys[i]) : mood, thresholds[i]);
             moodCounts[m]++;
             drawn++;
             if (batch == null) {

@@ -15,9 +15,10 @@ import com.rndmodgames.futtoboru.match.ecs.body.TeamSheet;
  * @param home           home side: team sheet (shape + eleven) and style
  * @param away           away side
  * @param neutral        played at a neutral ground (cup semi-final or final): no home advantage (E-20)
+ * @param attendance     spectators expected (E-18: the crowd's density); 0 or less: {@link CrowdSystem#DEFAULT_ATTENDANCE}
  */
 public record EcsMatchInput(String matchKey, PitchConditions pitch, double ballCarryShare, int halfMinutes, Side home,
-        Side away, boolean neutral) {
+        Side away, boolean neutral, int attendance) {
 
     /** One side: its eleven in their shape and its style (E-15). */
     public record Side(TeamSheet sheet, TeamStyle style) {
@@ -41,6 +42,12 @@ public record EcsMatchInput(String matchKey, PitchConditions pitch, double ballC
         if (!(ballCarryShare >= 0 && ballCarryShare <= 1) || halfMinutes < 0) {
             throw new IllegalArgumentException("carry " + ballCarryShare + ", half " + halfMinutes);
         }
+    }
+
+    /** With the default attendance. */
+    public EcsMatchInput(String matchKey, PitchConditions pitch, double ballCarryShare, int halfMinutes, Side home,
+            Side away, boolean neutral) {
+        this(matchKey, pitch, ballCarryShare, halfMinutes, home, away, neutral, 0);
     }
 
     /** On the home side's ground. */
