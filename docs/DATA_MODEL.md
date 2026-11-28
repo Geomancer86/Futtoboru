@@ -213,6 +213,15 @@ editions[fa-cup-1888-89].neutralVenues: { "rounds": [ {"round": "semi-final", "g
 - Errors (both validators): an unknown field or weekday, a bad month-day, a rule with no or two anchors, two
   calendars for one cup, a round listed twice, a round with no ground, an unknown ground or competition.
 
+## Injuries (G-02, D19-3)
+`injuries.json` (pack level, kind `injury`, one record per kind): `kind` `knock` (plays on) / `passenger` (stays on,
+worth `strengthWhileHurt` of a fit man; no substitutes in 1888) / `carried-off` (leaves, the side plays short; comes
+back on as a passenger with `returnChance`), `chancePerMatch` (per man per match, 0..1), `minDays`..`maxDays` (days
+out after the match; 0 = fit for the next one), `confidence` + `sources` as above (all `estimate` now: no injury
+rates for the era were found). Both validators: each kind once, 0 <= minDays <= maxDays, chances 0..1. A kind left
+out keeps the code default (`InjuryRules`). Saves: `Player.injury` (kind, since, until, daysOut, matchId) and
+`Match.home/awayInjuries` (person, kind, minute, returned minute, days out) are optional fields (no saveVersion bump).
+
 ## Rename log
 | Date | Kind | Old id | New id | Why | Approved by |
 |---|---|---|---|---|---|

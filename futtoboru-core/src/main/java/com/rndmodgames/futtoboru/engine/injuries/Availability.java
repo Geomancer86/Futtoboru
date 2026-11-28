@@ -89,6 +89,14 @@ public final class Availability {
         return of(player, date).isAvailable();
     }
 
+    /**
+     * Today's availability without a date: he is out while he has an injury record (the daily recovery clears it on
+     * the day he is fit, before that day's matches). Used by G-01 {@code TeamSheets.isAvailable}.
+     */
+    public static boolean isAvailable(Player player) {
+        return player != null && player.getInjury() == null;
+    }
+
     /** @return the club's men available on that day, in squad order */
     public static List<Player> available(Club club, LocalDateTime date) {
         if (club == null || club.getPlayers() == null) {
@@ -101,14 +109,5 @@ public final class Availability {
             }
         }
         return out;
-    }
-
-    /**
-     * The eleven who take the field on that day before G-01's team sheet: the first {@link #SIDE} available men in
-     * squad order (fewer when the club cannot raise eleven: it plays short).
-     */
-    public static List<Player> matchSide(Club club, LocalDateTime date) {
-        List<Player> all = available(club, date);
-        return all.size() > SIDE ? new ArrayList<>(all.subList(0, SIDE)) : all;
     }
 }

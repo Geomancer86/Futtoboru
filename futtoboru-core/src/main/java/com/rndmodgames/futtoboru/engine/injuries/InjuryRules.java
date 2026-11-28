@@ -86,6 +86,15 @@ public final class InjuryRules {
         return new InjuryRules(m);
     }
 
+    /** The defaults with these kinds replaced (tests, tuning). */
+    public static InjuryRules of(Rule... replace) {
+        Map<InjuryKind, Rule> m = defaults();
+        for (Rule r : replace) {
+            m.put(r.kind, r);
+        }
+        return new InjuryRules(m);
+    }
+
     private static double num(DataRecord r, String field, double def) {
         BigDecimal v = r.has(field) ? r.decimal(field) : null;
         return v != null ? v.doubleValue() : def;

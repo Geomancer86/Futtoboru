@@ -67,6 +67,12 @@ public class Club implements Serializable {
      * This doesn't indicate a true relation as there is no contracts yet
      */
     private List<Player> players = new ArrayList<>();
+
+    /**
+     * G-01: the standing team sheet (XI, shape, style, captain). The player edits his club's; an AI club's is the
+     * sheet of its last match. Null until first needed ({@code engine.team.TeamSheets#standing}); optional in saves.
+     */
+    private TeamSheet teamSheet;
     
     /**
      * Proposed Matches (this will be almost always clean/empty)
@@ -298,6 +304,15 @@ public class Club implements Serializable {
 
     public void setPlayers(List<Player> players) {
         this.players = players;
+    }
+
+    /** G-01: the standing team sheet, or null when none was picked yet (use {@code TeamSheets.standing}). */
+    public TeamSheet getTeamSheet() {
+        return teamSheet;
+    }
+
+    public void setTeamSheet(TeamSheet teamSheet) {
+        this.teamSheet = teamSheet;
     }
 
     public BigDecimal getClubBalance() {
