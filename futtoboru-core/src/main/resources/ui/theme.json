@@ -109,6 +109,8 @@
     "panel.list": 560,
     "text.wrap.narrow": 500,
     "text.wrap": 600,
+    "history.panel.h": 240,
+    "table.squad.fan": 60,
     "indicator": 20,
     "busybar.w": 150,
     "busybar.h": 4,
