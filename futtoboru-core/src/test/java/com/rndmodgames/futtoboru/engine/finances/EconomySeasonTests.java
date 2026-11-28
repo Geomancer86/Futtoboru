@@ -129,6 +129,30 @@ class EconomySeasonTests extends BaseTest {
     }
 
     @Test
+    void noClubPlaysTwiceOnOneDay() {
+        StringBuilder twice = new StringBuilder();
+        for (Club c : first.save.getAllClubs()) {
+            Map<LocalDate, List<Match>> byDay = new HashMap<>();
+            for (Match m : c.getPlayedMatches()) {
+                if (m != null && m.getMatchDateTime() != null) {
+                    byDay.computeIfAbsent(m.getMatchDateTime().toLocalDate(), d -> new ArrayList<>()).add(m);
+                }
+            }
+            byDay.forEach((day, ms) -> {
+                if (ms.size() > 1) {
+                    twice.append(c.getDataId()).append(' ').append(day);
+                    for (Match m : ms) {
+                        twice.append(" [").append(m.getId()).append(" type ").append(m.getMatchType())
+                                .append(" fixed ").append(m.getProposeDateTime()).append(']');
+                    }
+                    twice.append(NL);
+                }
+            });
+        }
+        assertEquals("", twice.toString());
+    }
+
+    @Test
     void leagueClubsVary() {
         int gained = 0;
         int lost = 0;
