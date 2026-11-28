@@ -36,6 +36,9 @@ import com.rndmodgames.futtoboru.data.jobs.JobOffer;
 import com.rndmodgames.futtoboru.data.jobs.JobOpening;
 import com.rndmodgames.futtoboru.dialogs.LoadGameDialog;
 import com.rndmodgames.futtoboru.engine.FuttoboruGameEngine;
+import com.rndmodgames.futtoboru.engine.simulation.MatchEngine;
+import com.rndmodgames.futtoboru.engine.simulation.MatchEngines;
+import com.rndmodgames.futtoboru.match.ecs.EcsMatchEngine;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.menu.MenuEntries;
@@ -251,8 +254,22 @@ public final class ScreenshotTour extends Futtoboru {
             playUntil(FuttoboruGameEngine.MATCH_PREVIEW_ACTION, 200);
             refreshGameScreen();
         });
-        once("game-match-preview", () -> topMenu().matchPreview());
-        once("game-match-result", () -> topMenu().matchResult());
+        if (Boolean.getBoolean("futtoboru.tour.watch")) {
+            // E-21f: -Dfuttoboru.tour.watch=true watches the manager's match on the ECS engine (the days before ran
+            // on the instant one): preview with its Watch button, the viewer with the ticker, the result after Skip
+            once(null, () -> MatchEngines.select(MatchEngine.ECS));
+            once("game-match-preview", () -> topMenu().matchPreview());
+            once(null, () -> click(LanguageModLoader.getValue("watch_match")));
+            waitFrames(60);
+            once(null, () -> playWatched(30 * 60 * 30)); // the first 30 minutes, to have a ticker
+            once("game-match-watch", () -> { });
+            once(null, () -> invoke(field(getScreen(), "watch"), "skip"));
+            waitFrames(300);
+            once("game-match-result", () -> MatchEngines.reset());
+        } else {
+            once("game-match-preview", () -> topMenu().matchPreview());
+            once("game-match-result", () -> topMenu().matchResult());
+        }
         // a few weeks of play so tables, history and finances have rows
         repeat(() -> playDays(5, 40));
         once(null, this::refreshGameScreen);
@@ -557,6 +574,14 @@ public final class ScreenshotTour extends Futtoboru {
     /** the Options select box entry {@code option} (1 Save, 2 Load, 3 Settings) */
     private void runOption(int option) {
         invoke(topMenu(), "runOption", option, stage());
+    }
+
+    /** E-21f: plays {@code ticks} ticks of the watched match at once (the tour's way to reach a minute) */
+    private void playWatched(int ticks) {
+        EcsMatchEngine.Live match = (EcsMatchEngine.Live) field(field(getScreen(), "watch"), "live");
+        for (int i = 0; i < ticks && !match.finished(); i++) {
+            match.tick();
+        }
     }
 
     /** the current screen's stage */

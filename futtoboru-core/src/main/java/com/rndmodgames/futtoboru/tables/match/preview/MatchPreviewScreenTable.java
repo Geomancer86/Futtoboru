@@ -1,7 +1,10 @@
 package com.rndmodgames.futtoboru.tables.match.preview;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
@@ -159,6 +162,23 @@ public class MatchPreviewScreenTable extends VisTable {
         this.row();
         this.add(game.getGroundArt().picture(GroundArt.groundId(venue), false, UiTheme.size("art.ground.panel.w"),
                 UiTheme.size("art.ground.panel.h"))).center().pad(UiTheme.space("sm"));
+
+        // E-21f: with the ECS engine the match can be watched (the instant engine has nothing to show)
+        if (game.getGameEngine() != null && game.getGameEngine().canWatchMatch()) {
+            VisTextButton watch = new VisTextButton(LanguageModLoader.getValue("watch_match"),
+                    UiTheme.style("button.primary"));
+            watch.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    com.rndmodgames.futtoboru.menu.MainMenuManager menu = game.getGameEngine().getMainMenuManager();
+                    if (menu != null) {
+                        menu.watchMatch();
+                    }
+                }
+            });
+            this.row();
+            this.add(watch).center();
+        }
 
         // G-01: both team sheets; the player's club's stays editable until kick-off, the other is the opponent's pick
         VisTable sheets = new VisTable(true);

@@ -87,6 +87,26 @@ public class MatchSimulator {
         public Match match() {
             return match;
         }
+
+        public Club homeClub() {
+            return homeClub;
+        }
+
+        public Club awayClub() {
+            return awayClub;
+        }
+
+        public MatchFixture fixture() {
+            return fixture;
+        }
+    }
+
+    /**
+     * E-21f: the prepared match readied to be watched, on the same stream {@link #compute} uses, so watching it to the
+     * end gives the outcome {@code compute} gives. Null when the engine has nothing to watch (the instant result).
+     */
+    public WatchedMatch watch(Prepared p) {
+        return engine.watch(p.fixture, root.fork("match:" + p.matchKey));
     }
 
     /** Simulate a match and generate result: prepare, compute, apply. */

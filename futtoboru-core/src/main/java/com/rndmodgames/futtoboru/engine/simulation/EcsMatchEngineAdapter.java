@@ -72,7 +72,18 @@ public final class EcsMatchEngineAdapter implements MatchEngine {
     public MatchOutcome play(MatchFixture fixture, RandomSource rng) {
         Eleven home = Eleven.of(fixture.homeSheet(), fixture.home(), fixture);
         Eleven away = Eleven.of(fixture.awaySheet(), fixture.away(), fixture);
-        EcsMatchResult r = engine.play(input(fixture, home, away), rng);
+        return outcome(home, away, engine.play(input(fixture, home, away), rng));
+    }
+
+    @Override
+    public WatchedMatch watch(MatchFixture fixture, RandomSource rng) {
+        Eleven home = Eleven.of(fixture.homeSheet(), fixture.home(), fixture);
+        Eleven away = Eleven.of(fixture.awaySheet(), fixture.away(), fixture);
+        EcsMatchEngine.Live live = engine.start(input(fixture, home, away), rng);
+        return new WatchedMatch(live, () -> outcome(home, away, live.result()));
+    }
+
+    private static MatchOutcome outcome(Eleven home, Eleven away, EcsMatchResult r) {
         List<Integer> homeMinutes = new ArrayList<>();
         List<Integer> awayMinutes = new ArrayList<>();
         for (MatchEvent e : r.events().of(MatchEventType.GOAL)) {

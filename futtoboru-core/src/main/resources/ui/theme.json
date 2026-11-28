@@ -26,7 +26,12 @@
     "magenta": "FF00FF",
     "blue-sky": "7FCCFF",
     "blue-bright": "3399FF",
-    "khaki": "CCCC99"
+    "khaki": "CCCC99",
+    "newsprint": "E8DFC8",
+    "newsprint-shade": "D5CAAC",
+    "newsprint-ink": "2B2620",
+    "newsprint-ink-soft": "6B6250",
+    "newsprint-red": "8B1A1A"
   },
   "colors": {
     "bg.screen": "black",
@@ -74,6 +79,11 @@
     "pitch.home": "blue-bright",
     "pitch.away": "red-bright",
     "debug.note": "khaki",
+    "ticker.paper": "newsprint",
+    "ticker.paper.shade": "newsprint-shade",
+    "ticker.ink": "newsprint-ink",
+    "ticker.ink.soft": "newsprint-ink-soft",
+    "ticker.goal": "newsprint-red",
     "tint.none": "white"
   },
   "fonts": {
@@ -133,7 +143,11 @@
     "art.ground.header.w": 640,
     "art.ground.header.h": 360,
     "art.thumb.w": 128,
-    "art.thumb.h": 72
+    "art.thumb.h": 72,
+    "ticker.w": 320,
+    "ticker.line.w": 290,
+    "ticker.rule": 1,
+    "ticker.rule.heavy": 3
   },
   "styles": {
     "button.primary": "blue",
