@@ -1,0 +1,111 @@
+[
+  {
+    "id": "fa-professional-registration-1885",
+    "rule": "registration",
+    "from": "1885-07-20",
+    "body": "fa",
+    "appliesTo": "professional",
+    "confidence": "high",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1885_in_association_football",
+      "https://en.wikipedia.org/wiki/Professionalism_in_association_football"
+    ],
+    "notes": "Professionalism legal from 20 July 1885; a professional registers with the FA (docs/data/history/RECRUITMENT_1888-1900.md §3)."
+  },
+  {
+    "id": "fa-birth-or-residence-1885",
+    "rule": "residence",
+    "from": "1885-07-20",
+    "until": "1889",
+    "body": "fa",
+    "appliesTo": "professional",
+    "miles": 6,
+    "years": 2,
+    "confidence": "medium",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1885_in_association_football",
+      "https://en.wikipedia.org/wiki/Professionalism_in_association_football"
+    ],
+    "notes": "Born within 6 miles of the ground or lived there 2 years. Dropped in 1889 (Inglis 1988, cited by the Wikipedia overview; month unknown). Whether it applied only to Cup ties is not confirmed. Clubs met it by having a signing 'take up his residence near the ground' (Lancashire Evening Post, 25 Aug 1888)."
+  },
+  {
+    "id": "fa-one-club-per-season-1885",
+    "rule": "second-registration-consent",
+    "from": "1885-07-20",
+    "until": "1888",
+    "body": "fa",
+    "appliesTo": "professional",
+    "confidence": "high",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1885_in_association_football"
+    ],
+    "notes": "A professional may not play for more than one club in a season without special permission."
+  },
+  {
+    "id": "fa-council-second-registration-1888",
+    "rule": "second-registration-consent",
+    "from": "1888",
+    "body": "fa-council",
+    "appliesTo": "professional",
+    "pence": 4200,
+    "confidence": "medium",
+    "sources": [
+      "Lancashire Evening Post, 25 Aug 1888 (period press, transcribed at https://bluecorrespondent.co.uk/1888-89/august1888.html)",
+      "https://en.wikipedia.org/wiki/Professionalism_in_association_football"
+    ],
+    "notes": "'No player shall sign a second registration paper in one season without the consent of the Council.' `pence` = the retaining fees Everton repaid for Ross (£17 10s), an example of what the old club may claim. The text is a period newspaper read through a fan transcription (non-commercial: cross-check pending), so medium."
+  },
+  {
+    "id": "league-registration-wait-1890",
+    "rule": "registration-wait",
+    "from": "1890-09",
+    "body": "football-league",
+    "appliesTo": "all",
+    "days": 7,
+    "confidence": "medium",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1890%E2%80%9391_Sunderland_A.F.C._season",
+      "https://www.lfchistory.net/players/603"
+    ],
+    "notes": "Sunderland lost 2 points (Sep 1890) for playing Doig before his League registration had run 7 days. Wikipedia gives the deduction; the 7-day length comes from LFChistory (non-commercial, not yet cross-checked). The earliest sourced date of the rule, not its start."
+  },
+  {
+    "id": "sfa-professional-ban",
+    "rule": "scottish-professional-ban",
+    "from": "1885",
+    "until": "1893-05",
+    "body": "sfa",
+    "appliesTo": "professional",
+    "confidence": "medium",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Scotch_Professors",
+      "https://en.wikipedia.org/wiki/Professionalism_in_association_football"
+    ],
+    "notes": "The SFA barred known professionals (men paid to play in England) until professionalism was legalised in Scotland in 1893 (560 registered)."
+  },
+  {
+    "id": "league-retain-and-transfer-1893",
+    "rule": "retain-and-transfer",
+    "from": "1893-09",
+    "body": "football-league",
+    "appliesTo": "professional",
+    "confidence": "high",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Retain_and_transfer_system"
+    ],
+    "notes": "From 1893-94 a League club keeps a player's registration after his contract ends; another club needs its consent and pays a fee. Before this, players moved freely between seasons (a 1891 start is not supported)."
+  },
+  {
+    "id": "fa-maximum-wage-1901",
+    "rule": "max-wage",
+    "from": "1901",
+    "body": "fa",
+    "appliesTo": "professional",
+    "pence": 960,
+    "confidence": "high",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Retain_and_transfer_system"
+    ],
+    "notes": "Maximum wage £4 a week (960 pence), bonuses banned. Sources differ between 1900 and 1901 for the FA decision. A claimed 1893 cap (£140 a year) may have been a proposal only and is not used. The £10 signing-on limit has no sourced date yet (gap)."
+  }
+]

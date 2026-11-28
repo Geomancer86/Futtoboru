@@ -1,0 +1,58 @@
+[
+  {
+    "id": "english",
+    "name": "English",
+    "countries": ["england", "scotland", "wales", "ireland"],
+    "sources": ["https://en.wikipedia.org/wiki/Elementary_Education_Act_1870", "https://en.wikipedia.org/wiki/Education_(Scotland)_Act_1872"],
+    "notes": "The language of the board and national schools (no Gaelic provision in the 1872 Scottish Act), so the language a schooled man reads and writes."
+  },
+  {
+    "id": "welsh",
+    "name": "Welsh",
+    "countries": [],
+    "sources": ["https://en.wikipedia.org/wiki/Welsh_language", "https://en.wikipedia.org/wiki/History_of_the_Welsh_language"],
+    "notes": "54.0% of people in Wales aged 3+ spoke Welsh in 1891 (L§2.1); shares per area in language_rates.json."
+  },
+  {
+    "id": "scottish-gaelic",
+    "name": "Scottish Gaelic",
+    "countries": [],
+    "sources": ["https://en.wikipedia.org/wiki/1881_United_Kingdom_census"],
+    "notes": "6.2% of Scotland in 1881, 60-75% in the Highland counties, under 2% in the football counties (L§3.1)."
+  },
+  {
+    "id": "irish",
+    "name": "Irish",
+    "countries": [],
+    "sources": ["https://db.nomics.world/CSO/C0901"],
+    "notes": "23.9% (1881) and 19.2% (1891) of the area of the later Irish state; highest in Connacht (L§3.3)."
+  },
+  {
+    "id": "german",
+    "name": "German",
+    "countries": ["germany"],
+    "sources": ["https://en.wikipedia.org/wiki/Historical_immigration_to_Great_Britain"],
+    "notes": "The largest European-born group in England and Wales in 1891 (about 50,000, L§4.3-4.4)."
+  },
+  {
+    "id": "yiddish",
+    "name": "Yiddish",
+    "countries": ["russia", "poland"],
+    "sources": ["https://en.wikipedia.org/wiki/Historical_immigration_to_Great_Britain"],
+    "notes": "Jews from the Russian Empire, about 120,000 settled by 1914 (Leeds, Manchester, London; L§4.5)."
+  },
+  {
+    "id": "italian",
+    "name": "Italian",
+    "countries": ["italy"],
+    "sources": ["https://en.wikipedia.org/wiki/Italians_in_the_United_Kingdom"],
+    "notes": "About 11,000 in Britain in 1891 (L§4.6)."
+  },
+  {
+    "id": "lithuanian",
+    "name": "Lithuanian",
+    "countries": ["lithuania"],
+    "sources": ["https://en.wikipedia.org/wiki/Lithuanians_in_the_United_Kingdom"],
+    "notes": "A few hundred to about 7,000 in the Lanarkshire and Midlothian pits, 1886-1914 (L§4.7)."
+  }
+]
