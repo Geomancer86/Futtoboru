@@ -178,8 +178,7 @@ class AutosaveTests {
         Log.ErrorListener recorder = (category, tag, message, error) -> errors.add(message);
         Log.addErrorListener(recorder);
         try {
-            game.setGameDate(game.getGameDate().withDayOfMonth(30)); // 30 Apr: the next day is the 1st
-            NewGameFixture.play(application, game, 1, true); // no exception out of the day
+            NewGameFixture.play(application, game, 30, true); // 1 Apr -> 1 May; no exception out of the day
             assertTrue(engine().getAutosave().awaitWrite(10_000));
         } finally {
             Log.removeErrorListener(recorder);
