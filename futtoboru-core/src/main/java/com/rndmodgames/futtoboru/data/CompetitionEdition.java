@@ -61,6 +61,17 @@ public class CompetitionEdition implements Serializable {
     /** P2-14: the clubs through to the next round, waiting for its draw (open-draw cups only) */
     private List<Long> drawPool = new ArrayList<>();
 
+    // G-08: the re-election vote after this season (null when the League's rule has none for it)
+    private ReElection reElection;
+
+    public ReElection getReElection() {
+        return reElection;
+    }
+
+    public void setReElection(ReElection reElection) {
+        this.reElection = reElection;
+    }
+
     // 
     public Long getId() {
         return id;

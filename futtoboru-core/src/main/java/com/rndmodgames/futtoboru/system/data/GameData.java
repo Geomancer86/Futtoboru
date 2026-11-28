@@ -147,8 +147,11 @@ public class GameData {
         spec("occupation", "id", "str!", "name", "str!", "category", "enum:occupation_category!", "bonuses", "attrs!",
                 "notes", "str");
         spec("names", "country", "ref:country!", "firstNames", "strs!", "lastNames", "strs!");
+        // G-08: the bottom clubs seek re-election at the annual meeting (seasons starting in From..Until)
         spec("competition", "id", "str!", "name", "str!", "longName", "str", "type", "enum:competition_type!",
-                "sources", "strs!", "notes", "str");
+                "sources", "strs!", "notes", "str", "reElectionPlaces", "int", "reElectionFrom", "int",
+                "reElectionUntil", "int", "annualMeetingAfterDays", "int", "annualMeetingConfidence",
+                "enum:confidence");
         spec("club", "id", "str!", "name", "str!", "fullName", "str", "founded", "int", "country", "ref:country!",
                 "sources", "strs!", "notes", "str");
         spec("ground", "id", "str!", "name", "str!", "opened", "int", "capacity", "int", "value", "num",

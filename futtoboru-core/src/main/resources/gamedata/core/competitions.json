@@ -14,8 +14,15 @@
     "longName": "The Football League",
     "type": "LEAGUE",
     "sources": [
-      "https://en.wikipedia.org/wiki/English_Football_League"
+      "https://en.wikipedia.org/wiki/English_Football_League",
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League",
+      "https://en.wikipedia.org/wiki/1889%E2%80%9390_Football_League"
     ],
-    "notes": "Not in the legacy competitions file; the league was created in code (ScriptsLoader)."
+    "reElectionPlaces": 4,
+    "reElectionFrom": 1888,
+    "reElectionUntil": 1891,
+    "annualMeetingAfterDays": 7,
+    "annualMeetingConfidence": "placeholder",
+    "notes": "Not in the legacy competitions file; the league was created in code (ScriptsLoader). Re-election (G-08): the bottom four retire and seek re-election at the annual general meeting, with any other clubs wishing to join (1888-89 article); the single-division League did this for 1888-89 to 1891-92, from 1892 the Second Division and test matches follow (not in data). The AGM date is not sourced yet: placeholder, a week after the last League day."
   }
 ]

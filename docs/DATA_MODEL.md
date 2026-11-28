@@ -11,7 +11,8 @@ futtoboru-core/src/main/resources/gamedata/
   core/                      the base pack; a mod is another folder with its own pack.json
     pack.json                id, name, version, dataVersion, seasons, files (every file, explicitly)
     continents.json countries.json professions.json occupations.json names.json
-    competitions.json        football-league, fa-cup (type LEAGUE / CUP)
+    competitions.json        football-league, fa-cup (type LEAGUE / CUP); optional re-election rule (G-08): reElectionPlaces,
+                             reElectionFrom/Until (season start years), annualMeetingAfterDays, annualMeetingConfidence
     clubs.json               identity only: name, fullName, founded, country, sources
     grounds.json             stadiums: capacity, value, rent, description, sources
     people.json              every real person once: firstName, lastName, born, country, confidence, sources
