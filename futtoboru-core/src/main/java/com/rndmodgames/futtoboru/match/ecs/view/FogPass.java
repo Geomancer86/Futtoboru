@@ -20,6 +20,7 @@ public final class FogPass extends EntitySystem implements DrawPass {
     public static final String MODULE = "fog";
 
     private static final int BANKS = 7;
+    private static final int FOG_RGB = 0xC7D1DB;
 
     private final ViewFrame view;
     private int banksDrawn;
@@ -61,7 +62,7 @@ public final class FogPass extends EntitySystem implements DrawPass {
                 float py = horizon - bh * 0.5f + h * 0.05f * (i % 4) - h * 0.08f;
                 float away = Math.abs(px + bw / 2 - w / 2) / (w * 0.35f);
                 float clear = Math.min(1f, away * away + 0.25f);
-                batch.setColor(0.78f, 0.82f, 0.86f, (float) fog * 0.55f * clear);
+                ViewColors.set(batch, FOG_RGB, (float) fog * 0.55f * clear);
                 batch.draw(ellipse, px, py, bw, bh);
                 banksDrawn++;
             }

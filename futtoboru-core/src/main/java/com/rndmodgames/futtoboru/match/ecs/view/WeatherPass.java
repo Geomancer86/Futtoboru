@@ -25,6 +25,9 @@ public final class WeatherPass extends EntitySystem implements DrawPass {
     /** Screens per second a drop falls. */
     private static final double RAIN_FALL = 1.7;
     private static final double SNOW_FALL = 0.14;
+    private static final int SPLASH_RGB = 0xBFD1E6;
+    private static final int SNOW_RGB = 0xF2F7FF;
+    private static final int RAIN_RGB = 0xB8CCE6;
     private static final float SPLASH_SECONDS = 0.12f;
 
     private final ViewFrame view;
@@ -58,13 +61,13 @@ public final class WeatherPass extends EntitySystem implements DrawPass {
         float len = 3 + 5 * (float) kind.intensity;
         for (int i = 0; i < count; i++) {
             if (splash[i] > 0) {
-                batch.setColor(0.75f, 0.82f, 0.9f, 0.5f * splash[i] / SPLASH_SECONDS);
+                ViewColors.set(batch, SPLASH_RGB, 0.5f * splash[i] / SPLASH_SECONDS);
                 batch.draw(white, x[i] - 1, land[i], 3, 1);
             } else if (snow) {
-                batch.setColor(0.95f, 0.97f, 1f, 0.85f);
+                ViewColors.set(batch, SNOW_RGB, 0.85f);
                 batch.draw(white, x[i], y[i], fall[i] > 0.14f ? 2 : 1, fall[i] > 0.14f ? 2 : 1);
             } else {
-                batch.setColor(0.72f, 0.8f, 0.9f, 0.55f);
+                ViewColors.set(batch, RAIN_RGB, 0.55f);
                 batch.draw(white, x[i], y[i], 0, 0, 1, len, 1, 1, tilt);
             }
         }
