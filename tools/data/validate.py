@@ -54,7 +54,9 @@ DAYS_IN_MONTH = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 KINDS = ["continent", "country", "profession", "occupation", "competition", "club", "ground", "person", "region",
          "season", "edition",
          # R-02 recruitment data, R-11a languages (DATA_MODEL.md "Recruitment and languages")
-         "rule", "wage", "origin", "origin-club", "area", "language"]
+         "rule", "wage", "origin", "origin-club", "area", "language",
+         # G-02 injury kinds (DATA_MODEL.md "Injuries")
+         "injury"]
 # R-02 / R-11a: research grade of a rule, wage, origin, area or rate row (RECRUITMENT_1888-1900.md H/M/L; `estimate` =
 # no direct source, the reasoning is in `sources`; `placeholder` = gameplay tuning, D30 A3)
 DATA_CONFIDENCE = {"high", "medium", "low", "estimate", "placeholder"}
@@ -73,6 +75,7 @@ ORIGIN_CLUB_KINDS = {"church", "sunday-school", "works", "junior", "school", "sc
 NUDGE_MAX = 2                 # an origin's attribute nudge is small (D28 Q12): -2..+2
 LITERACY_SHIFT_MAX = 1        # an origin moves literacy by at most one level
 RATE_FIELDS = ("speaks", "only", "signsMen", "signsWomen", "parentsBorn", "readWriteIfSigns")
+INJURY_KINDS = {"knock", "passenger", "carried-off"}  # D19-3: plays on / stays on hurt / leaves, may return
 READ_WRITE_LEVELS = 4         # readWriteIfSigns: signs his name / reads slowly / reads well / writes well
 
 # H-06 era events (docs/design/ERA_EVENTS_PROPOSAL.md, D30): gamedata/<pack>/era/{baseline,events}.json
@@ -97,7 +100,7 @@ ENUMS = {"era_kind": ERA_KINDS, "era_authority": ERA_AUTHORITIES, "era_confidenc
          "rule_kind": RULE_KINDS, "rule_body": RULE_BODIES, "applies_to": APPLIES_TO, "wage_type": WAGE_TYPES,
          "standing": STANDINGS, "source_kind": SOURCE_KINDS, "origin_club_kind": ORIGIN_CLUB_KINDS,
          "weekday": WEEKDAYS, "cup_round": CUP_ROUNDS, "neutral_gate": NEUTRAL_GATES, "later_draws": LATER_DRAWS,
-         "club_origin": CLUB_ORIGINS}
+         "club_origin": CLUB_ORIGINS, "injury_kind": INJURY_KINDS}
 SPECS = {
     "era_event": {"id": ("str", True), "kind": ("enum:era_kind", True), "authority": ("enum:era_authority", True),
                   "announced": ("str", True), "effective": ("str", True),
@@ -224,6 +227,11 @@ SPECS = {
                       "parentsBorn": ("shares:country", False), "readWriteIfSigns": ("nums", False),
                       "confidence": ("enum:data_confidence", True), "sources": ("strs", True),
                       "notes": ("str", False)},
+    # G-02 (D19-3): one record per injury kind: chance per man per match, days out after it, in-match effect
+    "injury": {"id": ("str", True), "kind": ("enum:injury_kind", True), "chancePerMatch": ("num", True),
+               "minDays": ("int", True), "maxDays": ("int", True), "returnChance": ("num", False),
+               "strengthWhileHurt": ("num", False), "confidence": ("enum:data_confidence", True),
+               "sources": ("strs", True), "notes": ("str", False)},
     "pack": {"id": ("str", True), "name": ("str", True), "version": ("int", True), "dataVersion": ("int", True),
              "seasons": ("strs", True), "files": ("strs", True)},
 }
@@ -237,6 +245,7 @@ PACK_FILES = {
     "recruitment/origins.json": ("origin", "origin"), "recruitment/origin_clubs.json": ("origin_club", "origin-club"),
     "languages.json": ("language", "language"), "areas.json": ("area", "area"),
     "language_rates.json": ("language_rate", None),
+    "injuries.json": ("injury", "injury"),
 }
 SEASON_FILES = {
     "squads.json": ("squad", None), "nationality_modifiers.json": ("nationality_modifier", None),
@@ -663,10 +672,30 @@ def check_rates(data, where: str, rep: Report):
         rep.error(where, "no default row (no area, no countries) with `signsMen`: a man born abroad has no rate")
 
 
+def check_injuries(data, where: str, rep: Report):
+    """G-02: each kind once; 0 <= minDays <= maxDays; chances and strengthWhileHurt in 0..1; a source or `estimate`."""
+    seen = {}
+    for r, w in recs(data, where):
+        check_sourced(r, w, rep)
+        k = r.get("kind")
+        if k in seen:
+            rep.error(w, f"injury kind `{k}` is listed twice (also {seen[k]})")
+        seen[k] = w
+        lo, hi = r.get("minDays"), r.get("maxDays")
+        if is_num(lo) and lo < 0:
+            rep.error(f"{w}.minDays", "must not be negative")
+        if is_num(lo) and is_num(hi) and lo > hi:
+            rep.error(w, f"minDays {lo} is above maxDays {hi}")
+        for f in ("chancePerMatch", "returnChance", "strengthWhileHurt"):
+            if is_num(r.get(f)) and not 0 <= r[f] <= 1:
+                rep.error(f"{w}.{f}", "must be from 0 to 1")
+
+
 # pack file -> its extra checks (beyond the field spec)
 FILE_CHECKS = {"recruitment/rules.json": check_rule_records, "recruitment/wages.json": check_wages,
                "recruitment/origins.json": check_origins, "recruitment/origin_clubs.json": check_sources_listed,
-               "languages.json": check_sources_listed, "areas.json": check_areas, "language_rates.json": check_rates}
+               "languages.json": check_sources_listed, "areas.json": check_areas, "language_rates.json": check_rates,
+               "injuries.json": check_injuries}
 
 
 def check_results(data: list, where: str, sid: str, season: dict | None, rep: Report):

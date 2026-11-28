@@ -668,3 +668,26 @@ def test_a_season_without_calendar_is_valid(pack):
         fa_cup(d).pop("neutralVenues")
     edit(pack.joinpath(*SEASON), drop)
     assert errors(pack) == ""
+
+
+# G-02 injuries (DATA_MODEL.md "Injuries")
+def test_shipped_injuries_have_the_three_kinds():
+    rep = validate.validate(ROOT)
+    assert rep.errors == []
+    data = json.loads((ROOT / "core" / "injuries.json").read_text(encoding="utf-8"))
+    assert sorted(r["kind"] for r in data) == ["carried-off", "knock", "passenger"]
+
+
+def test_injury_typos_are_errors(pack):
+    def bad(d):
+        d[0]["minDays"], d[0]["maxDays"] = 9, 3
+        d[1]["chancePerMatch"] = 1.5
+        d[2]["kind"] = "knock"
+        d[2]["sources"] = []
+        d[2]["confidence"] = "high"
+    edit(pack.joinpath("core", "injuries.json"), bad)
+    out = errors(pack)
+    assert "minDays 9 is above maxDays 3" in out
+    assert "must be from 0 to 1" in out
+    assert "injury kind `knock` is listed twice" in out
+    assert "no source" in out

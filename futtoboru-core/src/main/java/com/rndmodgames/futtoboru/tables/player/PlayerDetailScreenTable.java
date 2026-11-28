@@ -203,6 +203,23 @@ public class PlayerDetailScreenTable extends VisTable {
         infoTable.add(new VisLabel(clubName)).left();
         infoTable.row();
         
+        // G-02: fit, or the injury with the days left and the day he is back
+        infoTable.add(new VisLabel(LanguageModLoader.getValue("player_fitness"))).left().width(UiTheme.size("col.label"));
+        com.rndmodgames.futtoboru.engine.injuries.Availability.Status fitness =
+                com.rndmodgames.futtoboru.engine.injuries.Availability.of(currentPlayer, futtoboru.getCurrentGame().getGameDate());
+        VisLabel fitnessLabel;
+        if (fitness.isAvailable()) {
+            fitnessLabel = new VisLabel(LanguageModLoader.getValue("player_fit"));
+        } else {
+            com.rndmodgames.futtoboru.data.InjuryKind kind = fitness.getInjury().getKindEnum();
+            fitnessLabel = new VisLabel(LanguageModLoader.format("player_injured_days",
+                    LanguageModLoader.getValue(kind != null ? kind.labelKey() : "availability_injured"),
+                    fitness.getDaysLeft(), dateFormatter.format(fitness.getUntil())));
+            fitnessLabel.setColor(UiTheme.color("state.injured"));
+        }
+        infoTable.add(fitnessLabel).left();
+        infoTable.row();
+
         // E-01: this season's position in the 2-3-5
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_position"))).left().width(UiTheme.size("col.label"));
         infoTable.add(new VisLabel(currentPlayer.getPosition() == null ? LanguageModLoader.getValue("position_unknown")

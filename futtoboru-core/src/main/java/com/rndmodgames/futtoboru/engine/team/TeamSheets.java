@@ -11,6 +11,7 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.TeamShape;
 import com.rndmodgames.futtoboru.data.TeamSheet;
+import com.rndmodgames.futtoboru.engine.injuries.Availability;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
@@ -34,10 +35,11 @@ public final class TeamSheets {
     }
 
     /**
-     * Whether a man can play today. Every squad man for now; G-02 (injuries and availability) narrows it.
+     * Whether a man can play today: a squad man who is not out injured (G-02 {@link Availability#isAvailable(Player)},
+     * the one availability check; every path, AI pick, Auto-pick, editor and {@link #kickOff}, follows it).
      */
     public static boolean isAvailable(Player p) {
-        return p != null && p.getId() != null && p.getPerson() != null;
+        return p != null && p.getId() != null && p.getPerson() != null && Availability.isAvailable(p);
     }
 
     /** The club's fit men, in squad order. */

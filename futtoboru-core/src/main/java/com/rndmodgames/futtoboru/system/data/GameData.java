@@ -71,9 +71,12 @@ public class GameData {
     public static final String ORIGIN_CLUB = "origin-club";
     public static final String AREA = "area";
     public static final String LANGUAGE = "language";
+    // G-02 injury kinds
+    public static final String INJURY = "injury";
 
     static final List<String> KINDS = Arrays.asList(CONTINENT, COUNTRY, PROFESSION, OCCUPATION, COMPETITION, CLUB,
-            GROUND, PERSON, REGION, SEASON, EDITION, RULE, WAGE, ORIGIN, ORIGIN_CLUB, AREA, LANGUAGE);
+            GROUND, PERSON, REGION, SEASON, EDITION, RULE, WAGE, ORIGIN, ORIGIN_CLUB, AREA, LANGUAGE,
+            INJURY);
 
     /** R-02 / R-11a: the grades that may have no source (validate.py UNSOURCED_OK). */
     static final Set<String> UNSOURCED_OK = new HashSet<>(Arrays.asList("estimate", "placeholder"));
@@ -119,6 +122,7 @@ public class GameData {
                 "placeholder", "wp-season-1888-89", "wp-season-1888-89-line", "wp-player", "wp-player-line",
                 "fa-cup-final-1889")));
         // R-02 / R-11a (same lists as tools/data/validate.py)
+        ENUMS.put("injury_kind", new TreeSet<>(Arrays.asList("knock", "passenger", "carried-off")));
         ENUMS.put("data_confidence", new TreeSet<>(Arrays.asList("high", "medium", "low", "estimate", "placeholder")));
         ENUMS.put("rule_kind", new TreeSet<>(Arrays.asList("registration", "residence", "second-registration-consent",
                 "registration-wait", "scottish-professional-ban", "retain-and-transfer", "max-wage")));
@@ -267,6 +271,10 @@ public class GameData {
                 "str");
         spec("area", "id", "str!", "name", "str!", "country", "ref:country!", "weight", "num!", "places", "strs",
                 "confidence", "enum:data_confidence!", "sources", "strs!", "notes", "str");
+        // G-02 (D19-3): one record per injury kind
+        spec("injury", "id", "str!", "kind", "enum:injury_kind!", "chancePerMatch", "num!", "minDays", "int!",
+                "maxDays", "int!", "returnChance", "num", "strengthWhileHurt", "num", "confidence",
+                "enum:data_confidence!", "sources", "strs!", "notes", "str");
         spec("language_rate", "area", "ref:area", "countries", "refs:country", "bornFrom", "int!", "bornUntil",
                 "int!", "speaks", "shares:language", "only", "shares:language", "signsMen", "num", "signsWomen",
                 "num", "parentsBorn", "shares:country", "readWriteIfSigns", "nums", "confidence",
@@ -294,6 +302,7 @@ public class GameData {
         PACK_FILES.put("languages.json", new String[] { "language", LANGUAGE });
         PACK_FILES.put("areas.json", new String[] { "area", AREA });
         PACK_FILES.put("language_rates.json", new String[] { "language_rate", null });
+        PACK_FILES.put("injuries.json", new String[] { "injury", INJURY });
         SEASON_FILES.put("squads.json", new String[] { "squad", null });
         SEASON_FILES.put("nationality_modifiers.json", new String[] { "nationality_modifier", null });
         SEASON_FILES.put("region_modifiers.json", new String[] { "region", REGION });
@@ -1207,6 +1216,10 @@ public class GameData {
      */
     private void checkRecruitmentRecord(String specName, JsonValue v, String where) {
         switch (specName) {
+        case "injury":
+            checkSourced(v, where);
+            checkInjury(v, where);
+            return;
         case "rule":
         case "wage":
         case "origin":
@@ -1405,6 +1418,24 @@ public class GameData {
             }
         }
         return out;
+    }
+
+    /** G-02: 0 <= minDays <= maxDays; chances and strengthWhileHurt in 0..1 (each kind once: validate.py). */
+    private void checkInjury(JsonValue v, String where) {
+        int lo = v.getInt("minDays", 0);
+        int hi = v.getInt("maxDays", 0);
+        if (lo < 0) {
+            report.error(where + ".minDays", "must not be negative");
+        }
+        if (lo > hi) {
+            report.error(where, "minDays " + lo + " is above maxDays " + hi);
+        }
+        for (String f : new String[] { "chancePerMatch", "returnChance", "strengthWhileHurt" }) {
+            JsonValue x = v.get(f);
+            if (x != null && x.isNumber() && (x.asDouble() < 0 || x.asDouble() > 1)) {
+                report.error(where + "." + f, "must be from 0 to 1");
+            }
+        }
     }
 
     private void checkSourced(JsonValue v, String where) {
