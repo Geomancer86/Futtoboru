@@ -269,6 +269,104 @@ def test_player_without_position_is_a_warning(pack):
     assert any("no position" in w for w in rep.warnings)
 
 
+# ---------------------------------------------------------------------------------------------- R-02, R-11a
+REC = ("core", "recruitment")
+
+
+def test_shipped_recruitment_and_language_data_is_sourced():
+    for f, field in (("rules.json", "rule"), ("wages.json", "type"), ("origins.json", "nudges")):
+        rows = json.loads(ROOT.joinpath(*REC, f).read_text(encoding="utf-8"))
+        assert rows and all(field in r for r in rows), f
+    rules = {r["rule"] for r in json.loads(ROOT.joinpath(*REC, "rules.json").read_text(encoding="utf-8"))}
+    # the dated rules of the brief: 1885 registration + residence, 1888 consent, 1890 wait, 1893 retain, 1901 cap
+    assert {"registration", "residence", "second-registration-consent", "registration-wait", "retain-and-transfer",
+            "max-wage"} <= rules
+    rates = json.loads((ROOT / "core" / "language_rates.json").read_text(encoding="utf-8"))
+    assert all(r["sources"] or r["confidence"] in validate.UNSOURCED_OK for r in rates)
+
+
+def test_rule_needs_its_value_and_a_source(pack):
+    def bad(d):
+        d[0]["sources"] = []
+        d[0]["rule"] = "registration-wait"
+        d[1]["until"] = "1880"
+        d.append({"id": "made-up", "rule": "bribery", "from": "1888", "body": "fa", "appliesTo": "all",
+                  "confidence": "high", "sources": ["x"]})
+    edit(pack.joinpath(*REC, "rules.json"), bad)
+    out = errors(pack)
+    assert "no source" in out
+    assert "a `registration-wait` rule needs `days`" in out
+    assert "`until` 1880 is before `from`" in out
+    assert "bribery" in out
+
+
+def test_wage_band_and_example_checks(pack):
+    def bad(d):
+        d[0].pop("weeklyPence")
+        band = next(r for r in d if r["type"] == "band")
+        band["minWeeklyPence"], band["maxWeeklyPence"] = 600, 300
+        d[1]["club"] = "real-madrid"
+    edit(pack.joinpath(*REC, "wages.json"), bad)
+    out = errors(pack)
+    assert "an `example` needs `weeklyPence`" in out
+    assert "minWeeklyPence 600 is above maxWeeklyPence 300" in out
+    assert "unknown club `real-madrid`" in out
+
+
+def test_origin_nudges_are_small_and_refs_resolve(pack):
+    def bad(d):
+        d[0]["nudges"]["strength"] = 5
+        d[0]["literacyShift"] = 2
+        d[0]["sourceKinds"].append("academy")
+        d[0]["occupations"].append("astronaut")
+    edit(pack.joinpath(*REC, "origins.json"), bad)
+    out = errors(pack)
+    assert "a nudge is a whole number from -2 to 2" in out
+    assert "literacyShift" in out
+    assert "`academy` is not one of" in out
+    assert "unknown occupation `astronaut`" in out
+
+
+def test_new_records_need_numbers(pack):
+    edit(pack.joinpath(*REC, "origin_clubs.json"),
+         lambda d: d.append(dict(d[0], id="st-marys-junior", name="St Mary's")))
+    assert "origin-club `st-marys-junior` has no number" in errors(pack)
+
+
+def test_area_weights_add_up_per_country(pack):
+    edit(pack / "core" / "areas.json", lambda d: d[0].update({"weight": 0.5}))
+    assert "the area weights of `england` add up to" in errors(pack)
+
+
+def test_rate_rows_are_consistent_and_never_overlap(pack):
+    def bad(d):
+        glam = next(r for r in d if r.get("area") == "glamorgan")
+        glam["only"] = {"welsh": 0.9, "irish": 0.1}
+        glam["speaks"]["english"] = 1.0
+        d.append({"countries": ["england"], "bornFrom": 1860, "bornUntil": 1862, "signsMen": 0.9,
+                  "readWriteIfSigns": [0.5, 0.5], "parentsBorn": {"atlantis": 0.1},
+                  "confidence": "high", "sources": ["x"]})
+        d.append({"area": "glamorgan", "countries": ["wales"], "bornFrom": 1900, "bornUntil": 1890,
+                  "confidence": "estimate", "sources": []})
+    edit(pack / "core" / "language_rates.json", bad)
+    out = errors(pack)
+    assert "0.9 speak only it but 0.495 speak it" in out
+    assert "a language in `only` must be in `speaks`" in out
+    assert "English is the default language" in out
+    assert "`signsMen` for country england overlaps" in out
+    assert "readWriteIfSigns" in out
+    assert "unknown country `atlantis`" in out
+    assert "an `area` or `countries`, not both" in out
+    assert "bornFrom 1900 is after bornUntil 1890" in out
+    assert "no rate" in out
+
+
+def test_rates_need_a_default_row(pack):
+    edit(pack / "core" / "language_rates.json",
+         lambda d: d.remove(next(r for r in d if "area" not in r and "countries" not in r)))
+    assert "no default row" in errors(pack)
+
+
 # ---- P2-14: the season calendar and the cup's neutral grounds (season.json) -------------------------------------
 SEASON = ("core", "seasons", "1888-89", "season.json")
 

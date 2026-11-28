@@ -3,18 +3,21 @@ package com.rndmodgames.futtoboru.engine.simulation;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.data.TeamSheet;
 import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.engine.team.TeamSheets;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
- * Plays one match of the game (P2-2, E-17a): asks its {@link MatchEngine} for the score and scorers
- * ({@link InstantMatchEngine} by default, the ECS engine with {@code -Dfuttoboru.match.engine=ecs}, see
- * {@link MatchEngines}), writes them into the {@link Match}, then adds the goal minutes and the gate. Everything that
- * follows from a result is {@link MatchResultRecorder#record(Match)}.
+ * Plays one match of the game (P2-2, E-17a): freezes both team sheets on the match at kick-off (G-01,
+ * {@link TeamSheets#kickOff}), asks its {@link MatchEngine} for the score and scorers ({@link InstantMatchEngine} by
+ * default, the ECS engine with {@code -Dfuttoboru.match.engine=ecs}, see {@link MatchEngines}), writes them into the
+ * {@link Match}, then adds the goal minutes and the gate. Everything that follows from a result is
+ * {@link MatchResultRecorder#record(Match)}.
  *
  * @author Geomancer86
  */
@@ -81,14 +84,18 @@ public class MatchSimulator {
         String matchKey = match.getId() != null ? String.valueOf(match.getId())
                 : match.getHomeClubId() + "-" + match.getAwayClubId() + "@" + match.getMatchDateTime();
         RandomSource gate = root.fork("gate:" + matchKey);
+
+        // G-01: the team sheets at kick-off, frozen on the match
+        TeamSheet homeSheet = TeamSheets.kickOff(match, homeClub, true, currentGame, root);
+        TeamSheet awaySheet = TeamSheets.kickOff(match, awayClub, false, currentGame, root);
+
         // P2-14: a neutral ground (cup semi-final or final) has no home advantage and its own weather
         boolean neutral = NeutralVenues.isNeutral(match);
         String groundKey = neutral && match.getVenue() != null ? match.getVenue() : MatchWeather.groundOf(homeClub);
         MatchWeather weather = MatchWeather.of(root,
                 match.getMatchDateTime() != null ? match.getMatchDateTime().toLocalDate() : null, groundKey);
-        MatchOutcome outcome = engine.play(
-                new MatchFixture(matchKey, homeClub, awayClub, match.getMatchDateTime(), weather, neutral),
-                root.fork("match:" + matchKey));
+        MatchOutcome outcome = engine.play(new MatchFixture(matchKey, homeClub, awayClub, match.getMatchDateTime(),
+                weather, neutral, homeSheet, awaySheet), root.fork("match:" + matchKey));
 
         match.setHomeGoals(outcome.homeGoals());
         match.setAwayGoals(outcome.awayGoals());

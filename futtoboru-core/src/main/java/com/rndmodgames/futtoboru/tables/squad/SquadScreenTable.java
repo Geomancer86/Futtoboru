@@ -3,13 +3,20 @@ package com.rndmodgames.futtoboru.tables.squad;
 import java.time.temporal.ChronoUnit;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.engine.team.TeamSheets;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -45,6 +52,15 @@ public class SquadScreenTable extends VisTable{
     //
     PlayersListTable playersList;
     VisScrollPane playersScrollPane;
+
+    // G-01: the Players / Team Sheet tabs
+    private final VisTextButton playersTab = new VisTextButton(LanguageModLoader.getValue("team_sheet_players_tab"),
+            UiTheme.style("button.toggle"));
+    private final VisTextButton teamSheetTab = new VisTextButton(LanguageModLoader.getValue("team_sheet"),
+            UiTheme.style("button.toggle"));
+    private final TeamSheetEditor teamSheetEditor = new TeamSheetEditor();
+    private final VisScrollPane teamSheetScrollPane = new VisScrollPane(teamSheetEditor);
+    private Cell<Actor> contentCell;
     
     //
     
@@ -114,10 +130,57 @@ public class SquadScreenTable extends VisTable{
         this.add(averagePlayerAgeValueLabel);
         this.row();
         
+        // G-01: Players | Team Sheet
+        ButtonGroup<VisTextButton> tabs = new ButtonGroup<>(playersTab, teamSheetTab);
+        tabs.setMinCheckCount(1);
+        tabs.setMaxCheckCount(1);
+        playersTab.setChecked(true);
+        ChangeListener switchTab = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                showTab();
+            }
+        };
+        playersTab.addListener(switchTab);
+        teamSheetTab.addListener(switchTab);
+        VisTable tabRow = new VisTable(true);
+        tabRow.add(playersTab);
+        tabRow.add(teamSheetTab);
+        this.add(tabRow).colspan(2).left();
+        this.row();
+        teamSheetScrollPane.setFadeScrollBars(false);
+        teamSheetScrollPane.setScrollingDisabled(false, false);
+
         // Players List Component (wrapped in scroll pane for horizontal scrolling)
         this.addSeparator().colspan(2);
         this.row();
-        this.add(playersScrollPane).colspan(2).grow().fill();
+        contentCell = this.add((Actor) playersScrollPane).colspan(2).grow().fill();
+    }
+
+    /** G-01: shows the team sheet tab. */
+    public void showTeamSheet() {
+        teamSheetTab.setChecked(true);
+        showTab();
+    }
+
+    /** G-01: shows the players list tab (what the Squad menu entry opens on). */
+    public void showPlayers() {
+        playersTab.setChecked(true);
+        if (displayedClub != null) {
+            showTab();
+        }
+    }
+
+    private void showTab() {
+        if (teamSheetTab.isChecked()) {
+            if (displayedClub != null) {
+                boolean own = TeamSheets.isManaged(displayedClub, game.getCurrentGame());
+                teamSheetEditor.show(displayedClub, TeamSheets.standing(displayedClub), own, null);
+            }
+            contentCell.setActor(teamSheetScrollPane);
+        } else {
+            contentCell.setActor(playersScrollPane);
+        }
     }
     
     /**
@@ -167,6 +230,9 @@ public class SquadScreenTable extends VisTable{
         
         //
         playersList.updateDynamicComponents();
+
+        // G-01: the team sheet tab follows the displayed club
+        showTab();
     }
 
     public Club getCurrentClub() {

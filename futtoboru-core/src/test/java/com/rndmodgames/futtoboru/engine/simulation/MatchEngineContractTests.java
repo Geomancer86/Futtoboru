@@ -14,6 +14,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.ClubStyle;
+import com.rndmodgames.futtoboru.data.TeamShape;
+import com.rndmodgames.futtoboru.data.TeamSheet;
+import com.rndmodgames.futtoboru.engine.team.TeamSelector;
+import com.rndmodgames.futtoboru.engine.team.TeamSheets;
+import com.rndmodgames.futtoboru.match.ecs.ai.TeamStyle;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.Position;
@@ -49,6 +55,7 @@ class MatchEngineContractTests {
             person.setId(firstPersonId + i);
             person.setBirthDate(LocalDateTime.of(1862 + i % 6, 3, 1, 0, 0));
             Player p = new Player();
+            p.setId(firstPersonId + 5000 + i);
             p.setPerson(person);
             p.setPosition(squad[i]);
             float r = level + (i % 3) - 1;
@@ -65,8 +72,17 @@ class MatchEngineContractTests {
         return c;
     }
 
+    /** The committee's best sheet for the club (G-01), as an AI club would field. */
+    static TeamSheet sheet(Club club) {
+        return TeamSelector.bestSheet(club.getId(), TeamSheets.available(club), null);
+    }
+
+    static MatchFixture fixture(String key, Club home, Club away, MatchWeather weather) {
+        return new MatchFixture(key, home, away, KICK_OFF, weather, false, sheet(home), sheet(away));
+    }
+
     static MatchFixture fixture(MatchWeather weather) {
-        return new MatchFixture("contract-1", club(1, 100, 15), club(2, 200, 11), KICK_OFF, weather);
+        return fixture("contract-1", club(1, 100, 15), club(2, 200, 11), weather);
     }
 
     private static Set<Long> personIds(Club club) {
@@ -94,8 +110,7 @@ class MatchEngineContractTests {
         MatchEngine engine = new InstantMatchEngine();
         assertContract(engine, fixture(MatchWeather.DRY));
         for (int seed = 0; seed < 200; seed++) {
-            MatchFixture f = new MatchFixture("m" + seed, club(1, 100, 15), club(2, 200, 11), KICK_OFF,
-                    MatchWeather.DRY);
+            MatchFixture f = fixture("m" + seed, club(1, 100, 15), club(2, 200, 11), MatchWeather.DRY);
             MatchOutcome o = engine.play(f, RandomSource.seeded(seed));
             assertEquals(o.homeGoals(), o.homeScorerIds().size(), "every instant goal has a scorer");
             assertTrue(personIds(f.home()).containsAll(o.homeScorerIds()));
@@ -109,20 +124,35 @@ class MatchEngineContractTests {
     }
 
     @Test
-    void theBestElevenTakesEachPositionAndStandsInForAShortSquad() {
-        Club full = club(1, 100, 15);
-        EcsMatchEngineAdapter.Eleven xi = EcsMatchEngineAdapter.Eleven.pick(full, fixture(MatchWeather.DRY));
-        assertEquals(11, xi.sheet.players().size());
-        for (int s = 0; s < 11; s++) {
-            assertEquals(EcsMatchEngineAdapter.SHAPE.slot(s).position(), xi.sheet.players().get(s).position());
+    void theEcsSideIsTheFrozenSheetWithItsShapeAndStyle() {
+        MatchFixture f = fixture(MatchWeather.DRY);
+        for (TeamShape shape : TeamShape.values()) {
+            TeamSheet sheet = sheet(f.home());
+            sheet.reshape(shape);
+            sheet.setStyle(ClubStyle.COMBINATION);
+            EcsMatchEngineAdapter.Eleven xi = EcsMatchEngineAdapter.Eleven.of(sheet, f.home(), f);
+            assertEquals(shape.label(), xi.sheet.shape().label());
+            assertEquals(TeamStyle.COMBINATION, xi.style);
+            for (int s = 0; s < TeamShape.SLOTS; s++) {
+                assertEquals(shape.slot(s), xi.sheet.players().get(s).position(), shape + " slot " + s);
+                Long playerId = sheet.getPlayerId(s);
+                Long expected = null;
+                for (Player p : f.home().getPlayers()) {
+                    if (p.getId().equals(playerId)) {
+                        expected = p.getPerson().getId();
+                    }
+                }
+                assertEquals(expected, xi.personIds.get(s), "slot " + s + " is the sheet's man");
+            }
         }
-        assertEquals(11, new HashSet<>(xi.personIds).size(), "eleven different men");
 
-        Club short8 = club(3, 300, 13);
-        short8.getPlayers().subList(8, short8.getPlayers().size()).clear();
-        EcsMatchEngineAdapter.Eleven gaps = EcsMatchEngineAdapter.Eleven.pick(short8, fixture(MatchWeather.DRY));
+        TeamSheet shortSheet = sheet(f.away());
+        shortSheet.setPlayerId(9, null);
+        shortSheet.setPlayerId(10, null);
+        EcsMatchEngineAdapter.Eleven gaps = EcsMatchEngineAdapter.Eleven.of(shortSheet, f.away(), f);
         assertEquals(11, gaps.sheet.players().size());
-        assertEquals(3, gaps.personIds.stream().filter(id -> id == null).count(), "three stand-ins");
+        assertEquals(2, gaps.personIds.stream().filter(id -> id == null).count(), "two stand-ins");
+        assertEquals(EcsMatchEngineAdapter.STAND_IN_RATING, gaps.sheet.players().get(10).speed());
     }
 
     @Test

@@ -1,0 +1,126 @@
+[
+  {
+    "id": "holt-everton-1888",
+    "type": "example",
+    "from": "1888",
+    "club": "everton",
+    "person": "johnny-holt-1865",
+    "standing": "leading",
+    "weeklyPence": 540,
+    "summerWeeklyPence": 240,
+    "confidence": "medium",
+    "sources": [
+      "Cricket and Football Field, 4 Aug 1888, a reader's letter (period press, transcribed at https://bluecorrespondent.co.uk/1888-89/august1888.html)"
+    ],
+    "notes": "Everton offered Holt '45s per week for two matches a week and 20s per week during the summer'. Summer pay existed and was lower. A reader's letter in the period press, read through a fan transcription: medium."
+  },
+  {
+    "id": "ross-everton-1888",
+    "type": "example",
+    "from": "1888",
+    "club": "everton",
+    "person": "nick-ross-1863",
+    "standing": "leading",
+    "weeklyPence": 600,
+    "confidence": "low",
+    "sources": [
+      "Lancashire Evening Post, 25 Aug 1888 (period press, transcribed at https://bluecorrespondent.co.uk/1888-89/august1888.html)"
+    ],
+    "notes": "Not a stated wage: his release cost £17 10s of 'retaining fees', about 7 weeks of wages, which implies about 50s a week. A star: he was reportedly also promised to be 'set up in business'."
+  },
+  {
+    "id": "band-leading-1885",
+    "type": "band",
+    "from": "1885",
+    "until": "1893",
+    "standing": "leading",
+    "minWeeklyPence": 360,
+    "maxWeeklyPence": 600,
+    "confidence": "estimate",
+    "sources": [
+      "estimate: anchored on the Holt (45s) and Ross (about 50s) examples of 1888 in this file"
+    ],
+    "notes": "First-team professional at a League leader (Preston, Everton, Villa): 30s to 50s a week in the season."
+  },
+  {
+    "id": "band-middling-1885",
+    "type": "band",
+    "from": "1885",
+    "until": "1893",
+    "standing": "middling",
+    "minWeeklyPence": 240,
+    "maxWeeklyPence": 480,
+    "confidence": "estimate",
+    "sources": [
+      "estimate: below the 1888 Everton examples in this file; the design's 20-50s band (docs/design/RECRUITMENT_AND_TRIALS.md §6.1)"
+    ],
+    "notes": "An ordinary League club: 20s to 40s a week."
+  },
+  {
+    "id": "band-small-1885",
+    "type": "band",
+    "from": "1885",
+    "until": "1893",
+    "standing": "small",
+    "minWeeklyPence": 60,
+    "maxWeeklyPence": 300,
+    "confidence": "estimate",
+    "sources": [
+      "estimate: a non-League professional side; no sourced wage yet (gap)"
+    ],
+    "notes": "Combination or Alliance level, often a few shillings a match plus a job found."
+  },
+  {
+    "id": "band-leading-1893",
+    "type": "band",
+    "from": "1893",
+    "until": "1901",
+    "standing": "leading",
+    "minWeeklyPence": 480,
+    "maxWeeklyPence": 1200,
+    "confidence": "estimate",
+    "sources": [
+      "estimate: between the 1888 examples and the 1901 £4 cap (fa-maximum-wage-1901 in rules.json), which was set because top wages had gone above it"
+    ],
+    "notes": "1894: the League President said over 70% of gross receipts went on wages, outfits and travel (the1888letter.com, not yet cross-checked)."
+  },
+  {
+    "id": "band-middling-1893",
+    "type": "band",
+    "from": "1893",
+    "until": "1901",
+    "standing": "middling",
+    "minWeeklyPence": 300,
+    "maxWeeklyPence": 720,
+    "confidence": "estimate",
+    "sources": [
+      "estimate: below the leading band of the same years"
+    ]
+  },
+  {
+    "id": "band-small-1893",
+    "type": "band",
+    "from": "1893",
+    "until": "1901",
+    "standing": "small",
+    "minWeeklyPence": 120,
+    "maxWeeklyPence": 360,
+    "confidence": "estimate",
+    "sources": [
+      "estimate: no sourced wage yet (gap)"
+    ]
+  },
+  {
+    "id": "band-capped-1901",
+    "type": "band",
+    "from": "1901",
+    "standing": "any",
+    "minWeeklyPence": 240,
+    "maxWeeklyPence": 960,
+    "confidence": "estimate",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Retain_and_transfer_system"
+    ],
+    "notes": "The maximum is the sourced £4 cap (rules.json fa-maximum-wage-1901); the minimum is an estimate."
+  }
+]
