@@ -20,6 +20,7 @@ import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallSystem;
 
 /** E-10: world, registration rules, draw passes vs simulation, clock, state hash, entry point golden hash. */
+@Tag("slow") // 5.4 s for 8 tests on BOOK3PRO (test_tiers.py: over 5 s untagged fails every gate)
 class MatchWorldTest {
 
     static MatchWorld world(PitchConditions pitch) {
@@ -250,7 +251,6 @@ class MatchWorldTest {
     static final long GOLDEN_PLAY_RAIN = 0x1626d130f3919c52L;
 
     @Test
-    @Tag("slow") // the dry and wet golden plays with the E-16 laws: 5.3 s on BOOK3PRO, over the fast tier's 5 s (T-01)
     void playIsDeterministicAndPinnedByAGoldenHash() {
         EcsMatchEngine engine = new EcsMatchEngine();
         RandomSource game = RandomSource.seeded(1888L);
