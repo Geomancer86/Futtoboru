@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.rndmodgames.futtoboru.BaseTest;
@@ -31,6 +32,7 @@ import com.rndmodgames.futtoboru.system.generators.PersonGenerator;
  * P2-0: the same seed gives the same generated data and match results; another seed gives others.
  * (The full seeded-season test is P2-3.)
  */
+@Tag("slow")
 class SeededGameTests extends BaseTest {
 
     @AfterAll

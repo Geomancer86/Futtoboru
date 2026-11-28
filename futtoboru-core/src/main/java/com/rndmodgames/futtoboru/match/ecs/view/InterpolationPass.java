@@ -122,6 +122,17 @@ public final class InterpolationPass extends EntitySystem implements DrawPass {
         return liveCount;
     }
 
+    /**
+     * The {@code i}-th view transform (0..size-1), in first-capture order (pose sources in order, each in creation
+     * order).
+     */
+    public ViewTransform get(int i) {
+        if (i < 0 || i >= liveCount) {
+            throw new IndexOutOfBoundsException(i + " of " + liveCount);
+        }
+        return live[i];
+    }
+
     private ViewTransform slot(Entity e) {
         IdentityComponent id = ids.get(e);
         if (id == null) {

@@ -1,5 +1,6 @@
 package com.rndmodgames.futtoboru.tables.inbox;
 
+import com.rndmodgames.localization.LanguageModLoader;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -136,11 +137,11 @@ public class InboxScreenTable extends VisTable {
         // ========================================
         // LEFT PANEL: Filters
         // ========================================
-        filtersTable.add(new VisLabel("Filters")).row();
+        filtersTable.add(new VisLabel(LanguageModLoader.getValue("inbox_filters"))).row();
         filtersTable.add().height(UiTheme.space("sm")).row(); // Spacing
         
         // All messages button
-        VisTextButton allButton = new VisTextButton("All");
+        VisTextButton allButton = new VisTextButton(LanguageModLoader.getValue("inbox_all"));
         if (currentFilter == null && !unreadFilter) {
             // Highlight selected
             allButton.setColor(UiTheme.color("selection")); // Light blue for selected
@@ -162,7 +163,7 @@ public class InboxScreenTable extends VisTable {
         filtersTable.add(allButton).width(UiTheme.size("col.long")).pad(UiTheme.space("xxs")).row();
         
         // Unread filter button
-        VisTextButton unreadButton = new VisTextButton("Unread");
+        VisTextButton unreadButton = new VisTextButton(LanguageModLoader.getValue("inbox_unread"));
         if (unreadFilter) {
             // Highlight selected
             unreadButton.setColor(UiTheme.color("selection")); // Light blue for selected
@@ -187,7 +188,7 @@ public class InboxScreenTable extends VisTable {
         
         // Category filter buttons
         for (MessageCategory category : MessageCategory.values()) {
-            VisTextButton categoryButton = new VisTextButton(category.name());
+            VisTextButton categoryButton = new VisTextButton(categoryName(category));
             if (currentFilter == category) {
                 // Highlight selected by changing color
                 categoryButton.setColor(UiTheme.color("selection")); // Light blue for selected
@@ -213,17 +214,17 @@ public class InboxScreenTable extends VisTable {
         int unreadCount = getUnreadCount();
         if (unreadCount > 0) {
             filtersTable.add().height(UiTheme.space("sm")).row();
-            filtersTable.add(new VisLabel("Unread: " + unreadCount)).row();
+            filtersTable.add(new VisLabel(LanguageModLoader.format("inbox_unread_count", unreadCount))).row();
         }
         
         // ========================================
         // MIDDLE PANEL: Message List
         // ========================================
-        messagesListTable.add(new VisLabel("Messages (" + messagesToDisplay.size() + ")")).row();
+        messagesListTable.add(new VisLabel(LanguageModLoader.format("inbox_messages_count", messagesToDisplay.size()))).row();
         messagesListTable.add().height(UiTheme.space("xs")).row();
         
         if (messagesToDisplay.isEmpty()) {
-            messagesListTable.add(new VisLabel("No messages")).row();
+            messagesListTable.add(new VisLabel(LanguageModLoader.getValue("inbox_no_messages"))).row();
         } else {
             // Sort messages by date (newest first)
             List<Message> sortedMessages = new ArrayList<>(messagesToDisplay);
@@ -249,7 +250,7 @@ public class InboxScreenTable extends VisTable {
         if (selectedMessage != null) {
             displayMessageDetail(selectedMessage);
         } else {
-            messageDetailTable.add(new VisLabel("Select a message to view details")).row();
+            messageDetailTable.add(new VisLabel(LanguageModLoader.getValue("inbox_select_message"))).row();
         }
         
         // ========================================
@@ -278,7 +279,7 @@ public class InboxScreenTable extends VisTable {
         messageRow.add(indicatorLabel).width(UiTheme.size("indicator"));
         
         // Title (clickable)
-        String titleText = message.getTitle() != null ? message.getTitle() : "No Title";
+        String titleText = message.getTitle() != null ? message.getTitle() : LanguageModLoader.getValue("inbox_no_title");
         VisTextButton titleButton = new VisTextButton(titleText);
         if (message == selectedMessage) {
             // Highlight selected by changing color
@@ -309,7 +310,7 @@ public class InboxScreenTable extends VisTable {
         messageRow.add(titleButton).growX();
         
         // Date
-        String dateStr = "No date";
+        String dateStr = LanguageModLoader.getValue("inbox_no_date");
         if (message.getMessageTime() != null) {
             dateStr = message.getMessageTime().format(dateFormatter);
         }
@@ -317,7 +318,7 @@ public class InboxScreenTable extends VisTable {
         
         // Category badge
         if (message.getCategory() != null) {
-            VisLabel categoryLabel = new VisLabel(message.getCategory().name());
+            VisLabel categoryLabel = new VisLabel(categoryName(message.getCategory()));
             categoryLabel.setColor(getCategoryColor(message.getCategory()));
             messageRow.add(categoryLabel).width(UiTheme.size("col.number"));
         }
@@ -434,12 +435,41 @@ public class InboxScreenTable extends VisTable {
     /**
      * Display message detail in right panel
      */
+    /** The category's label (inbox filter button and badge). */
+    private static String categoryName(MessageCategory category) {
+        switch (category) {
+        case LEAGUE:
+            return LanguageModLoader.getValue("inbox_category_league");
+        case CUP:
+            return LanguageModLoader.getValue("inbox_category_cup");
+        case AUTHORITY:
+            return LanguageModLoader.getValue("inbox_category_authority");
+        case MATCH:
+            return LanguageModLoader.getValue("inbox_category_match");
+        case JOB:
+            return LanguageModLoader.getValue("inbox_category_job");
+        default:
+            return LanguageModLoader.getValue("inbox_category_system");
+        }
+    }
+
+    private static String priorityName(com.rndmodgames.futtoboru.data.MessagePriority priority) {
+        switch (priority) {
+        case URGENT:
+            return LanguageModLoader.getValue("inbox_priority_urgent");
+        case LOW:
+            return LanguageModLoader.getValue("inbox_priority_low");
+        default:
+            return LanguageModLoader.getValue("inbox_priority_normal");
+        }
+    }
+
     private void displayMessageDetail(Message message) {
         messageDetailTable.clear();
         
         // Title
-        messageDetailTable.add(new VisLabel("Title:")).row();
-        VisLabel titleLabel = new VisLabel(message.getTitle() != null ? message.getTitle() : "No Title");
+        messageDetailTable.add(new VisLabel(LanguageModLoader.getValue("inbox_title"))).row();
+        VisLabel titleLabel = new VisLabel(message.getTitle() != null ? message.getTitle() : LanguageModLoader.getValue("inbox_no_title"));
         titleLabel.setWrap(true);
         messageDetailTable.add(titleLabel).growX().pad(UiTheme.space("xs")).row();
         
@@ -447,26 +477,26 @@ public class InboxScreenTable extends VisTable {
         
         // Date
         if (message.getMessageTime() != null) {
-            messageDetailTable.add(new VisLabel("Date: " + message.getMessageTime().format(dateFormatter))).row();
+            messageDetailTable.add(new VisLabel(LanguageModLoader.format("inbox_date", message.getMessageTime().format(dateFormatter)))).row();
         }
         
         // Category
         if (message.getCategory() != null) {
-            VisLabel categoryLabel = new VisLabel("Category: " + message.getCategory().name());
+            VisLabel categoryLabel = new VisLabel(LanguageModLoader.format("inbox_category", categoryName(message.getCategory())));
             categoryLabel.setColor(getCategoryColor(message.getCategory()));
             messageDetailTable.add(categoryLabel).row();
         }
         
         // Priority
         if (message.getPriority() != null) {
-            messageDetailTable.add(new VisLabel("Priority: " + message.getPriority().name())).row();
+            messageDetailTable.add(new VisLabel(LanguageModLoader.format("inbox_priority", priorityName(message.getPriority())))).row();
         }
         
         messageDetailTable.add().height(UiTheme.space("sm")).row();
         
         // Content
-        messageDetailTable.add(new VisLabel("Message:")).row();
-        VisLabel contentLabel = new VisLabel(message.getPlainTextMessage() != null ? message.getPlainTextMessage() : "No content");
+        messageDetailTable.add(new VisLabel(LanguageModLoader.getValue("inbox_message"))).row();
+        VisLabel contentLabel = new VisLabel(message.getPlainTextMessage() != null ? message.getPlainTextMessage() : LanguageModLoader.getValue("inbox_no_content"));
         contentLabel.setWrap(true);
         messageDetailTable.add(contentLabel).growX().pad(UiTheme.space("xs")).row();
         
@@ -474,11 +504,11 @@ public class InboxScreenTable extends VisTable {
         if (message.getActionScreen() != null) {
             messageDetailTable.add().height(UiTheme.space("sm")).row();
             
-            String buttonText = "View Draw";
+            String buttonText = LanguageModLoader.getValue("inbox_view_draw");
             if (message.getMessageType() != null && message.getMessageType().equals("LEAGUE_DRAW")) {
-                buttonText = "View League Draw";
+                buttonText = LanguageModLoader.getValue("inbox_view_league_draw");
             } else {
-                buttonText = "View Related Screen";
+                buttonText = LanguageModLoader.getValue("inbox_view_related");
             }
             
             VisTextButton actionButton = new VisTextButton(buttonText);
@@ -528,7 +558,7 @@ public class InboxScreenTable extends VisTable {
         // Mark as read/unread button
         messageDetailTable.add().height(UiTheme.space("sm")).row();
         VisTextButton readButton = new VisTextButton(
-            (message.getIsRead() != null && message.getIsRead()) ? "Mark as Unread" : "Mark as Read"
+            (message.getIsRead() != null && message.getIsRead()) ? LanguageModLoader.getValue("inbox_mark_unread") : LanguageModLoader.getValue("inbox_mark_read")
         );
         readButton.addListener(new InputListener() {
             @Override

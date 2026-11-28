@@ -225,7 +225,7 @@ public class SaveGameDialog extends VisDialog {
             problemLabel.setText("");
         }
         boolean exists = check == SaveSlots.NameCheck.OVERWRITE;
-        saveGameButton.setText(LanguageModLoader.getValue(exists ? "overwrite" : "save_game"));
+        saveGameButton.setText(exists ? LanguageModLoader.getValue("overwrite") : LanguageModLoader.getValue("save_game"));
     }
 
     /** @return the manager's name and the in-game date, e.g. "Test Manager 1888-05-30" */

@@ -1,6 +1,11 @@
 // Futtoboru CI on the local Jenkins (same pattern as DarkBlade: labelled agent, parameters, mvn + junit).
 // Mirrors .github/workflows/ci.yml so a ws/ or b3/ branch can be checked here before it is merged into develop.
-// Jenkins setup (once): a Pipeline job "FUTTOBORU" with "Pipeline script from SCM" -> this repo, script path "Jenkinsfile".
+// Jenkins setup (once): a Pipeline job "Futtoboru DEV" with "Pipeline script from SCM" -> this repo, script path "Jenkinsfile".
+// T-01 test tiers (D27, docs/BUILD.md "Test tiers"): TEST_TIER=auto runs
+//   a develop commit (pollSCM)  -> slow tier + coverage (-Pslow,coverage; the fast tier ran at the lane's gate and on GitHub)
+//   the nightly (cron, develop) -> full + smoke + coverage (-Pfull,smoke,coverage); red -> bisect the day's merges
+//   main                        -> full + smoke + coverage
+//   any other BUILD_BRANCH      -> fast tier (ask for TEST_TIER=full to verify a branch before merging it)
 pipeline {
 
     agent {
@@ -12,6 +17,16 @@ pipeline {
             name: 'BUILD_BRANCH',
             defaultValue: 'develop',
             description: 'Branch to build: develop, main, or a ws/... or b3/... branch before merging it'
+        )
+        choice(
+            name: 'TEST_TIER',
+            choices: ['auto', 'fast', 'slow', 'full', 'smoke'],
+            description: 'auto: slow for develop commits, full+smoke+coverage at night, full+smoke for main, fast for other branches. smoke = full + the desktop smoke test'
+        )
+        booleanParam(
+            name: 'BISECT_ON_RED',
+            defaultValue: true,
+            description: 'Nightly only: when the full tier fails, git bisect (first parent) between the last green nightly and HEAD'
         )
         booleanParam(
             name: 'RUN_DATA_CHECKS',
@@ -27,6 +42,7 @@ pipeline {
     // GitHub webhooks can't reach the LAN Jenkins: poll develop instead (cheap, no build when nothing changed)
     triggers {
         pollSCM('H/15 * * * *')
+        cron('H 3 * * *')   // T-01: the nightly full tier of develop
     }
 
     options {
@@ -52,7 +68,28 @@ pipeline {
                     env.GIT_COMMIT_SHORT = isUnix()
                         ? sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                         : bat(script: '@git rev-parse --short HEAD', returnStdout: true).trim()
-                    currentBuild.displayName = "#${env.BUILD_NUMBER} ${params.BUILD_BRANCH} @ ${env.GIT_COMMIT_SHORT}"
+                    env.GIT_COMMIT_FULL = isUnix()
+                        ? sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                        : bat(script: '@git rev-parse HEAD', returnStdout: true).trim()
+                    // T-01: which tier this build runs
+                    env.NIGHTLY = currentBuild.getBuildCauses('hudson.triggers.TimerTrigger$TimerTriggerCause') ? 'true' : 'false'
+                    def tier = params.TEST_TIER ?: 'auto'
+                    if (tier == 'auto') {
+                        if (env.NIGHTLY == 'true') {
+                            tier = 'nightly'
+                        } else if (params.BUILD_BRANCH == 'develop') {
+                            tier = 'slow'
+                        } else if (params.BUILD_BRANCH == 'main') {
+                            tier = 'smoke'
+                        } else {
+                            tier = 'fast'
+                        }
+                    }
+                    env.TIER = tier
+                    // T-02: coverage (JaCoCo) only in the long Jenkins runs, never in the fast tier
+                    env.MVN_PROFILES = [fast: '', slow: '-Pslow,coverage', full: '-Pfull,coverage', smoke: '-Pfull,smoke,coverage',
+                                        nightly: '-Pfull,smoke,coverage'][tier]
+                    currentBuild.displayName = "#${env.BUILD_NUMBER} ${params.BUILD_BRANCH} @ ${env.GIT_COMMIT_SHORT} ${tier}"
                 }
             }
         }
@@ -65,19 +102,20 @@ pipeline {
                         sh '''
                             chmod +x mvnw
                             if command -v xvfb-run >/dev/null 2>&1; then
-                                xvfb-run -a ./mvnw -B -ntp clean verify
+                                xvfb-run -a ./mvnw -B -ntp clean verify $MVN_PROFILES
                             else
-                                ./mvnw -B -ntp clean verify
+                                ./mvnw -B -ntp clean verify $MVN_PROFILES
                             fi
+                            python3 tools/test_tiers.py || echo "WARNING: an untagged test class over 5 s (tools/test_tiers.py)"
                         '''
                     } else {
-                        bat 'mvnw.cmd -B -ntp clean verify'
+                        bat "mvnw.cmd -B -ntp clean verify ${env.MVN_PROFILES}"
                     }
                 }
             }
             post {
                 always {
-                    junit testResults: '**/target/surefire-reports/TEST-*.xml', allowEmptyResults: true
+                    junit testResults: '**/target/surefire-reports/TEST-*.xml, **/target/failsafe-reports/TEST-*.xml', allowEmptyResults: true
                 }
                 success {
                     archiveArtifacts artifacts: 'futtoboru-desktop/target/*-jar-with-dependencies.jar', fingerprint: true
@@ -110,7 +148,24 @@ pipeline {
 
     post {
         always {
-            echo "Futtoboru build ${env.BUILD_NUMBER}: branch ${params.BUILD_BRANCH} @ ${env.GIT_COMMIT_SHORT ?: 'N/A'} -> ${currentBuild.currentResult}"
+            echo "Futtoboru build ${env.BUILD_NUMBER}: branch ${params.BUILD_BRANCH} @ ${env.GIT_COMMIT_SHORT ?: 'N/A'} tier ${env.TIER ?: '?'} -> ${currentBuild.currentResult}"
+        }
+        failure {
+            script {
+                // T-01: a red nightly bisects the merges since the last green nightly (first parent: one step per merge)
+                def good = currentBuild.previousSuccessfulBuild?.buildVariables?.GIT_COMMIT_FULL
+                if (env.NIGHTLY == 'true' && params.BISECT_ON_RED && good && isUnix()) {
+                    sh """
+                        git bisect start --first-parent ${env.GIT_COMMIT_FULL} ${good}
+                        git bisect run sh -c 'xvfb-run -a ./mvnw -B -ntp -q -o test -Pfull' || true
+                        git bisect log | tee bisect.log
+                        git bisect reset
+                    """
+                    archiveArtifacts artifacts: 'bisect.log', allowEmptyArchive: true
+                } else {
+                    echo "no bisect (nightly=${env.NIGHTLY}, last green=${good ?: 'unknown'})"
+                }
+            }
         }
     }
 }

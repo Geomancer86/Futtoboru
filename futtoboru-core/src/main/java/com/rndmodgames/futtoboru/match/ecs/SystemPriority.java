@@ -32,12 +32,18 @@ public final class SystemPriority {
     public static final int DRAW_EVENTS = 1010;
     /** Light sources gathered for the light map. */
     public static final int DRAW_LIGHTS = 1015;
+    /** Skyline backdrop behind the far side of the ground (K1), with chimney smoke. */
+    public static final int DRAW_SKYLINE = 1090;
     public static final int DRAW_PITCH = 1100;
     /** Mud, divots, footprints, wear overlay. */
     public static final int DRAW_MARKS = 1120;
     public static final int DRAW_SHADOWS = 1150;
+    /** Touchline buildings behind the far bank (T1: pavilion, shed, tent, carriage, telegraph pole). */
+    public static final int DRAW_TOUCHLINE_BACK = 1170;
     /** Crowd along the far touchline (behind the players in a three-quarter view). */
     public static final int DRAW_CROWD_BACK = 1180;
+    /** Far touchline strip in front of the bank (T1: rope, press table, committee, trainer, pressman, constable). */
+    public static final int DRAW_TOUCHLINE = 1190;
     /** Players, officials, ball and goal frames, depth-sorted together. */
     public static final int DRAW_ACTORS = 1200;
     /** The ball in the air above heads. */

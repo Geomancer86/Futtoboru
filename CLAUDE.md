@@ -11,7 +11,14 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
 
 ## Git rules (both machines are equals, decision D8)
 - One item = one branch from `origin/develop`: `ws/<item>` on WORKSTATION, `b3/<item>` on BOOK3PRO.
-- Before every push: `git fetch origin && git merge origin/develop`, then `mvn -B verify`. Push only green builds.
+- Tests (D27, `docs/BUILD.md` "Test tiers"): while coding only the affected tests (`tools/test-changed.ps1`, no lock);
+  the level gate once at the end: `git fetch origin && git merge origin/develop`, then `python tools/test_level.py --run`
+  (same as `tools/dev/check`). It runs only what changed since the last green run, so a merge that brought only docs
+  re-runs nothing; if develop did not move since the tested SHA, merge into develop without running anything.
+  The full tier (`-Pfull`) runs on Jenkins and GitHub for develop, not locally; releases: `-Pfull,smoke`.
+- Every heavy Maven run goes through `python tools/suite_lock.py run -- <command>` (one suite per machine; it waits
+  inside and expires by itself): never your own wait loop. Long builds in the background. Push only green.
+- A test class over 2 s gets `@Tag("slow")`; `python tools/test_tiers.py` fails on an untagged class over 5 s.
 - Each machine merges its own green branches into `develop` (no waiting on the other machine).
 - Never force-push. Never rewrite `develop` or `main`. `main` only gets tagged releases (fast-forward from a green `develop`); agents may do them (D25).
 - Parallel agents on one machine: one `git worktree` per item; never work in another session's worktree.

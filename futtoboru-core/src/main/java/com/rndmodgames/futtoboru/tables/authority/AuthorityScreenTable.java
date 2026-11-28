@@ -127,7 +127,7 @@ public class AuthorityScreenTable extends VisTable {
         // No existing Leagues
         if (main.getLeagues().isEmpty()) {
             
-            leaguesListTable.add(new VisLabel("No Active Leagues"));
+            leaguesListTable.add(new VisLabel(LanguageModLoader.getValue("authority_no_leagues")));
             
         } else {
             
@@ -155,7 +155,7 @@ public class AuthorityScreenTable extends VisTable {
             
             teamsListTable.add(new VisLabel(club.getFullName()));
             teamsListTable.add(new VisLabel(club.getYear().toString()));
-            teamsListTable.add(new LinkLabel("(Wikipedia)", club.getUrlSource()));
+            teamsListTable.add(new LinkLabel(LanguageModLoader.getValue("authority_wikipedia"), club.getUrlSource()));
             teamsListTable.row();
         }
     }

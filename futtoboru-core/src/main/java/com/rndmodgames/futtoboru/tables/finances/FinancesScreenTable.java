@@ -16,6 +16,7 @@ import com.rndmodgames.futtoboru.data.MatchIncome;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -56,7 +57,7 @@ public class FinancesScreenTable extends VisTable {
         
         Club club = game.getCurrentGame().getCurrentClub();
         if (club == null) {
-            this.add(new VisLabel("No club selected")).pad(UiTheme.space("lg")).row();
+            this.add(new VisLabel(LanguageModLoader.getValue("finances_no_club"))).pad(UiTheme.space("lg")).row();
             return;
         }
 
@@ -64,20 +65,20 @@ public class FinancesScreenTable extends VisTable {
         // SUMMARY SECTION
         // ========================================
         this.row();
-        VisLabel summaryLabel = new VisLabel("FINANCIAL SUMMARY");
+        VisLabel summaryLabel = new VisLabel(LanguageModLoader.getValue("finances_summary"));
         summaryLabel.setFontScale(UiTheme.fontScale("heading"));
         this.add(summaryLabel).colspan(2).pad(UiTheme.space("sm")).row();
         this.addSeparator().colspan(2).pad(UiTheme.space("xs")).row();
         
         // Overall Balance
         this.row();
-        this.add(new VisLabel("Overall Balance:"));
+        this.add(new VisLabel(LanguageModLoader.getValue("finances_balance")));
         this.add(new VisLabel(Money.format(club.getClubBalance()))).left().row();
         
         // Profit/Loss (This Month)
         BigDecimal monthProfitLoss = club.getMonthIncome().subtract(club.getMonthExpenditure());
         this.row().padTop(UiTheme.space("xs"));
-        this.add(new VisLabel("Profit/Loss (This Month):"));
+        this.add(new VisLabel(LanguageModLoader.getValue("finances_profit_month")));
         VisLabel profitLossLabel = new VisLabel(Money.format(monthProfitLoss));
         if (monthProfitLoss.compareTo(BigDecimal.ZERO) >= 0) {
             profitLossLabel.setColor(UiTheme.color("state.positive")); // Green for profit
@@ -89,7 +90,7 @@ public class FinancesScreenTable extends VisTable {
         // Profit/Loss (This Season)
         BigDecimal seasonProfitLoss = club.getSeasonIncome().subtract(club.getSeasonExpenditure());
         this.row().padTop(UiTheme.space("xs"));
-        this.add(new VisLabel("Profit/Loss (This Season):"));
+        this.add(new VisLabel(LanguageModLoader.getValue("finances_profit_season")));
         VisLabel seasonProfitLossLabel = new VisLabel(Money.format(seasonProfitLoss));
         if (seasonProfitLoss.compareTo(BigDecimal.ZERO) >= 0) {
             seasonProfitLossLabel.setColor(UiTheme.color("state.positive")); // Green for profit
@@ -104,43 +105,43 @@ public class FinancesScreenTable extends VisTable {
         // INCOME SECTION
         // ========================================
         this.row();
-        VisLabel incomeLabel = new VisLabel("INCOME (This Season)");
+        VisLabel incomeLabel = new VisLabel(LanguageModLoader.getValue("finances_income_season"));
         incomeLabel.setFontScale(UiTheme.fontScale("subheading"));
         this.add(incomeLabel).colspan(2).pad(UiTheme.space("sm")).row();
         this.addSeparator().colspan(2).pad(UiTheme.space("xs")).row();
         
         // Match Day Income Table
         this.row();
-        VisLabel matchIncomeLabel = new VisLabel("Match Day Income Breakdown");
+        VisLabel matchIncomeLabel = new VisLabel(LanguageModLoader.getValue("finances_match_income"));
         matchIncomeLabel.setFontScale(UiTheme.fontScale("subheading.minor"));
         this.add(matchIncomeLabel).colspan(4).pad(UiTheme.space("xs")).row();
         
         // Table Header
         VisTable headerTable = new VisTable(true);
-        headerTable.add(new VisLabel("Match Type")).width(UiTheme.size("col.label"));
-        headerTable.add(new VisLabel("Revenue")).width(UiTheme.size("col.long"));
-        headerTable.add(new VisLabel("Avg Attendance")).width(UiTheme.size("col.long"));
-        headerTable.add(new VisLabel("Matches")).width(UiTheme.size("col.value"));
+        headerTable.add(new VisLabel(LanguageModLoader.getValue("finances_match_type"))).width(UiTheme.size("col.label"));
+        headerTable.add(new VisLabel(LanguageModLoader.getValue("finances_revenue"))).width(UiTheme.size("col.long"));
+        headerTable.add(new VisLabel(LanguageModLoader.getValue("finances_avg_attendance"))).width(UiTheme.size("col.long"));
+        headerTable.add(new VisLabel(LanguageModLoader.getValue("finances_matches"))).width(UiTheme.size("col.value"));
         this.add(headerTable).colspan(4).pad(UiTheme.space("xxs")).row();
         this.addSeparator().colspan(4).pad(UiTheme.space("xxs")).row();
         
         // Calculate and display League Matches
         MatchIncomeStats leagueStats = calculateMatchIncomeStats(club, Match.LEAGUE_MATCH);
-        displayMatchIncomeRow("League Matches", leagueStats);
+        displayMatchIncomeRow(LanguageModLoader.getValue("finances_league_matches"), leagueStats);
         
         // Calculate and display Cup Matches
         MatchIncomeStats cupStats = calculateMatchIncomeStats(club, Match.CUP_MATCH);
-        displayMatchIncomeRow("Cup Matches", cupStats);
+        displayMatchIncomeRow(LanguageModLoader.getValue("finances_cup_matches"), cupStats);
         
         // Calculate and display Friendly Matches
         MatchIncomeStats friendlyStats = calculateMatchIncomeStats(club, Match.FRIENDLY_MATCH);
-        displayMatchIncomeRow("Friendly Matches", friendlyStats);
+        displayMatchIncomeRow(LanguageModLoader.getValue("finances_friendly_matches"), friendlyStats);
         
         // Total Match Day Income
         BigDecimal matchDayIncome = calculateMatchDayIncome(club);
         this.addSeparator().colspan(4).pad(UiTheme.space("xxs")).row();
         VisTable matchIncomeTotalTable = new VisTable(true);
-        matchIncomeTotalTable.add(new VisLabel("Total Match Day Income:")).width(UiTheme.size("col.label"));
+        matchIncomeTotalTable.add(new VisLabel(LanguageModLoader.getValue("finances_total_match_income"))).width(UiTheme.size("col.label"));
         matchIncomeTotalTable.add(new VisLabel(Money.format(matchDayIncome))).width(UiTheme.size("col.long"));
         matchIncomeTotalTable.add(new VisLabel("")).width(UiTheme.size("col.long")); // Empty for avg attendance
         matchIncomeTotalTable.add(new VisLabel("")).width(UiTheme.size("col.value")); // Empty for match count
@@ -150,7 +151,7 @@ public class FinancesScreenTable extends VisTable {
         BigDecimal totalIncome = club.getSeasonIncome();
         this.addSeparator().colspan(2).pad(UiTheme.space("xxs")).row();
         this.row();
-        this.add(new VisLabel("Total Income:"));
+        this.add(new VisLabel(LanguageModLoader.getValue("finances_total_income")));
         this.add(new VisLabel(Money.format(totalIncome))).left().row();
         
         this.add().height(UiTheme.space("lg")).colspan(2).row();
@@ -159,7 +160,7 @@ public class FinancesScreenTable extends VisTable {
         // EXPENDITURE SECTION
         // ========================================
         this.row();
-        VisLabel expenditureLabel = new VisLabel("EXPENDITURE (This Season)");
+        VisLabel expenditureLabel = new VisLabel(LanguageModLoader.getValue("finances_expenditure_season"));
         expenditureLabel.setFontScale(UiTheme.fontScale("subheading"));
         this.add(expenditureLabel).colspan(2).pad(UiTheme.space("sm")).row();
         this.addSeparator().colspan(2).pad(UiTheme.space("xs")).row();
@@ -169,32 +170,32 @@ public class FinancesScreenTable extends VisTable {
         
         // Expense Breakdown Table
         this.row();
-        VisLabel breakdownLabel = new VisLabel("Expense Breakdown");
+        VisLabel breakdownLabel = new VisLabel(LanguageModLoader.getValue("finances_expense_breakdown"));
         breakdownLabel.setFontScale(UiTheme.fontScale("subheading.minor"));
         this.add(breakdownLabel).colspan(2).pad(UiTheme.space("xs")).row();
         
         // Table Header
         VisTable expenseHeaderTable = new VisTable(true);
-        expenseHeaderTable.add(new VisLabel("Category")).width(UiTheme.size("col.wide"));
-        expenseHeaderTable.add(new VisLabel("Amount")).width(UiTheme.size("col.long"));
+        expenseHeaderTable.add(new VisLabel(LanguageModLoader.getValue("finances_category"))).width(UiTheme.size("col.wide"));
+        expenseHeaderTable.add(new VisLabel(LanguageModLoader.getValue("finances_amount"))).width(UiTheme.size("col.long"));
         this.add(expenseHeaderTable).colspan(2).pad(UiTheme.space("xxs")).row();
         this.addSeparator().colspan(2).pad(UiTheme.space("xxs")).row();
         
         // Display each expense category
-        displayExpenseRow("Stadium Maintenance", breakdown.stadiumMaintenance);
-        displayExpenseRow("Pitch Maintenance", breakdown.pitchMaintenance);
-        displayExpenseRow("Materials & Equipment", breakdown.materialsEquipment);
-        displayExpenseRow("Staff Wages", breakdown.staffWages);
-        displayExpenseRow("Administrative", breakdown.administrativeExpenses);
-        displayExpenseRow("Stadium Rent", breakdown.stadiumRent);
-        displayExpenseRow("Other Expenses", breakdown.otherExpenses);
-        displayExpenseRow("Player Wages", breakdown.playerWages, true); // Italic if zero (not implemented yet)
+        displayExpenseRow(LanguageModLoader.getValue("finances_stadium_maintenance"), breakdown.stadiumMaintenance);
+        displayExpenseRow(LanguageModLoader.getValue("finances_pitch_maintenance"), breakdown.pitchMaintenance);
+        displayExpenseRow(LanguageModLoader.getValue("finances_materials"), breakdown.materialsEquipment);
+        displayExpenseRow(LanguageModLoader.getValue("finances_staff_wages"), breakdown.staffWages);
+        displayExpenseRow(LanguageModLoader.getValue("finances_administrative"), breakdown.administrativeExpenses);
+        displayExpenseRow(LanguageModLoader.getValue("finances_stadium_rent"), breakdown.stadiumRent);
+        displayExpenseRow(LanguageModLoader.getValue("finances_other"), breakdown.otherExpenses);
+        displayExpenseRow(LanguageModLoader.getValue("finances_player_wages"), breakdown.playerWages, true); // Italic if zero (not implemented yet)
         
         // Total Expenditure
         BigDecimal totalExpenditure = breakdown.getTotal();
         this.addSeparator().colspan(2).pad(UiTheme.space("xxs")).row();
         VisTable expenseTotalTable = new VisTable(true);
-        expenseTotalTable.add(new VisLabel("Total Expenditure:")).width(UiTheme.size("col.wide"));
+        expenseTotalTable.add(new VisLabel(LanguageModLoader.getValue("finances_total_expenditure"))).width(UiTheme.size("col.wide"));
         VisLabel totalLabel = new VisLabel(Money.format(totalExpenditure));
         totalLabel.setColor(UiTheme.color("state.negative")); // Red for expenses
         expenseTotalTable.add(totalLabel).width(UiTheme.size("col.long"));
@@ -205,7 +206,7 @@ public class FinancesScreenTable extends VisTable {
         if (totalExpenditure.compareTo(seasonExpenditure) != 0) {
             // Show both for debugging
             this.row();
-            this.add(new VisLabel("(Season Total: " + Money.format(seasonExpenditure) + ")")).colspan(2).left().padTop(UiTheme.space("xxs"));
+            this.add(new VisLabel(LanguageModLoader.format("finances_season_total", Money.format(seasonExpenditure)))).colspan(2).left().padTop(UiTheme.space("xxs"));
         }
     }
     

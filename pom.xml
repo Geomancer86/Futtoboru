@@ -19,9 +19,45 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-            	
+
             </properties>
         </profile>
+        <!-- Coverage only on Jenkins (EXECUTOR_BACKUP on WORKSTATION), long integration runs: -Pcoverage (T-02) -->
+        <profile>
+            <id>coverage</id>
+            <properties>
+                <jacoco.skip>false</jacoco.skip>
+            </properties>
+        </profile>
+        <!-- T-01 test tiers (D27, docs/BUILD.md "Test tiers"): the default build runs the fast tier only -->
+        <profile>
+            <!-- ./mvnw -B verify -Pfull: fast + slow (before merging into develop; CI on develop/main and PRs) -->
+            <id>full</id>
+            <properties>
+                <test.excludedGroups>smoke</test.excludedGroups>
+            </properties>
+        </profile>
+        <profile>
+            <!-- ./mvnw -B verify -Pslow: the slow tier alone (Jenkins after each develop commit) -->
+            <id>slow</id>
+            <properties>
+                <groups>slow,season</groups>
+                <test.excludedGroups>smoke</test.excludedGroups>
+            </properties>
+        </profile>
+        <profile>
+            <!-- -Dtest=SomeTests runs that test whatever its tier (a slow test on its own is not skipped) -->
+            <id>single-test</id>
+            <activation>
+                <property>
+                    <name>test</name>
+                </property>
+            </activation>
+            <properties>
+                <test.excludedGroups></test.excludedGroups>
+            </properties>
+        </profile>
+        <!-- -Psmoke (futtoboru-desktop/pom.xml) adds the smoke tier: the real desktop jar, started for a few seconds -->
     </profiles>
     
     <properties>
@@ -33,6 +69,8 @@
    		
    		<!-- JaCoCo -->
    		<jacoco.version>0.8.10</jacoco.version>
+   		<!-- off for local and branch runs; the coverage profile turns it on (T-02) -->
+   		<jacoco.skip>true</jacoco.skip>
    		
    		<!-- LibGDX -->
    		<libgdx.version>1.12.0</libgdx.version>
@@ -51,6 +89,9 @@
    		
    		<!-- Maven Surefire Plugin -->
    		<maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
+
+   		<!-- T-01 test tiers (D27): JUnit tags left out of the default (fast) run; -Pfull keeps only smoke out -->
+   		<test.excludedGroups>slow,season,smoke</test.excludedGroups>
    		
    		<!-- Java Source Version -->
    		<java.source.version>17</java.source.version>
@@ -58,6 +99,26 @@
    		<!-- Java Target Version -->
    		<java.target.version>17</java.target.version>
     </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                    <configuration>
+                        <excludedGroups>${test.excludedGroups}</excludedGroups>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 	<repositories>
 		<repository>
