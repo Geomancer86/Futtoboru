@@ -1,6 +1,7 @@
 package com.rndmodgames.futtoboru.match.ecs;
 
 import com.rndmodgames.futtoboru.match.ecs.action.ActionParams;
+import com.rndmodgames.futtoboru.match.ecs.ai.AiParams;
 import com.rndmodgames.futtoboru.match.ecs.body.BodyParams;
 import com.rndmodgames.futtoboru.match.ecs.laws.LawsParams;
 import com.rndmodgames.futtoboru.match.ecs.laws.RulesProfile;
@@ -114,6 +115,11 @@ public final class PhysicsParams {
     /** Reach, control, kicks, input noise, headers and lace, keeper handling and carrying, throws. */
     public ActionParams action = new ActionParams();
 
+    // ---- player AI (E-15, §4.1) ----------------------------------------------------------------------------------
+
+    /** Perception noise and delay, utility weights by style, keeper release. */
+    public AiParams ai = new AiParams();
+
     // ---- laws and officials (E-16, §4.2) ---------------------------------------------------------------------------
 
     /** The Laws of the season (offside, officials, penalties, keeper handling and protection, restarts). */
@@ -162,6 +168,8 @@ public final class PhysicsParams {
         body.validate();
         require(action != null, "action params");
         action.validate();
+        require(ai != null, "ai params");
+        ai.validate();
         require(rules != null, "rules profile");
         require(laws != null, "laws params");
         laws.validate();

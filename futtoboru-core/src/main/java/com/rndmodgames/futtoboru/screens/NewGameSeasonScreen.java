@@ -24,6 +24,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.SaveLoadSystem;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.system.Log;
@@ -282,7 +283,7 @@ public class NewGameSeasonScreen implements Screen {
         seasonCountriesNumber.setText(availableSeasonsSelectBox.getSelected().getCountries().size());
         
         // update season start date label
-        seasonStartDateValueLabel.setText(DatabaseLoader.formatter.format(availableSeasonsSelectBox.getSelected().getStartDate()));
+        seasonStartDateValueLabel.setText(GameFormat.longDate(availableSeasonsSelectBox.getSelected().getStartDate())); // U-12
         
         // update season source url label
         seasonUrlSourceValueLabel.setText(LanguageModLoader.getValue("newgame_source_wikipedia"));

@@ -1,6 +1,5 @@
 package com.rndmodgames.futtoboru.tables.squad;
 
-import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
 import com.badlogic.gdx.Game;
@@ -11,6 +10,7 @@ import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -47,7 +47,6 @@ public class SquadScreenTable extends VisTable{
     VisScrollPane playersScrollPane;
     
     //
-    DecimalFormat averageYearsFormat = new DecimalFormat("#.0"); 
     
     //
     public SquadScreenTable(Game parent) {
@@ -160,7 +159,7 @@ public class SquadScreenTable extends VisTable{
             double averagePlayerAge = (double) accumulatedAge / (double) displayedClub.getPlayers().size();
             
             //
-            averagePlayerAgeValueLabel.setText(LanguageModLoader.format("squad_years_old", averageYearsFormat.format(averagePlayerAge)));
+            averagePlayerAgeValueLabel.setText(LanguageModLoader.format("squad_years_old", GameFormat.decimal(averagePlayerAge, 1)));
         }
         
         // Update Players List Component

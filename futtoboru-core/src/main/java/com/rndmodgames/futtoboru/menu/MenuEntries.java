@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.rndmodgames.futtoboru.system.SaveGame;
+
 /**
  * The in-game left menu, for every profession, in one list (U-04b).
  *
@@ -93,6 +95,17 @@ public final class MenuEntries {
             }
         }
         return Collections.unmodifiableList(entries);
+    }
+
+    /**
+     * Which menu the owner sees (J-01): the club menu ({@link Audience#MANAGER}) when he works at a club, whatever
+     * his post (a director or scout hired from the job board too), else the job-seeker menu. It went by the
+     * profession alone: a hired director kept the job-seeker menu, a manager without a club got the club menu.
+     *
+     * @return true for {@code forProfession(true)}
+     */
+    public static boolean hasClub(SaveGame game) {
+        return game != null && game.getCurrentClub() != null;
     }
 
     /** @return the menu entry screen to highlight while {@code screen} is shown (itself for an entry screen) */

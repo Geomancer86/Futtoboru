@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,6 +25,7 @@ import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.GroundArt;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiTooltips;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -145,11 +145,8 @@ public class FixturesTable extends VisTable {
 
     /** The day in a cell ({@code schedule_day_pattern}: "d MMM", numeric in Spanish). */
     private static DateTimeFormatter dayFormatter() {
-        try {
-            return DateTimeFormatter.ofPattern(text("schedule_day_pattern"), Locale.ENGLISH);
-        } catch (RuntimeException e) { // a bad pattern in a language file
-            return DateTimeFormatter.ofPattern("d MMM", Locale.ENGLISH);
-        }
+        // U-12: month names in the game language; a bad pattern in a language file falls back to "d MMM"
+        return GameFormat.formatter("schedule_day_pattern", "d MMM");
     }
 
     private static String typeLabel(Match match) {

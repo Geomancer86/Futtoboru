@@ -1,11 +1,11 @@
 package com.rndmodgames.futtoboru.tables.widgets;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 
@@ -31,8 +31,8 @@ public class CurrentDateAndTimeWidget extends VisTable {
     /**
      * TODO: date formats should be set on user settings and persisted
      */
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("EEE hh:mm:ss a", Locale.ENGLISH);
+    DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.NUMERIC); // U-12: the game language
+    DateTimeFormatter timeFormatter = GameFormat.formatter(GameFormat.CLOCK);
     
     //
     public CurrentDateAndTimeWidget(Game game) {
