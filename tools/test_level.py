@@ -122,6 +122,10 @@ def affected_tests(files):
     return sorted(picked)
 
 
+# D35: tests run while coding and in the data/presentation gate skip the slow tiers (Jenkins runs them)
+FAST_ONLY = "-Dtest.excludedGroups=slow,season,smoke,soak"
+
+
 def mvnw():
     return "mvnw.cmd" if os.name == "nt" else "./mvnw"
 
@@ -173,6 +177,8 @@ def decide(base=None, tier="fast", offline=False, use_green=True):
             maven += ["-pl", "futtoboru-core"]
     elif level in ("data", "presentation"):
         maven = base_args + ["test", "-Dtest=" + ",".join(tests), "-Dsurefire.failIfNoSpecifiedTests=false"]
+        if tier != "full":
+            maven += [FAST_ONLY]  # D35: a named slow class stays out of the fast gate
         maven += ["-pl", "futtoboru-desktop", "-am"] if desktop else ["-pl", "futtoboru-core"]
     pytest = []
     if any(f.startswith("tools/data/") or f.startswith(GAMEDATA) for f in files):
@@ -215,7 +221,7 @@ def affected(base, offline):
         print("  " + t)
     desktop = any(f.startswith("futtoboru-desktop/") for f in files)
     command = [mvnw(), "-B", "-ntp", "-q"] + (["-o"] if offline else []) + [
-        "test", "-Dtest=" + ",".join(tests), "-Dsurefire.failIfNoSpecifiedTests=false"]
+        "test", "-Dtest=" + ",".join(tests), "-Dsurefire.failIfNoSpecifiedTests=false", FAST_ONLY]
     command += ["-pl", "futtoboru-desktop", "-am"] if desktop else ["-pl", "futtoboru-core"]
     print("run: " + " ".join(command))
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
