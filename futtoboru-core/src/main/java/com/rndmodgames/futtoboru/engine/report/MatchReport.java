@@ -10,6 +10,9 @@ import java.util.function.Function;
 
 import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.engine.simulation.GoalMinutes;
+import com.rndmodgames.futtoboru.match.ecs.Surface;
+import com.rndmodgames.futtoboru.match.ecs.events.MatchEventType;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
 
@@ -63,7 +66,30 @@ public final class MatchReport {
         VARIANTS.put("report_close_cup_through", 3);
         VARIANTS.put("report_close_cup_final", 2);
         VARIANTS.put("report_close_cup_replay", 2);
+        // E-17: sentences from the ECS events
+        VARIANTS.put("report_weather_fine", 3);
+        VARIANTS.put("report_weather_rain", 3);
+        VARIANTS.put("report_weather_wet", 3);
+        VARIANTS.put("report_weather_muddy", 2);
+        VARIANTS.put("report_weather_frozen", 2);
+        VARIANTS.put("report_press", 3);
+        VARIANTS.put("report_disputed_denied", 2);
+        VARIANTS.put("report_injury_off", 3);
+        VARIANTS.put("report_injury_passenger", 2);
+        VARIANTS.put("report_lace_cut", 2);
+        VARIANTS.put("report_sent_off", 2);
+        VARIANTS.put("report_heavy_ball", 2);
+        VARIANTS.put("report_keeper", 3);
     }
+
+    /** E-17: most sentences a report from events may have (one without events has 3 to 6). */
+    static final int MAX_SENTENCES_WITH_EVENTS = 8;
+    /** E-17: a keeper this busy gets a sentence. */
+    static final int BUSY_KEEPER_SAVES = 4;
+    /** E-17: a side with this many shots in the opening minutes (and twice the other's) pressed from the kick-off. */
+    static final int PRESS_SHOTS = 2;
+    /** E-17: wetness from which a dry ground still saw rain ({@code PitchConditions.DRIZZLE}). */
+    static final double RAIN_WETNESS = 0.15;
 
     /** Numbers up to this are written as words ("two goals to one"). */
     static final int MAX_WORD = 12;
@@ -156,7 +182,9 @@ public final class MatchReport {
                 "report_number_group", "report_ground_of", "report_the_league", "report_the_cup",
                 "report_last_minute", "report_minute_from_time_one", "report_minutes_from_time", "report_scrimmage",
                 "report_scorer_minutes", "report_scorer_count", "report_and", "report_round_final",
-                "report_round_semi", "report_round_quarter", "report_round_ordinal", "report_round_number"));
+                "report_round_semi", "report_round_quarter", "report_round_ordinal", "report_round_number",
+                "report_man_of", "report_a_man_of", "report_when_early", "report_when_first", "report_when_second",
+                "report_when_late"));
         return keys;
     }
 
@@ -165,7 +193,7 @@ public final class MatchReport {
         return headline;
     }
 
-    /** The report: 3 to 6 sentences. */
+    /** The report: 3 to 6 sentences, up to {@link #MAX_SENTENCES_WITH_EVENTS} when the match has events (E-17). */
     public String getParagraph() {
         return paragraph;
     }
@@ -245,13 +273,68 @@ public final class MatchReport {
             String headline = format(variant("report_headline_" + s.key), winner, loser, f.home(), f.away());
 
             List<String> sentences = new ArrayList<>();
+            MatchFacts.Play play = f.play();
             sentences.add(occasion());
+            if (play != null) {
+                sentences.add(weather(play));
+            }
             if (known && h + a > 0) {
                 sentences.add(half(htH, htA));
             }
+            // E-17: the optional sentences from the events, most telling first, as many as the length allows
+            List<MatchFacts.Incident> told = new ArrayList<>();
+            boolean press = false;
+            boolean keeper = false;
+            if (play != null) {
+                int room = MAX_SENTENCES_WITH_EVENTS - sentences.size() - 2 - (h + a > 0 ? 1 : 0);
+                MatchFacts.Incident dispute = null;
+                List<MatchFacts.Incident> others = new ArrayList<>();
+                for (MatchFacts.Incident i : play.incidents()) {
+                    if (i.type() == MatchEventType.DISPUTED_GOAL) {
+                        dispute = dispute == null ? i : dispute;
+                    } else {
+                        others.add(i);
+                    }
+                }
+                others.sort((x, y) -> Integer.compare(rank(y), rank(x)));
+                if (dispute != null && room > 0) {
+                    told.add(dispute);
+                    room--;
+                }
+                if (!others.isEmpty() && room > 0) {
+                    told.add(others.get(0));
+                    room--;
+                }
+                if (pressing(play) != 0 && room > 0) {
+                    press = true;
+                    room--;
+                }
+                if (others.size() > 1 && rank(others.get(1)) >= 2 && room > 0) {
+                    told.add(others.get(1));
+                    room--;
+                }
+                if (busyKeeper(play) != 0 && room > 0) {
+                    keeper = true;
+                }
+                told.sort((x, y) -> Integer.compare(x.minute(), y.minute()));
+            }
+            if (press) {
+                boolean home = pressing(play) > 0;
+                sentences.add(format(variant("report_press"), team(home), team(!home)));
+            }
             sentences.add(play(s, known, winner, loser));
             boolean disputed = false;
-            if (h + a > 0 && beforeNets() && random.nextDouble() < DISPUTED_CHANCE) {
+            if (play != null) {
+                for (MatchFacts.Incident i : told) {
+                    disputed |= i.type() == MatchEventType.DISPUTED_GOAL;
+                    sentences.add(incident(i));
+                }
+                if (keeper) {
+                    boolean home = busyKeeper(play) > 0;
+                    sentences.add(format(variant("report_keeper"), home ? play.homeKeeper() : play.awayKeeper(),
+                            team(home), num(home ? play.homeSaves() : play.awaySaves())));
+                }
+            } else if (h + a > 0 && beforeNets() && random.nextDouble() < DISPUTED_CHANCE) {
                 disputed = true;
                 String appealing = s == Situation.DRAW ? f.away() : loser;
                 String scoring = s == Situation.DRAW ? f.home() : winner;
@@ -389,6 +472,95 @@ public final class MatchReport {
                 }
             }
             return format(variant("report_close"), args);
+        }
+
+        // ------------------------------------------------------------------------------------- E-17 events
+
+        /** The ground and the weather, from the surface and wetness the match was played on. */
+        private String weather(MatchFacts.Play play) {
+            Surface surface = play.surface() >= 0 && play.surface() < Surface.values().length
+                    ? Surface.values()[play.surface()] : Surface.DRY;
+            switch (surface) {
+                case FROZEN:
+                    return format(variant("report_weather_frozen"), f.home(), f.away());
+                case MUDDY:
+                    return format(variant("report_weather_muddy"), f.home(), f.away());
+                case WET:
+                    return format(variant("report_weather_wet"), f.home(), f.away());
+                default:
+                    return format(variant(play.wetness() >= RAIN_WETNESS ? "report_weather_rain"
+                            : "report_weather_fine"), f.home(), f.away());
+            }
+        }
+
+        /** 1 when the home side pressed from the kick-off, -1 the away side, 0 neither. */
+        private static int pressing(MatchFacts.Play play) {
+            int h = play.openingHome();
+            int a = play.openingAway();
+            if (h >= PRESS_SHOTS && h >= 2 * a) {
+                return 1;
+            }
+            return a >= PRESS_SHOTS && a >= 2 * h ? -1 : 0;
+        }
+
+        /** 1 when the home keeper was the busier and busy enough (named), -1 the away keeper, 0 neither. */
+        private static int busyKeeper(MatchFacts.Play play) {
+            boolean home = play.homeSaves() >= play.awaySaves();
+            int saves = home ? play.homeSaves() : play.awaySaves();
+            String name = home ? play.homeKeeper() : play.awayKeeper();
+            return saves >= BUSY_KEEPER_SAVES && name != null ? (home ? 1 : -1) : 0;
+        }
+
+        /** How telling an incident is: a sending-off over a man carried off over a lace cut over a passenger. */
+        private static int rank(MatchFacts.Incident i) {
+            switch (i.type()) {
+                case SENDING_OFF:
+                    return 5;
+                case INJURY:
+                    return i.detail() >= 3 ? 4 : 2;
+                case LACE_CUT:
+                    return 3;
+                default:
+                    return 1; // the ball grown heavy
+            }
+        }
+
+        private String incident(MatchFacts.Incident i) {
+            String when = when(i.minute());
+            switch (i.type()) {
+                case DISPUTED_GOAL: {
+                    String attackers = team(i.home());
+                    String defenders = team(!i.home());
+                    return i.detail() == 1 ? format(variant("report_disputed"), defenders, attackers)
+                            : format(variant("report_disputed_denied"), attackers, defenders);
+                }
+                case SENDING_OFF:
+                    return format(variant("report_sent_off"), man(i), when);
+                case INJURY:
+                    return format(variant(i.detail() >= 3 ? "report_injury_off" : "report_injury_passenger"), man(i),
+                            when);
+                case LACE_CUT:
+                    return format(variant("report_lace_cut"), man(i), when);
+                default:
+                    return format(variant("report_heavy_ball"), f.home(), f.away());
+            }
+        }
+
+        /** "Ross of Preston North End", or "a Preston North End man" when his name is not known. */
+        private String man(MatchFacts.Incident i) {
+            return i.name() != null ? format("report_man_of", i.name(), team(i.home()))
+                    : format("report_a_man_of", team(i.home()));
+        }
+
+        /** "early in the game", "before the interval", "after the interval", "late in the game" */
+        private String when(int minute) {
+            if (minute <= EARLY) {
+                return t("report_when_early");
+            }
+            if (minute <= GoalMinutes.HALF) {
+                return t("report_when_first");
+            }
+            return minute >= LATE ? t("report_when_late") : t("report_when_second");
         }
 
         // ------------------------------------------------------------------------------------- pieces
