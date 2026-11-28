@@ -16,13 +16,15 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.rndmodgames.futtoboru.BaseTest;
 import com.rndmodgames.futtoboru.NewGameFixture;
 import com.rndmodgames.futtoboru.data.Club;
@@ -54,7 +56,7 @@ class NewGameClubsTests extends BaseTest {
 
     @Test
     void aNewGameListsEveryParticipantAndEveryClubOfTheSelectedCountriesOnce() {
-        SaveGame game = NewGameFixture.newGame(application);
+        SaveGame game = NewGameFixture.newGameInSession(application);
         assertEachClubOnce(game.getAllClubs());
 
         for (Competition comp : DatabaseLoader.getCompetitions()) {
@@ -105,7 +107,7 @@ class NewGameClubsTests extends BaseTest {
 
     @Test
     void aSaveRoundTripKeepsEveryClubOnce() {
-        SaveGame game = NewGameFixture.newGame(application);
+        SaveGame game = NewGameFixture.newGameInSession(application);
         List<Long> order = ids(game.getAllClubs());
 
         LoadResult result = SaveCodec.decode(SaveCodec.encode(game, "P2-13", SAVED_AT));
@@ -115,41 +117,75 @@ class NewGameClubsTests extends BaseTest {
         assertEachClubOnce(result.getGame().getAllClubs());
     }
 
+    /** What the load does to a pre-P2-13 game: the first entry of each club (by id) and each snapshot stays. */
+    @Test
+    void removingDuplicatesKeepsTheFirstEntryOfEachClubAndSnapshot() {
+        SaveGame game = new SaveGame();
+        Club a = new Club("A");
+        a.setId(1L);
+        Club b = new Club("B");
+        b.setId(2L);
+        Club sameIdAsB = new Club("B again");
+        sameIdAsB.setId(2L);
+        Club c = new Club("C");
+        c.setId(3L);
+        game.getAllClubs().addAll(List.of(a, b, a, c, sameIdAsB, b));
+        assertEquals(3, game.removeDuplicateClubs());
+        assertEquals(List.of(a, b, c), game.getAllClubs());
+        assertEquals(0, game.removeDuplicateClubs(), "nothing left to drop");
+
+        LocalDateTime week = LocalDateTime.of(1888, 4, 2, 0, 0);
+        for (int copy = 0; copy < 2; copy++) {
+            for (long player = 1; player <= 3; player++) {
+                com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot s = new com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot();
+                s.setPlayerId(player);
+                s.setSnapshotDate(week);
+                s.setSnapshotType("WEEKLY");
+                game.getPlayerAttributeSnapshots().add(s);
+            }
+        }
+        com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot nextWeek = new com.rndmodgames.futtoboru.data.PlayerAttributeSnapshot();
+        nextWeek.setPlayerId(1L);
+        nextWeek.setSnapshotDate(week.plusDays(7));
+        nextWeek.setSnapshotType("WEEKLY");
+        game.getPlayerAttributeSnapshots().add(nextWeek);
+        assertEquals(3, game.removeDuplicateSnapshots());
+        assertEquals(4, game.getPlayerAttributeSnapshots().size());
+    }
+
     /**
      * A save of a game started before P2-13: the clubs of England listed a second time after the participants and
      * the weekly attribute snapshots of their players taken twice. The load keeps each club once, in its order, as
      * the one object every other reference (league, database lookups) points at, and each snapshot once; the loaded
-     * game then books one week's expenses per club.
+     * game then books one week's expenses per club. (Slow: a played save written, edited and read back, ~2 s.)
      */
     @Test
+    @Tag("slow")
     void loadingASaveThatListsClubsTwiceKeepsEachClubOnceAsTheObjectOthersPointAt() {
-        SaveGame game = NewGameFixture.newGame(application);
+        SaveGame game = NewGameFixture.newGameInSession(application);
         NewGameFixture.play(application, game, 1, true); // the first weekly snapshots and expenses
         List<Long> order = ids(game.getAllClubs());
         int snapshots = game.getPlayerAttributeSnapshots().size();
         assertTrue(snapshots > 300, "snapshots: " + snapshots);
 
-        JsonValue root = new JsonReader().parse(SaveCodec.encode(game, "Before P2-13", SAVED_AT));
-        JsonValue saved = root.get("game");
-        JsonValue allClubs = saved.get("allClubs");
+        String text = SaveCodec.encode(game, "Before P2-13", SAVED_AT);
+        StringBuilder english = new StringBuilder();
         Country england = DatabaseLoader.getCountryByDataId("england");
-        int listedTwice = 0;
         for (Club club : DatabaseLoader.getClubsByCountry().get(england.getId())) {
-            allClubs.addChild(new JsonValue(club.getId()));
-            listedTwice++;
+            english.append(", ").append(club.getId());
         }
-        JsonValue snapshotList = saved.get("playerAttributeSnapshots");
-        List<JsonValue> copies = new ArrayList<>();
-        for (JsonValue s = snapshotList.child; s != null; s = s.next) {
-            copies.add(new JsonReader().parse(s.toJson(OutputType.json)));
-        }
-        for (JsonValue copy : copies) {
-            snapshotList.addChild(copy);
-        }
-        assertEquals(order.size() + listedTwice, allClubs.size, "the save lists clubs twice");
-        assertEquals(2 * snapshots, snapshotList.size);
+        // both arrays hold no nested array: the first ']' closes them
+        Matcher clubs = Pattern.compile("(\"allClubs\": \\[)([^\\]]*)\\]").matcher(text);
+        assertTrue(clubs.find());
+        text = text.substring(0, clubs.end(2)) + english + text.substring(clubs.end(2));
+        Matcher shots = Pattern.compile("(\"playerAttributeSnapshots\": \\[)([^\\]]*)\\]").matcher(text);
+        assertTrue(shots.find());
+        text = text.substring(0, shots.end(2)) + "," + shots.group(2) + text.substring(shots.end(2));
+        JsonValue saved = new JsonReader().parse(text).get("game");
+        assertTrue(saved.get("allClubs").size > order.size() + 12, "the save lists clubs twice");
+        assertEquals(2 * snapshots, saved.get("playerAttributeSnapshots").size);
 
-        LoadResult result = SaveCodec.decode(root.toJson(OutputType.json));
+        LoadResult result = SaveCodec.decode(text);
 
         assertTrue(result.isLoaded(), result.toString());
         assertEquals(new ArrayList<String>(), result.getProblems());
@@ -177,7 +213,7 @@ class NewGameClubsTests extends BaseTest {
      */
     @Test
     void weeklyExpensesSnapshotsAndTheDailyAttributeDriftRunOncePerClub() {
-        SaveGame game = NewGameFixture.newGame(application);
+        SaveGame game = NewGameFixture.newGameInSession(application);
         Map<Long, float[]> before = new HashMap<>();
         int players = 0;
         for (Club club : game.getAllClubs()) {
