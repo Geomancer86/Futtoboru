@@ -76,7 +76,9 @@ public final class MatchSystems {
             OfficialComponent.class,
             // E-15 player AI
             TeamTacticsComponent.class,
-            PerceptionComponent.class);
+            PerceptionComponent.class,
+            // E-18 crowd sections
+            CrowdComponent.class);
 
     private MatchSystems() {
     }
@@ -99,7 +101,9 @@ public final class MatchSystems {
         world.addSimulation(new BallSystem(world)).setPitch(pitch);
         world.addSimulation(new ContactSystem(world));
         world.addSimulation(new LawsSystem(world)).setPitch(pitch);
+        CrowdSystem crowd = world.addSimulation(new CrowdSystem(world));
         world.engine().getSystem(ActionSystem.class).setPitch(pitch);
+        world.engine().getSystem(ActionSystem.class).setCrowd(crowd);
     }
 
     /**
@@ -127,6 +131,7 @@ public final class MatchSystems {
         world.addDrawPass(new PitchPass(frame));
         world.addDrawPass(new ShadowPass(frame, interpolation));
         world.addDrawPass(new TouchlinePass.Buildings(frame));
+        frame.setCrowd(world.engine().getSystem(CrowdSystem.class));
         world.addDrawPass(new CrowdPass(frame));
         world.addDrawPass(new TouchlinePass(frame));
         world.addDrawPass(new ActorPass(frame, interpolation));

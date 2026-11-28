@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.rndmodgames.futtoboru.match.ecs.CrowdSystem;
 import com.rndmodgames.futtoboru.match.ecs.FrameContext;
 import com.rndmodgames.futtoboru.match.ecs.Surface;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
@@ -47,6 +48,7 @@ public final class ViewFrame implements FrameContext {
     private double tickSeconds = 1.0 / 30;
     private int crowdSize = DEFAULT_CROWD;
     private double crowdMood;
+    private CrowdSystem crowd;
 
     public ViewFrame(GraphicsQuality quality) {
         if (quality == null) {
@@ -143,6 +145,18 @@ public final class ViewFrame implements FrameContext {
      */
     public double crowdMood() {
         return crowdMood;
+    }
+
+    /**
+     * The simulation's crowd (E-18): when set and the world has crowd sections, {@link CrowdPass} takes each figure's
+     * mood from the section nearest to him and {@link #crowdMood()} is only the fallback.
+     */
+    public CrowdSystem crowd() {
+        return crowd;
+    }
+
+    public void setCrowd(CrowdSystem crowd) {
+        this.crowd = crowd;
     }
 
     public void setCrowdMood(double mood) {
