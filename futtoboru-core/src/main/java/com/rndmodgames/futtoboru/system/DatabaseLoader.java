@@ -38,6 +38,9 @@ import com.rndmodgames.futtoboru.system.data.DataRecord;
 import com.rndmodgames.futtoboru.system.data.DataReport;
 import com.rndmodgames.futtoboru.system.data.GameData;
 import com.rndmodgames.futtoboru.system.data.IdAllocator;
+import com.rndmodgames.futtoboru.system.data.LanguageData;
+import com.rndmodgames.futtoboru.system.data.RecruitmentData;
+import com.rndmodgames.futtoboru.system.generators.LanguageGenerator;
 import com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator;
 import com.rndmodgames.futtoboru.system.generators.PlayerContractGenerator;
 import com.rndmodgames.futtoboru.system.generators.PlayerProfessionAssigner;
@@ -106,6 +109,8 @@ public class DatabaseLoader {
 
     // the data the database was built from
     private static GameData gameData;
+    private static LanguageData languageData;
+    private static RecruitmentData recruitmentData;
 
     //
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss a", Locale.ENGLISH);
@@ -272,6 +277,8 @@ public class DatabaseLoader {
 
         clear();
         gameData = data;
+        languageData = LanguageData.from(data);
+        recruitmentData = RecruitmentData.from(data);
 
         DataReport report = data.getReport();
         for (String error : report.getErrors()) {
@@ -486,6 +493,8 @@ public class DatabaseLoader {
             person.setLastname(r.str("lastName"));
             person.setCountry(countriesByDataId.get(r.ref("country")));
             person.setBirthDate(BirthDates.complete(r.str("born"), rng.fork("born:" + r.id()).asRandom()));
+            // R-11a: languages on the person's own fork (never the player's stream: attributes are unchanged)
+            LanguageGenerator.assign(person, languageData, data, rng);
             persons.add(person);
             personsByDataId.put(person.getDataId(), person);
         }
@@ -638,6 +647,10 @@ public class DatabaseLoader {
         copy.setLastname(canonical.getLastname());
         copy.setCountry(canonical.getCountry());
         copy.setBirthDate(canonical.getBirthDate());
+        copy.setLanguages(new ArrayList<>(canonical.getLanguages()));
+        copy.setHomeLanguage(canonical.getHomeLanguage());
+        copy.setBirthArea(canonical.getBirthArea());
+        copy.setParentsOrigin(canonical.getParentsOrigin());
         return copy;
     }
 
@@ -697,6 +710,16 @@ public class DatabaseLoader {
     /** @return the game data the database was built from (with its error/warning report) */
     public static GameData getGameData() {
         return gameData;
+    }
+
+    /** R-11a: the languages, rate areas and rates of the data (null before the first load) */
+    public static LanguageData getLanguageData() {
+        return languageData;
+    }
+
+    /** R-02: the registration rules, wages, origins and origin clubs of the data (null before the first load) */
+    public static RecruitmentData getRecruitmentData() {
+        return recruitmentData;
     }
 
     /** @return how many squad places are runtime copies of a person already listed in another squad */

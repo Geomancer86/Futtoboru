@@ -1,0 +1,156 @@
+[
+  {
+    "id": "newton-heath-lyr",
+    "name": "Newton Heath LYR",
+    "kind": "works",
+    "place": "Manchester",
+    "country": "england",
+    "area": "lancashire",
+    "founded": 1878,
+    "origins": ["railway"],
+    "confidence": "unverified",
+    "sources": ["https://en.wikipedia.org/wiki/History_of_Manchester_United_F.C."],
+    "notes": "Carriage and wagon works of the Lancashire and Yorkshire Railway; later Manchester United."
+  },
+  {
+    "id": "ardwick",
+    "name": "Ardwick",
+    "kind": "church",
+    "place": "Manchester",
+    "country": "england",
+    "area": "lancashire",
+    "founded": 1880,
+    "confidence": "unverified",
+    "sources": ["https://en.wikipedia.org/wiki/Manchester_City_F.C."],
+    "notes": "Began as St. Mark's (West Gorton), a church side, 1880; Ardwick from 1887; later Manchester City."
+  },
+  {
+    "id": "royal-arsenal",
+    "name": "Royal Arsenal",
+    "kind": "works",
+    "place": "Woolwich",
+    "country": "england",
+    "area": "england-other",
+    "founded": 1886,
+    "origins": ["ironworks", "soldier"],
+    "confidence": "unverified",
+    "sources": ["https://en.wikipedia.org/wiki/History_of_Arsenal_F.C._(1886%E2%80%931966)"],
+    "notes": "Formed as Dial Square by workers at the Royal Arsenal, Woolwich, 1886."
+  },
+  {
+    "id": "singers",
+    "name": "Singers",
+    "kind": "works",
+    "place": "Coventry",
+    "country": "england",
+    "area": "england-other",
+    "founded": 1883,
+    "origins": ["ironworks"],
+    "confidence": "unverified",
+    "sources": ["https://en.wikipedia.org/wiki/Coventry_City_F.C."],
+    "notes": "Works side of the Singer cycle company; later Coventry City."
+  },
+  {
+    "id": "renton",
+    "name": "Renton",
+    "kind": "scottish",
+    "place": "Renton, Dunbartonshire",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "founded": 1872,
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Renton_F.C.",
+      "https://www.thescotsfootballhistoriansgroup.org/scotch-professors"
+    ],
+    "notes": "Scottish Cup winners 1885 and 1888; recruits went south from Renton, Vale of Leven and Dumbarton (RECRUITMENT_1888-1900.md §1.3)."
+  },
+  {
+    "id": "vale-of-leven",
+    "name": "Vale of Leven",
+    "kind": "scottish",
+    "place": "Alexandria, Dunbartonshire",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "founded": 1872,
+    "confidence": "unverified",
+    "sources": ["https://en.wikipedia.org/wiki/Vale_of_Leven_F.C."]
+  },
+  {
+    "id": "dumbarton",
+    "name": "Dumbarton",
+    "kind": "scottish",
+    "place": "Dumbarton",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "founded": 1872,
+    "confidence": "unverified",
+    "sources": ["https://en.wikipedia.org/wiki/Dumbarton_F.C."]
+  },
+  {
+    "id": "partick-thistle",
+    "name": "Partick Thistle",
+    "kind": "scottish",
+    "place": "Partick, Glasgow",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "founded": 1876,
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Partick_Thistle_F.C.",
+      "https://ptearlyyears.net/?p=945"
+    ],
+    "notes": "Blackburn's secretary signed Wilkie from Partick Thistle for £40 after a week in Scotland (1890s, RECRUITMENT_1888-1900.md §1.5)."
+  },
+  {
+    "id": "queens-park",
+    "name": "Queen's Park",
+    "kind": "scottish",
+    "place": "Glasgow",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "founded": 1867,
+    "origins": ["gentleman-amateur"],
+    "confidence": "unverified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Queen%27s_Park_F.C.",
+      "https://en.wikipedia.org/wiki/Andrew_Watson_(footballer,_born_1856)"
+    ],
+    "notes": "Strictly amateur; Andrew Watson's club before Bootle."
+  },
+  {
+    "id": "kilmarnock",
+    "name": "Kilmarnock",
+    "kind": "scottish",
+    "place": "Kilmarnock, Ayrshire",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "founded": 1869,
+    "confidence": "unverified",
+    "sources": ["https://en.wikipedia.org/wiki/Kilmarnock_F.C."],
+    "notes": "Ayrshire: the first source region of the Scots recruits."
+  },
+  {
+    "id": "hibernian",
+    "name": "Hibernian",
+    "kind": "scottish",
+    "place": "Edinburgh",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "founded": 1875,
+    "confidence": "unverified",
+    "sources": ["https://en.wikipedia.org/wiki/Hibernian_F.C."],
+    "notes": "Founded by Irish immigrants in Edinburgh; Edinburgh was an early source of recruits."
+  },
+  {
+    "id": "heart-of-midlothian",
+    "name": "Heart of Midlothian",
+    "kind": "scottish",
+    "place": "Edinburgh",
+    "country": "scotland",
+    "area": "scotland-lowlands",
+    "founded": 1874,
+    "confidence": "unverified",
+    "sources": ["https://en.wikipedia.org/wiki/Heart_of_Midlothian_F.C."]
+  }
+]

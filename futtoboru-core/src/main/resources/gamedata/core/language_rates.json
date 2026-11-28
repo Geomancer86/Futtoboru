@@ -1,0 +1,370 @@
+[
+  {
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "signsMen": 0.7,
+    "signsWomen": 0.6,
+    "readWriteIfSigns": [0.3, 0.35, 0.25, 0.1],
+    "confidence": "estimate",
+    "sources": ["estimate: the fallback for a man born where no row applies (abroad)"],
+    "notes": "The default row (no area, no countries)."
+  },
+
+  {
+    "countries": ["england", "wales"],
+    "bornFrom": 1800,
+    "bornUntil": 1850,
+    "signsMen": 0.815,
+    "signsWomen": 0.748,
+    "confidence": "high",
+    "sources": ["https://archive.org/stream/sid14148770/sid14148770_djvu.txt"],
+    "notes": "Marks per 1,000 marriages 1871-75: 185 men, 252 women (Registrar General, 62nd report). Cohort = married at about 25. Signing overstates adult reading (Vincent): readWriteIfSigns spreads it."
+  },
+  {
+    "countries": ["england", "wales"],
+    "bornFrom": 1851,
+    "bornUntil": 1855,
+    "signsMen": 0.852,
+    "signsWomen": 0.8,
+    "confidence": "high",
+    "sources": ["https://archive.org/stream/sid14148770/sid14148770_djvu.txt"],
+    "notes": "Marriages 1876-80: 148 / 200 marks per 1,000."
+  },
+  {
+    "countries": ["england", "wales"],
+    "bornFrom": 1856,
+    "bornUntil": 1860,
+    "signsMen": 0.877,
+    "signsWomen": 0.845,
+    "confidence": "high",
+    "sources": ["https://archive.org/stream/sid14148770/sid14148770_djvu.txt"],
+    "notes": "Marriages 1881-85: 123 / 155 marks per 1,000."
+  },
+  {
+    "countries": ["england", "wales"],
+    "bornFrom": 1861,
+    "bornUntil": 1865,
+    "signsMen": 0.916,
+    "signsWomen": 0.902,
+    "confidence": "high",
+    "sources": ["https://archive.org/stream/sid14148770/sid14148770_djvu.txt"],
+    "notes": "Marriages 1886-90: 84 / 98 marks per 1,000. The typical 1888 player."
+  },
+  {
+    "countries": ["england", "wales"],
+    "bornFrom": 1866,
+    "bornUntil": 1870,
+    "signsMen": 0.949,
+    "signsWomen": 0.93,
+    "confidence": "medium",
+    "sources": ["https://archive.org/stream/sid14148770/sid14148770_djvu.txt"],
+    "notes": "Marriages 1891-95: 51 marks per 1,000 men; the women's figure is interpolated between 1886-90 and 1896 (estimate)."
+  },
+  {
+    "countries": ["england", "wales"],
+    "bornFrom": 1871,
+    "bornUntil": 1920,
+    "signsMen": 0.971,
+    "signsWomen": 0.966,
+    "confidence": "high",
+    "sources": ["https://archive.org/stream/sid14148770/sid14148770_djvu.txt"],
+    "notes": "1899: 29 men and 34 women per 1,000 marriages signed with a mark."
+  },
+  {
+    "countries": ["england", "wales"],
+    "bornFrom": 1800,
+    "bornUntil": 1862,
+    "readWriteIfSigns": [0.3, 0.35, 0.25, 0.1],
+    "confidence": "estimate",
+    "sources": ["estimate: Vincent (https://oro.open.ac.uk/69072/3/69072.pdf, snippet) says signatures overstate adult reading; born before the 1870 Act's board schools"],
+    "notes": "Of those who sign: signs his name only / reads slowly / reads well / writes well."
+  },
+  {
+    "countries": ["england", "wales"],
+    "bornFrom": 1863,
+    "bornUntil": 1920,
+    "readWriteIfSigns": [0.15, 0.3, 0.35, 0.2],
+    "confidence": "estimate",
+    "sources": ["estimate: school age (5) after the Elementary Education Act 1870, https://en.wikipedia.org/wiki/Elementary_Education_Act_1870"]
+  },
+  {
+    "countries": ["england"],
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "parentsBorn": { "ireland": 0.022 },
+    "confidence": "low",
+    "sources": ["https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics"],
+    "notes": "562,374 Irish-born in England and Wales in 1881 (blog figure) of about 26 million: the chance a man has an Irish-born parent (an inference)."
+  },
+  {
+    "area": "lancashire",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "parentsBorn": { "ireland": 0.042 },
+    "confidence": "low",
+    "sources": ["1891 census General Report via search snippet (LANGUAGES_LITERACY_1880-1914.md §4.1)"],
+    "notes": "42 Irish-born per 1,000 in Lancashire, 1891 (snippet only)."
+  },
+  {
+    "area": "liverpool",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "parentsBorn": { "ireland": 0.091, "wales": 0.1 },
+    "confidence": "low",
+    "sources": [
+      "1891 census General Report via search snippet (LANGUAGES_LITERACY_1880-1914.md §4.1)",
+      "https://livrepository.liverpool.ac.uk/3176267/1/258705.pdf"
+    ],
+    "notes": "91 Irish-born per 1,000 (1891, snippet); about 70,000 Welsh in Liverpool by 1900 (snippets, L§2.6): about a tenth, low."
+  },
+
+  {
+    "area": "glamorgan",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "speaks": { "welsh": 0.495 },
+    "only": { "welsh": 0.22 },
+    "confidence": "low",
+    "sources": ["http://ysbrydpenderyn.blogspot.com/2012/11/welsh-language-census-1891-adroddiad-ar.html"],
+    "notes": "1891 census by county, from a blog that cites no source (W)."
+  },
+  {
+    "area": "denbighshire",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "speaks": { "welsh": 0.653 },
+    "only": { "welsh": 0.336 },
+    "confidence": "low",
+    "sources": ["http://ysbrydpenderyn.blogspot.com/2012/11/welsh-language-census-1891-adroddiad-ar.html"],
+    "notes": "1891 (blog, W). 1911 (S): 56.7% Welsh, 88.3% English."
+  },
+  {
+    "area": "monmouthshire",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "speaks": { "welsh": 0.144 },
+    "only": { "welsh": 0.02 },
+    "confidence": "low",
+    "sources": ["http://ysbrydpenderyn.blogspot.com/2012/11/welsh-language-census-1891-adroddiad-ar.html"],
+    "notes": "1891 speakers (blog, W); the Welsh-only share is an estimate."
+  },
+  {
+    "area": "wales-west",
+    "bornFrom": 1800,
+    "bornUntil": 1880,
+    "speaks": { "welsh": 0.93 },
+    "only": { "welsh": 0.6 },
+    "confidence": "low",
+    "sources": [
+      "http://ysbrydpenderyn.blogspot.com/2012/11/welsh-language-census-1891-adroddiad-ar.html",
+      "1891 census General Report via search snippet (LANGUAGES_LITERACY_1880-1914.md §2.2)"
+    ],
+    "notes": "1891: Cardiganshire 95% Welsh (blog); Merioneth 746 and Cardiganshire 745 per 1,000 Welsh only (snippet). Rounded down for Carmarthenshire."
+  },
+  {
+    "area": "wales-west",
+    "bornFrom": 1881,
+    "bornUntil": 1920,
+    "speaks": { "welsh": 0.878 },
+    "only": { "welsh": 0.347 },
+    "confidence": "medium",
+    "sources": ["https://en.wikipedia.org/wiki/History_of_the_Welsh_language"],
+    "notes": "1911 means of Anglesey, Caernarfonshire, Merioneth, Cardiganshire, Carmarthenshire: 87.8% speak Welsh, 65.3% speak English."
+  },
+  {
+    "area": "wales-other",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "speaks": { "welsh": 0.3 },
+    "only": { "welsh": 0.05 },
+    "confidence": "estimate",
+    "sources": ["estimate: set so the Welsh areas weigh to the sourced 54.0% of 1891 (https://en.wikipedia.org/wiki/Welsh_language); Radnorshire 939 per 1,000 English only (snippet)"]
+  },
+
+  {
+    "countries": ["scotland"],
+    "bornFrom": 1800,
+    "bornUntil": 1866,
+    "signsMen": 0.9,
+    "signsWomen": 0.79,
+    "readWriteIfSigns": [0.25, 0.35, 0.28, 0.12],
+    "confidence": "medium",
+    "sources": ["https://mpra.ub.uni-muenchen.de/119319/1/MPRA_paper_119319.pdf"],
+    "notes": "1872: 90% of men and 79% of women signed in Scotland (Flora 1983, cited). No yearly Scottish series 1880-1914 (gap). readWriteIfSigns is an estimate."
+  },
+  {
+    "countries": ["scotland"],
+    "bornFrom": 1867,
+    "bornUntil": 1920,
+    "signsMen": 0.95,
+    "signsWomen": 0.9,
+    "readWriteIfSigns": [0.12, 0.3, 0.36, 0.22],
+    "confidence": "estimate",
+    "sources": ["estimate: school age after the compulsory Education (Scotland) Act 1872, https://en.wikipedia.org/wiki/Education_(Scotland)_Act_1872"]
+  },
+  {
+    "countries": ["scotland"],
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "parentsBorn": { "ireland": 0.059 },
+    "confidence": "low",
+    "sources": ["https://thewildgeese.irish/profiles/blogs/irish-in-britain-census-statistics"],
+    "notes": "218,745 Irish-born in Scotland in 1881 (blog figure) of about 3.74 million."
+  },
+  {
+    "area": "scotland-lowlands",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "speaks": { "scottish-gaelic": 0.01 },
+    "confidence": "medium",
+    "sources": ["https://en.wikipedia.org/wiki/1881_United_Kingdom_census"],
+    "notes": "1881 'habitual' Gaelic: Renfrew 1.9%, Dumbarton 1.8%, Lanark 1.2%, Edinburgh 0.6%, Ayr 0.3%."
+  },
+  {
+    "area": "scotland-highlands",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "speaks": { "scottish-gaelic": 0.7 },
+    "only": { "scottish-gaelic": 0.15 },
+    "confidence": "medium",
+    "sources": ["https://en.wikipedia.org/wiki/1881_United_Kingdom_census"],
+    "notes": "1881: Sutherland 75.0%, Ross and Cromarty 71.4%, Inverness 70.0%, Argyll 62.1%. The Gaelic-only share is an estimate (not asked in 1881)."
+  },
+  {
+    "area": "scotland-other",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "speaks": { "scottish-gaelic": 0.03 },
+    "confidence": "estimate",
+    "sources": ["estimate: Perth 11.2% (1881, https://en.wikipedia.org/wiki/1881_United_Kingdom_census), the other counties low; set so Scotland weighs to about the sourced 6.2%"]
+  },
+
+  {
+    "countries": ["ireland"],
+    "bornFrom": 1800,
+    "bornUntil": 1850,
+    "signsMen": 0.654,
+    "signsWomen": 0.582,
+    "readWriteIfSigns": [0.3, 0.35, 0.25, 0.1],
+    "confidence": "high",
+    "sources": ["https://www.cso.ie/en/media/csoie/releasespublications/documents/birthsdm/archivedreports/P-VS_1882.pdf"],
+    "notes": "1872: 65.4% of husbands and 58.2% of wives wrote their names. readWriteIfSigns is an estimate."
+  },
+  {
+    "countries": ["ireland"],
+    "bornFrom": 1851,
+    "bornUntil": 1860,
+    "signsMen": 0.744,
+    "signsWomen": 0.703,
+    "readWriteIfSigns": [0.3, 0.35, 0.25, 0.1],
+    "confidence": "high",
+    "sources": ["https://www.cso.ie/en/media/csoie/releasespublications/documents/birthsdm/archivedreports/P-VS_1882.pdf"],
+    "notes": "1882: 74.4% of husbands, 70.3% of wives."
+  },
+  {
+    "countries": ["ireland"],
+    "bornFrom": 1861,
+    "bornUntil": 1920,
+    "signsMen": 0.88,
+    "signsWomen": 0.86,
+    "readWriteIfSigns": [0.2, 0.32, 0.32, 0.16],
+    "confidence": "estimate",
+    "sources": ["estimate: between 1882 and the 1911 census (90.8% literate aged 9+, https://www.cso.ie/en/releasesandpublications/ep/p-c1911/storiesfromcensus1911literacy/literacy)"]
+  },
+  {
+    "area": "leinster",
+    "bornFrom": 1851,
+    "bornUntil": 1860,
+    "signsMen": 0.78,
+    "signsWomen": 0.77,
+    "confidence": "high",
+    "sources": ["https://www.cso.ie/en/media/csoie/releasespublications/documents/birthsdm/archivedreports/P-VS_1882.pdf"],
+    "notes": "1882: Leinster 78 / 77 per 100."
+  },
+  {
+    "area": "connacht",
+    "bornFrom": 1851,
+    "bornUntil": 1860,
+    "signsMen": 0.65,
+    "signsWomen": 0.64,
+    "confidence": "high",
+    "sources": ["https://www.cso.ie/en/media/csoie/releasespublications/documents/birthsdm/archivedreports/P-VS_1882.pdf"],
+    "notes": "1882: Connaught 65 / 64 per 100."
+  },
+  {
+    "area": "connacht",
+    "bornFrom": 1861,
+    "bornUntil": 1920,
+    "signsMen": 0.8,
+    "signsWomen": 0.78,
+    "confidence": "estimate",
+    "sources": ["estimate: 1911 census Mayo 81.7%, Galway 81.2% literate (https://www.cso.ie/en/releasesandpublications/ep/p-c1911/storiesfromcensus1911literacy/literacy)"]
+  },
+  {
+    "area": "leinster",
+    "bornFrom": 1800,
+    "bornUntil": 1870,
+    "speaks": { "irish": 0.021 },
+    "confidence": "medium",
+    "sources": ["https://db.nomics.world/CSO/C0901"],
+    "notes": "1881 Irish speakers, % of population (CSO)."
+  },
+  {
+    "area": "leinster",
+    "bornFrom": 1871,
+    "bornUntil": 1920,
+    "speaks": { "irish": 0.012 },
+    "confidence": "medium",
+    "sources": ["https://db.nomics.world/CSO/C0901"],
+    "notes": "1891 (CSO)."
+  },
+  {
+    "area": "munster",
+    "bornFrom": 1800,
+    "bornUntil": 1870,
+    "speaks": { "irish": 0.335 },
+    "only": { "irish": 0.05 },
+    "confidence": "medium",
+    "sources": ["https://db.nomics.world/CSO/C0901"],
+    "notes": "1881 speakers (CSO); the Irish-only share is an estimate (gap)."
+  },
+  {
+    "area": "munster",
+    "bornFrom": 1871,
+    "bornUntil": 1920,
+    "speaks": { "irish": 0.262 },
+    "only": { "irish": 0.03 },
+    "confidence": "medium",
+    "sources": ["https://db.nomics.world/CSO/C0901"],
+    "notes": "1891 speakers (CSO); the Irish-only share is an estimate."
+  },
+  {
+    "area": "connacht",
+    "bornFrom": 1800,
+    "bornUntil": 1870,
+    "speaks": { "irish": 0.446 },
+    "only": { "irish": 0.1 },
+    "confidence": "medium",
+    "sources": ["https://db.nomics.world/CSO/C0901"],
+    "notes": "1881 speakers (CSO); the Irish-only share is an estimate."
+  },
+  {
+    "area": "connacht",
+    "bornFrom": 1871,
+    "bornUntil": 1920,
+    "speaks": { "irish": 0.379 },
+    "only": { "irish": 0.06 },
+    "confidence": "medium",
+    "sources": ["https://db.nomics.world/CSO/C0901"],
+    "notes": "1891 speakers (CSO); the Irish-only share is an estimate."
+  },
+  {
+    "area": "ulster",
+    "bornFrom": 1800,
+    "bornUntil": 1920,
+    "speaks": { "irish": 0.07 },
+    "only": { "irish": 0.01 },
+    "confidence": "estimate",
+    "sources": ["estimate: Donegal, Cavan and Monaghan 19.5% (1881, https://db.nomics.world/CSO/C0901); Belfast and Antrim not found (gap)"]
+  }
+]

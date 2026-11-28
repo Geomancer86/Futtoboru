@@ -1,0 +1,140 @@
+[
+  {
+    "id": "liverpool",
+    "name": "Liverpool",
+    "country": "england",
+    "weight": 0.022,
+    "places": ["Liverpool", "Bootle"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 550,000 of about 24.6 million people in England in 1881, rounded"],
+    "notes": "A rate area of its own: the Irish-born share was about twice Lancashire's (LANGUAGES_LITERACY_1880-1914.md §4.1)."
+  },
+  {
+    "id": "lancashire",
+    "name": "Lancashire",
+    "country": "england",
+    "weight": 0.12,
+    "places": ["Preston", "Blackburn", "Bolton", "Accrington", "Burnley", "Manchester", "Darwen", "Barrow"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 3.45 million in Lancashire in 1881 less Liverpool, rounded"]
+  },
+  {
+    "id": "england-other",
+    "name": "Rest of England",
+    "country": "england",
+    "weight": 0.858,
+    "places": ["Birmingham", "Wolverhampton", "Stoke", "Derby", "Nottingham", "Sheffield", "Sunderland", "London"],
+    "confidence": "estimate",
+    "sources": ["estimate: the rest of England's 1881 population"]
+  },
+  {
+    "id": "glamorgan",
+    "name": "Glamorgan",
+    "country": "wales",
+    "weight": 0.33,
+    "places": ["Cardiff", "Swansea", "Merthyr Tydfil"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 510,000 of about 1.57 million in Wales and Monmouthshire in 1881, rounded"]
+  },
+  {
+    "id": "monmouthshire",
+    "name": "Monmouthshire",
+    "country": "wales",
+    "weight": 0.13,
+    "places": ["Newport", "Abergavenny"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 210,000 in 1881, rounded"]
+  },
+  {
+    "id": "denbighshire",
+    "name": "Denbighshire",
+    "country": "wales",
+    "weight": 0.07,
+    "places": ["Wrexham", "Ruabon", "Chirk", "Denbigh"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 110,000 in 1881, rounded"],
+    "notes": "The 1870s-80s Welsh football towns; no Welsh-language figure below county level (gap, L§2.5)."
+  },
+  {
+    "id": "wales-west",
+    "name": "West and North-West Wales",
+    "country": "wales",
+    "weight": 0.27,
+    "places": ["Anglesey", "Caernarfonshire", "Merioneth", "Cardiganshire", "Carmarthenshire"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 420,000 in these five counties in 1881, rounded"]
+  },
+  {
+    "id": "wales-other",
+    "name": "Rest of Wales",
+    "country": "wales",
+    "weight": 0.2,
+    "places": ["Flintshire", "Montgomeryshire", "Brecknockshire", "Radnorshire", "Pembrokeshire"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 320,000 in these five counties in 1881, rounded"]
+  },
+  {
+    "id": "scotland-lowlands",
+    "name": "Scottish football counties",
+    "country": "scotland",
+    "weight": 0.5,
+    "places": ["Lanarkshire", "Glasgow", "Edinburgh", "Renfrewshire", "Ayrshire", "Dunbartonshire"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 1.85 million of about 3.74 million in Scotland in 1881, rounded"],
+    "notes": "The recruiting counties of RECRUITMENT_1888-1900.md §1.3."
+  },
+  {
+    "id": "scotland-highlands",
+    "name": "Highland counties",
+    "country": "scotland",
+    "weight": 0.07,
+    "places": ["Sutherland", "Ross and Cromarty", "Inverness-shire", "Argyll"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 270,000 in these four counties in 1881, rounded"]
+  },
+  {
+    "id": "scotland-other",
+    "name": "Rest of Scotland",
+    "country": "scotland",
+    "weight": 0.43,
+    "places": ["Perthshire", "Fife", "Aberdeenshire", "Dundee", "the Borders"],
+    "confidence": "estimate",
+    "sources": ["estimate: the rest of Scotland's 1881 population"]
+  },
+  {
+    "id": "leinster",
+    "name": "Leinster",
+    "country": "ireland",
+    "weight": 0.25,
+    "places": ["Dublin"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 1.28 million of about 5.17 million in Ireland in 1881, rounded"]
+  },
+  {
+    "id": "munster",
+    "name": "Munster",
+    "country": "ireland",
+    "weight": 0.26,
+    "places": ["Cork", "Limerick"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 1.33 million in 1881, rounded"]
+  },
+  {
+    "id": "connacht",
+    "name": "Connacht",
+    "country": "ireland",
+    "weight": 0.16,
+    "places": ["Galway", "Mayo"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 0.82 million in 1881, rounded"]
+  },
+  {
+    "id": "ulster",
+    "name": "Ulster",
+    "country": "ireland",
+    "weight": 0.33,
+    "places": ["Belfast", "Antrim", "Down", "Donegal"],
+    "confidence": "estimate",
+    "sources": ["estimate: about 1.74 million in 1881, rounded"]
+  }
+]

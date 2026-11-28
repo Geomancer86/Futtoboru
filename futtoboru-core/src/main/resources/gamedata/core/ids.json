@@ -3,7 +3,7 @@
     1,
     99999
   ],
-  "next": 930,
+  "next": 994,
   "ids": {
     "continent": {
       "africa": 38,
@@ -955,6 +955,82 @@
     "edition": {
       "football-league-1888-89": 913,
       "fa-cup-1888-89": 914
+    },
+    "rule": {
+      "fa-professional-registration-1885": 977,
+      "fa-birth-or-residence-1885": 978,
+      "fa-one-club-per-season-1885": 979,
+      "fa-council-second-registration-1888": 980,
+      "league-registration-wait-1890": 981,
+      "sfa-professional-ban": 982,
+      "league-retain-and-transfer-1893": 983,
+      "fa-maximum-wage-1901": 984
+    },
+    "wage": {
+      "holt-everton-1888": 985,
+      "ross-everton-1888": 986,
+      "band-leading-1885": 987,
+      "band-middling-1885": 988,
+      "band-small-1885": 989,
+      "band-leading-1893": 990,
+      "band-middling-1893": 991,
+      "band-small-1893": 992,
+      "band-capped-1901": 993
+    },
+    "origin": {
+      "mill": 965,
+      "pit": 966,
+      "docks": 967,
+      "ironworks": 968,
+      "railway": 969,
+      "farm": 970,
+      "tradesman": 971,
+      "publican": 972,
+      "clerk": 973,
+      "schoolmaster": 974,
+      "gentleman-amateur": 975,
+      "soldier": 976
+    },
+    "origin-club": {
+      "newton-heath-lyr": 953,
+      "ardwick": 954,
+      "royal-arsenal": 955,
+      "singers": 956,
+      "renton": 957,
+      "vale-of-leven": 958,
+      "dumbarton": 959,
+      "partick-thistle": 960,
+      "queens-park": 961,
+      "kilmarnock": 962,
+      "hibernian": 963,
+      "heart-of-midlothian": 964
+    },
+    "area": {
+      "liverpool": 930,
+      "lancashire": 931,
+      "england-other": 932,
+      "glamorgan": 933,
+      "monmouthshire": 934,
+      "denbighshire": 935,
+      "wales-west": 936,
+      "wales-other": 937,
+      "scotland-lowlands": 938,
+      "scotland-highlands": 939,
+      "scotland-other": 940,
+      "leinster": 941,
+      "munster": 942,
+      "connacht": 943,
+      "ulster": 944
+    },
+    "language": {
+      "english": 945,
+      "welsh": 946,
+      "scottish-gaelic": 947,
+      "irish": 948,
+      "german": 949,
+      "yiddish": 950,
+      "italian": 951,
+      "lithuanian": 952
     }
   },
   "retired": {
