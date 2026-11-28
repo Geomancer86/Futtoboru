@@ -17,6 +17,7 @@ right), 4 = N (away), 6 = W; odd numbers are the diagonals.
 from __future__ import annotations
 
 import math
+from array import array
 
 PI = 3.141592653589793
 TAU = 2.0 * PI
@@ -286,19 +287,19 @@ def render(state: str, frame: int, direction: int, S: int, look: dict) -> Geo:
     oy = int(math.ceil(S * (2.6 * KH + 2.2 * KG))) + 5
     geo = Geo(W, H, ox, oy)
     px = geo.px
-    zb = [-1e9] * (W * H)
+    zb = array("f", [-1e9]) * (W * H)  # float32 depth like the prototype (Float32Array): same tie-breaks
     step = 0.42 / S
     lx, ly, lz = LIGHT
     floor = math.floor
 
-    def plot(p, nn, key):
+    def plot(p, nn, key, flat=False):
         x, y, z = p[0], p[1] + dy, p[2]
         wx = x * cy + z * sy
         wz = -x * sy + z * cy
         nx = nn[0] * cy + nn[2] * sy
         nz = -nn[0] * sy + nn[2] * cy
         ny = nn[1]
-        if ny * KG + nz * KH < -0.08:
+        if not flat and ny * KG + nz * KH < -0.08:
             return
         sx = int(floor(ox + wx * S))
         syy = int(floor(oy - y * S * KH + wz * S * KG))
@@ -310,7 +311,7 @@ def render(state: str, frame: int, direction: int, S: int, look: dict) -> Geo:
             return
         zb[i] = d
         lv = nx * lx + ny * ly + nz * lz
-        px[i] = (key, 2 if lv > 0.42 else (1 if lv > -0.18 else 0))
+        px[i] = (key, 1 if flat else (2 if lv > 0.42 else (1 if lv > -0.18 else 0)))
 
     def sphere(c, r, mat):
         nl = max(5, int(math.ceil(PI * r / step)) + 2)
@@ -321,7 +322,7 @@ def render(state: str, frame: int, direction: int, S: int, look: dict) -> Geo:
             for j in range(na):
                 th = j / na * TAU
                 nn = (rr * cos(th), yy, rr * sin(th))
-                plot(add(c, scl(nn, r)), nn, mat(nn))
+                plot(add(c, scl(nn, r)), nn, mat(nn), True)  # flat, unculled: matches the prototype, where `m.flat` hit Array.prototype.flat (truthy)
 
     def capsule(a, b, r, mat):
         ax = sub(b, a)
@@ -380,7 +381,7 @@ def render(state: str, frame: int, direction: int, S: int, look: dict) -> Geo:
             p = add(base, add(scl(tR, rx * cx), scl(tF, rz * sz)))
             if player:
                 key = ("collar",) if (sz > 0.82 and abs(cx) < 0.14 and v > 0.8) else \
-                    ("shirt", round(-rx * cx, 3), round(v, 3), round(th, 3))
+                    ("shirt", -rx * cx, v, th)
             else:
                 key = ("front",) if (sz > 0.8 and abs(cx) < 0.2 and v > 0.72) else ("jacket",)
             plot(p, nn, key)
@@ -388,7 +389,7 @@ def render(state: str, frame: int, direction: int, S: int, look: dict) -> Geo:
     while rr <= 1.0:  # shoulders (top of the torso ellipse)
         for cx, sz, th in ring:
             p = add(neck_t, add(scl(tR, 0.22 * rr * cx), scl(tF, 0.115 * rr * sz)))
-            plot(p, tU, ("shirt", round(-0.22 * rr * cx, 3), 1.0, round(th, 3)) if player else ("jacket",))
+            plot(p, tU, ("shirt", -0.22 * rr * cx, 1.0, th) if player else ("jacket",))
         rr += step / 0.19
     if not player:  # coat skirt below the waist
         for i in range(7):

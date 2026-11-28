@@ -1,7 +1,7 @@
 # Match sprites (code-generated, E-21s)
 
 Sprite sheets for the match viewer, baked by our own code from the art picks of D26 (ROADMAP): players as the
-A2 "doll" (a tiny 3-D skeleton with capsule limbs, depth-buffered and lit in three tones, 1-px outline) in
+A2 "doll" (a tiny 3-D skeleton with capsule limbs lit in three tones, flat-coloured head, hands and joints as on the prototype page, depth-buffered, 1-px outline; matches the prototype pixel for pixel at the same scale and camera) in
 8 directions, keeper G2 (same kit + dark cap), ball BA2, officials O2 (hand-drawn pixel grids), crowd figures
 CR1 and touchline T1 (pavilion, shed, tent, carriage, rope, railings, chairs, press table, telegraph pole,
 bucket; committee men, trainer with sponge and bucket, pressmen, telegraph boy, constable). No advertising
@@ -28,7 +28,7 @@ integer xorshift noise seeded by name, PNGs without timestamp or text chunks. `-
 
 The 2x sheets are re-rendered at 10 px/m, not upscaled: at 5 px/m the doll is ~10 px and stripes, sashes and
 caps are only one pixel wide, so the prototype's own kit and animation boards used 10 px/m for readability. The
-viewer draws 1x when one world pixel is one screen pixel and switches to 2x at zoom >= 2 (drawing it at half
+viewer defaults to the 2x sheets (D28: match view at 10 px/m) and keeps 1x for the wide, zoomed-out view (drawing 2x at half
 size in world units), or for the near touchline under V3 perspective. Cells are uniform per layout (sized to the
 widest pose: lying, charging), so every frame of a layout has the same pivot.
 
