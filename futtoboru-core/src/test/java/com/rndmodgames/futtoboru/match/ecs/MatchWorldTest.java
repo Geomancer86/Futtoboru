@@ -236,9 +236,13 @@ class MatchWorldTest {
 
     // ---- entry point ---------------------------------------------------------------------------------------------
 
-    /** Golden hashes of the {@code play} stub over a full match (162,000 ticks); see BallPhysicsTest for the rule. */
-    static final long GOLDEN_PLAY_DRY = 0x0287cbc750d84093L;
-    static final long GOLDEN_PLAY_RAIN = 0x8f2d2af5fd95eddbL;
+    /**
+     * Golden hashes of the {@code play} stub over a full match (162,000 ticks); see BallPhysicsTest for the rule.
+     * Re-pinned by E-13 (ecs-0.2): {@code play} now lines up 22 bodies (body, athlete, kit, injury, command appended
+     * to the hashed components); they stand still, while boots soak in the rain.
+     */
+    static final long GOLDEN_PLAY_DRY = 0x18b78bc9e51c1b21L;
+    static final long GOLDEN_PLAY_RAIN = 0xd5c718bc39622621L;
 
     @Test
     void playIsDeterministicAndPinnedByAGoldenHash() {

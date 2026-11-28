@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.match.ecs;
 
+import com.rndmodgames.futtoboru.match.ecs.body.BodyParams;
+
 /**
  * All physics parameters of the match engine in one data class (D14: data, later
  * {@code gamedata/core/engine/physics.json}). Plain public fields with defaults and a no-arg constructor so a JSON
@@ -99,6 +101,11 @@ public final class PhysicsParams {
         }
     }
 
+    // ---- player bodies (E-13, §3.3) --------------------------------------------------------------------------------
+
+    /** Locomotion, stamina, contacts, injuries, physique by position, grip per surface and sole. */
+    public BodyParams body = new BodyParams();
+
     /** The parameters of a surface. */
     public SurfaceParams surface(Surface s) {
         switch (s) {
@@ -135,6 +142,8 @@ public final class PhysicsParams {
             require(p != null && p.restitution >= 0 && p.restitution < 1 && p.bounceKeep >= 0 && p.bounceKeep <= 1
                     && p.rollDrag >= 0, "surface " + s);
         }
+        require(body != null, "body params");
+        body.validate();
         return this;
     }
 
