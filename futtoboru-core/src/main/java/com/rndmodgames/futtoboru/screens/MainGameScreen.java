@@ -158,7 +158,8 @@ public class MainGameScreen implements Screen {
                     return true;
 
                 /**
-                 * ESC - BACK (U-04b), unless a dialog is open (the dialog handles its own keys)
+                 * ESC - BACK (U-04b), unless a dialog is open: the dialog takes Esc as its Cancel / Close and stops it
+                 * (UiDialogs, U-12), so it only gets here while a closing dialog fades out
                  */
                 case Keys.ESCAPE:
                     if (isDialogOpen()) {

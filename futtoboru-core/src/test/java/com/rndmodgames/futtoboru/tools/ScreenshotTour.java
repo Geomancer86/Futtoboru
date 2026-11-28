@@ -11,6 +11,7 @@ import java.util.function.BooleanSupplier;
 import java.util.zip.Deflater;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
@@ -206,7 +207,15 @@ public final class ScreenshotTour extends Futtoboru {
         // main menu and its screens
         once("menu", () -> changeScreen(MENU_SCREEN));
         once("menu-load-dialog", () -> UiDialogs.show(stage(), new LoadGameDialog(this)));
-        once("menu-load-delete-confirm", () -> click("Delete"));
+        once("menu-load-delete-confirm", () -> click(LanguageModLoader.getValue("delete")));
+        // U-12: Esc on "Delete save?" is Cancel (the list comes back); Esc on the list closes it
+        once(null, this::pressEscape);
+        waitFrames(SETTLE_FRAMES);
+        once(null, () -> expect(UiDialogs.isOpen() && UiDialogsCurrent.get() instanceof LoadGameDialog,
+                "Esc on Delete save? did not bring the save list back"));
+        once(null, this::pressEscape);
+        waitFrames(SETTLE_FRAMES);
+        once(null, () -> expect(!UiDialogs.isOpen(), "Esc did not close the load dialog"));
         once("settings", () -> {
             UiDialogs.closeOpen();
             changeScreen(SETTINGS_SCREEN);
@@ -227,7 +236,7 @@ public final class ScreenshotTour extends Futtoboru {
             topMenu().setMainContainerButton();
             openDraw();
         });
-        once("game-league-draw-done", () -> click("Draw All"));
+        once("game-league-draw-done", () -> click(LanguageModLoader.getValue("draw_all")));
         once("game-cup-draw", () -> {
             finishDraws();
             if (playUntilCupDraw(120)) {
@@ -236,7 +245,7 @@ public final class ScreenshotTour extends Futtoboru {
                 problems.add(passName + ": no cup draw within 120 days");
             }
         });
-        once("game-cup-draw-done", () -> click("Draw All"));
+        once("game-cup-draw-done", () -> click(LanguageModLoader.getValue("draw_all")));
         once("game-match-day-top-bar", () -> {
             finishDraws();
             playUntil(FuttoboruGameEngine.MATCH_PREVIEW_ACTION, 200);
@@ -252,7 +261,7 @@ public final class ScreenshotTour extends Futtoboru {
         }
         once(null, () -> menu().openMenuEntry(MainMenuManager.MAIN_SQUAD_SCREEN));
         waitFrames(5);
-        once(null, () -> hover("Accel"));
+        once(null, () -> hover(LanguageModLoader.getValue("squad_col_acceleration")));
         waitFrames(40);
         once("game-squad-tooltip", () -> {
         });
@@ -287,6 +296,32 @@ public final class ScreenshotTour extends Futtoboru {
             UiDialogs.closeOpen();
             runOption(2);
         });
+        // U-12: Esc on a question is its Cancel and stops there: the screen behind (a drill-down) does not go Back
+        once(null, () -> {
+            UiDialogs.closeOpen();
+            menu().openMenuEntry(MainMenuManager.MAIN_SQUAD_SCREEN);
+            menu().setSelectedPlayer(game.getCurrentClub().getPlayers().get(0));
+            menu().setActiveMainScreen(MainMenuManager.PLAYER_DETAIL_SCREEN);
+            runOption(2);
+        });
+        waitFrames(SETTLE_FRAMES);
+        once(null, () -> expect(UiDialogs.isOpen(), "no unsaved-progress question to try Esc on"));
+        once(null, this::pressEscape);
+        waitFrames(SETTLE_FRAMES);
+        once(null, () -> {
+            expect(!UiDialogs.isOpen(), "Esc did not close the unsaved-progress question");
+            expect(MainMenuManager.CURRENT_SCREEN == MainMenuManager.PLAYER_DETAIL_SCREEN,
+                    "Esc on a dialog also went Back (screen " + MainMenuManager.CURRENT_SCREEN + ")");
+            pressEscape(); // no dialog now: Esc is Back again, to the squad
+        });
+        waitFrames(5);
+        once(null, () -> {
+            expect(MainMenuManager.CURRENT_SCREEN == MainMenuManager.MAIN_SQUAD_SCREEN,
+                    "Esc without a dialog did not go Back to the squad");
+            menu().openMenuEntry(MainMenuManager.HOME_SCREEN);
+            runOption(2);
+        });
+        waitFrames(SETTLE_FRAMES);
         once("game-load-dialog", () -> click(LanguageModLoader.getValue("discard_progress")));
         once("game-settings", () -> {
             UiDialogs.closeOpen();
@@ -526,6 +561,19 @@ public final class ScreenshotTour extends Futtoboru {
             }
         }
         throw new IllegalStateException("no stage on " + screen);
+    }
+
+    /** Esc through the screen's real input processor (stage first, then the screen's own keys) */
+    private void pressEscape() {
+        Gdx.input.getInputProcessor().keyDown(Keys.ESCAPE);
+        Gdx.input.getInputProcessor().keyUp(Keys.ESCAPE);
+    }
+
+    /** a tour check: {@code problem} is reported (exit code 1) unless {@code ok} */
+    private void expect(boolean ok, String problem) {
+        if (!ok) {
+            problems.add(passName + ": " + problem);
+        }
     }
 
     /** clicks the last visible button reading {@code text} (dialogs are added last, so they win) */

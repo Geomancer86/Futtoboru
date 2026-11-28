@@ -17,6 +17,7 @@ import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.futtoboru.system.save.LoadResult;
 import com.rndmodgames.futtoboru.system.save.SaveSlots;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiDialogs;
@@ -69,6 +70,9 @@ public class LoadGameDialog extends VisDialog {
 
         this.row();
         this.add(closeButton).pad(UiTheme.space("xs")).align(Align.bottom);
+
+        // Esc = Close (U-12)
+        UiDialogs.closeOnEscape(this, this::hide);
 
         refresh();
     }
@@ -174,6 +178,7 @@ public class LoadGameDialog extends VisDialog {
                         LanguageModLoader.getValue("delete_save_text") + "\n\n" + save.getName(),
                         new String[] { LanguageModLoader.getValue("delete"), LanguageModLoader.getValue("cancel") },
                         new Boolean[] { Boolean.TRUE, Boolean.FALSE },
+                        Boolean.FALSE, // Esc = Cancel: the list comes back
                         confirmed -> {
                             if (Boolean.TRUE.equals(confirmed) && !SaveSlots.delete(save)) {
                                 UiDialogs.info(stage, LanguageModLoader.getValue("delete_save"),
@@ -192,7 +197,7 @@ public class LoadGameDialog extends VisDialog {
     static String describe(SaveSummary save) {
         StringBuilder sb = new StringBuilder();
         for (Object part : new Object[] { save.getManager(), save.getClub(),
-                save.getGameDate() != null ? save.getGameDate().toLocalDate() : null }) {
+                save.getGameDate() != null ? GameFormat.mediumDate(save.getGameDate()) : null }) { // U-12: game language
             if (part != null && !part.toString().isEmpty()) {
                 sb.append(sb.length() > 0 ? ", " : "").append(part);
             }

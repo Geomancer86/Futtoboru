@@ -15,6 +15,7 @@ import com.rndmodgames.futtoboru.data.MessageCategory;
 import com.rndmodgames.futtoboru.data.MessagePriority;
 import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.engine.finances.Money;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -87,7 +88,8 @@ public final class SeasonSummaryLetter {
             }
         }
         text.append(games == 0 ? LanguageModLoader.getValue("msg_season_summary_no_gates")
-                : LanguageModLoader.format("msg_season_summary_gates", total, games, total / games)).append("\n");
+                : LanguageModLoader.format("msg_season_summary_gates", GameFormat.integer(total), games,
+                        GameFormat.integer(total / games))).append("\n"); // U-12: "48,000" in the game language
         text.append(LanguageModLoader.format("msg_season_summary_balance",
                 Money.format(club.getClubBalance() != null ? club.getClubBalance() : java.math.BigDecimal.ZERO)));
 

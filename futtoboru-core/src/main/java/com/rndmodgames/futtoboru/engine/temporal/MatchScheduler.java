@@ -2,7 +2,6 @@ package com.rndmodgames.futtoboru.engine.temporal;
 
 import java.math.BigDecimal;
 import com.rndmodgames.futtoboru.engine.finances.Money;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
@@ -74,7 +73,6 @@ public class MatchScheduler {
     }
     
     //
-    DecimalFormat df = new DecimalFormat("#,###.00");
     
     //
     public MatchScheduler(Futtoboru parent) {

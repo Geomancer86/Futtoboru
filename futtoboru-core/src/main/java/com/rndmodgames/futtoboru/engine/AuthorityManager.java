@@ -1908,7 +1908,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
     private boolean needsNextSeasonGeneration(League league, LocalDateTime currentDate) {
         // Find if an edition for the upcoming year already exists
         int nextYear = currentDate.getYear();
-        String nextSeasonNameFragment = nextYear + "-" + ((nextYear + 1) % 100);
+        String nextSeasonNameFragment = com.rndmodgames.futtoboru.data.Season.label(nextYear); // "1899-00", not "1899-0"
         
         for (CompetitionEdition edition : league.getEditions()) {
             if (edition.getName() != null && edition.getName().contains(nextSeasonNameFragment)) {
@@ -1924,7 +1924,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         CompetitionEdition nextEdition = new CompetitionEdition();
         nextEdition.setId(ids().nextId());
         int startYear = currentDate.getYear();
-        nextEdition.setName(league.getName() + " " + startYear + "-" + ((startYear + 1) % 100));
+        nextEdition.setName(league.getName() + " " + com.rndmodgames.futtoboru.data.Season.label(startYear));
         
         // Start around September 1st
         nextEdition.setStartDate(LocalDateTime.of(startYear, 9, 1, 0, 0));
@@ -1975,7 +1975,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
             return false;
         }
         int nextYear = currentDate.getYear();
-        String nextSeasonNameFragment = nextYear + "-" + ((nextYear + 1) % 100);
+        String nextSeasonNameFragment = com.rndmodgames.futtoboru.data.Season.label(nextYear); // "1899-00", not "1899-0"
         
         for (CompetitionEdition edition : cup.getEditions()) {
             if (edition.getName() != null && edition.getName().contains(nextSeasonNameFragment)) {
@@ -1991,7 +1991,7 @@ Log.info(Log.ENGINE_AUTHORITY, "AuthorityManager", "Updated league edition " + e
         CompetitionEdition nextEdition = new CompetitionEdition();
         nextEdition.setId(ids().nextId());
         int startYear = currentDate.getYear();
-        nextEdition.setName(cup.getName() + " " + startYear + "-" + ((startYear + 1) % 100));
+        nextEdition.setName(cup.getName() + " " + com.rndmodgames.futtoboru.data.Season.label(startYear));
         
         // Set dates for cup staging
         nextEdition.setStartDate(currentDate);
