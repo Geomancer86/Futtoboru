@@ -45,13 +45,14 @@ import com.rndmodgames.futtoboru.system.save.SaveCodec;
  */
 class NewGameFreshDataTests {
 
+    private static final long SEED = 1888L;
     private static Futtoboru application;
 
     @BeforeAll
     static void preload() {
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         config.updatesPerSecond = 30;
-        application = new Futtoboru();
+        application = new Futtoboru(SEED); // S-01: forced, so a new game in the session replays the first
         new HeadlessApplication(application, config);
         BaseTest.awaitHeadlessCreate();
     }
@@ -71,6 +72,8 @@ class NewGameFreshDataTests {
         assertFresh(b, startBalances);
         assertNoSharedObjects(a, b);
         assertEquals(startIds, ids(b), "runtime ids are the same in every new game");
+        assertEquals(SEED, a.getSeed());
+        assertEquals(SEED, b.getSeed(), "S-01: the forced seed again for the new game");
 
         // nothing of A is left anywhere: B plays the same 170 days exactly as A did (same seed)
         NewGameFixture.play(application, b, 170, true);

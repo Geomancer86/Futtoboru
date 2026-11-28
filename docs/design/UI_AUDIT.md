@@ -61,7 +61,7 @@ MainGameScreen = MainGameMenuTable (top bar) + left button column + content tabl
 | `screens/NewGameSetupScreen` | Pick countries / leagues | Season screen, Overview (back) | working |
 | `screens/NewGameOverviewScreen` | Summary, pick a club, start | Setup screen | working (1013 lines) |
 | `screens/MainGameScreen` | In-game shell (top bar + menu + content) | Overview, Load dialog | working, `setDebug(true)` on |
-| `screens/SettingsScreen` | Resolution, fullscreen, language, logging | Menu | partial: the sound table is not wired |
+| `screens/SettingsScreen` | Resolution, fullscreen, language, logging | Menu | working (U-08: sound and empty gameplay panels hidden) |
 | `screens/MatchEngineDebugScreen` | Set up a test match for the 2D viewer | Menu | dev tool (1324 lines, `placeholder` data fallbacks) |
 | `match/engine/MatchEngineScreen` | 2D match viewer (ShapeRenderer, `FitViewport`) | Debug screen | dev tool, only a viewer (D5) |
 | `screens/NewGameScreen` | Old new-game screen | **nothing** (`NEW_GAME_SCREEN` opens `NewGameSeasonScreen`) | orphan: delete |
@@ -77,7 +77,7 @@ MainGameScreen = MainGameMenuTable (top bar) + left button column + content tabl
 | `tables/authority/AuthorityScreenTable` | Football authorities and leagues | Authorities button | partial (TODO: season is hard-coded, line 145) |
 | `tables/squad/SquadScreenTable` + `PlayersListTable` | Squad list | Squad button | working |
 | `tables/player/PlayerDetailScreenTable` | Player attributes, contract | Squad → player | working |
-| `tables/schedule/ScheduleScreenTable` + `FixturesTable`, `ArrangeFriendlyTable` | Fixtures, friendlies | Schedule button | working (friendlies WIP, 11 TODOs) |
+| `tables/schedule/ScheduleScreenTable` + `FixturesTable`, `ArrangeFriendlyTable` | Fixtures, friendlies | Schedule button | working (U-08: arrange, letter answer, play, gate) |
 | `tables/match/preview/MatchPreviewScreenTable` | Before a match | top bar | working |
 | `tables/match/result/MatchResultScreenTable` | After a match | top bar | working |
 | `tables/match/history/MatchHistoryScreenTable` | Past results | Match history button | working |
@@ -94,7 +94,7 @@ MainGameScreen = MainGameMenuTable (top bar) + left button column + content tabl
 | `tables/widgets/CurrentDateAndTimeWidget` | Game date | top bar | working |
 | `tables/settings/DebugLoggingSettingsTable` | Log categories | Settings | working |
 | `darkblade/screens/tables/ModsSettingsTable` | Language select | Settings | working |
-| `darkblade/screens/tables/SoundSettingsTable` | Volume sliders | Settings | **not wired**: the save calls are commented out and the game has no audio |
+| `darkblade/screens/tables/SoundSettingsTable` | Volume sliders | Settings | hidden (U-08) until the game has audio; class kept |
 | `dialogs/LoadGameDialog`, `SaveGameDialog` | Load / save (VisDialog) | Menu / top bar | working (save has TODOs: name, overwrite) |
 | `components/*` | Menu buttons, `CountryAndCitySelectBox`, `AutoFocusScrollPane`, `SocialNetworkLinksComponent` | various | working |
 
