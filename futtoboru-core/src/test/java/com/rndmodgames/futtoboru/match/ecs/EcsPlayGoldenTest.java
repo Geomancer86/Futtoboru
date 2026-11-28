@@ -19,13 +19,13 @@ import com.rndmodgames.futtoboru.engine.random.RandomSource;
  * the ball bounces off posts and bars, forwards play up and run in behind, offsides are given. Re-pinned by E-DET
  * (ecs-0.7): RandomSource has its own Gaussian, so these hashes are the same on every JDK (17.0.2, 25, ...).
  * Re-pinned by E-20 (ecs-0.8) calibration: home advantage (the away side's noise x 1.3 on the home ground) and the
- * contact injury rate cut to a fifth; the dry match went from 7-6 to 4-2, the wet one is 6-2.
+ * contact injury rate cut to a fifth (E-20c, ecs-0.9: shot range 28 to 27 m, re-pinned); the dry match went from 7-6 to 4-2, the wet one is 6-2.
  */
 @Tag("slow")
 class EcsPlayGoldenTest {
 
-    static final long GOLDEN_PLAY_DRY = 0x08d98fef44e958a6L;
-    static final long GOLDEN_PLAY_RAIN = 0x9b390a7c66fdaca2L;
+    static final long GOLDEN_PLAY_DRY = 0x69bc3c113dfadb58L;
+    static final long GOLDEN_PLAY_RAIN = 0xf34e7d67536deb43L;
 
     @Test
     void playIsDeterministicAndPinnedByAGoldenHash() {
