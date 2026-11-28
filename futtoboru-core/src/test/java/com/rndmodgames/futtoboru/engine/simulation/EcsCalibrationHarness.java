@@ -216,6 +216,15 @@ class EcsCalibrationHarness extends BaseTest {
         }
         b.append(String.format(Locale.ROOT, "%-22s %8.3f%n", "goals hist TV dist", tvGoals));
         b.append(String.format(Locale.ROOT, "%-22s %8.3f%n", "score grid TV dist", tv));
+        StringBuilder gl = new StringBuilder("total goals 0..10+ %: ECS");
+        for (double v : gs) {
+            gl.append(String.format(Locale.ROOT, " %4.1f", v * 100));
+        }
+        gl.append("   real");
+        for (double v : gr) {
+            gl.append(String.format(Locale.ROOT, " %4.1f", v * 100));
+        }
+        b.append(gl).append(NL);
         b.append(String.format(Locale.ROOT, "%-22s %8.2f%n", "injuries/match", inj / n));
         b.append(String.format(Locale.ROOT, "%-22s %8.2f%n", "carried off/match", off / n));
         b.append(String.format(Locale.ROOT, "%-22s %8.2f%n", "passengers/match", pas / n));

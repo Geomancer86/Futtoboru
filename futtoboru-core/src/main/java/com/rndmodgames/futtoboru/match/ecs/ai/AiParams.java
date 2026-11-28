@@ -91,7 +91,7 @@ public final class AiParams {
     /** Extra distance beyond foot reach at which the man on the ball decides what to do with it, m. */
     public double decideExtraM = 1.4;
     /** Shots from inside this distance to the goal centre, m. */
-    public double shotRangeM = 28;
+    public double shotRangeM = 27;
     /** Utility weights (before style). */
     public double wShot = 1.4, wPass = 1.0, wLoft = 0.65, wDribble = 1.0, wCross = 0.9, wClear = 1.1;
     /** Style multipliers on dribbling and on passing (dribbling side / combination side). */
