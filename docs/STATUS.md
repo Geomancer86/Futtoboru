@@ -10,6 +10,7 @@ _Last updated 2026-11-28 (BOOK3PRO)._ Version 0.5.0-SNAPSHOT.
 | FA Cup | working | completion, runner-up, replays; final = the bracket's last tie (P2-7); brackets of any size with byes, next edition opens in May (P2-3); one edition per season: the creation scripts open the season.json edition (P2-9); tests in engine/cup, engine/temporal, `CupFinalAndPrizeTests` |
 | Match simulation | crude | random scoreline; replaced in Phase 3 |
 | Unemployed / job system | mostly working | offer and refresh bugs |
+| Friendlies / Schedule | working | U-08: Schedule screen = 12-week calendar (played with score, fixed, awaiting answer) + arrange form (day from the calendar, ground, opponent). `engine/temporal/FriendlyArranger`: at least 2 days' notice; the other club answers by inbox letter the next day (accept, or decline with a reason: engaged, no side, travel cost, ground let; 80% accept when free, `fork("friendly:<id>")`); played via `MatchResultRecorder` (no table change); home club takes the gate; a friendly is called off when a league/cup match is fixed for that day. No AI-to-AI friendlies yet |
 | Finances | partial | weekly expenses, gate income; money text in £ via `Money.format` (P2-7) |
 | Contracts | partial | generated only; no expiry or transfers |
 | New season | partial | generated when the league completes; no re-election vote yet |
@@ -20,6 +21,7 @@ _Last updated 2026-11-28 (BOOK3PRO)._ Version 0.5.0-SNAPSHOT.
 | Competition schedule | fixed | daily check runs on the current game (P2-8); full-season proof comes with the P2-3 test |
 | New season table | working | table reset when the season completes; final table kept on the edition (`CompetitionEdition.finalStandings`, P2-6), no screen shows it yet |
 | Tactics, Training, Transfers, Scouting, Staff, Board | stub | empty screens |
+| Settings | working | sound panel and the empty gameplay panel hidden until there is audio / a setting (U-08) |
 | UI scale / window | working | U-03a: `ui/UiScale` on every stage (Settings: Auto (shows %) / 100% / 200%, integer steps; Auto = OS content scale rounded to 1-2, else 2x from a 1920x1080 window); window default and minimum 1280x720 from the saved preference (launcher, no double resize); screen roots scroll when they do not fit |
 | Logging | working | one style (P1-5): `Log.info/debug/warn/error(Log.<CATEGORY>[, tag], msg[, e])`; info/debug/warn follow Settings > Debug Logging, errors always print with stack trace; `LoggingStyleGuardTest` blocks `System.out/err`, `printStackTrace`, `Gdx.app.log` in main code |
 

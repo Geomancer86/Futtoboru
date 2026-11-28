@@ -1,355 +1,176 @@
 package com.rndmodgames.futtoboru.tables.schedule;
 
 import java.time.LocalDateTime;
-import com.rndmodgames.futtoboru.engine.finances.Money;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.temporal.FriendlyArranger;
 import com.rndmodgames.futtoboru.game.Futtoboru;
-import com.rndmodgames.futtoboru.system.DatabaseLoader;
-import com.rndmodgames.futtoboru.system.EngineParameters;
-import com.rndmodgames.futtoboru.system.SaveGame;
-import com.rndmodgames.localization.LanguageModLoader;
-import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
- * Arrange Friendly Table v1
- *  
- *  TODO WIP:
- * 
- *  - ARRANGE FRIENDLY COMPONENT TITLE
- *  
- *  - Match Type Select (Friendly, Cup, Home and Away, etc) NOTE: only Friendly for this release
- *  - Date Picker (date might be selected directly/manually by clicking on the Fixtures Component when that portion is implemented
- *  - Venue (Home, Away, Neutral) needs stadiums to be implemented.
- *  - Match Rules (90 minutes only, penalties, etc.) NOTE: Only 90 minutes for this release
- *  
- *  - SELECTED DATE LABEL TITLE
- *  
- *  - Selected Team
- *  
- *  - Expected Fee & Income Widget
- *      - A good opportunity to get more data on this and the reasons for the fees & income
- *      - Might show a color or reaction score for the opponent (classic matches get more income)
- *      - Show the expected attendance (this might calculate other important matches the same day)
- *      
- * @author Geomancer86
+ * Arrange a friendly (U-08): the day comes from a click on the calendar ({@link FixturesTable}), then the ground
+ * and the opponent. "Send the invitation" puts the friendly in the club's proposed list
+ * ({@link FriendlyArranger#propose}); the other club answers by letter the next day.
  */
 public class ArrangeFriendlyTable extends VisTable {
 
-    //
-    Futtoboru game;
-    SaveGame currentGame;
-    
-    //
-    ScheduleScreenTable parentTable;
-    
-    //
+    private final Futtoboru game;
+    private final ScheduleScreenTable parentTable;
+
     private Club currentClub;
-    
-    // Selected Component Values
-    String selectedMatchType = null;
-    String selectedVenueType = null;
-    String selectedMatchRulesType = null;
-    Club selectedClub = null;
-    Club selectedOpponentClub = null;
-    
-    /**
-     * Selected Date NOTE: this is set on the FixturesTable Component
-     */
+    /** Set from the calendar */
     private LocalDateTime selectedDate;
-    
-    // Dynamic Components
-    VisLabel selectedDateLabel = new VisLabel(LanguageModLoader.getValue("select_a_date"));
-    VisLabel feeValueLabel = new VisLabel(Money.format(java.math.BigDecimal.ZERO));
-    VisLabel incomeValueLabel = new VisLabel(Money.format(java.math.BigDecimal.ZERO));
-    VisSelectBox<Club> opponentSelectBox = new VisSelectBox<Club>();
-    VisTextButton confirmFriendlyButton = new VisTextButton(LanguageModLoader.getValue("confirm"));
-    
-    //
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-    
+    /** The clubs behind the opponent select box (index 0 is "Choose a club") */
+    private final List<Club> opponents = new ArrayList<>();
+
+    private final VisLabel selectedDateLabel = new VisLabel();
+    private final VisSelectBox<String> groundSelectBox = new VisSelectBox<>();
+    private final VisSelectBox<String> opponentSelectBox = new VisSelectBox<>();
+    private final VisLabel statusLabel = new VisLabel();
+    private final VisTextButton sendButton = new VisTextButton(text("friendly_send"),
+            UiTheme.style("button.primary"));
+
     public ArrangeFriendlyTable(Futtoboru parent, ScheduleScreenTable scheduleScreenTable) {
-        
-        // default vis spacing
         super(true);
-        
-        //
         this.game = parent;
-        this.currentGame = game.getCurrentGame();
-        
-        //
         this.parentTable = scheduleScreenTable;
-        
-        //
-        this.add(LanguageModLoader.getValue("arrange_friendly")).colspan(2);
-        
-        // Match Types
-        VisSelectBox<String> matchTypesSelectBox = new VisSelectBox<String>();
-        matchTypesSelectBox.setItems(EngineParameters.matchTypes);
 
-        // Venue Types
-        VisSelectBox<String> venuesSelectBox = new VisSelectBox<String>();
-        venuesSelectBox.setItems(EngineParameters.matchVenueTypes);
-        
-        // Match Rules
-        VisSelectBox<String> matchRulesSelectBox = new VisSelectBox<String>();
-        matchRulesSelectBox.setItems(EngineParameters.matchRulesTypes);
-        
-        /**
-         * Set Default Selected Values
-         */
-        matchTypesSelectBox.setSelectedIndex(0);
-        selectedMatchType = matchTypesSelectBox.getSelected();
-        
-        venuesSelectBox.setSelectedIndex(0);
-        selectedVenueType = venuesSelectBox.getSelected();
-        
-        matchRulesSelectBox.setSelectedIndex(0);
-        selectedMatchRulesType = matchRulesSelectBox.getSelected();
+        VisLabel title = new VisLabel(text("arrange_friendly"));
+        title.setFontScale(UiTheme.fontScale("subheading"));
+        this.add(title).colspan(2).left();
 
-        /**
-         * Club Selectbox
-         */
-        opponentSelectBox.addListener(new ChangeListener() {
+        this.row();
+        this.add(text("friendly_date")).left();
+        this.add(selectedDateLabel).left();
+
+        groundSelectBox.setItems(text("friendly_ground_home"), text("friendly_ground_away"));
+        this.row();
+        this.add(text("friendly_ground")).left();
+        this.add(groundSelectBox).fill();
+
+        this.row();
+        this.add(text("friendly_opponent")).left();
+        this.add(opponentSelectBox).fill();
+
+        ChangeListener validate = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                
-                // Disable Confirm if no Opponent Selected
-                confirmFriendlyButton.setDisabled(opponentSelectBox.getSelected().getId() == null);
+                updateSendButton();
+            }
+        };
+        opponentSelectBox.addListener(validate);
+
+        VisLabel hint = new VisLabel(text("friendly_hint"));
+        hint.setWrap(true);
+        hint.setColor(UiTheme.color("text.muted"));
+        this.row();
+        this.add(hint).colspan(2).left().width(UiTheme.size("text.wrap.narrow"));
+
+        statusLabel.setWrap(true);
+        this.row();
+        this.add(statusLabel).colspan(2).left().width(UiTheme.size("text.wrap.narrow"));
+
+        sendButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                send();
             }
         });
-        
-        //
-        this.row();
-        this.add("Type");
-        this.add(matchTypesSelectBox).fill();
-        
-        //
-        this.row();
-        this.add("Date");
-        this.add(selectedDateLabel);
-        
-        //
-        this.row();
-        this.add("Venue");
-        this.add(venuesSelectBox).fill();
-        
-        //
-        this.row();
-        this.add("Match Rules");
-        this.add(matchRulesSelectBox).fill();
-        
-        //
-        this.row();
-        this.add("Opponent");
-        this.add(opponentSelectBox).fill();
-        
-        //
-        this.row();
-        this.addSeparator().colspan(2);
-        this.row();
-        this.add("Fee");
-        this.add("Income");
-        
-        //
-        this.row();
-        this.add(feeValueLabel);
-        this.add(incomeValueLabel);
-        
-        /**
-         * Confirm Friendly Button  (adds Friendly Request)
-         * Cancel Button            (clear forms)
-         */
-        VisTextButton cancelFriendlyButton = new VisTextButton(LanguageModLoader.getValue("cancel"));
-        
-        // Confirm Friendly Listener
-        confirmFriendlyButton.addCaptureListener(new InputListener() {
-            
+        VisTextButton clearButton = new VisTextButton(text("friendly_clear"));
+        clearButton.addListener(new ChangeListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                
-                //
-                if (selectedDate == null) {
-                    
-                    Log.info(Log.UI_SCHEDULE, "MATCH DATE IS REQUIRED");
-                    return;
-                }
-                
-                // ADD NEW FRIENDLY DEPENDING ON THE SELECTED ELEMENTS ON THE FORM
-                Log.info(Log.UI_SCHEDULE, "ADDING A NEW FRIENDLY MATCH!");
-                Log.info(Log.UI_SCHEDULE, "selectedMatchType       : " + selectedMatchType);
-                Log.info(Log.UI_SCHEDULE, "selectedVenueType       : " + selectedVenueType);
-                Log.info(Log.UI_SCHEDULE, "selectedMatchRulesType  : " + selectedMatchRulesType);
-                Log.info(Log.UI_SCHEDULE, "selectedOpponentClub    : " + opponentSelectBox.getSelected());
-                Log.info(Log.UI_SCHEDULE, "selectedMatchDate       : " + dateFormatter.format(selectedDate));
-                
-                // Create New Match
-                Match match = new Match();
-                
-                // Runtime id from the game's allocator (P2-4)
-                Long newMatchId = currentGame.getIdAllocator().nextId();
-                match.setId(newMatchId);
-                Log.info(Log.UI_SCHEDULE, "ArrangeFriendlyTable: Assigned match ID: " + newMatchId);
-                
-                // TODO: implement true dynamic match type depending on selection (friendly cup/etc)
-                match.setMatchType(Match.FRIENDLY_MATCH);
-                
-                // home and away club logic
-                // TODO: this will fail if we localize the Home text instead of using a TYPE or ENUM/INT
-                if (selectedVenueType.equals("Home")) {
-                    
-                    //
-                    match.setHomeClubId(currentClub.getId());
-                    match.setAwayClubId(opponentSelectBox.getSelected().getId());
-                    
-                } else {
-                    
-                    //
-                    match.setHomeClubId(opponentSelectBox.getSelected().getId());
-                    match.setAwayClubId(currentClub.getId());
-                }
-                
-                // proposed date is current game date
-                match.setProposeDateTime(currentGame.getGameDate());
-                
-                // TODO: time of day will be set by the SCHEDULER, this only take the day into account
-                match.setMatchDateTime(selectedDate);
-                
-                //
-                match.setIsProposed(true);
-
-                // Save to Proposed Matches List
-                Club currentClub = currentGame.getCurrentClub();
-                
-                currentClub.getProposedMatches().add(match);
-                
-                /**
-                 * Clear/Update Screen
-                 * 
-                 *  TODO: this should show the freshly requested matches as PENDING
-                 *          if the player advances game time they should change to accepted or be deleted
-                 */
+            public void changed(ChangeEvent event, Actor actor) {
+                statusLabel.setText("");
                 clearForm();
             }
         });
-        
-        cancelFriendlyButton.addCaptureListener(new InputListener() {
-            
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
 
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                
-                // CLEAR UI
-                Log.info(Log.UI_SCHEDULE, "CLEAR ARRANGE FRIENDLY COMPONENT UI!");
-                
-                //
-                clearForm();
-            }
-        });
-        
-        // Confirm Friendly Button Disabled Until Valid Form
-        confirmFriendlyButton.setDisabled(true);
-        
-        this.row().padTop(UiTheme.space("xxl"));
-        this.add(confirmFriendlyButton).bottom();
-        this.add(cancelFriendlyButton).bottom();
-        
-        //
+        this.row().padTop(UiTheme.space("lg"));
+        this.add(sendButton).bottom();
+        this.add(clearButton).bottom();
+        this.align(Align.top);
+
         updateDynamicComponents();
     }
-    
-    // 
+
+    private Club selectedOpponent() {
+        int index = opponentSelectBox.getSelectedIndex();
+        return index > 0 && index < opponents.size() ? opponents.get(index) : null;
+    }
+
+    private void updateSendButton() {
+        sendButton.setDisabled(currentClub == null || selectedDate == null || selectedOpponent() == null);
+    }
+
+    private void send() {
+        Club opponent = selectedOpponent();
+        if (currentClub == null || selectedDate == null || opponent == null) {
+            return;
+        }
+        FriendlyArranger arranger = new FriendlyArranger(game);
+        FriendlyArranger.Reason reason = arranger.check(currentClub, opponent, selectedDate.toLocalDate());
+        if (reason != FriendlyArranger.Reason.NONE) {
+            statusLabel.setColor(UiTheme.color("state.negative"));
+            statusLabel.setText(text(reason.key));
+            return;
+        }
+        boolean atHome = groundSelectBox.getSelectedIndex() == 0;
+        Match match = arranger.propose(currentClub, opponent, selectedDate.toLocalDate(), atHome);
+        if (match == null) {
+            return;
+        }
+        Log.info(Log.UI_SCHEDULE, "ArrangeFriendlyTable: invitation " + match.getId() + " sent to " + opponent.getName());
+        statusLabel.setColor(UiTheme.color("state.positive"));
+        statusLabel.setText(FriendlyArranger.fill(text("friendly_sent"), opponent.getName(),
+                FriendlyArranger.formatDate(match.getMatchDateTime())));
+        clearForm();
+    }
+
+    /** Clears the day and the opponent, here and on the calendar. */
     public void clearForm() {
-        
-     // clear selected date
         selectedDate = null;
-        
-        // clear components
-        opponentSelectBox.setSelected(null);
-        
-        // 
-        updateDynamicComponents();
-        
-        // CLEAR SELECTION ON FIXTURE SCREEN
         parentTable.fixturesTable.setSelectedDate(null);
         parentTable.fixturesTable.updateDynamicComponents();
+        updateDynamicComponents();
+        opponentSelectBox.setSelectedIndex(0);
+        updateSendButton();
     }
-    
-    //
+
     public void updateDynamicComponents() {
-        
-        //
-        if (selectedDate != null) {
-            
-            selectedDateLabel.setText(dateFormatter.format(selectedDate));
-            
-        } else {
-            
-            selectedDateLabel.setText(LanguageModLoader.getValue("select_a_date"));
-        }
-        
-        // 
-        if (currentClub != null) {
-            
-            /**
-             * List of Clubs (do not include current club)
-             * 
-             *  - TODO: this component is difficult because should allow to do some filtering at least
-             *  - TODO: component shows opponent level/fame
-             *  
-             *  ---
-             *  TODO unhardcode available clubs for friendly
-             *  TODO filter out current club
-             *  TODO filter out clubs with matches on the selected day so they cannot play/accept other match
-             *  
-             *  TODO UNHARDCODE availableClubs BEFORE WE IMPLEMENT MORE TEAMS/LEAGUES
-             */
-            List<Club> availableClubs = new ArrayList<>();
-            
-            // 
-            availableClubs.add(new Club("CHOOSE"));
-            
-            //
-            availableClubs.addAll(DatabaseLoader.getInstance().getClubsByCountry(DatabaseLoader.getCountryByDataId("england")));
-            
-            // Remove Current Club Hack
-            for (Club club : availableClubs) {
-                
-                // Ignore null id club (CHOOSE item)
-                if (club.getId() != null
-                        && club.getId().equals(currentClub.getId())) {
-                    
-                    //
-                    availableClubs.remove(club);
-                    break;
-                }
+        selectedDateLabel.setText(selectedDate != null ? FriendlyArranger.formatDate(selectedDate)
+                : text("select_a_date"));
+
+        Club kept = selectedOpponent();
+        opponents.clear();
+        opponents.add(null);
+        List<String> names = new ArrayList<>();
+        names.add(text("friendly_choose_opponent"));
+        if (currentClub != null && game.getCurrentGame() != null) {
+            for (Club club : new FriendlyArranger(game).possibleOpponents(currentClub)) {
+                opponents.add(club);
+                names.add(club.getName());
             }
-                    
-            opponentSelectBox.setItems(availableClubs.toArray(new Club[availableClubs.size()]));
         }
+        opponentSelectBox.setItems(names.toArray(new String[0]));
+        int index = kept != null ? opponents.indexOf(kept) : 0;
+        opponentSelectBox.setSelectedIndex(Math.max(index, 0));
+        updateSendButton();
+    }
+
+    private static String text(String key) {
+        return LanguageModLoader.getValue(key);
     }
 
     public Club getCurrentClub() {
