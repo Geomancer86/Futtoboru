@@ -84,6 +84,17 @@ public class GameFingerprint {
             put(k + "fixtures", club.getProposedMatches().size() + " proposed, " + club.getScheduledMatches().size()
                     + " scheduled, " + club.getPlayedMatches().size() + " played");
             put(k + "staff", new TreeMap<>(club.getStaff()));
+            // G-12: the season's budget, actual to date, debt marks
+            com.rndmodgames.futtoboru.finances.Budget bud = club.getBudget();
+            put(k + "budget", bud == null ? "none" : bud.getSeason() + " " + plain(bud.getExpectedGates()) + "/"
+                    + plain(bud.getExpectedWages()) + "/" + plain(bud.getExpectedGround()) + "/"
+                    + plain(bud.getExpectedOther()) + " limit " + plain(bud.getFacilityLimit()) + " weeks "
+                    + bud.getWeeksDone() + "/" + bud.getPlayingWeeksDone() + "of" + bud.getWeeksPlanned() + "/"
+                    + bud.getPlayingWeeksPlanned() + " actual " + plain(bud.getActualGates()) + "/"
+                    + plain(bud.getActualWages()) + "/" + plain(bud.getActualGround()) + "/"
+                    + plain(bud.getActualOther()) + "/" + plain(bud.getActualInterest()) + " level "
+                    + bud.getLastLevel() + "/" + bud.getWarnedLevel() + " " + bud.isCommitteeConcern() + " "
+                    + bud.isSpendWarned() + bud.isGatesWarned());
             put(k + "finances", club.getFinancialHistory().size() + " snapshots, " + club.getExpensesHistory().size()
                     + " expenses, " + club.getMatchIncomes().size() + " incomes");
             for (Match m : club.getPlayedMatches()) {
