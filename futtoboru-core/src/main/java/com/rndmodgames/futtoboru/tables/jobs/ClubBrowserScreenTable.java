@@ -88,7 +88,7 @@ public class ClubBrowserScreenTable extends VisTable {
         clubsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_open_positions"))).width(UiTheme.size("col.label"));
         clubsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_actions"))).width(UiTheme.size("col.wide"));
         clubsListTable.row();
-        clubsListTable.addSeparator();
+        clubsListTable.addSeparator().colspan(4); // V-01: full width, not the first column only
         
         // Clubs
         for (Club club : allClubs) {

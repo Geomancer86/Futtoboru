@@ -5,9 +5,13 @@ import java.util.Map;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.rndmodgames.components.AutoFocusScrollPane;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Profession;
 import com.rndmodgames.futtoboru.menu.MenuEntries.MenuEntry;
@@ -640,6 +644,12 @@ public class MainMenuManager {
             
             break;
             
+        case HISTORY_SCREEN:
+            // V-01: the menu entry showed an empty panel (the case was missing here)
+            historyScreenTable.updateDynamicComponents();
+            parentTable.add(historyScreenTable).grow();
+            break;
+
         case COMPETITIONS_SCREEN:
             
             // Update dynamic components
@@ -831,10 +841,49 @@ public class MainMenuManager {
          * NOTE: this is where we set the final alignment of the MAIN / CENTRAL SCREEN
          */
         parentTable.top().left();
+        fitContent();
 
         syncMenuState();
     }
     
+    /**
+     * V-01: every content screen starts at the top (not centred in the window), and one that has no scroll pane of
+     * its own scrolls vertically when it is taller than the window (Authorities, Finances, Club Info at 1280x720).
+     */
+    private void fitContent() {
+        if (parentTable.getChildren().size != 1) {
+            return;
+        }
+        Actor content = parentTable.getChildren().first();
+        if (content instanceof Table) {
+            ((Table) content).top();
+        }
+        if (!(content instanceof VisTable) || containsScrollPane(content)) {
+            return;
+        }
+        parentTable.clearChildren();
+        AutoFocusScrollPane scroll = new AutoFocusScrollPane((VisTable) content);
+        scroll.setFadeScrollBars(false);
+        scroll.setOverscroll(false, false);
+        scroll.setFlickScroll(false);
+        scroll.setScrollingDisabled(true, false);
+        parentTable.add(scroll).grow();
+    }
+
+    private static boolean containsScrollPane(Actor actor) {
+        if (actor instanceof ScrollPane) {
+            return true;
+        }
+        if (actor instanceof Group) {
+            for (Actor child : ((Group) actor).getChildren()) {
+                if (containsScrollPane(child)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Allow to call this from other places after data is updated
      * 

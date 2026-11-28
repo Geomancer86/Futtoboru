@@ -61,6 +61,7 @@ public class CupDrawScreenTable extends VisTable {
         
         // Create scrollable content table
         contentTable = new VisTable(true);
+        contentTable.top(); // V-01: the draw starts under the top bar, not mid-screen
         contentScrollPane = new VisScrollPane(contentTable);
         contentScrollPane.setFadeScrollBars(false);
         

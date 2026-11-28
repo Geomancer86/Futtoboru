@@ -116,7 +116,7 @@ public class JobBoardScreenTable extends VisTable {
         jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_deadline"))).width(UiTheme.size("col.label"));
         jobsListTable.add(new VisLabel(LanguageModLoader.getValue("jobs_action"))).width(UiTheme.size("col.number"));
         jobsListTable.row();
-        jobsListTable.addSeparator();
+        jobsListTable.addSeparator().colspan(6); // V-01: full width, not the first column only
         
         // Jobs
         for (JobOpening job : jobs) {
