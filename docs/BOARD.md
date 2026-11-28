@@ -9,6 +9,7 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 | G-10 history and fan tiers on screen (club facts, prose en+es, fan-tier meter) | BOOK3PRO (parked) | `b3/G-10-history-ui` | 2026-11-28 |
 | G-13 AI-to-AI friendlies and away guarantees | BOOK3PRO (parked) | `b3/G-13-ai-friendlies` | 2026-11-28 |
+| R-05 candidate sources (letters, adverts, staff tips, agents, not-retained lists; Shortlist screen; saves v3) | BOOK3PRO | `b3/R-05-candidate-sources` | 2026-11-28 |
 | G-11 follow-up: era via `GameData`, instant-result rules read `EraProfile`, more 1888-1900 events | BOOK3PRO (parked) | `b3/G-11-era-events` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
