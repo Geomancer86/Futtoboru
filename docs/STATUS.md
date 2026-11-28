@@ -29,4 +29,4 @@ _Last updated 2026-11-28 (BOOK3PRO)._ Version 0.5.0-SNAPSHOT.
 
 Full season: `engine/FullSeasonTests` plays 1888-89 headless and seeded to the 1889-90 rollover (P2-3, ~11 s, in `verify`).
 
-Build: `./mvnw -B verify` green (Maven 3.9.12 via wrapper), 279 core + 1 desktop tests (2026-11-28). Dead 3D demo code removed (P1-4). Match engine v2 design: `docs/design/MATCH_ENGINE_V2.md`.
+Build (T-01, D27, 2026-11-28): fast tier `./mvnw -B verify` ~300 tests in ~20 s of Maven; the level gate `python tools/test_level.py --run`; `-Pfull` (slow tier: season, saves, seeded data) on Jenkins/GitHub; `-Pfull,smoke` adds the desktop jar smoke test. Dead 3D demo code removed (P1-4). Match engine v2 design: `docs/design/MATCH_ENGINE_V2.md`.

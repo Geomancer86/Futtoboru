@@ -51,6 +51,7 @@ import com.rndmodgames.futtoboru.system.data.GameData;
  * Football League and the FA Cup are complete and the next season has rolled over. Then checks the
  * invariants of the final table, the cup and the rollover, and that the same seed plays the same season.
  */
+@Tag("slow")
 @Tag("season")
 class FullSeasonTests extends BaseTest {
 

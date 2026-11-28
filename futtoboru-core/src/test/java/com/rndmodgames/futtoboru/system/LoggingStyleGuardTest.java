@@ -32,7 +32,9 @@ class LoggingStyleGuardTest {
             "com/rndmodgames/futtoboru/system/Log.java",
             "the facade itself: writes to Gdx.app, or stdout/stderr when no application exists",
             "com/rndmodgames/desktop/DesktopLauncher.java",
-            "startup and uncaught-exception handler: runs before Gdx.app exists or after it died");
+            "startup and uncaught-exception handler: runs before Gdx.app exists or after it died",
+            "com/rndmodgames/desktop/SmokeRun.java",
+            "T-01 smoke result lines on stdout, read by DesktopSmokeIT (also before Gdx.app exists or after it ended)");
 
     static final Map<String, Pattern> FORBIDDEN = Map.of(
             "System.out/err", Pattern.compile("\\bSystem\\s*\\.\\s*(out|err)\\s*\\.\\s*(print|println|printf|format)\\s*\\("),

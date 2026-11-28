@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -62,7 +63,7 @@ class SaveGameTests {
         SaveLoadSystem.setGameFolder(folder.toFile());
         HeadlessApplicationConfiguration config = new HeadlessApplicationConfiguration();
         config.updatesPerSecond = 30;
-        application = new Futtoboru();
+        application = new Futtoboru(SeasonMemo.SEED); // T-01: the seed of the shared season memo
         new HeadlessApplication(application, config);
         BaseTest.awaitHeadlessCreate();
     }
@@ -74,12 +75,11 @@ class SaveGameTests {
 
     /**
      * A new game played 170 days (1 Apr to mid-September 1888): the league and the cup are created and drawn, and
-     * the first league match days of the era calendar (P2-11: from 8 September) are played.
+     * the first league match days of the era calendar (P2-11: from 8 September) are played. T-01: an independent
+     * copy of the season memo's day-170 game (played once per test JVM, see {@link SeasonMemo}).
      */
     private static SaveGame playedGame() {
-        SaveGame game = NewGameFixture.newGame(application);
-        NewGameFixture.play(application, game, 170, true);
-        return game;
+        return SeasonMemo.get(application).copyAtSnapshot(application);
     }
 
     private static LoadResult saveAndLoad(SaveGame game, String name) throws IOException {
@@ -90,6 +90,7 @@ class SaveGameTests {
     }
 
     @Test
+    @Tag("slow")
     void saveThenLoadGivesTheSameGame() throws IOException {
         SaveGame game = playedGame();
         int played = 0;
@@ -121,6 +122,7 @@ class SaveGameTests {
     }
 
     @Test
+    @Tag("slow")
     void afterALoadEveryClubPersonAndCompetitionIsOneObject() throws IOException {
         SaveGame game = saveAndLoad(playedGame(), "Identity").getGame();
 
@@ -396,6 +398,7 @@ class SaveGameTests {
      * data editions from season.json instead of adding a second 1888-89 edition next to them.
      */
     @Test
+    @Tag("slow")
     void theV1FixtureScriptsOpenTheDataEditions() throws IOException {
         String text;
         try (java.io.InputStream in = getClass().getClassLoader().getResourceAsStream(FIXTURE)) {
