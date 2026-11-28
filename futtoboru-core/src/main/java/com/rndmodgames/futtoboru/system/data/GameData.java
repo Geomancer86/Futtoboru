@@ -343,6 +343,13 @@ public class GameData {
     /** kind -> lower id -> runtime id of every live record (and of the old ids that alias to one). */
     private final Map<String, Map<String, Long>> numbers = new HashMap<>();
 
+    /** G-11: era files, collected while the packs are read and built once after them. */
+    private String eraBaseline;
+    private String eraBaselineWhere;
+    private final List<String> eraEvents = new ArrayList<>();
+    private final List<String> eraEventsWhere = new ArrayList<>();
+    private EraProfile era;
+
     /** Continues after the last data record, for runtime copies made at load (still below GAME_START). */
     private IdAllocator dataIds;
 
@@ -586,6 +593,7 @@ public class GameData {
         for (String pack : packs) {
             readPack(source, pack);
         }
+        buildEra();
         checkAliases();
         resolveReferences();
         resolveTexts();
@@ -636,7 +644,8 @@ public class GameData {
                 continue;
             }
             if (f.startsWith("era/")) {
-                continue; // era events (H-06): read by EraProfile, checked by validate.py
+                readEra(source, f, where); // era events (H-06, G-11): built into EraProfile after all packs
+                continue;
             }
             if (parts.length == 3 && parts[0].equals("text")) {
                 readText(data, where, parts[1], parts[2]);
@@ -679,6 +688,54 @@ public class GameData {
                 report.error(manifestWhere, "season `" + s.asString() + "` has no seasons/" + s.asString() + "/season.json");
             }
         }
+    }
+
+    /**
+     * G-11: {@code era/baseline.json} (one pack only, normally core) and every pack's {@code era/events.json}
+     * (core first, then mods in index order). Schema and sources are checked by {@code validate.py}; here a file
+     * that EraProfile refuses (unknown parameter, wrong type) is a load error.
+     */
+    private void readEra(Source source, String f, String where) {
+        String text = source.read(where);
+        if (text == null) {
+            return;
+        }
+        if (f.equals("era/baseline.json")) {
+            if (eraBaseline != null) {
+                report.error(where, "a second era baseline (" + eraBaselineWhere + " has one); mods add events only");
+                return;
+            }
+            eraBaseline = text;
+            eraBaselineWhere = where;
+        } else if (f.equals("era/events.json")) {
+            eraEvents.add(text);
+            eraEventsWhere.add(where);
+        } else {
+            report.error(where, "unknown era file (only era/baseline.json and era/events.json)");
+        }
+    }
+
+    private void buildEra() {
+        if (eraBaseline == null) {
+            if (!eraEvents.isEmpty()) {
+                report.error(eraEventsWhere.get(0), "era events without an era/baseline.json");
+            }
+            return;
+        }
+        try {
+            era = EraProfile.parse(eraBaseline, eraEvents);
+        } catch (RuntimeException e) {
+            report.error(eraEventsWhere.isEmpty() ? eraBaselineWhere : String.join(", ", eraEventsWhere),
+                    "era profile: " + e.getMessage());
+        }
+    }
+
+    /**
+     * G-11: the era profile (baseline + the dated events of every pack), or null when the data has none or it
+     * failed to load (see the report). Laws, ball, kit and league rules on a date: {@code era().at(date)}.
+     */
+    public EraProfile era() {
+        return era;
     }
 
     /** A text entry read from {@code text/<lang>/history.json}, waiting for its key to be resolved. */

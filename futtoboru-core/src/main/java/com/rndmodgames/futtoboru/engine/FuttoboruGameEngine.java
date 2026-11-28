@@ -130,10 +130,10 @@ public class FuttoboruGameEngine {
         return eraScheduler;
     }
 
-    /** The era events and baseline (H-06), loaded on first use. */
+    /** The era events and baseline (H-06) of the loaded game data, core + mods ({@code EraRules}, G-11). */
     public com.rndmodgames.futtoboru.system.data.EraProfile era() {
         if (eraProfile == null) {
-            eraProfile = com.rndmodgames.futtoboru.system.data.EraProfile.loadDefault();
+            eraProfile = com.rndmodgames.futtoboru.engine.era.EraRules.profile();
         }
         return eraProfile;
     }

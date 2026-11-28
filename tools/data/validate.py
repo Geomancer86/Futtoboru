@@ -777,23 +777,29 @@ def is_number(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
 
-def read_bundle_keys(root: Path) -> dict[str, set[str]] | None:
-    """Bundle name -> keys with a non-empty value (mods/language next to the gamedata folder), or None."""
+def read_bundle_values(root: Path) -> dict[str, dict[str, str]] | None:
+    """Bundle name -> key -> non-empty value (mods/language next to the gamedata folder), or None."""
     folder = root.parent / "mods" / "language"
     if not folder.is_dir():
         return None
-    out: dict[str, set[str]] = {}
+    out: dict[str, dict[str, str]] = {}
     for b in BUNDLES:
-        keys: set[str] = set()
+        values: dict[str, str] = {}
         f = folder / f"{b}.properties"
         if f.exists():
             for line in f.read_text(encoding="utf-8").splitlines():
                 if "=" in line and not line.lstrip().startswith("#"):
                     k, v = line.split("=", 1)
                     if v.strip():
-                        keys.add(k.strip())
-        out[b] = keys
+                        values[k.strip()] = v
+        out[b] = values
     return out
+
+
+def read_bundle_keys(root: Path) -> dict[str, set[str]] | None:
+    """Bundle name -> keys with a non-empty value (mods/language next to the gamedata folder), or None."""
+    values = read_bundle_values(root)
+    return None if values is None else {b: set(v) for b, v in values.items()}
 
 
 def check_era(root: Path, baselines: list, events: list, rep: Report, refs: list):
@@ -836,7 +842,7 @@ def check_era(root: Path, baselines: list, events: list, rep: Report, refs: list
             if g not in groups:
                 rep.error(where, f"missing parameter group `{g}`")
 
-    bundles = read_bundle_keys(root)
+    bundles = read_bundle_values(root)
     seen: dict[str, str] = {}      # event id -> where
     eff_date: dict[str, date] = {}  # event id -> effective
     pending_requires: list[tuple[str, str, str]] = []
@@ -904,10 +910,18 @@ def check_era(root: Path, baselines: list, events: list, rep: Report, refs: list
                 if key != f"era.{eid}":
                     rep.error(f"{ew}.message.key", f"must be `era.{eid}` (language keys `<key>.title` and `<key>.body`)")
                 elif bundles is not None:
-                    for b, keys in bundles.items():
+                    n_args = len(msg["args"]) if isinstance(msg.get("args"), list) else 0
+                    for b, texts in bundles.items():
                         for suffix in ("title", "body"):
-                            if f"{key}.{suffix}" not in keys:
+                            text = texts.get(f"{key}.{suffix}")
+                            if text is None:
                                 rep.error(f"{ew}.message", f"`{key}.{suffix}` missing or empty in {b}.properties")
+                                continue
+                            # G-11: every {n} in the text needs an arg, or the inbox would show "{n}"
+                            for n in sorted({int(x) for x in re.findall(r"\{(\d+)\}", text)}):
+                                if n >= n_args:
+                                    rep.error(f"{ew}.message", f"`{key}.{suffix}` in {b}.properties uses {{{n}}} "
+                                              f"but the event gives {n_args} args")
                 args = msg.get("args")
                 if isinstance(args, list) and not args:
                     rep.error(f"{ew}.message.args", "empty list: leave it out")

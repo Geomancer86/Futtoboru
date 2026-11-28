@@ -1,6 +1,5 @@
 package com.rndmodgames.futtoboru.engine.report;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -9,6 +8,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.era.EraRules;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -73,8 +73,6 @@ public final class MatchReport {
     static final int LATE = 75;
     /** Share of matches with a goal (before nets) whose report has a disputed goal. */
     static final double DISPUTED_CHANCE = 0.12;
-    /** Goal nets came in League-wide in 1891-92 (ERA_TIMELINE.md): after that no "was it in?" disputes. */
-    static final LocalDate NETS = LocalDate.of(1891, 9, 1);
 
     enum Situation {
         GOALLESS("goalless"), DRAW("draw"), NARROW("narrow"), COMFORTABLE("comfortable"), ROUT("rout");
@@ -506,7 +504,8 @@ public final class MatchReport {
         }
 
         private boolean beforeNets() {
-            return f.date() == null || f.date().isBefore(NETS);
+            // G-11: goal nets from the era profile (League-wide 1891-92, ERA_TIMELINE.md): no "was it in?" after
+            return f.date() == null || !EraRules.goalNets(f.date());
         }
 
         private String variant(String group) {

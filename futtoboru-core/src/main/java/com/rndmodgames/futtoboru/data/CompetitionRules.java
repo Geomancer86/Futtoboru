@@ -81,6 +81,24 @@ public class CompetitionRules implements Serializable {
         return rules;
     }
     
+    /**
+     * G-11: the league rules in force on a date, from the era profile ({@code league.pointsWin}, {@code
+     * league.pointsDraw}, {@code league.tieBreak}: GOAL_AVERAGE in 1888-89, decided by the League in November 1888).
+     */
+    public static CompetitionRules fromEra(com.rndmodgames.futtoboru.system.data.EraProfile.Resolved era) {
+        CompetitionRules rules = new CompetitionRules();
+        rules.setPointsForWin(era.getInt("league.pointsWin"));
+        rules.setPointsForDraw(era.getInt("league.pointsDraw"));
+        rules.setPointsForLoss(0);
+        rules.getTieBreakingOrder().clear();
+        rules.getTieBreakingOrder().add(TieBreaker.POINTS);
+        rules.getTieBreakingOrder().add("GOAL_AVERAGE".equals(era.getString("league.tieBreak"))
+                ? TieBreaker.GOAL_AVERAGE : TieBreaker.GOAL_DIFFERENCE);
+        rules.getTieBreakingOrder().add(TieBreaker.GOALS_SCORED);
+        rules.getTieBreakingOrder().add(TieBreaker.ALPHABETICAL);
+        return rules;
+    }
+
     // Getters and setters
     public Integer getPointsForWin() {
         return pointsForWin;

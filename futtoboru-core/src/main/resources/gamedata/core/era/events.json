@@ -19,6 +19,28 @@
     "notes": "Before the 1888-89 start: already folded into the baseline (kit.shinPadShare 0.6); kept for history screens."
   },
   {
+    "id": "league-1888-points-system",
+    "kind": "authority",
+    "authority": "football-league",
+    "announced": "1888-11-21",
+    "effective": "1888-11-21",
+    "dateCertainty": "month",
+    "scope": {
+      "competitions": [
+        "football-league"
+      ]
+    },
+    "effects": [],
+    "message": {
+      "key": "era.league-1888-points-system"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/1888%E2%80%9389_Football_League"
+    ],
+    "notes": "Decided during the first season (ERA_TIMELINE: late Nov 1888). The game already counts 2-1-0 and goal average from the start (baseline league.*), so the message changes no parameter."
+  },
+  {
     "id": "ifab-1889-ball-weight",
     "kind": "ball",
     "authority": "ifab",
@@ -71,6 +93,24 @@
     ]
   },
   {
+    "id": "press-1889-brodie-goal-nets",
+    "kind": "equipment",
+    "authority": "press",
+    "announced": "1889-11-01",
+    "effective": "1889-11-01",
+    "dateCertainty": "year",
+    "effects": [],
+    "message": {
+      "key": "era.press-1889-brodie-goal-nets",
+      "newsOnly": true
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/John_Alexander_Brodie"
+    ],
+    "notes": "Patent year only in the sources; the day is a plausible placeholder."
+  },
+  {
     "id": "ifab-1890-no-goal-from-goal-kick",
     "kind": "rule",
     "authority": "ifab",
@@ -91,6 +131,25 @@
     "sources": [
       "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
     ]
+  },
+  {
+    "id": "press-1891-first-goal-nets",
+    "kind": "equipment",
+    "authority": "press",
+    "announced": "1891-01-12",
+    "effective": "1891-01-12",
+    "dateCertainty": "month",
+    "effects": [],
+    "message": {
+      "key": "era.press-1891-first-goal-nets",
+      "newsOnly": true
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/John_Alexander_Brodie",
+      "https://markmetcalfwfb.blogspot.com/2023/01/goal-nets-were-first-officially-used-on.html"
+    ],
+    "notes": "First official use: North v South at Nottingham, January 1891. League-wide nets: league-1891-goal-nets."
   },
   {
     "id": "league-1891-fourteen-clubs",
@@ -304,6 +363,41 @@
       "https://en.wikipedia.org/wiki/Retain_and_transfer_system",
       "https://spartacus-educational.com/Ftransfer.htm"
     ]
+  },
+  {
+    "id": "ifab-1897-eleven-players",
+    "kind": "rule",
+    "authority": "ifab",
+    "announced": "1897-06-01",
+    "effective": "1897-09-01",
+    "dateCertainty": "year",
+    "effects": [],
+    "message": {
+      "key": "era.ifab-1897-eleven-players"
+    },
+    "confidence": "verified",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Laws_of_the_Game_(association_football)"
+    ],
+    "notes": "Writes down what was already practice: rules.minutes is 90 and maxSubstitutes 0 in the baseline."
+  },
+  {
+    "id": "press-1898-players-union",
+    "kind": "authority",
+    "authority": "press",
+    "announced": "1898-02-01",
+    "effective": "1898-02-01",
+    "dateCertainty": "month",
+    "effects": [],
+    "message": {
+      "key": "era.press-1898-players-union",
+      "newsOnly": true
+    },
+    "confidence": "unverified",
+    "sources": [
+      "https://spartacus-educational.com/Ftransfer.htm"
+    ],
+    "notes": "One secondary source (Spartacus); about 250 members."
   },
   {
     "id": "league-1898-automatic-promotion",

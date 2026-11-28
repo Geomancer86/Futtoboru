@@ -249,7 +249,9 @@ public class ScriptsManager {
         com.rndmodgames.futtoboru.data.CompetitionRules rules;
         java.time.LocalDateTime startDate = currentGame.getGameStartDate();
         if (startDate != null && startDate.getYear() == 1888) {
-            rules = com.rndmodgames.futtoboru.data.CompetitionRules.createHistoricalRules();
+            // G-11: points and tie-break from the era profile (2-1-0, goal average in 1888-89)
+            rules = com.rndmodgames.futtoboru.data.CompetitionRules.fromEra(
+                    com.rndmodgames.futtoboru.engine.era.EraRules.at(startDate.toLocalDate(), "football-league"));
             Log.info(Log.ENGINE_SCRIPTS, "Assigned HISTORICAL competition rules to league (1888-89)");
         } else {
             rules = com.rndmodgames.futtoboru.data.CompetitionRules.createDefaultRules();

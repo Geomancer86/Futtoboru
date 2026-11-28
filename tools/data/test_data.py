@@ -335,9 +335,13 @@ def test_era_effect_param_must_exist_in_baseline(pack):
     assert "unknown parameter `rules.penaltyKik`" in errors(pack)
 
 
+def event(d, eid):
+    return next(e for e in d if e["id"] == eid)
+
+
 def test_era_effect_value_type_and_op(pack):
     edit(era(pack, "events.json"),
-         lambda d: d[1]["effects"].extend([{"param": "rules.penaltyKick", "op": "set", "value": 3},
+         lambda d: event(d, "ifab-1889-ball-weight")["effects"].extend([{"param": "rules.penaltyKick", "op": "set", "value": 3},
                                            {"param": "rules.officials", "op": "scale", "value": 2},
                                            {"param": "ball.massMinG", "op": "mul", "value": 2}]))
     e = errors(pack)
@@ -387,6 +391,16 @@ def test_era_message_key_must_match_id_and_exist_in_every_bundle(pack):
                     encoding="utf-8")
     e = errors(pack)
     assert "`era.ifab-1925-offside-two.body` missing or empty in BaseBundle_sp_la.properties" in e
+
+
+def test_era_message_placeholders_need_args(pack):
+    lang = pack.parent / "mods" / "language" / "BaseBundle_en_us.properties"
+    text = lang.read_text(encoding="utf-8")
+    lang.write_text(text.replace("era.ifab-1925-offside-two.body=", "era.ifab-1925-offside-two.body=From {0}, ", 1),
+                    encoding="utf-8")
+    assert "`era.ifab-1925-offside-two.body` in BaseBundle_en_us.properties uses {0} but the event gives 0 args"         in errors(pack)
+    edit(era(pack, "events.json"), lambda d: event(d, "ifab-1925-offside-two")["message"].update({"args": ["1925"]}))
+    assert "uses {0}" not in errors(pack)
 
 
 def test_era_scope_refs_and_sources(pack):
