@@ -110,7 +110,33 @@ public class PlayerContract implements Serializable {
     private Integer goals = 0;
     private Integer assists = 0;
     private Integer cleanSheets = 0;
-    
+
+    // ========================================
+    // G-04: ONE-SEASON ENGAGEMENT (all optional in saves: an older save derives them on load)
+    // ========================================
+    /** The season the engagement is for (1888 = 1888-89); it ends on 30 April of the next year */
+    private Integer season;
+    /** Weekly pay in the close season (May-August); zero = no summer pay */
+    private BigDecimal summerWage = BigDecimal.ZERO;
+    /** An amateur's weekly expenses in the playing season (fares, loss of time); amateurs take no wage */
+    private BigDecimal weeklyExpenses = BigDecimal.ZERO;
+
+    /** The retained list: the club's decision for next season (null = not decided yet) */
+    public enum Retain { RETAINED, NOT_RETAINED }
+
+    /** A man's answer to the terms offered for next season */
+    public enum Answer { ACCEPTED, DECLINED }
+
+    private Retain retain;
+    /** Terms offered for next season (the weekly wage, the summer pay) */
+    private BigDecimal offeredWage;
+    private BigDecimal offeredSummerWage;
+    /** When the terms were sent to the man (null = not sent yet); he answers the next day */
+    private LocalDateTime offerSentDate;
+    private Answer answer;
+    /** How many times terms were sent (each answer is its own seeded draw) */
+    private Integer offers = 0;
+
     // ========================================
     // CONSTRUCTORS
     // ========================================
@@ -585,5 +611,98 @@ public class PlayerContract implements Serializable {
 
     public void setCleanSheets(Integer cleanSheets) {
         this.cleanSheets = cleanSheets;
+    }
+
+    /** @return the season the engagement is for (1888 = 1888-89), or null in a save made before G-04 */
+    public Integer getSeason() {
+        return season;
+    }
+
+    public void setSeason(Integer season) {
+        this.season = season;
+    }
+
+    public BigDecimal getSummerWage() {
+        return summerWage != null ? summerWage : BigDecimal.ZERO;
+    }
+
+    public void setSummerWage(BigDecimal summerWage) {
+        this.summerWage = summerWage;
+    }
+
+    /** @return true when the man is paid in the close season */
+    public boolean hasSummerPay() {
+        return getSummerWage().signum() > 0;
+    }
+
+    public BigDecimal getWeeklyExpenses() {
+        return weeklyExpenses != null ? weeklyExpenses : BigDecimal.ZERO;
+    }
+
+    public void setWeeklyExpenses(BigDecimal weeklyExpenses) {
+        this.weeklyExpenses = weeklyExpenses;
+    }
+
+    /** @return true for an amateur (no wage, expenses only) */
+    public boolean isAmateur() {
+        return contractType != null && contractType == ContractType.AMATEUR;
+    }
+
+    public Retain getRetain() {
+        return retain;
+    }
+
+    public void setRetain(Retain retain) {
+        this.retain = retain;
+    }
+
+    public BigDecimal getOfferedWage() {
+        return offeredWage;
+    }
+
+    public void setOfferedWage(BigDecimal offeredWage) {
+        this.offeredWage = offeredWage;
+    }
+
+    public BigDecimal getOfferedSummerWage() {
+        return offeredSummerWage;
+    }
+
+    public void setOfferedSummerWage(BigDecimal offeredSummerWage) {
+        this.offeredSummerWage = offeredSummerWage;
+    }
+
+    public LocalDateTime getOfferSentDate() {
+        return offerSentDate;
+    }
+
+    public void setOfferSentDate(LocalDateTime offerSentDate) {
+        this.offerSentDate = offerSentDate;
+    }
+
+    public Answer getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(Answer answer) {
+        this.answer = answer;
+    }
+
+    public int getOffers() {
+        return offers != null ? offers : 0;
+    }
+
+    public void setOffers(Integer offers) {
+        this.offers = offers;
+    }
+
+    /** Clears the retained-list marks (a new engagement starts without them) */
+    public void clearRetainedList() {
+        retain = null;
+        offeredWage = null;
+        offeredSummerWage = null;
+        offerSentDate = null;
+        answer = null;
+        offers = 0;
     }
 }

@@ -176,6 +176,11 @@ public class ReElectionManager {
         return pendingSeason(league) != null;
     }
 
+    /** G-04: the same, for callers without the manager (the contract rollover waits for the vote) */
+    public static boolean hasPendingMeeting(League league) {
+        return pendingSeason(league) != null;
+    }
+
     private static CompetitionEdition pendingSeason(League league) {
         if (league == null || league.getEditions() == null) {
             return null;

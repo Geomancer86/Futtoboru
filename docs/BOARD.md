@@ -6,17 +6,12 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| G-11 era events in the inbox (EraProfile → AUTHORITY messages on announce dates; rules applied on effective dates) | WORKSTATION | `ws/G-11-era-inbox` | 2026-11-28 |
+| G-10 history + fan tiers on screen (club detail history/nicknames/rivals; player tier badge + bio) | WORKSTATION | `ws/G-10-history-ui` | 2026-11-28 |
 | E-DET cross-JDK determinism: own Gaussian in RandomSource, re-pin goldens once, guard | WORKSTATION | `ws/E-DET-gaussian` | 2026-11-28 |
-| H-06 era events data (`era/baseline.json` + `events.json` per ERA_EVENTS_PROPOSAL, D30) | WORKSTATION | `ws/H-06-era-events` | 2026-11-28 |
 | E-17a ECS engine behind `-Dfuttoboru.match.engine=instant|ecs` (default instant) + MatchEngine contract test + ECS season soak entry | WORKSTATION | `ws/E-17a-engine-flag` | 2026-11-28 |
-| E-12b/E-16b realism: ball bounces off posts/bar, forwards run onto passes (offsides happen), foul rate check | WORKSTATION | `ws/E-16b-realism` | 2026-11-28 |
-| H-05 history data into gamedata per HISTORY_DATA_PROPOSAL (D30): history texts, nicknames, fan tiers, kits | WORKSTATION | `ws/H-05-history-data` | 2026-11-28 |
-| U-12 UI polish: Esc closes dialogs, dates/decimals/months from the game language, Authorities season, one link colour, inbox filter, debug button behind a dev flag | BOOK3PRO | `b3/U-12-ui-polish` | 2026-11-28 |
-| P2-14 neutral venues on `Match` + season calendar as data (FA Cup opens/drawn in its real month) | BOOK3PRO | `b3/P2-14-venues-calendar` | 2026-11-28 |
-| G-01 team sheet (XI, shape, style, captain; AI too) on the instant result **(PARKED: WIP pushed, next to finish)** | BOOK3PRO | `b3/G-01-team-sheet` | 2026-11-28 |
-| G-04 contracts through the season (AI clubs too) **(PARKED: WIP pushed, after G-01)** | BOOK3PRO | `b3/G-04-contracts` | 2026-11-28 |
-| G-02 injuries and availability (days out, `Availability` API, recovery; AI too) on the instant result | BOOK3PRO | `b3/G-02-injuries` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
+| G-05 committee and the secretary's job | BOOK3PRO | `b3/G-05-committee` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -54,8 +49,8 @@ Model tier per D33: Sonnet for docs/data/research/art tools/merges, Opus for cor
 | G-01 gate run, G-04, R-02 + R-11a merge | parked by the producer (max two code lanes on BOOK3PRO); G-04 waits for G-01 |
 | AGM date for G-08 | unsourced (placeholder: one week after the league ends) |
 | G1 path-aware gate, G3 nightly soak, G4 red-develop rule | INF-01 (WORKSTATION, claimed) + `test_level.py` (BOOK3PRO) |
-| Phase 5 (season 2, 1889-90 as a release) | v0.5.0 tag, G-04 contracts, G-05 |
+| Phase 5 (season 2, 1889-90 as a release) | G-05 |
 | Marketing | a full season playing end to end on the shipped build (ROADMAP Phase 5 rule) |
 
 ## Already claimed (do not take)
-E-17a, INF-01, E-16b, H-05, DOC-01 (WORKSTATION); U-12, P2-14, G-01, G-04, R-02 + R-11a (BOOK3PRO).
+E-17a, INF-01, E-16b, H-05, DOC-01 (WORKSTATION); U-12, P2-14, G-01, R-02 + R-11a (BOOK3PRO).

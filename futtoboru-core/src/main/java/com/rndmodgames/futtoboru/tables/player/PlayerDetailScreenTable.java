@@ -203,6 +203,23 @@ public class PlayerDetailScreenTable extends VisTable {
         infoTable.add(new VisLabel(clubName)).left();
         infoTable.row();
         
+        // G-02: fit, or the injury with the days left and the day he is back
+        infoTable.add(new VisLabel(LanguageModLoader.getValue("player_fitness"))).left().width(UiTheme.size("col.label"));
+        com.rndmodgames.futtoboru.engine.injuries.Availability.Status fitness =
+                com.rndmodgames.futtoboru.engine.injuries.Availability.of(currentPlayer, futtoboru.getCurrentGame().getGameDate());
+        VisLabel fitnessLabel;
+        if (fitness.isAvailable()) {
+            fitnessLabel = new VisLabel(LanguageModLoader.getValue("player_fit"));
+        } else {
+            com.rndmodgames.futtoboru.data.InjuryKind kind = fitness.getInjury().getKindEnum();
+            fitnessLabel = new VisLabel(LanguageModLoader.format("player_injured_days",
+                    LanguageModLoader.getValue(kind != null ? kind.labelKey() : "availability_injured"),
+                    fitness.getDaysLeft(), dateFormatter.format(fitness.getUntil())));
+            fitnessLabel.setColor(UiTheme.color("state.injured"));
+        }
+        infoTable.add(fitnessLabel).left();
+        infoTable.row();
+
         // E-01: this season's position in the 2-3-5
         infoTable.add(new VisLabel(LanguageModLoader.getValue("player_position"))).left().width(UiTheme.size("col.label"));
         infoTable.add(new VisLabel(currentPlayer.getPosition() == null ? LanguageModLoader.getValue("position_unknown")
@@ -254,8 +271,10 @@ public class PlayerDetailScreenTable extends VisTable {
                 com.rndmodgames.futtoboru.data.PlayerContract contract = playerClub.getContractForPlayer(
                     currentPlayer.getId() != null ? currentPlayer.getId() : currentPlayer.getPerson().getId());
                 if (contract != null) {
-                    contractInfo = LanguageModLoader.format("player_contract_summary", com.rndmodgames.futtoboru.data.ContractType.getName(contract.getContractType()),
-                        "£" + contract.getWeeklyWage().setScale(2, java.math.RoundingMode.HALF_UP));
+                    // G-04: type and pay from the language files, money through Money.format
+                    contractInfo = LanguageModLoader.format("player_contract_summary",
+                        LanguageModLoader.getValue(com.rndmodgames.futtoboru.data.ContractType.labelKey(contract.getContractType())),
+                        com.rndmodgames.futtoboru.engine.contracts.ContractManager.terms(contract));
                 }
             }
         }
@@ -349,17 +368,51 @@ public class PlayerDetailScreenTable extends VisTable {
         }
         
         if (contract != null) {
-            // Contract Type
+            // G-04: a one-season engagement: amateur or professional, wage in the season, summer pay, the 30 April end
             contractTable.row();
             contractTable.add(new VisLabel(LanguageModLoader.getValue("player_contract_type"))).left().width(UiTheme.size("col.label"));
-            contractTable.add(new VisLabel(com.rndmodgames.futtoboru.data.ContractType.getName(contract.getContractType()))).left();
+            contractTable.add(new VisLabel(LanguageModLoader.getValue(
+                    com.rndmodgames.futtoboru.data.ContractType.labelKey(contract.getContractType())))).left();
             contractTable.row();
-            
-            // Weekly Wage
-            contractTable.add(new VisLabel(LanguageModLoader.getValue("player_weekly_wage"))).left().width(UiTheme.size("col.label"));
-            contractTable.add(new VisLabel("£" + contract.getWeeklyWage().setScale(2, java.math.RoundingMode.HALF_UP))).left();
-            contractTable.row();
-            
+
+            if (contract.getSeason() != null) {
+                contractTable.add(new VisLabel(LanguageModLoader.getValue("player_contract_season"))).left().width(UiTheme.size("col.label"));
+                contractTable.add(new VisLabel(com.rndmodgames.futtoboru.engine.contracts.ContractCalendar.seasonName(
+                        contract.getSeason()))).left();
+                contractTable.row();
+            }
+
+            if (contract.isAmateur()) {
+                contractTable.add(new VisLabel(LanguageModLoader.getValue("player_weekly_wage"))).left().width(UiTheme.size("col.label"));
+                contractTable.add(new VisLabel(LanguageModLoader.format("player_amateur_expenses",
+                        com.rndmodgames.futtoboru.engine.finances.Money.format(contract.getWeeklyExpenses())))).left();
+                contractTable.row();
+            } else {
+                contractTable.add(new VisLabel(LanguageModLoader.getValue("player_weekly_wage"))).left().width(UiTheme.size("col.label"));
+                contractTable.add(new VisLabel(LanguageModLoader.format("player_wage_in_season",
+                        com.rndmodgames.futtoboru.engine.finances.Money.format(contract.getWeeklyWage())))).left();
+                contractTable.row();
+                contractTable.add(new VisLabel(LanguageModLoader.getValue("player_summer_pay"))).left().width(UiTheme.size("col.label"));
+                contractTable.add(new VisLabel(contract.hasSummerPay()
+                        ? LanguageModLoader.format("player_summer_pay_weekly",
+                                com.rndmodgames.futtoboru.engine.finances.Money.format(contract.getSummerWage()))
+                        : LanguageModLoader.getValue("player_summer_pay_none"))).left();
+                contractTable.row();
+            }
+
+            // the retained list (16-30 April): the club's decision and his answer
+            if (contract.getRetain() != null) {
+                String status = contract.getRetain() == com.rndmodgames.futtoboru.data.PlayerContract.Retain.NOT_RETAINED
+                        ? "contracts_not_retained"
+                        : contract.getAnswer() == com.rndmodgames.futtoboru.data.PlayerContract.Answer.ACCEPTED
+                                ? "contracts_reply_state_accepted"
+                                : contract.getAnswer() == com.rndmodgames.futtoboru.data.PlayerContract.Answer.DECLINED
+                                        ? "contracts_reply_state_declined" : "contracts_retained";
+                contractTable.add(new VisLabel(LanguageModLoader.getValue("player_retained_list"))).left().width(UiTheme.size("col.label"));
+                contractTable.add(new VisLabel(LanguageModLoader.getValue(status))).left();
+                contractTable.row();
+            }
+
             // Contract Dates
             if (contract.getStartDate() != null) {
                 contractTable.add(new VisLabel(LanguageModLoader.getValue("player_start_date"))).left().width(UiTheme.size("col.label"));
@@ -387,30 +440,8 @@ public class PlayerDetailScreenTable extends VisTable {
                 contractTable.row();
             }
             
-            // Bonuses (only show if non-zero)
-            if (contract.getSigningBonus() != null && contract.getSigningBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
-                contractTable.add(new VisLabel(LanguageModLoader.getValue("player_signing_bonus"))).left().width(UiTheme.size("col.label"));
-                contractTable.add(new VisLabel("£" + contract.getSigningBonus().setScale(2, java.math.RoundingMode.HALF_UP))).left();
-                contractTable.row();
-            }
-            
-            if (contract.getGoalBonus() != null && contract.getGoalBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
-                contractTable.add(new VisLabel(LanguageModLoader.getValue("player_goal_bonus"))).left().width(UiTheme.size("col.label"));
-                contractTable.add(new VisLabel(LanguageModLoader.format("player_per_goal", "£" + contract.getGoalBonus().setScale(2, java.math.RoundingMode.HALF_UP)))).left();
-                contractTable.row();
-            }
-            
-            if (contract.getAppearanceFee() != null && contract.getAppearanceFee().compareTo(java.math.BigDecimal.ZERO) > 0) {
-                contractTable.add(new VisLabel(LanguageModLoader.getValue("player_appearance_fee"))).left().width(UiTheme.size("col.label"));
-                contractTable.add(new VisLabel(LanguageModLoader.format("player_per_match", "£" + contract.getAppearanceFee().setScale(2, java.math.RoundingMode.HALF_UP)))).left();
-                contractTable.row();
-            }
-            
-            if (contract.getLeagueWinBonus() != null && contract.getLeagueWinBonus().compareTo(java.math.BigDecimal.ZERO) > 0) {
-                contractTable.add(new VisLabel(LanguageModLoader.getValue("player_league_win_bonus"))).left().width(UiTheme.size("col.label"));
-                contractTable.add(new VisLabel("£" + contract.getLeagueWinBonus().setScale(2, java.math.RoundingMode.HALF_UP))).left();
-                contractTable.row();
-            }
+            // G-04: no bonus rows: the old generated bonuses (goal, appearance, league win) were never paid and no
+            // 1888 source gives any (a signing-on present comes in the 1890s)
         } else {
             contractTable.row();
             contractTable.add(new VisLabel(LanguageModLoader.getValue("player_no_contract_found"))).colspan(2).left();

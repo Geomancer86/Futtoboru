@@ -35,7 +35,9 @@ class AiMatchStatsTest {
         int draw = 0;
         int away = 0;
         long actions = 0;
-        long restarts = 0;
+        long offsides = 0;
+        long fouls = 0;
+        int maxOffsides = 0;
         long t0 = System.nanoTime();
         StringBuilder scores = new StringBuilder();
         for (int m = 0; m < n; m++) {
@@ -52,15 +54,18 @@ class AiMatchStatsTest {
             draw += r.homeGoals() == r.awayGoals() ? 1 : 0;
             away += r.homeGoals() < r.awayGoals() ? 1 : 0;
             actions += r.ballActions();
-            restarts += r.offsides() + r.fouls();
+            offsides += r.offsides();
+            fouls += r.fouls();
+            maxOffsides = Math.max(maxOffsides, r.offsides());
             scores.append(r.homeGoals()).append('-').append(r.awayGoals()).append(' ');
         }
         double ms = (System.nanoTime() - t0) / 1e6 / n;
         String line = String.format(Locale.ROOT,
                 "E-15 %d matches: %.2f goals/game (target 4.45), H/D/A %.0f/%.0f/%.0f %% (target 59/17/24),"
-                        + " %d ball actions and %d offsides+fouls given per match, %.0f ms per match (%.2f us/tick); scores %s",
+                        + " %d ball actions, %.2f offsides (max %d) and %.2f fouls given per match, %.0f ms per match"
+                        + " (%.2f us/tick); scores %s",
                 n, goals / (double) n, 100.0 * home / n, 100.0 * draw / n, 100.0 * away / n, actions / n,
-                restarts / n, ms, ms * 1000 / 162_000, scores);
+                offsides / (double) n, maxOffsides, fouls / (double) n, ms, ms * 1000 / 162_000, scores);
         System.out.println(line);
         assertTrue(goals > 0, line);
         assertTrue(actions / n > 300, line);

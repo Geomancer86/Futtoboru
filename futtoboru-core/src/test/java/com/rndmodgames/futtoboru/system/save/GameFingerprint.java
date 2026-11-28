@@ -69,7 +69,17 @@ public class GameFingerprint {
             }
             Collections.sort(squad);
             put(k + "squad", squad);
-            put(k + "contracts", club.getPlayerContracts().size());
+            // G-04: each engagement's terms and retained-list marks, not only how many there are
+            List<String> terms = new ArrayList<>();
+            for (com.rndmodgames.futtoboru.data.PlayerContract c : club.getPlayerContracts()) {
+                terms.add(c.getPlayerId() + ":" + c.getContractType() + " " + c.getSeason() + " " + c.getStartDate()
+                        + ".." + c.getEndDate() + " " + plain(c.getWeeklyWage()) + "/" + plain(c.getSummerWage()) + "/"
+                        + plain(c.getWeeklyExpenses()) + " " + c.getRetain() + " " + plain(c.getOfferedWage()) + "/"
+                        + plain(c.getOfferedSummerWage()) + " " + c.getOfferSentDate() + " " + c.getAnswer() + " "
+                        + c.getOffers());
+            }
+            Collections.sort(terms);
+            put(k + "contracts", terms);
             contracts += club.getPlayerContracts().size();
             put(k + "fixtures", club.getProposedMatches().size() + " proposed, " + club.getScheduledMatches().size()
                     + " scheduled, " + club.getPlayedMatches().size() + " played");
@@ -86,6 +96,13 @@ public class GameFingerprint {
         Collections.sort(played);
         put("clubs", seen.size());
         put("contracts", contracts);
+        List<Long> freeAgents = new ArrayList<>();
+        for (Player p : game.getFreeAgents()) {
+            freeAgents.add(p.getId());
+        }
+        Collections.sort(freeAgents);
+        put("freeAgents", freeAgents);
+        put("contractsSeason", game.getContractsSeason() + " (retained list " + game.getRetainedListSeason() + ")");
         put("matches.played", played);
 
         LeagueStandingsManager standings = new LeagueStandingsManager();

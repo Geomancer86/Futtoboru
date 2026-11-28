@@ -1,0 +1,42 @@
+[
+  {
+    "id": "knock",
+    "kind": "knock",
+    "chancePerMatch": 0.03,
+    "minDays": 0,
+    "maxDays": 6,
+    "confidence": "estimate",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Substitute_(association_football)"
+    ],
+    "notes": "D19-3: the man plays on. Chance per man per match and days out are gameplay estimates (no injury rates for 1888-89 were found); 0 days = fit for the next match. No substitutes existed (the League allowed one for an injured man only in 1965)."
+  },
+  {
+    "id": "passenger",
+    "kind": "passenger",
+    "chancePerMatch": 0.008,
+    "minDays": 7,
+    "maxDays": 21,
+    "strengthWhileHurt": 0.4,
+    "confidence": "estimate",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Substitute_(association_football)"
+    ],
+    "notes": "D19-3: hurt but stays on as a passenger (no substitutes), worth strengthWhileHurt of a fit man for the rest of the match. Rates and days out are estimates."
+  },
+  {
+    "id": "carried-off",
+    "kind": "carried-off",
+    "chancePerMatch": 0.006,
+    "minDays": 14,
+    "maxDays": 56,
+    "returnChance": 0.3,
+    "strengthWhileHurt": 0.4,
+    "confidence": "estimate",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Substitute_(association_football)",
+      "https://en.wikipedia.org/wiki/Ross_McMahon"
+    ],
+    "notes": "D19-3: carried off, the side plays short; with returnChance he comes back on later as a passenger (strengthWhileHurt). Ross McMahon (Bolton) was injured in both his 1888-89 League games. Rates and days out are estimates."
+  }
+]

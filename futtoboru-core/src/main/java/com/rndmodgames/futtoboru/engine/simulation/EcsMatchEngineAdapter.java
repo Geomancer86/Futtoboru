@@ -33,6 +33,8 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.Team;
  *   stand-in at the bottom of the rating scale who never scores (interim, until the engine can play with ten).
  * - Ground and weather: {@link MatchFixture#weather()}; home side defends west and kicks off; 2 x 45 minutes.
  * - Scorers: the last player of the scoring side to play the ball; an own goal has no scorer.
+ * - Injuries: the G-02 injuries {@link MatchSimulator} rolls are recorded on the match for both engines, but the ECS
+ *   play does not weaken the hurt men yet (its own contact injuries, E-13, are the later source; E-17 wires them).
  */
 public final class EcsMatchEngineAdapter implements MatchEngine {
 

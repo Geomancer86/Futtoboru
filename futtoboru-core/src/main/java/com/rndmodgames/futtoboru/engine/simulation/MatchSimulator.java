@@ -5,6 +5,8 @@ import com.rndmodgames.futtoboru.data.Match;
 import com.rndmodgames.futtoboru.data.Stadium;
 import com.rndmodgames.futtoboru.data.TeamSheet;
 import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
+import com.rndmodgames.futtoboru.engine.injuries.InjuryRules;
+import com.rndmodgames.futtoboru.engine.injuries.MatchInjuries;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.engine.team.TeamSheets;
 import com.rndmodgames.futtoboru.game.Futtoboru;
@@ -34,7 +36,8 @@ public class MatchSimulator {
 
     /**
      * @param root each match draws from {@code root.fork("match:" + id)}, its gate from {@code fork("gate:" + id)},
-     *             its goal minutes from {@code fork("minutes:" + id)} (G-03) and its weather from
+     *             its goal minutes from {@code fork("minutes:" + id)} (G-03), its injuries from
+     *             {@code fork("injuries:" + id)} (G-02) and its weather from
      *             {@code fork("weather:" + date + ":" + ground)}, so a result depends on the seed and the match, not on
      *             the order the day's matches are played
      */
@@ -89,13 +92,23 @@ public class MatchSimulator {
         TeamSheet homeSheet = TeamSheets.kickOff(match, homeClub, true, currentGame, root);
         TeamSheet awaySheet = TeamSheets.kickOff(match, awayClub, false, currentGame, root);
 
+        // G-02 (D19-3): men hurt during the match, on their own stream (the other draws stay the same); the engine
+        // weighs them (the instant result: a passenger is worth less from his minute on, a man carried off nothing)
+        InjuryRules injuryRules = InjuryRules.current();
+        RandomSource injuries = root.fork("injuries:" + matchKey);
+        match.setHomeInjuries(MatchInjuries.roll(InstantMatchEngine.onField(homeSheet, homeClub), injuryRules,
+                injuries.fork("home")));
+        match.setAwayInjuries(MatchInjuries.roll(InstantMatchEngine.onField(awaySheet, awayClub), injuryRules,
+                injuries.fork("away")));
+
         // P2-14: a neutral ground (cup semi-final or final) has no home advantage and its own weather
         boolean neutral = NeutralVenues.isNeutral(match);
         String groundKey = neutral && match.getVenue() != null ? match.getVenue() : MatchWeather.groundOf(homeClub);
         MatchWeather weather = MatchWeather.of(root,
                 match.getMatchDateTime() != null ? match.getMatchDateTime().toLocalDate() : null, groundKey);
         MatchOutcome outcome = engine.play(new MatchFixture(matchKey, homeClub, awayClub, match.getMatchDateTime(),
-                weather, neutral, homeSheet, awaySheet), root.fork("match:" + matchKey));
+                weather, neutral, homeSheet, awaySheet, match.getHomeInjuries(), match.getAwayInjuries(), injuryRules),
+                root.fork("match:" + matchKey));
 
         match.setHomeGoals(outcome.homeGoals());
         match.setAwayGoals(outcome.awayGoals());

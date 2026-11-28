@@ -231,8 +231,9 @@ class FullSeasonTests extends BaseTest {
 
     /**
      * G-01: every league match and cup tie of the season was played by two frozen team sheets (the player's club
-     * and every AI club alike): eleven squad men each (no club of 1888-89 had to play short), a captain among them,
-     * and every goal scored by a man on his side's sheet.
+     * and every AI club alike): eleven squad men each, a captain among them, and every goal scored by a man on his
+     * side's sheet. G-02: a side is short only when men hurt in an earlier match were still out that day, and no man
+     * plays while out.
      */
     @Test
     void everyMatchIsPlayedByTwoTeamSheetsAndOnlyTheElevenScore() {
@@ -251,11 +252,15 @@ class FullSeasonTests extends BaseTest {
                 assertNotNull(sheet, "match " + m.getId() + (home ? " home" : " away") + " sheet");
                 assertEquals(clubId, sheet.getClubId());
                 Club club = first.save.getClubById(clubId);
-                Set<Long> squad = new HashSet<>();
-                for (com.rndmodgames.futtoboru.data.Player p : club.getPlayers()) {
-                    squad.add(p.getId());
+                // G-04: the 1888-89 squad (the 1 May rollover changed the squads since)
+                Set<Long> squad = first.seasonMen.getOrDefault(clubId, Set.of());
+                Set<Long> out = outOn(club, m);
+                for (Long id : sheet.selectedIds()) {
+                    assertFalse(out.contains(id), club.getName() + ": man " + id + " played while injured, match "
+                            + m.getId());
                 }
-                assertEquals(11, sheet.selectedCount(), club.getName() + " in match " + m.getId());
+                assertEquals(Math.min(11, squad.size() - out.size()), sheet.selectedCount(),
+                        club.getName() + " in match " + m.getId() + " (" + out.size() + " injured)");
                 assertTrue(squad.containsAll(sheet.selectedIds()), club.getName() + ": squad men only");
                 assertTrue(sheet.isSelected(sheet.getCaptainId()), club.getName() + ": the captain plays");
                 for (Long scorer : home ? m.getHomeScorerIds() : m.getAwayScorerIds()) {
@@ -267,6 +272,51 @@ class FullSeasonTests extends BaseTest {
         assertTrue(played > 132, "league and cup matches played: " + played);
         assertTrue(clubsWithSheets.containsAll(first.leagueClubIds), "every league club picked its sheets");
         assertNotNull(first.save.getCurrentClub().getTeamSheet(), "the player's club has a standing sheet");
+    }
+
+    /** G-02: the club's men (player ids) still out on the day of {@code match} from injuries in earlier matches. */
+    private static Set<Long> outOn(Club club, Match match) {
+        Set<Long> out = new HashSet<>();
+        LocalDate day = match.getMatchDateTime().toLocalDate();
+        for (Match m : club.getPlayedMatches()) {
+            if (m == match || m.getMatchDateTime() == null || !m.getMatchDateTime().toLocalDate().isBefore(day)) {
+                continue;
+            }
+            boolean home = club.getId().equals(m.getHomeClubId());
+            for (com.rndmodgames.futtoboru.data.MatchInjury i : home ? m.getHomeInjuries() : m.getAwayInjuries()) {
+                int days = i.getDaysOut() != null ? i.getDaysOut() : 0;
+                if (m.getMatchDateTime().toLocalDate().plusDays(days).isAfter(day)) {
+                    for (com.rndmodgames.futtoboru.data.Player p : club.getPlayers()) {
+                        if (p.getPerson() != null && p.getPerson().getId().equals(i.getPersonId())) {
+                            out.add(p.getId());
+                        }
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
+    /** G-02: over a season every kind of injury happens, at the player's club and at AI clubs alike. */
+    @Test
+    void injuriesHappenAtEveryKindOfClubOverASeason() {
+        Set<String> kinds = new HashSet<>();
+        int ai = 0;
+        Long mine = first.save.getCurrentClub().getId();
+        List<Match> all = new ArrayList<>(first.leagueMatches);
+        all.addAll(first.cupMatches);
+        for (Match m : all) {
+            for (com.rndmodgames.futtoboru.data.MatchInjury i : m.getHomeInjuries()) {
+                kinds.add(i.getKind());
+                ai += mine.equals(m.getHomeClubId()) ? 0 : 1;
+            }
+            for (com.rndmodgames.futtoboru.data.MatchInjury i : m.getAwayInjuries()) {
+                kinds.add(i.getKind());
+                ai += mine.equals(m.getAwayClubId()) ? 0 : 1;
+            }
+        }
+        assertEquals(Set.of("knock", "passenger", "carried-off"), kinds);
+        assertTrue(ai > 20, "AI clubs' injuries: " + ai);
     }
 
     @Test
@@ -521,6 +571,43 @@ class FullSeasonTests extends BaseTest {
     }
 
     /**
+     * G-04: the 1888-89 engagements ended on 30 April; on 1 May every club (the manager's, left to its committee here,
+     * and every AI club) re-engaged some men, let the others go and filled its squad, so each starts 1889-90 with an
+     * engagement per man, its band's minimum and a full 2-3-5; the men let go are free agents; the manager got the
+     * April retained-list letter and the close-season letter.
+     */
+    @Test
+    void theEngagementsRollOverOn1MayForEveryClub() {
+        com.rndmodgames.futtoboru.engine.contracts.ContractManager contracts = first.engine.getContractManager();
+        java.util.Set<com.rndmodgames.futtoboru.data.Player> seen =
+                java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        int clubs = 0;
+        int renewed = 0;
+        for (Club club : com.rndmodgames.futtoboru.engine.contracts.ContractManager.uniqueClubs(first.save)) {
+            clubs++;
+            assertEquals(club.getPlayers().size(), club.getPlayerContracts().size(), club.getName() + ": one engagement per man");
+            assertTrue(club.getPlayers().size() >= contracts.bandOf(club, 1889).getMinimumSquad(), club.getName() + ": "
+                    + club.getPlayers().size() + " men");
+            for (com.rndmodgames.futtoboru.data.Player p : club.getPlayers()) {
+                assertTrue(seen.add(p), p.getPerson().getName() + " " + p.getPerson().getLastname() + " in two squads");
+                com.rndmodgames.futtoboru.data.PlayerContract c = club.getContractForPlayer(p.getId());
+                assertEquals(Integer.valueOf(1889), c.getSeason(), club.getName());
+                assertEquals(LocalDateTime.of(1890, 4, 30, 23, 59, 59), c.getEndDate());
+                renewed += c.getStartDate().equals(LocalDateTime.of(1889, 5, 1, 0, 0)) ? 1 : 0;
+            }
+        }
+        assertTrue(clubs > 20, "clubs " + clubs);
+        assertTrue(renewed > 300, "most men were re-engaged: " + renewed);
+        assertTrue(!first.save.getFreeAgents().isEmpty(), "men let go are free agents");
+        for (com.rndmodgames.futtoboru.data.Player p : first.save.getFreeAgents()) {
+            assertTrue(seen.add(p), "a free agent is in no squad");
+        }
+        assertEquals(1, first.messages(com.rndmodgames.futtoboru.engine.contracts.ContractManager.MESSAGE_RETAINED_LIST));
+        assertEquals(1, first.messages(com.rndmodgames.futtoboru.engine.contracts.ContractManager.MESSAGE_CLOSE_SEASON));
+        assertEquals(first.save.getFreeAgents().size(), second.save.getFreeAgents().size(), "same seed, same rollover");
+    }
+
+    /**
      * P2-12: only the home club sells tickets for a league or cup match and books its gate, once; the away club's
      * finances never see it. Every played 1888-89 league match and FA Cup tie has exactly one gate entry, the home
      * club's, holding the match's whole revenue, and each club's gate total is the sum over its home matches.
@@ -656,6 +743,8 @@ class FullSeasonTests extends BaseTest {
         /** E-01b: clubs of the game that cannot field a 2-3-5, at the new game and after the rollover. */
         List<String> shortAtStart;
         List<String> shortAfterRollover;
+        /** G-04: every man of each club's squad (player ids by club id) before the 1 May contract rollover */
+        Map<Long, Set<Long>> seasonMen = new HashMap<>();
         /** P2-14: the day the 1888-89 FA Cup opened, and the day each of its rounds was drawn */
         LocalDate cupOpenedOn;
         Map<Integer, LocalDate> roundDrawnOn = new HashMap<>();
@@ -774,6 +863,14 @@ class FullSeasonTests extends BaseTest {
                     readDrawMessages();
                 }
                 watchCup();
+                if (save.getContractsSeason() == null || save.getContractsSeason() < 1889) {
+                    for (Club c : save.getAllClubs()) {
+                        Set<Long> men = seasonMen.computeIfAbsent(c.getId(), k -> new HashSet<>());
+                        for (com.rndmodgames.futtoboru.data.Player p : c.getPlayers()) {
+                            men.add(p.getId());
+                        }
+                    }
+                }
                 if (isRolledOver()) {
                     days = (int) java.time.temporal.ChronoUnit.DAYS.between(start, save.getGameDate());
                     return;
@@ -925,8 +1022,10 @@ class FullSeasonTests extends BaseTest {
         boolean isRolledOver() {
             CompetitionEdition le = leagueEdition();
             CompetitionEdition ce = cupEdition();
+            // G-04: and the 1 May rollover of the engagements (retained list, free agents, short squads filled)
             return le != null && !le.getFinalStandings().isEmpty() && ce != null && ce.getChampionsId() != null
-                    && league().getEditions().size() > league().getEditions().indexOf(le) + 1;
+                    && league().getEditions().size() > league().getEditions().indexOf(le) + 1
+                    && save.getContractsSeason() != null && save.getContractsSeason() >= 1889;
         }
 
         void collect() {

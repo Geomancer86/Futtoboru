@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.AttributeChangeCalculator;
 import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
+import com.rndmodgames.futtoboru.engine.injuries.Availability;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.futtoboru.ui.UiTooltips;
 import com.rndmodgames.futtoboru.system.Log;
@@ -123,6 +124,7 @@ public class PlayersListTable extends VisTable {
         this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_name"), "name")).width(UiTheme.size("table.squad.name"));
         this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_age"), "age")).width(UiTheme.size("table.squad.age"));
         this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_country"), "country")).width(UiTheme.size("table.squad.country"));
+        this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_injury"), "injury")).width(UiTheme.size("table.squad.injury"));
         
         // Physical attribute columns
         if (showAcceleration) {
@@ -205,6 +207,9 @@ public class PlayersListTable extends VisTable {
             String countryName = player.getPerson().getCountry() != null ? 
                 player.getPerson().getCountry().getCommonName() : LanguageModLoader.getValue("not_available");
             this.add(new VisLabel(countryName)).width(UiTheme.size("table.squad.country"));
+
+            // G-02: injury mark + days out (empty when available)
+            this.add(injuryCell(player)).width(UiTheme.size("table.squad.injury"));
             
             // Physical attributes (with change indicators)
             if (showAcceleration) {
@@ -297,6 +302,17 @@ public class PlayersListTable extends VisTable {
         return header;
     }
     
+    /** G-02: "Inj. 12d" in the injury colour while he is out, else nothing. */
+    private VisLabel injuryCell(Player player) {
+        Availability.Status status = Availability.of(player, game.getCurrentGame().getGameDate());
+        if (status.isAvailable()) {
+            return new VisLabel("");
+        }
+        VisLabel label = new VisLabel(LanguageModLoader.format("squad_injury_mark", status.getDaysLeft()));
+        label.setColor(UiTheme.color("state.injured"));
+        return label;
+    }
+
     /**
      * Sort players by column
      */
@@ -314,6 +330,9 @@ public class PlayersListTable extends VisTable {
             case "country":
                 comparator = Comparator.comparing(p -> 
                     p.getPerson().getCountry() != null ? p.getPerson().getCountry().getCommonName() : "");
+                break;
+            case "injury":
+                comparator = Comparator.comparing(p -> Availability.of(p, game.getCurrentGame().getGameDate()).getDaysLeft());
                 break;
             case "strength":
                 comparator = Comparator.comparing(p -> p.getStrength() != null ? p.getStrength() : 0.0f);
@@ -368,7 +387,7 @@ public class PlayersListTable extends VisTable {
      * Calculates the total number of columns currently displayed.
      */
     private int getColumnCount() {
-        int count = 3; // Name, Age, Country (always shown)
+        int count = 4; // Name, Age, Country, Injury (always shown)
         
         // Physical
         if (showAcceleration) count++;

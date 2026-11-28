@@ -92,6 +92,15 @@ public class FuttoboruGameEngine {
         this.attributeGenerator = new PlayerAttributeGenerator();
         this.messageManager = new MessageManager(gameInstance);
         this.expenseCalculator = new ExpenseCalculator(gameInstance);
+        this.contractManager = new com.rndmodgames.futtoboru.engine.contracts.ContractManager(gameInstance,
+                messageManager);
+    }
+
+    /** G-04: engagements through the season (retained list, answers, the 1 May rollover), every club */
+    private final com.rndmodgames.futtoboru.engine.contracts.ContractManager contractManager;
+
+    public com.rndmodgames.futtoboru.engine.contracts.ContractManager getContractManager() {
+        return contractManager;
     }
 
     /** U-06 / D18: the rotating autosave slot (1st of each month and season rollover) */
@@ -352,6 +361,10 @@ public class FuttoboruGameEngine {
         LocalDateTime newDate = current.plusDays(1);
         gameInstance.getCurrentGame().setGameDate(newDate);
         
+        // G-02: the day's injury recovery, every club (a man fit again is available for today's matches)
+        com.rndmodgames.futtoboru.engine.injuries.InjuryManager.recoverDaily(gameInstance.getCurrentGame(), newDate,
+                messageManager);
+
         // Check Game Scripts (may create new scheduled messages)
         scriptsManager.checkGameScripts();
 
@@ -362,7 +375,15 @@ public class FuttoboruGameEngine {
         if (gameInstance.getJobManager() != null) {
             gameInstance.getJobManager().updateJobOpenings();
         }
-        
+
+        // G-04: a new month's money starts from nothing (the Finances screen's "this month"; it never reset)
+        if (newDate.getDayOfMonth() == 1) {
+            resetMonthTotals();
+        }
+
+        // G-04: engagements (retained list from 16 April, answers the next day, the 1 May rollover for every club)
+        contractManager.afterDay(newDate);
+
         /**
          * STEP 5: Deliver scheduled messages AFTER advancing date
          * This catches messages scheduled for the new date (same day events)
@@ -592,6 +613,16 @@ public class FuttoboruGameEngine {
         }
     }
     
+    /** G-04: the month's income and expenditure of every club start again on the 1st */
+    private void resetMonthTotals() {
+        for (Club club : gameInstance.getCurrentGame().getAllClubs()) {
+            if (club != null) {
+                club.setMonthIncome(BigDecimal.ZERO);
+                club.setMonthExpenditure(BigDecimal.ZERO);
+            }
+        }
+    }
+
     /**
      * Get the date of the most recent expense calculation
      */

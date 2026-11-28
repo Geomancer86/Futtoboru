@@ -40,8 +40,9 @@ public class NameGenerator {
         /**
          * TODO: small chance of having more than 1 name or more than 1 lastname or both
          */
-        String randomName = names.get(rng.nextInt(numberOfNames - 1));
-        String randomLastName = lastnames.get(rng.nextInt(numberOfLastnames - 1));
+        // G-04 fix: nextInt(size - 1) never drew the last name of either list
+        String randomName = names.get(rng.nextInt(numberOfNames));
+        String randomLastName = lastnames.get(rng.nextInt(numberOfLastnames));
         
         //
         String generatedName [] = new String [2]; 

@@ -105,6 +105,10 @@ public class DatabaseLoader {
     // number of squad places that are runtime copies of a person already in another squad
     private static int personCopies;
 
+    // G-04: the wage bands of each data season, by the year it starts (1888 = 1888-89)
+    private static java.util.TreeMap<Integer, List<com.rndmodgames.futtoboru.data.ContractBand>> contractBands =
+            new java.util.TreeMap<>();
+
     // keep track of main/top authority
     private static Authority mainAuthority;
 
@@ -344,6 +348,7 @@ public class DatabaseLoader {
         firstNamesByCountry = new HashMap<>();
         lastNamesByCountry = new HashMap<>();
         personCopies = 0;
+        contractBands = new java.util.TreeMap<>();
         mainAuthority = null;
     }
 
@@ -589,7 +594,22 @@ public class DatabaseLoader {
 
             Log.info(Log.DATA_LOADING, "LOADING SEASON " + season.getName());
 
-            loadSquads(data, season, dataIds, rng);
+            // G-04: the season's wage bands and its league clubs, before the squads' contracts are made
+            int startYear = com.rndmodgames.futtoboru.engine.temporal.SeasonCalendar.forDate(season.getStartDate())
+                    .getStartYear();
+            List<com.rndmodgames.futtoboru.data.ContractBand> bands = loadContractBands(data, season.getDataId());
+            if (!bands.isEmpty()) {
+                contractBands.put(startYear, bands);
+            }
+            Set<String> leagueClubs = new HashSet<>();
+            for (DataRecord e : r.children()) {
+                Competition competition = competitionsByDataId.get(e.ref("competition"));
+                if (competition != null && Competition.COMPETITION_LEAGUE.equals(competition.getCompetitionType())) {
+                    leagueClubs.addAll(e.refs("participants"));
+                }
+            }
+
+            loadSquads(data, season, dataIds, rng, startYear, leagueClubs);
 
             // Editions of this season (participants by runtime club id)
             Map<CompetitionEdition, Competition> editions = new LinkedHashMap<>();
@@ -626,7 +646,30 @@ public class DatabaseLoader {
      * keeps today's gameplay: the first squad gets the canonical Person, later squads a runtime copy with the same
      * data id. Lookups by data id return the canonical one.
      */
-    private static void loadSquads(GameData data, Season season, IdAllocator dataIds, RandomSource rng) {
+    /** G-04: the wage bands of a season's {@code contracts.json} (money read in shillings, kept in pounds). */
+    private static List<com.rndmodgames.futtoboru.data.ContractBand> loadContractBands(GameData data, String season) {
+        List<com.rndmodgames.futtoboru.data.ContractBand> bands = new ArrayList<>();
+        for (DataRecord r : data.records("contract_band", season)) {
+            com.rndmodgames.futtoboru.data.ContractBand b = new com.rndmodgames.futtoboru.data.ContractBand();
+            b.setStanding(r.str("standing"));
+            b.setClubs(new ArrayList<>(r.refs("clubs")));
+            b.setProfessionalShare(r.decimal("professionalShare").doubleValue());
+            b.setSeasonWageMin(com.rndmodgames.futtoboru.data.ContractBand.pounds(r.decimal("seasonWageMin")));
+            b.setSeasonWageMax(com.rndmodgames.futtoboru.data.ContractBand.pounds(r.decimal("seasonWageMax")));
+            b.setSummerWageMin(com.rndmodgames.futtoboru.data.ContractBand.pounds(r.decimal("summerWageMin")));
+            b.setSummerWageMax(com.rndmodgames.futtoboru.data.ContractBand.pounds(r.decimal("summerWageMax")));
+            b.setSummerPayShare(r.decimal("summerPayShare").doubleValue());
+            b.setAmateurExpenses(com.rndmodgames.futtoboru.data.ContractBand.pounds(r.decimal("amateurExpenses")));
+            b.setMinimumSquad(r.integer("minimumSquad"));
+            b.setSquadSize(r.integer("squadSize"));
+            b.setConfidence(r.str("confidence"));
+            bands.add(b);
+        }
+        return bands;
+    }
+
+    private static void loadSquads(GameData data, Season season, IdAllocator dataIds, RandomSource rng, int startYear,
+            Set<String> leagueClubs) {
         Set<String> listed = new HashSet<>();
         Set<String> usedGrounds = new HashSet<>();
         int copies = 0;
@@ -671,13 +714,15 @@ public class DatabaseLoader {
             // Players (E-01: this season's position and any sourced dribbling come from the squad entry)
             Map<String, Position> positions = data.squadPositions(sq);
             Map<String, Integer> dribbling = data.squadDribbling(sq);
+            com.rndmodgames.futtoboru.data.ContractBand band = com.rndmodgames.futtoboru.data.ContractBand.forClub(
+                    getContractBands(startYear), club.getDataId(), leagueClubs.contains(club.getDataId()));
             for (String personId : sq.refs("players")) {
                 Person person = personsByDataId.get(personId);
                 if (!listed.add(personId)) {
                     person = copyOf(person, dataIds.nextId());
                     copies++;
                 }
-                Player player = createPlayer(person, club, season, dataIds, rng);
+                Player player = createPlayer(person, club, season, dataIds, rng, startYear, band);
                 player.setPosition(positions.get(personId));
                 if (dribbling.containsKey(personId)) {
                     player.setDribbling(dribbling.get(personId).floatValue());
@@ -723,8 +768,12 @@ public class DatabaseLoader {
         return copy;
     }
 
-    /** A loaded player: attributes, a random contract and an occupation, as the legacy PlayersLoader did. */
-    private static Player createPlayer(Person person, Club club, Season season, IdAllocator dataIds, RandomSource rng) {
+    /**
+     * A loaded player: attributes, his engagement for the season (G-04: one season to 30 April, terms from the club's
+     * wage band) and an occupation.
+     */
+    private static Player createPlayer(Person person, Club club, Season season, IdAllocator dataIds, RandomSource rng,
+            int startYear, com.rndmodgames.futtoboru.data.ContractBand band) {
         Player player = new Player();
 
         // one stream per player (runtime ids of data are stable), so load order does not matter
@@ -738,10 +787,10 @@ public class DatabaseLoader {
         LocalDateTime estimatedDate = person.getBirthDate().plusYears(20);
         new PlayerAttributeGenerator().generatePlayerAttributes(player, person, estimatedDate, playerRng.fork("attributes"));
 
-        // For Season 1, contracts are randomly generated (ids from the data range: they are made at load)
+        // The season's engagement (ids from the data range: they are made at load)
         LocalDateTime seasonStartDate = season.getStartDate() != null ? season.getStartDate() : estimatedDate;
-        PlayerContract contract = PlayerContractGenerator.generateRandomContract(player, club, seasonStartDate, dataIds,
-                playerRng.fork("contract"));
+        PlayerContract contract = PlayerContractGenerator.generateSeasonContract(player, club, seasonStartDate,
+                startYear, band, dataIds, playerRng.fork("contract"));
         if (contract != null) {
             club.addPlayerContract(contract);
         }
@@ -794,6 +843,19 @@ public class DatabaseLoader {
     /** @return how many squad places are runtime copies of a person already listed in another squad */
     public static int getPersonCopies() {
         return personCopies;
+    }
+
+    /**
+     * G-04: the wage bands for the season starting in {@code startYear}: those of the latest data season starting
+     * on or before it (1889-90 plays on 1888-89's until the data has its own), else the earliest data season's, else
+     * the built-in bands.
+     */
+    public static synchronized List<com.rndmodgames.futtoboru.data.ContractBand> getContractBands(int startYear) {
+        Map.Entry<Integer, List<com.rndmodgames.futtoboru.data.ContractBand>> e = contractBands.floorEntry(startYear);
+        if (e == null) {
+            e = contractBands.firstEntry();
+        }
+        return e != null ? e.getValue() : com.rndmodgames.futtoboru.data.ContractBand.defaults();
     }
 
     /**

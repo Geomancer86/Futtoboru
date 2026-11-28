@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.rndmodgames.futtoboru.data.Club;
+import com.rndmodgames.futtoboru.data.MatchInjury;
 import com.rndmodgames.futtoboru.data.Player;
+import com.rndmodgames.futtoboru.data.TeamShape;
 import com.rndmodgames.futtoboru.data.TeamSheet;
+import com.rndmodgames.futtoboru.engine.injuries.InjuryRules;
+import com.rndmodgames.futtoboru.engine.injuries.MatchInjuries;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.engine.team.TeamSheets;
 import com.rndmodgames.futtoboru.engine.team.TeamStrength;
@@ -17,7 +21,7 @@ import com.rndmodgames.futtoboru.engine.team.TeamStrength;
  * - strength comes from the eleven on each side's frozen sheet ({@link TeamStrength}: attack and defence by place,
  *   out of position and playing short cost, small shape / style / captain modifiers)
  * - home side x 1.15 (not at a neutral ground, P2-14)
- * - each side x a random 0.7..1.3
+ * - each side x a random 0.7..1.3, x its hurt factor (G-02: men hurt in the match)
  * - goals from a base distribution (30 % 0, 30 % 1, 25 % 2, 10 % 3, 5 % 4-5), each side's attack against the other's
  *   defence, shifted by the strength ratio, cap 5
  * - each goal's scorer is one of the eleven, weighted by place and finishing ({@link TeamStrength#pickScorer})
@@ -43,30 +47,44 @@ public final class InstantMatchEngine implements MatchEngine {
         TeamStrength homeStrength = TeamStrength.of(fixture.homeSheet(), TeamSheets.squadById(homeClub));
         TeamStrength awayStrength = TeamStrength.of(fixture.awaySheet(), TeamSheets.squadById(awayClub));
 
+        // G-02 (D19-3): a passenger is worth less from his minute on, a man carried off nothing while off
+        double homeHurt = hurtFactor(onField(fixture.homeSheet(), homeClub).size(), fixture.homeInjuries(),
+                fixture.injuryRules());
+        double awayHurt = hurtFactor(onField(fixture.awaySheet(), awayClub).size(), fixture.awayInjuries(),
+                fixture.injuryRules());
+
         double homeAdvantage = fixture.neutral() ? 1.0 : HOME_ADVANTAGE_MULTIPLIER;
 
         double homeRandom = RANDOMNESS_MIN + (random.nextDouble() * (RANDOMNESS_MAX - RANDOMNESS_MIN));
         double awayRandom = RANDOMNESS_MIN + (random.nextDouble() * (RANDOMNESS_MAX - RANDOMNESS_MIN));
 
-        double homeAttack = homeStrength.attack() * homeAdvantage * homeRandom;
-        double homeDefence = homeStrength.defence() * homeAdvantage * homeRandom;
-        double awayAttack = awayStrength.attack() * awayRandom;
-        double awayDefence = awayStrength.defence() * awayRandom;
+        double homeAttack = homeStrength.attack() * homeAdvantage * homeRandom * homeHurt;
+        double homeDefence = homeStrength.defence() * homeAdvantage * homeRandom * homeHurt;
+        double awayAttack = awayStrength.attack() * awayRandom * awayHurt;
+        double awayDefence = awayStrength.defence() * awayRandom * awayHurt;
 
         int homeScore = generateScore(homeAttack, awayDefence, random);
         int awayScore = generateScore(awayAttack, homeDefence, random);
 
-        List<Long> homeScorers = scorers(fixture.homeSheet(), homeClub, homeScore, random);
-        List<Long> awayScorers = scorers(fixture.awaySheet(), awayClub, awayScore, random);
+        List<Long> homeScorers = scorers(fixture.homeSheet(), homeClub, fixture.homeInjuries(), homeScore, random);
+        List<Long> awayScorers = scorers(fixture.awaySheet(), awayClub, fixture.awayInjuries(), awayScore, random);
         return new MatchOutcome(homeScore, awayScore, homeScorers, awayScorers);
     }
 
-    /** One draw per goal: a man of the sheet ({@link TeamStrength#pickScorer}). */
-    private static List<Long> scorers(TeamSheet sheet, Club club, int goals, RandomSource random) {
+    /**
+     * One draw per goal: a man of the sheet ({@link TeamStrength#pickScorer}); G-02: a man carried off for good
+     * scores no more (kept simple: not at all in this match).
+     */
+    private static List<Long> scorers(TeamSheet sheet, Club club, List<MatchInjury> injuries, int goals,
+            RandomSource random) {
         List<Long> ids = new ArrayList<>();
         if (goals > 0 && club.getPlayers() != null && !club.getPlayers().isEmpty()) {
-            Map<Long, Player> squad = TeamSheets.squadById(club);
             for (int i = 0; i < goals; i++) {
+                Map<Long, Player> squad = TeamSheets.squadById(club);
+                if (injuries != null && !injuries.isEmpty()) {
+                    squad.values().removeIf(p -> p.getPerson() != null && injuries.stream().anyMatch(
+                            in -> MatchInjuries.leftForGood(in) && p.getPerson().getId().equals(in.getPersonId())));
+                }
                 Player scorer = TeamStrength.pickScorer(sheet, squad, random);
                 if (scorer != null && scorer.getPerson() != null) {
                     ids.add(scorer.getPerson().getId());
@@ -74,6 +92,33 @@ public final class InstantMatchEngine implements MatchEngine {
             }
         }
         return ids;
+    }
+
+    /** G-02: the men on the sheet's places, in slot order (empty places: the side plays short). */
+    static List<Player> onField(TeamSheet sheet, Club club) {
+        List<Player> out = new ArrayList<>();
+        if (sheet == null) {
+            return out;
+        }
+        Map<Long, Player> squad = TeamSheets.squadById(club);
+        for (int s = 0; s < TeamShape.SLOTS; s++) {
+            Player p = sheet.getPlayerId(s) != null ? squad.get(sheet.getPlayerId(s)) : null;
+            if (p != null) {
+                out.add(p);
+            }
+        }
+        return out;
+    }
+
+    /**
+     * G-02: what the side is worth over the match next to the same men unhurt (1 when nobody is hurt; playing short
+     * from kick-off is already in {@link TeamStrength}).
+     */
+    static double hurtFactor(int menOnField, List<MatchInjury> injuries, InjuryRules rules) {
+        if (menOnField == 0 || injuries == null || injuries.isEmpty()) {
+            return 1.0;
+        }
+        return MatchInjuries.effectiveMen(menOnField, injuries, rules) / menOnField;
     }
 
     /** Goals for one side from the base distribution, shifted by its share of the combined strength. */
