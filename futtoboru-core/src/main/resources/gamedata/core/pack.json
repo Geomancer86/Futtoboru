@@ -13,6 +13,8 @@
     "competitions.json",
     "continents.json",
     "countries.json",
+    "era/baseline.json",
+    "era/events.json",
     "grounds.json",
     "ids.json",
     "language_rates.json",
