@@ -136,7 +136,19 @@ public class PlayerDetailScreenTable extends VisTable {
         contentTable.row();
         contentTable.addSeparator().colspan(2).pad(UiTheme.space("sm"));
         contentTable.row();
-        
+
+        // R-04: another club's man is seen only through our observers (words or ranges); ours are fully known
+        com.rndmodgames.futtoboru.system.SaveGame save = futtoboru.getSession().getGame();
+        if (save != null && !com.rndmodgames.futtoboru.engine.recruitment.Perception.isOwn(save, currentPlayer)) {
+            com.rndmodgames.futtoboru.engine.recruitment.Perception.ensure(save);
+            Player shown = currentPlayer;
+            contentTable.add(com.rndmodgames.futtoboru.tables.recruitment.PerceptionCard.card(futtoboru.getSession(),
+                    shown.getPerson().getName() + " " + shown.getPerson().getLastname(), shown,
+                    com.rndmodgames.futtoboru.engine.recruitment.Perception.report(save, shown, futtoboru.random()),
+                    () -> updateDynamicComponents(shown))).left().pad(UiTheme.space("sm"));
+            return;
+        }
+
         // Physical Attributes Section
         buildPhysicalAttributesSection();
         contentTable.row();

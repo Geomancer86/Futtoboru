@@ -163,6 +163,9 @@ public class MatchResultRecorder {
         // G-02: the men hurt in the match get their days out (every club), the player's club its injury letter
         com.rndmodgames.futtoboru.engine.injuries.InjuryManager.applyAfterMatch(game, match, messageManager);
 
+        // R-04: the player's club's observers who were there saw the other side
+        com.rndmodgames.futtoboru.engine.recruitment.Perception.afterMatch(game, match);
+
         Log.info(Log.ENGINE_MATCH, "MatchResultRecorder",
             "Recorded " + homeClub.getName() + " " + match.getHomeGoals() + " - " + match.getAwayGoals()
             + " " + awayClub.getName());

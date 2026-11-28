@@ -109,6 +109,7 @@ Stream names contain what makes the draw unique (club, day). Same seed = same ga
 | Money | `engine/finances/`, `seasons/<id>/economy.json` |
 | Committee, jobs, staff | `engine/committee/CommitteeManager`, `engine/jobs/JobManager`, `ClubStaffManager` |
 | Recruitment | `engine/recruitment/Recruitment`, `CandidatePools`, `gamedata/core/recruitment/` |
+| Hidden ratings, perception | `engine/recruitment/Perception`, `Observers`; UI `tables/recruitment/PerceptionCard` |
 | Inbox letters | `engine/messages/MessageManager`, `data/Message` |
 | World build | `system/DatabaseLoader`, `system/data/GameData`, `system/generators/` |
 | Save / load | `system/save/SaveCodec`, `SaveMigrations`, `Autosave`, `SaveSlots` |

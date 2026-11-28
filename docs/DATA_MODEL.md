@@ -237,6 +237,10 @@ facts: `docs/data/history/RECRUITMENT_1888-1900.md`, `LANGUAGES_LITERACY_1880-19
   sourceKind, origin, originClub, playsFor, upbringing, tendencies, arrivedAge, real, season, since, status}]` (the
   player and his person in the usual tables, not in `allPlayers`), `candidatePoolSeason`, `candidateArrivalsMonth`.
   A save without them gets the pools of its day on load.
+- **Perception (R-04, saves, optional, saveVersion stays 3):** `SaveGame.knowledge` = `[{observer, player, minutes}]`
+  (what the player's club's observers have watched: `p<personId>` or `c:<club>:<name>`), `knowledgeCounted`. The
+  per-attribute error is not saved: it is drawn from `fork("perceive:<observer>:<player>:<attribute>")`. A save
+  without them counts the club's played matches once (`Perception.ensure`).
 - Java: `GameData` checks the same rules; `RecruitmentData` and `LanguageData` (from `DatabaseLoader`) are the
   read-only lookups.
 

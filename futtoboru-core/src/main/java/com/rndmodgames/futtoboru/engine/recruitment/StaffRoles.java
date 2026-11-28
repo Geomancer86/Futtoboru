@@ -39,6 +39,9 @@ public final class StaffRoles {
     static final int[] TRAINER_MEANS = { 15, 9, 10, 8 };
     static final int[] SECRETARY_MEANS = { 11, 11, 11, 10 };
     static final int[] COMMITTEE_MEANS = { 9, 9, 13, 7 };
+    /** R-04: the captain judges on the field (technical and teamwork best, design §7); not a profession */
+    static final int[] CAPTAIN_MEANS = { 10, 13, 12, 7 };
+    public static final String CAPTAIN = "captain";
     /** A judging skill is its mean plus a spread of -3..+3 (two dice), on the 3..23 scale (placeholder). */
     static final int SPREAD = 3;
     /** Ages of a generated trainer and secretary (placeholder: the trainer an ex-sprinter or pedestrian). */
@@ -211,13 +214,15 @@ public final class StaffRoles {
      * well and likes pace; a committee man judges character and likes a local lad; the secretary is middling at all,
      * with his own bias. Some secretaries know men in the west of Scotland.
      *
-     * @param profession {@link Profession#TRAINER}, {@link Profession#SECRETARY} or {@link Profession#COMMITTEE_MEMBER}
+     * @param profession {@link Profession#TRAINER}, {@link Profession#SECRETARY}, {@link Profession#COMMITTEE_MEMBER}
+     *                   or {@link #CAPTAIN} (R-04)
      * @param network    his own region(s)
      * @param rng        his own fork ({@code "judge:" + id})
      */
     public static StaffJudgement judgementFor(String profession, List<String> network, RandomSource rng) {
         int[] means = Profession.TRAINER.equals(profession) ? TRAINER_MEANS
-                : Profession.COMMITTEE_MEMBER.equals(profession) ? COMMITTEE_MEANS : SECRETARY_MEANS;
+                : Profession.COMMITTEE_MEMBER.equals(profession) ? COMMITTEE_MEANS
+                : CAPTAIN.equals(profession) ? CAPTAIN_MEANS : SECRETARY_MEANS;
         int[] v = new int[4];
         for (int i = 0; i < 4; i++) {
             v[i] = clamp(means[i] - SPREAD + rng.nextInt(SPREAD + 1) + rng.nextInt(SPREAD + 1));
@@ -226,6 +231,8 @@ public final class StaffRoles {
         String bias;
         if (Profession.TRAINER.equals(profession)) {
             bias = u < 0.7 ? StaffJudgement.BIAS_PACE : StaffJudgement.BIAS_SIZE;
+        } else if (CAPTAIN.equals(profession)) {
+            bias = u < 0.6 ? StaffJudgement.BIAS_FLAIR : u < 0.8 ? StaffJudgement.BIAS_SIZE : StaffJudgement.BIAS_LOCAL;
         } else if (Profession.COMMITTEE_MEMBER.equals(profession)) {
             bias = u < 0.6 ? StaffJudgement.BIAS_LOCAL : u < 0.85 ? StaffJudgement.BIAS_SIZE : StaffJudgement.BIAS_SCOTS;
         } else {

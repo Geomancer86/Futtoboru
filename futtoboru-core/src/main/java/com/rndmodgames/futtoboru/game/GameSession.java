@@ -36,6 +36,17 @@ public final class GameSession {
         return navigation;
     }
 
+    /** R-04 (D28 Q5): perceived ratings as numeric ranges instead of period words (a view setting, not saved) */
+    private boolean perceptionNumbers;
+
+    public boolean isPerceptionNumbers() {
+        return perceptionNumbers;
+    }
+
+    public void setPerceptionNumbers(boolean perceptionNumbers) {
+        this.perceptionNumbers = perceptionNumbers;
+    }
+
     /** @return which game was last saved or loaded, and on which in-game date (U-04d) */
     public UnsavedProgress progress() {
         return progress;

@@ -270,6 +270,7 @@ public final class GameplayRun {
         GameInvariants.finishedCupsLeaveNoTies(w, g);
         GameInvariants.values(w, g, bot.today());
         GameInvariants.injuriesHeal(w, g, bot.today());
+        GameInvariants.perceivedRangesHoldTheTruth(w, g, bot.app.random());
         GameInvariants.contracts(w, g, bot.app.getGameEngine().getContractManager().runningSeason(g));
     }
 

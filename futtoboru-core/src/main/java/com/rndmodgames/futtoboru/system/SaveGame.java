@@ -191,7 +191,17 @@ public class SaveGame implements Serializable {
     /** R-03: the season (start year) the pools were last built for, and the month (yyyy-mm) of the last arrivals */
     private Integer candidatePoolSeason;
     private String candidateArrivalsMonth;
-    
+
+    /**
+     * R-04: what the player's club's observers have seen of other men (minutes per observer and man,
+     * engine/recruitment/Perception). Optional in saves: a save without it gets the club's played matches on load.
+     */
+    private List<com.rndmodgames.futtoboru.data.recruitment.Knowledge> knowledge = new ArrayList<>();
+    /** R-04: true once the club's matches played before R-04 have been counted (Perception.ensure) */
+    private Boolean knowledgeCounted;
+    /** R-04: lookup of {@link #knowledge} by (observer, man); rebuilt when missing (never saved) */
+    private transient java.util.Map<String, com.rndmodgames.futtoboru.data.recruitment.Knowledge> knowledgeIndex;
+
     /**
      * Proposed Matches
      */
@@ -381,6 +391,43 @@ public class SaveGame implements Serializable {
 
     public void setCandidatePoolSeason(Integer candidatePoolSeason) {
         this.candidatePoolSeason = candidatePoolSeason;
+    }
+
+    /** @return R-04's exposure records (never null) */
+    public List<com.rndmodgames.futtoboru.data.recruitment.Knowledge> getKnowledge() {
+        if (knowledge == null) {
+            knowledge = new ArrayList<>();
+        }
+        return knowledge;
+    }
+
+    /** @return the record of (observer, man), made (with 0 minutes) when {@code create}, else null when none */
+    public com.rndmodgames.futtoboru.data.recruitment.Knowledge knowledgeOf(String observer, Long player,
+            boolean create) {
+        List<com.rndmodgames.futtoboru.data.recruitment.Knowledge> all = getKnowledge();
+        if (knowledgeIndex == null || knowledgeIndex.size() != all.size()) {
+            knowledgeIndex = new java.util.HashMap<>();
+            for (com.rndmodgames.futtoboru.data.recruitment.Knowledge k : all) {
+                knowledgeIndex.put(com.rndmodgames.futtoboru.data.recruitment.Knowledge.key(k.getObserver(),
+                        k.getPlayer()), k);
+            }
+        }
+        String key = com.rndmodgames.futtoboru.data.recruitment.Knowledge.key(observer, player);
+        com.rndmodgames.futtoboru.data.recruitment.Knowledge k = knowledgeIndex.get(key);
+        if (k == null && create) {
+            k = new com.rndmodgames.futtoboru.data.recruitment.Knowledge(observer, player, 0f);
+            all.add(k);
+            knowledgeIndex.put(key, k);
+        }
+        return k;
+    }
+
+    public boolean isKnowledgeCounted() {
+        return Boolean.TRUE.equals(knowledgeCounted);
+    }
+
+    public void setKnowledgeCounted(boolean knowledgeCounted) {
+        this.knowledgeCounted = knowledgeCounted;
     }
 
     public String getCandidateArrivalsMonth() {

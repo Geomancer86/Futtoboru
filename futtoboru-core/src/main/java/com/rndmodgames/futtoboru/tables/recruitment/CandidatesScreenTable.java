@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -19,6 +21,7 @@ import com.rndmodgames.futtoboru.data.Player;
 import com.rndmodgames.futtoboru.data.recruitment.Candidate;
 import com.rndmodgames.futtoboru.data.recruitment.PoolRegion;
 import com.rndmodgames.futtoboru.engine.recruitment.CandidatePools;
+import com.rndmodgames.futtoboru.engine.recruitment.Perception;
 import com.rndmodgames.futtoboru.engine.recruitment.Recruitment;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
@@ -28,8 +31,9 @@ import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * R-03: the candidate pools, read-only (name, age, origin, position, where he plays). Opens on the club's own region;
- * the region box shows the others (the Scottish pools are where the imports come from). No ratings: perception is
- * R-04, letters R-05, signing R-07.
+ * the region box shows the others (the Scottish pools are where the imports come from). R-04: the club's view of each
+ * man (period words, or ranges behind the toggle); a click on a man opens his card (club view, each observer).
+ * Letters are R-05, signing R-07.
  */
 public class CandidatesScreenTable extends VisTable {
 
@@ -38,6 +42,8 @@ public class CandidatesScreenTable extends VisTable {
     /** the region shown, kept while the screen is reopened */
     private String regionId;
     private final VisTable rows = new VisTable(true);
+    /** R-04: the man whose card is open (by player id), or null */
+    private Long selected;
 
     public CandidatesScreenTable(Game parent) {
         super(true);
@@ -103,10 +109,27 @@ public class CandidatesScreenTable extends VisTable {
         VisLabel count = new VisLabel(LanguageModLoader.format("candidates_count", men.size()));
         count.setColor(UiTheme.color("text.secondary"));
         top.add(count).left();
+        top.add(PerceptionCard.toggle(game.getSession(), this::updateDynamicComponents)).left()
+                .padLeft(UiTheme.space("lg"));
         this.add(top).left().row();
 
+        Perception.ensure(save);
+        VisTable content = new VisTable(true);
+        Candidate open = null;
+        for (Candidate c : men) {
+            if (c.getPlayer() != null && selected != null && selected.equals(c.getPlayer().getId())) {
+                open = c;
+            }
+        }
+        if (open != null && open.getPlayer().getPerson() != null) {
+            Person person = open.getPlayer().getPerson();
+            content.add(PerceptionCard.card(game.getSession(), person.getName() + " " + person.getLastname(),
+                    open.getPlayer(), Perception.report(save, open.getPlayer(), open, game.random()),
+                    this::updateDynamicComponents)).left().padBottom(UiTheme.space("lg")).row();
+        }
         buildRows(save, men);
-        VisScrollPane scroll = new VisScrollPane(rows);
+        content.add(rows).left().top();
+        VisScrollPane scroll = new VisScrollPane(content);
         scroll.setFadeScrollBars(false);
         this.add(scroll).grow().row();
         this.align(Align.top);
@@ -115,7 +138,7 @@ public class CandidatesScreenTable extends VisTable {
     private void buildRows(SaveGame save, List<Candidate> men) {
         rows.clear();
         String[] headers = { "candidates_col_name", "candidates_col_age", "candidates_col_origin",
-                "candidates_col_position", "candidates_col_plays_for" };
+                "candidates_col_position", "candidates_col_plays_for", "candidates_col_view" };
         for (String h : headers) {
             VisLabel l = new VisLabel(text(h));
             l.setColor(UiTheme.color("text.heading"));
@@ -133,7 +156,18 @@ public class CandidatesScreenTable extends VisTable {
             if (person == null) {
                 continue;
             }
-            rows.add(new VisLabel(person.getName() + " " + person.getLastname())).left().width(UiTheme.size("col.label"));
+            VisLabel name = new VisLabel(person.getName() + " " + person.getLastname());
+            if (p.getId() != null && p.getId().equals(selected)) {
+                name.setColor(UiTheme.color("accent"));
+            }
+            name.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    selected = p.getId() != null && p.getId().equals(selected) ? null : p.getId();
+                    updateDynamicComponents();
+                }
+            });
+            rows.add(name).left().width(UiTheme.size("col.label"));
             rows.add(new VisLabel(person.getBirthDate() != null ? String.valueOf(CandidatePools.age(person, today)) : "-"))
                     .left();
             rows.add(new VisLabel(origin(c, person))).left().width(UiTheme.size("col.long"));
@@ -144,6 +178,11 @@ public class CandidatesScreenTable extends VisTable {
                 club.setColor(UiTheme.color("text.secondary"));
             }
             rows.add(club).left();
+            // R-04: the club's view in a line
+            VisLabel view = new VisLabel(PerceptionCard.summary(Perception.report(save, p, c, game.random())
+                    .consensus(), p, game.getSession().isPerceptionNumbers()));
+            view.setColor(UiTheme.color("text.secondary"));
+            rows.add(view).left();
             rows.row();
         }
     }

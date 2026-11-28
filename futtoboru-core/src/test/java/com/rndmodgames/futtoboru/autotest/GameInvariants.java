@@ -400,6 +400,69 @@ final class GameInvariants {
         }
     }
 
+    /**
+     * R-04: every perceived range (each observer's and the club view) holds the man's true value, for every man the
+     * club has seen and the candidates of its own region; the club's own men are exact.
+     */
+    static void perceivedRangesHoldTheTruth(String where, SaveGame game,
+            com.rndmodgames.futtoboru.engine.random.RandomSource root) {
+        Club mine = game.getCurrentClub();
+        if (mine == null) {
+            return;
+        }
+        Map<Long, Player> men = new HashMap<>();
+        Map<Long, com.rndmodgames.futtoboru.data.recruitment.Candidate> candidates = new HashMap<>();
+        for (Club c : game.getAllClubs()) {
+            for (Player p : c.getPlayers()) {
+                if (p != null && p.getId() != null) {
+                    men.put(p.getId(), p);
+                }
+            }
+        }
+        com.rndmodgames.futtoboru.data.recruitment.PoolRegion own =
+                com.rndmodgames.futtoboru.engine.recruitment.CandidatePools.regionOf(mine);
+        for (com.rndmodgames.futtoboru.data.recruitment.Candidate c : game.getCandidates()) {
+            if (c != null && c.getPlayer() != null && c.getPlayer().getId() != null) {
+                men.put(c.getPlayer().getId(), c.getPlayer());
+                candidates.put(c.getPlayer().getId(), c);
+            }
+        }
+        Set<Long> check = new HashSet<>();
+        for (com.rndmodgames.futtoboru.data.recruitment.Knowledge k : game.getKnowledge()) {
+            check.add(k.getPlayer());
+        }
+        for (com.rndmodgames.futtoboru.data.recruitment.Candidate c : candidates.values()) {
+            if (own != null && own.dataId().equals(c.getRegion())) {
+                check.add(c.getPlayer().getId());
+            }
+        }
+        check.add(mine.getPlayers().isEmpty() ? null : mine.getPlayers().get(0).getId());
+        for (Long id : check) {
+            Player p = men.get(id);
+            if (p == null) {
+                continue; // a man who left the game (released, retired)
+            }
+            com.rndmodgames.futtoboru.engine.recruitment.Perception.Report r =
+                    com.rndmodgames.futtoboru.engine.recruitment.Perception.report(game, p, candidates.get(id), root);
+            for (com.rndmodgames.futtoboru.engine.recruitment.Perception.Attr a
+                    : com.rndmodgames.futtoboru.engine.recruitment.Perception.ATTRIBUTES) {
+                Float truth = a.of(p);
+                if (truth == null) {
+                    continue;
+                }
+                com.rndmodgames.futtoboru.engine.recruitment.Perception.Range club = r.consensus().get(a);
+                check(club.contains(truth), where, "club view of player " + id + " " + a + " " + club
+                        + " misses " + truth);
+                check(!r.known() || club.width() == 0f, where, "own player " + id + " " + a + " not exact");
+                for (com.rndmodgames.futtoboru.engine.recruitment.Perception.ObserverView v : r.observers()) {
+                    com.rndmodgames.futtoboru.engine.recruitment.Perception.Range o = v.ranges().get(a);
+                    check(o.contains(truth), where, v.observer() + " on player " + id + " " + a + " " + o
+                            + " misses " + truth);
+                }
+            }
+        }
+    }
+
     /** No man at a club is still out after his last day. */
     static void injuriesHeal(String where, SaveGame game, LocalDate today) {
         for (Club c : game.getAllClubs()) {
