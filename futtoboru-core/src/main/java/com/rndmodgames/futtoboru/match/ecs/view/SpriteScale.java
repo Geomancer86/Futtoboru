@@ -67,6 +67,21 @@ public final class SpriteScale {
         return best;
     }
 
+    /**
+     * The ball (BA2, E-21e): in the default view the small 1x frame (5 px ground, 7 px high: the ball's ~22 cm as 2-3
+     * pixels plus its outline) at one texel per art pixel of the 10 px/m view, i.e. {@code t} screen pixels per texel
+     * where a 2x player gets {@code t} too, so it stays in proportion with the players (the 2x frames at that size are
+     * a ball of about a metre). The wide view keeps {@link #choose(double, int, int, double)}.
+     */
+    public static int chooseBall(double artPixelsPerMetre, int magnification, double viewPixelsPerMetre) {
+        int m = Math.max(1, magnification);
+        if (viewPixelsPerMetre * m >= FINE_PIXELS_PER_METRE - 1e-9) {
+            double wanted = Math.max(1e-3, artPixelsPerMetre * m);
+            return 256 + Math.max(1, (int) Math.round(wanted / FINE_PIXELS_PER_METRE));
+        }
+        return choose(artPixelsPerMetre, magnification, 1, viewPixelsPerMetre);
+    }
+
     /** Sheet scale of a choice (1 or 2). */
     public static int sheet(int choice) {
         return choice >> 8;
