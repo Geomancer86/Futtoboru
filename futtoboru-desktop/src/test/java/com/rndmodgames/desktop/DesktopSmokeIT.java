@@ -63,9 +63,27 @@ class DesktopSmokeIT {
         assertTrue(log.contains(SmokeRun.OK_LINE), "the main menu was not shown" + tail(log));
     }
 
-    private static File findJar(File target) {
+    /**
+     * The jar of THIS build: Maven passes its path ({@code smoke.jar}); without it (IDE run), the newest
+     * jar-with-dependencies. Never the first one listed: without {@code clean}, target/ keeps older versions
+     * (a 0.4.0 jar has no smoke mode, never quits and timed the test out).
+     */
+    static File findJar(File target) {
+        String exact = System.getProperty("smoke.jar");
+        if (exact != null && !exact.isEmpty() && new File(exact).isFile()) {
+            return new File(exact);
+        }
         File[] jars = target.listFiles((dir, name) -> name.endsWith("-jar-with-dependencies.jar"));
-        return jars == null || jars.length == 0 ? null : jars[0];
+        if (jars == null || jars.length == 0) {
+            return null;
+        }
+        File newest = jars[0];
+        for (File jar : jars) {
+            if (jar.lastModified() > newest.lastModified()) {
+                newest = jar;
+            }
+        }
+        return newest;
     }
 
     private static void copy(InputStream in, ByteArrayOutputStream out) {

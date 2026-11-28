@@ -107,9 +107,7 @@ public final class ActionParams {
 
     // ---- keeper -------------------------------------------------------------------------------------------------
 
-    /** Where the keeper may handle: {@link KeeperHandling#OWN_HALF} in 1888-89 (V2 §1; M). */
-    public KeeperHandling keeperHandling = KeeperHandling.OWN_HALF;
-    /** Penalty area for {@link KeeperHandling#PENALTY_AREA}: depth and half width, m (1902 area, 18 x 44 yd; H). */
+    /** Penalty area for {@link KeeperHandling#PENALTY_AREA} (where the keeper may handle: {@code RulesProfile}): depth and half width, m (1902 area, 18 x 44 yd; H). */
     public double penaltyAreaDepthM = 18 * PitchParams.YARD, penaltyAreaHalfWidthM = 22 * PitchParams.YARD;
     /** Relative speed the keeper holds, worst / best handling, m/s; faster balls are parried (D). */
     public double catchSpeedMin = 12.0, catchSpeedMax = 22.0;
@@ -138,13 +136,6 @@ public final class ActionParams {
     /** Ticks an action stays armed waiting for the ball to come into reach (D: half a second at 30 Hz). */
     public int armTicks = 15;
 
-    /** The season's keeper law: own half until 1911-12, penalty area from 1912-13 (V2 §1; M). */
-    public static ActionParams forSeason(int seasonStartYear) {
-        ActionParams a = new ActionParams();
-        a.keeperHandling = seasonStartYear >= 1912 ? KeeperHandling.PENALTY_AREA : KeeperHandling.OWN_HALF;
-        return a;
-    }
-
     /** Throws on values the engine cannot run with. Returns this. */
     public ActionParams validate() {
         req(footReachM > 0 && footMaxZ > 0 && headReachM > 0 && headMaxZ > headMinZ && headMinZ > 0, "reach");
@@ -167,7 +158,7 @@ public final class ActionParams {
         req(headRestitution >= 0 && headDriveMax >= headDriveMin && headDriveMin >= 0, "header");
         req(laceStrikeShare >= 0 && laceStrikeShare <= 1 && laceCutChance >= 0 && laceCutChance <= 1
                 && laceCutWetFactor >= 0, "lace");
-        req(keeperHandling != null && penaltyAreaDepthM > 0 && penaltyAreaHalfWidthM > 0, "keeper law");
+        req(penaltyAreaDepthM > 0 && penaltyAreaHalfWidthM > 0, "keeper law");
         req(catchSpeedMax >= catchSpeedMin && catchSpeedMin > 0 && parryRestitution >= 0 && parryRestitution <= 1,
                 "catch");
         req(punchDriveMax >= punchDriveMin && punchDriveMin >= 0 && punchRestitution >= 0, "punch");

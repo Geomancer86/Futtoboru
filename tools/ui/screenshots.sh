@@ -7,7 +7,12 @@ set -e
 cd "$(dirname "$0")/../.."
 OUT="${1:-target/screenshots}"
 ROOT="$(pwd -W 2>/dev/null || pwd)"  # Git Bash: a Windows path for java
-case "$OUT" in /*|?:*) ;; *) OUT="$ROOT/$OUT" ;; esac
+# java on Windows reads a Git Bash path /c/git/... as C:\c\git\... (a first tour run left its PNGs there)
+case "$OUT" in
+  ?:*) ;;
+  /*) if command -v cygpath >/dev/null 2>&1; then OUT="$(cygpath -w "$OUT")"; fi ;;
+  *) OUT="$ROOT/$OUT" ;;
+esac
 ./mvnw -B -q -pl futtoboru-core test-compile org.codehaus.mojo:exec-maven-plugin:3.1.0:exec \
   -Dexec.classpathScope=test -Dexec.executable=java \
   -Dexec.args="-cp %classpath com.rndmodgames.futtoboru.tools.ScreenshotTour $OUT ${2:-1x,2x} ${3:-en_US}"
