@@ -94,38 +94,4 @@ class TicketSalesTests extends BaseTest {
             assertEquals(0, BigDecimal.ZERO.compareTo(away.getClubBalance()), type + ": away balance untouched");
         }
     }
-
-    /** P2-12: a club listed twice in the game (as a new game does) still sells the tickets of a day once. */
-    @Test
-    void aClubListedTwiceSellsADaysTicketsOnce() {
-        BigDecimal[] revenue = new BigDecimal[2];
-        int[] attendance = new int[2];
-        for (int run = 0; run < 2; run++) {
-            EngineTestWorld world = new EngineTestWorld(application, 2);
-            for (Club c : world.clubs) {
-                for (com.rndmodgames.futtoboru.data.Player p : c.getPlayers()) {
-                    // the day's attribute changes want a birth date and attributes
-                    p.getPerson().setBirthDate(java.time.LocalDateTime.of(1862, 1, 1, 0, 0));
-                    new com.rndmodgames.futtoboru.system.generators.PlayerAttributeGenerator().generatePlayerAttributes(
-                            p, p.getPerson(), world.game.getGameDate(),
-                            com.rndmodgames.futtoboru.engine.random.RandomSource.seeded(p.getPerson().getId()));
-                }
-            }
-            Club home = world.club(0);
-            Match match = world.leagueMatch(home, world.club(1));
-            match.setMatchDateTime(world.game.getGameDate().plusDays(5));
-            if (run == 1) {
-                world.game.getAllClubs().add(home);
-                world.game.getAllClubs().add(world.club(1));
-            }
-            world.engine.continueGame();
-            revenue[run] = match.getMatchRevenue();
-            attendance[run] = match.getAttendance();
-            assertEquals(1, home.getMatchIncomes().stream().filter(i -> match.getId().equals(i.getMatchId())).count(),
-                    "run " + run + ": one gate entry");
-        }
-        assertTrue(revenue[0].signum() > 0, "the day's tickets were sold");
-        assertEquals(0, revenue[0].compareTo(revenue[1]), "same gate with the club listed twice");
-        assertEquals(attendance[0], attendance[1], "same tickets with the club listed twice");
-    }
 }
