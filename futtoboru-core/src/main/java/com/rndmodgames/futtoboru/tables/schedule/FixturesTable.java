@@ -119,7 +119,7 @@ public class FixturesTable extends VisTable {
         cell.add(dateLabel).left();
         if (selected || day.equals(today)) {
             cell.row();
-            cell.add(new VisLabel(text(selected ? "schedule_selected" : "schedule_today"))).left();
+            cell.add(new VisLabel(selected ? text("schedule_selected") : text("schedule_today"))).left();
         }
 
         for (Match match : matches) {

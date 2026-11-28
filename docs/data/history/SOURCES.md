@@ -414,3 +414,119 @@ Sites that refused automated access during the research: historicalkits.co.uk (4
 ## wolves.co.uk (1)
 
 - https://www.wolves.co.uk/news/features/20260709-the-story-of-wolves-an-iconic-home-kit-part-1/ (wolverhampton-wanderers)
+
+## Squad positions (H-04, 67)
+
+Cited in `POSITIONS_1888-89.md` (the `wp-season-1888-89`, `wp-player` and `fa-cup-final-1889` position sources of `seasons/1888-89/squads.json`).
+
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Preston_North_End_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Aston_Villa_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Wolverhampton_Wanderers_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Blackburn_Rovers_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Bolton_Wanderers_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_West_Bromwich_Albion_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Accrington_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Everton_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Burnley_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Derby_County_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Notts_County_F.C._season
+- https://en.wikipedia.org/wiki/1888%E2%80%9389_Stoke_F.C._season
+- https://en.wikipedia.org/wiki/1889_FA_Cup_final
+- https://en.wikipedia.org/wiki/James_Beresford_(footballer,_born_1860)
+- https://en.wikipedia.org/wiki/James_Stothert
+- https://en.wikipedia.org/wiki/Bernard_Whittaker
+- https://en.wikipedia.org/wiki/Thomas_Coupar
+- https://en.wikipedia.org/wiki/George_Haynes_(footballer)
+- https://en.wikipedia.org/wiki/Robert_Macbeth
+- https://en.wikipedia.org/wiki/Arthur_Wilkinson_(footballer)
+- https://en.wikipedia.org/wiki/John_Lees_(footballer)
+- https://en.wikipedia.org/wiki/Benjamin_Spilsbury
+- https://en.wikipedia.org/wiki/Thomas_Allin_(footballer)
+- https://en.wikipedia.org/wiki/George_Slater
+- https://en.wikipedia.org/wiki/Bob_Barr_(footballer,_born_1865)
+- https://en.wikipedia.org/wiki/Freddie_Gee
+- https://en.wikipedia.org/wiki/Billy_Hutchinson_(footballer,_born_1870)
+- https://en.wikipedia.org/wiki/Thomas_Moore_(footballer)
+- https://en.wikipedia.org/wiki/Rupert_Sandilands
+- https://en.wikipedia.org/wiki/Ernest_Bambridge
+- https://en.wikipedia.org/wiki/Francis_Pawson
+- https://en.wikipedia.org/wiki/Norman_Cooper_(sportsman)
+- https://en.wikipedia.org/wiki/George_Cotterill_(footballer)
+- https://en.wikipedia.org/wiki/George_Owen_(footballer)
+- https://en.wikipedia.org/wiki/Seth_Powell
+- https://en.wikipedia.org/wiki/John_Price_(footballer,_born_1854)
+- https://en.wikipedia.org/wiki/Jack_Powell_(footballer,_born_1860)
+- https://en.wikipedia.org/wiki/Albert_Smith_(footballer,_born_1869)
+- https://en.wikipedia.org/wiki/Sam_Widdowson
+- https://en.wikipedia.org/wiki/Frank_Burton_(footballer,_born_1865)
+- https://en.wikipedia.org/wiki/George_Gaffikin
+- https://en.wikipedia.org/wiki/William_Dalton_(footballer)
+- https://en.wikipedia.org/wiki/Robert_Milne_(footballer)
+- https://en.wikipedia.org/wiki/Andrew_Watson_(footballer,_born_1856)
+- https://en.wikipedia.org/wiki/Job_Wilding
+- https://en.wikipedia.org/wiki/Hugh_Galbraith_(footballer)
+- https://en.wikipedia.org/wiki/Walter_Evans_(footballer,_born_1867)
+- https://en.wikipedia.org/wiki/David_Jardine_(footballer)
+- https://en.wikipedia.org/wiki/Jimmy_Hannah
+- https://en.wikipedia.org/wiki/John_Angus_(footballer,_born_1867)
+- https://en.wikipedia.org/wiki/William_Bell_(footballer,_born_1859)
+- https://en.wikipedia.org/wiki/John_Pearson_(footballer,_born_1868)
+- https://en.wikipedia.org/wiki/Alfred_Owen_Davies
+- https://en.wikipedia.org/wiki/Nevill_Cobbold
+- https://en.wikipedia.org/wiki/Edward_Hagarty_Parry
+- https://en.wikipedia.org/wiki/Maurice_Stanbrough
+- https://en.wikipedia.org/wiki/Percy_Melmoth_Walters
+- https://en.wikipedia.org/wiki/Arthur_Melmoth_Walters
+- https://en.wikipedia.org/wiki/William_Page_(footballer)
+- https://en.wikipedia.org/wiki/Arthur_Elliott_(footballer)
+- https://en.wikipedia.org/wiki/Michael_Whitham
+- https://en.wikipedia.org/wiki/William_Siddons
+- https://en.wikipedia.org/wiki/Jack_Devey
+- https://en.wikipedia.org/wiki/Ted_Devey
+- https://en.wikipedia.org/wiki/Will_Devey
+- https://en.wikipedia.org/wiki/Charlie_Shaw_(footballer,_born_1862)
+- https://en.wikipedia.org/wiki/Bob_Roberts_(footballer,_born_1863)
+
+## Recruitment, trials, signing (R-01, 39)
+
+Cited in `RECRUITMENT_1888-1900.md` (numbered there), used by `docs/design/RECRUITMENT_AND_TRIALS.md`.
+
+- https://bluecorrespondent.co.uk/1888-89/august1888.html
+- https://bluecorrespondent.co.uk/1888-89/september1888.html
+- https://en.wikipedia.org/wiki/Professionalism_in_association_football
+- https://spartacus-educational.com/Fsudell.htm
+- https://en.wikipedia.org/wiki/William_Sudell
+- https://www.thescotsfootballhistoriansgroup.org/scotch-professors
+- https://thescotsfootballhistoriansgroup.org/thescotchprofessors
+- https://warwick.ac.uk/services/library/mrc/archives_online/exhibitions/football/
+- https://scottishsporthistory.com/sports-history-news-and-blog/archives/09-2016
+- https://ptearlyyears.net/?p=945
+- https://en.wikipedia.org/wiki/Scotch_Professors
+- https://the1888letter.com/?p=137
+- https://spartacus-educational.com/FreligionG.htm
+- https://bluecorrespondent.co.uk/1889-90/august1889.html
+- https://en.wikipedia.org/wiki/Sunderland_Albion
+- https://bluecorrespondent.co.uk/February%201891.htm
+- https://en.wikipedia.org/wiki/1885_in_association_football
+- https://www.lfchistory.net/players/603
+- https://en.wikipedia.org/wiki/1890%E2%80%9391_Sunderland_A.F.C._season
+- https://en.wikipedia.org/wiki/Retain_and_transfer_system
+- https://leicestershirefootballarchive.com/?p=9220
+- https://en.wikipedia.org/wiki/Willie_Groves
+- https://premierleague.com/news/4212638
+- https://the1888letter.com/?p=3992
+- https://en.wikipedia.org/wiki/Scottish_Junior_Football_Association
+- https://schoolsfootball.org/about-us/esfa-history/
+- https://sfss.co.uk/history.html
+- https://atom.aim25.com/index.php/london-schools-football-association-2
+- https://vdoc.pub/documents/teachers-and-football-schoolboy-association-football-in-england-1885-1915-woburn-education-487uopkfrlj0
+- https://en.wikipedia.org/wiki/Harry_Plackett
+- https://en.wikipedia.org/wiki/Edwin_Wardle
+- https://www.national-football-teams.com/club/695/1888/Preston_North_End.html
+- https://spartacus-educational.com/Falcohol.htm
+- https://spartacus-educational.com/Fcoaching.htm
+- https://en.wikipedia.org/wiki/Aston_Villa_F.C._in_the_1880s
+- https://playupliverpool.com/1890/11/01/triumphs-of-the-football-field-aston-villa-archie-hunter
+- https://en.wikipedia.org/wiki/Tom_Watson_(football_manager)
+- https://lfchistory.net/articles/2845
+- https://www.playingpasts.co.uk/?p=9331

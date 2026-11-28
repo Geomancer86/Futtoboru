@@ -32,6 +32,7 @@ import com.rndmodgames.futtoboru.data.CompetitionRules;
 import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.data.LeagueStandingRow;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.data.MatchIncome;
 import com.rndmodgames.futtoboru.data.Message;
 import com.rndmodgames.futtoboru.data.Person;
 import com.rndmodgames.futtoboru.data.Profession;
@@ -371,6 +372,52 @@ class FullSeasonTests extends BaseTest {
         assertTrue(first.save.getAllClubs().size() > 20, "clubs: " + first.save.getAllClubs().size());
         assertEquals(List.of(), first.shortAtStart, "new game");
         assertEquals(List.of(), first.shortAfterRollover, "1889-90 rollover");
+    }
+
+    /**
+     * P2-12: only the home club sells tickets for a league or cup match and books its gate, once; the away club's
+     * finances never see it. Every played 1888-89 league match and FA Cup tie has exactly one gate entry, the home
+     * club's, holding the match's whole revenue, and each club's gate total is the sum over its home matches.
+     */
+    @Test
+    void onlyTheHomeClubBooksTheGateOfLeagueAndCupMatches() {
+        Map<Long, List<Long>> gateClubsByMatch = new HashMap<>();
+        // the game lists the clubs of the selected countries twice (as NewGameOverviewScreen does): count each once
+        Set<Club> clubs = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        clubs.addAll(first.save.getAllClubs());
+        Map<Long, BigDecimal> gateByMatch = new HashMap<>();
+        for (Club c : clubs) {
+            for (MatchIncome income : c.getMatchIncomes()) {
+                gateClubsByMatch.computeIfAbsent(income.getMatchId(), k -> new ArrayList<>()).add(c.getId());
+                gateByMatch.merge(income.getMatchId(), income.getTicketRevenue(), BigDecimal::add);
+            }
+        }
+        List<Match> played = new ArrayList<>(first.leagueMatches);
+        played.addAll(first.cupMatches);
+        assertTrue(played.size() > 132, "league + cup matches: " + played.size());
+        Map<Long, BigDecimal> homeRevenueByClub = new HashMap<>();
+        for (Match m : played) {
+            assertEquals(List.of(m.getHomeClubId()), gateClubsByMatch.get(m.getId()),
+                    "gate entries of match " + m.getId() + " (" + m.getBracketPath() + ", home " + m.getHomeClubId()
+                            + ", away " + m.getAwayClubId() + ")");
+            assertTrue(m.getMatchRevenue().signum() > 0, "gate of match " + m.getId());
+            assertEquals(0, m.getMatchRevenue().compareTo(gateByMatch.get(m.getId())), "gate of match " + m.getId());
+            homeRevenueByClub.merge(m.getHomeClubId(), m.getMatchRevenue(), BigDecimal::add);
+        }
+        Set<Long> playedIds = new HashSet<>();
+        for (Match m : played) {
+            playedIds.add(m.getId());
+        }
+        for (Club c : clubs) {
+            BigDecimal booked = BigDecimal.ZERO;
+            for (MatchIncome income : c.getMatchIncomes()) {
+                if (playedIds.contains(income.getMatchId())) {
+                    booked = booked.add(income.getTicketRevenue());
+                }
+            }
+            assertEquals(0, homeRevenueByClub.getOrDefault(c.getId(), BigDecimal.ZERO).compareTo(booked),
+                    c.getName() + ": gate total = sum over its home matches");
+        }
     }
 
     @Test

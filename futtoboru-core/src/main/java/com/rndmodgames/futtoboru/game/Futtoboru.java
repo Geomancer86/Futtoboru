@@ -88,7 +88,12 @@ public class Futtoboru extends Game {
      * 
      * TODO: set from game settings screen
      */
-    public static boolean DEBUG_MODE = false; // default to false
+    public static boolean DEBUG_MODE = Boolean.getBoolean("futtoboru.dev"); // -Dfuttoboru.dev=true (debug run scripts)
+
+    /** dev-only tools (Match Engine Debug) show only in dev mode (U-04a) */
+    public static boolean isDevMode() {
+        return DEBUG_MODE;
+    }
     public static int LIBGDX_LOG_LEVEL = Application.LOG_DEBUG;
     
     /**

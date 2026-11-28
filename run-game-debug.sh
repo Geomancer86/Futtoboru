@@ -21,7 +21,7 @@ echo
 # POSIX sh has no pipefail: keep java's exit code in a temp file.
 rcfile=$(mktemp 2>/dev/null || echo "${TMPDIR:-/tmp}/futtoboru-rc.$$")
 # shellcheck disable=SC2086
-{ java $JAVA_OPTS_EXTRA -jar "$JAR" 2>&1; echo $? > "$rcfile"; } | tee "$LOG"
+{ java -Dfuttoboru.dev=true $JAVA_OPTS_EXTRA -jar "$JAR" 2>&1; echo $? > "$rcfile"; } | tee "$LOG"
 status=$(cat "$rcfile" 2>/dev/null)
 rm -f "$rcfile"
 [ -n "$status" ] || status=1

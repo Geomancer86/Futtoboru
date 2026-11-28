@@ -138,7 +138,7 @@ public class SquadScreenTable extends VisTable{
         } else {
             
             // Count of Players & Player List Component
-            playersCountValueLabel.setText(displayedClub.getPlayers().size() + " " + LanguageModLoader.getValue("players_at_club"));
+            playersCountValueLabel.setText(LanguageModLoader.format("squad_player_count", displayedClub.getPlayers().size()));
             
             /**
              * Average Player Age
@@ -160,7 +160,7 @@ public class SquadScreenTable extends VisTable{
             double averagePlayerAge = (double) accumulatedAge / (double) displayedClub.getPlayers().size();
             
             //
-            averagePlayerAgeValueLabel.setText(averageYearsFormat.format(averagePlayerAge) + " years old");
+            averagePlayerAgeValueLabel.setText(LanguageModLoader.format("squad_years_old", averageYearsFormat.format(averagePlayerAge)));
         }
         
         // Update Players List Component

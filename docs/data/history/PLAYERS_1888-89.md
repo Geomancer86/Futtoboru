@@ -2,7 +2,7 @@
 
 Research for the game, not game data yet: the fields that would carry it are proposed in
 [`docs/design/HISTORY_DATA_PROPOSAL.md`](../../design/HISTORY_DATA_PROPOSAL.md). Club histories are in
-[`clubs/`](clubs/). Person ids are the ones in `gamedata/core/people.json` (ids never change, even where the birth year
+[`clubs/`](clubs/). Squad positions (H-04) and their sources: [`POSITIONS_1888-89.md`](POSITIONS_1888-89.md). Person ids are the ones in `gamedata/core/people.json` (ids never change, even where the birth year
 inside the id is wrong; corrections are listed under "Data notes" at the end of each club section and in the club files).
 
 **Short sources:** `W:Page` = `https://en.wikipedia.org/wiki/Page` (spaces as `_`). "season page" = that club's

@@ -115,7 +115,7 @@ public class MenuScreen implements Screen {
 		 * Match Engine Debug Button
 		 * Development/Testing screen for match engine
 		 */
-		final VisTextButton matchEngineDebugButton = new VisTextButton("Match Engine Debug");
+		final VisTextButton matchEngineDebugButton = new VisTextButton(LanguageModLoader.getValue("menu_match_engine_debug"));
 		
 		matchEngineDebugButton.addCaptureListener(new InputListener() {
 			
@@ -150,9 +150,11 @@ public class MenuScreen implements Screen {
 		table.row();
 		table.add(settingsButton).fill();
 		
-		//
-		table.row();
-		table.add(matchEngineDebugButton).fill();
+		// dev tool only (U-04a): -Dfuttoboru.dev=true, set by the run-game-debug scripts
+		if (Futtoboru.isDevMode()) {
+			table.row();
+			table.add(matchEngineDebugButton).fill();
+		}
 		
 		//
 		table.row();

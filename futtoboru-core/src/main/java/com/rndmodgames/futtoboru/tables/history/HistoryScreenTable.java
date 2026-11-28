@@ -65,23 +65,23 @@ public class HistoryScreenTable extends VisTable {
         content.clear();
         content.top().left();
 
-        VisLabel title = new VisLabel(t("history_title"));
+        VisLabel title = new VisLabel(LanguageModLoader.getValue("history_title"));
         title.setFontScale(UiTheme.fontScale("heading"));
         content.add(title).left().pad(UiTheme.space("sm")).row();
         content.addSeparator().pad(UiTheme.space("xs")).row();
 
         if (entries.isEmpty()) {
-            content.add(new VisLabel(t("history_none"))).left().pad(UiTheme.space("sm")).row();
+            content.add(new VisLabel(LanguageModLoader.getValue("history_none"))).left().pad(UiTheme.space("sm")).row();
             return;
         }
 
-        heading(t("history_honours"));
+        heading(LanguageModLoader.getValue("history_honours"));
         VisTable honours = new VisTable(true);
-        honours.add(new VisLabel(t("history_season"))).width(UiTheme.size("col.mid")).left();
-        honours.add(new VisLabel(t("history_competition"))).width(UiTheme.size("col.wide")).left();
-        honours.add(new VisLabel(t("history_winner"))).width(UiTheme.size("col.club")).left();
-        honours.add(new VisLabel(t("history_runner_up"))).width(UiTheme.size("col.club")).left();
-        honours.add(new VisLabel(t("history_source"))).width(UiTheme.size("col.short")).left();
+        honours.add(new VisLabel(LanguageModLoader.getValue("history_season"))).width(UiTheme.size("col.mid")).left();
+        honours.add(new VisLabel(LanguageModLoader.getValue("history_competition"))).width(UiTheme.size("col.wide")).left();
+        honours.add(new VisLabel(LanguageModLoader.getValue("history_winner"))).width(UiTheme.size("col.club")).left();
+        honours.add(new VisLabel(LanguageModLoader.getValue("history_runner_up"))).width(UiTheme.size("col.club")).left();
+        honours.add(new VisLabel(LanguageModLoader.getValue("history_source"))).width(UiTheme.size("col.short")).left();
         honours.add().row();
         for (HistoryEntry e : HistoryProvider.winners(entries)) {
             honours.add(new VisLabel(e.season)).left();
@@ -94,7 +94,7 @@ public class HistoryScreenTable extends VisTable {
             honours.add(new VisLabel(e.runnerUp != null ? e.runnerUp : "-")).left();
             honours.add(new VisLabel(sourceLabel(e))).left();
             if (!e.table.isEmpty() || !e.ties.isEmpty()) {
-                VisTextButton view = new VisTextButton(t("history_view"));
+                VisTextButton view = new VisTextButton(LanguageModLoader.getValue("history_view"));
                 view.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
@@ -131,7 +131,7 @@ public class HistoryScreenTable extends VisTable {
     private static VisTable table(HistoryEntry e) {
         VisTable tbl = new VisTable(true);
         tbl.add(UiTooltips.header("history_pos", "tip_pos")).width(UiTheme.size("table.league.pos"));
-        tbl.add(new VisLabel(t("history_club"))).width(UiTheme.size("table.league.club")).left();
+        tbl.add(new VisLabel(LanguageModLoader.getValue("history_club"))).width(UiTheme.size("table.league.club")).left();
         String[][] stats = { { "history_p", "tip_played" }, { "history_w", "tip_won" }, { "history_d", "tip_drawn" },
                 { "history_l", "tip_lost" }, { "history_f", "tip_goals_for" }, { "history_a", "tip_goals_against" } };
         for (String[] k : stats) {
@@ -156,18 +156,18 @@ public class HistoryScreenTable extends VisTable {
 
     private static VisTable ties(HistoryEntry e) {
         VisTable tbl = new VisTable(true);
-        tbl.add(new VisLabel(t("history_round"))).width(UiTheme.size("col.short")).left();
-        tbl.add(new VisLabel(t("history_date"))).width(UiTheme.size("col.mid")).left();
-        tbl.add(new VisLabel(t("history_home"))).width(UiTheme.size("col.club")).left();
-        tbl.add(new VisLabel(t("history_score"))).width(UiTheme.size("col.score"));
-        tbl.add(new VisLabel(t("history_away"))).width(UiTheme.size("col.club")).left();
-        tbl.add(new VisLabel(t("history_venue"))).width(UiTheme.size("col.wide")).left();
+        tbl.add(new VisLabel(LanguageModLoader.getValue("history_round"))).width(UiTheme.size("col.short")).left();
+        tbl.add(new VisLabel(LanguageModLoader.getValue("history_date"))).width(UiTheme.size("col.mid")).left();
+        tbl.add(new VisLabel(LanguageModLoader.getValue("history_home"))).width(UiTheme.size("col.club")).left();
+        tbl.add(new VisLabel(LanguageModLoader.getValue("history_score"))).width(UiTheme.size("col.score"));
+        tbl.add(new VisLabel(LanguageModLoader.getValue("history_away"))).width(UiTheme.size("col.club")).left();
+        tbl.add(new VisLabel(LanguageModLoader.getValue("history_venue"))).width(UiTheme.size("col.wide")).left();
         tbl.row();
         for (HistoryEntry.Tie tie : e.ties) {
             tbl.add(new VisLabel(tie.round)).left();
             tbl.add(new VisLabel(tie.date != null ? tie.date : "-")).left();
             tbl.add(new VisLabel(tie.home)).left();
-            String score = tie.walkover != null ? t("history_walkover")
+            String score = tie.walkover != null ? LanguageModLoader.getValue("history_walkover")
                     : tie.homeGoals + " - " + tie.awayGoals;
             tbl.add(new VisLabel(score));
             tbl.add(new VisLabel(tie.away)).left();
@@ -175,7 +175,7 @@ public class HistoryScreenTable extends VisTable {
             tbl.row();
         }
         if (e.winner != null) {
-            VisLabel w = new VisLabel(t("history_winner") + ": " + e.winner);
+            VisLabel w = new VisLabel(LanguageModLoader.getValue("history_winner") + ": " + e.winner);
             w.setColor(UiTheme.color("state.winner"));
             tbl.add(w).colspan(6).left().padTop(UiTheme.space("xs")).row();
         }

@@ -285,7 +285,7 @@ public class NewGameSeasonScreen implements Screen {
         seasonStartDateValueLabel.setText(DatabaseLoader.formatter.format(availableSeasonsSelectBox.getSelected().getStartDate()));
         
         // update season source url label
-        seasonUrlSourceValueLabel.setText("Wikipedia");
+        seasonUrlSourceValueLabel.setText(LanguageModLoader.getValue("newgame_source_wikipedia"));
         seasonUrlSourceValueLabel.setUrl(availableSeasonsSelectBox.getSelected().getUrlSource());
     }
     

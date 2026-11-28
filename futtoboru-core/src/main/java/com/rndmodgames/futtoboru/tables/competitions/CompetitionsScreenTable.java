@@ -12,6 +12,7 @@ import com.rndmodgames.futtoboru.data.League;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
 
 /**
@@ -76,7 +77,7 @@ public class CompetitionsScreenTable extends VisTable {
         
         // Title
         this.row().colspan(3);
-        VisLabel titleLabel = new VisLabel("COMPETITIONS");
+        VisLabel titleLabel = new VisLabel(LanguageModLoader.getValue("competitions_title"));
         titleLabel.setFontScale(UiTheme.fontScale("heading"));
         this.add(titleLabel).pad(UiTheme.space("sm")).row();
         
@@ -85,13 +86,13 @@ public class CompetitionsScreenTable extends VisTable {
         // Check if mainAuthority exists
         if (currentGame == null) {
             this.row().colspan(3);
-            this.add(new VisLabel("ERROR: SaveGame is null")).pad(UiTheme.space("sm")).row();
+            this.add(new VisLabel(LanguageModLoader.getValue("competitions_no_game"))).pad(UiTheme.space("sm")).row();
             return;
         }
         
         if (currentGame.getMainAuthority() == null) {
             this.row().colspan(3);
-            this.add(new VisLabel("No Football Association found")).pad(UiTheme.space("sm")).row();
+            this.add(new VisLabel(LanguageModLoader.getValue("competitions_no_association"))).pad(UiTheme.space("sm")).row();
             return;
         }
         
@@ -100,9 +101,9 @@ public class CompetitionsScreenTable extends VisTable {
         
         if (leagues == null || leagues.isEmpty()) {
             this.row().colspan(3);
-            this.add(new VisLabel("No leagues found. League creation script may not have executed yet.")).pad(UiTheme.space("sm")).row();
+            this.add(new VisLabel(LanguageModLoader.getValue("competitions_no_leagues"))).pad(UiTheme.space("sm")).row();
             this.row().colspan(3);
-            this.add(new VisLabel("Check console logs for league creation messages.")).pad(UiTheme.space("xs")).row();
+            this.add(new VisLabel(LanguageModLoader.getValue("competitions_no_leagues_hint"))).pad(UiTheme.space("xs")).row();
             return;
         }
         
@@ -110,15 +111,15 @@ public class CompetitionsScreenTable extends VisTable {
         
         // --- LEAGUES SECTION ---
         this.row().colspan(3);
-        VisLabel leaguesTitle = new VisLabel("LEAGUES");
+        VisLabel leaguesTitle = new VisLabel(LanguageModLoader.getValue("competitions_leagues"));
         leaguesTitle.setColor(UiTheme.color("text.heading"));
         this.add(leaguesTitle).padTop(UiTheme.space("sm")).padBottom(UiTheme.space("xs")).row();
         
         // Header row
         this.row().pad(UiTheme.space("xs"));
-        this.add(new VisLabel("League Name")).width(UiTheme.size("col.xwide"));
-        this.add(new VisLabel("Clubs")).width(UiTheme.size("col.number"));
-        this.add(new VisLabel("Country")).width(UiTheme.size("col.label"));
+        this.add(new VisLabel(LanguageModLoader.getValue("competitions_league_name"))).width(UiTheme.size("col.xwide"));
+        this.add(new VisLabel(LanguageModLoader.getValue("competitions_clubs"))).width(UiTheme.size("col.number"));
+        this.add(new VisLabel(LanguageModLoader.getValue("competitions_country"))).width(UiTheme.size("col.label"));
         this.row();
         this.addSeparator().colspan(3).pad(UiTheme.space("xxs")).row();
         
@@ -129,7 +130,7 @@ public class CompetitionsScreenTable extends VisTable {
             }
             
             // League name (clickable)
-            VisTextButton leagueButton = new VisTextButton(league.getName() != null ? league.getName() : "Unnamed League");
+            VisTextButton leagueButton = new VisTextButton(league.getName() != null ? league.getName() : LanguageModLoader.getValue("competitions_unnamed_league"));
             final League leagueForClick = league; // Final reference for inner class
             leagueButton.addListener(new InputListener() {
                 @Override
@@ -157,7 +158,7 @@ public class CompetitionsScreenTable extends VisTable {
             // Country
             String countryName = (league.getCountry() != null && league.getCountry().getCommonName() != null) 
                 ? league.getCountry().getCommonName() 
-                : "Unknown";
+                : LanguageModLoader.getValue("unknown");
             this.add(new VisLabel(countryName)).width(UiTheme.size("col.label"));
         }
         
@@ -165,22 +166,22 @@ public class CompetitionsScreenTable extends VisTable {
         List<com.rndmodgames.futtoboru.data.Competition> cups = currentGame.getAllCups();
         if (cups != null && !cups.isEmpty()) {
             this.row().colspan(3);
-            VisLabel cupsTitle = new VisLabel("CUPS");
+            VisLabel cupsTitle = new VisLabel(LanguageModLoader.getValue("competitions_cups"));
             cupsTitle.setColor(UiTheme.color("text.heading"));
             this.add(cupsTitle).padTop(UiTheme.space("lg")).padBottom(UiTheme.space("xs")).row();
             
             // Header row
             this.row().pad(UiTheme.space("xs"));
-            this.add(new VisLabel("Cup Name")).width(UiTheme.size("col.xwide"));
-            this.add(new VisLabel("Teams")).width(UiTheme.size("col.number"));
-            this.add(new VisLabel("Country")).width(UiTheme.size("col.label"));
+            this.add(new VisLabel(LanguageModLoader.getValue("competitions_cup_name"))).width(UiTheme.size("col.xwide"));
+            this.add(new VisLabel(LanguageModLoader.getValue("competitions_teams"))).width(UiTheme.size("col.number"));
+            this.add(new VisLabel(LanguageModLoader.getValue("competitions_country"))).width(UiTheme.size("col.label"));
             this.row();
             this.addSeparator().colspan(3).pad(UiTheme.space("xxs")).row();
             
             for (com.rndmodgames.futtoboru.data.Competition cup : cups) {
                 if (cup == null) continue;
                 
-                VisTextButton cupButton = new VisTextButton(cup.getName() != null ? cup.getName() : "Unnamed Cup");
+                VisTextButton cupButton = new VisTextButton(cup.getName() != null ? cup.getName() : LanguageModLoader.getValue("competitions_unnamed_cup"));
                 final com.rndmodgames.futtoboru.data.Competition cupForClick = cup;
                 cupButton.addListener(new InputListener() {
                     @Override
@@ -211,7 +212,7 @@ public class CompetitionsScreenTable extends VisTable {
                 this.add(new VisLabel(String.valueOf(participantCount))).width(UiTheme.size("col.number"));
                 
                 // Country (assume first club's country or default)
-                this.add(new VisLabel("England")).width(UiTheme.size("col.label"));
+                this.add(new VisLabel(LanguageModLoader.getValue("competitions_country_england"))).width(UiTheme.size("col.label"));
             }
         }
         

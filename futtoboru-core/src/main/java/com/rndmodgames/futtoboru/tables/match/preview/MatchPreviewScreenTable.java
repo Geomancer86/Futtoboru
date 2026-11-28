@@ -114,7 +114,7 @@ public class MatchPreviewScreenTable extends VisTable {
         
         if (match == null) {
             this.row();
-            this.add("No upcoming match available");
+            this.add(LanguageModLoader.getValue("match_no_upcoming"));
             return;
         }
         
@@ -126,10 +126,10 @@ public class MatchPreviewScreenTable extends VisTable {
         
         if (homeClub == null || awayClub == null) {
             this.row();
-            this.add("Match teams not yet determined");
+            this.add(LanguageModLoader.getValue("match_teams_undecided"));
             if (match.getBracketPath() != null) {
                 this.row();
-                this.add("Match: " + match.getBracketPath());
+                this.add(LanguageModLoader.format("match_bracket", match.getBracketPath()));
             }
             return;
         }

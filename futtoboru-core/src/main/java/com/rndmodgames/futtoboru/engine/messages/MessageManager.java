@@ -14,6 +14,7 @@ import com.rndmodgames.futtoboru.data.MessagePriority;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.localization.LanguageModLoader;
 
 /**
  * Message Manager v1
@@ -268,55 +269,57 @@ public class MessageManager {
         message.setCategory(MessageCategory.SYSTEM);
         message.setMessageType("WELCOME");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Welcome to Futtoboru!");
-        
+        message.setTitle(LanguageModLoader.getValue("msg_welcome_title"));
+
         StringBuilder content = new StringBuilder();
-        content.append("Welcome, ");
-        
+
         // Add player name
+        String ownerName;
         if (owner.getName() != null && owner.getLastname() != null) {
-            content.append(owner.getName()).append(" ").append(owner.getLastname());
+            ownerName = owner.getName() + " " + owner.getLastname();
         } else if (owner.getName() != null) {
-            content.append(owner.getName());
+            ownerName = owner.getName();
         } else {
-            content.append("Manager");
+            ownerName = LanguageModLoader.getValue("msg_welcome_default_name");
         }
-        
-        content.append("!\n\n");
-        
+
+        content.append(LanguageModLoader.format("msg_welcome_greeting", ownerName)).append("\n\n");
+
         // Add profession
         if (profession != null) {
-            content.append("You are starting your career as a ");
-            content.append(profession.getName() != null ? profession.getName() : "Professional");
-            content.append(".\n\n");
+            content.append(LanguageModLoader.format("msg_welcome_profession", profession.getName() != null
+                    ? profession.getName() : LanguageModLoader.getValue("msg_welcome_default_profession")));
+            content.append("\n\n");
         }
-        
+
+        String countryName = country != null && country.getCommonName() != null ? country.getCommonName()
+                : LanguageModLoader.getValue("msg_welcome_default_country");
+
         // Add starting club or unemployed status
         if (startingClub != null) {
-            content.append("You are currently managing ");
-            content.append(startingClub.getName() != null ? startingClub.getName() : "a club");
+            String clubName = startingClub.getName() != null ? startingClub.getName()
+                    : LanguageModLoader.getValue("msg_welcome_default_club");
             if (country != null) {
-                content.append(" in ").append(country.getCommonName() != null ? country.getCommonName() : "your country");
+                content.append(LanguageModLoader.format("msg_welcome_managing_in", clubName, countryName));
+            } else {
+                content.append(LanguageModLoader.format("msg_welcome_managing", clubName));
             }
-            content.append(".\n\n");
+            content.append("\n\n");
         } else {
-            content.append("You are currently unemployed and looking for your first opportunity.\n\n");
+            content.append(LanguageModLoader.getValue("msg_welcome_unemployed")).append("\n\n");
             if (country != null) {
-                content.append("You are based in ");
-                content.append(country.getCommonName() != null ? country.getCommonName() : "your country");
-                content.append(".\n\n");
+                content.append(LanguageModLoader.format("msg_welcome_based_in", countryName));
+                content.append("\n\n");
             }
         }
-        
+
         // Add game start date
         if (gameStartDate != null) {
-            content.append("The year is ");
-            content.append(gameStartDate.getYear());
-            content.append(".\n\n");
+            content.append(LanguageModLoader.format("msg_welcome_year", gameStartDate.getYear()));
+            content.append("\n\n");
         }
-        
-        content.append("Good luck in your career!\n\n");
-        content.append("Check your inbox regularly for important messages and opportunities.");
+
+        content.append(LanguageModLoader.getValue("msg_welcome_closing"));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null); // System message
@@ -342,13 +345,13 @@ public class MessageManager {
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_CREATION");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("English Football League Created");
-        
+        message.setTitle(LanguageModLoader.getValue("msg_league_created_title"));
+
         // Build message content with club list
         StringBuilder content = new StringBuilder();
-        content.append("The English Football League has been formed with ");
-        content.append(league.getLeagueClubs() != null ? league.getLeagueClubs().size() : 0);
-        content.append(" founding clubs:\n\n");
+        content.append(LanguageModLoader.format("msg_league_created_text",
+                league.getLeagueClubs() != null ? league.getLeagueClubs().size() : 0));
+        content.append("\n\n");
         
         if (league.getLeagueClubs() != null) {
             for (int i = 0; i < league.getLeagueClubs().size(); i++) {
@@ -360,7 +363,7 @@ public class MessageManager {
             }
         }
         
-        content.append("\n\nThe first season will begin on 8 September 1888.");
+        content.append("\n\n").append(LanguageModLoader.getValue("msg_league_created_first_season"));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null); // System message
@@ -393,15 +396,12 @@ public class MessageManager {
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_DRAW");
         message.setPriority(MessagePriority.URGENT);
-        message.setTitle("League Fixture Draw - " + league.getName());
+        // Keep the "... - {0}" ending in every language: the inbox recovers the league name after the last " - "
+        message.setTitle(LanguageModLoader.format("msg_league_draw_title", league.getName()));
         message.setIsMandatory(true);  // CRITICAL: Blocks time advancement
-        
+
         StringBuilder content = new StringBuilder();
-        content.append("The fixture draw for the ");
-        content.append(league.getName());
-        content.append(" is ready to be revealed.\n\n");
-        content.append("Click below to view the draw and see all fixtures for the upcoming season.\n\n");
-        content.append("You must view the complete draw before continuing.");
+        content.append(LanguageModLoader.format("msg_league_draw_text", league.getName()));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -432,14 +432,10 @@ public class MessageManager {
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("FIXTURE_RELEASE");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("League Fixtures Released");
-        
+        message.setTitle(LanguageModLoader.getValue("msg_fixtures_released_title"));
+
         StringBuilder content = new StringBuilder();
-        content.append("The complete fixture list for the ");
-        content.append(league.getName());
-        content.append(" season has been released.\n\n");
-        content.append("Your club's first match is scheduled for 8 September 1888.\n\n");
-        content.append("View the complete fixture list in the Schedule screen.");
+        content.append(LanguageModLoader.format("msg_fixtures_released_text", league.getName()));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -460,13 +456,10 @@ public class MessageManager {
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("SEASON_START_REMINDER");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Season Starts Soon");
-        
+        message.setTitle(LanguageModLoader.getValue("msg_season_starts_soon_title"));
+
         StringBuilder content = new StringBuilder();
-        content.append("The new season begins on ");
-        content.append(formatDate(seasonStartDate));
-        content.append(".\n\n");
-        content.append("Make sure your squad is ready for the upcoming matches.");
+        content.append(LanguageModLoader.format("msg_season_starts_soon_text", formatDate(seasonStartDate)));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -489,28 +482,21 @@ public class MessageManager {
         message.setCategory(MessageCategory.LEAGUE);
         message.setMessageType("LEAGUE_WELCOME");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Welcome to the " + league.getName());
-        
+        message.setTitle(LanguageModLoader.format("msg_welcome_to_competition_title", league.getName()));
+
         StringBuilder content = new StringBuilder();
-        content.append("Congratulations! Your club, ");
-        content.append(club.getName());
-        content.append(", has been accepted into the ");
-        content.append(league.getName());
-        content.append(" for the upcoming season.\n\n");
-        
+        content.append(LanguageModLoader.format("msg_league_welcome_accepted", club.getName(), league.getName()));
+        content.append("\n\n");
+
         if (league.getLeagueClubs() != null) {
-            content.append("The league consists of ");
-            content.append(league.getLeagueClubs().size());
-            content.append(" clubs, and you will play each team twice (home and away) throughout the season.\n\n");
+            content.append(LanguageModLoader.format("msg_league_welcome_clubs", league.getLeagueClubs().size()));
+            content.append("\n\n");
         }
-        
-        content.append("The season begins on ");
-        content.append(formatDate(seasonStart));
-        content.append(" and concludes on ");
-        content.append(formatDate(seasonEnd));
-        content.append(".\n\n");
-        
-        content.append("Good luck!");
+
+        content.append(LanguageModLoader.format("msg_league_welcome_dates", formatDate(seasonStart), formatDate(seasonEnd)));
+        content.append("\n\n");
+
+        content.append(LanguageModLoader.getValue("msg_good_luck"));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -541,15 +527,10 @@ public class MessageManager {
         message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_WELCOME");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Welcome to the " + cup.getName());
-        
+        message.setTitle(LanguageModLoader.format("msg_welcome_to_competition_title", cup.getName()));
+
         StringBuilder content = new StringBuilder();
-        content.append("Your club, ");
-        content.append(club.getName());
-        content.append(", has been invited to participate in the ");
-        content.append(cup.getName());
-        content.append(".\n\n");
-        content.append("The competition will begin shortly. Good luck!");
+        content.append(LanguageModLoader.format("msg_cup_welcome_text", club.getName(), cup.getName()));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -571,15 +552,10 @@ public class MessageManager {
         message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_DRAW_ANNOUNCEMENT");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle(cup.getName() + " Draw Date Announced");
-        
+        message.setTitle(LanguageModLoader.format("msg_cup_draw_date_title", cup.getName()));
+
         StringBuilder content = new StringBuilder();
-        content.append("The Football Association has announced that the draw for the First Round of the ");
-        content.append(cup.getName());
-        content.append(" will take place on ");
-        content.append(formatDate(drawDate));
-        content.append(".\n\n");
-        content.append("All participating clubs will be notified of their opponents following the draw.");
+        content.append(LanguageModLoader.format("msg_cup_draw_date_text", cup.getName(), formatDate(drawDate)));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -601,28 +577,23 @@ public class MessageManager {
         message.setCategory(MessageCategory.CUP);
         message.setMessageType("CUP_DRAW_RESULT");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle(cup.getName() + " " + (roundName != null ? roundName : "Draw"));
-        
+        message.setTitle(LanguageModLoader.format("msg_cup_draw_result_title", cup.getName(),
+                roundName != null ? roundName : LanguageModLoader.getValue("msg_draw")));
+
         StringBuilder content = new StringBuilder();
-        content.append("The draw for the ");
         if (roundName != null) {
-            content.append(roundName);
-            content.append(" of the ");
-        }
-        content.append(cup.getName());
-        content.append(" has been completed.\n\n");
-        content.append("Your club, ");
-        content.append(club.getName());
-        content.append(", has been drawn against ");
-        content.append(opponent.getName());
-        content.append(".\n\n");
-        
-        if (matchDate != null) {
-            content.append("The match will be played on ");
-            content.append(formatDate(matchDate));
-            content.append(".");
+            content.append(LanguageModLoader.format("msg_cup_draw_result_round", roundName, cup.getName()));
         } else {
-            content.append("The match date will be announced shortly.");
+            content.append(LanguageModLoader.format("msg_cup_draw_result_done", cup.getName()));
+        }
+        content.append("\n\n");
+        content.append(LanguageModLoader.format("msg_cup_draw_result_opponent", club.getName(), opponent.getName()));
+        content.append("\n\n");
+
+        if (matchDate != null) {
+            content.append(LanguageModLoader.format("msg_cup_draw_result_date", formatDate(matchDate)));
+        } else {
+            content.append(LanguageModLoader.getValue("msg_cup_draw_result_no_date"));
         }
         
         message.setPlainTextMessage(content.toString());
@@ -655,21 +626,12 @@ public class MessageManager {
         message.setPriority(MessagePriority.URGENT);
         // The edition's name (e.g. "1888-89 FA Cup") keeps every season's draw title distinct (P2-3)
         String competitionName = edition.getName() != null ? edition.getName() : cup.getName();
-        message.setTitle(competitionName + " Draw - " + (roundName != null ? roundName : "Round " + round));
+        String roundLabel = roundName != null ? roundName : LanguageModLoader.format("msg_round_number", round);
+        message.setTitle(LanguageModLoader.format("msg_cup_draw_title", competitionName, roundLabel));
         message.setIsMandatory(true);  // Blocks time advancement
-        
+
         StringBuilder content = new StringBuilder();
-        content.append("The draw for the ");
-        if (roundName != null) {
-            content.append(roundName);
-            content.append(" of the ");
-        } else {
-            content.append("Round ").append(round).append(" of the ");
-        }
-        content.append(cup.getName());
-        content.append(" is ready to be revealed.\n\n");
-        content.append("Click below to view the draw and see the matchups.\n\n");
-        content.append("You must view the complete draw before continuing.");
+        content.append(LanguageModLoader.format("msg_cup_draw_text", roundLabel, cup.getName()));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -699,8 +661,8 @@ public class MessageManager {
         message.setCategory(MessageCategory.MATCH);
         message.setMessageType("MATCH_RESULT");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Match Result: " + homeClub.getName() + " " + 
-                         match.getHomeGoals() + " - " + match.getAwayGoals() + " " + awayClub.getName());
+        message.setTitle(LanguageModLoader.format("msg_match_result_title", homeClub.getName(),
+                         match.getHomeGoals(), match.getAwayGoals(), awayClub.getName()));
         
         StringBuilder content = new StringBuilder();
         content.append(homeClub.getName());
@@ -713,46 +675,32 @@ public class MessageManager {
         content.append("\n\n");
         
         if (match.getMatchDateTime() != null) {
-            content.append("Date: ");
-            content.append(formatDate(match.getMatchDateTime()));
+            content.append(LanguageModLoader.format("msg_match_date", formatDate(match.getMatchDateTime())));
             content.append("\n");
         }
-        
+
         if (match.getAttendance() != null) {
-            content.append("Attendance: ");
-            content.append(match.getAttendance());
+            content.append(LanguageModLoader.format("msg_match_attendance", match.getAttendance()));
             content.append("\n");
         }
-        
+
         // Match revenue (v1.0)
         if (match.getMatchRevenue() != null && match.getMatchRevenue().compareTo(java.math.BigDecimal.ZERO) > 0) {
-            content.append("Match Revenue: ");
-            content.append(Money.format(match.getMatchRevenue()));
+            content.append(LanguageModLoader.format("msg_match_revenue", Money.format(match.getMatchRevenue())));
             content.append("\n");
         }
-        
+
         // Match type
-        String matchType = "Friendly";
-        if (match.getMatchType() != null) {
-            if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.LEAGUE_MATCH) {
-                matchType = "League Match";
-            } else if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.CUP_MATCH) {
-                matchType = "Cup Match";
-            }
-        }
-        content.append("Type: ");
-        content.append(matchType);
+        content.append(LanguageModLoader.format("msg_match_type", matchTypeName(match)));
         content.append("\n\n");
-        
+
         // Result summary
         if (match.getHomeGoals() > match.getAwayGoals()) {
-            content.append(homeClub.getName());
-            content.append(" won the match.");
+            content.append(LanguageModLoader.format("msg_match_won", homeClub.getName()));
         } else if (match.getAwayGoals() > match.getHomeGoals()) {
-            content.append(awayClub.getName());
-            content.append(" won the match.");
+            content.append(LanguageModLoader.format("msg_match_won", awayClub.getName()));
         } else {
-            content.append("The match ended in a draw.");
+            content.append(LanguageModLoader.getValue("msg_match_drawn"));
         }
         
         message.setPlainTextMessage(content.toString());
@@ -775,42 +723,25 @@ public class MessageManager {
         message.setCategory(MessageCategory.MATCH);
         message.setMessageType("MATCH_PREVIEW");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Upcoming Match: " + homeClub.getName() + " vs " + awayClub.getName());
-        
+        message.setTitle(LanguageModLoader.format("msg_match_preview_title", homeClub.getName(), awayClub.getName()));
+
         StringBuilder content = new StringBuilder();
-        content.append("Your next match is scheduled for ");
-        if (match.getMatchDateTime() != null) {
-            content.append(formatDate(match.getMatchDateTime()));
-        } else {
-            content.append("TBD");
-        }
-        content.append(".\n\n");
-        
-        content.append("Match Details:\n");
-        content.append("Home: ");
-        content.append(homeClub.getName());
+        content.append(LanguageModLoader.format("msg_match_preview_text", formatDate(match.getMatchDateTime())));
+        content.append("\n\n");
+
+        content.append(LanguageModLoader.getValue("msg_match_details")).append("\n");
+        content.append(LanguageModLoader.format("msg_match_home", homeClub.getName()));
         content.append("\n");
-        content.append("Away: ");
-        content.append(awayClub.getName());
+        content.append(LanguageModLoader.format("msg_match_away", awayClub.getName()));
         content.append("\n");
-        
+
         if (homeClub.getStadium() != null) {
-            content.append("Venue: ");
-            content.append(homeClub.getStadium().getName());
+            content.append(LanguageModLoader.format("msg_match_venue", homeClub.getStadium().getName()));
             content.append("\n");
         }
-        
+
         // Match type
-        String matchType = "Friendly";
-        if (match.getMatchType() != null) {
-            if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.LEAGUE_MATCH) {
-                matchType = "League Match";
-            } else if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.CUP_MATCH) {
-                matchType = "Cup Match";
-            }
-        }
-        content.append("Type: ");
-        content.append(matchType);
+        content.append(LanguageModLoader.format("msg_match_type", matchTypeName(match)));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -832,7 +763,7 @@ public class MessageManager {
         message.setCategory(MessageCategory.AUTHORITY);
         message.setMessageType("AUTHORITY_ANNOUNCEMENT");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle(title != null ? title : "Football Association Announcement");
+        message.setTitle(title != null ? title : LanguageModLoader.getValue("msg_fa_announcement_title"));
         message.setPlainTextMessage(content != null ? content : "");
         message.setRemitent(null);
         message.setIsRead(false);
@@ -849,17 +780,15 @@ public class MessageManager {
         message.setCategory(MessageCategory.AUTHORITY);
         message.setMessageType("IMPORTANT_DATES");
         message.setPriority(MessagePriority.NORMAL);
-        message.setTitle("Important Dates Announced");
-        
+        message.setTitle(LanguageModLoader.getValue("msg_important_dates_title"));
+
         StringBuilder content = new StringBuilder();
-        content.append("The Football Association has announced the following important dates:\n\n");
-        content.append("Season Start: ");
-        content.append(formatDate(seasonStart));
+        content.append(LanguageModLoader.getValue("msg_important_dates_text")).append("\n\n");
+        content.append(LanguageModLoader.format("msg_important_dates_start", formatDate(seasonStart)));
         content.append("\n");
-        content.append("Season End: ");
-        content.append(formatDate(seasonEnd));
+        content.append(LanguageModLoader.format("msg_important_dates_end", formatDate(seasonEnd)));
         content.append("\n\n");
-        content.append("Please mark these dates in your calendar.");
+        content.append(LanguageModLoader.getValue("msg_important_dates_closing"));
         
         message.setPlainTextMessage(content.toString());
         message.setRemitent(null);
@@ -936,14 +865,46 @@ public class MessageManager {
      */
     private String formatDate(LocalDateTime date) {
         if (date == null) {
-            return "TBD";
+            return LanguageModLoader.getValue("msg_tbd");
         }
-        
-        // Format: "8 September 1888"
-        return date.getDayOfMonth() + " " + 
-               date.getMonth().toString().substring(0, 1) + 
-               date.getMonth().toString().substring(1).toLowerCase() + " " + 
-               date.getYear();
+
+        // Format: "8 September 1888" (msg_date orders day, month and year per language)
+        return formatDay(date.getDayOfMonth(), date.getMonthValue(), date.getYear());
+    }
+
+    /** "8 September 1888" in the current language (month names from the bundles). */
+    public static String formatDay(int day, int month, int year) {
+        return LanguageModLoader.format("msg_date", day, monthName(month), year);
+    }
+
+    /** The month's name, 1 = January. */
+    public static String monthName(int month) {
+        switch (month) {
+        case 1: return LanguageModLoader.getValue("msg_month_january");
+        case 2: return LanguageModLoader.getValue("msg_month_february");
+        case 3: return LanguageModLoader.getValue("msg_month_march");
+        case 4: return LanguageModLoader.getValue("msg_month_april");
+        case 5: return LanguageModLoader.getValue("msg_month_may");
+        case 6: return LanguageModLoader.getValue("msg_month_june");
+        case 7: return LanguageModLoader.getValue("msg_month_july");
+        case 8: return LanguageModLoader.getValue("msg_month_august");
+        case 9: return LanguageModLoader.getValue("msg_month_september");
+        case 10: return LanguageModLoader.getValue("msg_month_october");
+        case 11: return LanguageModLoader.getValue("msg_month_november");
+        default: return LanguageModLoader.getValue("msg_month_december");
+        }
+    }
+
+    /** "League Match", "Cup Match" or "Friendly" in the current language. */
+    private static String matchTypeName(com.rndmodgames.futtoboru.data.Match match) {
+        if (match.getMatchType() != null) {
+            if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.LEAGUE_MATCH) {
+                return LanguageModLoader.getValue("msg_match_type_league");
+            } else if (match.getMatchType() == com.rndmodgames.futtoboru.data.Match.CUP_MATCH) {
+                return LanguageModLoader.getValue("msg_match_type_cup");
+            }
+        }
+        return LanguageModLoader.getValue("msg_match_type_friendly");
     }
 }
 

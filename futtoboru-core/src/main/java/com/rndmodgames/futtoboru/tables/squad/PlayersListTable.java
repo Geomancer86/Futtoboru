@@ -122,53 +122,53 @@ public class PlayersListTable extends VisTable {
          * Header Row with Sortable Columns
          */
         this.row();
-        this.add(createSortableHeader("Name", "name")).width(UiTheme.size("table.squad.name"));
-        this.add(createSortableHeader("Age", "age")).width(UiTheme.size("table.squad.age"));
-        this.add(createSortableHeader("Country", "country")).width(UiTheme.size("table.squad.country"));
+        this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_name"), "name")).width(UiTheme.size("table.squad.name"));
+        this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_age"), "age")).width(UiTheme.size("table.squad.age"));
+        this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_country"), "country")).width(UiTheme.size("table.squad.country"));
         
         // Physical attribute columns
         if (showAcceleration) {
-            this.add(createSortableHeader("Accel", "acceleration")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_acceleration"), "acceleration")).width(UiTheme.size("table.squad.attr"));
         }
         if (showSpeed) {
-            this.add(createSortableHeader("Speed", "speed")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_speed"), "speed")).width(UiTheme.size("table.squad.attr"));
         }
         if (showStrength) {
-            this.add(createSortableHeader("Str", "strength")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_strength"), "strength")).width(UiTheme.size("table.squad.attr"));
         }
         if (showStamina) {
-            this.add(createSortableHeader("Sta", "stamina")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_stamina"), "stamina")).width(UiTheme.size("table.squad.attr"));
         }
         if (showJumping) {
-            this.add(createSortableHeader("Jump", "jumping")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_jumping"), "jumping")).width(UiTheme.size("table.squad.attr"));
         }
         
         // Technical attribute columns
         if (showPassing) {
-            this.add(createSortableHeader("Pass", "passing")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_passing"), "passing")).width(UiTheme.size("table.squad.attr"));
         }
         if (showLongShots) {
-            this.add(createSortableHeader("Long", "longShots")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_long_shots"), "longShots")).width(UiTheme.size("table.squad.attr"));
         }
         if (showHeading) {
-            this.add(createSortableHeader("Head", "heading")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_heading"), "heading")).width(UiTheme.size("table.squad.attr"));
         }
         if (showTackling) {
-            this.add(createSortableHeader("Tack", "tackling")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_tackling"), "tackling")).width(UiTheme.size("table.squad.attr"));
         }
         if (showMarking) {
-            this.add(createSortableHeader("Mark", "marking")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_marking"), "marking")).width(UiTheme.size("table.squad.attr"));
         }
         
         // Mental attribute columns
         if (showDetermination) {
-            this.add(createSortableHeader("Det", "determination")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_determination"), "determination")).width(UiTheme.size("table.squad.attr"));
         }
         if (showPositioning) {
-            this.add(createSortableHeader("Pos", "positioning")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_positioning"), "positioning")).width(UiTheme.size("table.squad.attr"));
         }
         if (showTeamwork) {
-            this.add(createSortableHeader("Team", "teamwork")).width(UiTheme.size("table.squad.attr"));
+            this.add(createSortableHeader(LanguageModLoader.getValue("squad_col_teamwork"), "teamwork")).width(UiTheme.size("table.squad.attr"));
         }
         
         // Add separator with correct column span
@@ -205,7 +205,7 @@ public class PlayersListTable extends VisTable {
             
             // Country
             String countryName = player.getPerson().getCountry() != null ? 
-                player.getPerson().getCountry().getCommonName() : "N/A";
+                player.getPerson().getCountry().getCommonName() : LanguageModLoader.getValue("not_available");
             this.add(new VisLabel(countryName)).width(UiTheme.size("table.squad.country"));
             
             // Physical attributes (with change indicators)
@@ -395,7 +395,7 @@ public class PlayersListTable extends VisTable {
      * Add an attribute cell with value and change indicator
      */
     private void addAttributeCell(Player player, String attributeName, Float value) {
-        String valueText = value != null ? attributeFormat.format(value) : "N/A";
+        String valueText = value != null ? attributeFormat.format(value) : LanguageModLoader.getValue("not_available");
         
         // Get change indicator
         String changeText = "";

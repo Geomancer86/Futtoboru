@@ -2,9 +2,9 @@
 // Mirrors .github/workflows/ci.yml so a ws/ or b3/ branch can be checked here before it is merged into develop.
 // Jenkins setup (once): a Pipeline job "Futtoboru DEV" with "Pipeline script from SCM" -> this repo, script path "Jenkinsfile".
 // T-01 test tiers (D27, docs/BUILD.md "Test tiers"): TEST_TIER=auto runs
-//   a develop commit (pollSCM)  -> slow tier (-Pslow; the fast tier already ran at the lane's gate and on GitHub)
+//   a develop commit (pollSCM)  -> slow tier + coverage (-Pslow,coverage; the fast tier ran at the lane's gate and on GitHub)
 //   the nightly (cron, develop) -> full + smoke + coverage (-Pfull,smoke,coverage); red -> bisect the day's merges
-//   main                        -> full + smoke
+//   main                        -> full + smoke + coverage
 //   any other BUILD_BRANCH      -> fast tier (ask for TEST_TIER=full to verify a branch before merging it)
 pipeline {
 
@@ -86,7 +86,8 @@ pipeline {
                         }
                     }
                     env.TIER = tier
-                    env.MVN_PROFILES = [fast: '', slow: '-Pslow', full: '-Pfull', smoke: '-Pfull,smoke',
+                    // T-02: coverage (JaCoCo) only in the long Jenkins runs, never in the fast tier
+                    env.MVN_PROFILES = [fast: '', slow: '-Pslow,coverage', full: '-Pfull,coverage', smoke: '-Pfull,smoke,coverage',
                                         nightly: '-Pfull,smoke,coverage'][tier]
                     currentBuild.displayName = "#${env.BUILD_NUMBER} ${params.BUILD_BRANCH} @ ${env.GIT_COMMIT_SHORT} ${tier}"
                 }
