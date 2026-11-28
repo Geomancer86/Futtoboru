@@ -119,13 +119,16 @@ public final class SaveMigrations {
      * saved country and birth date. A save without a seed is left as it is (the load fills the gap afterwards).
      */
     static JsonValue addLanguages(JsonValue root) {
-        LanguageData languages = DatabaseLoader.getLanguageData();
+        return addLanguages(root, DatabaseLoader.getLanguageData(), DatabaseLoader.getGameData());
+    }
+
+    /** The v2 -> v3 step with the data given (public for tests). */
+    public static JsonValue addLanguages(JsonValue root, LanguageData languages, GameData data) {
         JsonValue seed = root.has("game") ? root.get("game").get("seed") : null;
         if (languages == null || seed == null || !seed.isLong()) {
             return root;
         }
         RandomSource database = RandomSource.seeded(seed.asLong()).fork("database");
-        GameData data = DatabaseLoader.getGameData();
         for (JsonValue p = child(root, "persons"); p != null; p = p.next) {
             if (p.has("languages") && p.get("languages").size > 0) {
                 continue;
@@ -138,7 +141,12 @@ public final class SaveMigrations {
             String born = p.has("birthDate") && p.get("birthDate").isString() ? p.getString("birthDate") : null;
             person.setBirthDate(born == null ? null : java.time.LocalDateTime.parse(born));
             String country = p.has("country") && p.get("country").isString() ? p.getString("country") : null;
-            person.setCountry(country == null ? null : DatabaseLoader.getCountryByDataId(country));
+            if (country != null) {
+                // the generator needs only the data id (no database lookup before the load rebuilds it)
+                com.rndmodgames.futtoboru.data.Country c = new com.rndmodgames.futtoboru.data.Country();
+                c.setDataId(country);
+                person.setCountry(c);
+            }
             LanguageGenerator.assign(person, languages, data, database);
             if (p.has("languages")) {
                 p.remove("languages");

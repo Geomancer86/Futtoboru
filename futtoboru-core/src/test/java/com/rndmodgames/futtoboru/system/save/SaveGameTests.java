@@ -349,6 +349,22 @@ class SaveGameTests {
         Player dewhurst = player(game, "preston-north-end", "fred-dewhurst-1863");
         assertEquals(PlayerAttributeGenerator.deriveDribbling(dewhurst.getDexterity(), dewhurst.getAcceleration(),
                 dewhurst.getTrickShots(), dewhurst.getSpeed()), dewhurst.getDribbling());
+
+        // v2 -> v3 (R-11a): every person has languages, and a data person has what a new game with the save's seed
+        // gives him
+        for (Person p : game.getAllPersons()) {
+            assertFalse(p.getLanguages().isEmpty(), p.getName() + " " + p.getLastname());
+            assertNotNull(p.getHomeLanguage());
+        }
+        Person fresh = new Person();
+        fresh.setDataId(dewhurst.getPerson().getDataId());
+        fresh.setBirthDate(dewhurst.getPerson().getBirthDate());
+        fresh.setCountry(dewhurst.getPerson().getCountry());
+        com.rndmodgames.futtoboru.system.generators.LanguageGenerator.assign(fresh, DatabaseLoader.getLanguageData(),
+                DatabaseLoader.getGameData(),
+                com.rndmodgames.futtoboru.engine.random.RandomSource.seeded(game.getSeed()).fork("database"));
+        assertEquals(fresh.getLanguages(), dewhurst.getPerson().getLanguages());
+        assertEquals(fresh.getBirthArea(), dewhurst.getPerson().getBirthArea());
     }
 
     @Test
@@ -362,7 +378,9 @@ class SaveGameTests {
             for (Player p : club.getPlayers()) {
                 assertNotNull(p.getDribbling());
                 assertTrue(p.getDribbling() >= 3 && p.getDribbling() <= 23, String.valueOf(p.getDribbling()));
-                before.put(p.getId(), p.getPosition() + " " + p.getDribbling());
+                before.put(p.getId(), p.getPosition() + " " + p.getDribbling() + " " + p.getPerson().getLanguages()
+                        + " " + p.getPerson().getHomeLanguage() + " " + p.getPerson().getBirthArea());
+                assertFalse(p.getPerson().getLanguages().isEmpty()); // R-11a
             }
         }
         String text = SaveCodec.encode(game, "E-01", LocalDateTime.of(2000, 1, 1, 0, 0));
@@ -374,7 +392,8 @@ class SaveGameTests {
         Map<Long, String> after = new HashMap<>();
         for (Club club : result.getGame().getAllClubs()) {
             for (Player p : club.getPlayers()) {
-                after.put(p.getId(), p.getPosition() + " " + p.getDribbling());
+                after.put(p.getId(), p.getPosition() + " " + p.getDribbling() + " " + p.getPerson().getLanguages()
+                        + " " + p.getPerson().getHomeLanguage() + " " + p.getPerson().getBirthArea());
             }
         }
         assertEquals(before, after);
