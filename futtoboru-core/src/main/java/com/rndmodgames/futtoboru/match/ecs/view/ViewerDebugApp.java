@@ -26,6 +26,7 @@ import com.rndmodgames.futtoboru.match.ecs.body.MoveCommand;
 import com.rndmodgames.futtoboru.match.ecs.body.Shape;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchParams;
+import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.ui.gfx.GraphicsQuality;
 
 /**
@@ -262,7 +263,7 @@ public final class ViewerDebugApp extends ApplicationAdapter {
                 pixels.put(i, (byte) 0xFF); // opaque, whatever the passes left in the alpha channel
             }
             PixmapIO.writePNG(Gdx.files.absolute(path), shot, 6, true);
-            System.out.println("viewer screenshot " + path);
+            Log.info(Log.UI_MATCH, "ViewerDebugApp", "viewer screenshot " + path);
         } finally {
             shot.dispose();
         }
