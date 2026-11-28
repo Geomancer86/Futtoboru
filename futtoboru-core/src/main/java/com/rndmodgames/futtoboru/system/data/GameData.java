@@ -87,16 +87,15 @@ public class GameData {
             positions.add(p.getDataId());
         }
         ENUMS.put("position", positions);
-        ENUMS.put("club_origin", CLUB_ORIGINS);
+        // H-05: what kind of body a club grew out of (same list as tools/data/validate.py)
+        ENUMS.put("club_origin", new TreeSet<>(Arrays.asList("church", "cricket", "works", "school", "old-boys",
+                "rugby", "merger", "other")));
         // H-04 sources: docs/data/history/POSITIONS_1888-89.md (same list as tools/data/validate.py)
         ENUMS.put("position_source", new TreeSet<>(Arrays.asList("players-1888-89", "players-1888-89-line",
                 "placeholder", "wp-season-1888-89", "wp-season-1888-89-line", "wp-player", "wp-player-line",
                 "fa-cup-final-1889")));
     }
 
-    /** H-05: what kind of body a club grew out of (same list as tools/data/validate.py). */
-    static final Set<String> CLUB_ORIGINS = new TreeSet<>(Arrays.asList("church", "cricket", "works", "school",
-            "old-boys", "rugby", "merger", "other"));
     /** H-05: the fan-love scale of a squad entry. */
     static final int FAN_TIER_MIN = 0;
     static final int FAN_TIER_MAX = 5;
