@@ -15,7 +15,10 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
   the level gate once at the end: `git fetch origin && git merge origin/develop`, then `python tools/test_level.py --run`
   (same as `tools/dev/check`). It runs only what changed since the last green run, so a merge that brought only docs
   re-runs nothing; if develop did not move since the tested SHA, merge into develop without running anything.
-  The full tier (`-Pfull`) runs on Jenkins and GitHub for develop, not locally; releases: `-Pfull,smoke`.
+  The full tier (`-Pfull`) runs on WORKSTATION's Jenkins for develop, not locally; releases: `-Pfull,smoke`.
+  **GitHub is git storage only (D32):** no Actions, PRs, Releases or API. A branch's full tier: `python tools/ci_jenkins.py
+  run --branch <branch>` on the home LAN; off it, a local `-Pfull` through `suite_lock.py` when the change needs it.
+  Never wrap `test_level.py` in `suite_lock.py` by hand (it takes the lock itself; nested runs are now safe anyway).
 - Every heavy Maven run goes through `python tools/suite_lock.py run -- <command>` (one suite per machine; it waits
   inside and expires by itself): never your own wait loop. Long builds in the background. Push only green.
 - A test class over 2 s gets `@Tag("slow")`; `python tools/test_tiers.py` fails on an untagged class over 5 s.
