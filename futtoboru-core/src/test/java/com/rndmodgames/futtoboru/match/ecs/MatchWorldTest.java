@@ -241,7 +241,7 @@ class MatchWorldTest {
      * player AI (E-15) and the laws (E-16); see BallPhysicsTest for the rule. The 90-minute goldens and the wet-ball
      * masses are in {@link EcsPlayGoldenTest} (slow tier). Pinned by E-15 (ecs-0.5).
      */
-    static final long GOLDEN_SHORT_PLAY = 0xa7bfb4aa2517133dL;
+    static final long GOLDEN_SHORT_PLAY = 0x33b802dfcc4d1d44L;
 
     @Test
     void shortPlayIsDeterministicAndPinnedByAGoldenHash() {

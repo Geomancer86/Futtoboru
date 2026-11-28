@@ -28,7 +28,7 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.Team;
 public final class EcsMatchEngine {
 
     /** Saved with every match (§5.3); bump when a change alters any simulated bit. */
-    public static final String ENGINE_VERSION = "ecs-0.5";
+    public static final String ENGINE_VERSION = "ecs-0.6";
 
     private final PhysicsParams params;
 
