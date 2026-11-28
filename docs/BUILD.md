@@ -85,7 +85,7 @@ runs what the merge brought).
 - `-Dtest=SomeTests` runs that class whatever its tier. `-Pcoverage` adds JaCoCo (T-02; Jenkins only).
 - **Rule:** a test class over 2 s gets `@Tag("slow")` (on the class, or on its slow methods); `python tools/test_tiers.py`
   (after any Maven run, from the surefire reports) fails when an untagged class took more than 5 s.
-- **`tools/test-changed.ps1` / `.sh`** (while coding, no lock): the changed tests and the tests that name a changed class, `-Dtest`.
+- **`tools/test-changed.ps1` / `.sh`** (while coding, through the suite lock: no two Maven runs ever overlap): the changed tests and the tests that name a changed class, `-Dtest`.
 - **`python tools/test_level.py [--run] [--full] [--offline] [--base <rev>]`** (= `tools/dev/check.ps1` / `.sh`), the gate:
   levels from the files changed since the last green `--run` (`target/.last-green-<tier>`, the working tree as a git
   tree) or since the merge base with origin/develop: **docs** (docs, `*.md`, CI files, tools) nothing;
