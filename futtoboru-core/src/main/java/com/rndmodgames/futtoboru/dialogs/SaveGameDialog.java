@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
@@ -18,6 +17,8 @@ import com.rndmodgames.futtoboru.system.SaveLoadSystem;
 import com.rndmodgames.futtoboru.system.save.SaveSummary;
 import com.rndmodgames.localization.LanguageModLoader;
 import com.rndmodgames.futtoboru.system.Log;
+import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiDialogs;
 
 /**
  * Save Game Dialog v2 (P2-5)
@@ -78,7 +79,7 @@ public class SaveGameDialog extends VisDialog {
                     Log.error(Log.SYSTEM_INIT, "SaveGameDialog",
                             "save failed: " + e);
                     if (getStage() != null) {
-                        Dialogs.showOKDialog(getStage(), LanguageModLoader.getValue("save_game"),
+                        UiDialogs.info(getStage(), LanguageModLoader.getValue("save_game"),
                                 LanguageModLoader.getValue("save_failed"));
                     }
                 }
@@ -105,8 +106,8 @@ public class SaveGameDialog extends VisDialog {
         scrollPane.setFadeScrollBars(false);
 
         VisTable nameRow = new VisTable();
-        nameRow.add(new VisLabel(LanguageModLoader.getValue("save_name"))).pad(5);
-        nameRow.add(nameField).pad(5).growX();
+        nameRow.add(new VisLabel(LanguageModLoader.getValue("save_name"))).pad(UiTheme.space("xs"));
+        nameRow.add(nameField).pad(UiTheme.space("xs")).growX();
 
         this.add(nameRow).colspan(2).growX();
         this.row();
@@ -128,6 +129,7 @@ public class SaveGameDialog extends VisDialog {
     public VisDialog showThen(Stage stage, Runnable afterSave) {
         onSaved = afterSave;
         refresh();
+        UiDialogs.track(this);
         return super.show(stage);
     }
 
@@ -154,8 +156,8 @@ public class SaveGameDialog extends VisDialog {
                 }
             });
             savesTable.row();
-            savesTable.add(pick).pad(5).growX();
-            savesTable.add(new VisLabel(LoadGameDialog.describe(save))).pad(5);
+            savesTable.add(pick).pad(UiTheme.space("xs")).growX();
+            savesTable.add(new VisLabel(LoadGameDialog.describe(save))).pad(UiTheme.space("xs"));
         }
         updateSaveButton();
     }

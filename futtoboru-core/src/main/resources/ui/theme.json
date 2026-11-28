@@ -127,7 +127,13 @@
     "table.squad.age": 80,
     "table.squad.country": 100,
     "table.squad.attr": 70,
-    "dashboard.card.w": 480
+    "dashboard.card.w": 480,
+    "art.ground.panel.w": 320,
+    "art.ground.panel.h": 180,
+    "art.ground.header.w": 640,
+    "art.ground.header.h": 360,
+    "art.thumb.w": 128,
+    "art.thumb.h": 72
   },
   "styles": {
     "button.primary": "blue",

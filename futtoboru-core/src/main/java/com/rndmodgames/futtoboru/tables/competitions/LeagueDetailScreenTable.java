@@ -20,6 +20,7 @@ import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.menu.MainMenuManager;
 import com.rndmodgames.futtoboru.system.SaveGame;
 import com.rndmodgames.futtoboru.ui.UiTheme;
+import com.rndmodgames.futtoboru.ui.UiTooltips;
 
 /**
  * League Detail Screen Table v1.0
@@ -199,16 +200,14 @@ public class LeagueDetailScreenTable extends VisTable {
         
         // Header
         VisTable standingsHeader = new VisTable(true);
-        standingsHeader.add(new VisLabel("Pos")).width(UiTheme.size("table.league.pos"));
-        standingsHeader.add(new VisLabel("Club")).width(UiTheme.size("table.league.club"));
-        standingsHeader.add(new VisLabel("P")).width(UiTheme.size("table.league.stat"));
-        standingsHeader.add(new VisLabel("W")).width(UiTheme.size("table.league.stat"));
-        standingsHeader.add(new VisLabel("D")).width(UiTheme.size("table.league.stat"));
-        standingsHeader.add(new VisLabel("L")).width(UiTheme.size("table.league.stat"));
-        standingsHeader.add(new VisLabel("GF")).width(UiTheme.size("table.league.stat"));
-        standingsHeader.add(new VisLabel("GA")).width(UiTheme.size("table.league.stat"));
-        standingsHeader.add(new VisLabel("GD")).width(UiTheme.size("table.league.gd"));
-        standingsHeader.add(new VisLabel("Pts")).width(UiTheme.size("table.league.pts"));
+        // labels and tooltips from the language files (U-09)
+        String[] columnWidths = { "table.league.pos", "table.league.club", "table.league.stat", "table.league.stat",
+                "table.league.stat", "table.league.stat", "table.league.stat", "table.league.stat", "table.league.gd",
+                "table.league.pts" };
+        for (int c = 0; c < UiTooltips.LEAGUE_COLUMNS.size(); c++) {
+            String[] column = UiTooltips.LEAGUE_COLUMNS.get(c);
+            standingsHeader.add(UiTooltips.header(column[0], column[1])).width(UiTheme.size(columnWidths[c]));
+        }
         contentTable.add(standingsHeader).pad(UiTheme.space("xxs")).row();
         contentTable.addSeparator().pad(UiTheme.space("xxs")).row();
         
