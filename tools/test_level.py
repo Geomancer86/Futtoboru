@@ -128,6 +128,8 @@ def mvnw():
 
 def decide(base=None, tier="fast", offline=False, use_green=True):
     tree = working_tree()
+    if not tree:
+        sys.exit("test_level: git failed here (is git on PATH? a WSL bash on Windows runs another git: use Git Bash)")
     source = None
     if base is None and use_green:
         green, path = last_green(tier)
