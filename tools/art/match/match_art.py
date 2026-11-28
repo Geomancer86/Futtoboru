@@ -13,6 +13,7 @@ Scales: `1x` = 5 px/m (S1, D26); `2x` = the same art re-rendered at 10 px/m for 
 from __future__ import annotations
 
 import json
+import math
 import struct
 import sys
 import zlib
@@ -119,17 +120,15 @@ def pattern_colour(kit: dict, u: float, v: float, th: float, S: int):
         return a if u >= 0 else b
     if p == "quarters":
         return a if (u >= 0) == (v >= 0.5) else b
-    if p == "stripes":  # at least one pixel per stripe
-        ws = max(0.07, 1.0 / S)
-        n = max(4, 2 * rnd(1.19 / (2 * ws)))
-        return cs[int(th * n) % len(cs)]
+    # stripes, hoops and sash: the prototype's exact formulas (A2 pick, D26)
+    if p == "stripes":
+        return a if math.floor((u + 0.33) / 0.066) % 2 == 1 else b
     if p == "hoops":
-        bands = max(2, rnd(0.5 / max(0.1, 1.0 / S)))
-        i = min(bands - 1, int((1.0 - v) * bands))
-        return cs[i % len(cs)]
+        if len(cs) >= 3:
+            return cs[math.floor(v * 6) % 3]
+        return a if math.floor(v * 5) % 2 == 1 else b
     if p == "sash":  # left shoulder to right hip
-        thr = 0.32 * max(1.0, 7.0 / S)
-        return b if abs(u / 0.17 + (v - 0.5) * 1.7) < thr else a
+        return b if abs(u / 0.17 + (v - 0.5) * 1.7) < 0.32 else a
     if p == "spots":
         nth, nv = (8, 3) if S < 8 else (14, 5)
         i, j = int(th * nth), int(v * nv)
