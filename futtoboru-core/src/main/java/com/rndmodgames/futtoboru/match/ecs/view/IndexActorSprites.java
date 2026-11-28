@@ -31,7 +31,8 @@ import com.rndmodgames.futtoboru.ui.gfx.atlas.RuntimeAtlas;
  * to another club's, never the same as the other side's).</li>
  * <li><b>Mud</b>: the overlay over every player frame, alpha from the pitch wetness ({@link #mudAlpha}).</li>
  * <li><b>Ball</b> (BA2): {@code high} above {@link #HIGH_BALL_M}, wetness variant from the ball's water share
- * ({@link #ballWetness}), lace spin phase advanced by roll distance and spin.</li>
+ * ({@link #ballWetness}), lace spin phase advanced by roll distance and spin; drawn from the small 1x frames in the
+ * default view so it keeps its size next to the players ({@link SpriteScale#chooseBall}).</li>
  * </ul>
  * Animation state (run phase, when a player went down) is view-only, per entity key; time comes from the
  * {@link ViewFrame} (stops while paused). Every entry that touches art passes {@link ArtGuard#check(String)}.
@@ -236,8 +237,7 @@ public final class IndexActorSprites implements ActorSprites {
         if (!loaded || set == null || set[1] == null) {
             return null;
         }
-        int choice = SpriteScale.choose(p.pixelsPerMetre, p.magnification, set[2] != null ? 2 : 1,
-                p.viewPixelsPerMetre);
+        int choice = SpriteScale.chooseBall(p.pixelsPerMetre, p.magnification, p.viewPixelsPerMetre);
         Loaded sheet = set[SpriteScale.sheet(choice)];
         String name = ballAnimation(p.z, p.saturation);
         Anim anim = sheet.animations.get(name);

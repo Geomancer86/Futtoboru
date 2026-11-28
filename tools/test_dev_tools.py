@@ -119,3 +119,15 @@ def test_dot_slash_mvnw_runs_the_cmd_wrapper_on_windows(tmp_path):
         (tmp_path / name).write_text("")
     argv = suite_lock.runnable(["./mvnw", "-B", "verify"], cwd=str(tmp_path))
     assert argv[0].lower().endswith("mvnw.cmd") and os.path.isabs(argv[0]) and argv[1:] == ["-B", "verify"]
+
+
+def test_an_extensionless_script_runs_its_windows_twin(tmp_path):
+    script = tmp_path / "mvnw"
+    script.write_text("#!/bin/sh\n")
+    (tmp_path / "mvnw.cmd").write_text("@echo off\n")
+    assert suite_lock.windows_twin(str(script), is_windows=True) == str(script) + ".cmd"
+    assert suite_lock.windows_twin(str(script), is_windows=False) == str(script)
+    assert suite_lock.windows_twin(str(tmp_path / "mvnw.cmd"), is_windows=True) == str(tmp_path / "mvnw.cmd")
+    lone = tmp_path / "tool"
+    lone.write_text("x")
+    assert suite_lock.windows_twin(str(lone), is_windows=True) == str(lone)

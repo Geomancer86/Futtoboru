@@ -8,7 +8,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 |---|---|---|---|
 | E-15 player AI (perception, shape slots, style, action choice) | WORKSTATION | `ws/E-15-ai` | 2026-11-28 |
 | E-16 officials + laws (umpires/referee bodies, 3-player offside, appeals, disputed goals, fouls, half-time) | WORKSTATION | `ws/E-16-laws` | 2026-11-28 |
-| E-21e viewer polish (near crowd size, ball size, corrected sprites screenshot) | WORKSTATION | `ws/E-21e-viewer-polish` | 2026-11-28 |
 | P2-13 duplicate clubs in `allClubs` (new game + load) + sweep of every other open bug (D31) | BOOK3PRO | `b3/P2-13-duplicate-clubs` | 2026-11-28 |
 | J-01 job system: duplicate offer rows, offer/refresh bugs, salary shown as money | BOOK3PRO | `b3/J-01-job-bugs` | 2026-11-28 |
 | U-12 UI polish: Esc closes dialogs, dates/decimals/months from the game language, Authorities season, one link colour, inbox filter, debug button behind a dev flag | BOOK3PRO | `b3/U-12-ui-polish` | 2026-11-28 |
@@ -17,6 +16,8 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 | G-03 match report stand-in (goal minutes, period paragraph) | BOOK3PRO | `b3/G-03-match-report` | 2026-11-28 |
 | G-04 contracts through the season (AI clubs too) | BOOK3PRO | `b3/G-04-contracts` | 2026-11-28 |
 | Jenkins "Futtoboru DEV" setup + BOOK3PRO trigger access (T-01 open item) | BOOK3PRO | none (CI config) | 2026-11-28 |
+| G-08 re-election vote for the bottom clubs + season summary letter at rollover (contracts, retained lists, free agents stay in G-04) | BOOK3PRO | `b3/G-02-new-season` | 2026-11-28 |
+| R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO | `b3/R-02-recruitment-data` | 2026-11-28 |
 
 ## Files in use (lock: don't edit these while the claim is open; ask in the log)
 | Machine | Item | Paths |
@@ -27,10 +28,12 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 minimum, autosave, labels in language files). Details in `docs/ROADMAP.md` Phase 2 close-out + Phase 3.
 
 **v0.5.0-alpha released** (tag on `main`, 7d7727f). **v0.5.0** is tagged once P2-13, J-01, U-12 and P2-14 are merged (D30 A10).
-**Phase 3b (D30):** gameplay on the instant result; order in `docs/ROADMAP.md`. Next after the claimed lanes: G-02 injuries, G-05 committee, recruitment R-02..R-07, G-08 re-election.
+**Phase 3b (D30):** gameplay on the instant result; order in `docs/ROADMAP.md`. Next after the claimed lanes: G-02 injuries, G-05 committee, recruitment R-02..R-07, G-08 re-election (claimed, BOOK3PRO).
 **Unclaimed for WORKSTATION:** Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md`. The ECS engine will read G-01's team sheet (`TeamSheet`, outside `match/ecs`) as its line-up input.
 
 ## Log
+- 2026-11-28 · WORKSTATION · DONE · E-21e · Near crowd row on the touchline at a capped perspective scale (≤ 1.5× halfway); ball uses the small BA2 frame at the players' texel (≈0.5 m on screen) with its shadow; corrected fidelity sprites confirmed. Gate green. Open: near-touchline officials look large next to the capped crowd — handle with E-16 officials.
+- 2026-11-28 · BOOK3PRO · CLAIM · G-08 (re-election; was "G-02" here, renamed to match ROADMAP D30), R-02 + R-11a · Two more lanes (producer picks). R-02 writes wage *data* only; the G-04 contracts lane owns contract code. Sources (producer, R-10 choices): no paid archives (BNA, ENFA); non-commercial sites only to cross-check facts another source gives; Wikidata (CC0) + Wikipedia facts + RSSSF are the base.
 - 2026-11-28 · WORKSTATION · CLAIM · E-15 (`match/ecs/ai/**`), E-16 (`match/ecs/laws/**` + officials), E-21e (`match/ecs/view/**`).
 - 2026-11-28 · WORKSTATION · DONE · E-14 · `match/ecs/action`: `ActionCommand`/`ActionSystem` (dribble, pass ground/lofted, cross, shot, clear, header, keeper catch/punch/throw, throw-in; nearest player wins, others CONTESTED), `SkillComponent` (kicking, technique, heading, handling, dribbling), `PossessionComponent` on the ball, `ActionRecord`s for laws/events. Kicks solved against the real ball model with skill/fatigue/pressure/wet-ball noise on inputs only; foot impulse with wet heavy boots; headers in head band; lace cuts rare (×2 saturated); keeper hands own half in 1888 (area from 1912), 2-step carry. Goldens re-pinned, ENGINE_VERSION ecs-0.3. Gate green (366 core). Next: E-15 AI, E-16 laws/officials.
 - 2026-11-28 · WORKSTATION · NOTE · T-01 tooling (BOOK3PRO) · `python tools/suite_lock.py run -- python tools/test_level.py --run` deadlocks (test_level takes the suite lock itself); run `test_level.py` directly. Maybe make test_level detect an outer lock held by the same worktree, or document it in CLAUDE.md.

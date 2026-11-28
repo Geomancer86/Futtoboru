@@ -271,15 +271,27 @@ class Held:
                      "at": datetime.datetime.now().isoformat(timespec="seconds")})
 
 
+def windows_twin(first, is_windows=None):
+    """On Windows an extensionless shell script (./mvnw) cannot be started: use its .cmd/.bat twin if there is one"""
+    if is_windows is None:
+        is_windows = os.name == "nt"
+    if not is_windows or os.path.splitext(first)[1]:
+        return first
+    for ext in (".cmd", ".bat"):
+        if os.path.isfile(first + ext):
+            return first + ext
+    return first
+
+
 def runnable(command, cwd=None):
-    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows; ./mvnw (a shell script) becomes
-    mvnw.cmd there, so the same command line works on every machine"""
+    """mvnw.cmd / a .bat needs an absolute path to run through cmd on Windows; ./mvnw becomes mvnw.cmd there.
+    A relative program path is resolved against cwd (the command's working directory) when given"""
     first = command[0]
-    if os.name == "nt" and os.path.basename(first) == "mvnw" and os.path.isfile(os.path.join(cwd or ".", first + ".cmd")):
-        first = first + ".cmd"
-    path = os.path.join(cwd or ".", first)
-    if os.path.isfile(path) and not os.path.isabs(first):
-        return [os.path.abspath(path)] + command[1:]
+    if cwd and not os.path.isabs(first) and os.path.dirname(first):
+        first = os.path.join(cwd, first)
+    first = windows_twin(first)
+    if os.path.isfile(first) and not os.path.isabs(first):
+        first = os.path.abspath(first)
     return [first] + command[1:]
 
 
