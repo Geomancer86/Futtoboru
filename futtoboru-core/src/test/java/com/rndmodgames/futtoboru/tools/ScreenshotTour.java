@@ -250,6 +250,12 @@ public final class ScreenshotTour extends Futtoboru {
         for (MenuEntries.MenuEntry entry : MenuEntries.forProfession(true)) {
             once("game-" + entry.labelKey().replace('_', '-'), () -> menu().openMenuEntry(entry.screen()));
         }
+        once(null, () -> menu().openMenuEntry(MainMenuManager.MAIN_SQUAD_SCREEN));
+        waitFrames(5);
+        once(null, () -> hover("Accel"));
+        waitFrames(40);
+        once("game-squad-tooltip", () -> {
+        });
         once("game-player-detail", () -> {
             menu().openMenuEntry(MainMenuManager.MAIN_SQUAD_SCREEN);
             menu().setSelectedPlayer(game.getCurrentClub().getPlayers().get(0));
@@ -534,6 +540,35 @@ public final class ScreenshotTour extends Futtoboru {
         stage.stageToScreenCoordinates(at);
         stage.touchDown((int) at.x, (int) at.y, 0, 0);
         stage.touchUp((int) at.x, (int) at.y, 0, 0);
+    }
+
+    /** moves the mouse over the last visible label reading {@code text} (shows its tooltip) */
+    private void hover(String text) {
+        Stage stage = stage();
+        Actor label = findActor(stage.getRoot(), text, null);
+        if (label == null) {
+            problems.add(passName + ": no label \"" + text + "\" to hover");
+            return;
+        }
+        Vector2 at = label.localToStageCoordinates(new Vector2(label.getWidth() / 2f, label.getHeight() / 2f));
+        stage.stageToScreenCoordinates(at);
+        stage.mouseMoved((int) at.x, (int) at.y);
+    }
+
+    private static Actor findActor(Actor actor, String text, Actor found) {
+        if (!actor.isVisible()) {
+            return found;
+        }
+        if (actor instanceof com.badlogic.gdx.scenes.scene2d.ui.Label
+                && text.equals(((com.badlogic.gdx.scenes.scene2d.ui.Label) actor).getText().toString())) {
+            found = actor;
+        }
+        if (actor instanceof Group) {
+            for (Actor child : ((Group) actor).getChildren()) {
+                found = findActor(child, text, found);
+            }
+        }
+        return found;
     }
 
     private static TextButton findButton(Actor actor, String text, TextButton found) {
