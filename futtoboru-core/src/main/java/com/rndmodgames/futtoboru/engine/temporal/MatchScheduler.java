@@ -160,8 +160,7 @@ public class MatchScheduler {
          *  - sales should stop if the stadium is full
          *  
          *  TODO: all club stadiums
-         *  TODO: split money between clubs in friendlies
-         *  TODO: research about real world ticket splitting (or they just pay the fee)
+         *  P2-12: only the home club sells tickets (no gate share in 1888-89; see below)
          *  TODO: friendly match fees
          *  TODO: differentiate between match and league matches so the ticket values are different
          */
@@ -183,8 +182,14 @@ public class MatchScheduler {
             if (scheduled.getHomeClubId() == null || scheduled.getAwayClubId() == null) {
                 continue; // the opponent is not decided yet: no tickets until it is
             }
-            // U-08: the gate of a friendly goes to the home club (the visitors play at its ground)
-            if (FriendlyArranger.isFriendly(scheduled) && !club.getId().equals(scheduled.getHomeClubId())) {
+            // U-08 / P2-12: only the home club sells tickets and books the gate, for friendlies, league and cup
+            // matches alike: the visitors play at its ground. Before P2-12 the away club of a league or cup match
+            // sold tickets too (against its own ground's capacity), so each gate was booked twice and the away club
+            // was paid for it. No gate share or visitors' guarantee is modelled for 1888-89 (none sourced for that
+            // season). The FA required a gate share for the visitors in cup ties only after Chatham's open-ground
+            // run of 1888-89 (docs/data/history/GROUNDS_1888-89.md, "Chatham: the Great Lines"; Wikipedia,
+            // Chatham Town F.C.): a later season's rule, to come from data when seasons after 1888-89 need it.
+            if (!club.getId().equals(scheduled.getHomeClubId())) {
                 continue;
             }
             
