@@ -382,9 +382,7 @@ class FullSeasonTests extends BaseTest {
     @Test
     void onlyTheHomeClubBooksTheGateOfLeagueAndCupMatches() {
         Map<Long, List<Long>> gateClubsByMatch = new HashMap<>();
-        // the game lists the clubs of the selected countries twice (as NewGameOverviewScreen does): count each once
-        Set<Club> clubs = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
-        clubs.addAll(first.save.getAllClubs());
+        List<Club> clubs = first.save.getAllClubs(); // each club once (P2-13)
         Map<Long, BigDecimal> gateByMatch = new HashMap<>();
         for (Club c : clubs) {
             for (MatchIncome income : c.getMatchIncomes()) {
@@ -420,6 +418,52 @@ class FullSeasonTests extends BaseTest {
         }
     }
 
+    /**
+     * P2-13: the game lists every club once from the new game to the rollover (the screen listed the selected
+     * countries' clubs twice), so the weekly expenses were booked once a week per club for the whole season.
+     */
+    @Test
+    void everyClubIsListedOnceAndPaysItsWeeklyExpensesOnce() {
+        List<Club> clubs = first.save.getAllClubs();
+        Set<Long> ids = new HashSet<>();
+        Set<Club> objects = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        for (Club c : clubs) {
+            assertTrue(ids.add(c.getId()), c.getName() + " listed once by id");
+            assertTrue(objects.add(c), c.getName() + " listed once");
+        }
+        assertTrue(clubs.size() >= first.clubsAtStart, "clubs at the start " + first.clubsAtStart + ", now " + clubs.size());
+        int weeks = -1;
+        for (Club c : clubs) {
+            Set<LocalDateTime> periods = new HashSet<>();
+            for (com.rndmodgames.futtoboru.data.ClubExpenses e : c.getExpensesHistory()) {
+                assertTrue(periods.add(e.getPeriodStart()), c.getName() + ": one expense entry for the week of "
+                        + e.getPeriodStart());
+            }
+            if (weeks < 0) {
+                weeks = periods.size();
+            }
+            assertEquals(weeks, periods.size(), c.getName() + ": as many weekly expense entries as every club");
+        }
+        assertTrue(weeks > 50, "a season of weekly expenses: " + weeks);
+    }
+
+    /** P2-13: the league's creation and fixture-list letters name the first league day of the generated schedule. */
+    @Test
+    void theLeagueLettersNameTheFirstLeagueDayOfTheSchedule() {
+        LocalDate firstDay = null;
+        for (Match m : first.leagueMatches) {
+            LocalDate d = m.getMatchDateTime().toLocalDate();
+            firstDay = firstDay == null || d.isBefore(firstDay) ? d : firstDay;
+        }
+        String day = com.rndmodgames.futtoboru.engine.messages.MessageManager.formatDay(firstDay.getDayOfMonth(),
+                firstDay.getMonthValue(), firstDay.getYear());
+        for (String type : new String[] { "LEAGUE_CREATION", "FIXTURE_RELEASE" }) {
+            assertEquals(1, first.messages(type), type);
+            String text = first.message(type).getPlainTextMessage();
+            assertTrue(text.contains(day), type + " names " + day + ": " + text);
+        }
+    }
+
     @Test
     void theSameSeedPlaysTheSameSeason() {
         assertEquals(first.tableFingerprint(), second.tableFingerprint(), "same final table");
@@ -444,6 +488,8 @@ class FullSeasonTests extends BaseTest {
         List<Match> cupMatches = new ArrayList<>();
         int drawnReplays;
         int drawsRead;
+        /** P2-13: clubs the new game lists (each once). */
+        int clubsAtStart;
         int days;
         long millis;
         List<String> errors = new ArrayList<>();
@@ -508,26 +554,10 @@ class FullSeasonTests extends BaseTest {
             save.setGameDate(season.getStartDate());
 
             save.setAllClubs(new ArrayList<>());
-            for (Competition comp : DatabaseLoader.getCompetitions()) {
-                if (Competition.COMPETITION_CUP.equals(comp.getCompetitionType())) {
-                    save.getAllCups().add(comp);
-                } else if (Competition.COMPETITION_LEAGUE.equals(comp.getCompetitionType())) {
-                    save.getAllLeagues().add(comp);
-                }
-                for (CompetitionEdition edition : comp.getEditions()) {
-                    for (Long clubId : edition.getParticipantClubsIds()) {
-                        if (save.getClubById(clubId) == null && DatabaseLoader.getClubById(clubId) != null) {
-                            save.getAllClubs().add(DatabaseLoader.getClubById(clubId));
-                        }
-                    }
-                }
-            }
-            for (com.rndmodgames.futtoboru.data.Country country : season.getCountries()) {
-                List<Club> clubs = DatabaseLoader.getClubsByCountry().get(country.getId());
-                if (clubs != null) {
-                    save.getAllClubs().addAll(clubs); // as the screen does (duplicates included)
-                }
-            }
+            // the screen's step 6 (P2-13: each club once; it listed the selected countries' clubs twice)
+            com.rndmodgames.futtoboru.system.NewGameClubs.addTo(save, DatabaseLoader.getCompetitions(),
+                    save.getSelectedCountries());
+            clubsAtStart = save.getAllClubs().size();
             owner.setCurrentClubId(startingClub.getId());
             save.getGameScripts().addAll(season.getSeasonScripts());
 

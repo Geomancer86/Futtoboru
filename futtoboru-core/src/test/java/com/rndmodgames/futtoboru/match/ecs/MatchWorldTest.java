@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.ashley.core.ComponentMapper;
@@ -19,6 +20,7 @@ import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallSystem;
 
 /** E-10: world, registration rules, draw passes vs simulation, clock, state hash, entry point golden hash. */
+@Tag("slow") // 5.4 s for 8 tests on BOOK3PRO (test_tiers.py: over 5 s untagged fails every gate)
 class MatchWorldTest {
 
     static MatchWorld world(PitchConditions pitch) {
