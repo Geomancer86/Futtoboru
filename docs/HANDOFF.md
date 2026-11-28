@@ -8,7 +8,6 @@ Claim before you start; mark DONE when merged to develop. Never claim an item th
 |---|---|---|---|
 | E-15 player AI (perception, shape slots, style, action choice) | WORKSTATION | `ws/E-15-ai` | 2026-11-28 |
 | E-16 officials + laws (umpires/referee bodies, 3-player offside, appeals, disputed goals, fouls, half-time) | WORKSTATION | `ws/E-16-laws` | 2026-11-28 |
-| E-21e viewer polish (near crowd size, ball size, corrected sprites screenshot) | WORKSTATION | `ws/E-21e-viewer-polish` | 2026-11-28 |
 | P2-13 duplicate clubs in `allClubs` (new game + load) + sweep of every other open bug (D31) | BOOK3PRO | `b3/P2-13-duplicate-clubs` | 2026-11-28 |
 | J-01 job system: duplicate offer rows, offer/refresh bugs, salary shown as money | BOOK3PRO | `b3/J-01-job-bugs` | 2026-11-28 |
 | U-12 UI polish: Esc closes dialogs, dates/decimals/months from the game language, Authorities season, one link colour, inbox filter, debug button behind a dev flag | BOOK3PRO | `b3/U-12-ui-polish` | 2026-11-28 |
@@ -33,6 +32,7 @@ Target: **v0.5.0** = D18 (full season playable, every button works, 1280×720 mi
 **Unclaimed for WORKSTATION:** Phase 4 engine lanes per `docs/design/MATCH_ENGINE_ECS.md`. The ECS engine will read G-01's team sheet (`TeamSheet`, outside `match/ecs`) as its line-up input.
 
 ## Log
+- 2026-11-28 · WORKSTATION · DONE · E-21e · Near crowd row on the touchline at a capped perspective scale (≤ 1.5× halfway); ball uses the small BA2 frame at the players' texel (≈0.5 m on screen) with its shadow; corrected fidelity sprites confirmed. Gate green. Open: near-touchline officials look large next to the capped crowd — handle with E-16 officials.
 - 2026-11-28 · BOOK3PRO · CLAIM · G-02, R-02 + R-11a · Two more lanes (producer picks). R-02 writes wage *data* only; the G-04 contracts lane owns contract code. Sources (producer, R-10 choices): no paid archives (BNA, ENFA); non-commercial sites only to cross-check facts another source gives; Wikidata (CC0) + Wikipedia facts + RSSSF are the base.
 - 2026-11-28 · WORKSTATION · CLAIM · E-15 (`match/ecs/ai/**`), E-16 (`match/ecs/laws/**` + officials), E-21e (`match/ecs/view/**`).
 - 2026-11-28 · WORKSTATION · DONE · E-14 · `match/ecs/action`: `ActionCommand`/`ActionSystem` (dribble, pass ground/lofted, cross, shot, clear, header, keeper catch/punch/throw, throw-in; nearest player wins, others CONTESTED), `SkillComponent` (kicking, technique, heading, handling, dribbling), `PossessionComponent` on the ball, `ActionRecord`s for laws/events. Kicks solved against the real ball model with skill/fatigue/pressure/wet-ball noise on inputs only; foot impulse with wet heavy boots; headers in head band; lace cuts rare (×2 saturated); keeper hands own half in 1888 (area from 1912), 2-step carry. Goldens re-pinned, ENGINE_VERSION ecs-0.3. Gate green (366 core). Next: E-15 AI, E-16 laws/officials.
