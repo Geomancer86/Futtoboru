@@ -67,7 +67,8 @@ public final class ViewerDebugApp extends ApplicationAdapter {
         pitch = new PitchGeometry(PitchParams.defaults1888());
         double wetness = Double.parseDouble(System.getProperty("futtoboru.viewer.wetness",
                 String.valueOf(PitchConditions.DAMP)));
-        world = new MatchWorld(new PhysicsParams(), new UniformPitch(Surface.DRY, wetness),
+        world = new MatchWorld(new PhysicsParams(), new UniformPitch(
+                Surface.valueOf(System.getProperty("futtoboru.viewer.surface", "DRY")), wetness),
                 RandomSource.seeded(seed).fork("match:viewer-debug"));
         MatchSystems.installSimulation(world);
         players = BodySpawner.spawnDefault(world, pitch);

@@ -24,6 +24,9 @@ public final class PitchPass extends EntitySystem implements DrawPass {
     private static final int EARTH = 0x5D5646;
 
     private final ViewFrame view;
+    private static final int MUD = 0x4A3B26;
+
+    private double mud;
     private int rowsDrawn;
     private int lineQuads;
 
@@ -50,6 +53,7 @@ public final class PitchPass extends EntitySystem implements DrawPass {
         float width = (float) cam.orthoWidth();
         int farRow = (int) Math.ceil(cam.screenY(image.maxY, 0));
         Batch batch = view.batch();
+        mud = ViewWeather.mud(view.wetness(), view.tick() * view.tickSeconds());
 
         batch.begin();
         ViewColors.set(batch, EARTH, 1f);
@@ -73,10 +77,30 @@ public final class PitchPass extends EntitySystem implements DrawPass {
             float v = (region.getRegionY() + row + 0.5f) * ih;
             batch.draw(texture, sxa, sy, sxb - sxa, 1, u, v, u2, v);
             rowsDrawn++;
+            if (mud > 0) {
+                mudRow(batch, white, cam, wy, sy, sxa, sxb);
+            }
         }
+        ViewColors.white(batch);
         drawLines(batch, white, cam, image);
         ViewColors.white(batch);
         batch.end();
+    }
+
+    /** Mud over one ground row (E-21g): a few brown spans, thicker in the goalmouths and the centre, as wet rises. */
+    private void mudRow(Batch batch, TextureRegion white, ViewCamera cam, double wy, int sy, float sxa, float sxb) {
+        double hl = view.pitch().halfLength();
+        int parts = 6;
+        float w = (sxb - sxa) / parts;
+        for (int i = 0; i < parts; i++) {
+            double wx = cam.worldX(sxa + (i + 0.5f) * w, wy);
+            float a = ViewWeather.mudAlpha(mud, wx, wy, hl, view.groundSeed());
+            if (a > 0.01f) {
+                ViewColors.set(batch, MUD, a);
+                batch.draw(white, sxa + i * w, sy, w + 1, 1);
+            }
+        }
+        ViewColors.white(batch);
     }
 
     private void drawLines(Batch batch, TextureRegion white, ViewCamera cam, PitchArt image) {

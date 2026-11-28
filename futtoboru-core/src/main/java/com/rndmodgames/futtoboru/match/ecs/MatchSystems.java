@@ -24,6 +24,8 @@ import com.rndmodgames.futtoboru.match.ecs.view.BallPose;
 import com.rndmodgames.futtoboru.match.ecs.view.BodyPose;
 import com.rndmodgames.futtoboru.match.ecs.view.CameraPass;
 import com.rndmodgames.futtoboru.match.ecs.view.CrowdPass;
+import com.rndmodgames.futtoboru.match.ecs.view.FogPass;
+import com.rndmodgames.futtoboru.match.ecs.view.WeatherPass;
 import com.rndmodgames.futtoboru.match.ecs.view.InterpolationPass;
 import com.rndmodgames.futtoboru.match.ecs.view.MatchViewer;
 import com.rndmodgames.futtoboru.match.ecs.view.PitchPass;
@@ -129,6 +131,8 @@ public final class MatchSystems {
         world.addDrawPass(new TouchlinePass(frame));
         world.addDrawPass(new ActorPass(frame, interpolation));
         world.addDrawPass(new CrowdPass.Near(frame));
+        world.addDrawPass(new WeatherPass(frame));
+        world.addDrawPass(new FogPass(frame));
     }
 
     /**
