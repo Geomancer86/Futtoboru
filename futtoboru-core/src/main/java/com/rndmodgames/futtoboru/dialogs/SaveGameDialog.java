@@ -102,6 +102,9 @@ public class SaveGameDialog extends VisDialog {
         this.add(cancelButton);
         this.add(saveGameButton);
 
+        // Esc = Cancel (U-12), also while typing the name
+        UiDialogs.closeOnEscape(this, this::hide);
+
         refresh();
     }
 
@@ -138,6 +141,7 @@ public class SaveGameDialog extends VisDialog {
                     LanguageModLoader.getValue("overwrite_save_text") + "\n\n" + name.trim(),
                     new String[] { LanguageModLoader.getValue("overwrite"), LanguageModLoader.getValue("cancel") },
                     new Boolean[] { Boolean.TRUE, Boolean.FALSE },
+                    Boolean.FALSE, // Esc = Cancel: back to the save dialog with the typed name
                     confirmed -> {
                         if (Boolean.TRUE.equals(confirmed)) {
                             write(stage, name, after);

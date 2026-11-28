@@ -5,9 +5,13 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.rndmodgames.futtoboru.data.Club;
 import com.rndmodgames.futtoboru.data.Match;
+import com.rndmodgames.futtoboru.engine.cup.NeutralVenues;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.DatabaseLoader;
 import com.rndmodgames.futtoboru.data.Stadium;
+import com.rndmodgames.futtoboru.engine.team.TeamSheets;
+import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.futtoboru.tables.squad.TeamSheetEditor;
 import com.rndmodgames.futtoboru.ui.GroundArt;
 import com.rndmodgames.futtoboru.ui.UiTheme;
 import com.rndmodgames.localization.LanguageModLoader;
@@ -141,15 +145,45 @@ public class MatchPreviewScreenTable extends VisTable {
         fixture.setFontScale(UiTheme.fontScale("heading"));
         this.add(fixture).center();
 
-        // Venue: the home club's season ground. Match has no venue field yet, so a neutral ground (e.g. a cup
-        // final at Kennington Oval) cannot be shown until the schedule records one; GroundArt takes any ground.
-        Stadium venue = homeClub.getStadium();
+        // Venue: the match's neutral ground (P2-14: a cup semi-final or final, e.g. Kennington Oval), else the home
+        // club's season ground
+        Stadium venue = NeutralVenues.stadiumOf(match, game.getCurrentGame());
         if (venue != null) {
             this.row();
-            this.add(new VisLabel(LanguageModLoader.getValue("ground_venue") + ": " + venue.getName())).center();
+            String line = LanguageModLoader.getValue("ground_venue") + ": " + venue.getName();
+            if (NeutralVenues.isNeutral(match)) {
+                line += " " + LanguageModLoader.getValue("ground_neutral_suffix");
+            }
+            this.add(new VisLabel(line)).center();
         }
         this.row();
-        this.add(game.getGroundArt().picture(GroundArt.groundId(venue), false, UiTheme.size("art.ground.header.w"),
-                UiTheme.size("art.ground.header.h"))).center().pad(UiTheme.space("sm"));
+        this.add(game.getGroundArt().picture(GroundArt.groundId(venue), false, UiTheme.size("art.ground.panel.w"),
+                UiTheme.size("art.ground.panel.h"))).center().pad(UiTheme.space("sm"));
+
+        // G-01: both team sheets; the player's club's stays editable until kick-off, the other is the opponent's pick
+        VisTable sheets = new VisTable(true);
+        addSheet(sheets, match, homeClub, true);
+        addSheet(sheets, match, awayClub, false);
+        this.row();
+        this.add(sheets).center().top();
+    }
+
+    private void addSheet(VisTable sheets, Match match, Club fallback, boolean home) {
+        SaveGame save = game.getCurrentGame();
+        Club club = save.getClubById(home ? match.getHomeClubId() : match.getAwayClubId());
+        if (club == null) {
+            club = fallback;
+        }
+        VisTable column = new VisTable(true);
+        VisLabel title = new VisLabel(club.getName());
+        title.setFontScale(UiTheme.fontScale("subheading"));
+        title.setColor(UiTheme.color("text.heading"));
+        column.add(title).left();
+        column.row();
+        boolean own = TeamSheets.isManaged(club, save);
+        TeamSheetEditor editor = new TeamSheetEditor();
+        editor.show(club, TeamSheets.preview(match, club, home, save, game.random()), own, null);
+        column.add(editor).left().top();
+        sheets.add(column).top().left().padLeft(UiTheme.space("md")).padRight(UiTheme.space("md"));
     }
 }

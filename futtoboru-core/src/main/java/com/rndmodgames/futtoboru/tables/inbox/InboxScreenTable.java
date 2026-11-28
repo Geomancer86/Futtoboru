@@ -1,12 +1,12 @@
 package com.rndmodgames.futtoboru.tables.inbox;
 
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -51,7 +51,7 @@ public class InboxScreenTable extends VisTable {
     private VisScrollPane messageDetailScrollPane = null;
     
     // Date formatter
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
+    private DateTimeFormatter dateFormatter = GameFormat.formatter(GameFormat.MEDIUM); // U-12: the game language
     
     public InboxScreenTable(Game parent) {
         
@@ -70,6 +70,7 @@ public class InboxScreenTable extends VisTable {
         // Wrap in scroll panes
         messagesScrollPane = new VisScrollPane(messagesListTable);
         messagesScrollPane.setFadeScrollBars(false);
+        messagesScrollPane.setScrollingDisabled(true, false); // U-12: rows fit the column (long titles end in "..."), dates stay visible
         
         messageDetailScrollPane = new VisScrollPane(messageDetailTable);
         messageDetailScrollPane.setFadeScrollBars(false);
@@ -257,7 +258,8 @@ public class InboxScreenTable extends VisTable {
         // LAYOUT: Three-column layout
         // ========================================
         this.row();
-        this.add(filtersTable).width(UiTheme.size("col.label")).fillY();
+        filtersTable.top(); // U-12: the filters start at the top like the list beside them
+        this.add(filtersTable).width(UiTheme.size("col.label")).fillY().top();
         this.add(messagesScrollPane).width(UiTheme.size("panel.list")).fillY();
         this.add(messageDetailScrollPane).grow().fill();
     }
@@ -307,7 +309,9 @@ public class InboxScreenTable extends VisTable {
                 updateDynamicComponents();
             }
         });
-        messageRow.add(titleButton).growX();
+        titleButton.getLabel().setEllipsis(true);
+        titleButton.getLabelCell().minWidth(UiTheme.space("none")); // a Label's min width is its whole text
+        messageRow.add(titleButton).growX().minWidth(UiTheme.space("none")); // may shrink: the label ends in "..."
         
         // Date
         String dateStr = LanguageModLoader.getValue("inbox_no_date");

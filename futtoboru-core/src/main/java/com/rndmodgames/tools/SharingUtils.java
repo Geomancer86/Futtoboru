@@ -24,7 +24,7 @@ public class SharingUtils {
     private static final String SCREENSHOT_FOLDER = "screenshots";
  
     //
-    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", java.util.Locale.ROOT); // a file name
     
     /**
      * Takes a Screenshot and Saves to Screenshot Folder

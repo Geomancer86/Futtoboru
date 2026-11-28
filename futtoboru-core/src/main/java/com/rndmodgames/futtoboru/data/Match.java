@@ -62,6 +62,10 @@ public class Match implements Serializable {
     private java.util.List<Long> homeScorerIds = new java.util.ArrayList<>();
     private java.util.List<Long> awayScorerIds = new java.util.ArrayList<>();
 
+    // G-01: the team sheet each side played with, frozen at kick-off (null until played; optional in saves)
+    private TeamSheet homeSheet;
+    private TeamSheet awaySheet;
+
     // Goal minutes (G-03): one minute (1-90, half-time after 45) per goal of that side, ascending, so goal i of the
     // side was scored by its scorer i. Empty for a goalless side and for matches played before G-03 (old saves).
     private java.util.List<Integer> homeGoalMinutes = new java.util.ArrayList<>();
@@ -72,7 +76,13 @@ public class Match implements Serializable {
     
     // Match revenue (ticket sales for home club) (v1.0)
     private BigDecimal matchRevenue;
-    
+
+    /**
+     * P2-14: the ground data id of a neutral venue (a cup semi-final or final, engine/cup/NeutralVenues); null or
+     * empty = the home club's ground. Saved with the match (an older save has none: home ground).
+     */
+    private String venue;
+
     // Match Type Constants
     public static final int FRIENDLY_MATCH = 1;
     public static final int LEAGUE_MATCH = 2;
@@ -191,6 +201,27 @@ public class Match implements Serializable {
         this.awayScorerIds = awayScorerIds;
     }
 
+    /**
+     * G-01: the home side's team sheet as it stood at kick-off (who played, in which place, shape, style, captain);
+     * null before the match is played. The line-up the match engines read (see {@link TeamSheet}).
+     */
+    public TeamSheet getHomeSheet() {
+        return homeSheet;
+    }
+
+    public void setHomeSheet(TeamSheet homeSheet) {
+        this.homeSheet = homeSheet;
+    }
+
+    /** G-01: the away side's team sheet as it stood at kick-off; null before the match is played. */
+    public TeamSheet getAwaySheet() {
+        return awaySheet;
+    }
+
+    public void setAwaySheet(TeamSheet awaySheet) {
+        this.awaySheet = awaySheet;
+    }
+
     /** G-03: the minute of each home goal, ascending (empty when unknown). Never null. */
     public java.util.List<Integer> getHomeGoalMinutes() {
         if (homeGoalMinutes == null) {
@@ -292,5 +323,14 @@ public class Match implements Serializable {
     
     public void setBracketPath(String bracketPath) {
         this.bracketPath = bracketPath;
+    }
+
+    /** @return the neutral ground's data id, or null when the match is at the home club's ground (P2-14) */
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
     }
 }

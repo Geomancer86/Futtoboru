@@ -1,0 +1,151 @@
+[
+  {
+    "id": "mill",
+    "name": "Mill hand",
+    "occupations": ["spinner", "weaver", "piecer", "loom-operator", "cotton-carder"],
+    "sourceKinds": ["local-junior", "works-team", "released"],
+    "nudges": { "endurance": 1, "dexterity": 1, "strength": -1 },
+    "literacyShift": 0,
+    "confidence": "placeholder",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Professionalism_in_association_football",
+      "https://en.wikipedia.org/wiki/William_Sudell"
+    ],
+    "notes": "Lancashire clubs found players jobs at the mills (Sudell at Preston). The nudges are gameplay tuning (D30 placeholder), not a sourced effect. literacyShift stays 0 until a source on the 1880 half-time exemptions is added (design §10.2)."
+  },
+  {
+    "id": "pit",
+    "name": "Collier",
+    "occupations": ["coal-miner", "iron-miner", "quarryman"],
+    "sourceKinds": ["local-junior", "works-team", "scottish-import"],
+    "nudges": { "strength": 1, "courage": 1, "speed": -1 },
+    "literacyShift": 0,
+    "confidence": "placeholder",
+    "sources": [
+      "https://www.thescotsfootballhistoriansgroup.org/scotch-professors"
+    ],
+    "notes": "Mining villages of Ayrshire and Lanarkshire supplied many Scots recruits (order of magnitude only). Nudges are placeholders."
+  },
+  {
+    "id": "docks",
+    "name": "Docker",
+    "occupations": ["dock-worker", "warehouse-worker", "porter"],
+    "sourceKinds": ["local-junior", "works-team"],
+    "nudges": { "strength": 1, "jumping": 1, "concentration": -1 },
+    "literacyShift": 0,
+    "confidence": "placeholder",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Professionalism_in_association_football"
+    ],
+    "notes": "Port towns (Liverpool, Sunderland, Bootle) with works and local clubs. No source ties a player to dock work yet; the kind is a D28 Q12 backstory."
+  },
+  {
+    "id": "ironworks",
+    "name": "Foundry or ironworks man",
+    "occupations": ["foundry-worker", "steelworker", "metalworker", "blacksmith"],
+    "sourceKinds": ["works-team", "local-junior"],
+    "nudges": { "strength": 1, "stamina": 1, "acceleration": -1 },
+    "literacyShift": 0,
+    "confidence": "placeholder",
+    "sources": [
+      "https://en.wikipedia.org/wiki/History_of_West_Ham_United_F.C."
+    ],
+    "notes": "Works clubs (Thames Ironworks 1895, a works team at its founding). Nudges are placeholders."
+  },
+  {
+    "id": "railway",
+    "name": "Railwayman",
+    "occupations": ["railway-worker", "porter", "signalman", "railway-engineer", "track-layer", "railway-clerk"],
+    "sourceKinds": ["works-team", "local-junior"],
+    "nudges": { "endurance": 1, "teamwork": 1, "dexterity": -1 },
+    "literacyShift": 0,
+    "confidence": "placeholder",
+    "sources": [
+      "https://en.wikipedia.org/wiki/History_of_Manchester_United_F.C."
+    ],
+    "notes": "Railway works clubs (Newton Heath LYR, 1878). Nudges are placeholders."
+  },
+  {
+    "id": "farm",
+    "name": "Farm lad",
+    "occupations": ["farm-laborer", "agricultural-worker", "shepherd", "dairy-worker"],
+    "sourceKinds": ["local-junior"],
+    "nudges": { "stamina": 1, "endurance": 1, "positioning": -1 },
+    "literacyShift": 0,
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "D28 Q12 backstory; no football source yet (gap). Nudges are placeholders."
+  },
+  {
+    "id": "tradesman",
+    "name": "Tradesman or shop lad",
+    "occupations": ["carpenter", "bricklayer", "plumber", "painter", "tailor", "shoemaker", "baker", "butcher", "shopkeeper"],
+    "sourceKinds": ["local-junior", "released", "veteran"],
+    "nudges": { "dexterity": 1, "determination": 1, "endurance": -1 },
+    "literacyShift": 0,
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "D28 Q12 backstory; no football source yet (gap). Nudges are placeholders."
+  },
+  {
+    "id": "publican",
+    "name": "Publican",
+    "occupations": ["publican"],
+    "sourceKinds": ["released", "veteran", "league-poach"],
+    "nudges": { "leadership": 1, "stamina": -1 },
+    "literacyShift": 0,
+    "confidence": "placeholder",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Sunderland_Albion"
+    ],
+    "notes": "Jobs as cover: Sunderland Albion's Hannah as landlord of the Free Gardeners Arms (1888). Nudges are placeholders."
+  },
+  {
+    "id": "clerk",
+    "name": "Clerk",
+    "occupations": ["clerk", "bookkeeper", "bank-clerk", "railway-clerk", "mine-clerk"],
+    "sourceKinds": ["local-junior", "amateur"],
+    "nudges": { "concentration": 1, "perception": 1, "strength": -1 },
+    "literacyShift": 1,
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "A clerk reads and writes for his living (literacy +1). Nudges are placeholders."
+  },
+  {
+    "id": "schoolmaster",
+    "name": "Schoolmaster",
+    "occupations": ["schoolmaster", "teacher", "tutor"],
+    "sourceKinds": ["amateur", "local-junior"],
+    "nudges": { "perception": 1, "leadership": 1, "courage": -1 },
+    "literacyShift": 1,
+    "confidence": "placeholder",
+    "sources": [
+      "https://sfss.co.uk/history.html"
+    ],
+    "notes": "Teachers ran schools football from 1885 (Sheffield 1889). Literacy +1 per design §10.2. Nudges are placeholders."
+  },
+  {
+    "id": "gentleman-amateur",
+    "name": "Gentleman amateur",
+    "occupations": ["accountant", "architect", "engineer"],
+    "sourceKinds": ["amateur"],
+    "nudges": { "determination": 1, "positioning": 1, "endurance": -1 },
+    "literacyShift": 1,
+    "confidence": "placeholder",
+    "sources": [
+      "https://en.wikipedia.org/wiki/Old_Brightonians_F.C."
+    ],
+    "notes": "Public-school and university men (Old Boys' clubs in the 1888-89 FA Cup); a man who had not 'signed a professional form' could still move freely. Literacy +1 per design §10.2. Nudges are placeholders."
+  },
+  {
+    "id": "soldier",
+    "name": "Soldier or sailor",
+    "occupations": ["soldier", "sailor"],
+    "sourceKinds": ["local-junior", "released"],
+    "nudges": { "courage": 1, "teamwork": 1, "dexterity": -1 },
+    "literacyShift": 0,
+    "confidence": "placeholder",
+    "sources": [],
+    "notes": "D28 Q12 backstory (Royal Arsenal began among Woolwich workers; army sides played the FA Cup earlier). No player source yet (gap). Nudges are placeholders."
+  }
+]

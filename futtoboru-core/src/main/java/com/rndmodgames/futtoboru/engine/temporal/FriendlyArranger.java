@@ -2,12 +2,10 @@ package com.rndmodgames.futtoboru.engine.temporal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.rndmodgames.futtoboru.data.Club;
@@ -20,6 +18,7 @@ import com.rndmodgames.futtoboru.engine.random.RandomSource;
 import com.rndmodgames.futtoboru.game.Futtoboru;
 import com.rndmodgames.futtoboru.system.Log;
 import com.rndmodgames.futtoboru.system.SaveGame;
+import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 
 /**
@@ -367,12 +366,8 @@ public class FriendlyArranger {
         if (date == null) {
             return "";
         }
-        String pattern = LanguageModLoader.getValue("schedule_date_pattern");
-        try {
-            return DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH).format(date);
-        } catch (RuntimeException e) { // a bad pattern in a language file
-            return DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH).format(date);
-        }
+        // U-12: in the game language; a bad pattern in a language file falls back to dd/MM/yyyy
+        return GameFormat.formatter("schedule_date_pattern", "dd/MM/yyyy").format(date);
     }
 
     /** The label with {0}, {1}... replaced by {@code args} (the bundles hold plain patterns). */
