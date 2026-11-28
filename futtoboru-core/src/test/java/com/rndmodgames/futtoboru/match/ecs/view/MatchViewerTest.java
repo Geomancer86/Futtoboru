@@ -169,7 +169,7 @@ class MatchViewerTest {
         MatchViewer viewer = new MatchViewer(w, frame(), clock(w));
         class Nudger extends EntitySystem implements DrawPass {
             Nudger() {
-                super(SystemPriority.DRAW_PARTICLES);
+                super(SystemPriority.DRAW_OVERHEAD);
             }
 
             @Override

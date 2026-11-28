@@ -5,6 +5,7 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.rndmodgames.futtoboru.match.ecs.FrameContext;
+import com.rndmodgames.futtoboru.match.ecs.Surface;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchParams;
 import com.rndmodgames.futtoboru.ui.gfx.GraphicsQuality;
@@ -42,6 +43,7 @@ public final class ViewFrame implements FrameContext {
     private double matchSpeed = 1;
     private boolean paused;
     private double wetness;
+    private Surface surface = Surface.DRY;
     private double tickSeconds = 1.0 / 30;
     private int crowdSize = DEFAULT_CROWD;
     private double crowdMood;
@@ -106,6 +108,15 @@ public final class ViewFrame implements FrameContext {
 
     public void setWetness(double wetness) {
         this.wetness = wetness;
+    }
+
+    /** Ground surface this frame (the match's {@code PitchConditions} at the centre spot; picks snow vs rain). */
+    public Surface surface() {
+        return surface;
+    }
+
+    public void setSurface(Surface surface) {
+        this.surface = surface == null ? Surface.DRY : surface;
     }
 
     /** Length of one simulation tick (velocities from two captured positions). */
@@ -187,6 +198,11 @@ public final class ViewFrame implements FrameContext {
         this.viewCamera = new ViewCamera(pitch);
         viewCamera.resizeView(w, h);
         disposeArt();
+    }
+
+    /** Seed of the ground's look (mud patches repeat from it). */
+    public long groundSeed() {
+        return groundSeed;
     }
 
     public PitchArt.Style pitchStyle() {
