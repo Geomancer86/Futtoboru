@@ -104,11 +104,15 @@ public final class TeamSelector {
         return sheet;
     }
 
+    /** How much stronger another shape must be before a committee leaves the 2-3-5 of 1888 (placeholder). */
+    static final double USUAL_SHAPE_MARGIN = 0.03;
+
     /**
      * What an AI committee picks (and the first sheet of the player's club): for each era shape the best eleven and
-     * the style that suits them, then the shape whose side is strongest overall ({@link TeamStrength#overall()};
-     * ties to the earlier shape, 2-3-5 first). <b>Placeholder</b> (D30 A3): no sourced club shapes or styles yet, so
-     * the committee plays to its men; club data, once researched, would fix them instead.
+     * the style that suits them, then the 2-3-5 (the usual shape of 1888) unless another shape's side is at least
+     * {@link #USUAL_SHAPE_MARGIN} stronger overall ({@link TeamStrength#overall()}; ties to the earlier shape).
+     * <b>Placeholder</b> (D30 A3): no sourced club shapes or styles yet, so the committee plays to its men; club
+     * data, once researched, would fix them instead.
      */
     public static TeamSheet bestSheet(Long clubId, List<Player> available, Map<Long, Double> form) {
         Map<Long, Player> squad = new HashMap<>();
@@ -123,6 +127,9 @@ public final class TeamSelector {
             TeamSheet sheet = pick(clubId, shape, ClubStyle.COMBINATION, available, form);
             sheet.setStyle(TeamStrength.bestStyle(sheet, squad));
             double overall = TeamStrength.of(sheet, squad).overall();
+            if (shape == TeamShape.TWO_THREE_FIVE) {
+                overall *= 1 + USUAL_SHAPE_MARGIN;
+            }
             if (overall > bestOverall + 1e-9) {
                 best = sheet;
                 bestOverall = overall;
