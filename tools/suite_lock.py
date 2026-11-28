@@ -40,7 +40,9 @@ OWNER = "owner.json"
 HISTORY = "history.jsonl"
 EXPIRE_MIN = 20
 WAIT_MIN = 60
-POLL_S = 15
+POLL_S = 2
+# concurrent holders allowed per lock on this machine (WORKSTATION: 4, a 32-thread box; default 1 = old behaviour)
+SLOTS = max(1, int(os.environ.get("FUTTOBORU_SUITE_SLOTS", "1") or "1"))
 HEARTBEAT_S = 60
 NOT_TAKEN = 75
 # a process created this long after the lock was taken holds a reused pid, not the lock
@@ -49,6 +51,11 @@ REUSE_SLACK_S = 5
 
 def lock_path(name):
     return os.path.join(LOCK_DIR, name + ".lock")
+
+
+def slot_paths(name):
+    """suite.lock, then suite-2.lock .. suite-N.lock when FUTTOBORU_SUITE_SLOTS = N"""
+    return [lock_path(name)] + [lock_path("%s-%d" % (name, i)) for i in range(2, SLOTS + 1)]
 
 
 def now():
@@ -180,34 +187,39 @@ def take_over(path, reason, owner=None):
 
 
 def acquire(name, command, wait_min, expire_min):
-    """The owner dict once the lock is ours, or None after wait_min"""
+    """The owner dict once a slot of the lock is ours (owner["path"] = that slot), or None after wait_min"""
     os.makedirs(LOCK_DIR, exist_ok=True)
-    path = lock_path(name)
     token = uuid.uuid4().hex
     deadline = now() + wait_min * 60
     started_waiting = None
     while True:
-        try:
-            os.mkdir(path)
-        except FileExistsError:
-            pass
-        else:
+        for path in slot_paths(name):
+            try:
+                os.mkdir(path)
+            except FileExistsError:
+                held = read_owner(path)
+                reason = stale(path, held, expire_min)
+                if reason and take_over(path, reason, held):
+                    try:
+                        os.mkdir(path)
+                    except FileExistsError:
+                        continue
+                else:
+                    continue
             owner = {"token": token, "worktree": ROOT, "branch": branch(), "command": command, "pid": os.getpid(),
-                     "host": socket.gethostname(), "started": now(), "heartbeat": now()}
+                     "host": socket.gethostname(), "started": now(), "heartbeat": now(), "path": path}
             write_owner(path, owner)
             if started_waiting:
                 print("suite_lock: %s taken after %d s of waiting" % (name, now() - started_waiting), flush=True)
             return owner
+        path = lock_path(name)
         owner = read_owner(path)
-        reason = stale(path, owner, expire_min)
-        if reason and take_over(path, reason, owner):
-            continue
         if started_waiting is None:
             started_waiting = now()
-            print("suite_lock: %s is held by %s; waiting (up to %d min)" % (name, describe(path, owner), wait_min),
-                  flush=True)
+            print("suite_lock: all %d slot(s) of %s are held (e.g. %s); waiting (up to %d min)"
+                  % (SLOTS, name, describe(path, owner), wait_min), flush=True)
         if now() > deadline:
-            print("suite_lock: %s not taken in %d min; held by %s" % (name, wait_min, describe(path, owner)), flush=True)
+            print("suite_lock: %s not taken in %d min" % (name, wait_min), flush=True)
             return None
         time.sleep(POLL_S)
 
@@ -218,7 +230,7 @@ def ours(path, owner):
 
 
 def beat(name, owner, stop):
-    path = lock_path(name)
+    path = owner.get("path") or lock_path(name)
     while not stop.wait(HEARTBEAT_S):
         if not ours(path, owner):
             print("suite_lock: WARNING: %s was taken over while the command ran" % name, flush=True)
@@ -262,8 +274,9 @@ class Held:
 
     def __exit__(self, *exc):
         self.stop.set()
-        if ours(lock_path(self.name), self.owner):
-            shutil.rmtree(lock_path(self.name), ignore_errors=True)
+        path = self.owner.get("path") or lock_path(self.name)
+        if ours(path, self.owner):
+            shutil.rmtree(path, ignore_errors=True)
         acquired = self.owner["started"]
         log_history({"lock": self.name, "host": socket.gethostname(), "worktree": ROOT, "branch": self.owner["branch"],
                      "command": self.command[:120], "wait_s": round(acquired - self.requested),

@@ -53,6 +53,7 @@ def test_slow_tags_from_the_source():
 
 
 def test_the_lock_is_exclusive_and_stale_locks_are_taken_over(tmp_path, monkeypatch):
+    monkeypatch.setattr(suite_lock, "SLOTS", 1)  # these tests check the exclusive default
     monkeypatch.setattr(suite_lock, "LOCK_DIR", str(tmp_path))
     owner = suite_lock.acquire("suite", "first", wait_min=0, expire_min=20)
     assert owner is not None
@@ -82,6 +83,7 @@ def test_the_command_knows_it_holds_the_lock(tmp_path, monkeypatch):
 
 
 def test_a_nested_run_of_the_same_lock_runs_directly(tmp_path, monkeypatch):
+    monkeypatch.setattr(suite_lock, "SLOTS", 1)  # these tests check the exclusive default
     # `suite_lock.py run -- python tools/test_level.py --run` deadlocked: test_level waited for the lock its parent held
     monkeypatch.setattr(suite_lock, "LOCK_DIR", str(tmp_path))
     assert suite_lock.acquire("suite", "the outer run", wait_min=0, expire_min=20) is not None
@@ -119,3 +121,13 @@ def test_an_extensionless_script_runs_its_windows_twin(tmp_path):
     lone = tmp_path / "tool"
     lone.write_text("x")
     assert suite_lock.windows_twin(str(lone), is_windows=True) == str(lone)
+
+
+def test_slots_allow_that_many_holders(tmp_path, monkeypatch):
+    # INF-02: FUTTOBORU_SUITE_SLOTS = 2 lets two runs hold the lock at once, the third waits
+    monkeypatch.setattr(suite_lock, "LOCK_DIR", str(tmp_path))
+    monkeypatch.setattr(suite_lock, "SLOTS", 2)
+    a = suite_lock.acquire("suite", "a", wait_min=0, expire_min=20)
+    b = suite_lock.acquire("suite", "b", wait_min=0, expire_min=20)
+    assert a is not None and b is not None and a["path"] != b["path"]
+    assert suite_lock.acquire("suite", "c", wait_min=0, expire_min=20) is None

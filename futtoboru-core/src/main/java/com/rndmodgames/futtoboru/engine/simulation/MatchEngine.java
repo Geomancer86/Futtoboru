@@ -26,4 +26,12 @@ public interface MatchEngine {
      * @param rng the match's own stream, {@code game.random().fork("match:" + fixture.matchKey())}
      */
     MatchOutcome play(MatchFixture fixture, RandomSource rng);
+
+    /**
+     * E-21f: the same match readied to be played tick by tick and watched; null when this engine has nothing to watch
+     * (the instant result). Played to the end it gives the outcome {@link #play} gives for the same fixture and stream.
+     */
+    default WatchedMatch watch(MatchFixture fixture, RandomSource rng) {
+        return null;
+    }
 }

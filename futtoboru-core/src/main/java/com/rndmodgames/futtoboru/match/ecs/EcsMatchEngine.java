@@ -14,6 +14,7 @@ import com.rndmodgames.futtoboru.match.ecs.body.BodyComponent;
 import com.rndmodgames.futtoboru.match.ecs.body.BodySpawner;
 import com.rndmodgames.futtoboru.match.ecs.body.KitParams;
 import com.rndmodgames.futtoboru.match.ecs.events.MatchEventDetector;
+import com.rndmodgames.futtoboru.match.ecs.events.MatchEventLog;
 import com.rndmodgames.futtoboru.match.ecs.laws.LawsSystem;
 import com.rndmodgames.futtoboru.match.ecs.laws.Officials;
 import com.rndmodgames.futtoboru.match.ecs.laws.PlayStateComponent;
@@ -61,31 +62,120 @@ public final class EcsMatchEngine {
      */
     public EcsMatchResult play(EcsMatchInput input, RandomSource rng,
             java.util.function.Consumer<MatchWorld> atFullTime) {
+        Live live = start(input, rng);
+        while (!live.finished()) {
+            live.tick();
+        }
+        if (atFullTime != null) {
+            synchronized (ASHLEY_STATICS) {
+                atFullTime.accept(live.world());
+            }
+        }
+        return live.result();
+    }
+
+    /**
+     * A match readied to be played tick by tick (E-21f: the match screen watches it in the viewer). Playing it to the
+     * end gives exactly the result of {@link #play(EcsMatchInput, RandomSource)} for the same input and stream: the
+     * viewer's draw passes never change a simulated bit.
+     */
+    public Live start(EcsMatchInput input, RandomSource rng) {
         Setup s;
         synchronized (ASHLEY_STATICS) {
             s = setUp(input, rng);
         }
-        MatchWorld world = s.world();
-        Entity ballEntity = s.ballEntity();
-        BallComponent ball = s.ball();
-        PlayStateComponent play = s.play();
-        int[] teamOf = s.teamOf();
-        int[] slotOf = s.slotOf();
-        MatchEventDetector events = s.events();
-        long halfTicks = (long) input.halfMinutes() * 60L * params.tickHz;
-        List<EcsMatchResult.Goal> goals = new ArrayList<>();
-        runHalf(world, halfTicks, play, ballEntity, teamOf, slotOf, goals, events);
-        double halfTimeMass = ball.massKg;
-        runHalf(world, halfTicks, play, ballEntity, teamOf, slotOf, goals, events);
-        long actions = world.engine().getSystem(ActionSystem.class).totalActions();
-        if (atFullTime != null) {
-            synchronized (ASHLEY_STATICS) {
-                atFullTime.accept(world);
-            }
+        return new Live(s, input, rng);
+    }
+
+    /** One match in progress: {@link #tick()} until {@link #finished()}, then {@link #result()}. */
+    public final class Live {
+        private final Setup s;
+        private final EcsMatchInput input;
+        private final RandomSource rng;
+        private final long halfTicks;
+        private final List<EcsMatchResult.Goal> goals = new ArrayList<>();
+        private long done;
+        private double halfTimeMass;
+
+        private Live(Setup s, EcsMatchInput input, RandomSource rng) {
+            this.s = s;
+            this.input = input;
+            this.rng = rng;
+            this.halfTicks = (long) input.halfMinutes() * 60L * params.tickHz;
         }
-        return new EcsMatchResult(input.matchKey(), ENGINE_VERSION, rng.getSeed(), world.tickCount(),
-                world.stateHash(), halfTimeMass, ball.massKg, play.homeGoals, play.awayGoals, actions,
-                play.offsidesGiven, play.foulsGiven, goals, events.log());
+
+        public MatchWorld world() {
+            return s.world();
+        }
+
+        /** Ticks played so far. */
+        public long ticksDone() {
+            return done;
+        }
+
+        /** Ticks of the whole match (two halves). */
+        public long totalTicks() {
+            return halfTicks * 2;
+        }
+
+        public boolean finished() {
+            return done >= totalTicks();
+        }
+
+        public int homeGoals() {
+            return s.play().homeGoals;
+        }
+
+        public int awayGoals() {
+            return s.play().awayGoals;
+        }
+
+        /** The events so far (grows while the match is played). */
+        public MatchEventLog events() {
+            return s.events().log();
+        }
+
+        /**
+         * Plays one tick and notes a goal if one was given (E-17a): the side it counts for and the last player to play
+         * the ball, and lets the event detector read the tick (E-17). Reads the state only after the tick, so it never
+         * changes a simulated bit.
+         */
+        public void tick() {
+            if (finished()) {
+                throw new IllegalStateException("the match is over");
+            }
+            PlayStateComponent play = s.play();
+            int home = play.homeGoals;
+            int away = play.awayGoals;
+            s.world().tick();
+            s.events().afterTick();
+            done++;
+            if (done == halfTicks) {
+                halfTimeMass = s.ball().massKg;
+            }
+            if (play.homeGoals == home && play.awayGoals == away) {
+                return;
+            }
+            Team scoring = play.homeGoals != home ? Team.HOME : Team.AWAY;
+            PossessionComponent poss = s.ballEntity().getComponent(PossessionComponent.class);
+            int index = poss != null ? poss.lastTouchIndex : -1;
+            int team = index >= 0 && index < s.teamOf().length ? s.teamOf()[index] : -1;
+            int slot = team >= 0 ? s.slotOf()[index] : -1;
+            goals.add(new EcsMatchResult.Goal(scoring, team < 0 ? null : Team.values()[team], slot,
+                    s.world().tickCount()));
+        }
+
+        /** The result of the finished match. */
+        public EcsMatchResult result() {
+            if (!finished()) {
+                throw new IllegalStateException("the match is not over");
+            }
+            PlayStateComponent play = s.play();
+            long actions = s.world().engine().getSystem(ActionSystem.class).totalActions();
+            return new EcsMatchResult(input.matchKey(), ENGINE_VERSION, rng.getSeed(), s.world().tickCount(),
+                    s.world().stateHash(), halfTimeMass, s.ball().massKg, play.homeGoals, play.awayGoals, actions,
+                    play.offsidesGiven, play.foulsGiven, goals, s.events().log());
+        }
     }
 
     /**
@@ -130,30 +220,6 @@ public final class EcsMatchEngine {
         MatchEventDetector events = new MatchEventDetector(world, pitch, ballEntity, play, input.pitch(),
                 input.halfMinutes(), params.ballDryMassKg);
         return new Setup(world, ballEntity, ball, play, teamOf, slotOf, events);
-    }
-
-    /**
-     * Runs {@code ticks} ticks and notes each goal as it is given (E-17a): the side it counts for and the last player
-     * to play the ball, and lets the event detector read the tick (E-17). Reads the state only after a tick, so it
-     * never changes a simulated bit.
-     */
-    private static void runHalf(MatchWorld world, long ticks, PlayStateComponent play, Entity ballEntity,
-            int[] teamOf, int[] slotOf, List<EcsMatchResult.Goal> goals, MatchEventDetector events) {
-        for (long i = 0; i < ticks; i++) {
-            int home = play.homeGoals;
-            int away = play.awayGoals;
-            world.tick();
-            events.afterTick();
-            if (play.homeGoals == home && play.awayGoals == away) {
-                continue;
-            }
-            Team scoring = play.homeGoals != home ? Team.HOME : Team.AWAY;
-            PossessionComponent poss = ballEntity.getComponent(PossessionComponent.class);
-            int index = poss != null ? poss.lastTouchIndex : -1;
-            int team = index >= 0 && index < teamOf.length ? teamOf[index] : -1;
-            int slot = team >= 0 ? slotOf[index] : -1;
-            goals.add(new EcsMatchResult.Goal(scoring, team < 0 ? null : Team.values()[team], slot, world.tickCount()));
-        }
     }
 
     private static AiSetup.Side side(EcsMatchInput.Side s) {
