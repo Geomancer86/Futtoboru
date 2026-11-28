@@ -17,8 +17,9 @@ import com.rndmodgames.futtoboru.ui.gfx.atlas.RuntimeAtlas;
  * mud overlay, officials, touchline people, ball, crowd, props; 1x and 2x where baked) and picks every frame:
  *
  * <ul>
- * <li><b>Scale</b>: {@link SpriteScale#choose} from the perspective scale and magnification (2x near the camera or at
- * magnification 2 and more; texels always whole screen pixels).</li>
+ * <li><b>Scale</b>: {@link SpriteScale#choose} from the perspective scale, magnification and the view's scale: 2x
+ * everywhere in the default 10 px/m view (D28), the closest of 1x/2x in the wide view; texels always whole screen
+ * pixels.</li>
  * <li><b>Animation</b> ({@link #motion}): down -> {@code fall} (once, from the moment he went down), then
  * {@code injured} (lying, looped) if he is hurt; injury "off" -> {@code injured}; moving -> {@code run} (or
  * {@code charge} while charging), its frame rate from the speed ({@link #RUN_REFERENCE_MPS} = the baked rate);
@@ -179,7 +180,8 @@ public final class IndexActorSprites implements ActorSprites {
         if (set == null || set[1] == null) {
             return null;
         }
-        int choice = SpriteScale.choose(p.pixelsPerMetre, p.magnification, set[2] != null ? 2 : 1);
+        int choice = SpriteScale.choose(p.pixelsPerMetre, p.magnification, set[2] != null ? 2 : 1,
+                p.viewPixelsPerMetre);
         Loaded sheet = set[SpriteScale.sheet(choice)];
         ensure(p.key);
         boolean down = !official && (p.down || p.injury == 3);
@@ -234,7 +236,8 @@ public final class IndexActorSprites implements ActorSprites {
         if (!loaded || set == null || set[1] == null) {
             return null;
         }
-        int choice = SpriteScale.choose(p.pixelsPerMetre, p.magnification, set[2] != null ? 2 : 1);
+        int choice = SpriteScale.choose(p.pixelsPerMetre, p.magnification, set[2] != null ? 2 : 1,
+                p.viewPixelsPerMetre);
         Loaded sheet = set[SpriteScale.sheet(choice)];
         String name = ballAnimation(p.z, p.saturation);
         Anim anim = sheet.animations.get(name);

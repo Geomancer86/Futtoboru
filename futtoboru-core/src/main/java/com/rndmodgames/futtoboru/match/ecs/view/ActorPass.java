@@ -182,6 +182,7 @@ public final class ActorPass extends EntitySystem implements DrawPass {
         p.z = t.z;
         p.pixelsPerMetre = scale;
         p.magnification = view.viewCamera().magnification();
+        p.viewPixelsPerMetre = view.viewCamera().pixelsPerMetre();
         if (ballView != null) {
             p.ballX = ballView.x;
             p.ballY = ballView.y;

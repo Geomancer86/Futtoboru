@@ -23,11 +23,11 @@ class MatchArtTest {
     }
 
     @Test
-    void pitchIsFivePixelsPerMetreAndDeterministic() {
+    void pitchIsTenPixelsPerMetreAndDeterministic() {
         PitchArt a = new PitchArt(PITCH, PitchArt.Style.of1888());
         PitchArt b = new PitchArt(PITCH, PitchArt.Style.of1888());
         assertArrayEquals(a.rgb, b.rgb, "same style and seed, same pixels");
-        assertEquals(Math.ceil((PITCH.length() + 2 * PitchArt.END_MARGIN_M) * 5), a.width);
+        assertEquals(Math.ceil((PITCH.length() + 2 * PitchArt.END_MARGIN_M) * 10), a.width);
         assertEquals(PITCH.halfWidth() + PitchArt.FAR_MARGIN_M, a.maxY, 1e-12);
         PitchArt other = new PitchArt(PITCH, new PitchArt.Style(PitchArt.Turf.WORN, 0.6, 0, true, false, 8));
         assertFalse(java.util.Arrays.equals(a.rgb, other.rgb), "another seed, another pitch");

@@ -25,8 +25,8 @@ import com.rndmodgames.futtoboru.ui.gfx.TickGate;
  * otherwise calm ({@link #mood(double, float)}).</li>
  * <li>Module {@code crowd} off: nothing. Its {@code ticks} knob gates the animation clock ({@link TickGate}); its
  * {@code animated} knob is the share of figures that move at all.</li>
- * <li>Sheet scale: 1x only, drawn at whole-screen-pixel multiples ({@link SpriteScale}); figures outside the view are
- * culled.</li>
+ * <li>Sheet scale: 1x only, drawn at whole-screen-pixel multiples ({@link SpriteScale}: two screen pixels per texel
+ * and up in the default 10 px/m view, matching the 2x players); figures outside the view are culled.</li>
  * </ul>
  */
 public class CrowdPass extends EntitySystem implements DrawPass {
@@ -72,6 +72,7 @@ public class CrowdPass extends EntitySystem implements DrawPass {
     private int builtSize = -1;
     private PitchGeometry builtPitch;
     private int builtMagnification = -1;
+    private double builtViewScale = -1;
 
     private ActorSprites builtSprites;
     /** [look][mood][frame]. */
@@ -114,11 +115,12 @@ public class CrowdPass extends EntitySystem implements DrawPass {
         double mood = view.crowdMood();
         ViewCamera cam = view.viewCamera();
         int mag = cam.magnification();
-        if (mag != builtMagnification) {
+        if (mag != builtMagnification || cam.pixelsPerMetre() != builtViewScale) {
             for (int i = 0; i < count; i++) {
-                choices[i] = SpriteScale.choose(cam.scale(ys[i]), mag, 1);
+                choices[i] = SpriteScale.choose(cam.scale(ys[i]), mag, 1, cam.pixelsPerMetre());
             }
             builtMagnification = mag;
+            builtViewScale = cam.pixelsPerMetre();
         }
         Batch batch = null;
         ViewArt art = null;

@@ -162,18 +162,22 @@ class SpriteViewerTest {
             sprites.begin(frame);
             assertTrue(sprites.actor(p).frame != before, "the run cycle advances with time and speed");
 
-            // the keeper (slot 0) standing in the middle: keeper set, 1x
+            // the keeper (slot 0) standing on the far side: keeper set, 2x in the default view (D28), 1x when wide
             p.clear();
             p.key = 0;
             p.role = SpawnRole.AWAY_PLAYER;
             p.index = 0;
             p.hasFacing = true;
             p.facing = Math.PI;
-            p.pixelsPerMetre = 5;
+            p.pixelsPerMetre = 6.6;
             f = sprites.actor(p);
             assertEquals("keeper/idle", f.animation);
             assertEquals(6, f.direction);
-            assertEquals(1, f.sprite.scale);
+            assertEquals(2, f.sprite.scale);
+            assertEquals(1, f.texel);
+            p.viewPixelsPerMetre = ViewCamera.WIDE_PIXELS_PER_METRE;
+            p.pixelsPerMetre = 3.3;
+            assertEquals(1, sprites.actor(p).sprite.scale, "wide view: 1x");
 
             // a knocked-down, hurt player: falls, then lies injured
             p.clear();

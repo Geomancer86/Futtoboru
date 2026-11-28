@@ -111,6 +111,8 @@ public interface ActorSprites {
         /** Perspective scale at the actor's depth, art px/m, and the screen magnification. */
         public double pixelsPerMetre;
         public int magnification = 1;
+        /** The view's halfway scale ({@link ViewCamera#pixelsPerMetre()}): default 10 px/m or the wide 5 px/m. */
+        public double viewPixelsPerMetre = ViewCamera.PIXELS_PER_METRE;
 
         public double speed() {
             return Math.sqrt(vx * vx + vy * vy);
@@ -123,8 +125,9 @@ public interface ActorSprites {
             x = y = z = vx = vy = vz = facing = spin = saturation = ballX = ballY = 0;
             hasFacing = down = charge = false;
             injury = 0;
-            pixelsPerMetre = 5;
+            pixelsPerMetre = ViewCamera.PIXELS_PER_METRE;
             magnification = 1;
+            viewPixelsPerMetre = ViewCamera.PIXELS_PER_METRE;
             return this;
         }
     }

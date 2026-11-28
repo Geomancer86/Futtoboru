@@ -197,7 +197,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
         ActorSprites.Sprite s = frames[Math.floorMod((int) Math.floor(t * 2), frames.length)];
         ViewCamera cam = view.viewCamera();
         int mag = cam.magnification();
-        int choice = SpriteScale.choose(cam.scale(y), mag, 1);
+        int choice = SpriteScale.choose(cam.scale(y), mag, 1, cam.pixelsPerMetre());
         SpriteScale.draw(batch, s, cam.screenX(x, y), cam.screenY(y, 0), SpriteScale.texel(choice), mag);
         pieces++;
     }
@@ -210,7 +210,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
         }
         ViewCamera cam = view.viewCamera();
         int mag = cam.magnification();
-        int texel = SpriteScale.texel(SpriteScale.choose(cam.scale(y), mag, 1));
+        int texel = SpriteScale.texel(SpriteScale.choose(cam.scale(y), mag, 1, cam.pixelsPerMetre()));
         double step = s.width * texel / (double) mag;
         double sy = cam.screenY(y, 0);
         double from = Math.max(cam.screenX(x0, y), -step);
@@ -231,7 +231,7 @@ public class TouchlinePass extends EntitySystem implements DrawPass {
             boolean moving, int dir, double t) {
         ViewCamera cam = view.viewCamera();
         int mag = cam.magnification();
-        int choice = SpriteScale.choose(cam.scale(y), mag, 2);
+        int choice = SpriteScale.choose(cam.scale(y), mag, 2, cam.pixelsPerMetre());
         double sx = cam.screenX(x, y);
         double sy = cam.screenY(y, 0);
         int d = dir >= 0 ? dir : IndexActorSprites.direction(Math.atan2(-y, cam.x() - x));
