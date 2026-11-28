@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import com.rndmodgames.localization.LanguageModLoader;
 import java.util.List;
 
@@ -142,7 +144,7 @@ public class MyApplicationsScreenTable extends VisTable {
                             
                             if (offer != null && menuManager != null) {
                                 menuManager.setCurrentNegotiationOffer(offer);
-                                menuManager.setActiveMainScreen(MainMenuManager.JOB_OFFER_SCREEN);
+                                menuManager.setActiveMainScreen(GameScreenId.JOB_OFFER);
                             }
                         }
                     }

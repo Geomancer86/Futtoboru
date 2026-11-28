@@ -14,16 +14,16 @@ import java.util.List;
  */
 public final class NavigationHistory {
 
-    private final List<Integer> screens = new ArrayList<>();
+    private final List<GameScreenId> screens = new ArrayList<>();
 
     /** Starts a new history at {@code root} (a menu entry was picked). */
-    public void reset(int root) {
+    public void reset(GameScreenId root) {
         screens.clear();
         screens.add(root);
     }
 
     /** Records that {@code screen} is now shown. */
-    public void visit(int screen) {
+    public void visit(GameScreenId screen) {
         int index = screens.lastIndexOf(screen);
         if (index >= 0) {
             screens.subList(index + 1, screens.size()).clear();
@@ -47,23 +47,23 @@ public final class NavigationHistory {
     /**
      * Leaves the current screen.
      *
-     * @return the screen to show now, or -1 if there is none to go back to (nothing changes then)
+     * @return the screen to show now, or NONE if there is none to go back to (nothing changes then)
      */
-    public int back() {
+    public GameScreenId back() {
         if (!canGoBack()) {
-            return -1;
+            return GameScreenId.NONE;
         }
         dropCurrent();
         return current();
     }
 
-    /** @return the current screen, or -1 when empty */
-    public int current() {
-        return screens.isEmpty() ? -1 : screens.get(screens.size() - 1);
+    /** @return the current screen, or NONE when empty */
+    public GameScreenId current() {
+        return screens.isEmpty() ? GameScreenId.NONE : screens.get(screens.size() - 1);
     }
 
     /** @return the history, oldest first (read-only) */
-    public List<Integer> screens() {
+    public List<GameScreenId> screens() {
         return Collections.unmodifiableList(screens);
     }
 }

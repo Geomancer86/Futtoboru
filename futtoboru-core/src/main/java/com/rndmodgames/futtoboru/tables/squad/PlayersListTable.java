@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.squad;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -195,7 +197,7 @@ public class PlayersListTable extends VisTable {
                         game.getGameEngine().getMainMenuManager();
                     if (menuManager != null) {
                         menuManager.setSelectedPlayer(player);
-                        menuManager.setActiveMainScreen(com.rndmodgames.futtoboru.menu.MainMenuManager.PLAYER_DETAIL_SCREEN);
+                        menuManager.setActiveMainScreen(GameScreenId.PLAYER_DETAIL);
                     } else {
                         Log.error(Log.UI_CLUB, "PlayersListTable", "MainMenuManager is null, cannot open player detail");
                     }

@@ -35,11 +35,11 @@ public final class MenuEntries {
      * One menu button.
      *
      * @param labelKey key in {@code mods/language/BaseBundle_*.properties}
-     * @param screen   {@link MainMenuManager} screen id
+     * @param screen   the screen it opens
      * @param audience who sees it
      * @param group    entries of different groups are separated by a line
      */
-    public record MenuEntry(String labelKey, int screen, Audience audience, int group) {
+    public record MenuEntry(String labelKey, GameScreenId screen, Audience audience, int group) {
     }
 
     private static final int GROUP_MAIN = 0;
@@ -50,41 +50,41 @@ public final class MenuEntries {
 
     /** Every entry, in menu order. */
     public static final List<MenuEntry> ALL = List.of(
-            new MenuEntry("home", MainMenuManager.HOME_SCREEN, Audience.ALL, GROUP_MAIN),
-            new MenuEntry("inbox", MainMenuManager.INBOX_SCREEN, Audience.ALL, GROUP_MAIN),
-            new MenuEntry("squad", MainMenuManager.MAIN_SQUAD_SCREEN, Audience.MANAGER, GROUP_MAIN),
+            new MenuEntry("home", GameScreenId.HOME, Audience.ALL, GROUP_MAIN),
+            new MenuEntry("inbox", GameScreenId.INBOX, Audience.ALL, GROUP_MAIN),
+            new MenuEntry("squad", GameScreenId.MAIN_SQUAD, Audience.MANAGER, GROUP_MAIN),
 
-            new MenuEntry("schedule", MainMenuManager.SCHEDULE_SCREEN, Audience.MANAGER, GROUP_MATCHES),
-            new MenuEntry("match_history", MainMenuManager.MATCH_HISTORY_SCREEN, Audience.MANAGER, GROUP_MATCHES),
-            new MenuEntry("competitions", MainMenuManager.COMPETITIONS_SCREEN, Audience.MANAGER, GROUP_MATCHES),
-            new MenuEntry("history", MainMenuManager.HISTORY_SCREEN, Audience.ALL, GROUP_MATCHES),
+            new MenuEntry("schedule", GameScreenId.SCHEDULE, Audience.MANAGER, GROUP_MATCHES),
+            new MenuEntry("match_history", GameScreenId.MATCH_HISTORY, Audience.MANAGER, GROUP_MATCHES),
+            new MenuEntry("competitions", GameScreenId.COMPETITIONS, Audience.MANAGER, GROUP_MATCHES),
+            new MenuEntry("history", GameScreenId.HISTORY, Audience.ALL, GROUP_MATCHES),
 
-            new MenuEntry("club_info", MainMenuManager.CLUB_INFO_SCREEN, Audience.MANAGER, GROUP_CLUB),
-            new MenuEntry("finances", MainMenuManager.FINANCES_SCREEN, Audience.MANAGER, GROUP_CLUB),
-            new MenuEntry("committee", MainMenuManager.COMMITTEE_SCREEN, Audience.MANAGER, GROUP_CLUB),
-            new MenuEntry("candidates", MainMenuManager.CANDIDATES_SCREEN, Audience.MANAGER, GROUP_CLUB),
+            new MenuEntry("club_info", GameScreenId.CLUB_INFO, Audience.MANAGER, GROUP_CLUB),
+            new MenuEntry("finances", GameScreenId.FINANCES, Audience.MANAGER, GROUP_CLUB),
+            new MenuEntry("committee", GameScreenId.COMMITTEE, Audience.MANAGER, GROUP_CLUB),
+            new MenuEntry("candidates", GameScreenId.CANDIDATES, Audience.MANAGER, GROUP_CLUB),
 
-            new MenuEntry("club_browser", MainMenuManager.CLUB_BROWSER_SCREEN, Audience.UNEMPLOYED, GROUP_JOBS),
-            new MenuEntry("job_board", MainMenuManager.JOB_BOARD_SCREEN, Audience.UNEMPLOYED, GROUP_JOBS),
-            new MenuEntry("my_applications", MainMenuManager.MY_APPLICATIONS_SCREEN, Audience.UNEMPLOYED, GROUP_JOBS),
+            new MenuEntry("club_browser", GameScreenId.CLUB_BROWSER, Audience.UNEMPLOYED, GROUP_JOBS),
+            new MenuEntry("job_board", GameScreenId.JOB_BOARD, Audience.UNEMPLOYED, GROUP_JOBS),
+            new MenuEntry("my_applications", GameScreenId.MY_APPLICATIONS, Audience.UNEMPLOYED, GROUP_JOBS),
 
-            new MenuEntry("personal_details", MainMenuManager.PERSON_DETAILS_SCREEN, Audience.ALL, GROUP_PERSON),
-            new MenuEntry("authority", MainMenuManager.AUTHORITY_SCREEN, Audience.ALL, GROUP_PERSON));
+            new MenuEntry("personal_details", GameScreenId.PERSON_DETAILS, Audience.ALL, GROUP_PERSON),
+            new MenuEntry("authority", GameScreenId.AUTHORITY, Audience.ALL, GROUP_PERSON));
 
     /** Screens reached from inside another screen, mapped to the menu entry that stays highlighted. */
-    public static final Map<Integer, Integer> DRILL_DOWNS = Map.ofEntries(
-            Map.entry(MainMenuManager.LEAGUE_DETAIL_SCREEN, MainMenuManager.COMPETITIONS_SCREEN),
-            Map.entry(MainMenuManager.CUP_DETAIL_SCREEN, MainMenuManager.COMPETITIONS_SCREEN),
-            Map.entry(MainMenuManager.CUP_PLAYOFFS_SCREEN, MainMenuManager.COMPETITIONS_SCREEN),
-            Map.entry(MainMenuManager.PLAYER_DETAIL_SCREEN, MainMenuManager.MAIN_SQUAD_SCREEN),
-            Map.entry(MainMenuManager.RETAINED_LIST_SCREEN, MainMenuManager.MAIN_SQUAD_SCREEN),
-            Map.entry(MainMenuManager.CLUB_DETAIL_SCREEN, MainMenuManager.CLUB_BROWSER_SCREEN),
-            Map.entry(MainMenuManager.JOB_OFFER_SCREEN, MainMenuManager.MY_APPLICATIONS_SCREEN),
-            Map.entry(MainMenuManager.NEGOTIATION_SCREEN, MainMenuManager.MY_APPLICATIONS_SCREEN),
-            Map.entry(MainMenuManager.LEAGUE_DRAW_SCREEN, MainMenuManager.INBOX_SCREEN),
-            Map.entry(MainMenuManager.CUP_DRAW_SCREEN, MainMenuManager.INBOX_SCREEN),
-            Map.entry(MainMenuManager.MATCH_PREVIEW_SCREEN, MainMenuManager.SCHEDULE_SCREEN),
-            Map.entry(MainMenuManager.MATCH_RESULT_SCREEN, MainMenuManager.SCHEDULE_SCREEN));
+    public static final Map<GameScreenId, GameScreenId> DRILL_DOWNS = Map.ofEntries(
+            Map.entry(GameScreenId.LEAGUE_DETAIL, GameScreenId.COMPETITIONS),
+            Map.entry(GameScreenId.CUP_DETAIL, GameScreenId.COMPETITIONS),
+            Map.entry(GameScreenId.CUP_PLAYOFFS, GameScreenId.COMPETITIONS),
+            Map.entry(GameScreenId.PLAYER_DETAIL, GameScreenId.MAIN_SQUAD),
+            Map.entry(GameScreenId.RETAINED_LIST, GameScreenId.MAIN_SQUAD),
+            Map.entry(GameScreenId.CLUB_DETAIL, GameScreenId.CLUB_BROWSER),
+            Map.entry(GameScreenId.JOB_OFFER, GameScreenId.MY_APPLICATIONS),
+            Map.entry(GameScreenId.NEGOTIATION, GameScreenId.MY_APPLICATIONS),
+            Map.entry(GameScreenId.LEAGUE_DRAW, GameScreenId.INBOX),
+            Map.entry(GameScreenId.CUP_DRAW, GameScreenId.INBOX),
+            Map.entry(GameScreenId.MATCH_PREVIEW, GameScreenId.SCHEDULE),
+            Map.entry(GameScreenId.MATCH_RESULT, GameScreenId.SCHEDULE));
 
     private MenuEntries() {
     }
@@ -112,7 +112,7 @@ public final class MenuEntries {
     }
 
     /** @return the menu entry screen to highlight while {@code screen} is shown (itself for an entry screen) */
-    public static int entryScreenFor(int screen) {
+    public static GameScreenId entryScreenFor(GameScreenId screen) {
         return DRILL_DOWNS.getOrDefault(screen, screen);
     }
 }

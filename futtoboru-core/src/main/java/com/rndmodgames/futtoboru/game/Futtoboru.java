@@ -178,6 +178,15 @@ public class Futtoboru extends Game {
         this.random = RandomSource.seeded(seed);
     }
     
+    /** RF-01: which in-game screen is shown; outlives one MainGameScreen, reset for a new or loaded game */
+    private final com.rndmodgames.futtoboru.menu.ScreenNavigation screenNavigation =
+            new com.rndmodgames.futtoboru.menu.ScreenNavigation();
+
+    /** RF-01: the in-game screen navigation (was MainMenuManager's static screen ids). */
+    public com.rndmodgames.futtoboru.menu.ScreenNavigation getScreenNavigation() {
+        return screenNavigation;
+    }
+
     /** RF-01: the game's database (one object, rebuilt in place for a new or a loaded game). */
     public DatabaseLoader getDatabase() {
         return DatabaseLoader.getInstance();

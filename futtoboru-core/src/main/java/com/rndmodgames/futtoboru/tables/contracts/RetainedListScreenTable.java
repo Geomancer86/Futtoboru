@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.contracts;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.util.List;
 
 import com.badlogic.gdx.Game;
@@ -157,7 +159,7 @@ public class RetainedListScreenTable extends VisTable {
             public void clicked(String url) {
                 if (menuManager != null) {
                     menuManager.setSelectedPlayer(p);
-                    menuManager.setActiveMainScreen(MainMenuManager.PLAYER_DETAIL_SCREEN);
+                    menuManager.setActiveMainScreen(GameScreenId.PLAYER_DETAIL);
                 }
             }
         });

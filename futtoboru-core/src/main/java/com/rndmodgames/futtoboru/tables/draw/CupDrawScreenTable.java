@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.draw;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import com.rndmodgames.localization.LanguageModLoader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -507,7 +509,7 @@ public class CupDrawScreenTable extends VisTable {
                 public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                     markDrawMessageAsComplete();
                     if (menuManager != null) {
-                        menuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                        menuManager.setActiveMainScreen(GameScreenId.INBOX);
                     }
                     if (game.getGameEngine() != null) {
                         game.getGameEngine().getNextGameAction();

@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.engine.contracts;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -875,7 +877,7 @@ public class ContractManager {
         m.setPlainTextMessage(body);
         m.setActionData(club.getId());
         if (linkToList) {
-            m.setActionScreen(MainMenuManager.RETAINED_LIST_SCREEN);
+            m.setActionScreen(GameScreenId.RETAINED_LIST);
         }
         m.setIsRead(false);
         m.setIsDeleted(false);

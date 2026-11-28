@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.competitions;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -166,7 +168,7 @@ public class CupDetailScreenTable extends VisTable {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (menuManager != null) {
-                    menuManager.setActiveMainScreen(MainMenuManager.CUP_PLAYOFFS_SCREEN);
+                    menuManager.setActiveMainScreen(GameScreenId.CUP_PLAYOFFS);
                 }
             }
         });

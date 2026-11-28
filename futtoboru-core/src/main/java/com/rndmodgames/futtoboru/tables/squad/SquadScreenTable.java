@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.squad;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.time.temporal.ChronoUnit;
 
 import com.badlogic.gdx.Game;
@@ -158,7 +160,7 @@ public class SquadScreenTable extends VisTable{
             public void changed(ChangeEvent event, Actor actor) {
                 if (game.getGameEngine() != null && game.getGameEngine().getMainMenuManager() != null) {
                     game.getGameEngine().getMainMenuManager().setActiveMainScreen(
-                            com.rndmodgames.futtoboru.menu.MainMenuManager.RETAINED_LIST_SCREEN);
+                            GameScreenId.RETAINED_LIST);
                 }
             }
         });

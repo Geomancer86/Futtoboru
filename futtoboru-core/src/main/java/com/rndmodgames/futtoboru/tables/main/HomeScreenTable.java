@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.main;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.math.BigDecimal;
 
 import com.badlogic.gdx.Game;
@@ -110,7 +112,7 @@ public class HomeScreenTable extends VisTable {
                     : format("dashboard_in_days", fixture.daysUntil());
             line(card, when, fixture.daysUntil() <= 1 ? "state.warning" : "text.secondary");
         }
-        link(card, "schedule", MainMenuManager.SCHEDULE_SCREEN);
+        link(card, "schedule", GameScreenId.SCHEDULE);
         return card;
     }
 
@@ -125,7 +127,7 @@ public class HomeScreenTable extends VisTable {
                     league.position() == 1 ? "state.winner" : "text.primary");
             line(card, format("dashboard_played_points", league.played(), league.points()), "text.secondary");
         }
-        link(card, "competitions", MainMenuManager.COMPETITIONS_SCREEN);
+        link(card, "competitions", GameScreenId.COMPETITIONS);
         return card;
     }
 
@@ -136,7 +138,7 @@ public class HomeScreenTable extends VisTable {
         if (dashboard.getUnreadNeedingAction() > 0) {
             line(card, format("dashboard_action_needed", dashboard.getUnreadNeedingAction()), "state.warning");
         }
-        link(card, "inbox", MainMenuManager.INBOX_SCREEN);
+        link(card, "inbox", GameScreenId.INBOX);
         return card;
     }
 
@@ -144,7 +146,7 @@ public class HomeScreenTable extends VisTable {
         VisTable card = card("dashboard_balance");
         BigDecimal balance = dashboard.getBalance();
         line(card, Money.format(balance), balance != null && balance.signum() < 0 ? "state.negative" : "text.primary");
-        link(card, "finances", MainMenuManager.FINANCES_SCREEN);
+        link(card, "finances", GameScreenId.FINANCES);
         return card;
     }
 
@@ -171,7 +173,7 @@ public class HomeScreenTable extends VisTable {
             line(card, text(result.home() ? "dashboard_home" : "dashboard_away") + ", " + GameFormat.weekdayDate(result.date()),
                     "text.secondary");
         }
-        link(card, "match_history", MainMenuManager.MATCH_HISTORY_SCREEN);
+        link(card, "match_history", GameScreenId.MATCH_HISTORY);
         return card;
     }
 
@@ -180,7 +182,7 @@ public class HomeScreenTable extends VisTable {
         line(card, format("dashboard_applications", dashboard.getPendingApplications()), "text.primary");
         line(card, format("dashboard_offers", dashboard.getPendingOffers()),
                 dashboard.getPendingOffers() > 0 ? "state.positive" : "text.secondary");
-        link(card, "my_applications", MainMenuManager.MY_APPLICATIONS_SCREEN);
+        link(card, "my_applications", GameScreenId.MY_APPLICATIONS);
         return card;
     }
 
@@ -207,7 +209,7 @@ public class HomeScreenTable extends VisTable {
     }
 
     /** A button to the screen with the details; it opens that menu entry (so its button lights up). */
-    private void link(VisTable card, String labelKey, final int screen) {
+    private void link(VisTable card, String labelKey, final GameScreenId screen) {
         VisTextButton button = new VisTextButton(text(labelKey));
         button.addListener(new ChangeListener() {
             @Override

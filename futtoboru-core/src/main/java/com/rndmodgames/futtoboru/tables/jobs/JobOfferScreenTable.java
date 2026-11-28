@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -133,7 +135,7 @@ public class JobOfferScreenTable extends VisTable {
                 buttonsTable.add(button("jobs_negotiate", () -> {
                     if (menuManager != null) {
                         menuManager.setCurrentNegotiationOffer(offer);
-                        menuManager.setActiveMainScreen(MainMenuManager.NEGOTIATION_SCREEN);
+                        menuManager.setActiveMainScreen(GameScreenId.NEGOTIATION);
                     }
                 }));
             }
@@ -150,7 +152,7 @@ public class JobOfferScreenTable extends VisTable {
                     LanguageModLoader.format("jobs_accepted_text", profession.getName(), club.getName()));
             if (menuManager != null) {
                 menuManager.setDynamicButtonsMenu();
-                menuManager.openMenuEntry(MainMenuManager.HOME_SCREEN);
+                menuManager.openMenuEntry(GameScreenId.HOME);
             }
         } else {
             Log.info(Log.UI_JOBS, "JobOfferScreenTable", "Offer could not be accepted: " + offer.getId());

@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.draw;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import com.rndmodgames.localization.GameFormat;
 import com.rndmodgames.localization.LanguageModLoader;
 import java.time.format.DateTimeFormatter;
@@ -280,7 +282,7 @@ public class LeagueDrawScreenTable extends VisTable {
                     
                     // Return to inbox or home screen
                     if (menuManager != null) {
-                        menuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                        menuManager.setActiveMainScreen(GameScreenId.INBOX);
                     }
                     
                     // Update button state via game engine

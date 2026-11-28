@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.engine.contracts;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -197,7 +199,7 @@ class ContractsTests extends BaseTest {
         assertTrue(contracts.isRetainedListOpen());
         List<Message> letters = messages(ContractManager.MESSAGE_RETAINED_LIST);
         assertEquals(1, letters.size(), "one April letter");
-        assertEquals(MainMenuManager.RETAINED_LIST_SCREEN, letters.get(0).getActionScreen());
+        assertEquals(GameScreenId.RETAINED_LIST, letters.get(0).getActionScreen());
         assertEquals(mine.getId(), letters.get(0).getActionData());
         assertTrue(letters.get(0).getTitle().contains("1889-90"), letters.get(0).getTitle());
         assertEquals(11, contracts.endingContracts(mine).size());

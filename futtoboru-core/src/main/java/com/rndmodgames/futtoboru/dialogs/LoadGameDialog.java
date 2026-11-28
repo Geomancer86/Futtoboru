@@ -133,7 +133,7 @@ public class LoadGameDialog extends VisDialog {
 
                     ((Futtoboru) game).startLoadedGame(result.getGame());
                     UnsavedProgress.markSaved(result.getGame());
-                    MainMenuManager.resetNavigation();
+                    ((Futtoboru) game).getScreenNavigation().reset();
 
                     /**
                      * Redirect to Main Game Screen with Game Loaded

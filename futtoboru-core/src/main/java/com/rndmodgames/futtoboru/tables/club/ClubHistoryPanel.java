@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.club;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.util.List;
 
 import com.kotcrab.vis.ui.widget.LinkLabel;
@@ -114,7 +116,7 @@ public final class ClubHistoryPanel {
             public void clicked(String url) {
                 Log.info(Log.UI_CLUB, "ClubHistoryPanel", "Rival link: " + target.getName());
                 menu.setSelectedClubForDetail(target);
-                menu.setActiveMainScreen(MainMenuManager.CLUB_DETAIL_SCREEN);
+                menu.setActiveMainScreen(GameScreenId.CLUB_DETAIL);
             }
         });
         return link;

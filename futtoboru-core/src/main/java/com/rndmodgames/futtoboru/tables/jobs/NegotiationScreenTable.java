@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -176,7 +178,7 @@ public class NegotiationScreenTable extends VisTable {
 
     private void backToOffers() {
         if (menuManager != null) {
-            menuManager.setActiveMainScreen(MainMenuManager.JOB_OFFER_SCREEN);
+            menuManager.setActiveMainScreen(GameScreenId.JOB_OFFER);
         }
     }
 

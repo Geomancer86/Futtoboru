@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.menu.topmenu;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -435,7 +437,7 @@ public class MainGameMenuTable extends VisTable {
                                 // Handle CUP_DRAW separately
                                 if ("CUP_DRAW".equals(messageType)) {
                                     Log.info(Log.UI_MENU, "MainGameMenuTable: Found mandatory cup draw message");
-                                    mainMenuManager.setActiveMainScreen(MainMenuManager.CUP_DRAW_SCREEN);
+                                    mainMenuManager.setActiveMainScreen(GameScreenId.CUP_DRAW);
                                     return;
                                 }
                                 
@@ -463,13 +465,13 @@ public class MainGameMenuTable extends VisTable {
                                         if (league != null) {
                                             // Set selected league and navigate directly to draw screen
                                             mainMenuManager.setSelectedLeague(league);
-                                            mainMenuManager.setActiveMainScreen(MainMenuManager.LEAGUE_DRAW_SCREEN);
+                                            mainMenuManager.setActiveMainScreen(GameScreenId.LEAGUE_DRAW);
                                             Log.info(Log.UI_MENU, "MainGameMenuTable: Navigating directly to league draw screen");
                                             return;
                                         } else {
                                             Log.warn(Log.UI_MENU, "MainGameMenuTable: ERROR - League not found, falling back to inbox");
                                             // Fallback: navigate to inbox and select message
-                                            mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                                            mainMenuManager.setActiveMainScreen(GameScreenId.INBOX);
                                             com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                                                 @Override
                                                 public void run() {
@@ -485,7 +487,7 @@ public class MainGameMenuTable extends VisTable {
                                     } else {
                                         Log.warn(Log.UI_MENU, "MainGameMenuTable: ERROR - actionData is not a Long, falling back to inbox");
                                         // Fallback: navigate to inbox and select message
-                                        mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                                        mainMenuManager.setActiveMainScreen(GameScreenId.INBOX);
                                         com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                                             @Override
                                             public void run() {
@@ -503,7 +505,7 @@ public class MainGameMenuTable extends VisTable {
                             
                             // No mandatory draw message found
                             Log.warn(Log.UI_MENU, "MainGameMenuTable: WARNING - No mandatory draw message found, navigating to inbox");
-                            mainMenuManager.setActiveMainScreen(MainMenuManager.INBOX_SCREEN);
+                            mainMenuManager.setActiveMainScreen(GameScreenId.INBOX);
                         } else {
                             Log.error(Log.UI_MENU, "MainGameMenuTable: ERROR - mainMenuManager is null");
                         }
@@ -548,7 +550,7 @@ public class MainGameMenuTable extends VisTable {
         //
         Log.info(Log.UI_MENU, "LOADING MATCH PREVIEW SCREEN!");
         
-        mainMenuManager.setActiveMainScreen(MainMenuManager.MATCH_PREVIEW_SCREEN);
+        mainMenuManager.setActiveMainScreen(GameScreenId.MATCH_PREVIEW);
         
         /**
          * TODO: RESET BUTTON TO MATCH RESULT
@@ -605,8 +607,10 @@ public class MainGameMenuTable extends VisTable {
                             resetProcessingState("Processing complete");
                             
                             // Handle screen transitions
-                            if (MainMenuManager.CURRENT_SCREEN == MainMenuManager.MATCH_RESULT_SCREEN) {
-                                mainMenuManager.setActiveMainScreen(MainMenuManager.BEFORE_MATCH_SCREEN);
+                            com.rndmodgames.futtoboru.menu.ScreenNavigation navigation =
+                                    ((Futtoboru) game).getScreenNavigation();
+                            if (navigation.current() == GameScreenId.MATCH_RESULT) {
+                                mainMenuManager.setActiveMainScreen(navigation.beforeMatch());
                             }
                         }
                     });

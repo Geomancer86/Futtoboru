@@ -1,5 +1,7 @@
 package com.rndmodgames.futtoboru.tables.jobs;
 
+import com.rndmodgames.futtoboru.menu.GameScreenId;
+
 import com.rndmodgames.localization.LanguageModLoader;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,14 +123,14 @@ public class ClubBrowserScreenTable extends VisTable {
                     if (button == Input.Buttons.LEFT) {
                         if (menuManager != null) {
                             menuManager.setSelectedClubForDetail(currentClub);
-                            menuManager.setActiveMainScreen(MainMenuManager.CLUB_DETAIL_SCREEN);
+                            menuManager.setActiveMainScreen(GameScreenId.CLUB_DETAIL);
                         }
                     }
                     // Right click: apply for job (if positions available)
                     else if (button == Input.Buttons.RIGHT && openPositions > 0) {
                         if (menuManager != null) {
                             menuManager.setSelectedClubForDetail(currentClub);
-                            menuManager.setActiveMainScreen(MainMenuManager.CLUB_DETAIL_SCREEN);
+                            menuManager.setActiveMainScreen(GameScreenId.CLUB_DETAIL);
                         }
                     }
                 }
@@ -152,7 +154,7 @@ public class ClubBrowserScreenTable extends VisTable {
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     if (viewButton.isPressed() && menuManager != null) {
                         menuManager.setSelectedClubForDetail(club);
-                        menuManager.setActiveMainScreen(MainMenuManager.CLUB_DETAIL_SCREEN);
+                        menuManager.setActiveMainScreen(GameScreenId.CLUB_DETAIL);
                     }
                 }
             });
@@ -172,7 +174,7 @@ public class ClubBrowserScreenTable extends VisTable {
                         if (applyButton.isPressed() && menuManager != null) {
                             // Go to club detail screen to see available positions and apply
                             menuManager.setSelectedClubForDetail(club);
-                            menuManager.setActiveMainScreen(MainMenuManager.CLUB_DETAIL_SCREEN);
+                            menuManager.setActiveMainScreen(GameScreenId.CLUB_DETAIL);
                         }
                     }
                 });
