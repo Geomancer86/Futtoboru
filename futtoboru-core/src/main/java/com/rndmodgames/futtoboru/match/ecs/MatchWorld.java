@@ -10,6 +10,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.rndmodgames.futtoboru.engine.random.RandomSource;
+import com.rndmodgames.futtoboru.ui.gfx.ArtGuard;
 
 /**
  * One match: one Ashley {@link Engine}, no Gdx, no statics (docs/design/MATCH_ENGINE_ECS.md §2, E-10).
@@ -18,7 +19,9 @@ import com.rndmodgames.futtoboru.engine.random.RandomSource;
  * <li>{@link #tick()} runs every {@link SimSystem} once, in {@link SystemPriority} order: one tick of
  * {@link #tickSeconds()}. Systems never see a frame delta.</li>
  * <li>{@link DrawPass} systems are added to the engine with processing off, so a tick never runs them;
- * {@link #draw(double)} runs them once per frame. {@link #frame(FixedStepClock, double)} is the viewer loop.</li>
+ * {@link #draw(FrameContext)} runs them once per frame. {@link #frame(FixedStepClock, double)} is the simplest
+ * viewer loop; {@code match.ecs.view.MatchViewer} is the real one (time budget, interpolation).</li>
+ * <li>A tick runs inside {@link ArtGuard#enterSimulation()}: a simulation system that asks for art throws.</li>
  * <li>Entities are created only through {@link #spawn(SpawnRole)}, in {@link SpawnRole} order and before the first
  * tick, so iteration order (and the state hash) is fixed.</li>
  * <li>{@link #stateHash()} hashes the tick and every {@link HashedComponent} in creation order.</li>
@@ -39,6 +42,7 @@ public final class MatchWorld {
     private final List<Integer> simPriorities = new ArrayList<>();
     private final ComponentMapper<? extends Component>[] hashedMappers;
     private final StateHash hash = new StateHash();
+    private final PlainFrame plainFrame = new PlainFrame();
 
     private long tick;
     private int nextIndex;
@@ -127,7 +131,12 @@ public final class MatchWorld {
 
     /** One fixed simulation step. */
     public void tick() {
-        engine.update((float) tickSeconds);
+        ArtGuard.enterSimulation();
+        try {
+            engine.update((float) tickSeconds);
+        } finally {
+            ArtGuard.exitSimulation();
+        }
         tick++;
     }
 
@@ -137,28 +146,70 @@ public final class MatchWorld {
         }
     }
 
-    /** Runs every draw pass once; with the draw guard on, throws if a pass changed the simulation state. */
+    /** Runs every draw pass once with only an interpolation share (no frame time); see {@link #draw(FrameContext)}. */
     public void draw(double alpha) {
+        plainFrame.set(alpha, 0, tick);
+        draw(plainFrame);
+    }
+
+    /** Runs every draw pass once; with the draw guard on, throws if a pass changed the simulation state. */
+    public void draw(FrameContext frame) {
         for (int i = 0; i < drawPasses.size(); i++) {
             DrawPass pass = drawPasses.get(i);
             if (drawGuard) {
                 long before = stateHash();
-                pass.draw(alpha);
+                pass.draw(frame);
                 if (stateHash() != before) {
                     throw new IllegalStateException("draw pass " + name(pass) + " changed the simulation state");
                 }
             } else {
-                pass.draw(alpha);
+                pass.draw(frame);
             }
         }
     }
 
-    /** Viewer loop for one frame: the clock's steps, then one draw. Returns the number of ticks run. */
+    /** Simplest viewer loop for one frame: the clock's steps, then one draw. Returns the number of ticks run. */
     public int frame(FixedStepClock clock, double frameSeconds) {
         int steps = clock.advance(frameSeconds);
         runTicks(steps);
-        draw(clock.alpha());
+        plainFrame.set(clock.alpha(), frameSeconds, tick);
+        draw(plainFrame);
         return steps;
+    }
+
+    /** The frame context of {@link #draw(double)} and {@link #frame(FixedStepClock, double)}; one per world. */
+    private static final class PlainFrame implements FrameContext {
+        private double alpha;
+        private double frameSeconds;
+        private double viewSeconds;
+        private long tick;
+
+        void set(double alpha, double frameSeconds, long tick) {
+            this.alpha = alpha;
+            this.frameSeconds = frameSeconds;
+            this.viewSeconds += frameSeconds;
+            this.tick = tick;
+        }
+
+        @Override
+        public double alpha() {
+            return alpha;
+        }
+
+        @Override
+        public double frameSeconds() {
+            return frameSeconds;
+        }
+
+        @Override
+        public double viewSeconds() {
+            return viewSeconds;
+        }
+
+        @Override
+        public long tick() {
+            return tick;
+        }
     }
 
     /** Hash the state around every draw pass (tests, debug viewer). */
