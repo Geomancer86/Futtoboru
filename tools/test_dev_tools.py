@@ -3,6 +3,8 @@ import json
 import os
 import sys
 
+import pytest
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import suite_lock  # noqa: E402
@@ -70,3 +72,62 @@ def test_run_locked_returns_the_exit_code_and_logs_history(tmp_path, monkeypatch
     assert not os.path.exists(suite_lock.lock_path("suite")), "released"
     with open(os.path.join(str(tmp_path), suite_lock.HISTORY), encoding="utf-8") as handle:
         assert json.loads(handle.readline())["exit"] == 3
+
+
+def test_the_command_knows_it_holds_the_lock(tmp_path, monkeypatch):
+    monkeypatch.setattr(suite_lock, "LOCK_DIR", str(tmp_path))
+    monkeypatch.delenv(suite_lock.HELD_ENV, raising=False)
+    probe = "import os, sys; sys.exit(0 if 'suite' in os.environ.get('%s', '').split(',') else 4)" % suite_lock.HELD_ENV
+    assert suite_lock.run_locked([sys.executable, "-c", probe], cwd=str(tmp_path)) == 0
+
+
+def test_a_nested_run_of_the_same_lock_runs_directly(tmp_path, monkeypatch):
+    # `suite_lock.py run -- python tools/test_level.py --run` deadlocked: test_level waited for the lock its parent held
+    monkeypatch.setattr(suite_lock, "LOCK_DIR", str(tmp_path))
+    assert suite_lock.acquire("suite", "the outer run", wait_min=0, expire_min=20) is not None
+    monkeypatch.setenv(suite_lock.HELD_ENV, "suite")
+    assert suite_lock.run_locked([sys.executable, "-c", "import sys; sys.exit(5)"], wait_min=0, cwd=str(tmp_path)) == 5
+    monkeypatch.delenv(suite_lock.HELD_ENV)
+    assert suite_lock.run_locked([sys.executable, "-c", "pass"], wait_min=0, cwd=str(tmp_path)) == suite_lock.NOT_TAKEN
+
+
+def test_ci_remote_reads_failing_tests_from_the_reports(tmp_path, monkeypatch):
+    import ci_remote
+    reports = tmp_path / "core" / "target" / "surefire-reports"
+    reports.mkdir(parents=True)
+    (reports / "TEST-a.xml").write_text(
+        '<testsuite><testcase classname="com.x.SeasonTests" name="plays"/>'
+        '<testcase classname="com.x.ArtTests" name="loads"><failure type="org.opentest4j.AssertionFailedError" '
+        'message="expected: 3 but was: 2">trace</failure></testcase>'
+        '<testcase classname="com.x.ArtTests" name="reads"><error type="java.io.FileNotFoundException">'
+        'art/match/Index.json\nat ...</error></testcase></testsuite>', encoding="utf-8")
+    monkeypatch.setattr(ci_remote, "ROOT", str(tmp_path))
+    assert ci_remote.failures() == [("ArtTests.loads", "AssertionFailedError: expected: 3 but was: 2"),
+                                    ("ArtTests.reads", "FileNotFoundException: art/match/Index.json")]
+
+
+def test_ci_remote_request_branches_name_the_tier():
+    import datetime as dt
+    import ci_remote
+    when = dt.datetime(2026, 11, 28, 3, 4, 5, tzinfo=dt.timezone.utc)
+    assert ci_remote.request_branch("full", "b3", when) == "ci/full/b3-20261128-030405"
+
+
+@pytest.mark.skipif(os.name != "nt", reason="the mvnw -> mvnw.cmd mapping is Windows only")
+def test_dot_slash_mvnw_runs_the_cmd_wrapper_on_windows(tmp_path):
+    for name in ("mvnw", "mvnw.cmd"):
+        (tmp_path / name).write_text("")
+    argv = suite_lock.runnable(["./mvnw", "-B", "verify"], cwd=str(tmp_path))
+    assert argv[0].lower().endswith("mvnw.cmd") and os.path.isabs(argv[0]) and argv[1:] == ["-B", "verify"]
+
+
+def test_an_extensionless_script_runs_its_windows_twin(tmp_path):
+    script = tmp_path / "mvnw"
+    script.write_text("#!/bin/sh\n")
+    (tmp_path / "mvnw.cmd").write_text("@echo off\n")
+    assert suite_lock.windows_twin(str(script), is_windows=True) == str(script) + ".cmd"
+    assert suite_lock.windows_twin(str(script), is_windows=False) == str(script)
+    assert suite_lock.windows_twin(str(tmp_path / "mvnw.cmd"), is_windows=True) == str(tmp_path / "mvnw.cmd")
+    lone = tmp_path / "tool"
+    lone.write_text("x")
+    assert suite_lock.windows_twin(str(lone), is_windows=True) == str(lone)

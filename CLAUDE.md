@@ -16,6 +16,8 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
   (same as `tools/dev/check`). It runs only what changed since the last green run, so a merge that brought only docs
   re-runs nothing; if develop did not move since the tested SHA, merge into develop without running anything.
   The full tier (`-Pfull`) runs on Jenkins and GitHub for develop, not locally; releases: `-Pfull,smoke`.
+  For a branch's full tier from any network: `python tools/ci_remote.py run`; why develop is red: `... status` (CI-01).
+  Never wrap `test_level.py` in `suite_lock.py` by hand (it takes the lock itself; nested runs are now safe anyway).
 - Every heavy Maven run goes through `python tools/suite_lock.py run -- <command>` (one suite per machine; it waits
   inside and expires by itself): never your own wait loop. Long builds in the background. Push only green.
 - A test class over 2 s gets `@Tag("slow")`; `python tools/test_tiers.py` fails on an untagged class over 5 s.

@@ -24,6 +24,7 @@ import com.rndmodgames.futtoboru.match.ecs.body.BodyParams;
 import com.rndmodgames.futtoboru.match.ecs.body.InjuryComponent;
 import com.rndmodgames.futtoboru.match.ecs.body.MoveCommand;
 import com.rndmodgames.futtoboru.match.ecs.body.Shape;
+import com.rndmodgames.futtoboru.match.ecs.laws.PlayStateComponent;
 import com.rndmodgames.futtoboru.match.ecs.pitch.PitchGeometry;
 import com.rndmodgames.futtoboru.match.ecs.pitch.RestartType;
 
@@ -57,9 +58,13 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.RestartType;
  * gets there first. Holding the ball he stands still and releases it ({@link AiParams#keeperHoldTicks}, or at once at
  * {@link AiParams#keeperReleaseSteps}) with a throw to a free back or half, else a punt, well inside the two steps.
  *
- * <p><b>Dead ball</b> ({@link PlayStateComponent}, stand-in until E-16): one taker per restart (kick-off: the kicker
- * slot; throw-in: the nearest outfielder; goal kick: the nearest back; corner: the nearest forward) goes to the ball
- * and plays it once the restart is ready; everybody else takes position and plays nothing.
+ * <p><b>Laws</b> (E-16 {@link PlayStateComponent}, read only). At a dead ball one taker of the restart side (kick-off:
+ * the kicker slot; throw-in and free kick: the nearest outfielder; goal kick: the nearest back; corner: the nearest
+ * forward) goes to the ball and plays it once the laws say the restart is ready (a throw-in with
+ * {@code THROW_IN}); everybody else takes position (kick-off: own half, the other side ten yards off; corner: forwards
+ * in the goalmouth) and plays nothing. In play, forwards keep onside of the third-last opponent as they believe him,
+ * passes to a man believed offside score low, and a man the laws hold in an offside position leaves the ball to
+ * others. Ends follow the laws ({@link PlayStateComponent#attackSign}); at full time everybody stops.
  *
  * <p>Pacing: chasing is a sprint (less when short-term stamina is low); everything else runs at most at a cruising
  * pace below the aerobic level, lower as the match reserve empties. Determinism: doubles, no trig, a fixed number of
@@ -118,6 +123,8 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
     private double ix, iy;
     private double ax, ay;
     private double tOppBest, tMateBest;
+    /** Team frame x of the offside line as player i believes it (third-last opponent, or the ball if further). */
+    private double onside;
     private int rank;
     private double bestU;
     private ActionIntent bestIntent;
@@ -156,12 +163,22 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
         ball = ballMap.get(be);
         poss = possMap.get(be);
         play = playMap.get(be);
-        if (poss == null) {
-            return;
+        if (poss == null || !play.started || play.restartType() == null) {
+            return; // the laws set up the kick-off at the end of the first tick
         }
         long tick = world.tickCount();
         injuries();
-        if (!play.live) {
+        for (int t = 0; t < 2; t++) {
+            tactics[t].attackSign = play.attackSign(tactics[t].team);
+        }
+        if (play.fullTime()) {
+            for (int i = 0; i < cached; i++) {
+                move[i].stop();
+                act[i].cancel();
+            }
+            return;
+        }
+        if (play.stopped()) {
             pickTaker();
             cancelNonTakers();
         }
@@ -213,13 +230,16 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
     }
 
     private void pickTaker() {
-        TeamTacticsComponent tc = tactics[play.restartTeam.ordinal()];
-        if (tc.takerForDeadTick == play.deadTick) {
+        if (play.restartTeam() == null) {
+            return;
+        }
+        TeamTacticsComponent tc = tactics[play.restartTeam];
+        if (tc.takerForRestart == play.readyTick) {
             return;
         }
         int team = tc.team.ordinal();
         int pick = -1;
-        if (play.restartType == RestartType.KICK_OFF) {
+        if (play.restartType() == RestartType.KICK_OFF) {
             pick = tc.playerIn(tc.shape.kickerSlot());
             if (pick >= 0 && !onField(member[team][pick])) {
                 pick = -1;
@@ -236,7 +256,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
                     int slot = tc.slotOf[k];
                     Position.Line line = tc.shape.slot(slot).position().getLine();
                     boolean fits;
-                    switch (play.restartType) {
+                    switch (play.restartType()) {
                         case GOAL_KICK:
                             fits = line == Position.Line.BACK || pass == 1;
                             break;
@@ -251,7 +271,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
                     if (!fits) {
                         continue;
                     }
-                    double d = dist(body[j].x, body[j].y, play.spotX, play.spotY);
+                    double d = dist(body[j].x, body[j].y, play.restartX, play.restartY);
                     if (d < best) {
                         best = d;
                         pick = k;
@@ -260,7 +280,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             }
         }
         tc.restartTaker = pick;
-        tc.takerForDeadTick = play.deadTick;
+        tc.takerForRestart = play.readyTick;
     }
 
     private void cancelNonTakers() {
@@ -272,8 +292,11 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
     }
 
     private boolean isTaker(int i) {
-        TeamTacticsComponent tc = tactics[play.restartTeam.ordinal()];
-        return side[i] == tc.team.ordinal() && tc.restartTaker == body[i].slot && tc.takerForDeadTick == play.deadTick;
+        if (play.restartTeam < 0) {
+            return false;
+        }
+        TeamTacticsComponent tc = tactics[play.restartTeam];
+        return side[i] == tc.team.ordinal() && tc.restartTaker == body[i].slot && tc.takerForRestart == play.readyTick;
     }
 
     /** A keeper holding the ball stands still and lets it go in time (the 1883 two-step law). */
@@ -337,6 +360,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             return;
         }
         mv.charge = false;
+        onside = onsideLine(i);
         if (poss.held) {
             int holder = byIndex(poss.holderIndex);
             if (holder >= 0 && holder != i) {
@@ -345,7 +369,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             }
             return;
         }
-        if (!play.live) {
+        if (!play.inPlay()) {
             deadBall(i, slot, tick);
             return;
         }
@@ -398,7 +422,8 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
                 if (!keeper && sj == 0) {
                     continue;
                 }
-                if (injury[j] != null && injury[j].state == InjuryComponent.PASSENGER) {
+                if (injury[j] != null && injury[j].state == InjuryComponent.PASSENGER
+                        || play.offsidePosition(index[j])) {
                     continue;
                 }
                 if (t < tMe - p.rankMarginS || t <= tMe + p.rankMarginS && j < i) {
@@ -410,6 +435,9 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             } else if (t < tOppBest) {
                 tOppBest = t;
             }
+        }
+        if (play.offsidePosition(index[i])) {
+            rank = cached; // the laws hold him offside: he leaves the ball to others
         }
     }
 
@@ -463,7 +491,18 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             return;
         }
         double d = dist(b.x, b.y, pc.x[carrier], pc.y[carrier]);
-        if (d < p.chargeRangeM) {
+        // his facing as believed: his run, or toward the ball when he stands
+        double fx = pc.vx[carrier];
+        double fy = pc.vy[carrier];
+        double fv = Math.sqrt(fx * fx + fy * fy);
+        if (fv < 1) {
+            fx = pc.ballX - pc.x[carrier];
+            fy = pc.ballY - pc.y[carrier];
+            fv = Math.sqrt(fx * fx + fy * fy);
+        }
+        boolean behind = fv > 1e-6 && d > 1e-6
+                && ((b.x - pc.x[carrier]) * fx + (b.y - pc.y[carrier]) * fy) / (fv * d) < p.chargeBehindCos;
+        if (d < p.chargeRangeM && !behind) { // charging from behind is a foul (1869)
             move[i].charge = true;
             move[i].toward(b.x, b.y, pc.x[carrier], pc.y[carrier], sprint(i));
         }
@@ -547,6 +586,8 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             double tech = 0.6 + 0.4 * sk.technique;
             double len = dp <= shortM ? 1 : shortM / dp;
             double lane = clamp01(laneClearance(pc, side[i], bx, by, mx, my) / 3);
+            double offside = s * pc.x[j] > onside + 0.3 ? p.offsidePassFactor : 1;
+            tech *= offside;
             double u = p.wPass * style * progress * open * lane * len * tech;
             consider(u + wGround, ActionIntent.PASS, mx, my, 0, 0.5);
             if (dp > 15) {
@@ -783,6 +824,9 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
                 break;
         }
         x = clamp(x, lo, hi);
+        if (line == Position.Line.FORWARD && x > onside - p.onsideMarginM) {
+            x = Math.max(onside - p.onsideMarginM, lo); // keep onside of the third-last man
+        }
         double spread = attacking ? (tc.style == TeamStyle.COMBINATION ? p.spreadCombination : p.spreadDribbling)
                 : p.spreadDefend;
         double y = sl.lateral() * hw * spread + p.lateralPull * byT;
@@ -867,7 +911,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
         PerceptionComponent pc = perception[i];
         TeamTacticsComponent tc = tactics[side[i]];
         int s = tc.attackSign;
-        boolean ours = play.restartTeam.ordinal() == side[i];
+        boolean ours = play.restartTeam == side[i];
         if (isTaker(i)) {
             takeRestart(i, s, tick);
             return;
@@ -876,11 +920,11 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             keeperPosition(i);
             return;
         }
-        anchor(i, slot, ours, play.spotX, play.spotY);
+        anchor(i, slot, ours, play.restartX, play.restartY);
         double tx = ax;
         double ty = ay;
         Position.Line line = tc.shape.slot(slot).position().getLine();
-        switch (play.restartType) {
+        switch (play.restartType()) {
             case KICK_OFF:
                 if (s * tx > -1.5) {
                     tx = -s * 1.5;
@@ -915,14 +959,14 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
     private void takeRestart(int i, int s, long tick) {
         BodyComponent b = body[i];
         PerceptionComponent pc = perception[i];
-        double sx = play.spotX;
-        double sy = play.spotY;
+        double sx = play.restartX;
+        double sy = play.restartY;
         ActionIntent intent;
         double tx;
         double ty;
         double tz = 0;
         double power = 0.5;
-        switch (play.restartType) {
+        switch (play.restartType()) {
             case KICK_OFF: {
                 intent = ActionIntent.PASS;
                 int mate = nearestMate(i, sx, sy, 4, 25);
@@ -944,6 +988,34 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
                 ty = sy >= 0 ? hw * 0.5 : -hw * 0.5;
                 power = 1;
                 break;
+            case FREE_KICK:
+            case PENALTY_KICK: {
+                double fwd = s * sx;
+                if (play.restartType() == RestartType.PENALTY_KICK || play.restartGoalDirect && fwd > hl - 25) {
+                    intent = ActionIntent.SHOT;
+                    tx = s * hl;
+                    ty = keeperSideAim(i);
+                    tz = 0.6;
+                    power = 0.9;
+                } else if (fwd < -hl / 3) {
+                    intent = ActionIntent.CLEAR;
+                    tx = clampX(sx + s * 45);
+                    ty = sy >= 0 ? hw * 0.5 : -hw * 0.5;
+                    power = 1;
+                } else if (fwd > hl - 35) {
+                    // indirect near goal (every free kick in 1888-89): lift it into the goalmouth
+                    intent = ActionIntent.CROSS;
+                    tx = s * (hl - 7);
+                    ty = 0;
+                    tz = 1.7;
+                } else {
+                    intent = ActionIntent.PASS;
+                    int mate = openMate(i, sx, sy, 30);
+                    tx = mate >= 0 ? pc.x[mate] : clampX(sx + s * 15);
+                    ty = mate >= 0 ? pc.y[mate] : sy;
+                }
+                break;
+            }
             default: // corner
                 intent = ActionIntent.CROSS;
                 tx = s * (hl - 6);
@@ -959,7 +1031,7 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
         double px = sx - ux / n * back;
         double py = sy - uy / n * back;
         double d = dist(b.x, b.y, px, py);
-        if (tick < play.readyTick || d > 0.6) {
+        if (!play.restartReady(tick) || d > 0.6) {
             go(i, px, py, d > 8 ? 0.85 * athlete[i].topSpeed : Math.max(1.0, cruise(i)));
             return;
         }
@@ -1005,6 +1077,34 @@ public final class DecisionSystem extends EntitySystem implements SimSystem {
             }
         }
         return best;
+    }
+
+    /** Team-frame x of the offside line from i's beliefs: the third-last opponent, or the ball if it is further. */
+    private double onsideLine(int i) {
+        PerceptionComponent pc = perception[i];
+        int s = tactics[side[i]].attackSign;
+        double a = -INF;
+        double b = -INF;
+        double c = -INF;
+        for (int j = 0; j < cached; j++) {
+            if (side[j] == side[i] || !onField(j)) {
+                continue;
+            }
+            double x = s * pc.x[j];
+            if (x > a) {
+                c = b;
+                b = a;
+                a = x;
+            } else if (x > b) {
+                c = b;
+                b = x;
+            } else if (x > c) {
+                c = x;
+            }
+        }
+        double ball = s * pc.ballX;
+        double line = c > -INF ? c : hl;
+        return Math.max(line, ball);
     }
 
     // ---- geometry and estimates --------------------------------------------------------------------------------

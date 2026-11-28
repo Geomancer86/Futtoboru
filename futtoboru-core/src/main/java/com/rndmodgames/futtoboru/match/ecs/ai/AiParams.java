@@ -2,7 +2,7 @@ package com.rndmodgames.futtoboru.match.ecs.ai;
 
 /**
  * Parameters of the player AI (E-15, docs/design/MATCH_ENGINE_ECS.md §4.1): perception noise and delay, interception
- * guesses, utility weights by club style, keeper release, dead-ball waits. Plain public fields with defaults (D14:
+ * guesses, utility weights by club style, keeper release. Plain public fields with defaults (D14:
  * later {@code gamedata/core/engine/match_engine.json}), part of
  * {@link com.rndmodgames.futtoboru.match.ecs.PhysicsParams#ai}. Everything here is D (design estimate, tuned by the
  * calibration E-20).
@@ -57,8 +57,14 @@ public final class AiParams {
     public double backUpBehindM = 5, backUpSideM = 6;
     /** Combination: the nearest team-mate offers a short pass this far from the carrier, m. */
     public double shortOptionM = 11;
+    /** Forwards stay this far behind the offside line (third-last opponent) as they believe it, m. */
+    public double onsideMarginM = 1.0;
+    /** Score multiplier for a pass to a man believed offside. */
+    public double offsidePassFactor = 0.1;
     /** Distance at which a chaser shoulder-charges the man on the ball, m. */
     public double chargeRangeM = 2.0;
+    /** No charge when he comes from behind the man: cosine of the angle off his back beyond which he holds off. */
+    public double chargeBehindCos = 0.2;
 
     // ---- on the ball -----------------------------------------------------------------------------------------------
 
@@ -87,11 +93,6 @@ public final class AiParams {
     /** He comes off his line for a loose ball within this distance of the goal line, m. */
     public double keeperRushM = 18;
 
-    // ---- dead ball (stand-in until E-16 owns restarts) -------------------------------------------------------------
-
-    /** Seconds the ball stays dead before the taker may play it. */
-    public double kickOffWaitS = 10, throwInWaitS = 1.5, goalKickWaitS = 3, cornerWaitS = 4;
-
     /** Throws on values the AI cannot run with. Returns this. */
     public AiParams validate() {
         req(reactionTicks >= 0 && reactionTicks <= 30, "reaction ticks");
@@ -101,8 +102,8 @@ public final class AiParams {
         req(chasersDribbling >= 1 && chasersCombination >= 1 && backersUp >= 0, "chasers");
         req(shotRangeM > 0 && wShot >= 0 && wPass >= 0 && wLoft >= 0 && wDribble >= 0 && wCross >= 0 && wClear >= 0
                 && whim >= 0, "weights");
+        req(onsideMarginM >= 0 && offsidePassFactor >= 0, "offside");
         req(keeperHoldTicks >= 0 && keeperReleaseSteps > 0, "keeper");
-        req(kickOffWaitS >= 0 && throwInWaitS >= 0 && goalKickWaitS >= 0 && cornerWaitS >= 0, "dead ball");
         return this;
     }
 

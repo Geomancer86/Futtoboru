@@ -24,7 +24,7 @@ public final class TeamTacticsComponent implements Component, HashedComponent {
     public final Team team;
     public final Shape shape;
     public final TeamStyle style;
-    /** +1 when attacking the EAST goal (+x), -1 when attacking WEST. Changes at half-time. */
+    /** +1 when attacking the EAST goal (+x), -1 when attacking WEST. Follows the laws' ends (half-time). */
     public int attackSign;
     /** Shape slot played now by the player of original slot k, or {@link #NO_SLOT} when he is off. */
     public final int[] slotOf = new int[11];
@@ -32,8 +32,8 @@ public final class TeamTacticsComponent implements Component, HashedComponent {
     public int offMask, passengerMask;
     /** Original slot of the player who takes the current restart, -1 none. */
     public int restartTaker = -1;
-    /** Tick the ball went dead for the restart {@link #restartTaker} was picked for. */
-    public long takerForDeadTick = Long.MIN_VALUE;
+    /** Ready tick of the restart {@link #restartTaker} was picked for (identifies the dead ball). */
+    public long takerForRestart = Long.MIN_VALUE;
 
     public TeamTacticsComponent(Team team, Shape shape, TeamStyle style, MatchEnds ends) {
         if (team == null || shape == null || style == null || ends == null) {
@@ -159,6 +159,6 @@ public final class TeamTacticsComponent implements Component, HashedComponent {
         h.mix("tac.off", offMask);
         h.mix("tac.passenger", passengerMask);
         h.mix("tac.taker", restartTaker);
-        h.mix("tac.takerTick", takerForDeadTick);
+        h.mix("tac.takerTick", takerForRestart);
     }
 }

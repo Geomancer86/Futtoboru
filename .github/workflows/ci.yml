@@ -6,6 +6,8 @@ name: CI
 #                                                  presentation/simulation: the fast tier
 #   push to develop / main, PR into develop      -> full tier (-Pfull)
 #   nightly schedule, workflow_dispatch          -> full + smoke (-Pfull,smoke) under Xvfb
+#   push to ci/<fast|full|smoke>/<name>          -> that tier (CI-01: tools/ci_remote.py run, from any network)
+# A failed Maven job lists each failing test as an annotation (public: tools/ci_remote.py reads them without a login).
 on:
   push:
   pull_request:
@@ -44,6 +46,7 @@ jobs:
           if [ "${{ github.event_name }}" = "schedule" ]; then tier=smoke
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then tier="${{ github.event.inputs.tier }}"
           elif [ "${{ github.event_name }}" = "pull_request" ] || [ "$ref" = develop ] || [ "$ref" = main ]; then tier=full
+          elif [[ "$ref" =~ ^ci/(fast|full|smoke)/ ]]; then tier="${BASH_REMATCH[1]}"
           else tier=branch
           fi
           if [ "$tier" = branch ]; then
@@ -85,6 +88,9 @@ jobs:
         run: sudo apt-get update -q && sudo apt-get install -y -q xvfb
       - name: ./mvnw ${{ needs.level.outputs.maven }}
         run: xvfb-run -a ./mvnw ${{ needs.level.outputs.maven }}
+      - name: Failing tests as annotations
+        if: failure()
+        run: python3 tools/ci_remote.py annotate
       - name: Untagged slow test classes (tools/test_tiers.py)
         run: python3 tools/test_tiers.py
       - name: Upload test reports on failure

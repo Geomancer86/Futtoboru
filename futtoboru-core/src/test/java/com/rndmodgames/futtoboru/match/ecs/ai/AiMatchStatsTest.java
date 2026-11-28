@@ -52,13 +52,13 @@ class AiMatchStatsTest {
             draw += r.homeGoals() == r.awayGoals() ? 1 : 0;
             away += r.homeGoals() < r.awayGoals() ? 1 : 0;
             actions += r.ballActions();
-            restarts += r.restarts();
+            restarts += r.offsides() + r.fouls();
             scores.append(r.homeGoals()).append('-').append(r.awayGoals()).append(' ');
         }
         double ms = (System.nanoTime() - t0) / 1e6 / n;
         String line = String.format(Locale.ROOT,
                 "E-15 %d matches: %.2f goals/game (target 4.45), H/D/A %.0f/%.0f/%.0f %% (target 59/17/24),"
-                        + " %d ball actions and %d restarts per match, %.0f ms per match (%.2f us/tick); scores %s",
+                        + " %d ball actions and %d offsides+fouls given per match, %.0f ms per match (%.2f us/tick); scores %s",
                 n, goals / (double) n, 100.0 * home / n, 100.0 * draw / n, 100.0 * away / n, actions / n,
                 restarts / n, ms, ms * 1000 / 162_000, scores);
         System.out.println(line);
