@@ -58,9 +58,29 @@ public final class AiParams {
     /** Combination: the nearest team-mate offers a short pass this far from the carrier, m. */
     public double shortOptionM = 11;
     /** Forwards stay this far behind the offside line (third-last opponent) as they believe it, m. */
-    public double onsideMarginM = 1.0;
+    public double onsideMarginM = 0.5;
+    /** Attacking forwards play up: their slot is at least this close behind the offside line they believe in, m. */
+    public double forwardsUpBehindM = 2.5;
     /** Score multiplier for a pass to a man believed offside. */
     public double offsidePassFactor = 0.1;
+    /** The man on the ball still sees a team-mate this far beyond the line he believes in as onside, m. */
+    public double passOffsideToleranceM = 1.0;
+    /**
+     * A player in the offside snapshot judges himself with this error (1 sigma, plus {@link #playerSigmaPerM} per metre
+     * to the line) and this optimism (he gives himself the benefit), m (E-16b). He leaves the ball only when he
+     * believes he was offside.
+     */
+    public double offsideJudgeSigmaM = 1.5, offsideJudgeLeanM = 3.0;
+    /**
+     * Forward runs in behind (E-16b): chance per think to set off when his side has the ball behind him within
+     * {@link #runCarrierRangeM} and he is onside, no more than {@link #runFromBehindM} behind the line; he runs for
+     * {@link #runSeconds} to {@link #runBeyondM} beyond the line he believes in.
+     */
+    public double runStartChance = 0.15, runCarrierRangeM = 40, runFromBehindM = 8, runSeconds = 2.0, runBeyondM = 12;
+    /** Through ball: to a team-mate running upfield faster than this (m/s), aimed this far ahead of him (s). */
+    public double throughMinSpeedMps = 3.5, throughLeadS = 1.3;
+    /** Utility weight of a through ball (before style). */
+    public double wThrough = 1.1;
     /** Distance at which a chaser shoulder-charges the man on the ball, m. */
     public double chargeRangeM = 2.0;
     /** No charge when he comes from behind the man: cosine of the angle off his back beyond which he holds off. */
@@ -102,7 +122,12 @@ public final class AiParams {
         req(chasersDribbling >= 1 && chasersCombination >= 1 && backersUp >= 0, "chasers");
         req(shotRangeM > 0 && wShot >= 0 && wPass >= 0 && wLoft >= 0 && wDribble >= 0 && wCross >= 0 && wClear >= 0
                 && whim >= 0, "weights");
-        req(onsideMarginM >= 0 && offsidePassFactor >= 0, "offside");
+        req(onsideMarginM >= 0 && forwardsUpBehindM >= 0 && passOffsideToleranceM >= 0 && offsidePassFactor >= 0
+                && offsideJudgeSigmaM >= 0 && offsideJudgeLeanM >= 0,
+                "offside");
+        req(runStartChance >= 0 && runStartChance <= 1 && runCarrierRangeM >= 0 && runFromBehindM >= 0
+                && runSeconds >= 0 && runBeyondM >= 0 && throughMinSpeedMps >= 0 && throughLeadS >= 0
+                && wThrough >= 0, "forward runs");
         req(keeperHoldTicks >= 0 && keeperReleaseSteps > 0, "keeper");
         return this;
     }

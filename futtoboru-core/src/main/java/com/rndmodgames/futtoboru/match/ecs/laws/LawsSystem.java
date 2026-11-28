@@ -18,6 +18,7 @@ import com.rndmodgames.futtoboru.match.ecs.action.ActionRecord;
 import com.rndmodgames.futtoboru.match.ecs.action.ActionSystem;
 import com.rndmodgames.futtoboru.match.ecs.action.PossessionComponent;
 import com.rndmodgames.futtoboru.match.ecs.ball.BallComponent;
+import com.rndmodgames.futtoboru.match.ecs.ball.BallSystem;
 import com.rndmodgames.futtoboru.match.ecs.body.AthleteComponent;
 import com.rndmodgames.futtoboru.match.ecs.body.BodyComponent;
 import com.rndmodgames.futtoboru.match.ecs.body.ContactRecord;
@@ -47,7 +48,8 @@ import com.rndmodgames.futtoboru.match.ecs.pitch.BallSegment;
  * <ul>
  * <li><b>Dead ball:</b> the ball is kept on the restart spot until a player of the restart side plays it after
  * {@link LawsParams#restartDelaySeconds} (a throw-in only with a two-handed throw); then it is in play.</li>
- * <li><b>Out of play:</b> the ball wholly over a line ({@link PitchGeometry#sweep} from last tick's centre) goes to the
+ * <li><b>Out of play:</b> the ball wholly over a line ({@link PitchGeometry#sweep} of the ball centre from last tick's,
+ * or from where it last bounced off a post or the bar this tick, {@link BallSystem#frameContactThisTick()}) goes to the
  * {@link RestartDecider}: throw-in, goal kick, corner, goal (kick-off). A close call with no nets is a disputed goal:
  * the side the line decision goes against appeals.</li>
  * <li><b>Offside:</b> every time the ball is played ({@code ActionRecord}) the margins of the player's team-mates are
@@ -104,6 +106,7 @@ public final class LawsSystem extends EntitySystem implements SimSystem {
     private Engine engine;
     private ActionSystem actions;
     private ContactSystem contacts;
+    private BallSystem ballSystem;
     private ImmutableArray<Entity> players;
     private ImmutableArray<Entity> balls;
     private ImmutableArray<Entity> officialEntities;
@@ -185,6 +188,9 @@ public final class LawsSystem extends EntitySystem implements SimSystem {
         }
         if (contacts == null) {
             contacts = engine.getSystem(ContactSystem.class);
+        }
+        if (ballSystem == null) {
+            ballSystem = engine.getSystem(BallSystem.class);
         }
         if (players.size() != cached) {
             cache();
@@ -639,23 +645,35 @@ public final class LawsSystem extends EntitySystem implements SimSystem {
         rec.restartY = restart.spot().y();
     }
 
-    /** The line crossing of this tick's ball path; synthesized if the swept test cannot give one. */
+    /**
+     * The line crossing of this tick's ball path (ball centres); synthesized if the swept test cannot give one. The
+     * path starts at last tick's ball, or where the ball last bounced off the frame this tick if that was in play.
+     */
     private LineCrossing crossing(double r) {
-        SweepResult s = pitch.sweep(BallSegment.of(state.prevBallX, state.prevBallY, state.prevBallZ, ball.x, ball.y,
-                ball.z, r));
+        double x0 = state.prevBallX;
+        double y0 = state.prevBallY;
+        double z0 = state.prevBallZ;
+        if (ballSystem != null && ballSystem.frameContactThisTick()
+                && Math.abs(ballSystem.contactX()) <= pitch.halfLength() + r
+                && Math.abs(ballSystem.contactY()) <= pitch.halfWidth() + r) {
+            x0 = ballSystem.contactX();
+            y0 = ballSystem.contactY();
+            z0 = ballSystem.contactZ();
+        }
+        SweepResult s = pitch.sweep(BallSegment.of(x0, y0, z0 + r, ball.x, ball.y, ball.z + r, r));
         if (s.hasCrossing()) {
             return s.crossing();
         }
-        // The ball passed through a post (no frame physics yet) or started out of play: judge from the positions.
+        // The path started out of play (over the line, then back off the frame): judge from the positions.
         double hl = pitch.halfLength();
-        Vec3 at = new Vec3(ball.x, ball.y, ball.z);
+        Vec3 at = new Vec3(ball.x, ball.y, ball.z + r);
         if (Math.abs(ball.x) > hl + r) {
             PitchEnd end = PitchEnd.ofX(ball.x);
             double gx = pitch.goalLineX(end);
-            double dx = ball.x - state.prevBallX;
-            double f = Math.abs(dx) < 1e-12 ? 1 : Math.max(0, Math.min(1, (gx - state.prevBallX) / dx));
-            double py = state.prevBallY + (ball.y - state.prevBallY) * f;
-            double pz = state.prevBallZ + (ball.z - state.prevBallZ) * f;
+            double dx = ball.x - x0;
+            double f = Math.abs(dx) < 1e-12 ? 1 : Math.max(0, Math.min(1, (gx - x0) / dx));
+            double py = y0 + (ball.y - y0) * f;
+            double pz = z0 + r + (ball.z - z0) * f;
             boolean between = Math.abs(py) <= pitch.goalMouthHalfWidth() - r && pz <= pitch.crossbarUndersideZ() - r;
             return new LineCrossing(LineCrossing.Line.GOAL_LINE, end, Flank.ofY(py), 1, at, py, pz, between,
                     between ? 0 : r, false);

@@ -194,6 +194,31 @@ public final class PitchGeometry {
         return contact != null ? new SweepResult(contact, null) : SweepResult.NOTHING;
     }
 
+    /**
+     * The earliest contact of the substep with a post or the bar, or null, whatever the lines do (E-16b: the ball
+     * system bounces the ball off the frame even just after it went wholly over a line, e.g. skimming the outside of
+     * a post; the laws judge the line crossing separately).
+     */
+    public FrameContact frameContact(BallSegment seg) {
+        return earliestFrameContact(seg);
+    }
+
+    /**
+     * Cheap pre-test: true when a substep from {@code (x0, y0, z0)} to {@code (x1, y1, z1)} (ball centres) may come
+     * within {@code r} of either goal frame, so {@link #frameContact} is worth calling.
+     */
+    public boolean nearFrame(double x0, double y0, double z0, double x1, double y1, double z1, double r) {
+        double reach = r + Math.max(params.postRadiusM(), params.crossbarRadiusM());
+        double ax0 = Math.abs(x0);
+        double ax1 = Math.abs(x1);
+        if (Math.max(ax0, ax1) < halfLength - reach || Math.min(ax0, ax1) > halfLength + reach
+                && (x0 > 0) == (x1 > 0)) {
+            return false;
+        }
+        return Math.min(Math.abs(y0), Math.abs(y1)) <= postCentreY + reach + Math.abs(y1 - y0)
+                && Math.min(z0, z1) <= crossbarCentreZ + reach;
+    }
+
     private FrameContact earliestFrameContact(BallSegment seg) {
         Vec3 p0 = seg.start();
         Vec3 d = seg.end().minus(p0);
