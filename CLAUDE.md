@@ -19,7 +19,7 @@ Game data lives in `futtoboru-core/src/main/resources/gamedata/` (JSON packs, se
   **GitHub is git storage only (D32):** no Actions, PRs, Releases or API. A branch's full tier: `python tools/ci_jenkins.py
   run --branch <branch>` on the home LAN; off it, a local `-Pfull` through `suite_lock.py` when the change needs it.
   Never wrap `test_level.py` in `suite_lock.py` by hand (it takes the lock itself; nested runs are now safe anyway).
-- Every heavy Maven run goes through `python tools/suite_lock.py run -- <command>` (one suite per machine; it waits
+- Every heavy Maven run goes through `python tools/suite_lock.py run -- <command>` (`FUTTOBORU_SUITE_SLOTS` concurrent runs per machine: WORKSTATION 4, default 1; it waits
   inside and expires by itself): never your own wait loop. Long builds in the background. Push only green.
 - A test class over 2 s gets `@Tag("slow")`; `python tools/test_tiers.py` fails on an untagged class over 5 s.
 - Each machine merges its own green branches into `develop` (no waiting on the other machine).

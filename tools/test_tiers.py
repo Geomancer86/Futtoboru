@@ -19,7 +19,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LIMIT = 5.0
+LIMIT = float(os.environ.get("FUTTOBORU_TIERS_LIMIT", "5.0"))  # WORKSTATION runs suites concurrently: 8
 SLOW_TAGS = ("slow", "season", "smoke", "soak")
 _TAG = re.compile(r'@Tag\("(%s)"\)' % "|".join(SLOW_TAGS))
 
