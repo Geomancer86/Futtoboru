@@ -293,7 +293,14 @@ public final class SaveCodec {
                 DatabaseLoader.setRandom(RandomSource.seeded(seed.asLong()).fork("database"));
             }
             DatabaseLoader.rebuild();
-            return new Reading(root).read();
+            LoadResult result = new Reading(root).read();
+            if (result.isLoaded() && result.getGame() != null) {
+                // E-01b: a player the save and the data give no position (e.g. moved in the data since) gets the
+                // slot his squad is shortest of
+                com.rndmodgames.futtoboru.system.generators.PositionAssigner.fillMissing(
+                        result.getGame().getAllClubs(), "loaded save");
+            }
+            return result;
         } catch (RuntimeException e) {
             com.rndmodgames.futtoboru.system.Log.error(
                     com.rndmodgames.futtoboru.system.Log.SYSTEM_INIT, "SaveCodec",

@@ -366,6 +366,13 @@ class FullSeasonTests extends BaseTest {
     }
 
     @Test
+    void everySquadCanFieldATwoThreeFiveAtTheStartAndAfterTheRollover() {
+        assertTrue(first.save.getAllClubs().size() > 20, "clubs: " + first.save.getAllClubs().size());
+        assertEquals(List.of(), first.shortAtStart, "new game");
+        assertEquals(List.of(), first.shortAfterRollover, "1889-90 rollover");
+    }
+
+    @Test
     void theSameSeedPlaysTheSameSeason() {
         assertEquals(first.tableFingerprint(), second.tableFingerprint(), "same final table");
         assertEquals(first.cupEdition.getChampionsId(), second.cupEdition.getChampionsId(), "same cup winner");
@@ -394,6 +401,9 @@ class FullSeasonTests extends BaseTest {
         List<String> errors = new ArrayList<>();
         Map<Long, BigDecimal> balancesBeforeExtraChecks;
         Map<Long, BigDecimal> balancesAfterExtraChecks;
+        /** E-01b: clubs of the game that cannot field a 2-3-5, at the new game and after the rollover. */
+        List<String> shortAtStart;
+        List<String> shortAfterRollover;
 
         static SeasonRun play(long seed) {
             SeasonRun run = new SeasonRun();
@@ -405,7 +415,9 @@ class FullSeasonTests extends BaseTest {
             long start = System.currentTimeMillis();
             try {
                 run.newGame(seed);
+                run.shortAtStart = run.shortSquads();
                 run.playUntilRolledOver();
+                run.shortAfterRollover = run.shortSquads();
                 run.collect();
             } finally {
                 Log.removeErrorListener(recorder);
@@ -485,6 +497,17 @@ class FullSeasonTests extends BaseTest {
             }
             engine.getMessageManager().deliverMessage(engine.getMessageManager().createWelcomeMessage(owner, manager,
                     owner.getCurrentCountry(), startingClub, save.getGameStartDate()));
+        }
+
+        List<String> shortSquads() {
+            List<String> out = new ArrayList<>();
+            for (Club club : save.getAllClubs()) {
+                if (!com.rndmodgames.futtoboru.system.generators.PositionAssigner.canFieldTwoThreeFive(
+                        club.getPlayers())) {
+                    out.add(club.getDataId() + " (" + club.getPlayers().size() + " players)");
+                }
+            }
+            return out;
         }
 
         void playUntilRolledOver() {

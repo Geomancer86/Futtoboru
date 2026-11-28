@@ -120,23 +120,42 @@ public class Futtoboru extends Game {
      */
     public static final String SEED_PROPERTY = "futtoboru.seed";
     private RandomSource random;
+    /** S-01 (D25): the seed every new game uses (tests, replays), or null: each new game draws a fresh one. */
+    private final Long forcedSeed;
     
-    // main constructor: seed from -Dfuttoboru.seed, else a fresh one
+    // main constructor: seed from -Dfuttoboru.seed (forced for every new game), else a fresh one per new game
     public Futtoboru() {
-        this(seedFromSystemProperty());
+        this(Long.getLong(SEED_PROPERTY));
     }
     
-    /** A game whose randomness is fully determined by {@code seed}. */
+    /** A game whose randomness is fully determined by {@code seed}; every new game of the session uses it again. */
     public Futtoboru(long seed) {
+        this(Long.valueOf(seed));
+    }
+    
+    private Futtoboru(Long forcedSeed) {
     
         // keep reference of the running instance
         instance = this;
-        this.random = RandomSource.seeded(seed);
+        this.forcedSeed = forcedSeed;
+        this.random = RandomSource.seeded(forcedSeed != null ? forcedSeed : RandomSource.newSeed());
     }
     
-    private static long seedFromSystemProperty() {
-        Long seed = Long.getLong(SEED_PROPERTY);
-        return seed != null ? seed : RandomSource.newSeed();
+    /** @return true when the seed was forced ({@value #SEED_PROPERTY} or {@link #Futtoboru(long)}) */
+    public boolean isSeedForced() {
+        return forcedSeed != null;
+    }
+    
+    /**
+     * S-01 (D25): the root random source for a new game: the forced seed again, else a fresh seed (the new game's
+     * save stores it, so a load replays it).
+     *
+     * @return the new game's seed
+     */
+    public long reseedForNewGame() {
+        setSeed(forcedSeed != null ? forcedSeed : RandomSource.newSeed());
+        Log.info(Log.SYSTEM_INIT, "Futtoboru", "New game seed " + getSeed() + (forcedSeed != null ? " (forced)" : ""));
+        return getSeed();
     }
     
     /** The root random source; fork it, don't draw from it directly. */
@@ -248,12 +267,14 @@ public class Futtoboru extends Game {
      * clubs, people, competitions, editions, tables and balances (the game plays with those objects). This drops the
      * current game, rebuilds every database object fresh from the game data already read (same runtime ids: data
      * records keep their {@code ids.json} number and derived ids are handed out the same way on every build) and
-     * makes new engine managers, so the new game starts from the data as it is in gamedata.
+     * makes new engine managers, so the new game starts from the data as it is in gamedata. S-01 (D25): the new
+     * game gets a fresh seed unless one is forced ({@link #reseedForNewGame()}).
      */
     public void prepareNewGame() {
         Log.info(Log.SYSTEM_INIT, "Futtoboru", "New game: rebuilding the database from game data");
         awaitAutosave();
         this.currentGame = null;
+        reseedForNewGame();
         DatabaseLoader.setRandom(random.fork("database"));
         DatabaseLoader.rebuild();
         createEngine();
