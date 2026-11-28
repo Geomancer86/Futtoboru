@@ -6,6 +6,8 @@ Claims, file locks and what is ready to take. **Only the PM of each machine edit
 ## Open claims
 | Item | Machine | Branch | Since |
 |---|---|---|---|
+| E-21g weather in the viewer (W1 particles + tint, mud, fog, snow, wet ball) from match weather | WORKSTATION | `ws/E-21g-weather` | 2026-11-28 |
+| E-18 crowd sections in the sim (mood, density, encroachment, small player effect; D22) | WORKSTATION | `ws/E-18-crowd` | 2026-11-28 |
 | R-02 + R-11a recruitment data (rules, wages, origins under `recruitment/`) + languages/literacy data and person language attributes (saves v3) | BOOK3PRO (parked) | `b3/R-02-recruitment-data` | 2026-11-28 |
 | G-10 history and fan tiers on screen (club facts, prose en+es, fan-tier meter) | BOOK3PRO (parked) | `b3/G-10-history-ui` | 2026-11-28 |
 | G-13 AI-to-AI friendlies and away guarantees | BOOK3PRO (parked) | `b3/G-13-ai-friendlies` | 2026-11-28 |
